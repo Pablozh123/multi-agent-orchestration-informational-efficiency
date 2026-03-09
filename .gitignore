@@ -1,0 +1,34 @@
+# API Keys — NIEMALS committen
+.env
+.env.*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Datenbank (zu gross für Git)
+data/*.db
+data/raw/*.json
+data/raw/*.csv
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# Claude Code
+.claude/worktrees/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/*.jsonl
+logs/*.log
+
+# Reports (regenerierbar)
+reports/*.md

@@ -1,0 +1,44 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p mcp_servers/market_agent mcp_servers/sentiment_agent mcp_servers/whale_agent mcp_servers/orchestrator analysis tests)",
+      "Bash(touch mcp_servers/__init__.py mcp_servers/market_agent/__init__.py mcp_servers/sentiment_agent/__init__.py mcp_servers/whale_agent/__init__.py mcp_servers/orchestrator/__init__.py analysis/__init__.py tests/__init__.py)",
+      "Bash(python -m venv .venv)",
+      "Bash(.venv/Scripts/pip install --upgrade pip)",
+      "Bash(.venv/Scripts/python.exe -m pip install --upgrade pip)",
+      "Bash(.venv/Scripts/pip install -r requirements.txt)",
+      "Bash(.venv/Scripts/pip install black)",
+      "Bash(.venv/Scripts/python init_db.py)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\chole\\ba-thesis\\.claude\\skills"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write(*.py)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python -m black --quiet $CHANGED_FILE 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write(.env*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'BLOCKED: .env Dateien dürfen nicht von Claude geschrieben werden. Keys manuell eintragen!' >&2; exit 2"
+          }
+        ]
+      }
+    ]
+  }
+}

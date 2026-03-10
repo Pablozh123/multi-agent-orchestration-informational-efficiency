@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: in-progress
-stopped_at: Completed 01-00-PLAN.md
-last_updated: "2026-03-10T22:33:08.886Z"
-last_activity: 2026-03-09 — Roadmap created, STATE.md initialized
+status: executing
+stopped_at: Completed 01-01-PLAN.md
+last_updated: "2026-03-10T22:37:15.314Z"
+last_activity: 2026-03-10 — Plan 01-00 complete (test infrastructure, Wave 0)
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 7
-  completed_plans: 1
+  completed_plans: 2
   percent: 14
 ---
 
@@ -50,6 +50,7 @@ Progress: [█░░░░░░░░░] 14%
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01 P01 | 2 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -66,6 +67,9 @@ Recent decisions affecting current work:
 - [Phase 01]: WAL pragma applied in :memory: fixture documents intent for init_db.py
 - [Phase 01]: pytest.importorskip used over xfail for missing ingest modules — cleaner skip messages
 - [Phase 01]: test_price_timestamp_format parametrized independently — passes green in Wave 0 without ingest modules
+- [Phase 01]: init_db.py: PRAGMA journal_mode=WAL placed as first statement in SCHEMA string to guarantee WAL activation before tables exist
+- [Phase 01]: init_db.py: force_recreate=True default deletes existing DB file to prevent schema drift in Wave 2 ingest scripts
+- [Phase 01]: ingest/__init__.py: to_utc_iso() raises ValueError for unknown source_format — explicit failure over silent wrong data
 
 ### Pending Todos
 
@@ -80,6 +84,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-10T22:33:08.883Z
-Stopped at: Completed 01-00-PLAN.md
+Last session: 2026-03-10T22:37:15.307Z
+Stopped at: Completed 01-01-PLAN.md
 Resume file: None

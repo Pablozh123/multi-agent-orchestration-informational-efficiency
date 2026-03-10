@@ -35,15 +35,16 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Running `SELECT COUNT(*) FROM poll_forecasts WHERE source='fivethirtyeight'` and `source='rcp'` returns continuous daily rows for Jan-Nov 2024; RCP rows have a `probability` column in [0.0, 1.0]
   4. Running `SELECT COUNT(*) FROM events_timeline` returns >= 20 rows, each with a non-null UTC timestamp and event category label
   5. Running `SELECT COUNT(*) FROM whale_trades WHERE amount_usd >= 10000` returns rows, and no row has a wallet address that appears on the market-maker exclusion list
-**Plans**: TBD
+**Plans**: 7 plans (Wave 0 + Waves 1-2)
 
 Plans:
-- [ ] 01-01: Schema design and init_db.py (WAL mode, UTC constraints, idempotent upsert pattern)
-- [ ] 01-02: Polymarket CLOB ingestion (polymarket.py — price_timestamp / fetched_at separation, DATA-01)
-- [ ] 01-03: FiveThirtyEight and RCP ingestion (fivethirtyeight.py, rcp.py — logit conversion for RCP, DATA-03/DATA-04)
-- [ ] 01-04: Dune Analytics whale ingestion and market-maker exclusion list (dune.py, DATA-05)
-- [ ] 01-05: GDELT sentiment ingestion (gdelt.py — election keywords, tägliche Granularität, DATA-06)
-- [ ] 01-06: Event catalog curation (20+ key events with exact UTC timestamps, DATA-07)
+- [ ] 01-00-PLAN.md — Test infrastructure: pytest.ini, conftest.py, test stubs for all DATA-01..07 requirements (Wave 0)
+- [ ] 01-01-PLAN.md — Schema + init_db.py rewrite: WAL mode, 5 schema gap fixes, ingest/__init__.py utilities (Wave 1)
+- [ ] 01-02-PLAN.md — Polymarket CLOB ingestion: price_timestamp/fetched_at separation, look-ahead bias prevention (Wave 2)
+- [ ] 01-03-PLAN.md — FiveThirtyEight CSV + RCP scraper with logit conversion to [0,1] probabilities (Wave 2)
+- [ ] 01-04-PLAN.md — Dune Analytics whale ingestion with market-maker exclusion filter (Wave 2)
+- [ ] 01-05-PLAN.md — GDELT DOC API sentiment ingestion, daily granularity, Jan-Nov 2024 (Wave 2)
+- [ ] 01-06-PLAN.md — Event catalog: curate 20+ key events with UTC timestamps and category labels (Wave 2)
 
 ### Phase 2: MCP Agent Layer
 **Goal**: Three FastMCP servers run against thesis.db and return correct, well-typed results for every tool call — verified with real database data, not mocks
@@ -114,7 +115,7 @@ Note: Phase 3 depends only on Phase 1 (not Phase 2) and can begin as soon as dat
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Data Foundation | 0/6 | Not started | - |
+| 1. Data Foundation | 0/7 | Planned | - |
 | 2. MCP Agent Layer | 0/3 | Not started | - |
 | 3. H1 Analysis — Brier Score and Calibration | 0/2 | Not started | - |
 | 4. H2 and H3 Analysis — Event Study and Whale Timing | 0/3 | Not started | - |

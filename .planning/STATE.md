@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Checkpoint: 01-02 Task 1 complete, awaiting human-verify for polymarket_prices data"
-last_updated: "2026-03-10T22:40:47.902Z"
+stopped_at: "Checkpoint: 01-05 Task 1 complete, awaiting human-verify for GDELT ingest run"
+last_updated: "2026-03-10T22:41:09.842Z"
 last_activity: 2026-03-10 — Plan 01-00 complete (test infrastructure, Wave 0)
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 7
-  completed_plans: 4
+  completed_plans: 6
   percent: 14
 ---
 
@@ -51,6 +51,7 @@ Progress: [█░░░░░░░░░] 14%
 
 *Updated after each plan completion*
 | Phase 01 P01 | 2 | 2 tasks | 2 files |
+| Phase 01 P05 | 2 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -72,6 +73,9 @@ Recent decisions affecting current work:
 - [Phase 01]: ingest/__init__.py: to_utc_iso() raises ValueError for unknown source_format — explicit failure over silent wrong data
 - [Phase 01]: parse_prices fetched_at is optional (None default generates current UTC) — existing tests omit it, production always passes explicit pre-call timestamp for lookahead-bias guarantee
 - [Phase 01]: fidelity=1440 (daily) is the only valid granularity for resolved Polymarket markets; finer fidelity returns empty history
+- [Phase 01]: GDELT DOC API artlist mode used over Summary API — more keyword control, consistent tone field per article
+- [Phase 01]: parse_sentiment takes pre-aggregated dicts (not raw API articles) — enables testing without network calls
+- [Phase 01]: fetch_daily_sentiment returns zero-row dict on error — silent fallback avoids aborting multi-hour ingest
 
 ### Pending Todos
 
@@ -86,6 +90,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-10T22:40:41.875Z
-Stopped at: Checkpoint: 01-02 Task 1 complete, awaiting human-verify for polymarket_prices data
+Last session: 2026-03-10T22:41:09.840Z
+Stopped at: Checkpoint: 01-05 Task 1 complete, awaiting human-verify for GDELT ingest run
 Resume file: None

@@ -1,0 +1,27 @@
+[
+  {
+    "wallet_address": "0x0000000000000000000000000000000000000000",
+    "label": "Polymarket Official Liquidity Provider",
+    "source": "dune.com/rchen8/polymarket"
+  },
+  {
+    "wallet_address": "0xd91e80cf2e7be2e162c6513ced06f1dd0da35296",
+    "label": "Polymarket CLOB Exchange Contract",
+    "source": "dune.com/rchen8/polymarket"
+  },
+  {
+    "wallet_address": "0x4bfb41d5b3570defd03c39a9a4d8de6bd8b8982e",
+    "label": "Polymarket Automated Market Maker",
+    "source": "dune.com/rchen8/polymarket"
+  },
+  {
+    "wallet_address": "0xc5d563a36ae78145c45a50134d48a1a52cace4c",
+    "label": "Polymarket Liquidity Bot",
+    "source": "dune.com/rchen8/polymarket"
+  },
+  {
+    "wallet_address": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+    "label": "Known Polymarket MM via Dune community",
+    "source": "dune.com/rchen8/polymarket"
+  }
+]

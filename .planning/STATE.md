@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-03-10T22:37:15.314Z"
+stopped_at: "Checkpoint: 01-02 Task 1 complete, awaiting human-verify for polymarket_prices data"
+last_updated: "2026-03-10T22:40:47.902Z"
 last_activity: 2026-03-10 — Plan 01-00 complete (test infrastructure, Wave 0)
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 7
-  completed_plans: 2
+  completed_plans: 4
   percent: 14
 ---
 
@@ -70,6 +70,8 @@ Recent decisions affecting current work:
 - [Phase 01]: init_db.py: PRAGMA journal_mode=WAL placed as first statement in SCHEMA string to guarantee WAL activation before tables exist
 - [Phase 01]: init_db.py: force_recreate=True default deletes existing DB file to prevent schema drift in Wave 2 ingest scripts
 - [Phase 01]: ingest/__init__.py: to_utc_iso() raises ValueError for unknown source_format — explicit failure over silent wrong data
+- [Phase 01]: parse_prices fetched_at is optional (None default generates current UTC) — existing tests omit it, production always passes explicit pre-call timestamp for lookahead-bias guarantee
+- [Phase 01]: fidelity=1440 (daily) is the only valid granularity for resolved Polymarket markets; finer fidelity returns empty history
 
 ### Pending Todos
 
@@ -84,6 +86,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-10T22:37:15.307Z
-Stopped at: Completed 01-01-PLAN.md
+Last session: 2026-03-10T22:40:41.875Z
+Stopped at: Checkpoint: 01-02 Task 1 complete, awaiting human-verify for polymarket_prices data
 Resume file: None

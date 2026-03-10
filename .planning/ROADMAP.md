@@ -115,7 +115,7 @@ Note: Phase 3 depends only on Phase 1 (not Phase 2) and can begin as soon as dat
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Data Foundation | 0/7 | Planned | - |
+| 1. Data Foundation | 1/7 | In Progress|  |
 | 2. MCP Agent Layer | 0/3 | Not started | - |
 | 3. H1 Analysis — Brier Score and Calibration | 0/2 | Not started | - |
 | 4. H2 and H3 Analysis — Event Study and Whale Timing | 0/3 | Not started | - |

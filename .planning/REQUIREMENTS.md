@@ -7,13 +7,13 @@
 
 ### Data Foundation
 
-- [ ] **DATA-01**: System ladt historische Polymarket-Preise (Jan-Nov 2024) via CLOB API und cached sie in SQLite — mit strikter Trennung von `price_timestamp` und `fetched_at` zur Vermeidung von Look-ahead Bias
-- [ ] **DATA-02**: SQLite-Datenbank lauft im WAL-Mode und unterstutzt gleichzeitige Reads durch 3 MCP-Server ohne Datenverlust
-- [ ] **DATA-03**: System importiert FiveThirtyEight-Modellwahrscheinlichkeiten 2024 (CSV) als tagliche Zeitreihe in `poll_forecasts`
-- [ ] **DATA-04**: System scrapt oder importiert RealClearPolitics Poll-Averages und transformiert sie mittels Logit-Funktion zu Wahrscheinlichkeiten 0.0-1.0
-- [ ] **DATA-05**: System ladt Whale-Transaktionen (>$10k) von Dune Analytics via API und filtert bekannte Market-Maker-Adressen heraus
-- [ ] **DATA-06**: System importiert GDELT-Sentiment-Scores fur US-Election-2024-Keywords (tagliche Granularitat) in `sentiment_scores`
-- [ ] **DATA-07**: Event-Katalog (`events_timeline`) enthalt mindestens 20 kuratierte Key-Events (Debatten, Umfrage-Schocks, Skandale) mit exakten UTC-Timestamps
+- [x] **DATA-01**: System ladt historische Polymarket-Preise (Jan-Nov 2024) via CLOB API und cached sie in SQLite — mit strikter Trennung von `price_timestamp` und `fetched_at` zur Vermeidung von Look-ahead Bias
+- [x] **DATA-02**: SQLite-Datenbank lauft im WAL-Mode und unterstutzt gleichzeitige Reads durch 3 MCP-Server ohne Datenverlust
+- [x] **DATA-03**: System importiert FiveThirtyEight-Modellwahrscheinlichkeiten 2024 (CSV) als tagliche Zeitreihe in `poll_forecasts`
+- [x] **DATA-04**: System scrapt oder importiert RealClearPolitics Poll-Averages und transformiert sie mittels Logit-Funktion zu Wahrscheinlichkeiten 0.0-1.0
+- [x] **DATA-05**: System ladt Whale-Transaktionen (>$10k) von Dune Analytics via API und filtert bekannte Market-Maker-Adressen heraus
+- [x] **DATA-06**: System importiert GDELT-Sentiment-Scores fur US-Election-2024-Keywords (tagliche Granularitat) in `sentiment_scores`
+- [x] **DATA-07**: Event-Katalog (`events_timeline`) enthalt mindestens 20 kuratierte Key-Events (Debatten, Umfrage-Schocks, Skandale) mit exakten UTC-Timestamps
 
 ### MCP Agent Layer
 
@@ -75,13 +75,13 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DATA-01 | Phase 1 | Pending |
-| DATA-02 | Phase 1 | Pending |
-| DATA-03 | Phase 1 | Pending |
-| DATA-04 | Phase 1 | Pending |
-| DATA-05 | Phase 1 | Pending |
-| DATA-06 | Phase 1 | Pending |
-| DATA-07 | Phase 1 | Pending |
+| DATA-01 | Phase 1 | Complete |
+| DATA-02 | Phase 1 | Complete |
+| DATA-03 | Phase 1 | Complete |
+| DATA-04 | Phase 1 | Complete |
+| DATA-05 | Phase 1 | Complete |
+| DATA-06 | Phase 1 | Complete |
+| DATA-07 | Phase 1 | Complete |
 | AGENT-01 | Phase 2 | Pending |
 | AGENT-02 | Phase 2 | Pending |
 | AGENT-03 | Phase 2 | Pending |

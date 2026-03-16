@@ -29,10 +29,10 @@ _CLOB_BASE_URL = "https://clob.polymarket.com"
 # Gamma API base URL for market metadata
 _GAMMA_BASE_URL = "https://gamma-api.polymarket.com"
 
-# Primary slug for the 2024 US presidential election market
-_PRIMARY_SLUG = "presidential-election-winner-2024"
-# Fallback slug in case the primary slug has changed
-_FALLBACK_SLUG = "will-donald-trump-win-the-2024-us-presidential-election"
+# Known stable IDs for 2024 US Presidential Election market (resolved Nov 2024)
+# Verified 2026-03-16 via CLOB /markets/{condition_id} endpoint
+_CONDITION_ID = "0xdd22472e552920b8438158ea7238bfadfa4f736aa4cee91a6b86c39ead110917"
+_YES_TOKEN_ID = "21742633143463906290569050155826241533067272736897614950488156847949938836455"
 
 
 def parse_prices(
@@ -74,8 +74,8 @@ def parse_prices(
 
     rows: list[dict] = []
     for entry in history:
-        # Convert Unix milliseconds to UTC ISO 8601 string
-        price_timestamp = to_utc_iso(entry["t"], "unix_ms")
+        # Convert Unix seconds to UTC ISO 8601 string (CLOB API returns seconds, not ms)
+        price_timestamp = to_utc_iso(entry["t"], "unix_s")
         price = float(entry["p"])
 
         rows.append(
@@ -125,66 +125,38 @@ async def fetch_polymarket_prices(
 
 
 async def resolve_token_id() -> tuple[str, str]:
-    """Ermittelt dynamisch die aktuelle market_id und token_id des 2024-Praesidentschaftsmarkts.
+    """Ermittelt die market_id und token_id des 2024-Praesidentschaftsmarkts.
 
-    Fragt die Polymarket Gamma API ab, um die stabilen IDs des US-Praesidentschaftswahl-
-    2024-Marktes zu erhalten. Versucht zunaechst den primaeren Slug, dann den Fallback-Slug.
-    Gibt die condition_id als market_id und die token_id des YES-Outcome-Tokens zurueck.
+    Fragt die Polymarket CLOB API ab (funktioniert auch fuer archivierte Maerkte,
+    im Gegensatz zur Gamma API die nur aktive Maerkte liefert).
+    Faellt auf bekannte Konstanten zurueck wenn die API nicht antwortet.
 
     Returns:
         Tupel (market_id, token_id), wobei market_id die condition_id und
         token_id die ID des YES-Outcome-Tokens ist.
-
-    Raises:
-        ValueError: Wenn kein Markt fuer den primaeren oder Fallback-Slug gefunden wird.
-        httpx.HTTPStatusError: Bei HTTP-Fehlerantworten der Gamma API.
     """
-    url = f"{_GAMMA_BASE_URL}/markets"
+    url = f"{_CLOB_BASE_URL}/markets/{_CONDITION_ID}"
 
     async with httpx.AsyncClient(timeout=30.0) as client:
-        # Try primary slug first
-        for slug in (_PRIMARY_SLUG, _FALLBACK_SLUG):
-            params = {"slug": slug}
-            response = await client.get(url, params=params)
-            response.raise_for_status()
-            markets = response.json()
-
-            # Handle both list and dict responses from Gamma API
-            if isinstance(markets, dict):
-                markets = [markets]
-
-            if markets:
-                market = markets[0]
-                # Extract condition_id as the stable market identifier
-                market_id: str = market.get("conditionId") or market.get(
-                    "condition_id", ""
-                )
-                # Find YES outcome token from tokens array
-                tokens: list[dict] = market.get("tokens", [])
-                token_id: str = ""
-                for token in tokens:
-                    outcome = token.get("outcome", "").upper()
-                    if outcome == "YES":
-                        token_id = token.get("token_id", "")
-                        break
-                # Fall back to first token if no YES token found
-                if not token_id and tokens:
-                    token_id = tokens[0].get("token_id", "")
-
-                if market_id and token_id:
+        response = await client.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            market_id: str = data.get("condition_id", _CONDITION_ID)
+            for token in data.get("tokens", []):
+                if token.get("outcome", "").upper() == "YES":
+                    token_id: str = token["token_id"]
                     logger.info(
-                        "Polymarket market resolved: market_id=%s token_id=%s",
+                        "Polymarket market resolved via CLOB: market_id=%s token_id=%s",
                         market_id,
                         token_id,
                     )
-                    print(
-                        f"Resolved market_id={market_id}, token_id={token_id}"
-                    )
+                    print(f"Resolved via CLOB: market_id={market_id}, token_id={token_id}")
                     return market_id, token_id
 
-    raise ValueError(
-        f"Kein Markt fuer Slugs '{_PRIMARY_SLUG}' oder '{_FALLBACK_SLUG}' gefunden."
-    )
+    # Hardcoded fallback — verified 2026-03-16
+    logger.warning("CLOB market lookup failed, using hardcoded fallback constants.")
+    print(f"Using hardcoded fallback: market_id={_CONDITION_ID}")
+    return _CONDITION_ID, _YES_TOKEN_ID
 
 
 async def ingest_polymarket(db_path: Path = DB_PATH) -> int:

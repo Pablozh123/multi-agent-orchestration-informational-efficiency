@@ -113,7 +113,7 @@ def mock_polymarket_response() -> dict:
     """Gibt eine minimale Mock-Antwort der Polymarket CLOB API zurueck.
 
     Das Format entspricht dem `/prices-history`-Endpunkt mit zwei Preispunkten
-    fuer Januar 2024 (Unix-Millisekunden-Zeitstempel).
+    fuer Januar 2024 (Unix-Sekunden-Zeitstempel, wie von der CLOB API geliefert).
 
     Returns:
         dict: Simulierte API-Antwort mit 'history'-Liste.
@@ -121,8 +121,8 @@ def mock_polymarket_response() -> dict:
     # Two price observations: 2024-01-01T00:00:00Z and 2024-01-02T00:00:00Z
     return {
         "history": [
-            {"t": 1704067200000, "p": 0.52},
-            {"t": 1704153600000, "p": 0.55},
+            {"t": 1704067200, "p": 0.52},
+            {"t": 1704153600, "p": 0.55},
         ]
     }
 

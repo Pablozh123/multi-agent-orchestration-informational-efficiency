@@ -24,7 +24,7 @@ from ingest import DB_PATH, get_connection, to_utc_iso
 
 # Replace with actual query ID from Dune web UI after developing and testing the query.
 # See user_setup in 01-04-PLAN.md: https://dune.com/queries/new
-DUNE_QUERY_ID: int = 0  # REPLACE with actual query ID from Dune web UI
+DUNE_QUERY_ID: int = 6810777
 
 WHALE_THRESHOLD_USD: float = 10_000.0
 

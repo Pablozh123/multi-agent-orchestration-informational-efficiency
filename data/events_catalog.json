@@ -1,0 +1,142 @@
+[
+  {
+    "event_timestamp": "2024-01-15T00:00:00.000000Z",
+    "event_type": "iowa_caucuses",
+    "event_category": "primary",
+    "description": "Iowa Caucuses: Trump gewinnt deutlich, DeSantis zieht sich zurueck",
+    "impact_score": 0.7
+  },
+  {
+    "event_timestamp": "2024-02-24T00:00:00.000000Z",
+    "event_type": "south_carolina_primary",
+    "event_category": "primary",
+    "description": "South Carolina Primary: Haley verliert Heimatstaat gegen Trump",
+    "impact_score": 0.6
+  },
+  {
+    "event_timestamp": "2024-03-05T00:00:00.000000Z",
+    "event_type": "super_tuesday",
+    "event_category": "primary",
+    "description": "Super Tuesday: Trump sichert sich faktisch die republikanische Nominierung",
+    "impact_score": 0.8
+  },
+  {
+    "event_timestamp": "2024-04-15T00:00:00.000000Z",
+    "event_type": "trump_criminal_trial_begins",
+    "event_category": "legal",
+    "description": "Trumps New Yorker Strafprozess beginnt (34 Anklagepunkte wegen Dokumentenfaelschung)",
+    "impact_score": 0.7
+  },
+  {
+    "event_timestamp": "2024-05-30T00:00:00.000000Z",
+    "event_type": "trump_conviction",
+    "event_category": "legal",
+    "description": "Trump in New York in allen 34 Anklagepunkten schuldig gesprochen",
+    "impact_score": 0.9
+  },
+  {
+    "event_timestamp": "2024-06-27T01:00:00.000000Z",
+    "event_type": "presidential_debate_1",
+    "event_category": "debate",
+    "description": "Erste Praesidentschaftsdebatte Biden vs. Trump (CNN, Atlanta, 21:00 ET)",
+    "impact_score": 0.9
+  },
+  {
+    "event_timestamp": "2024-07-13T00:00:00.000000Z",
+    "event_type": "trump_assassination_attempt_1",
+    "event_category": "scandal",
+    "description": "Attentat auf Trump in Butler, Pennsylvania (Schuss streift Ohr)",
+    "impact_score": 1.0
+  },
+  {
+    "event_timestamp": "2024-07-21T00:00:00.000000Z",
+    "event_type": "biden_withdrawal",
+    "event_category": "poll_shock",
+    "description": "Biden zieht sich aus dem Rennen zurueck und unterstuetzt Harris",
+    "impact_score": 1.0
+  },
+  {
+    "event_timestamp": "2024-07-22T00:00:00.000000Z",
+    "event_type": "harris_candidacy_announcement",
+    "event_category": "poll_shock",
+    "description": "Harris gibt offiziell ihre Praesidentschaftskandidatur bekannt",
+    "impact_score": 0.9
+  },
+  {
+    "event_timestamp": "2024-08-06T00:00:00.000000Z",
+    "event_type": "walz_vp_announcement",
+    "event_category": "endorsement",
+    "description": "Harris gibt Tim Walz als Vizepraesidentschaftskandidaten bekannt",
+    "impact_score": 0.6
+  },
+  {
+    "event_timestamp": "2024-08-19T00:00:00.000000Z",
+    "event_type": "dnc_opens",
+    "event_category": "primary",
+    "description": "Demokratischer Nationalkonvent eroeffnet in Chicago",
+    "impact_score": 0.5
+  },
+  {
+    "event_timestamp": "2024-08-23T00:00:00.000000Z",
+    "event_type": "harris_nomination",
+    "event_category": "primary",
+    "description": "Harris offiziell als demokratische Praesidentschaftskandidatin nominiert",
+    "impact_score": 0.7
+  },
+  {
+    "event_timestamp": "2024-09-11T01:00:00.000000Z",
+    "event_type": "presidential_debate_2",
+    "event_category": "debate",
+    "description": "Praesidentschaftsdebatte Harris vs. Trump (ABC, Philadelphia, 21:00 ET)",
+    "impact_score": 0.9
+  },
+  {
+    "event_timestamp": "2024-09-15T00:00:00.000000Z",
+    "event_type": "trump_assassination_attempt_2",
+    "event_category": "scandal",
+    "description": "Zweiter Attentatsversuch auf Trump in West Palm Beach, Florida",
+    "impact_score": 0.8
+  },
+  {
+    "event_timestamp": "2024-10-01T02:00:00.000000Z",
+    "event_type": "vp_debate",
+    "event_category": "debate",
+    "description": "Vizepraesidentschaftsdebatte Vance vs. Walz (CBS, New York, 22:00 ET)",
+    "impact_score": 0.5
+  },
+  {
+    "event_timestamp": "2024-10-07T00:00:00.000000Z",
+    "event_type": "hamas_anniversary",
+    "event_category": "scandal",
+    "description": "Jahrestag des Hamas-Angriffs — sicherheitspolitisches Ereignis mit Nahost-Bezug",
+    "impact_score": 0.4
+  },
+  {
+    "event_timestamp": "2024-10-07T20:00:00.000000Z",
+    "event_type": "taylor_swift_endorsement",
+    "event_category": "endorsement",
+    "description": "Taylor Swift unterstuetzt Harris oeffentlich auf Instagram (nach Harris-Trump-Debatte)",
+    "impact_score": 0.6
+  },
+  {
+    "event_timestamp": "2024-10-27T00:00:00.000000Z",
+    "event_type": "trump_msg_rally",
+    "event_category": "scandal",
+    "description": "Trump-Kundgebung Madison Square Garden — Puerto-Rico-Kommentare loesen Empoeung aus",
+    "impact_score": 0.7
+  },
+  {
+    "event_timestamp": "2024-10-28T00:00:00.000000Z",
+    "event_type": "final_polls_published",
+    "event_category": "poll_shock",
+    "description": "Letzte grosse nationale Umfragen veroeffentlicht (New York Times/Siena, ABC/WaPo)",
+    "impact_score": 0.8
+  },
+  {
+    "event_timestamp": "2024-11-05T12:00:00.000000Z",
+    "event_type": "election_day",
+    "event_category": "poll_shock",
+    "description": "US-Praesidentschaftswahl 2024 — Wahltag (Polls schliessen 19:00-23:00 ET)",
+    "impact_score": 1.0
+  }
+]

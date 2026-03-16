@@ -39,7 +39,7 @@ key-files:
 
 key-decisions:
   - "filter_market_makers() is pure (no DB access) — enables clean unit testing with mock_dune_response fixture without DB setup"
-  - "DUNE_QUERY_ID = 0 placeholder — user must develop query on Dune web UI and update constant before first live ingest"
+  - "DUNE_QUERY_ID = 6810777 — developed and tested on Dune web UI before API use"
   - "data/market_maker_exclusions.json seeds 5 known MM addresses; DB table populated on each ingest_dune() call via INSERT OR IGNORE"
   - "Column name aliasing in _map_row() handles Dune query result variations (taker/wallet, size_usd/amount_usd, side/direction)"
   - "direction normalization maps buy/sell variants to uppercase BUY/SELL to satisfy whale_trades CHECK constraint"
@@ -52,27 +52,29 @@ patterns-established:
 requirements-completed: [DATA-05]
 
 # Metrics
-duration: 2min
-completed: 2026-03-10
+duration: 2min (code) + human checkpoint (Dune setup)
+completed: 2026-03-16
 ---
 
 # Phase 1 Plan 04: Dune Whale Ingest Summary
 
-**Dune Analytics whale-trade ingest with pure filter_market_makers() function, 5-entry MM exclusion JSON seed, and column-aliasing _map_row() for Dune query result variations**
+**Dune Analytics whale-trade ingest with pure filter_market_makers() function, 5-entry MM exclusion JSON seed, and column-aliasing _map_row() for Dune query result variations — 25,113 whale trades verified (amount_usd >= $10k, DUNE_QUERY_ID=6810777)**
 
 ## Performance
 
-- **Duration:** 2 min
+- **Duration:** 2 min (code) + human checkpoint (Dune query setup and live verification)
 - **Started:** 2026-03-10T22:38:35Z
-- **Completed:** 2026-03-10T22:40:22Z
-- **Tasks:** 1 of 2 (Task 2 is a human-verify checkpoint — awaiting user setup)
+- **Completed:** 2026-03-16
+- **Tasks:** 2 of 2 (including human-verify checkpoint — approved)
 - **Files modified:** 2
 
 ## Accomplishments
 - Implemented `filter_market_makers()` as a pure function: filters MM wallets, normalizes wallet_address to lowercase; both whale tests pass
 - Implemented `ingest_dune()` with full Dune REST API call, column aliasing, whale threshold ($10k), direction normalization, and INSERT OR IGNORE deduplication
 - Created `data/market_maker_exclusions.json` with 5 known Polymarket MM addresses (all lowercase)
-- Module import works; unit tests pass without any API key required
+- Live ingest executed with DUNE_QUERY_ID=6810777: **25,113 rows** inserted into `whale_trades`
+- All rows verified: amount_usd >= 10,000 (min check passed), cross-join with market_maker_exclusions returns 0 (no MM wallets in results)
+- Idempotency confirmed: running script a second time inserted 0 new rows (tx_hash UNIQUE constraint)
 
 ## Task Commits
 
@@ -80,17 +82,13 @@ Each task was committed atomically:
 
 1. **Task 1: ingest/dune.py and data/market_maker_exclusions.json** - `3aee579` (feat)
 
-**Plan metadata:** _(pending — blocking checkpoint active)_
-
-_Note: Task 2 is a blocking human-verify checkpoint requiring Dune API key, web UI query development, and live data verification._
-
 ## Files Created/Modified
 - `ingest/dune.py` - Dune Analytics ingest: filter_market_makers, ingest_dune, load_exclusions, _populate_market_maker_exclusions
 - `data/market_maker_exclusions.json` - Static seed list of 5 known Polymarket market-maker wallet addresses
 
 ## Decisions Made
 - `filter_market_makers()` kept pure (no DB access) to allow clean unit testing with mock fixture
-- `DUNE_QUERY_ID = 0` placeholder constant with comment directing user to Dune web UI
+- `DUNE_QUERY_ID = 6810777` — developed and tested on Dune web UI before using API credits
 - Column aliasing in `_map_row()` handles multiple Dune column name conventions
 
 ## Deviations from Plan
@@ -100,34 +98,23 @@ None - plan executed exactly as written.
 ## Issues Encountered
 None.
 
-## User Setup Required
+## Live Ingest Results
 
-Before running `ingest_dune()` for live data, the following manual steps are required:
+| Check | Result | Status |
+|-------|--------|--------|
+| whale_trades row count | 25,113 | Pass |
+| MIN(amount_usd) | >= 10,000.0 | Pass |
+| MM cross-join count | 0 | Pass |
+| Idempotency (2nd run) | 0 new rows | Pass |
+| DUNE_QUERY_ID used | 6810777 | — |
 
-1. Get Dune API key: https://dune.com/settings/api -> add `DUNE_API_KEY=your_key` to `.env`
-2. Develop SQL query on Dune web UI (https://dune.com/queries/new) for Polymarket CLOB trades >= $10k in 2024
-   - Reference dashboard: https://dune.com/rchen8/polymarket
-   - Example: `SELECT block_time, tx_hash, taker, condition_id, 'BUY' as direction, usd_amount FROM polymarket_polygon.clob_trades WHERE block_time BETWEEN TIMESTAMP '2024-01-01' AND TIMESTAMP '2024-11-05' AND usd_amount >= 10000`
-3. Note the query ID from the URL after saving
-4. Update `DUNE_QUERY_ID` constant in `ingest/dune.py` (currently `0`)
-5. Run: `.venv/Scripts/python.exe ingest/dune.py`
-6. Verify: `SELECT COUNT(*), MIN(amount_usd) FROM whale_trades` should return count > 0, min >= 10000
+## Self-Check: PASSED
 
-## Checkpoint Status
-
-**Stopped at:** Task 2 — `checkpoint:human-verify` (blocking)
-
-The unit tests (pure logic) all pass. The blocking checkpoint requires:
-- DUNE_API_KEY in .env
-- Dune SQL query developed and tested on web UI
-- DUNE_QUERY_ID updated in ingest/dune.py
-- Live ingest run with data integrity verification
-
-## Next Phase Readiness
-- `filter_market_makers()` and `ingest_dune()` are production-ready once DUNE_QUERY_ID is set
-- Unit tests provide ongoing regression coverage for the exclusion filter logic
-- After checkpoint approval, `whale_trades` table will be populated for Phase 4 H3 analysis
+- `ingest/dune.py` — exists (committed 3aee579)
+- `data/market_maker_exclusions.json` — exists (committed 3aee579)
+- whale_trades: 25,113 rows verified by human
+- All integrity checks passed
 
 ---
 *Phase: 01-data-foundation*
-*Completed: 2026-03-10*
+*Completed: 2026-03-16*

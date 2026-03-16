@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Checkpoint: 01-05 Task 1 complete, awaiting human-verify for GDELT ingest run"
-last_updated: "2026-03-10T22:41:09.842Z"
+stopped_at: Completed 01-04-PLAN.md (Dune whale ingest — 25113 rows verified)
+last_updated: "2026-03-16T16:10:27.711Z"
 last_activity: 2026-03-10 — Plan 01-00 complete (test infrastructure, Wave 0)
 progress:
   total_phases: 5
@@ -52,6 +52,7 @@ Progress: [█░░░░░░░░░] 14%
 *Updated after each plan completion*
 | Phase 01 P01 | 2 | 2 tasks | 2 files |
 | Phase 01 P05 | 2 | 1 tasks | 1 files |
+| Phase 01 P04 | 2 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -76,6 +77,7 @@ Recent decisions affecting current work:
 - [Phase 01]: GDELT DOC API artlist mode used over Summary API — more keyword control, consistent tone field per article
 - [Phase 01]: parse_sentiment takes pre-aggregated dicts (not raw API articles) — enables testing without network calls
 - [Phase 01]: fetch_daily_sentiment returns zero-row dict on error — silent fallback avoids aborting multi-hour ingest
+- [Phase 01]: DUNE_QUERY_ID=6810777 developed and tested on Dune web UI before API use — 25113 whale trades ingested
 
 ### Pending Todos
 
@@ -90,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-10T22:41:09.840Z
-Stopped at: Checkpoint: 01-05 Task 1 complete, awaiting human-verify for GDELT ingest run
+Last session: 2026-03-16T16:10:27.708Z
+Stopped at: Completed 01-04-PLAN.md (Dune whale ingest — 25113 rows verified)
 Resume file: None

@@ -17,7 +17,7 @@ database to thesis-ready figures with statistical significance tests.
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Data Foundation** - Populate thesis.db with all source data (Jan-Nov 2024) and lock schema before any analysis
+- [x] **Phase 1: Data Foundation** - Populate thesis.db with all source data (Jan-Nov 2024) and lock schema before any analysis (completed 2026-03-16)
 - [ ] **Phase 2: MCP Agent Layer** - Build three read-only FastMCP servers that expose thesis.db to the orchestrator
 - [ ] **Phase 3: H1 Analysis — Brier Score and Calibration** - Compute and compare forecast accuracy across all three sources
 - [ ] **Phase 4: H2 and H3 Analysis — Event Study and Whale Timing** - Measure information integration speed and whale lead-time
@@ -115,7 +115,7 @@ Note: Phase 3 depends only on Phase 1 (not Phase 2) and can begin as soon as dat
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Data Foundation | 6/7 | In Progress|  |
+| 1. Data Foundation | 7/7 | Complete   | 2026-03-16 |
 | 2. MCP Agent Layer | 0/3 | Not started | - |
 | 3. H1 Analysis — Brier Score and Calibration | 0/2 | Not started | - |
 | 4. H2 and H3 Analysis — Event Study and Whale Timing | 0/3 | Not started | - |

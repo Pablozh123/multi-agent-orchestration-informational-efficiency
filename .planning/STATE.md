@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 01-05-PLAN.md (GDELT sentiment ingest — 309 days verified)
-last_updated: "2026-03-16T17:09:10.929Z"
-last_activity: 2026-03-10 — Plan 01-00 complete (test infrastructure, Wave 0)
+status: completed
+stopped_at: Completed 01-06-PLAN.md (events catalog — 20 events verified) — Phase 1 complete
+last_updated: "2026-03-16T17:19:55.192Z"
+last_activity: 2026-03-16 — Plan 01-06 complete (events catalog, Wave 2) — Phase 1 complete 7/7
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 7
-  completed_plans: 6
-  percent: 14
+  completed_plans: 7
+  percent: 100
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-03-09)
 
 ## Current Position
 
-Phase: 1 of 5 (Data Foundation)
-Plan: 1 of 7 in current phase
-Status: In Progress
-Last activity: 2026-03-10 — Plan 01-00 complete (test infrastructure, Wave 0)
+Phase: 1 of 5 (Data Foundation) — COMPLETE
+Plan: 7 of 7 in current phase (all complete)
+Status: Phase 1 complete — ready for Phase 2
+Last activity: 2026-03-16 — Plan 01-06 complete (events catalog, Wave 2) — Phase 1 complete 7/7
 
-Progress: [█░░░░░░░░░] 14%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -55,6 +55,7 @@ Progress: [█░░░░░░░░░] 14%
 | Phase 01 P04 | 2 | 2 tasks | 2 files |
 | Phase 01 P02 | 10 | 2 tasks | 1 files |
 | Phase 01 P05 | 2 | 2 tasks | 1 files |
+| Phase 01 P06 | 15 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,10 @@ Recent decisions affecting current work:
 - [Phase 01]: resolve_token_id switched from Gamma API to CLOB API /markets — Gamma returns archived 2024 markets with empty tokens[]
 - [Phase 01]: CLOB prices-history timestamps are unix_s not unix_ms — parse_prices uses to_utc_iso(t, 'unix_s')
 - [Phase Phase 01]: GDELT DOC API artlist mode used over Summary API — more keyword control, consistent tone field per article
+- [Phase 01 P06]: UTC midnight (T00:00:00.000000Z) for day-level events; debate starts use precise ET-to-UTC conversion (9 PM ET = 01:00 UTC next day in summer/DST)
+- [Phase 01 P06]: INSERT OR IGNORE on events_timeline — idempotent ingest, second run safe
+- [Phase 01 P06]: load_events() hard-asserts >= 20 events — hard contract prevents silent data loss
+- [Phase 01 P06]: impact_score nullable — Phase 4 can derive from observed price movement instead of pre-assigned weights
 
 ### Pending Todos
 
@@ -97,6 +102,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T17:09:02.266Z
-Stopped at: Completed 01-05-PLAN.md (GDELT sentiment ingest — 309 days verified)
+Last session: 2026-03-16T18:00:00.000Z
+Stopped at: Completed 01-06-PLAN.md (events catalog — 20 events verified) — Phase 1 complete
 Resume file: None

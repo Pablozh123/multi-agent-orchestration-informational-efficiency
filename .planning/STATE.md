@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-02-PLAN.md (Polymarket price ingest — 307 rows verified)
-last_updated: "2026-03-16T16:42:17.224Z"
+stopped_at: Completed 01-05-PLAN.md (GDELT sentiment ingest — 309 days verified)
+last_updated: "2026-03-16T17:09:10.929Z"
 last_activity: 2026-03-10 — Plan 01-00 complete (test infrastructure, Wave 0)
 progress:
   total_phases: 5
@@ -54,6 +54,7 @@ Progress: [█░░░░░░░░░] 14%
 | Phase 01 P05 | 2 | 1 tasks | 1 files |
 | Phase 01 P04 | 2 | 2 tasks | 2 files |
 | Phase 01 P02 | 10 | 2 tasks | 1 files |
+| Phase 01 P05 | 2 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -81,6 +82,7 @@ Recent decisions affecting current work:
 - [Phase 01]: DUNE_QUERY_ID=6810777 developed and tested on Dune web UI before API use — 25113 whale trades ingested
 - [Phase 01]: resolve_token_id switched from Gamma API to CLOB API /markets — Gamma returns archived 2024 markets with empty tokens[]
 - [Phase 01]: CLOB prices-history timestamps are unix_s not unix_ms — parse_prices uses to_utc_iso(t, 'unix_s')
+- [Phase Phase 01]: GDELT DOC API artlist mode used over Summary API — more keyword control, consistent tone field per article
 
 ### Pending Todos
 
@@ -95,6 +97,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T16:42:17.219Z
-Stopped at: Completed 01-02-PLAN.md (Polymarket price ingest — 307 rows verified)
+Last session: 2026-03-16T17:09:02.266Z
+Stopped at: Completed 01-05-PLAN.md (GDELT sentiment ingest — 309 days verified)
 Resume file: None

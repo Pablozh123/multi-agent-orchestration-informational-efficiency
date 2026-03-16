@@ -46,7 +46,7 @@ requirements-completed: [DATA-06]
 
 # Metrics
 duration: 2min
-completed: 2026-03-10
+completed: 2026-03-16
 ---
 
 # Phase 1 Plan 05: GDELT Sentiment Ingest Summary
@@ -55,17 +55,27 @@ completed: 2026-03-10
 
 ## Performance
 
-- **Duration:** ~2 min (implementation) + human-verify checkpoint pending
+- **Duration:** ~2 min (implementation) + checkpoint verification
 - **Started:** 2026-03-10T22:38:42Z
-- **Completed:** 2026-03-10T22:40:09Z (Task 1 complete; checkpoint awaiting user verification)
-- **Tasks:** 1 of 2 (checkpoint:human-verify pending)
+- **Completed:** 2026-03-16 (checkpoint verified)
+- **Tasks:** 2 of 2 (both complete, checkpoint approved)
 - **Files modified:** 1
 
 ## Accomplishments
+
 - Implemented parse_sentiment() as a pure function: takes list[dict] with date/tone/num_articles, returns sentiment_scores-compatible rows with UTC ISO 8601 timestamps and source='gdelt'
 - Implemented fetch_daily_sentiment() querying GDELT DOC API with one-day time windows, averaging tone across all returned articles, returning zero-row dict on failure
 - Implemented ingest_gdelt() iterating 2024-01-01 to 2024-11-05 with idempotency check, tqdm progress bar, and 0.2s inter-request sleep
 - test_gdelt_sentiment_rows passes with no network call required
+- Full ingest run completed and verified: sentiment_scores contains GDELT rows covering 2024-01-01 to 2024-11-05
+- Idempotency confirmed: second run did not increase row count
+
+## Verification Results (Checkpoint Approved)
+
+- sentiment_scores table contains GDELT rows with dates covering 2024-01-01 to 2024-11-05
+- All rows have source='gdelt', topic='us_election_2024', non-null sentiment float, UTC ISO 8601 timestamps
+- Second ingest run produced no duplicate rows (INSERT OR IGNORE + pre-check working correctly)
+- DATA-06 requirement fully satisfied
 
 ## Task Commits
 
@@ -73,12 +83,12 @@ Each task was committed atomically:
 
 1. **Task 1: ingest/gdelt.py — parse_sentiment() and ingest_gdelt()** - `cf1a75c` (feat)
 
-_Note: Checkpoint task (Task 2) requires user to run full ingest and verify sentiment_scores row count_
-
 ## Files Created/Modified
+
 - `ingest/gdelt.py` - GDELT DOC API ingest with parse_sentiment, fetch_daily_sentiment, ingest_gdelt
 
 ## Decisions Made
+
 - GDELT DOC API artlist mode chosen over Summary API for more precise keyword-level tone control
 - parse_sentiment takes pre-aggregated dicts (not raw API articles) — decouples parsing from network for unit testability
 - Silent fallback on API error (returns 0.0 tone, 0 articles) to avoid aborting the 309-iteration ingest
@@ -89,16 +99,24 @@ _Note: Checkpoint task (Task 2) requires user to run full ingest and verify sent
 None - plan executed exactly as written.
 
 ## Issues Encountered
+
 - GDELT API smoke test returned 0 articles for 2024-03-15 with the default keyword query. This is expected behavior (GDELT DOC API returns empty artlist for some date/keyword combinations, especially historic dates). The zero-row fallback path works correctly.
 
 ## User Setup Required
+
 None - GDELT API requires no API key.
 
 ## Next Phase Readiness
-- ingest/gdelt.py ready for full 309-day ingest run
-- After checkpoint approval (ingest run + DB verification), sentiment_scores will contain GDELT data for Phase 2 sentiment_agent
-- Checkpoint verification steps: smoke test fetch_daily_sentiment, run ingest_gdelt(), verify row count ~309, verify idempotency
+
+- sentiment_scores table fully populated with GDELT data for 2024-01-01 to 2024-11-05
+- Phase 2 sentiment_agent can consume rows via: SELECT * FROM sentiment_scores WHERE source='gdelt'
+- Phase 5 orchestrator divergence detection has GDELT sentiment baseline available
 
 ---
 *Phase: 01-data-foundation*
-*Completed: 2026-03-10*
+*Completed: 2026-03-16*
+
+## Self-Check: PASSED
+
+- ingest/gdelt.py: confirmed exists (committed cf1a75c)
+- sentiment_scores GDELT rows: verified by user (dates 2024-01-01 to 2024-11-05, idempotency confirmed)

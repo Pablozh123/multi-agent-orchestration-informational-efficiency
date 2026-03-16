@@ -35,7 +35,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Running `SELECT COUNT(*) FROM poll_forecasts WHERE source='fivethirtyeight'` and `source='rcp'` returns continuous daily rows for Jan-Nov 2024; RCP rows have a `probability` column in [0.0, 1.0]
   4. Running `SELECT COUNT(*) FROM events_timeline` returns >= 20 rows, each with a non-null UTC timestamp and event category label
   5. Running `SELECT COUNT(*) FROM whale_trades WHERE amount_usd >= 10000` returns rows, and no row has a wallet address that appears on the market-maker exclusion list
-**Plans**: 7 plans (Wave 0 + Waves 1-2)
+**Plans**: 9 plans (Wave 0 + Waves 1-2 + Wave 3 gap closure)
 
 Plans:
 - [ ] 01-00-PLAN.md — Test infrastructure: pytest.ini, conftest.py, test stubs for all DATA-01..07 requirements (Wave 0)
@@ -45,6 +45,8 @@ Plans:
 - [ ] 01-04-PLAN.md — Dune Analytics whale ingestion with market-maker exclusion filter (Wave 2)
 - [ ] 01-05-PLAN.md — GDELT DOC API sentiment ingestion, daily granularity, Jan-Nov 2024 (Wave 2)
 - [ ] 01-06-PLAN.md — Event catalog: curate 20+ key events with UTC timestamps and category labels (Wave 2)
+- [ ] 01-07-PLAN.md — Gap closure: execute FiveThirtyEight ingest, verify row count and date coverage (Wave 3, DATA-03)
+- [ ] 01-08-PLAN.md — Gap closure: implement RCP CSV ingest path, populate poll_forecasts (Wave 3, DATA-04)
 
 ### Phase 2: MCP Agent Layer
 **Goal**: Three FastMCP servers run against thesis.db and return correct, well-typed results for every tool call — verified with real database data, not mocks
@@ -115,7 +117,7 @@ Note: Phase 3 depends only on Phase 1 (not Phase 2) and can begin as soon as dat
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Data Foundation | 7/7 | Complete   | 2026-03-16 |
+| 1. Data Foundation | 7/9 | Gap closure in progress | 2026-03-16 (partial) |
 | 2. MCP Agent Layer | 0/3 | Not started | - |
 | 3. H1 Analysis — Brier Score and Calibration | 0/2 | Not started | - |
 | 4. H2 and H3 Analysis — Event Study and Whale Timing | 0/3 | Not started | - |

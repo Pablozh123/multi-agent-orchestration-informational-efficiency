@@ -25,6 +25,13 @@ python-dotenv>=1.0.0
 tqdm>=4.66.0
 aiosqlite>=0.20.0
 
+# Agent framework (v2.1)
+pydantic-ai>=1.0
+
+# Data validation pipeline (v2.1)
+pandera>=0.20
+tenacity>=8.0
+
 # Testing
 pytest>=8.3.0
 pytest-asyncio>=0.24.0

@@ -91,6 +91,59 @@ CREATE INDEX IF NOT EXISTS idx_sentiment_time
     ON sentiment_scores(timestamp, source);
 """
 
+# v2.1 tables — kept separate from SCHEMA so the migration helper
+# can apply them to an existing thesis.db without touching legacy data.
+V2_SCHEMA = """
+CREATE TABLE IF NOT EXISTS analysis_summaries (
+    id                INTEGER PRIMARY KEY AUTOINCREMENT,
+    table_name        TEXT NOT NULL,
+    metric_name       TEXT NOT NULL,
+    date_range_start  TEXT,
+    date_range_end    TEXT,
+    value_json        TEXT NOT NULL,
+    computed_at       TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_summaries_metric
+    ON analysis_summaries(table_name, metric_name);
+
+CREATE TABLE IF NOT EXISTS llm_audit_log (
+    call_id                TEXT PRIMARY KEY,
+    run_id                 TEXT NOT NULL,
+    timestamp              TEXT NOT NULL,
+    model                  TEXT NOT NULL,
+    tier                   INTEGER NOT NULL,
+    system_prompt_hash     TEXT,
+    system_prompt_version  TEXT,
+    user_prompt            TEXT,
+    response               TEXT,
+    input_tokens           INTEGER,
+    output_tokens          INTEGER,
+    cost_usd               REAL,
+    cached_tokens          INTEGER,
+    tools_called           TEXT,
+    tool_results_summary   TEXT,
+    consistency_group_id   TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_audit_run  ON llm_audit_log(run_id);
+CREATE INDEX IF NOT EXISTS idx_audit_time ON llm_audit_log(timestamp);
+"""
+
+
+def _create_v2_tables(conn: sqlite3.Connection) -> None:
+    """Erstellt die v2.1-Tabellen analysis_summaries und llm_audit_log.
+
+    Idempotent: nutzt CREATE TABLE IF NOT EXISTS und greift nicht auf
+    bestehende Daten zu. Wird sowohl von init() als auch von der
+    Standalone-Migration auf einer existierenden thesis.db aufgerufen.
+
+    Args:
+        conn: Offene SQLite-Verbindung zur Zieldatenbank.
+    """
+    # Apply v2.1 schema additions only — never touches legacy tables
+    conn.executescript(V2_SCHEMA)
+
 
 def get_connection(db_path: Path) -> sqlite3.Connection:
     """Oeffnet eine SQLite-Verbindung mit WAL-Modus und Busy-Timeout.
@@ -134,6 +187,7 @@ def init(db_path: Path = DB_PATH, force_recreate: bool = True) -> None:
     # Create fresh database and execute full schema
     conn = sqlite3.connect(str(db_path))
     conn.executescript(SCHEMA)
+    _create_v2_tables(conn)
 
     # Verify WAL mode is active — fails loudly if pragma was ignored
     mode = conn.execute("PRAGMA journal_mode").fetchone()[0]

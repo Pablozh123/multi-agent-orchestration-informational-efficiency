@@ -144,6 +144,37 @@ def test_rcp_symmetric() -> None:
     )
 
 
+def test_fetch_via_csv_missing_file(tmp_path: Any) -> None:
+    """_fetch_via_csv gibt [] zurueck wenn die Datei nicht existiert."""
+    rcp_mod = pytest.importorskip("ingest.rcp")
+    result = rcp_mod._fetch_via_csv(tmp_path / "nonexistent.csv")
+    assert result == [], "Nicht-existierende CSV muss leere Liste zurueckgeben"
+
+
+def test_fetch_via_csv_basic(tmp_path: Any) -> None:
+    """_fetch_via_csv parst eine minimale RCP-CSV korrekt."""
+    rcp_mod = pytest.importorskip("ingest.rcp")
+    csv_content = "Date,Trump (R),Harris (D),Spread\n10/15/2024,48.5,47.2,Trump +1.3\n"
+    csv_file = tmp_path / "rcp_test.csv"
+    csv_file.write_text(csv_content, encoding="utf-8")
+    result = rcp_mod._fetch_via_csv(csv_file)
+    assert len(result) == 1, f"Erwartete 1 Zeile, erhalten: {len(result)}"
+    assert result[0]["date"] == "2024-10-15", f"Datum falsch: {result[0]['date']}"
+    assert abs(result[0]["trump_pct"] - 48.5) < 0.01
+    assert abs(result[0]["harris_pct"] - 47.2) < 0.01
+
+
+def test_fetch_via_csv_iso_date(tmp_path: Any) -> None:
+    """_fetch_via_csv akzeptiert auch YYYY-MM-DD Datumsformat."""
+    rcp_mod = pytest.importorskip("ingest.rcp")
+    csv_content = "Date,Trump,Harris\n2024-09-01,47.0,48.5\n"
+    csv_file = tmp_path / "rcp_iso.csv"
+    csv_file.write_text(csv_content, encoding="utf-8")
+    result = rcp_mod._fetch_via_csv(csv_file)
+    assert len(result) == 1
+    assert result[0]["date"] == "2024-09-01"
+
+
 # ---------------------------------------------------------------------------
 # Dune / whale ingest tests
 # ---------------------------------------------------------------------------
@@ -216,7 +247,6 @@ def test_gdelt_sentiment_rows(mock_gdelt_response: list[dict]) -> None:
 # Events catalog tests
 # ---------------------------------------------------------------------------
 
-@pytest.mark.xfail(strict=False, reason="ingest/events.py noch nicht implementiert")
 def test_events_catalog_count() -> None:
     """Prueft, dass load_events mindestens 20 Ereignisse im Katalog enthaelt.
 

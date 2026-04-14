@@ -107,6 +107,13 @@ None - no external service configuration required. All data is static JSON with 
 - Phase 3 (H1 Brier Score) can begin immediately: depends only on Phase 1
 - Phase 4 (H2/H3 analysis) event-study windows can reference events_timeline timestamps
 
+## Self-Check: PASSED
+
+- 01-06-SUMMARY.md: FOUND
+- data/events_catalog.json: FOUND
+- ingest/events.py: FOUND
+- Commit 62cb554: FOUND
+
 ---
 *Phase: 01-data-foundation*
 *Completed: 2026-03-16*

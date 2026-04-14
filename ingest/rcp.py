@@ -9,7 +9,9 @@ eine methodische Entscheidung, die in Abschnitt 3.2 der Thesis dokumentiert ist.
 Ein Faktor von 4.0 entspricht einer moderaten Sigmoidkurve, bei der ein 5-Prozentpunkt-
 Vorsprung einer Wahrscheinlichkeit von ca. 73% entspricht.
 """
+import csv
 import logging
+from datetime import datetime
 from pathlib import Path
 
 from scipy.special import expit  # type: ignore[import-untyped]
@@ -97,8 +99,10 @@ def ingest_rcp(db_path: Path = DB_PATH) -> int:
             "realclearpolitics-Paket nicht installiert. "
             "Ausfuehren: pip install realclearpolitics"
         )
-        # Attempt HTTP fallback
-        rcp_data = _fetch_via_http_fallback()
+        # Try CSV file before HTTP fallback
+        rcp_data = _fetch_via_csv()
+        if not rcp_data:
+            rcp_data = _fetch_via_http_fallback()
 
     if not rcp_data:
         logger.warning("RCP: Keine Daten verfuegbar — 0 Zeilen eingefuegt.")
@@ -172,6 +176,80 @@ def _fetch_via_package(realclearpolitics_module: object) -> list[dict]:
     except Exception as exc:
         logger.warning("realclearpolitics-Paket Datenabruf fehlgeschlagen: %s", exc)
         return []
+
+
+def _fetch_via_csv(csv_path: Path = Path("data/rcp_2024_general.csv")) -> list[dict]:
+    """Laedt RCP-Daten aus einer heruntergeladenen CSV-Datei.
+
+    Erwartet eine CSV mit Datum-, Trump- und Harris-Prozentspalten.
+    Unterstuetzt gaengige RCP-Export-Formate mit flexiblem Spaltenname-Matching.
+    Datum-Formate MM/DD/YYYY und YYYY-MM-DD werden beide akzeptiert.
+
+    Args:
+        csv_path: Pfad zur CSV-Datei. Standard: data/rcp_2024_general.csv.
+
+    Returns:
+        Liste von Dicts mit Schluesseln date (YYYY-MM-DD), trump_pct, harris_pct.
+        Leere Liste wenn Datei nicht existiert oder nicht lesbar.
+    """
+    if not Path(csv_path).exists():
+        logger.warning("RCP CSV nicht gefunden: %s", csv_path)
+        return []
+
+    rows: list[dict] = []
+    try:
+        with open(csv_path, newline="", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f)
+            raw_headers = list(reader.fieldnames or [])
+            headers_lower = [h.strip().lower() for h in raw_headers]
+
+            # Map lowercase header back to original for DictReader lookup
+            header_map = {h.strip().lower(): h for h in raw_headers}
+
+            # Fuzzy-match column names for Trump, Harris, and date
+            trump_key = next(
+                (header_map[h] for h in headers_lower if "trump" in h), None
+            )
+            harris_key = next(
+                (header_map[h] for h in headers_lower if "harris" in h), None
+            )
+            date_key = next(
+                (header_map[h] for h in headers_lower if "date" in h), None
+            )
+
+            if not (trump_key and harris_key and date_key):
+                logger.warning(
+                    "RCP CSV: Erwartete Spalten nicht gefunden. Headers: %s", raw_headers
+                )
+                return []
+
+            for raw_row in reader:
+                try:
+                    raw_date = raw_row[date_key].strip()
+                    # Handle MM/DD/YYYY and YYYY-MM-DD
+                    if "/" in raw_date:
+                        dt = datetime.strptime(raw_date, "%m/%d/%Y")
+                    else:
+                        dt = datetime.strptime(raw_date[:10], "%Y-%m-%d")
+                    date_str = dt.strftime("%Y-%m-%d")
+
+                    trump_pct = float(raw_row[trump_key].strip())
+                    harris_pct = float(raw_row[harris_key].strip())
+
+                    if trump_pct > 0.0 and harris_pct > 0.0:
+                        rows.append(
+                            {"date": date_str, "trump_pct": trump_pct, "harris_pct": harris_pct}
+                        )
+                except (ValueError, KeyError) as exc:
+                    logger.debug("RCP CSV Zeile uebersprungen: %s", exc)
+                    continue
+
+    except Exception as exc:
+        logger.warning("RCP CSV Lesefehler: %s", exc)
+        return []
+
+    logger.info("RCP CSV: %d Zeilen gelesen aus %s", len(rows), csv_path)
+    return rows
 
 
 def _fetch_via_http_fallback() -> list[dict]:

@@ -56,6 +56,12 @@ def parse_csv(csv_text: str) -> list[dict]:
     # Normalize column names to lowercase for consistent matching
     df.columns = [c.strip().lower() for c in df.columns]
 
+    # Filter to 2024 national data only — CSV contains 2020 state-level rows too
+    if "cycle" in df.columns:
+        df = df[df["cycle"] == 2024]
+    if "state" in df.columns:
+        df = df[df["state"].str.lower() == "national"]
+
     # Detect the forecast probability column
     prob_col: str | None = None
     for candidate_col in _PROB_COLUMN_CANDIDATES:
@@ -85,8 +91,13 @@ def parse_csv(csv_text: str) -> list[dict]:
         else:
             continue
 
+        # Skip rows with missing probability values
+        raw_prob_raw = row[prob_col]
+        if pd.isna(raw_prob_raw):
+            continue
+
         # Normalize raw probability: divide by 100 if value appears to be a percentage
-        raw_prob = float(row[prob_col])
+        raw_prob = float(raw_prob_raw)
         probability = raw_prob / 100.0 if raw_prob > 1.0 else raw_prob
 
         # Normalize date to YYYY-MM-DD string

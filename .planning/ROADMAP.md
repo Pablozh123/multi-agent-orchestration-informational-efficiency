@@ -17,11 +17,11 @@ database to thesis-ready figures with statistical significance tests.
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [x] **Phase 1: Data Foundation** - Populate thesis.db with all source data (Jan-Nov 2024) and lock schema before any analysis (completed 2026-03-16)
-- [ ] **Phase 2: MCP Agent Layer** - Build three read-only FastMCP servers that expose thesis.db to the orchestrator
+- [x] **Phase 1: Data Foundation** - Populate thesis.db with all source data (Jan-Nov 2024) and lock schema before any analysis (completed 2026-03-16, re-verified 2026-04-15: 6/7, DATA-04 RCP blocked on CSV)
+- [x] **Phase 2: Agent Layer (Pydantic AI + MCP Demo)** - Three Pydantic AI agents + orchestrator with parallel execution, audit logging, and MCP demo server (completed 2026-04-15)
 - [ ] **Phase 3: H1 Analysis — Brier Score and Calibration** - Compute and compare forecast accuracy across all three sources
 - [ ] **Phase 4: H2 and H3 Analysis — Event Study and Whale Timing** - Measure information integration speed and whale lead-time
-- [ ] **Phase 5: Orchestrator and Reporting** - Coordinate agents via Claude API and produce thesis-ready figures
+- [ ] **Phase 5: Visualization and Thesis Figures** - Produce thesis-ready figures at DPI >= 300 with LaTeX-compatible fonts
 
 ## Phase Details
 
@@ -48,36 +48,38 @@ Plans:
 - [ ] 01-07-PLAN.md — Gap closure: execute FiveThirtyEight ingest, verify row count and date coverage (Wave 3, DATA-03)
 - [ ] 01-08-PLAN.md — Gap closure: implement RCP CSV ingest path, populate poll_forecasts (Wave 3, DATA-04)
 
-### Phase 2: MCP Agent Layer
-**Goal**: Three FastMCP servers run against thesis.db and return correct, well-typed results for every tool call — verified with real database data, not mocks
+### Phase 2: Agent Layer (Pydantic AI + MCP Demo)
+**Goal**: Three Pydantic AI agents (market, sentiment, whale) with structured outputs, an orchestrator coordinating them via asyncio.gather(), full audit logging in llm_audit_log, and an MCP demo server exposing the same tools
 **Depends on**: Phase 1
 **Requirements**: AGENT-01, AGENT-02, AGENT-03
 **Success Criteria** (what must be TRUE):
-  1. Calling `market_agent` tool `get_prices` with a valid date range returns a JSON list of price rows; calling `detect_anomalies` returns flagged rows where Z-score > 3
-  2. Calling `sentiment_agent` tool `get_sentiment_score` for a specific date returns a GDELT-derived score; calling `get_sentiment_trend` for a window returns a signed delta
-  3. Calling `whale_agent` tool `get_large_trades` for a date range returns only trades >= $10k from non-market-maker wallets; calling `get_lead_time_analysis` returns a ranked list of trade-to-event time deltas
-  4. All three servers start without error from the orchestrator subprocess pattern and respond within 5 seconds on a cold start against the populated database
-**Plans**: TBD
+  1. Market agent (Haiku 4.5) returns typed `MarketDataResult` with price_range, volatility, divergences when queried about Polymarket data
+  2. Sentiment agent (Sonnet 4.5) returns typed `SentimentAnalysisResult` with tone_range, volume_total, trend_direction from GDELT data
+  3. Whale agent (Haiku 4.5) returns typed `WhaleActivityResult` with net_volume_usd, anomalies_flagged, top_wallets (lowercase) from whale_trades
+  4. Orchestrator runs all three agents in parallel via asyncio.gather(), persists 4 audit entries (3 sub + 1 synthesis) in llm_audit_log with shared run_id, and writes changelog JSON
+  5. MCP demo server (FastMCP, stdio transport) exposes db_tools as MCP tools for Claude Desktop integration
+**Decision**: Originally planned as 3 FastMCP servers on ports 8001-8003. Implemented instead as Pydantic AI agents per CLAUDE.md v2.1 §2.2 — MCP retained as single stdio demo layer (not core pipeline).
 
-Plans:
-- [ ] 02-01: market_agent FastMCP server (Port 8001 — price query, anomaly detection, volume aggregation, AGENT-01)
-- [ ] 02-02: sentiment_agent FastMCP server (Port 8002 — GDELT score lookup, trend window, AGENT-02)
-- [ ] 02-03: whale_agent FastMCP server (Port 8003 — large trades, wallet timeline, lead-time tools, AGENT-03)
+Plans (retroactively completed via v2.1 migration commits):
+- [x] 02-01: market_agent Pydantic AI agent (operations/agents/market_agent.py, AGENT-01)
+- [x] 02-02: sentiment_agent + whale_agent (operations/agents/sentiment_agent.py, whale_agent.py, AGENT-02/03)
+- [x] 02-03: orchestrator + audit logger + MCP demo (operations/agents/orchestrator.py, operations/audit/logger.py, operations/mcp/thesis_mcp_server.py)
+- [x] 02-04: live smoke test — first end-to-end run verified 2026-04-15 (run_id: 1b7be1de)
 
 ### Phase 3: H1 Analysis — Brier Score and Calibration
 **Goal**: H1 is answered with a statistically validated Brier Score comparison and calibration curves for all three sources, with a naive baseline establishing the floor
 **Depends on**: Phase 1
 **Requirements**: H1-01, H1-02, H1-03, H1-04
 **Success Criteria** (what must be TRUE):
-  1. `analysis/brier_score.py` produces a daily Brier Score time-series for Polymarket, FiveThirtyEight, and RCP over Jan-Nov 2024, with an assertion that no forecast uses a price timestamped after the evaluation day
-  2. `analysis/calibrate.py` produces a reliability diagram (calibration curve) for all three sources in a single comparable plot, using resolved Polymarket market history for sufficient N
+  1. `operations/analysis/brier_score.py` produces a daily Brier Score time-series for Polymarket, FiveThirtyEight, and RCP over Jan-Nov 2024, with an assertion that no forecast uses a price timestamped after the evaluation day
+  2. `operations/analysis/calibrate.py` produces a reliability diagram (calibration curve) for all three sources in a single comparable plot, using resolved Polymarket market history for sufficient N
   3. A Diebold-Mariano test result (p-value and test statistic) is written to the database or a results file, quantifying whether Brier Score differences are statistically significant
   4. Naive baseline results (always-50% and prior-day-price models) are computed alongside the three sources, providing a lower-bound benchmark visible in the output table
 **Plans**: TBD
 
 Plans:
-- [ ] 03-01: Brier Score computation and time-series (analysis/brier_score.py — DuckDB, H1-01/H1-04)
-- [ ] 03-02: Calibration curves and Diebold-Mariano test (analysis/calibrate.py — H1-02/H1-03)
+- [ ] 03-01: Brier Score computation and time-series (operations/analysis/brier_score.py — DuckDB, H1-01/H1-04)
+- [ ] 03-02: Calibration curves and Diebold-Mariano test (operations/analysis/calibrate.py — H1-02/H1-03)
 
 ### Phase 4: H2 and H3 Analysis — Event Study and Whale Timing
 **Goal**: H2 and H3 are answered with pre-specified event windows, Granger causality tests, and lead-time histograms — all window choices documented in writing before any code is written
@@ -85,15 +87,15 @@ Plans:
 **Requirements**: H2-01, H2-02, H2-03, H3-01, H3-02, H3-03
 **Success Criteria** (what must be TRUE):
   1. A written methodology note (in thesis prose or a pre-analysis document) specifies event windows (+-1h, +-6h, +-24h) and the significance threshold before any H2 or H3 script is executed
-  2. `analysis/reaction_speed.py` computes Cumulative Abnormal Returns (CAR) around >= 5 key events from the event catalog and produces an event-study plot showing Polymarket price path vs. 538/RCP update timing
-  3. `analysis/whale_timing.py` produces a lead-time histogram (whale trade timestamp minus next price movement >= 5%) across all qualifying whale trades, with market-maker exclusion verified by address lookup
+  2. `operations/analysis/reaction_speed.py` computes Cumulative Abnormal Returns (CAR) around >= 5 key events from the event catalog and produces an event-study plot showing Polymarket price path vs. 538/RCP update timing
+  3. `operations/analysis/whale_timing.py` produces a lead-time histogram (whale trade timestamp minus next price movement >= 5%) across all qualifying whale trades, with market-maker exclusion verified by address lookup
   4. A Granger causality test result (lag selection, F-statistic, p-value) is written to a results file showing whether whale volume Granger-causes Polymarket price changes
 **Plans**: TBD
 
 Plans:
 - [ ] 04-01: Pre-analysis methodology note — event windows and hypothesis framing (H2-01, process step before code)
-- [ ] 04-02: Event study and reaction speed analysis (analysis/reaction_speed.py — CAR, H2-02/H2-03)
-- [ ] 04-03: Whale lead-time and Granger causality analysis (analysis/whale_timing.py — H3-01/H3-02/H3-03)
+- [ ] 04-02: Event study and reaction speed analysis (operations/analysis/reaction_speed.py — CAR, H2-02/H2-03)
+- [ ] 04-03: Whale lead-time and Granger causality analysis (operations/analysis/whale_timing.py — H3-01/H3-02/H3-03)
 
 ### Phase 5: Orchestrator and Reporting
 **Goal**: The orchestrator coordinates all three agents via Claude API for qualitative case-study synthesis, and all thesis-ready figures are rendered at DPI >= 300 with LaTeX-compatible fonts
@@ -117,8 +119,8 @@ Note: Phase 3 depends only on Phase 1 (not Phase 2) and can begin as soon as dat
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Data Foundation | 7/9 | Gap closure in progress | 2026-03-16 (partial) |
-| 2. MCP Agent Layer | 0/3 | Not started | - |
+| 1. Data Foundation | 9/9 | 6/7 verified (DATA-04 RCP blocked on CSV) | 2026-03-16, re-verified 2026-04-15 |
+| 2. Agent Layer (Pydantic AI + MCP Demo) | 4/4 | Complete, live-tested | 2026-04-15 |
 | 3. H1 Analysis — Brier Score and Calibration | 0/2 | Not started | - |
 | 4. H2 and H3 Analysis — Event Study and Whale Timing | 0/3 | Not started | - |
-| 5. Orchestrator and Reporting | 0/2 | Not started | - |
+| 5. Visualization and Thesis Figures | 0/2 | Not started | - |

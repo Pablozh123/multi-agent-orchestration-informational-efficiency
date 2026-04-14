@@ -1,0 +1,31 @@
+{
+  "run_id": "1b7be1de-9637-4012-9597-c0f81e6701c0",
+  "timestamp": "2026-04-14T23:02:09+00:00",
+  "question": "Analysiere die Polymarket-Preisentwicklung in KW 42 2024.",
+  "agents_invoked": [
+    "market",
+    "sentiment",
+    "whale",
+    "orchestrator"
+  ],
+  "key_findings": [
+    "Preisanstieg von +14,6 % (0,5395 → 0,6185) in KW 42 mit Volatilitätsspitze (0,0292) am 18. Oktober",
+    "Whale-Anomalie am 17. Oktober (USD 19,59 Mio., z-score 3,02) geht Preissprung um einen Tag voraus – deutet auf Whale-getriebene Marktdynamik hin",
+    "Netto-Whale-Volumen von USD 8,67 Mio. am 20. Oktober bei 333 Transaktionen; dominante Wallet 0xc5d563a36ae78145c45a50134d48a1215220f80a",
+    "Sentiment-Daten nicht aussagekräftig: 0,0 Tone bei 6 Einträgen, keine Polymarket-spezifischen Treffer – GDELT-Erfassung unzureichend",
+    "Rückgang auf 0,5995 am 19. Oktober (-3,1 %) bei konstanter Volatilität indiziert Gewinnmitnahmen nach Kaufwelle"
+  ],
+  "divergences": [
+    "Whale-Anomalie (17. Oktober, USD 19,59 Mio.) vs. Preissprung (18. Oktober, +3,3 %) – zeitlicher Versatz von einem Tag deutet auf Lead-Lag-Beziehung hin",
+    "Sentiment-Daten zeigen 0,0 Tone trotz +14,6 % Preisbewegung – Indikator für methodische Limitationen der GDELT-Erfassung bei Nischenmärkten",
+    "Fehlende Umfragedaten (poll_forecasts) verhindern Quantifizierung der Markt-Umfrage-Divergenz – Validierung der impliziten Wahrscheinlichkeit nicht möglich",
+    "Buy-Sell-Ratio nicht berechenbar aufgrund fehlender SELL-Daten in Whale-Analyse – Asymmetrie in der Datenverfügbarkeit",
+    "Volatilitätssprung am 18. Oktober (+236 % gegenüber 14. Oktober) steht in Diskrepanz zur konstanten Sentiment-Tonalität – entweder externe Katalysatoren ausserhalb der GDELT-Erfassung oder reine Whale-Manipulation"
+  ],
+  "confidence": 0.62,
+  "tokens_used": {
+    "input": 92667,
+    "output": 4339
+  },
+  "cost_usd_estimate": 0.343086
+}

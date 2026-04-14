@@ -1,0 +1,34 @@
+[
+  {
+    "source_1": "Polymarket",
+    "source_2": "FiveThirtyEight",
+    "dm_statistic": -24.405555734420656,
+    "p_value": 6.710806316065365e-61,
+    "n_obs": 194,
+    "interpretation": "Polymarket und FiveThirtyEight unterscheiden sich hochsignifikant (p<0.01)"
+  },
+  {
+    "source_1": "Polymarket",
+    "source_2": "immer_50%",
+    "dm_statistic": -4.857968363989698,
+    "p_value": 2.4468859983650103e-06,
+    "n_obs": 194,
+    "interpretation": "Polymarket und immer_50% unterscheiden sich hochsignifikant (p<0.01)"
+  },
+  {
+    "source_1": "Polymarket",
+    "source_2": "Vortag_Polymarket",
+    "dm_statistic": 0.022363267840199916,
+    "p_value": 0.982181284829174,
+    "n_obs": 194,
+    "interpretation": "Kein signifikanter Unterschied zwischen Polymarket und Vortag_Polymarket"
+  },
+  {
+    "source_1": "FiveThirtyEight",
+    "source_2": "immer_50%",
+    "dm_statistic": 93.67588341055826,
+    "p_value": 7.649433158143458e-163,
+    "n_obs": 194,
+    "interpretation": "FiveThirtyEight und immer_50% unterscheiden sich hochsignifikant (p<0.01)"
+  }
+]

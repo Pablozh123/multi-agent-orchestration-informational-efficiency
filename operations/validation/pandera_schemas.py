@@ -18,8 +18,13 @@ from pandera.pandas import Column, DataFrameSchema
 
 
 def _check_iso_utc(series: pd.Series) -> pd.Series:
-    """Returns boolean Series: True wenn jeder Wert als UTC-Datetime parsebar ist."""
-    parsed = pd.to_datetime(series, utc=True, errors="coerce")
+    """Returns boolean Series: True wenn jeder Wert als UTC-Datetime parsebar ist.
+
+    Handles common formats including 'YYYY-MM-DD HH:MM:SS.sss UTCZ' from Dune.
+    """
+    # Strip trailing ' UTCZ' / ' UTC' suffixes before parsing
+    cleaned = series.astype(str).str.replace(r"\s*UTCZ?\s*$", "", regex=True)
+    parsed = pd.to_datetime(cleaned, utc=True, errors="coerce")
     return parsed.notna()
 
 

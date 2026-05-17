@@ -11,10 +11,29 @@
       "Bash(.venv/Scripts/python.exe -m pip install --upgrade pip)",
       "Bash(.venv/Scripts/pip install -r requirements.txt)",
       "Bash(.venv/Scripts/pip install black)",
-      "Bash(.venv/Scripts/python init_db.py)"
+      "Bash(.venv/Scripts/python init_db.py)",
+      "Bash(node \"$HOME/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs: initialize project\" --files .planning/PROJECT.md)",
+      "Read(//c/Users/chole/ba-thesis/$HOME/.gsd/**)",
+      "Read(//c/Users/chole/.claude/get-shit-done/templates/research-project/**)",
+      "Bash(node \"$HOME/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs: complete project research\" --files .planning/research/)",
+      "Bash(git add .planning/research/)",
+      "Bash(git commit:*)",
+      "Read(//c/Users/chole/.claude/get-shit-done/templates/**)",
+      "WebSearch",
+      "Bash(cat c:/Users/chole/ba-thesis/.planning/phases/01-data-foundation/*-PLAN.md)",
+      "Bash(git add .planning/phases/01-data-foundation/01-05-SUMMARY.md .planning/STATE.md)",
+      "Bash(git add .planning/phases/01-data-foundation/01-04-SUMMARY.md)",
+      "Bash(node \"$HOME/.claude/get-shit-done/bin/gsd-tools.cjs\" roadmap update-plan-progress \"1\")",
+      "Bash(node \"C:/Users/chole/.claude/get-shit-done/bin/gsd-tools.cjs\" roadmap update-plan-progress \"1\")",
+      "Bash(git add .planning/phases/01-data-foundation/01-03-SUMMARY.md .planning/ROADMAP.md)",
+      "Bash(sqlite3 /c/Users/chole/ba-thesis/data/thesis.db \"SELECT COUNT\\(*\\), MIN\\(price_timestamp\\), MAX\\(price_timestamp\\) FROM whale_trades LIMIT 1;\")",
+      "Bash(ls /c/Users/chole/ba-thesis/.planning/phases/01-data-foundation/*VERIFICATION*)",
+      "Skill(gsd:plan-phase)",
+      "Skill(gsd:plan-phase:*)"
     ],
     "additionalDirectories": [
-      "c:\\Users\\chole\\ba-thesis\\.claude\\skills"
+      "c:\\Users\\chole\\ba-thesis\\.claude\\skills",
+      "c:\\Users\\chole\\ba-thesis"
     ]
   },
   "hooks": {

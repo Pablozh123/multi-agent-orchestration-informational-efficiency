@@ -25,6 +25,29 @@ import pandas as pd
 DB_PATH = Path("data/thesis.db")
 JSON_EXPORT_PATH = Path("data/summaries.json")
 
+TABLE_COLUMNS = {
+    "polymarket_prices": (
+        "price_timestamp",
+        "market_id",
+        "token_id",
+        "price",
+    ),
+    "whale_trades": (
+        "price_timestamp",
+        "direction",
+        "amount_usd",
+    ),
+    "sentiment_scores": (
+        "timestamp",
+        "sentiment",
+    ),
+    "poll_forecasts": (
+        "date",
+        "source",
+        "probability",
+    ),
+}
+
 
 @dataclass(frozen=True)
 class SummaryRow:
@@ -46,8 +69,12 @@ def _now_utc() -> str:
 
 
 def _load_df(conn: sqlite3.Connection, table: str) -> pd.DataFrame:
-    """Lies eine komplette Tabelle als DataFrame."""
-    return pd.read_sql(f"SELECT * FROM {table}", conn)
+    """Lies die benoetigten Spalten einer bekannten Tabelle als DataFrame."""
+    columns = TABLE_COLUMNS.get(table)
+    if columns is None:
+        raise ValueError(f"table {table!r} is not configured for summary loading")
+    column_sql = ", ".join(columns)
+    return pd.read_sql(f"SELECT {column_sql} FROM {table}", conn)
 
 
 def _safe_parse_ts(series: pd.Series) -> pd.Series:

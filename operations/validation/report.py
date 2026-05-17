@@ -33,6 +33,16 @@ def _format_violation(table: str, error: Exception) -> str:
     return f"  [FAIL] {table}: {type(error).__name__}: {error}"
 
 
+def _load_table_for_schema(
+    conn: sqlite3.Connection,
+    table: str,
+) -> pd.DataFrame:
+    """Load explicit schema columns for validation."""
+    schema = TABLE_TO_SCHEMA[table]
+    columns = ", ".join(schema.columns.keys())
+    return pd.read_sql(f"SELECT {columns} FROM {table}", conn)
+
+
 def main() -> int:
     """Run the validation report. Returns process exit code (0 = clean)."""
     if not DB_PATH.exists():
@@ -44,7 +54,7 @@ def main() -> int:
 
     total_violations = 0
     for table, schema in TABLE_TO_SCHEMA.items():
-        df = pd.read_sql(f"SELECT * FROM {table}", conn)
+        df = _load_table_for_schema(conn, table)
         n = len(df)
         if n == 0:
             print(f"  [SKIP] {table}: 0 rows")

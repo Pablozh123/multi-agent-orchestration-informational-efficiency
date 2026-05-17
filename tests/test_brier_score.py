@@ -120,6 +120,49 @@ def test_run_brier_analysis_structure(tmp_path):
         )
 
 
+def test_run_brier_pipeline_writes_configured_output(tmp_path):
+    """run_brier_pipeline schreibt genau den konfigurierten CSV-Pfad."""
+    import sqlite3
+    from operations.analysis.brier_score import BrierAnalysisConfig, run_brier_pipeline
+
+    db_path = tmp_path / "test.db"
+    output_path = tmp_path / "results" / "brier.csv"
+    conn = sqlite3.connect(db_path)
+    conn.executescript("""
+        CREATE TABLE polymarket_prices (
+            price_timestamp TEXT, price REAL
+        );
+        CREATE TABLE poll_forecasts (
+            date TEXT, source TEXT, candidate TEXT, probability REAL, poll_type TEXT
+        );
+        INSERT INTO polymarket_prices VALUES
+            ('2024-04-01T00:00:00.000000Z', 0.55),
+            ('2024-04-02T00:00:00.000000Z', 0.60);
+        INSERT INTO poll_forecasts VALUES
+            ('2024-04-01', 'fivethirtyeight', 'Trump', 0.52, 'model'),
+            ('2024-04-02', 'fivethirtyeight', 'Trump', 0.54, 'model');
+    """)
+    conn.close()
+
+    df = run_brier_pipeline(
+        BrierAnalysisConfig(db_path=db_path, output_path=output_path)
+    )
+
+    assert output_path.exists()
+    written = pd.read_csv(output_path)
+    assert len(df) == len(written) == 2
+    assert "bs_polymarket" in written.columns
+
+
+def test_validate_forecast_values_rejects_out_of_range():
+    """Forecast-Werte muessen Wahrscheinlichkeiten in [0, 1] sein."""
+    from operations.analysis.brier_score import validate_forecast_values
+
+    df = pd.DataFrame({"forecast": [0.1, 1.2]})
+    with pytest.raises(ValueError, match="outside"):
+        validate_forecast_values(df, ["forecast"])
+
+
 def test_no_lookahead_bias_in_brier(tmp_path):
     """Lookahead-Assertion: kein price_timestamp nach Election Day."""
     import sqlite3

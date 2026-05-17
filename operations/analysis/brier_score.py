@@ -16,6 +16,7 @@ Output:
 from __future__ import annotations
 
 import sqlite3
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
@@ -25,6 +26,17 @@ DB_PATH = Path("data/thesis.db")
 RESULTS_DIR = Path("data/results")
 ELECTION_OUTCOME = 1.0  # Trump gewann am 2024-11-05 (historische Tatsache)
 ELECTION_DATE = pd.Timestamp("2024-11-05", tz="UTC")
+FIVETHIRTYEIGHT_SOURCE = "fivethirtyeight"
+RCP_SOURCE = "rcp"
+
+
+@dataclass(frozen=True)
+class BrierAnalysisConfig:
+    """Configuration for the deterministic H1 Brier baseline."""
+
+    db_path: Path = DB_PATH
+    output_path: Path = RESULTS_DIR / "h1_brier_scores.csv"
+    outcome: float = ELECTION_OUTCOME
 
 
 # ---------------------------------------------------------------------------
@@ -104,6 +116,16 @@ def brier_score(forecast: float | np.ndarray, outcome: float) -> float | np.ndar
     return (np.asarray(forecast) - outcome) ** 2
 
 
+def validate_forecast_values(df: pd.DataFrame, columns: list[str]) -> None:
+    """Verifiziert, dass Forecast-Spalten Wahrscheinlichkeiten in [0, 1] enthalten."""
+    for column in columns:
+        if column not in df.columns:
+            continue
+        is_valid = df[column].dropna().between(0.0, 1.0).all()
+        if not is_valid:
+            raise ValueError(f"Forecast column {column!r} contains values outside [0, 1]")
+
+
 def compute_daily_brier_series(
     forecasts: pd.Series, outcome: float
 ) -> pd.Series:
@@ -137,7 +159,10 @@ def compute_naive_baselines(date_range: pd.DatetimeIndex) -> pd.DataFrame:
 # ---------------------------------------------------------------------------
 
 
-def run_brier_analysis(conn: sqlite3.Connection) -> pd.DataFrame:
+def run_brier_analysis(
+    conn: sqlite3.Connection,
+    outcome: float = ELECTION_OUTCOME,
+) -> pd.DataFrame:
     """Fuehrt die vollstaendige Brier-Score-Analyse durch.
 
     Returns:
@@ -146,15 +171,20 @@ def run_brier_analysis(conn: sqlite3.Connection) -> pd.DataFrame:
     """
     # Lade Rohdaten
     pm = load_polymarket_daily(conn)
-    fe = load_poll_forecasts_daily(conn, "fivethirtyeight")
+    fe = load_poll_forecasts_daily(conn, FIVETHIRTYEIGHT_SOURCE)
+    if pm.empty:
+        raise ValueError("polymarket_prices contains no parseable daily prices")
+    if fe.empty:
+        raise ValueError("poll_forecasts contains no fivethirtyeight Trump forecasts")
 
     # Optionale RCP-Daten (falls vorhanden)
     rcp_raw = pd.read_sql(
-        "SELECT COUNT(*) as n FROM poll_forecasts WHERE source='rcp'", conn
+        "SELECT COUNT(1) as n FROM poll_forecasts WHERE source = ?", conn,
+        params=(RCP_SOURCE,),
     ).iloc[0]["n"]
     has_rcp = rcp_raw > 0
     if has_rcp:
-        rcp = load_poll_forecasts_daily(conn, "rcp")
+        rcp = load_poll_forecasts_daily(conn, RCP_SOURCE)
     else:
         rcp = None
 
@@ -163,6 +193,12 @@ def run_brier_analysis(conn: sqlite3.Connection) -> pd.DataFrame:
     merged = merged.merge(fe, on="date", how="inner")
     if has_rcp and rcp is not None and not rcp.empty:
         merged = merged.merge(rcp, on="date", how="left")
+    if merged.empty:
+        raise ValueError("No overlapping dates between Polymarket and FiveThirtyEight")
+    validate_forecast_values(
+        merged,
+        ["polymarket", FIVETHIRTYEIGHT_SOURCE, RCP_SOURCE],
+    )
 
     # Prior-Day Polymarket (Look-ahead-freie Baseline): Preis vom Vortag
     merged = merged.sort_values("date").reset_index(drop=True)
@@ -172,7 +208,6 @@ def run_brier_analysis(conn: sqlite3.Connection) -> pd.DataFrame:
     merged["always_50"] = 0.5
 
     # Brier Scores berechnen
-    outcome = ELECTION_OUTCOME
     result = pd.DataFrame({"date": merged["date"]})
     result["bs_polymarket"] = brier_score(merged["polymarket"].values, outcome)
     result["bs_fivethirtyeight"] = brier_score(merged["fivethirtyeight"].values, outcome)
@@ -216,22 +251,28 @@ def print_summary(df: pd.DataFrame) -> None:
     print()
 
 
+def run_brier_pipeline(config: BrierAnalysisConfig = BrierAnalysisConfig()) -> pd.DataFrame:
+    """Run the deterministic Brier baseline and write the configured CSV output."""
+    config.output_path.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(config.db_path)
+    try:
+        df = run_brier_analysis(conn, outcome=config.outcome)
+    finally:
+        conn.close()
+    df.to_csv(config.output_path, index=False)
+    return df
+
+
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
 
 
 def main() -> None:
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
-
     print("Berechne Brier Score Zeitreihe ...")
-    df = run_brier_analysis(conn)
-    conn.close()
-
-    out_path = RESULTS_DIR / "h1_brier_scores.csv"
-    df.to_csv(out_path, index=False)
-    print(f"Gespeichert: {out_path} ({len(df)} Tage)")
+    config = BrierAnalysisConfig()
+    df = run_brier_pipeline(config)
+    print(f"Gespeichert: {config.output_path} ({len(df)} Tage)")
 
     print_summary(df)
 

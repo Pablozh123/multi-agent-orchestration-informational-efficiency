@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 import re
 import sqlite3
+import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -202,7 +203,11 @@ def generate_inventory(db_path: Path = DB_PATH) -> dict[str, Any]:
 
 def main() -> int:
     """Print the data inventory as deterministic JSON."""
-    inventory = generate_inventory()
+    try:
+        inventory = generate_inventory(DB_PATH)
+    except FileNotFoundError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 2
     print(json.dumps(inventory, indent=2, sort_keys=True, ensure_ascii=False))
     return 0
 

@@ -80,3 +80,18 @@ def test_inventory_rejects_unsafe_identifiers():
     assert _quote_identifier("poll_forecasts") == '"poll_forecasts"'
     with pytest.raises(ValueError):
         _quote_identifier("poll_forecasts; DROP TABLE poll_forecasts")
+
+
+def test_main_reports_missing_database(capsys, monkeypatch, tmp_path):
+    """CLI returns a clear error instead of a traceback when thesis.db is absent."""
+    from operations.analysis import data_inventory
+
+    missing_db = tmp_path / "missing.db"
+    monkeypatch.setattr(data_inventory, "DB_PATH", missing_db)
+
+    exit_code = data_inventory.main()
+    captured = capsys.readouterr()
+
+    assert exit_code == 2
+    assert "ERROR:" in captured.err
+    assert str(missing_db) in captured.err

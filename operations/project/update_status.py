@@ -58,7 +58,8 @@ def _derive_blockers(git_status: str, pytest_result: CommandResult, goal: Active
         blockers.append("Pytest is failing; inspect output before continuing.")
     if goal.status.lower() not in {"active", "in progress"}:
         blockers.append(f"Active goal status is '{goal.status}', not active.")
-    if "h2" in goal.title.lower() or "h3" in goal.title.lower():
+    title = goal.title.lower()
+    if "before h2" in title or "before h3" in title:
         blockers.append("Do not implement H2/H3 before the empirical scope deliverables are complete.")
     return blockers
 
@@ -177,4 +178,3 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

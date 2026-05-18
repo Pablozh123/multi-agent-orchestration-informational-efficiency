@@ -5,6 +5,7 @@ from pathlib import Path
 from operations.project.commit_plan import render_commit_plan
 from operations.project.init import (
     ActiveGoal,
+    CommandResult,
     count_active_goals,
     detect_roadmap_phase,
     group_changed_paths,
@@ -13,7 +14,7 @@ from operations.project.init import (
     replace_generated_block,
 )
 from operations.project.review_check import run_checks
-from operations.project.update_status import update_status
+from operations.project.update_status import render_status_block, update_status
 
 
 GOAL_TEXT = """# GOAL.md
@@ -135,6 +136,33 @@ def test_update_status_cli_helper_updates_only_generated_block(tmp_path: Path) -
     assert "Manual section." in status
     assert "Current goal: `goal-test` - Keep automation focused" in status
     assert "skipped: unit test" in status
+
+
+def test_h2_output_goal_is_not_marked_as_premature_scope_work() -> None:
+    goal = ActiveGoal(
+        goal_id="goal-h2",
+        title="Generate deterministic H2 event-window outputs",
+        status="active",
+        phase="Phase 5: H2 Event Study And CAR",
+        why=(),
+        deliverables=(),
+        scope=(),
+        out_of_scope=(),
+        acceptance_criteria=(),
+        next_commit="feat: generate h2 outputs",
+    )
+
+    block = render_status_block(
+        branch="main",
+        latest_commit="abc123",
+        git_status="clean",
+        diff_stat="no unstaged diff",
+        pytest_result=CommandResult(("pytest",), 0, "133 passed", ""),
+        goal=goal,
+        roadmap_phase=goal.phase,
+    )
+
+    assert "Do not implement H2/H3 before" not in block
 
 
 def test_review_check_passes_for_minimal_project(tmp_path: Path) -> None:

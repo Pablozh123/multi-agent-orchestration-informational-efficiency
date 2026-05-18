@@ -125,7 +125,7 @@ Blockers:
 
 ## Phase 7: H3 Lead-Lag And Granger Tests
 
-Status: active for descriptive lead-time histograms
+Status: active for deterministic daily lead-lag and Granger baseline
 
 Done criteria:
 
@@ -134,12 +134,14 @@ Done criteria:
 - Tests use toy data with known timing patterns.
 - Results are described as predictive lead-lag structure, not proof of insider
   trading or causal misconduct.
+- Descriptive lead-time histograms exist and are reviewed before Granger code.
+- Granger outputs use daily tiered activity and daily Polymarket price changes.
 
 Blockers:
 
 - Sell-side or directionality limitations need resolution or explicit scope.
-- Granger tests remain blocked until descriptive lead-time histograms are
-  implemented and reviewed.
+- Intraday lead-lag claims remain blocked until intraday data are added and
+  validated.
 
 ## Phase 8: Interpretation Layer
 

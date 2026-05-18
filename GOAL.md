@@ -2,43 +2,45 @@
 
 ## Active Goal
 
-goal_id: goal-h3-lead-time-histograms-001
-title: Compute descriptive H3 lead-time histograms
+goal_id: goal-h3-granger-baseline-001
+title: Compute deterministic H3 lead-lag and Granger baseline
 status: active
 phase: Phase 7: H3 Lead-Lag And Granger Tests
 why:
 - H2 deterministic outputs and compact summary persistence now exist.
 - The H3 tier method is selected as wallet-level cumulative `amount_usd`
   percentiles.
-- The wallet distribution inventory now documents observed source filters,
-  percentile thresholds, and tier counts.
-- Wallet tier classification now assigns observed wallets to deterministic
-  distribution tiers.
-- Tiered wallet activity series now exists as a deterministic daily input.
+- H3 wallet distribution inventory, tier classification, and daily tiered
+  activity inputs exist.
+- Descriptive H3 lead-time histograms exist and their shape is accepted for
+  the first daily baseline.
 deliverables:
-- Descriptive lead-time histograms for tiered wallet activity around curated
-  H2 events.
-- Tests proving event alignment and histogram bins are deterministic.
-- Documentation that results are descriptive timing patterns, not causal proof.
+- Daily lead-lag correlation outputs between tiered wallet activity and
+  Polymarket daily price changes.
+- Daily Granger baseline outputs by wallet tier and selected activity measure.
+- Tests proving lag alignment and Granger result extraction are deterministic.
+- Documentation that results are predictive timing diagnostics, not proof of
+  true causality or misconduct.
 scope:
-- Descriptive timing histograms using existing H2 events and H3 tiered activity
-  inputs.
+- Deterministic Python analysis using existing daily H3 tiered activity inputs
+  and daily Polymarket prices from SQLite.
 - Keep source-filter metadata separate from analytical tier definitions.
 out_of_scope:
-- Granger implementation.
 - Agents, MCP, model routing, ML, cloud deployment, and interpretation workflows.
 - Adding or removing curated events based on observed results.
 - Treating the source-filter minimum `amount_usd` as a whale threshold.
+- RCP probability transformation.
+- Intraday lead-lag claims.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Histogram calculations are deterministic Python and use pre-existing curated
-  events.
-- No causal language or Granger statistics are introduced.
+- Lead-lag and Granger calculations are deterministic Python.
+- Granger outputs are described as predictive timing diagnostics only.
+- Daily and BUY-only limitations remain explicit.
 - Output avoids raw table dumps into prompts and preserves source-filter
   metadata separately.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: compute h3 lead-time histograms
+next_commit: feat: compute h3 lead-lag and granger baseline
 
 ## Decision Inputs For This Goal
 
@@ -50,20 +52,22 @@ next_commit: feat: compute h3 lead-time histograms
 - H3 wallet distribution inventory exists in `data/results/`.
 - H3 wallet tier classification exists in `data/results/`.
 - H3 tiered wallet activity series exists in `data/results/`.
+- H3 descriptive lead-time histograms exist in `data/results/`.
+- H3 lead-time output shape is reviewed and accepted in
+  `docs/research/WHALE_METHOD.md`.
 - ML scope and re-entry conditions are explicit in `docs/research/RESEARCH_SPEC.md`.
 - Codex workflow roles are separate from deferred thesis runtime agents.
 
 ## Done Means
 
-- Descriptive H3 timing histograms exist before Granger code.
-- Event alignment uses pre-curated H2 events.
+- Deterministic H3 lead-lag and Granger outputs exist.
+- Lead-lag alignment uses pre-existing daily tiered wallet activity and daily
+  Polymarket price changes.
 - Source filters and analytical tier definitions remain separated.
 - Project review checks still detect premature H3, ML, agent, or MCP work.
 
 ## Blocked Follow-Up Goals
 
-- H3 lead-lag and Granger implementation is blocked until wallet tiers are
-  distribution-derived and documented.
 - ML, runtime agents, MCP, and interpretation workflows are blocked until
   deterministic H1, H2, and H3 outputs exist and pass tests.
 
@@ -84,3 +88,5 @@ next_commit: feat: compute h3 lead-time histograms
 - H3 wallet tier classification exists for observed wallets with compact
   metadata and deterministic tier counts.
 - H3 tiered wallet activity series exists as a complete daily tier panel.
+- H3 descriptive lead-time histograms exist and are reviewed as a daily
+  descriptive timing baseline.

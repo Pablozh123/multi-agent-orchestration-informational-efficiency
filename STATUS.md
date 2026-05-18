@@ -3,39 +3,44 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-18 18:59
+Generated: 2026-05-18 19:14
 
-Current goal: `goal-h3-lead-time-histograms-001` - Compute descriptive H3 lead-time histograms
+Current goal: `goal-h3-granger-baseline-001` - Compute deterministic H3 lead-lag and Granger baseline
 
 Current roadmap phase: Phase 7: H3 Lead-Lag And Granger Tests
 
 Test status: PASS
 
-Pytest summary: `160 passed in 6.10s`
+Pytest summary: `167 passed in 6.05s`
 
 Git branch: `main`
 
-Latest commit: `d724196`
+Latest commit: `11f0ffd`
 
 Git status:
 
 ```text
-clean
+ M GOAL.md
+ M ROADMAP.md
+ M docs/research/WHALE_METHOD.md
 ```
 
 Git diff stat:
 
 ```text
-no unstaged diff
+ GOAL.md                       | 50 ++++++++++++++++++++++++-------------------
+ ROADMAP.md                    |  8 ++++---
+ docs/research/WHALE_METHOD.md | 44 +++++++++++++++++++++++++++++++------
+ 3 files changed, 70 insertions(+), 32 deletions(-)
 ```
 
 Blockers:
 
-- None detected.
+- Worktree has uncommitted changes that need review before commit.
 
 Next recommended action:
 
-- feat: compute h3 lead-time histograms
+- feat: compute h3 lead-lag and granger baseline
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

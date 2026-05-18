@@ -396,3 +396,43 @@ Next step:
 
 - Compute descriptive H3 lead-time histograms from curated events and the
   tiered activity series.
+
+## 2026-05-18 - goal-h3-lead-time-histograms-001
+
+Task:
+
+- Compute and review descriptive H3 lead-time histograms.
+
+Files changed:
+
+- `operations/analysis/h3_lead_time_histograms.py`
+- `tests/test_h3_lead_time_histograms.py`
+- `data/results/h3_lead_time_event_rows.csv`
+- `data/results/h3_lead_time_histograms.csv`
+- `data/results/h3_lead_time_histograms_metadata.json`
+- `docs/research/WHALE_METHOD.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_h3_lead_time_histograms.py tests/test_tiered_wallet_activity.py -q` -> 13 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 167 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.h3_lead_time_histograms` -> 420 event rows and 60 histogram rows.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  167 passed.
+
+Decision:
+
+- Accept the H3 lead-time output shape for the first daily descriptive timing
+  baseline.
+- Keep H3 timing CSV outputs file-based until the Granger result shape is
+  stable and reviewed.
+- Advance the active goal to deterministic daily lead-lag and Granger tests.
+
+Next step:
+
+- Compute deterministic H3 lead-lag correlations and Granger baseline outputs
+  from daily tiered activity and Polymarket daily price changes.

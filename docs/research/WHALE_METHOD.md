@@ -15,12 +15,12 @@ verified. They must not be silently converted into analytical whale definitions.
 - h3_tier_status: selected
 - selected_tier_method: wallet_cumulative_amount_usd_percentiles
 - lead_time_histogram_status: complete
-- lead_lag_status: review_required
-- granger_status: blocked
-- blocking_reason: Granger remains blocked until the descriptive lead-time
-  histograms are reviewed and accepted.
-- required_before_code: H3 wallet classification, lead-lag, or Granger
-  implementation.
+- lead_lag_status: selected
+- granger_status: selected
+- blocking_reason: none for the first deterministic daily baseline; limitations
+  must remain explicit in interpretation.
+- required_before_code: complete for the initial deterministic lead-lag and
+  Granger baseline.
 
 ## Allowed Claims
 
@@ -248,7 +248,37 @@ Limitations:
 - The output uses daily alignment only.
 - The current activity input is BUY-only under the observed source extract.
 - Results are descriptive timing patterns and do not establish causality.
-- Granger and lead-lag tests remain blocked until this output is reviewed.
+- Granger and lead-lag tests may proceed only as deterministic predictive
+  timing tests with the limitations above.
+
+## Lead-Time Output Review
+
+Review date: 2026-05-18
+
+Review status: accepted for the first deterministic daily H3 timing baseline.
+
+Accepted shape:
+
+- 7 curated events from the tracked H2 event seed.
+- 4 deterministic wallet tiers.
+- 15 daily relative-day bins from `-14` through `0`.
+- 420 event-tier-day trace rows.
+- 60 tier-by-relative-day histogram rows.
+- No wallet addresses in the H3 lead-time outputs.
+
+Persistence decision:
+
+- Keep the row-level trace and histogram outputs as versioned CSV artifacts
+  under `data/results/`.
+- Do not write H3 timing outputs into `analysis_summaries` until the Granger
+  result shape is stable and reviewed.
+
+Decision:
+
+- Proceed to a deterministic daily lead-lag and Granger baseline.
+- Use tier-level daily activity measures and daily Polymarket price changes.
+- Treat results as predictive timing diagnostics under model assumptions.
+- Do not describe results as proof of misconduct or true causal mechanism.
 
 ## No Insider Wording
 

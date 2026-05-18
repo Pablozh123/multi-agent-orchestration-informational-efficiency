@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-18 15:19
+Generated: 2026-05-18 15:22
 
 Current goal: `goal-empirical-scope-001` - Generate deterministic H2 event-window outputs
 
@@ -11,27 +11,25 @@ Current roadmap phase: Phase 5: H2 Event Study And CAR
 
 Test status: PASS
 
-Pytest summary: `134 passed in 5.72s`
+Pytest summary: `140 passed in 8.99s`
 
 Git branch: `main`
 
-Latest commit: `ecd9107`
+Latest commit: `027ae15`
 
 Git status:
 
 ```text
- M GOAL.md
- M ROADMAP.md
- M STATUS.md
+?? data/results/h2_event_window_rows.csv
+?? data/results/h2_event_window_summary.csv
+?? operations/analysis/run_h2_event_windows.py
+?? tests/test_h2_event_window_runner.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md    | 46 +++++++++++++++++++++++++++-------------------
- ROADMAP.md | 15 ++++++++-------
- STATUS.md  | 18 +++++++++---------
- 3 files changed, 44 insertions(+), 35 deletions(-)
+no unstaged diff
 ```
 
 Blockers:

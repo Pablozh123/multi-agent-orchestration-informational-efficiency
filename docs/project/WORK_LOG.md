@@ -137,3 +137,36 @@ Decision:
 Next step:
 
 - Implement the deterministic H2 output runner and generated CSV artifacts.
+
+## 2026-05-18 - goal-empirical-scope-001
+
+Task:
+
+- Generate deterministic H2 event-window output CSVs from curated seed events
+  and daily Polymarket prices.
+
+Files changed:
+
+- `operations/analysis/run_h2_event_windows.py`
+- `tests/test_h2_event_window_runner.py`
+- `data/results/h2_event_window_rows.csv`
+- `data/results/h2_event_window_summary.csv`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_event_study.py tests/test_h2_event_window_runner.py -q` -> 11 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 140 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  140 passed.
+
+Decision:
+
+- Keep H2 output generation file-based for now; database persistence into
+  `analysis_summaries` remains a later reviewed step.
+
+Next step:
+
+- Review the H2 output CSV shape and decide whether to persist compact H2
+  summaries into `analysis_summaries`.

@@ -112,6 +112,187 @@ def _check_no_fixed_whale_threshold(repo_root: Path) -> CheckResult:
     return CheckResult("fixed whale threshold", True, "no fixed numeric whale threshold in operations")
 
 
+def _marker_value(text: str, marker: str) -> str | None:
+    pattern = re.compile(
+        rf"(?im)^\s*-\s*{re.escape(marker)}:\s*(?P<value>.+?)\s*$"
+    )
+    match = pattern.search(text)
+    if not match:
+        return None
+    return match.group("value").strip().strip("`").lower()
+
+
+def _read_research_doc(repo_root: Path, filename: str) -> tuple[Path, str | None]:
+    path = repo_root / "docs" / "research" / filename
+    if not path.exists():
+        return path, None
+    return path, read_text(path)
+
+
+def _analysis_matches(
+    repo_root: Path,
+    *,
+    filename_terms: tuple[str, ...],
+    text_terms: tuple[str, ...],
+) -> list[str]:
+    matches: list[str] = []
+    analysis_root = repo_root / "operations" / "analysis"
+    if not analysis_root.exists():
+        return matches
+
+    for path in _python_files(analysis_root):
+        normalized_name = path.name.lower().replace("-", "_")
+        text = read_text(path).lower()
+        if any(term in normalized_name for term in filename_terms) or any(
+            term in text for term in text_terms
+        ):
+            matches.append(str(path.relative_to(repo_root)))
+    return matches
+
+
+def _operations_matches(
+    repo_root: Path,
+    *,
+    filename_terms: tuple[str, ...],
+    text_terms: tuple[str, ...],
+) -> list[str]:
+    matches: list[str] = []
+    operations_root = repo_root / "operations"
+    if not operations_root.exists():
+        return matches
+
+    for path in _python_files(operations_root):
+        if "project" in path.relative_to(operations_root).parts:
+            continue
+        normalized_name = path.name.lower().replace("-", "_")
+        text = read_text(path).lower()
+        if any(term in normalized_name for term in filename_terms) or any(
+            term in text for term in text_terms
+        ):
+            matches.append(str(path.relative_to(repo_root)))
+    return matches
+
+
+def _check_empirical_decision_markers(repo_root: Path) -> CheckResult:
+    docs = {
+        "EVENT_SELECTION.md": ("h2_window_status", {"blocked", "candidate", "selected"}),
+        "WHALE_METHOD.md": ("h3_tier_status", {"blocked", "candidate", "selected"}),
+        "RESEARCH_SPEC.md": ("ml_scope_status", {"deferred", "candidate", "selected"}),
+    }
+    missing_or_invalid: list[str] = []
+
+    for filename, (marker, allowed_values) in docs.items():
+        path, text = _read_research_doc(repo_root, filename)
+        if text is None:
+            missing_or_invalid.append(f"{path.relative_to(repo_root)} missing")
+            continue
+        value = _marker_value(text, marker)
+        if value not in allowed_values:
+            allowed = ", ".join(sorted(allowed_values))
+            missing_or_invalid.append(
+                f"{path.relative_to(repo_root)} {marker} must be one of: {allowed}"
+            )
+
+    if missing_or_invalid:
+        return CheckResult("empirical decision markers", False, "; ".join(missing_or_invalid))
+    return CheckResult("empirical decision markers", True, "H2, H3, and ML markers are present")
+
+
+def _check_h2_window_guard(repo_root: Path) -> CheckResult:
+    _, text = _read_research_doc(repo_root, "EVENT_SELECTION.md")
+    h2_status = _marker_value(text or "", "h2_window_status")
+    matches = _analysis_matches(
+        repo_root,
+        filename_terms=("car", "event_study", "eventstudy"),
+        text_terms=("cumulative abnormal return", "event study"),
+    )
+    if matches and h2_status != "selected":
+        return CheckResult(
+            "h2 window guard",
+            False,
+            "H2 event-study code exists before h2_window_status is selected: "
+            + "; ".join(matches),
+        )
+    return CheckResult("h2 window guard", True, f"h2_window_status={h2_status or 'missing'}")
+
+
+def _check_h3_tier_guard(repo_root: Path) -> CheckResult:
+    _, text = _read_research_doc(repo_root, "WHALE_METHOD.md")
+    h3_status = _marker_value(text or "", "h3_tier_status")
+    matches = _analysis_matches(
+        repo_root,
+        filename_terms=("granger", "lead_lag", "lead_time"),
+        text_terms=("granger", "lead-lag", "lead lag", "lead-time", "lead time"),
+    )
+    if matches and h3_status != "selected":
+        return CheckResult(
+            "h3 tier guard",
+            False,
+            "H3 timing code exists before h3_tier_status is selected: "
+            + "; ".join(matches),
+        )
+    return CheckResult("h3 tier guard", True, f"h3_tier_status={h3_status or 'missing'}")
+
+
+def _deterministic_h1_h2_h3_outputs_exist(repo_root: Path) -> bool:
+    result_root = repo_root / "data" / "results"
+    if not result_root.exists():
+        return False
+    required_prefixes = ("h1", "h2", "h3")
+    existing_names = [path.name.lower() for path in result_root.iterdir() if path.is_file()]
+    return all(any(name.startswith(prefix) for name in existing_names) for prefix in required_prefixes)
+
+
+def _check_ml_scope_guard(repo_root: Path) -> CheckResult:
+    _, text = _read_research_doc(repo_root, "RESEARCH_SPEC.md")
+    ml_status = _marker_value(text or "", "ml_scope_status")
+    ml_matches = _operations_matches(
+        repo_root,
+        filename_terms=("ml", "machine_learning", "classifier", "model_training"),
+        text_terms=(
+            "machine learning",
+            "sklearn",
+            "tensorflow",
+            "torch",
+            "xgboost",
+            "random forest",
+        ),
+    )
+
+    if ml_matches and ml_status == "deferred":
+        return CheckResult(
+            "ml scope guard",
+            False,
+            "ML implementation exists while ml_scope_status is deferred: "
+            + "; ".join(ml_matches),
+        )
+    if ml_status != "deferred" and not _deterministic_h1_h2_h3_outputs_exist(repo_root):
+        return CheckResult(
+            "ml scope guard",
+            False,
+            "ml_scope_status may only move beyond deferred after H1, H2, and H3 outputs exist",
+        )
+    return CheckResult("ml scope guard", True, f"ml_scope_status={ml_status or 'missing'}")
+
+
+def _check_runtime_agent_guards(repo_root: Path) -> CheckResult:
+    guarded_paths = [
+        repo_root / "operations" / "agents" / "orchestrator.py",
+        repo_root / "operations" / "mcp" / "thesis_mcp_server.py",
+    ]
+    failures: list[str] = []
+    for path in guarded_paths:
+        if not path.exists():
+            failures.append(f"{path.relative_to(repo_root)} missing")
+            continue
+        text = read_text(path)
+        if "DEFERRED_MESSAGE" not in text or "RuntimeError" not in text:
+            failures.append(f"{path.relative_to(repo_root)} missing deferred runtime guard")
+    if failures:
+        return CheckResult("runtime agent guards", False, "; ".join(failures))
+    return CheckResult("runtime agent guards", True, "orchestrator and MCP entry points remain guarded")
+
+
 def _check_pytest(repo_root: Path, skip_reason: str | None) -> CheckResult:
     if skip_reason:
         return CheckResult("pytest", True, f"skipped with reason: {skip_reason}")
@@ -131,6 +312,11 @@ def run_checks(repo_root: Path, skip_pytest: str | None = None) -> list[CheckRes
         _check_no_restricted_claim_wording,
         _check_rcp_guard,
         _check_no_fixed_whale_threshold,
+        _check_empirical_decision_markers,
+        _check_h2_window_guard,
+        _check_h3_tier_guard,
+        _check_ml_scope_guard,
+        _check_runtime_agent_guards,
     ]
     results = [check(repo_root) for check in checks]
     results.append(_check_pytest(repo_root, skip_pytest))

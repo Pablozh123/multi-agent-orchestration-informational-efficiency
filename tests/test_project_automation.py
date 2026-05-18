@@ -40,8 +40,36 @@ next_commit: chore: add automation
 
 def _write_minimal_project(root: Path) -> None:
     (root / "operations" / "analysis").mkdir(parents=True)
+    (root / "operations" / "agents").mkdir(parents=True)
+    (root / "operations" / "mcp").mkdir(parents=True)
+    (root / "docs" / "research").mkdir(parents=True)
     (root / "operations" / "analysis" / "safe.py").write_text(
         "include_rcp: bool = False\nrcp_transformation_documented = False\n",
+        encoding="utf-8",
+    )
+    guard = (
+        'DEFERRED_MESSAGE = "Deferred until deterministic analysis core is complete"\n'
+        "def main():\n"
+        "    raise RuntimeError(DEFERRED_MESSAGE)\n"
+    )
+    (root / "operations" / "agents" / "orchestrator.py").write_text(
+        guard,
+        encoding="utf-8",
+    )
+    (root / "operations" / "mcp" / "thesis_mcp_server.py").write_text(
+        guard,
+        encoding="utf-8",
+    )
+    (root / "docs" / "research" / "EVENT_SELECTION.md").write_text(
+        "# EVENT_SELECTION.md\n\n## Decision Status\n\n- h2_window_status: blocked\n",
+        encoding="utf-8",
+    )
+    (root / "docs" / "research" / "WHALE_METHOD.md").write_text(
+        "# WHALE_METHOD.md\n\n## Decision Status\n\n- h3_tier_status: blocked\n",
+        encoding="utf-8",
+    )
+    (root / "docs" / "research" / "RESEARCH_SPEC.md").write_text(
+        "# RESEARCH_SPEC.md\n\n## ML Scope Rule\n\n- ml_scope_status: deferred\n",
         encoding="utf-8",
     )
     (root / "GOAL.md").write_text(GOAL_TEXT, encoding="utf-8")
@@ -109,6 +137,36 @@ def test_review_check_fails_for_select_star(tmp_path: Path) -> None:
     )
     results = run_checks(tmp_path, skip_pytest="unit test")
     assert any(result.name == "sql select star" and not result.passed for result in results)
+
+
+def test_review_check_fails_for_h2_code_before_selected_window(tmp_path: Path) -> None:
+    _write_minimal_project(tmp_path)
+    (tmp_path / "operations" / "analysis" / "event_study.py").write_text(
+        '"""Event study implementation placeholder."""\n',
+        encoding="utf-8",
+    )
+    results = run_checks(tmp_path, skip_pytest="unit test")
+    assert any(result.name == "h2 window guard" and not result.passed for result in results)
+
+
+def test_review_check_fails_for_h3_code_before_selected_tiers(tmp_path: Path) -> None:
+    _write_minimal_project(tmp_path)
+    (tmp_path / "operations" / "analysis" / "granger.py").write_text(
+        '"""Granger implementation placeholder."""\n',
+        encoding="utf-8",
+    )
+    results = run_checks(tmp_path, skip_pytest="unit test")
+    assert any(result.name == "h3 tier guard" and not result.passed for result in results)
+
+
+def test_review_check_fails_for_ml_scope_before_h1_h2_h3_outputs(tmp_path: Path) -> None:
+    _write_minimal_project(tmp_path)
+    (tmp_path / "docs" / "research" / "RESEARCH_SPEC.md").write_text(
+        "# RESEARCH_SPEC.md\n\n## ML Scope Rule\n\n- ml_scope_status: selected\n",
+        encoding="utf-8",
+    )
+    results = run_checks(tmp_path, skip_pytest="unit test")
+    assert any(result.name == "ml scope guard" and not result.passed for result in results)
 
 
 def test_group_changed_paths_suggests_project_automation_group() -> None:

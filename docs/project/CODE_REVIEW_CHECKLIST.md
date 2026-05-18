@@ -3,6 +3,7 @@
 ## Scope Checks
 
 - Does the change match the requested task?
+- Does the change match the single active goal in `GOAL.md`?
 - Are unrelated files untouched?
 - Are agents, MCP, model routing, ML, and cloud deployment still deferred?
 - Is the change small enough for an atomic commit?
@@ -14,6 +15,7 @@
 - Do CLI paths run without crashing?
 - Has the full test suite been run when code changed?
 - If tests were not run, is the reason documented?
+- Does `python -m operations.project.review_check` pass?
 
 ## Deterministic-Core Checks
 
@@ -45,6 +47,6 @@
 - Does `git diff --stat` show only intended files?
 - Does `git status --short` reveal unrelated dirty files that should be left
   out of the commit?
+- Does `python -m operations.project.commit_plan` suggest one coherent group?
 - Are generated artifacts intentionally included or excluded?
 - Does the commit message describe one coherent change?
-

@@ -8,6 +8,7 @@ one commit.
 
 Good commit slices:
 
+- Project automation and project-control docs.
 - Documentation control files.
 - Schema migration and migration tests.
 - Validation foundation and validation tests.
@@ -28,6 +29,7 @@ Use conventional-style messages:
 
 Examples:
 
+- `chore: add goal-driven project automation`
 - `docs: add project control and research specification`
 - `test: guard rcp usage behind documented transformation`
 - `feat: add canonical event catalog audit and loader`
@@ -51,6 +53,11 @@ worktree already contains related code changes.
 
 Before committing:
 
+- Read `GOAL.md` and confirm the commit belongs to the active goal.
+- Run `python -m operations.project.update_status`.
+- Add a `docs/project/WORK_LOG.md` entry.
+- Run `python -m operations.project.review_check`.
+- Run `python -m operations.project.commit_plan`.
 - Run `git diff --stat`.
 - Run `git status --short`.
 - Confirm no unrelated files are staged.
@@ -76,4 +83,3 @@ them by splitting commits in dependency order:
 If a file contains changes from multiple tasks, inspect the diff carefully and
 stage only the hunks that belong to the current commit. Do not revert user work
 or unrelated foundation changes.
-

@@ -19,11 +19,13 @@ Done criteria:
 - Deferred agent and MCP entry points cannot run accidentally.
 - Tests pass.
 - Foundation changes are committed in atomic slices.
+- Goal-driven project automation can update status, run review checks, and
+  propose commit groups.
 
 Blockers:
 
-- Many foundation changes are still uncommitted.
-- Root project-control docs are new and need review.
+- Project-control automation is not committed yet.
+- `STATUS.md` and `WORK_LOG.md` must be updated before stopping each work turn.
 
 ## Phase 2: Database Schema And Validation
 
@@ -77,6 +79,7 @@ Blockers:
 - Current event audit reports 20 missing values for each required canonical
   field.
 - Source URLs and expected directions are not curated.
+- Active goal remains research-scope definition before H2/H3 implementation.
 
 ## Phase 5: H2 Event Study And CAR
 
@@ -157,4 +160,3 @@ Done criteria:
 Blockers:
 
 - Empirical scope and H2/H3 outputs are not yet finalized.
-

@@ -1,15 +1,66 @@
 # STATUS.md
 
+<!-- PROJECT_STATUS:START -->
+## Automation Snapshot
+
+Generated: 2026-05-18 13:45
+
+Current goal: `goal-empirical-scope-001` - Define empirical research scope before H2/H3 implementation
+
+Current roadmap phase: Phase 4: Event Catalog And H2 Method
+
+Test status: PASS
+
+Pytest summary: `124 passed in 5.50s`
+
+Git branch: `main`
+
+Latest commit: `92aa132`
+
+Git status:
+
+```text
+ M AGENTS.md
+ M GOAL.md
+ M ROADMAP.md
+ M STATUS.md
+ M docs/project/CODE_REVIEW_CHECKLIST.md
+ M docs/project/COMMIT_PROTOCOL.md
+ M docs/project/TOOL_USAGE.md
+?? docs/project/WORK_LOG.md
+?? operations/project/
+?? tests/test_project_automation.py
+```
+
+Git diff stat:
+
+```text
+ AGENTS.md                             | 22 +++++++++-
+ GOAL.md                               | 43 +++++++++++--------
+ ROADMAP.md                            |  8 ++--
+ STATUS.md                             | 77 ++++++++++++++++++++++-------------
+ docs/project/CODE_REVIEW_CHECKLIST.md |  4 +-
+ docs/project/COMMIT_PROTOCOL.md       |  8 +++-
+ docs/project/TOOL_USAGE.md            | 12 +++++-
+ 7 files changed, 120 insertions(+), 54 deletions(-)
+```
+
+Blockers:
+
+- Worktree has uncommitted changes that need review before commit.
+- Do not implement H2/H3 before the empirical scope deliverables are complete.
+
+Next recommended action:
+
+- chore: add goal-driven project automation
+<!-- PROJECT_STATUS:END -->
+
 ## Current Status
 
 Status date: 2026-05-18
 
 The project is in deterministic data-foundation mode. The deterministic Python
 core is being built before H2, H3, agents, MCP, model routing, or ML workflows.
-
-Current test result:
-
-- `115 passed`
 
 Current implemented foundation:
 
@@ -20,6 +71,7 @@ Current implemented foundation:
 - RCP usage in Brier and calibration code is guarded by explicit flags.
 - Agent and MCP entry points are deferred.
 - Canonical event catalog audit and loader exist.
+- Project-control automation is being added for goal-driven Codex work.
 
 ## Event Catalog Audit Result
 
@@ -51,8 +103,6 @@ catalog is filled and reviewed.
 
 ## Current Blockers
 
-- The repository has many uncommitted foundation changes. Commit history needs
-  to be split into atomic commits before new feature work continues.
 - Canonical event catalog fields are missing for all 20 existing event rows.
 - RCP is not a native probability forecast. It remains a polling signal until a
   documented and tested probability transformation exists.
@@ -65,28 +115,14 @@ catalog is filled and reviewed.
 
 ## Next Recommended Commits
 
-1. `docs: add project control and research specification`
-   - Add this document set only.
-   - Acceptance: docs exist, no code changes, pytest passes.
+1. `chore: add goal-driven project automation`
+   - Commit `operations/project`, tests, and project-control docs.
+   - Acceptance: automation CLIs work, review checks pass, pytest passes.
 
-2. `chore: commit synchronized architecture and prompt docs`
-   - Commit `AGENTS.md`, `PROJECT_CONTEXT.md`, `ARCHITECTURE_DECISIONS.md`,
-     directive updates, and legacy inventory.
-   - Acceptance: no active prompt conflicts remain.
+2. `docs: finalize h2 event selection and window specification`
+   - Commit research-scope and event-method updates only.
+   - Acceptance: event inclusion, exclusion, and windows are fixed before CAR.
 
-3. `feat: add deterministic schema migrations`
-   - Commit migration layer and schema tests.
-   - Acceptance: migrations are idempotent, tests pass.
-
-4. `feat: add validation and inventory foundation`
-   - Commit validation modules, data inventory, and related tests.
-   - Acceptance: invalid rows fail, inventory CLI works.
-
-5. `test: guard rcp usage behind documented transformation`
-   - Commit RCP guardrails and Brier/calibration tests.
-   - Acceptance: RCP is excluded by default and requires both explicit flags.
-
-6. `feat: add canonical event catalog audit and loader`
-   - Commit event audit, loader, seed CSV, and tests.
-   - Acceptance: audit CLI reports current gaps, loader upserts by `event_id`.
-
+3. `data: curate canonical event catalog seed`
+   - Commit reviewed event seed rows with source URLs.
+   - Acceptance: event audit reports no missing canonical fields for included events.

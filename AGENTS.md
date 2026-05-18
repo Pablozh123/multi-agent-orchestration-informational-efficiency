@@ -90,6 +90,27 @@ multi-agent or MCP entry points must raise:
 - Use Swiss spelling in thesis-facing text: `ss` instead of German sharp s.
 - Keep generated prompts and LLM inputs small and auditable.
 
+## Mandatory Project Workflow
+
+Before starting work:
+
+1. Read `GOAL.md`.
+2. Confirm there is exactly one active goal.
+3. Work only on the active goal unless the user explicitly changes it.
+4. Use planning, TDD, and review discipline where available.
+
+Before stopping work:
+
+1. Update `STATUS.md` with `python -m operations.project.update_status`.
+2. Add an append-only entry to `docs/project/WORK_LOG.md`.
+3. Run `python -m operations.project.review_check`.
+4. Run `python -m operations.project.commit_plan`.
+5. Show `git diff --stat`.
+6. Recommend the exact next commit.
+
+If a check fails, report the failure and do not claim the repository is ready
+for the next empirical phase.
+
 ## First Implementation Target
 
 Create a reproducible deterministic pipeline:
@@ -100,4 +121,3 @@ Create a reproducible deterministic pipeline:
 4. Create event catalog structure.
 5. Compute first Brier Score baseline.
 6. Create tests.
-

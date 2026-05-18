@@ -13,6 +13,17 @@ Use Codex for repository work:
 Codex must not use LLM reasoning to compute statistical metrics. Metrics belong
 in deterministic Python code.
 
+Before stopping, Codex must run the project-control workflow:
+
+1. `python -m operations.project.update_status`
+2. add an entry to `docs/project/WORK_LOG.md`
+3. `python -m operations.project.review_check`
+4. `python -m operations.project.commit_plan`
+5. show `git diff --stat`
+
+Use `--skip-pytest "reason"` only when the user explicitly accepts skipping
+tests or when running pytest would be misleading.
+
 ## Superpowers Usage
 
 Use Superpowers for planning discipline and execution structure when helpful:
@@ -72,4 +83,3 @@ They must not:
 - Receive raw table dumps.
 - Invent events, data, or sources.
 - Make causal insider-trading claims.
-

@@ -68,13 +68,68 @@ CREATE TABLE IF NOT EXISTS sentiment_scores (
 );
 
 CREATE TABLE IF NOT EXISTS events_timeline (
-    id               INTEGER PRIMARY KEY AUTOINCREMENT,
-    event_timestamp  TEXT    NOT NULL,
-    event_type       TEXT    NOT NULL,
-    event_category   TEXT,
-    description      TEXT,
-    impact_score     REAL
+    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_id            TEXT,
+    event_date          TEXT,
+    event_time_utc      TEXT,
+    title               TEXT,
+    description         TEXT,
+    event_type          TEXT,
+    source_url          TEXT,
+    expected_direction  TEXT,
+    relevance_score     REAL,
+    event_timestamp     TEXT,
+    event_category      TEXT,
+    impact_score        REAL,
+    created_at          TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS analysis_summaries (
+    id                INTEGER PRIMARY KEY AUTOINCREMENT,
+    summary_id        TEXT,
+    run_id            TEXT,
+    summary_type      TEXT,
+    date_range_start  TEXT,
+    date_range_end    TEXT,
+    input_tables      TEXT,
+    metrics_json      TEXT,
+    summary_json      TEXT,
+    table_name        TEXT,
+    metric_name       TEXT,
+    value_json        TEXT,
+    computed_at       TEXT,
+    created_at        TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_summaries_run_type
+    ON analysis_summaries(run_id, summary_type);
+CREATE INDEX IF NOT EXISTS idx_summaries_metric
+    ON analysis_summaries(table_name, metric_name);
+
+CREATE TABLE IF NOT EXISTS llm_audit_log (
+    call_id                TEXT PRIMARY KEY,
+    run_id                 TEXT NOT NULL,
+    timestamp              TEXT NOT NULL,
+    model                  TEXT NOT NULL,
+    tier                   INTEGER NOT NULL,
+    system_prompt_hash     TEXT,
+    system_prompt_version  TEXT,
+    user_prompt            TEXT,
+    response               TEXT,
+    input_tokens           INTEGER,
+    output_tokens          INTEGER,
+    cost_usd               REAL,
+    cached_tokens          INTEGER,
+    tools_called           TEXT,
+    tool_results_summary   TEXT,
+    consistency_group_id   TEXT,
+    created_at             TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_audit_run
+    ON llm_audit_log(run_id);
+CREATE INDEX IF NOT EXISTS idx_audit_time
+    ON llm_audit_log(timestamp);
 
 CREATE INDEX IF NOT EXISTS idx_prices_market_time
     ON polymarket_prices(market_id, price_timestamp);
@@ -86,6 +141,10 @@ CREATE INDEX IF NOT EXISTS idx_polls_date_source
     ON poll_forecasts(date, source);
 CREATE INDEX IF NOT EXISTS idx_sentiment_time
     ON sentiment_scores(timestamp, source);
+CREATE INDEX IF NOT EXISTS idx_events_date
+    ON events_timeline(event_date);
+CREATE INDEX IF NOT EXISTS idx_events_timestamp
+    ON events_timeline(event_timestamp);
 """
 
 

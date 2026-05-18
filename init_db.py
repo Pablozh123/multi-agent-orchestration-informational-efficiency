@@ -1,7 +1,7 @@
 """Initialisiert die SQLite-Datenbank fuer die BA-Thesis mit dem korrekten Zielschema.
 
 Fuehrt alle PRAGMAs vor dem ersten CREATE TABLE aus (WAL-Modus, Busy-Timeout,
-synchronous=NORMAL). Erstellt sechs Tabellen und alle notwendigen Indizes.
+synchronous=NORMAL). Erstellt die Thesis-Tabellen und alle notwendigen Indizes.
 Das Skript ist idempotent: bei jedem Aufruf wird die bestehende Datei geloescht
 und neu erstellt, um Schema-Divergenz zu verhindern.
 """
@@ -71,12 +71,20 @@ CREATE TABLE IF NOT EXISTS sentiment_scores (
 );
 
 CREATE TABLE IF NOT EXISTS events_timeline (
-    id               INTEGER PRIMARY KEY AUTOINCREMENT,
-    event_timestamp  TEXT    NOT NULL,
-    event_type       TEXT    NOT NULL,
-    event_category   TEXT,
-    description      TEXT,
-    impact_score     REAL
+    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_id            TEXT,
+    event_date          TEXT,
+    event_time_utc      TEXT,
+    title               TEXT,
+    description         TEXT,
+    event_type          TEXT,
+    source_url          TEXT,
+    expected_direction  TEXT,
+    relevance_score     REAL,
+    event_timestamp     TEXT,
+    event_category      TEXT,
+    impact_score        REAL,
+    created_at          TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX IF NOT EXISTS idx_prices_market_time
@@ -89,6 +97,10 @@ CREATE INDEX IF NOT EXISTS idx_polls_date_source
     ON poll_forecasts(date, source);
 CREATE INDEX IF NOT EXISTS idx_sentiment_time
     ON sentiment_scores(timestamp, source);
+CREATE INDEX IF NOT EXISTS idx_events_date
+    ON events_timeline(event_date);
+CREATE INDEX IF NOT EXISTS idx_events_timestamp
+    ON events_timeline(event_timestamp);
 """
 
 # v2.1 tables — kept separate from SCHEMA so the migration helper
@@ -96,14 +108,23 @@ CREATE INDEX IF NOT EXISTS idx_sentiment_time
 V2_SCHEMA = """
 CREATE TABLE IF NOT EXISTS analysis_summaries (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
-    table_name        TEXT NOT NULL,
-    metric_name       TEXT NOT NULL,
+    summary_id        TEXT,
+    run_id            TEXT,
+    summary_type      TEXT,
     date_range_start  TEXT,
     date_range_end    TEXT,
-    value_json        TEXT NOT NULL,
-    computed_at       TEXT NOT NULL
+    input_tables      TEXT,
+    metrics_json      TEXT,
+    summary_json      TEXT,
+    table_name        TEXT,
+    metric_name       TEXT,
+    value_json        TEXT,
+    computed_at       TEXT,
+    created_at        TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE INDEX IF NOT EXISTS idx_summaries_run_type
+    ON analysis_summaries(run_id, summary_type);
 CREATE INDEX IF NOT EXISTS idx_summaries_metric
     ON analysis_summaries(table_name, metric_name);
 
@@ -123,7 +144,8 @@ CREATE TABLE IF NOT EXISTS llm_audit_log (
     cached_tokens          INTEGER,
     tools_called           TEXT,
     tool_results_summary   TEXT,
-    consistency_group_id   TEXT
+    consistency_group_id   TEXT,
+    created_at             TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX IF NOT EXISTS idx_audit_run  ON llm_audit_log(run_id);
@@ -166,7 +188,7 @@ def init(db_path: Path = DB_PATH, force_recreate: bool = True) -> None:
     """Initialisiert die SQLite-Datenbank mit dem korrekten Thesis-Schema.
 
     Loescht bei force_recreate=True die bestehende Datei, um Schema-Divergenz
-    zu vermeiden. Erstellt alle sechs Tabellen sowie die erforderlichen Indizes.
+    zu vermeiden. Erstellt alle Tabellen sowie die erforderlichen Indizes.
     Verifiziert nach der Erstellung, dass der WAL-Modus aktiv ist.
 
     Args:

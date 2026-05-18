@@ -75,3 +75,37 @@ Decision:
 Next step:
 
 - Finalize H2 event selection and window specification before CAR code.
+
+## 2026-05-18 - goal-empirical-scope-001
+
+Task:
+
+- Finalize H2 windows, curate and load canonical event seed rows, and add the
+  first deterministic H2 event-window baseline.
+
+Files changed:
+
+- `docs/research/EVENT_SELECTION.md`
+- `data/events_timeline_seed.csv`
+- `operations/tools/load_events.py`
+- `tests/test_event_catalog.py`
+- `operations/analysis/event_study.py`
+- `tests/test_event_study.py`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_event_catalog.py -q` -> 6 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_event_study.py -q` -> 5 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 132 passed.
+- `python -m operations.tools.load_events` -> inserted 7, then updated 7 on rerun.
+- `python -m operations.tools.event_catalog_audit` -> no duplicate canonical events and no invalid dates.
+
+Decision:
+
+- Use daily H2 windows for the current daily Polymarket price dataset.
+- Keep intraday windows out of scope until intraday data are added and validated.
+
+Next step:
+
+- Generate H2 event-window result artifacts from the curated catalog and daily
+  price series.

@@ -26,7 +26,7 @@ acceptance_criteria:
 - Project-control scripts can update status, run review checks, and suggest commit groups.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: finalize h2 event selection and window specification
+next_commit: feat: generate h2 event-window outputs from curated catalog
 
 ## Decision Outputs For This Goal
 

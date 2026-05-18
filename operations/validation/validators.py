@@ -1,18 +1,11 @@
-"""Dreistufige Validierungs-Pipeline (CLAUDE.md v2.1 §6.1).
-
-Stufe 1: Pydantic — Schema-Validierung pro Zeile.
-Stufe 2: Pandera — DataFrame-Schema und Wertebereiche.
-Stufe 3: Tenacity — Retry mit exponentiellem Backoff bei transienten Fehlern.
-
-Die Funktionen sind unabhaengig nutzbar; `run_pipeline()` verkettet alle drei.
-"""
+"""Small deterministic validation helpers for thesis data rows."""
 from __future__ import annotations
 
 from typing import Any, Callable, TypeVar
 
 import pandas as pd
 import pandera.pandas as pa
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel
 from tenacity import (
     retry,
     retry_if_exception_type,
@@ -20,50 +13,45 @@ from tenacity import (
     wait_random_exponential,
 )
 
+from operations.validation.pandera_schemas import TABLE_TO_SCHEMA
+from operations.validation.schemas import TABLE_TO_MODEL
+
 
 T = TypeVar("T", bound=BaseModel)
 R = TypeVar("R")
 
 
-# --- Stufe 1: Pydantic ---------------------------------------------------
-
-
 def validate_row(model_cls: type[T], data: dict[str, Any]) -> T:
-    """Validiert eine einzelne Zeile gegen ein Pydantic-Modell.
+    """Validate one row against a Pydantic model.
 
-    Args:
-        model_cls: Pydantic-Modellklasse (z. B. PolymarketPriceRow).
-        data: Dictionary mit Spalten => Werten.
-
-    Returns:
-        Instanziiertes Modell.
-
-    Raises:
-        pydantic.ValidationError: Wenn Felder fehlen oder Typen nicht passen.
+    Pydantic raises clear field-level errors for missing critical fields,
+    unparseable dates, and value-range violations.
     """
     return model_cls.model_validate(data)
 
 
-# --- Stufe 2: Pandera ----------------------------------------------------
-
-
 def validate_dataframe(schema: pa.DataFrameSchema, df: pd.DataFrame) -> pd.DataFrame:
-    """Validiert einen DataFrame gegen ein Pandera-Schema.
-
-    Args:
-        schema: Pandera DataFrameSchema.
-        df: Pandas DataFrame mit den zu validierenden Zeilen.
-
-    Returns:
-        Den (ggf. gecasteten) DataFrame, wenn die Validierung erfolgreich war.
-
-    Raises:
-        pandera.errors.SchemaError: Wenn ein Constraint verletzt ist.
-    """
+    """Validate a DataFrame against a Pandera schema."""
     return schema.validate(df, lazy=False)
 
 
-# --- Stufe 3: Tenacity ---------------------------------------------------
+def validate_table_row(table_name: str, data: dict[str, Any]) -> BaseModel:
+    """Validate one row using the registered model for `table_name`."""
+    try:
+        model_cls = TABLE_TO_MODEL[table_name]
+    except KeyError as exc:
+        raise ValueError(f"no Pydantic validation model registered for {table_name!r}") from exc
+    return validate_row(model_cls, data)
+
+
+def validate_table_rows(table_name: str, rows: list[dict[str, Any]]) -> pd.DataFrame:
+    """Validate rows with the registered Pydantic and Pandera schemas."""
+    try:
+        model_cls = TABLE_TO_MODEL[table_name]
+        schema = TABLE_TO_SCHEMA[table_name]
+    except KeyError as exc:
+        raise ValueError(f"no validation schema registered for {table_name!r}") from exc
+    return run_pipeline(model_cls, schema, rows)
 
 
 def with_retry(
@@ -71,16 +59,7 @@ def with_retry(
     max_attempts: int = 3,
     retry_exceptions: tuple[type[Exception], ...] = (ConnectionError, TimeoutError),
 ) -> Callable[..., R]:
-    """Wrapped `fn` mit exponentiellem Backoff fuer transiente Fehler.
-
-    Args:
-        fn: Synchrone Funktion, die retried werden soll.
-        max_attempts: Maximale Anzahl Versuche (default 3).
-        retry_exceptions: Exception-Typen, die einen Retry ausloesen.
-
-    Returns:
-        Decorated function.
-    """
+    """Wrap `fn` with retry behavior for transient I/O failures."""
     decorator = retry(
         stop=stop_after_attempt(max_attempts),
         wait=wait_random_exponential(multiplier=1, max=10),
@@ -90,34 +69,15 @@ def with_retry(
     return decorator(fn)
 
 
-# --- Top-level pipeline --------------------------------------------------
-
-
 def run_pipeline(
     model_cls: type[T],
     schema: pa.DataFrameSchema,
     rows: list[dict[str, Any]],
 ) -> pd.DataFrame:
-    """Verkettet Stufe 1 + 2 fuer eine Sammlung von Zeilen.
+    """Run row-level Pydantic validation followed by DataFrame validation."""
+    if not rows:
+        return pd.DataFrame(columns=list(schema.columns.keys()))
 
-    Stufe 3 (retry) wird nur fuer I/O-bound Functions benoetigt und ist
-    deshalb nicht Teil dieser pipeline — der API-Client oben drauf wickelt
-    den retry-Decorator selbst ein.
-
-    Args:
-        model_cls: Pydantic-Modell fuer Stufe 1.
-        schema: Pandera-Schema fuer Stufe 2.
-        rows: Roh-Zeilen aus der API oder einem CSV-Parser.
-
-    Returns:
-        Validierter DataFrame.
-
-    Raises:
-        ValidationError oder SchemaError je nach Stufe.
-    """
-    # Stage 1 — per-row Pydantic validation, surfaces field-level errors
     validated_models = [validate_row(model_cls, row) for row in rows]
-    df = pd.DataFrame([m.model_dump() for m in validated_models])
-
-    # Stage 2 — DataFrame schema, surfaces value-range and uniqueness errors
+    df = pd.DataFrame([model.model_dump(exclude_none=True) for model in validated_models])
     return validate_dataframe(schema, df)

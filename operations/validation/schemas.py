@@ -1,38 +1,33 @@
-"""Pydantic-Modelle fuer die Core-Tabellen der thesis.db.
-
-Stufe 1 der dreistufigen Validierungs-Pipeline (CLAUDE.md v2.1 §6.1).
-Jedes Modell entspricht einer Zeile in der jeweiligen SQLite-Tabelle.
-Spaltennamen folgen exakt dem Schema in init_db.py — nicht den Beispielen
-in CLAUDE.md v2.1 §6.2 (siehe Migrations-Plan: whale_transactions ist
-in Wirklichkeit whale_trades, sentiment_scores.tone ist sentiment usw.).
-"""
+"""Pydantic row schemas for deterministic thesis data validation."""
 from __future__ import annotations
 
+import re
+from datetime import datetime
 from typing import Literal, Optional
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, field_validator
 
 
-# ISO 8601 sanity check used by several models. We accept any string that
-# pandas/python can parse as a UTC-aware datetime; deeper format checks
-# happen in pandera (Stufe 2).
-def _ensure_iso_utc(value: str) -> str:
-    """Verifiziert, dass `value` als ISO 8601-UTC-Zeitstempel parsebar ist."""
-    from datetime import datetime
-
+def _ensure_datetime(value: str) -> str:
+    """Return `value` if it is a non-empty string parseable as a datetime."""
     if not isinstance(value, str):
-        raise TypeError(f"timestamp must be str, got {type(value).__name__}")
-    # Accept Z or +00:00 suffix; reject naive timestamps
-    candidate = value.replace("Z", "+00:00")
+        raise TypeError(f"date value must be str, got {type(value).__name__}")
+
+    candidate = value.strip()
+    if not candidate:
+        raise ValueError("date value must be a non-empty parseable datetime string")
+
+    candidate = re.sub(r"\s*UTCZ?\s*$", "", candidate)
+    candidate = candidate.replace("Z", "+00:00")
     try:
         datetime.fromisoformat(candidate)
     except ValueError as exc:
-        raise ValueError(f"not an ISO 8601 timestamp: {value!r}") from exc
+        raise ValueError(f"date value is not parseable as datetime: {value!r}") from exc
     return value
 
 
 class PolymarketPriceRow(BaseModel):
-    """Eine Zeile aus polymarket_prices."""
+    """One row from polymarket_prices."""
 
     id: Optional[int] = None
     price_timestamp: str
@@ -46,12 +41,12 @@ class PolymarketPriceRow(BaseModel):
 
     @field_validator("price_timestamp", "fetched_at")
     @classmethod
-    def _check_iso(cls, v: str) -> str:
-        return _ensure_iso_utc(v)
+    def _check_datetime(cls, value: str) -> str:
+        return _ensure_datetime(value)
 
 
 class WhaleTradeRow(BaseModel):
-    """Eine Zeile aus whale_trades (echter Tabellenname, nicht whale_transactions)."""
+    """One row from whale_trades."""
 
     id: Optional[int] = None
     price_timestamp: str
@@ -63,23 +58,23 @@ class WhaleTradeRow(BaseModel):
     token_id: Optional[str] = None
     price_at_trade: Optional[float] = None
 
-    @field_validator("wallet_address")
-    @classmethod
-    def _lowercase(cls, v: str) -> str:
-        if v != v.lower():
-            raise ValueError(f"wallet_address must be lowercase: {v!r}")
-        if not v.startswith("0x"):
-            raise ValueError(f"wallet_address must start with 0x: {v!r}")
-        return v
-
     @field_validator("price_timestamp")
     @classmethod
-    def _check_iso(cls, v: str) -> str:
-        return _ensure_iso_utc(v)
+    def _check_datetime(cls, value: str) -> str:
+        return _ensure_datetime(value)
+
+    @field_validator("wallet_address")
+    @classmethod
+    def _check_wallet(cls, value: str) -> str:
+        if value != value.lower():
+            raise ValueError(f"wallet_address must be lowercase: {value!r}")
+        if not value.startswith("0x"):
+            raise ValueError(f"wallet_address must start with 0x: {value!r}")
+        return value
 
 
 class PollForecastRow(BaseModel):
-    """Eine Zeile aus poll_forecasts."""
+    """One row from poll_forecasts."""
 
     id: Optional[int] = None
     date: str
@@ -88,42 +83,68 @@ class PollForecastRow(BaseModel):
     probability: float = Field(ge=0.0, le=1.0)
     poll_type: Optional[str] = None
 
+    @field_validator("date")
+    @classmethod
+    def _check_date(cls, value: str) -> str:
+        return _ensure_datetime(value)
+
 
 class SentimentScoreRow(BaseModel):
-    """Eine Zeile aus sentiment_scores. Spalte heisst `sentiment`, nicht `tone`."""
+    """One row from sentiment_scores.
+
+    The source concept is tone. The current SQLite column is `sentiment`, so the
+    model accepts either `tone` or `sentiment` and normalizes to `sentiment`.
+    """
+
+    model_config = ConfigDict(populate_by_name=True)
 
     id: Optional[int] = None
     timestamp: str
     source: str
     topic: Optional[str] = None
-    sentiment: float = Field(ge=-100.0, le=100.0)
+    sentiment: float = Field(
+        validation_alias=AliasChoices("sentiment", "tone"),
+        ge=-100.0,
+        le=100.0,
+    )
     volume: Optional[int] = None
     raw_text_sample: Optional[str] = None
 
     @field_validator("timestamp")
     @classmethod
-    def _check_iso(cls, v: str) -> str:
-        return _ensure_iso_utc(v)
+    def _check_datetime(cls, value: str) -> str:
+        return _ensure_datetime(value)
 
 
 class EventsTimelineRow(BaseModel):
-    """Eine Zeile aus events_timeline."""
+    """One row from events_timeline."""
 
     id: Optional[int] = None
-    event_timestamp: str
-    event_type: str
-    event_category: Optional[str] = None
+    event_id: Optional[str] = None
+    event_date: Optional[str] = None
+    event_time_utc: Optional[str] = None
+    title: Optional[str] = None
     description: Optional[str] = None
+    event_type: Optional[str] = None
+    source_url: Optional[str] = None
+    expected_direction: Optional[str] = None
+    relevance_score: Optional[float] = None
+    created_at: Optional[str] = None
+    # Compatibility fields from the first deterministic schema.
+    event_timestamp: Optional[str] = None
+    event_category: Optional[str] = None
     impact_score: Optional[float] = None
 
-    @field_validator("event_timestamp")
+    @field_validator("event_timestamp", "event_date", "created_at")
     @classmethod
-    def _check_iso(cls, v: str) -> str:
-        return _ensure_iso_utc(v)
+    def _check_datetime_if_present(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return value
+        return _ensure_datetime(value)
 
 
 class MarketMakerExclusionRow(BaseModel):
-    """Eine Zeile aus market_maker_exclusions."""
+    """One row from market_maker_exclusions."""
 
     id: Optional[int] = None
     wallet_address: str = Field(min_length=42, max_length=42)
@@ -133,14 +154,17 @@ class MarketMakerExclusionRow(BaseModel):
 
     @field_validator("wallet_address")
     @classmethod
-    def _lowercase(cls, v: str) -> str:
-        if v != v.lower() or not v.startswith("0x"):
-            raise ValueError(f"wallet_address must be lowercase 0x...: {v!r}")
-        return v
+    def _check_wallet(cls, value: str) -> str:
+        if value != value.lower() or not value.startswith("0x"):
+            raise ValueError(f"wallet_address must be lowercase 0x...: {value!r}")
+        return value
+
+    @field_validator("added_at")
+    @classmethod
+    def _check_added_at(cls, value: str) -> str:
+        return _ensure_datetime(value)
 
 
-# Registry mapping table_name -> Pydantic row model. Used by validators.py
-# and report.py to pick the right schema for each SQLite table.
 TABLE_TO_MODEL = {
     "polymarket_prices": PolymarketPriceRow,
     "whale_trades": WhaleTradeRow,

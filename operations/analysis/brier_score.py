@@ -28,6 +28,11 @@ ELECTION_OUTCOME = 1.0  # Trump gewann am 2024-11-05 (historische Tatsache)
 ELECTION_DATE = pd.Timestamp("2024-11-05", tz="UTC")
 FIVETHIRTYEIGHT_SOURCE = "fivethirtyeight"
 RCP_SOURCE = "rcp"
+RCP_TRANSFORMATION_ERROR = (
+    "RCP inclusion requires include_rcp=True and "
+    "rcp_transformation_documented=True because RCP polling averages are not "
+    "native probability forecasts."
+)
 
 
 @dataclass(frozen=True)
@@ -37,6 +42,8 @@ class BrierAnalysisConfig:
     db_path: Path = DB_PATH
     output_path: Path = RESULTS_DIR / "h1_brier_scores.csv"
     outcome: float = ELECTION_OUTCOME
+    include_rcp: bool = False
+    rcp_transformation_documented: bool = False
 
 
 # ---------------------------------------------------------------------------
@@ -81,13 +88,23 @@ def load_polymarket_daily(conn: sqlite3.Connection) -> pd.DataFrame:
 
 
 def load_poll_forecasts_daily(
-    conn: sqlite3.Connection, source: str
+    conn: sqlite3.Connection,
+    source: str,
+    include_rcp: bool = False,
+    rcp_transformation_documented: bool = False,
 ) -> pd.DataFrame:
     """Laedt taeglische Prognosewahrscheinlichkeiten fuer Trump aus poll_forecasts.
 
     Filtert auf candidate LIKE '%Trump%' und den angegebenen source.
     Gibt DataFrame mit Spalten [date, probability] zurueck.
     """
+    if source.lower() == RCP_SOURCE and not _should_include_rcp(
+        has_rcp=True,
+        include_rcp=include_rcp,
+        rcp_transformation_documented=rcp_transformation_documented,
+    ):
+        raise ValueError(RCP_TRANSFORMATION_ERROR)
+
     df = pd.read_sql(
         """
         SELECT date, probability
@@ -126,6 +143,17 @@ def validate_forecast_values(df: pd.DataFrame, columns: list[str]) -> None:
             raise ValueError(f"Forecast column {column!r} contains values outside [0, 1]")
 
 
+def _should_include_rcp(
+    has_rcp: bool,
+    include_rcp: bool,
+    rcp_transformation_documented: bool,
+) -> bool:
+    """Return whether RCP may be included in a probability forecast analysis."""
+    if include_rcp and not rcp_transformation_documented:
+        raise ValueError(RCP_TRANSFORMATION_ERROR)
+    return has_rcp and include_rcp and rcp_transformation_documented
+
+
 def compute_daily_brier_series(
     forecasts: pd.Series, outcome: float
 ) -> pd.Series:
@@ -162,12 +190,15 @@ def compute_naive_baselines(date_range: pd.DatetimeIndex) -> pd.DataFrame:
 def run_brier_analysis(
     conn: sqlite3.Connection,
     outcome: float = ELECTION_OUTCOME,
+    include_rcp: bool = False,
+    rcp_transformation_documented: bool = False,
 ) -> pd.DataFrame:
     """Fuehrt die vollstaendige Brier-Score-Analyse durch.
 
     Returns:
-        DataFrame mit taeglischen Brier Scores fuer alle Quellen.
-        Spalten: date, polymarket, fivethirtyeight, [rcp,] always_50, prior_day
+        DataFrame mit taeglischen Brier Scores fuer zugelassene Quellen.
+        RCP ist standardmaessig ausgeschlossen und darf nur mit
+        include_rcp=True und rcp_transformation_documented=True einfliessen.
     """
     # Lade Rohdaten
     pm = load_polymarket_daily(conn)
@@ -182,22 +213,34 @@ def run_brier_analysis(
         "SELECT COUNT(1) as n FROM poll_forecasts WHERE source = ?", conn,
         params=(RCP_SOURCE,),
     ).iloc[0]["n"]
-    has_rcp = rcp_raw > 0
-    if has_rcp:
-        rcp = load_poll_forecasts_daily(conn, RCP_SOURCE)
+    include_rcp_data = _should_include_rcp(
+        bool(rcp_raw > 0),
+        include_rcp=include_rcp,
+        rcp_transformation_documented=rcp_transformation_documented,
+    )
+    if include_rcp_data:
+        rcp = load_poll_forecasts_daily(
+            conn,
+            RCP_SOURCE,
+            include_rcp=include_rcp,
+            rcp_transformation_documented=rcp_transformation_documented,
+        )
     else:
         rcp = None
 
     # Merge auf Tagesdatum
     merged = pm.copy()
     merged = merged.merge(fe, on="date", how="inner")
-    if has_rcp and rcp is not None and not rcp.empty:
+    if include_rcp_data and rcp is not None and not rcp.empty:
         merged = merged.merge(rcp, on="date", how="left")
     if merged.empty:
         raise ValueError("No overlapping dates between Polymarket and FiveThirtyEight")
+    forecast_columns = ["polymarket", FIVETHIRTYEIGHT_SOURCE]
+    if include_rcp_data:
+        forecast_columns.append(RCP_SOURCE)
     validate_forecast_values(
         merged,
-        ["polymarket", FIVETHIRTYEIGHT_SOURCE, RCP_SOURCE],
+        forecast_columns,
     )
 
     # Prior-Day Polymarket (Look-ahead-freie Baseline): Preis vom Vortag
@@ -211,7 +254,7 @@ def run_brier_analysis(
     result = pd.DataFrame({"date": merged["date"]})
     result["bs_polymarket"] = brier_score(merged["polymarket"].values, outcome)
     result["bs_fivethirtyeight"] = brier_score(merged["fivethirtyeight"].values, outcome)
-    if has_rcp and "rcp" in merged.columns:
+    if include_rcp_data and "rcp" in merged.columns:
         result["bs_rcp"] = brier_score(merged["rcp"].values, outcome)
     result["bs_always_50"] = brier_score(merged["always_50"].values, outcome)
     # Prior-day hat NaN in erster Zeile; Lookahead-safe da Vortag
@@ -222,7 +265,7 @@ def run_brier_analysis(
     # Rohe Prognosen behalten (benoetigt fuer Calibration)
     result["forecast_polymarket"] = merged["polymarket"].values
     result["forecast_fivethirtyeight"] = merged["fivethirtyeight"].values
-    if has_rcp and "rcp" in merged.columns:
+    if include_rcp_data and "rcp" in merged.columns:
         result["forecast_rcp"] = merged["rcp"].values
     result["forecast_always_50"] = 0.5
     result["forecast_prior_day"] = merged["prior_day"].fillna(0.5).values
@@ -230,7 +273,11 @@ def run_brier_analysis(
     return result
 
 
-def print_summary(df: pd.DataFrame) -> None:
+def print_summary(
+    df: pd.DataFrame,
+    include_rcp: bool = False,
+    rcp_transformation_documented: bool = False,
+) -> None:
     """Gibt eine Zusammenfassung der mittleren Brier Scores aus."""
     print("\n=== H1 Brier Score Zusammenfassung ===")
     print(f"Analyse-Fenster: {df['date'].min()} bis {df['date'].max()} ({len(df)} Tage)")
@@ -241,7 +288,11 @@ def print_summary(df: pd.DataFrame) -> None:
         ("Baseline: immer 50%", "bs_always_50"),
         ("Baseline: Vortag Polymarket", "bs_prior_day"),
     ]
-    if "bs_rcp" in df.columns:
+    if "bs_rcp" in df.columns and _should_include_rcp(
+        has_rcp=True,
+        include_rcp=include_rcp,
+        rcp_transformation_documented=rcp_transformation_documented,
+    ):
         sources.insert(2, ("RCP", "bs_rcp"))
 
     for label, col in sources:
@@ -256,7 +307,12 @@ def run_brier_pipeline(config: BrierAnalysisConfig = BrierAnalysisConfig()) -> p
     config.output_path.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(config.db_path)
     try:
-        df = run_brier_analysis(conn, outcome=config.outcome)
+        df = run_brier_analysis(
+            conn,
+            outcome=config.outcome,
+            include_rcp=config.include_rcp,
+            rcp_transformation_documented=config.rcp_transformation_documented,
+        )
     finally:
         conn.close()
     df.to_csv(config.output_path, index=False)
@@ -274,7 +330,11 @@ def main() -> None:
     df = run_brier_pipeline(config)
     print(f"Gespeichert: {config.output_path} ({len(df)} Tage)")
 
-    print_summary(df)
+    print_summary(
+        df,
+        include_rcp=config.include_rcp,
+        rcp_transformation_documented=config.rcp_transformation_documented,
+    )
 
 
 if __name__ == "__main__":

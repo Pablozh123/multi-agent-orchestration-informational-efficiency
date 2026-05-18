@@ -35,6 +35,11 @@ from scipy.stats import norm
 RESULTS_DIR = Path("data/results")
 BRIER_CSV = RESULTS_DIR / "h1_brier_scores.csv"
 ELECTION_OUTCOME = 1.0
+RCP_TRANSFORMATION_ERROR = (
+    "RCP inclusion requires include_rcp=True and "
+    "rcp_transformation_documented=True because RCP polling averages are not "
+    "native probability forecasts."
+)
 
 # Matplotlib OO API, LaTeX-kompatible Fonts (CLAUDE.md Anforderung Phase 05)
 plt.rcParams.update({
@@ -83,9 +88,21 @@ def compute_calibration_curve(
     return np.array(centers), np.array(mean_forecast), np.array(frac_pos)
 
 
+def _allow_rcp(
+    include_rcp: bool,
+    rcp_transformation_documented: bool,
+) -> bool:
+    """Return whether RCP columns may be used in calibration outputs."""
+    if include_rcp and not rcp_transformation_documented:
+        raise ValueError(RCP_TRANSFORMATION_ERROR)
+    return include_rcp and rcp_transformation_documented
+
+
 def plot_reliability_diagram(
     df: pd.DataFrame,
     out_path: Path,
+    include_rcp: bool = False,
+    rcp_transformation_documented: bool = False,
 ) -> None:
     """Erstellt Reliability Diagram fuer alle Forecasting-Quellen.
 
@@ -100,7 +117,10 @@ def plot_reliability_diagram(
         ("Baseline: immer 50%", "forecast_always_50", "#9ca3af"),
         ("Baseline: Vortag", "forecast_prior_day", "#f59e0b"),
     ]
-    if "forecast_rcp" in df.columns:
+    if "forecast_rcp" in df.columns and _allow_rcp(
+        include_rcp,
+        rcp_transformation_documented,
+    ):
         sources.insert(2, ("RCP", "forecast_rcp", "#16a34a"))
 
     # Outcome-Array (Trump gewann -> outcome fuer jede Zeile = 1.0)
@@ -197,7 +217,11 @@ def diebold_mariano_test(
     return float(dm_stat_hln), float(p_value)
 
 
-def run_diebold_mariano(df: pd.DataFrame) -> list[DMResult]:
+def run_diebold_mariano(
+    df: pd.DataFrame,
+    include_rcp: bool = False,
+    rcp_transformation_documented: bool = False,
+) -> list[DMResult]:
     """Fuehrt DM-Test fuer alle sinnvollen Paarungen durch.
 
     Vergleicht: Polymarket vs FiveThirtyEight, Polymarket vs Baselines.
@@ -208,7 +232,10 @@ def run_diebold_mariano(df: pd.DataFrame) -> list[DMResult]:
         ("Polymarket", "bs_polymarket", "Vortag_Polymarket", "bs_prior_day"),
         ("FiveThirtyEight", "bs_fivethirtyeight", "immer_50%", "bs_always_50"),
     ]
-    if "bs_rcp" in df.columns:
+    if "bs_rcp" in df.columns and _allow_rcp(
+        include_rcp,
+        rcp_transformation_documented,
+    ):
         comparisons.insert(1, ("Polymarket", "bs_polymarket", "RCP", "bs_rcp"))
         comparisons.insert(2, ("FiveThirtyEight", "bs_fivethirtyeight", "RCP", "bs_rcp"))
 

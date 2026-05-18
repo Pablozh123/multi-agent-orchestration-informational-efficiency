@@ -24,6 +24,12 @@ import pandas as pd
 
 DB_PATH = Path("data/thesis.db")
 JSON_EXPORT_PATH = Path("data/summaries.json")
+RCP_SOURCE = "rcp"
+RCP_TRANSFORMATION_ERROR = (
+    "RCP inclusion requires include_rcp=True and "
+    "rcp_transformation_documented=True because RCP polling averages are not "
+    "native probability forecasts."
+)
 
 TABLE_COLUMNS = {
     "polymarket_prices": (
@@ -85,6 +91,16 @@ def _safe_parse_ts(series: pd.Series) -> pd.Series:
     """
     cleaned = series.astype(str).str.replace(" UTCZ", "Z", regex=False)
     return pd.to_datetime(cleaned, utc=True, errors="coerce")
+
+
+def _allow_rcp(
+    include_rcp: bool,
+    rcp_transformation_documented: bool,
+) -> bool:
+    """Return whether RCP rows may enter Brier/calibration summaries."""
+    if include_rcp and not rcp_transformation_documented:
+        raise ValueError(RCP_TRANSFORMATION_ERROR)
+    return include_rcp and rcp_transformation_documented
 
 
 # --- Metric computations -------------------------------------------------
@@ -275,7 +291,11 @@ def compute_sentiment_daily(conn: sqlite3.Connection) -> list[SummaryRow]:
     ]
 
 
-def compute_brier_score_windows(conn: sqlite3.Connection) -> list[SummaryRow]:
+def compute_brier_score_windows(
+    conn: sqlite3.Connection,
+    include_rcp: bool = False,
+    rcp_transformation_documented: bool = False,
+) -> list[SummaryRow]:
     """Brier Score pro Zeitfenster — blockiert solange poll_forecasts leer ist."""
     polls = _load_df(conn, "poll_forecasts")
     if polls.empty:
@@ -292,6 +312,13 @@ def compute_brier_score_windows(conn: sqlite3.Connection) -> list[SummaryRow]:
     prices = prices.dropna(subset=["ts"])
     polls["ts"] = pd.to_datetime(polls["date"], errors="coerce", utc=True)
     polls = polls.dropna(subset=["ts"])
+    polls["source"] = polls["source"].astype(str).str.lower()
+    if not _allow_rcp(include_rcp, rcp_transformation_documented):
+        polls = polls[polls["source"] != RCP_SOURCE]
+    if polls.empty:
+        print("  [SKIP] compute_brier_score_windows: no approved probability "
+              "forecast sources after RCP guard")
+        return []
 
     # Market daily close (last known price per day)
     market_daily = (

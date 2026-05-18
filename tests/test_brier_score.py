@@ -16,6 +16,30 @@ import pandas as pd
 import pytest
 
 
+def _minimal_brier_connection_with_rcp():
+    """Return an in-memory DB with Polymarket, FiveThirtyEight, and RCP rows."""
+    import sqlite3
+
+    conn = sqlite3.connect(":memory:")
+    conn.executescript("""
+        CREATE TABLE polymarket_prices (
+            price_timestamp TEXT, price REAL
+        );
+        CREATE TABLE poll_forecasts (
+            date TEXT, source TEXT, candidate TEXT, probability REAL, poll_type TEXT
+        );
+        INSERT INTO polymarket_prices VALUES
+            ('2024-04-01T00:00:00.000000Z', 0.55),
+            ('2024-04-02T00:00:00.000000Z', 0.60);
+        INSERT INTO poll_forecasts VALUES
+            ('2024-04-01', 'fivethirtyeight', 'Trump', 0.52, 'model'),
+            ('2024-04-02', 'fivethirtyeight', 'Trump', 0.54, 'model'),
+            ('2024-04-01', 'rcp', 'Trump', 0.51, 'polling_signal'),
+            ('2024-04-02', 'rcp', 'Trump', 0.53, 'polling_signal');
+    """)
+    return conn
+
+
 # ---------------------------------------------------------------------------
 # brier_score.py Tests
 # ---------------------------------------------------------------------------
@@ -118,6 +142,62 @@ def test_run_brier_analysis_structure(tmp_path):
         assert (result[col] >= 0).all() and (result[col] <= 1).all(), (
             f"{col} hat Werte ausserhalb [0, 1]"
         )
+
+
+def test_run_brier_analysis_excludes_rcp_by_default() -> None:
+    """FiveThirtyEight works by default and RCP remains excluded."""
+    from operations.analysis.brier_score import run_brier_analysis
+
+    conn = _minimal_brier_connection_with_rcp()
+    result = run_brier_analysis(conn)
+    conn.close()
+
+    assert "bs_fivethirtyeight" in result.columns
+    assert "forecast_fivethirtyeight" in result.columns
+    assert "bs_rcp" not in result.columns
+    assert "forecast_rcp" not in result.columns
+
+
+def test_run_brier_analysis_rcp_inclusion_fails_without_documentation() -> None:
+    from operations.analysis.brier_score import run_brier_analysis
+
+    conn = _minimal_brier_connection_with_rcp()
+    with pytest.raises(ValueError, match="RCP inclusion requires"):
+        run_brier_analysis(conn, include_rcp=True)
+    conn.close()
+
+
+def test_load_poll_forecasts_daily_rcp_requires_explicit_flags() -> None:
+    from operations.analysis.brier_score import load_poll_forecasts_daily
+
+    conn = _minimal_brier_connection_with_rcp()
+    with pytest.raises(ValueError, match="RCP inclusion requires"):
+        load_poll_forecasts_daily(conn, "rcp")
+
+    result = load_poll_forecasts_daily(
+        conn,
+        "rcp",
+        include_rcp=True,
+        rcp_transformation_documented=True,
+    )
+    conn.close()
+
+    assert list(result.columns) == ["date", "rcp"]
+
+
+def test_run_brier_analysis_includes_rcp_only_with_explicit_flags() -> None:
+    from operations.analysis.brier_score import run_brier_analysis
+
+    conn = _minimal_brier_connection_with_rcp()
+    result = run_brier_analysis(
+        conn,
+        include_rcp=True,
+        rcp_transformation_documented=True,
+    )
+    conn.close()
+
+    assert "bs_rcp" in result.columns
+    assert "forecast_rcp" in result.columns
 
 
 def test_run_brier_pipeline_writes_configured_output(tmp_path):
@@ -253,3 +333,161 @@ def test_run_diebold_mariano_returns_results():
     for r in results:
         assert 0.0 <= r.p_value <= 1.0, f"p_value ausserhalb [0,1]: {r.p_value}"
         assert isinstance(r.interpretation, str) and len(r.interpretation) > 0
+
+
+def test_run_diebold_mariano_excludes_rcp_by_default() -> None:
+    from operations.analysis.calibrate import run_diebold_mariano
+
+    df = pd.DataFrame({
+        "date": pd.date_range("2024-03-01", periods=50).astype(str),
+        "bs_polymarket": np.full(50, 0.10),
+        "bs_fivethirtyeight": np.full(50, 0.12),
+        "bs_rcp": np.full(50, 0.11),
+        "bs_always_50": np.full(50, 0.25),
+        "bs_prior_day": np.full(50, 0.13),
+    })
+
+    results = run_diebold_mariano(df)
+
+    assert all("RCP" not in {result.source_1, result.source_2} for result in results)
+
+
+def test_run_diebold_mariano_rcp_inclusion_fails_without_documentation() -> None:
+    from operations.analysis.calibrate import run_diebold_mariano
+
+    df = pd.DataFrame({
+        "date": pd.date_range("2024-03-01", periods=50).astype(str),
+        "bs_polymarket": np.full(50, 0.10),
+        "bs_fivethirtyeight": np.full(50, 0.12),
+        "bs_rcp": np.full(50, 0.11),
+        "bs_always_50": np.full(50, 0.25),
+        "bs_prior_day": np.full(50, 0.13),
+    })
+
+    with pytest.raises(ValueError, match="RCP inclusion requires"):
+        run_diebold_mariano(df, include_rcp=True)
+
+
+def test_run_diebold_mariano_includes_rcp_only_with_explicit_flags() -> None:
+    from operations.analysis.calibrate import run_diebold_mariano
+
+    df = pd.DataFrame({
+        "date": pd.date_range("2024-03-01", periods=50).astype(str),
+        "bs_polymarket": np.full(50, 0.10),
+        "bs_fivethirtyeight": np.full(50, 0.12),
+        "bs_rcp": np.full(50, 0.11),
+        "bs_always_50": np.full(50, 0.25),
+        "bs_prior_day": np.full(50, 0.13),
+    })
+
+    results = run_diebold_mariano(
+        df,
+        include_rcp=True,
+        rcp_transformation_documented=True,
+    )
+
+    assert any("RCP" in {result.source_1, result.source_2} for result in results)
+
+
+def test_reliability_diagram_rcp_inclusion_fails_without_documentation(tmp_path) -> None:
+    from operations.analysis.calibrate import plot_reliability_diagram
+
+    df = pd.DataFrame({
+        "date": pd.date_range("2024-03-01", periods=10).astype(str),
+        "forecast_polymarket": np.full(10, 0.60),
+        "forecast_fivethirtyeight": np.full(10, 0.55),
+        "forecast_rcp": np.full(10, 0.57),
+        "forecast_always_50": np.full(10, 0.50),
+        "forecast_prior_day": np.full(10, 0.58),
+    })
+
+    with pytest.raises(ValueError, match="RCP inclusion requires"):
+        plot_reliability_diagram(df, tmp_path / "reliability.png", include_rcp=True)
+
+
+def test_summary_brier_windows_exclude_rcp_by_default() -> None:
+    import json
+    import sqlite3
+
+    from operations.analysis.generate_summaries import compute_brier_score_windows
+
+    conn = sqlite3.connect(":memory:")
+    conn.executescript("""
+        CREATE TABLE polymarket_prices (
+            price_timestamp TEXT, market_id TEXT, token_id TEXT, price REAL
+        );
+        CREATE TABLE poll_forecasts (
+            date TEXT, source TEXT, probability REAL
+        );
+        INSERT INTO polymarket_prices VALUES
+            ('2024-04-01T00:00:00.000000Z', 'm1', 't1', 0.55),
+            ('2024-04-02T00:00:00.000000Z', 'm1', 't1', 0.60);
+        INSERT INTO poll_forecasts VALUES
+            ('2024-04-01', 'fivethirtyeight', 0.52),
+            ('2024-04-02', 'fivethirtyeight', 0.54),
+            ('2024-04-01', 'rcp', 0.51),
+            ('2024-04-02', 'rcp', 0.53);
+    """)
+
+    rows = compute_brier_score_windows(conn)
+    conn.close()
+    sources = {json.loads(row.value_json)["source"] for row in rows}
+
+    assert sources == {"fivethirtyeight"}
+
+
+def test_summary_brier_windows_rcp_inclusion_fails_without_documentation() -> None:
+    import sqlite3
+
+    from operations.analysis.generate_summaries import compute_brier_score_windows
+
+    conn = sqlite3.connect(":memory:")
+    conn.executescript("""
+        CREATE TABLE polymarket_prices (
+            price_timestamp TEXT, market_id TEXT, token_id TEXT, price REAL
+        );
+        CREATE TABLE poll_forecasts (
+            date TEXT, source TEXT, probability REAL
+        );
+        INSERT INTO polymarket_prices VALUES
+            ('2024-04-01T00:00:00.000000Z', 'm1', 't1', 0.55);
+        INSERT INTO poll_forecasts VALUES
+            ('2024-04-01', 'fivethirtyeight', 0.52),
+            ('2024-04-01', 'rcp', 0.51);
+    """)
+
+    with pytest.raises(ValueError, match="RCP inclusion requires"):
+        compute_brier_score_windows(conn, include_rcp=True)
+    conn.close()
+
+
+def test_summary_brier_windows_include_rcp_only_with_explicit_flags() -> None:
+    import json
+    import sqlite3
+
+    from operations.analysis.generate_summaries import compute_brier_score_windows
+
+    conn = sqlite3.connect(":memory:")
+    conn.executescript("""
+        CREATE TABLE polymarket_prices (
+            price_timestamp TEXT, market_id TEXT, token_id TEXT, price REAL
+        );
+        CREATE TABLE poll_forecasts (
+            date TEXT, source TEXT, probability REAL
+        );
+        INSERT INTO polymarket_prices VALUES
+            ('2024-04-01T00:00:00.000000Z', 'm1', 't1', 0.55);
+        INSERT INTO poll_forecasts VALUES
+            ('2024-04-01', 'fivethirtyeight', 0.52),
+            ('2024-04-01', 'rcp', 0.51);
+    """)
+
+    rows = compute_brier_score_windows(
+        conn,
+        include_rcp=True,
+        rcp_transformation_documented=True,
+    )
+    conn.close()
+    sources = {json.loads(row.value_json)["source"] for row in rows}
+
+    assert sources == {"fivethirtyeight", "rcp"}

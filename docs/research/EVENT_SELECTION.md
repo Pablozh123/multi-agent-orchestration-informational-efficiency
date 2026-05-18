@@ -13,7 +13,9 @@ It exists to prevent cherry-picking and to keep the event study reproducible.
 - not_selected_windows: [-1h, +1h]
 - decision_reason: current Polymarket price data are daily, so the primary H2
   event window must be daily rather than intraday.
-- required_before_code: CAR or event-study implementation.
+- h2_output_shape_status: accepted
+- h2_persistence_status: approved_for_compact_summary_only
+- required_before_code: complete for initial daily event-window baseline.
 
 ## Inclusion Criteria
 
@@ -70,8 +72,9 @@ Each canonical event row requires:
 - `expected_direction`
 - `relevance_score`
 
-The current seed CSV is intentionally header-only. Do not invent real events to
-fill it. Add events only after manual source review.
+The tracked seed CSV contains the curated event set for the first deterministic
+H2 output. Add events only after manual source review. Do not add, remove, or
+reclassify events based on observed market reactions.
 
 ## Window Definitions
 
@@ -89,6 +92,65 @@ Not selected for the current dataset:
 Reason: current Polymarket price data are daily. Intraday windows require
 intraday price observations and must not be used unless such data are added and
 validated later.
+
+## H2 Output Shape Review
+
+Review date: 2026-05-18
+
+Accepted output files:
+
+- `data/results/h2_event_window_rows.csv`
+- `data/results/h2_event_window_summary.csv`
+
+The row-level output shape is accepted as the deterministic calculation trace.
+It contains:
+
+- event identifier and window label,
+- event date and observed price date,
+- relative day within the pre-specified window,
+- observed daily price change,
+- expected daily change from the estimation window,
+- abnormal change,
+- cumulative abnormal change,
+- estimation observation count.
+
+The summary output shape is accepted as the compact thesis-facing H2 result
+table. It contains the canonical event metadata plus one final cumulative
+abnormal change per event and selected window.
+
+## Daily Window Limitations
+
+The first H2 baseline uses daily Polymarket price observations. This means:
+
+- `event_time_utc` is retained for source transparency, but calculations use
+  the event calendar date.
+- Same-day and next-day movement can be measured; intraday reaction speed
+  cannot be measured.
+- Events occurring after the daily price observation may partially appear in
+  the following daily row.
+- The `[-1h, +1h]` window remains out of scope until intraday prices are added
+  and validated.
+- Missing daily observations would reduce `observed_days`; the current output
+  includes all expected days for the selected curated events.
+
+## Persistence Decision
+
+Persist compact H2 summaries later, not the full row-level trace.
+
+Approved later target:
+
+- Write deterministic, compact H2 summary records into `analysis_summaries`.
+- Use the accepted summary CSV shape as the source of truth for the first
+  persistence implementation.
+- Store bounded JSON metrics and metadata only; do not dump raw row-level data
+  into `analysis_summaries` or prompts.
+
+Not approved:
+
+- Persisting the full `h2_event_window_rows.csv` trace into
+  `analysis_summaries`.
+- Changing the curated event set during persistence.
+- Using LLMs to calculate, transform, or validate CAR values.
 
 ## Source Quality Rules
 

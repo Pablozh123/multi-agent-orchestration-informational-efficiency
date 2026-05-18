@@ -170,3 +170,38 @@ Next step:
 
 - Review the H2 output CSV shape and decide whether to persist compact H2
   summaries into `analysis_summaries`.
+
+## 2026-05-18 - goal-empirical-scope-001
+
+Task:
+
+- Review the H2 output CSV shape and document the persistence decision.
+
+Files changed:
+
+- `docs/research/EVENT_SELECTION.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.tools.event_catalog_audit` -> PASS,
+  27 rows, no duplicate canonical events, no invalid dates.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  140 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check` -> PASS,
+  140 passed.
+
+Decision:
+
+- Accept the H2 row-level CSV as the calculation trace and the H2 summary CSV
+  as the compact thesis-facing result shape.
+- Persist compact H2 summaries into `analysis_summaries` later; keep full
+  row-level traces file-based.
+
+Next step:
+
+- Implement deterministic, idempotent H2 summary persistence into
+  `analysis_summaries`.

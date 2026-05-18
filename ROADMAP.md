@@ -82,7 +82,7 @@ Blockers:
 
 ## Phase 5: H2 Event Study And CAR
 
-Status: in progress
+Status: in progress; CSV output shape accepted
 
 Done criteria:
 
@@ -91,11 +91,14 @@ Done criteria:
 - Outputs separate event-level movement, source timing, and limitations.
 - No event is added or removed after seeing results without documentation.
 - H2 output CSVs can be regenerated from tracked seed events and SQLite prices.
+- H2 summary output shape is reviewed before database persistence.
 
 Blockers:
 
-- Do not persist H2 rows into `analysis_summaries` until CSV output shape is
-  reviewed.
+- Compact H2 summary persistence into `analysis_summaries` is not implemented
+  yet.
+- Full row-level H2 traces must remain file-based unless a separate storage
+  decision is documented.
 
 ## Phase 6: H3 Whale Distribution And Classification
 

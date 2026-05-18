@@ -3,33 +3,39 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-18 15:22
+Generated: 2026-05-18 17:54
 
-Current goal: `goal-empirical-scope-001` - Generate deterministic H2 event-window outputs
+Current goal: `goal-h2-summary-persistence-001` - Persist reviewed H2 summaries into analysis_summaries
 
 Current roadmap phase: Phase 5: H2 Event Study And CAR
 
 Test status: PASS
 
-Pytest summary: `140 passed in 8.99s`
+Pytest summary: `140 passed in 5.76s`
 
 Git branch: `main`
 
-Latest commit: `027ae15`
+Latest commit: `4b2b0f9`
 
 Git status:
 
 ```text
-?? data/results/h2_event_window_rows.csv
-?? data/results/h2_event_window_summary.csv
-?? operations/analysis/run_h2_event_windows.py
-?? tests/test_h2_event_window_runner.py
+ M GOAL.md
+ M ROADMAP.md
+ M STATUS.md
+ M docs/project/WORK_LOG.md
+ M docs/research/EVENT_SELECTION.md
 ```
 
 Git diff stat:
 
 ```text
-no unstaged diff
+ GOAL.md                          | 48 +++++++++++++--------------
+ ROADMAP.md                       |  9 +++--
+ STATUS.md                        | 71 ++++++++++++++++++++++++----------------
+ docs/project/WORK_LOG.md         | 35 ++++++++++++++++++++
+ docs/research/EVENT_SELECTION.md | 68 ++++++++++++++++++++++++++++++++++++--
+ 5 files changed, 172 insertions(+), 59 deletions(-)
 ```
 
 Blockers:
@@ -38,17 +44,19 @@ Blockers:
 
 Next recommended action:
 
-- feat: generate h2 event-window outputs from curated catalog
+- feat: persist h2 summaries in analysis_summaries
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status
 
 Status date: 2026-05-18
 
-The project is in deterministic data-foundation mode. The deterministic Python
-core is being built before H2, H3, agents, MCP, model routing, or ML workflows.
+The project is in deterministic H2 event-study mode. H2 event windows are
+selected, curated seed events exist, and deterministic H2 CSV outputs have been
+generated and reviewed for shape. H3, agents, MCP, model routing, and ML remain
+deferred.
 
-Current implemented foundation:
+Current implemented foundation and H2 baseline:
 
 - SQLite schema support tables exist or are migrated idempotently.
 - Validation foundation exists for core row types.
@@ -57,7 +65,10 @@ Current implemented foundation:
 - RCP usage in Brier and calibration code is guarded by explicit flags.
 - Agent and MCP entry points are deferred.
 - Canonical event catalog audit and loader exist.
-- Project-control automation is being added for goal-driven Codex work.
+- Project-control automation exists for goal-driven Codex work.
+- Deterministic H2 event-window CSV outputs exist under `data/results/`.
+- The H2 row-level and summary CSV shapes are accepted for the initial daily
+  baseline.
 
 ## Event Catalog Audit Result
 
@@ -71,7 +82,7 @@ Current result against `data/thesis.db`:
 
 | Check | Result |
 | --- | ---: |
-| Row count | 20 |
+| Row count | 27 |
 | Missing `event_id` | 20 |
 | Missing `event_date` | 20 |
 | Missing `title` | 20 |
@@ -83,16 +94,17 @@ Current result against `data/thesis.db`:
 | Detectable duplicate canonical keys | 0 |
 | Detectable duplicate legacy keys | 0 |
 
-Interpretation: legacy event rows exist, but canonical H2 fields are not yet
-curated. CAR and event-window analysis must not start until the canonical event
-catalog is filled and reviewed.
+Interpretation: 20 legacy event rows remain without canonical fields, while
+the tracked seed CSV contains the curated 7-event H2 set used for deterministic
+output generation. The legacy rows are preserved but are not the default source
+for H2 outputs.
 
 ## Current Blockers
 
-- Canonical event catalog fields are missing for all 20 existing event rows.
 - RCP is not a native probability forecast. It remains a polling signal until a
   documented and tested probability transformation exists.
-- H2 window definitions and event inclusion rules need sign-off before CAR.
+- Compact H2 summary persistence into `analysis_summaries` is not implemented
+  yet.
 - H3 whale data currently has a BUY-only limitation and a minimum
   `amount_usd` of 10000, so analytical whale tiers are not yet valid.
 - Distribution-derived wallet classification is not implemented.
@@ -101,14 +113,15 @@ catalog is filled and reviewed.
 
 ## Next Recommended Commits
 
-1. `chore: add goal-driven project automation`
-   - Commit `operations/project`, tests, and project-control docs.
-   - Acceptance: automation CLIs work, review checks pass, pytest passes.
+1. `feat: persist h2 summaries in analysis_summaries`
+   - Persist compact accepted H2 summaries, not full row-level traces.
+   - Acceptance: idempotent writer, tests, no raw table dumps.
 
-2. `docs: finalize h2 event selection and window specification`
-   - Commit research-scope and event-method updates only.
-   - Acceptance: event inclusion, exclusion, and windows are fixed before CAR.
+2. `docs: document h2 thesis interpretation limits`
+   - Document daily-window interpretation, event timing limitations, and
+     accepted wording for H2.
+   - Acceptance: thesis-facing text stays aligned with deterministic outputs.
 
-3. `data: curate canonical event catalog seed`
-   - Commit reviewed event seed rows with source URLs.
-   - Acceptance: event audit reports no missing canonical fields for included events.
+3. `docs: choose h3 wallet-tier decision rule`
+   - Select a distribution-derived wallet-tier method before H3 code.
+   - Acceptance: no arbitrary whale thresholds.

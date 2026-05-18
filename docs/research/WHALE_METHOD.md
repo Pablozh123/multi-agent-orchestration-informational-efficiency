@@ -14,10 +14,11 @@ verified. They must not be silently converted into analytical whale definitions.
 
 - h3_tier_status: selected
 - selected_tier_method: wallet_cumulative_amount_usd_percentiles
-- lead_lag_status: blocked
+- lead_time_histogram_status: complete
+- lead_lag_status: review_required
 - granger_status: blocked
-- blocking_reason: lead-lag and Granger remain blocked until the selected
-  wallet-tier method is implemented and tested.
+- blocking_reason: Granger remains blocked until the descriptive lead-time
+  histograms are reviewed and accepted.
 - required_before_code: H3 wallet classification, lead-lag, or Granger
   implementation.
 
@@ -206,6 +207,48 @@ Metadata confirms:
 
 This series is an input for later descriptive H3 timing work. It does not
 contain Granger tests, causal claims, or proof of misconduct.
+
+## Lead-Time Histograms
+
+Lead-time histogram status: complete for the initial daily H3 timing baseline.
+
+Output files:
+
+- `data/results/h3_lead_time_event_rows.csv`
+- `data/results/h3_lead_time_histograms.csv`
+- `data/results/h3_lead_time_histograms_metadata.json`
+
+The lead-time outputs align the tiered daily wallet activity series to the
+curated H2 event catalog. The selected descriptive window is `[-14d, 0d]`
+relative to each curated event date.
+
+The event-row trace contains:
+
+- `event_id`,
+- `event_date`,
+- activity date,
+- `relative_day`,
+- wallet tier,
+- availability and activity indicators,
+- daily tier activity aggregates.
+
+The histogram output aggregates across curated events by wallet tier and
+relative day. It includes:
+
+- event count,
+- available event-days,
+- active event-days,
+- active event share,
+- total trade rows,
+- summed active-wallet observations,
+- total and average amount measures.
+
+Limitations:
+
+- The output uses daily alignment only.
+- The current activity input is BUY-only under the observed source extract.
+- Results are descriptive timing patterns and do not establish causality.
+- Granger and lead-lag tests remain blocked until this output is reviewed.
 
 ## No Insider Wording
 

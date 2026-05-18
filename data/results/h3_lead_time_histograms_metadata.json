@@ -1,0 +1,71 @@
+{
+  "input": {
+    "activity_date_range_end": "2024-11-04",
+    "activity_date_range_start": "2024-01-01",
+    "activity_path": "data\\results\\h3_tiered_wallet_activity_daily.csv",
+    "activity_row_count": 1236,
+    "event_count": 7,
+    "events_csv_path": "data\\events_timeline_seed.csv",
+    "tiers": [
+      "tier_1_top_1pct",
+      "tier_2_top_5pct",
+      "tier_3_top_10pct",
+      "tier_4_observed_baseline"
+    ]
+  },
+  "limitations": {
+    "daily_alignment_only": true,
+    "does_not_establish_causality": true,
+    "granger_tests_included": false,
+    "uses_curated_h2_events": true
+  },
+  "method": {
+    "alignment": "calendar_day_relative_to_curated_event_date",
+    "lead_window_days": {
+      "end": 0,
+      "label": "lead_minus_14d_to_0d",
+      "start": -14
+    },
+    "name": "descriptive_h3_lead_time_histograms",
+    "statistics": "descriptive_aggregates_only"
+  },
+  "output": {
+    "claim_scope": "descriptive_timing_patterns_only",
+    "contains_wallet_addresses": false,
+    "event_row_columns": [
+      "window_label",
+      "event_id",
+      "event_date",
+      "date",
+      "relative_day",
+      "tier",
+      "activity_date_available",
+      "has_activity",
+      "trade_rows",
+      "active_wallets",
+      "total_amount_usd",
+      "buy_amount_usd",
+      "sell_amount_usd",
+      "net_amount_usd"
+    ],
+    "event_row_count": 420,
+    "histogram_columns": [
+      "window_label",
+      "tier",
+      "relative_day",
+      "event_count",
+      "available_event_days",
+      "active_event_days",
+      "active_event_share",
+      "total_trade_rows",
+      "total_active_wallet_observations",
+      "total_amount_usd",
+      "buy_amount_usd",
+      "sell_amount_usd",
+      "net_amount_usd",
+      "avg_trade_rows_per_event",
+      "avg_total_amount_usd_per_event"
+    ],
+    "histogram_row_count": 60
+  }
+}

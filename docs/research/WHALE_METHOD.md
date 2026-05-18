@@ -320,6 +320,44 @@ Interpretation limits:
 - Multiple-testing and sensitivity choices must be reviewed before thesis
   conclusion wording is finalised.
 
+## Granger Output Review
+
+Review date: 2026-05-18
+
+Review status: accepted for methodological use in the first daily H3 baseline.
+
+Accepted thesis wording:
+
+- The daily H3 baseline tests whether tier-level wallet activity changes have
+  predictive timing structure relative to later Polymarket price changes.
+- Results may be described as exploratory lead-lag evidence under the chosen
+  model and dataset.
+- Stronger claims require additional sensitivity checks and, ideally, richer
+  trade direction or intraday data.
+
+Disallowed thesis wording:
+
+- Do not write that Granger results prove true causality.
+- Do not write that Granger results prove manipulation or misconduct.
+- Do not write that BUY-only tier activity captures complete wallet intent.
+
+Persistence decision:
+
+- Keep full H3 lead-lag and Granger outputs as versioned CSV files under
+  `data/results/`.
+- Do not persist full H3 row-level outputs into `analysis_summaries`.
+- A later commit may persist compact H3 summary records after the exact summary
+  payload is specified and tested.
+
+Required sensitivity review before final thesis conclusions:
+
+- Multiple-testing treatment across tiers and lags.
+- Robustness to different maximum lag windows.
+- Robustness to alternative activity measures such as trade-row changes.
+- Whether event days should be excluded or modelled separately.
+- Whether missing sell-side rows materially limit H3 interpretation.
+- Whether intraday data are needed for stronger timing claims.
+
 ## No Insider Wording
 
 The thesis may discuss whether wallet data provide early signals. It must not

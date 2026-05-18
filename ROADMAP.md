@@ -125,7 +125,7 @@ Blockers:
 
 ## Phase 7: H3 Lead-Lag And Granger Tests
 
-Status: complete for initial daily H3 baseline
+Status: complete and reviewed for initial daily H3 baseline
 
 Done criteria:
 
@@ -136,14 +136,15 @@ Done criteria:
   trading or causal misconduct.
 - Descriptive lead-time histograms exist and are reviewed before Granger code.
 - Granger outputs use daily tiered activity and daily Polymarket price changes.
+- H3 Granger interpretation limits and persistence decision are documented.
 
 Blockers:
 
 - Sell-side or directionality limitations need resolution or explicit scope.
 - Intraday lead-lag claims remain blocked until intraday data are added and
   validated.
-- Thesis conclusion wording remains blocked until H3 result review covers
-  multiple testing and sensitivity limits.
+- Strong thesis conclusion wording remains blocked until multiple-testing and
+  sensitivity checks are completed or explicitly scoped as limitations.
 
 ## Phase 8: Interpretation Layer
 
@@ -163,7 +164,7 @@ Blockers:
 
 ## Phase 9: Thesis Export
 
-Status: not started
+Status: active for empirical baseline review
 
 Done criteria:
 

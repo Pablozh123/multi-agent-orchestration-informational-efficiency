@@ -2,10 +2,10 @@
 
 ## Active Goal
 
-goal_id: goal-h3-granger-review-001
-title: Review H3 Granger baseline before thesis interpretation
+goal_id: goal-empirical-baseline-review-001
+title: Review H1-H3 deterministic baseline before thesis export
 status: active
-phase: Phase 7: H3 Lead-Lag And Granger Tests
+phase: Phase 9: Thesis Export
 why:
 - H2 deterministic outputs and compact summary persistence now exist.
 - The H3 tier method is selected as wallet-level cumulative `amount_usd`
@@ -15,13 +15,17 @@ why:
 - Descriptive H3 lead-time histograms exist and their shape is accepted for
   the first daily baseline.
 - Deterministic H3 lead-lag and Granger output files now exist.
+- H3 Granger interpretation limits and accepted wording are documented.
 deliverables:
-- Methodological review of H3 lead-lag and Granger outputs.
-- Accepted thesis wording for H3 result interpretation.
-- Decision on whether compact H3 summaries should be persisted later.
-- Documented sensitivity needs before final thesis claims.
+- Review H1, H2, and H3 deterministic baseline outputs as a coherent empirical
+  package.
+- Identify which result tables are thesis-ready and which need regeneration or
+  sensitivity checks.
+- Decide whether compact H3 summaries should be persisted into
+  `analysis_summaries`.
+- Prepare the next thesis-facing result-summary commit.
 scope:
-- Review existing deterministic H3 outputs and methodology notes.
+- Review existing deterministic outputs and methodology notes.
 - Keep source-filter metadata separate from analytical tier definitions.
 out_of_scope:
 - New statistical code.
@@ -32,14 +36,15 @@ out_of_scope:
 - Intraday lead-lag claims.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- H3 Granger outputs are reviewed before thesis interpretation.
-- Accepted wording avoids proof-of-causality or misconduct claims.
-- Daily, BUY-only, and multiple-testing limitations remain explicit.
+- H1-H3 baseline outputs are reviewed before thesis export or interpretation
+  work.
+- H3 wording remains limited to predictive timing diagnostics.
+- RCP and intraday limitations remain explicit.
 - Output avoids raw table dumps into prompts and preserves source-filter
   metadata separately.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: review h3 granger outputs and interpretation limits
+next_commit: docs: review h1 h2 h3 empirical baseline
 
 ## Decision Inputs For This Goal
 
@@ -55,13 +60,15 @@ next_commit: docs: review h3 granger outputs and interpretation limits
 - H3 lead-time output shape is reviewed and accepted in
   `docs/research/WHALE_METHOD.md`.
 - H3 daily lead-lag and Granger outputs exist in `data/results/`.
+- H3 Granger output interpretation limits are accepted in
+  `docs/research/WHALE_METHOD.md`.
 - ML scope and re-entry conditions are explicit in `docs/research/RESEARCH_SPEC.md`.
 - Codex workflow roles are separate from deferred thesis runtime agents.
 
 ## Done Means
 
-- H3 Granger result shape and interpretation limits are reviewed.
-- Thesis-facing H3 wording is constrained to predictive timing diagnostics.
+- H1-H3 deterministic baseline package is reviewed.
+- Thesis-facing empirical wording and output-table readiness are documented.
 - Source filters and analytical tier definitions remain separated.
 - Project review checks still detect premature H3, ML, agent, or MCP work.
 
@@ -91,3 +98,5 @@ next_commit: docs: review h3 granger outputs and interpretation limits
   descriptive timing baseline.
 - H3 deterministic daily lead-lag correlations and Granger outputs exist with
   tests and compact metadata.
+- H3 Granger interpretation limits, persistence decision, and sensitivity needs
+  are documented.

@@ -476,3 +476,37 @@ Next step:
 
 - Review H3 Granger outputs and interpretation limits before thesis-facing
   conclusions or interpretation-layer work.
+
+## 2026-05-18 - goal-h3-granger-review-001
+
+Task:
+
+- Review H3 Granger baseline outputs before thesis interpretation.
+
+Files changed:
+
+- `docs/research/WHALE_METHOD.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  173 passed.
+
+Decision:
+
+- Accept the H3 lead-lag and Granger output shape for the first deterministic
+  daily baseline.
+- Keep full H3 timing and Granger outputs as CSV artifacts for now.
+- Persist compact H3 summaries only in a later tested commit after the summary
+  payload is specified.
+- Require multiple-testing and sensitivity review before strong thesis
+  conclusion wording.
+
+Next step:
+
+- Review H1, H2, and H3 deterministic baseline outputs as one empirical
+  package before thesis export work.

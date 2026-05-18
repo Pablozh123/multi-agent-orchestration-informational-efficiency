@@ -14,7 +14,7 @@ It exists to prevent cherry-picking and to keep the event study reproducible.
 - decision_reason: current Polymarket price data are daily, so the primary H2
   event window must be daily rather than intraday.
 - h2_output_shape_status: accepted
-- h2_persistence_status: approved_for_compact_summary_only
+- h2_persistence_status: compact_summary_persisted
 - required_before_code: complete for initial daily event-window baseline.
 
 ## Inclusion Criteria
@@ -135,9 +135,9 @@ The first H2 baseline uses daily Polymarket price observations. This means:
 
 ## Persistence Decision
 
-Persist compact H2 summaries later, not the full row-level trace.
+Persist compact H2 summaries, not the full row-level trace.
 
-Approved later target:
+Approved target:
 
 - Write deterministic, compact H2 summary records into `analysis_summaries`.
 - Use the accepted summary CSV shape as the source of truth for the first
@@ -151,6 +151,30 @@ Not approved:
   `analysis_summaries`.
 - Changing the curated event set during persistence.
 - Using LLMs to calculate, transform, or validate CAR values.
+
+## H2 Summary Persistence Payload
+
+Persistence status: complete for the initial daily H2 baseline.
+
+Run metadata:
+
+- `run_id`: `h2_event_window_baseline_v1`
+- `summary_type`: `h2_event_window_summary`
+- `table_name`: `h2_event_window_summary`
+- `metric_name`: `final_cumulative_abnormal_change`
+
+Each persisted record represents one curated event and one selected window. The
+payload is compact and includes:
+
+- event metadata from the accepted summary CSV,
+- `window_label`,
+- `observed_days`,
+- `final_cumulative_abnormal_change`,
+- `estimation_observations`.
+
+The row-level calculation trace remains only in
+`data/results/h2_event_window_rows.csv` and is not persisted into
+`analysis_summaries`.
 
 ## Source Quality Rules
 

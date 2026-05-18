@@ -82,7 +82,7 @@ Blockers:
 
 ## Phase 5: H2 Event Study And CAR
 
-Status: in progress; CSV output shape accepted
+Status: complete for initial daily baseline
 
 Done criteria:
 
@@ -92,17 +92,18 @@ Done criteria:
 - No event is added or removed after seeing results without documentation.
 - H2 output CSVs can be regenerated from tracked seed events and SQLite prices.
 - H2 summary output shape is reviewed before database persistence.
+- Compact H2 summaries are persisted idempotently into `analysis_summaries`.
 
 Blockers:
 
-- Compact H2 summary persistence into `analysis_summaries` is not implemented
-  yet.
 - Full row-level H2 traces must remain file-based unless a separate storage
   decision is documented.
+- Intraday reaction-speed claims remain blocked until intraday data are added
+  and validated.
 
 ## Phase 6: H3 Whale Distribution And Classification
 
-Status: blocked
+Status: active for method decision
 
 Done criteria:
 
@@ -115,7 +116,9 @@ Blockers:
 
 - Current whale data appears BUY-only.
 - Current minimum `amount_usd` is 10000, likely reflecting an upstream filter.
-- Distribution-derived classification is not implemented.
+- The distribution-derived wallet-tier method is not selected yet.
+- Wallet classification code must wait until the method is selected and
+  documented.
 
 ## Phase 7: H3 Lead-Lag And Granger Tests
 

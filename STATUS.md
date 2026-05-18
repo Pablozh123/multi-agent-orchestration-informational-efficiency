@@ -3,19 +3,19 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-18 17:54
+Generated: 2026-05-18 18:04
 
-Current goal: `goal-h2-summary-persistence-001` - Persist reviewed H2 summaries into analysis_summaries
+Current goal: `goal-h3-tier-method-001` - Select distribution-derived H3 wallet-tier method
 
-Current roadmap phase: Phase 5: H2 Event Study And CAR
+Current roadmap phase: Phase 6: H3 Whale Distribution And Classification
 
 Test status: PASS
 
-Pytest summary: `140 passed in 5.76s`
+Pytest summary: `145 passed in 6.05s`
 
 Git branch: `main`
 
-Latest commit: `4b2b0f9`
+Latest commit: `4be8021`
 
 Git status:
 
@@ -25,17 +25,19 @@ Git status:
  M STATUS.md
  M docs/project/WORK_LOG.md
  M docs/research/EVENT_SELECTION.md
+?? operations/analysis/persist_h2_summaries.py
+?? tests/test_h2_summary_persistence.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                          | 48 +++++++++++++--------------
- ROADMAP.md                       |  9 +++--
- STATUS.md                        | 71 ++++++++++++++++++++++++----------------
- docs/project/WORK_LOG.md         | 35 ++++++++++++++++++++
- docs/research/EVENT_SELECTION.md | 68 ++++++++++++++++++++++++++++++++++++--
- 5 files changed, 172 insertions(+), 59 deletions(-)
+ GOAL.md                          | 49 +++++++++++++++++++-----------------
+ ROADMAP.md                       | 13 ++++++----
+ STATUS.md                        | 54 +++++++++++++++++++++-------------------
+ docs/project/WORK_LOG.md         | 38 ++++++++++++++++++++++++++++
+ docs/research/EVENT_SELECTION.md | 30 +++++++++++++++++++---
+ 5 files changed, 128 insertions(+), 56 deletions(-)
 ```
 
 Blockers:
@@ -44,17 +46,18 @@ Blockers:
 
 Next recommended action:
 
-- feat: persist h2 summaries in analysis_summaries
+- docs: select h3 wallet-tier method
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status
 
 Status date: 2026-05-18
 
-The project is in deterministic H2 event-study mode. H2 event windows are
-selected, curated seed events exist, and deterministic H2 CSV outputs have been
-generated and reviewed for shape. H3, agents, MCP, model routing, and ML remain
-deferred.
+The project is moving from the deterministic H2 event-study baseline into H3
+method selection. H2 event windows are selected, curated seed events exist,
+deterministic H2 CSV outputs have been generated, and compact H2 summaries are
+persisted into `analysis_summaries`. H3 code remains blocked until the wallet
+tier method is selected.
 
 Current implemented foundation and H2 baseline:
 
@@ -69,6 +72,7 @@ Current implemented foundation and H2 baseline:
 - Deterministic H2 event-window CSV outputs exist under `data/results/`.
 - The H2 row-level and summary CSV shapes are accepted for the initial daily
   baseline.
+- Compact H2 summaries are persisted idempotently into `analysis_summaries`.
 
 ## Event Catalog Audit Result
 
@@ -103,25 +107,25 @@ for H2 outputs.
 
 - RCP is not a native probability forecast. It remains a polling signal until a
   documented and tested probability transformation exists.
-- Compact H2 summary persistence into `analysis_summaries` is not implemented
-  yet.
 - H3 whale data currently has a BUY-only limitation and a minimum
   `amount_usd` of 10000, so analytical whale tiers are not yet valid.
-- Distribution-derived wallet classification is not implemented.
+- Distribution-derived wallet-tier selection is not documented yet.
 - Granger and lead-time pipelines are not implemented.
 - Agent and MCP layers remain deferred.
 
 ## Next Recommended Commits
 
-1. `feat: persist h2 summaries in analysis_summaries`
-   - Persist compact accepted H2 summaries, not full row-level traces.
-   - Acceptance: idempotent writer, tests, no raw table dumps.
+1. `docs: select h3 wallet-tier method`
+   - Select one distribution-derived wallet-tier method before H3 code.
+   - Acceptance: no arbitrary whale thresholds and BUY-only limitations remain
+     separate from analytical tier definitions.
 
 2. `docs: document h2 thesis interpretation limits`
    - Document daily-window interpretation, event timing limitations, and
      accepted wording for H2.
    - Acceptance: thesis-facing text stays aligned with deterministic outputs.
 
-3. `docs: choose h3 wallet-tier decision rule`
-   - Select a distribution-derived wallet-tier method before H3 code.
-   - Acceptance: no arbitrary whale thresholds.
+3. `feat: inventory wallet distribution for h3 tiering`
+   - Compute deterministic wallet/trade distribution summaries needed for H3
+     tier implementation.
+   - Acceptance: no Granger or lead-lag code yet.

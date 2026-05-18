@@ -205,3 +205,41 @@ Next step:
 
 - Implement deterministic, idempotent H2 summary persistence into
   `analysis_summaries`.
+
+## 2026-05-18 - goal-h2-summary-persistence-001
+
+Task:
+
+- Persist reviewed compact H2 event-window summaries into `analysis_summaries`.
+
+Files changed:
+
+- `operations/analysis/persist_h2_summaries.py`
+- `tests/test_h2_summary_persistence.py`
+- `docs/research/EVENT_SELECTION.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_h2_summary_persistence.py -q` -> 5 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 145 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.persist_h2_summaries` -> inserted 14, then deleted 14 and inserted 14 on rerun.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  145 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check` -> PASS,
+  145 passed.
+
+Decision:
+
+- Store one compact H2 summary record per event/window in
+  `analysis_summaries`.
+- Keep full row-level H2 traces file-based under `data/results/`.
+- Advance the active goal to H3 wallet-tier method selection, not H3 code.
+
+Next step:
+
+- Select and document the H3 wallet-tier method before implementing wallet
+  classification, lead-lag, or Granger analysis.

@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-h3-granger-baseline-001
-title: Compute deterministic H3 lead-lag and Granger baseline
+goal_id: goal-h3-granger-review-001
+title: Review H3 Granger baseline before thesis interpretation
 status: active
 phase: Phase 7: H3 Lead-Lag And Granger Tests
 why:
@@ -14,18 +14,17 @@ why:
   activity inputs exist.
 - Descriptive H3 lead-time histograms exist and their shape is accepted for
   the first daily baseline.
+- Deterministic H3 lead-lag and Granger output files now exist.
 deliverables:
-- Daily lead-lag correlation outputs between tiered wallet activity and
-  Polymarket daily price changes.
-- Daily Granger baseline outputs by wallet tier and selected activity measure.
-- Tests proving lag alignment and Granger result extraction are deterministic.
-- Documentation that results are predictive timing diagnostics, not proof of
-  true causality or misconduct.
+- Methodological review of H3 lead-lag and Granger outputs.
+- Accepted thesis wording for H3 result interpretation.
+- Decision on whether compact H3 summaries should be persisted later.
+- Documented sensitivity needs before final thesis claims.
 scope:
-- Deterministic Python analysis using existing daily H3 tiered activity inputs
-  and daily Polymarket prices from SQLite.
+- Review existing deterministic H3 outputs and methodology notes.
 - Keep source-filter metadata separate from analytical tier definitions.
 out_of_scope:
+- New statistical code.
 - Agents, MCP, model routing, ML, cloud deployment, and interpretation workflows.
 - Adding or removing curated events based on observed results.
 - Treating the source-filter minimum `amount_usd` as a whale threshold.
@@ -33,14 +32,14 @@ out_of_scope:
 - Intraday lead-lag claims.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Lead-lag and Granger calculations are deterministic Python.
-- Granger outputs are described as predictive timing diagnostics only.
-- Daily and BUY-only limitations remain explicit.
+- H3 Granger outputs are reviewed before thesis interpretation.
+- Accepted wording avoids proof-of-causality or misconduct claims.
+- Daily, BUY-only, and multiple-testing limitations remain explicit.
 - Output avoids raw table dumps into prompts and preserves source-filter
   metadata separately.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: compute h3 lead-lag and granger baseline
+next_commit: docs: review h3 granger outputs and interpretation limits
 
 ## Decision Inputs For This Goal
 
@@ -55,21 +54,21 @@ next_commit: feat: compute h3 lead-lag and granger baseline
 - H3 descriptive lead-time histograms exist in `data/results/`.
 - H3 lead-time output shape is reviewed and accepted in
   `docs/research/WHALE_METHOD.md`.
+- H3 daily lead-lag and Granger outputs exist in `data/results/`.
 - ML scope and re-entry conditions are explicit in `docs/research/RESEARCH_SPEC.md`.
 - Codex workflow roles are separate from deferred thesis runtime agents.
 
 ## Done Means
 
-- Deterministic H3 lead-lag and Granger outputs exist.
-- Lead-lag alignment uses pre-existing daily tiered wallet activity and daily
-  Polymarket price changes.
+- H3 Granger result shape and interpretation limits are reviewed.
+- Thesis-facing H3 wording is constrained to predictive timing diagnostics.
 - Source filters and analytical tier definitions remain separated.
 - Project review checks still detect premature H3, ML, agent, or MCP work.
 
 ## Blocked Follow-Up Goals
 
-- ML, runtime agents, MCP, and interpretation workflows are blocked until
-  deterministic H1, H2, and H3 outputs exist and pass tests.
+- ML, runtime agents, MCP, and interpretation workflows remain blocked until
+  H3 result interpretation limits are reviewed and explicitly approved.
 
 ## Completed Goals
 
@@ -90,3 +89,5 @@ next_commit: feat: compute h3 lead-lag and granger baseline
 - H3 tiered wallet activity series exists as a complete daily tier panel.
 - H3 descriptive lead-time histograms exist and are reviewed as a daily
   descriptive timing baseline.
+- H3 deterministic daily lead-lag correlations and Granger outputs exist with
+  tests and compact metadata.

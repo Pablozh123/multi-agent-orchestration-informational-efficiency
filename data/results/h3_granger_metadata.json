@@ -1,0 +1,66 @@
+{
+  "input": {
+    "activity_path": "data\\results\\h3_tiered_wallet_activity_daily.csv",
+    "activity_row_count": 1236,
+    "date_range_end": "2024-11-04",
+    "date_range_start": "2024-01-06",
+    "db_path": "data\\thesis.db",
+    "model_row_count": 1216,
+    "price_row_count": 305,
+    "tiers": [
+      "tier_1_top_1pct",
+      "tier_2_top_5pct",
+      "tier_3_top_10pct",
+      "tier_4_observed_baseline"
+    ]
+  },
+  "limitations": {
+    "daily_alignment_only": true,
+    "does_not_establish_true_causality": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_rcp": true,
+    "uses_observed_buy_side_activity_extract": true
+  },
+  "method": {
+    "activity_measure": "log1p_total_amount_usd_change",
+    "activity_transform": "daily_difference_of_log1p_total_amount_usd",
+    "granger_direction": "tier_activity_change_precedes_price_change",
+    "max_lag_days": 7,
+    "name": "deterministic_h3_daily_lead_lag_granger_baseline",
+    "price_measure": "polymarket_daily_price_change"
+  },
+  "output": {
+    "claim_scope": "predictive_timing_diagnostics_only",
+    "contains_wallet_addresses": false,
+    "correlation_columns": [
+      "tier",
+      "price_measure",
+      "activity_measure",
+      "lag_days",
+      "observation_count",
+      "correlation",
+      "status"
+    ],
+    "correlation_row_count": 32,
+    "correlation_status_counts": {
+      "ok": 32
+    },
+    "granger_columns": [
+      "tier",
+      "price_measure",
+      "activity_measure",
+      "lag_days",
+      "observation_count",
+      "f_statistic",
+      "p_value",
+      "df_denom",
+      "df_num",
+      "status"
+    ],
+    "granger_row_count": 28,
+    "granger_status_counts": {
+      "ok": 28
+    }
+  }
+}

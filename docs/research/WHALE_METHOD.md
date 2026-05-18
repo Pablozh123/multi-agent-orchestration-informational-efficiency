@@ -15,10 +15,10 @@ verified. They must not be silently converted into analytical whale definitions.
 - h3_tier_status: selected
 - selected_tier_method: wallet_cumulative_amount_usd_percentiles
 - lead_time_histogram_status: complete
-- lead_lag_status: selected
-- granger_status: selected
-- blocking_reason: none for the first deterministic daily baseline; limitations
-  must remain explicit in interpretation.
+- lead_lag_status: complete
+- granger_status: complete
+- blocking_reason: none for the first deterministic daily baseline; result
+  review is required before thesis interpretation.
 - required_before_code: complete for the initial deterministic lead-lag and
   Granger baseline.
 
@@ -279,6 +279,46 @@ Decision:
 - Use tier-level daily activity measures and daily Polymarket price changes.
 - Treat results as predictive timing diagnostics under model assumptions.
 - Do not describe results as proof of misconduct or true causal mechanism.
+
+## Lead-Lag And Granger Baseline
+
+Baseline status: complete for the first deterministic daily H3 output.
+
+Output files:
+
+- `data/results/h3_lead_lag_correlations.csv`
+- `data/results/h3_granger_results.csv`
+- `data/results/h3_granger_metadata.json`
+
+Method:
+
+- Price measure: daily Polymarket price change.
+- Activity measure: daily difference of `log1p(total_amount_usd)` by wallet
+  tier.
+- Lead-lag correlations: activity changes lagged from 0 through 7 days against
+  same-day price changes.
+- Granger baseline: tier activity change is tested as a predictor of later
+  price change for lags 1 through 7.
+
+Output shape:
+
+- 1216 aligned model rows.
+- 32 lead-lag correlation rows.
+- 28 Granger result rows.
+- All generated Granger rows have status `ok`.
+- No wallet addresses are present in the output files.
+
+Interpretation limits:
+
+- The output is a deterministic daily baseline, not an intraday reaction-speed
+  test.
+- The current activity input remains BUY-only under the observed source
+  extract.
+- Granger p-values indicate predictive timing structure under model
+  assumptions. They must not be written as proof of true causality,
+  manipulation, or misconduct.
+- Multiple-testing and sensitivity choices must be reviewed before thesis
+  conclusion wording is finalised.
 
 ## No Insider Wording
 

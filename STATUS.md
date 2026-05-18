@@ -3,19 +3,19 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-18 19:14
+Generated: 2026-05-18 19:19
 
-Current goal: `goal-h3-granger-baseline-001` - Compute deterministic H3 lead-lag and Granger baseline
+Current goal: `goal-h3-granger-review-001` - Review H3 Granger baseline before thesis interpretation
 
 Current roadmap phase: Phase 7: H3 Lead-Lag And Granger Tests
 
 Test status: PASS
 
-Pytest summary: `167 passed in 6.05s`
+Pytest summary: `173 passed in 7.28s`
 
 Git branch: `main`
 
-Latest commit: `11f0ffd`
+Latest commit: `ae90e29`
 
 Git status:
 
@@ -23,15 +23,20 @@ Git status:
  M GOAL.md
  M ROADMAP.md
  M docs/research/WHALE_METHOD.md
+?? data/results/h3_granger_metadata.json
+?? data/results/h3_granger_results.csv
+?? data/results/h3_lead_lag_correlations.csv
+?? operations/analysis/h3_granger_baseline.py
+?? tests/test_h3_granger_baseline.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                       | 50 ++++++++++++++++++++++++-------------------
- ROADMAP.md                    |  8 ++++---
- docs/research/WHALE_METHOD.md | 44 +++++++++++++++++++++++++++++++------
- 3 files changed, 70 insertions(+), 32 deletions(-)
+ GOAL.md                       | 39 ++++++++++++++++++-----------------
+ ROADMAP.md                    |  4 +++-
+ docs/research/WHALE_METHOD.md | 48 +++++++++++++++++++++++++++++++++++++++----
+ 3 files changed, 67 insertions(+), 24 deletions(-)
 ```
 
 Blockers:
@@ -40,18 +45,18 @@ Blockers:
 
 Next recommended action:
 
-- feat: compute h3 lead-lag and granger baseline
+- docs: review h3 granger outputs and interpretation limits
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status
 
 Status date: 2026-05-18
 
-The project is moving from H3 tiered wallet activity inputs into descriptive
-H3 lead-time histograms. H2 event windows are selected, curated seed events
-exist, deterministic H2 CSV outputs have been generated, and compact H2
-summaries are persisted into `analysis_summaries`. H3 Granger code remains
-blocked until descriptive timing outputs are implemented and reviewed.
+The project now has a complete deterministic daily H3 baseline for the current
+trade extract: wallet tiers, daily tiered activity, descriptive lead-time
+histograms, lead-lag correlations, and Granger outputs. The active work is
+reviewing H3 interpretation limits before thesis wording or any interpretation
+layer is allowed.
 
 Current implemented foundation and H2 baseline:
 
@@ -72,6 +77,9 @@ Current implemented foundation and H2 baseline:
 - H3 wallet distribution inventory exists under `data/results/`.
 - H3 wallet tier classification exists under `data/results/`.
 - H3 tiered daily wallet activity series exists under `data/results/`.
+- H3 descriptive lead-time histograms exist under `data/results/`.
+- H3 daily lead-lag correlations and Granger outputs exist under
+  `data/results/`.
 
 ## Event Catalog Audit Result
 
@@ -109,23 +117,22 @@ for H2 outputs.
 - H3 wallet data currently has a BUY-only limitation and a minimum observed
   `amount_usd` of 10000, which remain source-filter metadata rather than
   analytical tier thresholds.
-- Descriptive H3 lead-time histograms are not implemented yet.
-- Granger pipeline is not implemented.
+- H3 result interpretation still needs review for daily-data limits,
+  BUY-only source limits, and multiple-testing sensitivity.
 - Agent and MCP layers remain deferred.
 
 ## Next Recommended Commits
 
-1. `feat: compute h3 lead-time histograms`
-   - Align tiered wallet activity to curated H2 events and compute descriptive
-     lead-time histograms.
-   - Acceptance: no Granger code and no causal language.
+1. `feat: compute h3 lead-lag and granger baseline`
+   - Commit the deterministic H3 Granger module, tests, and output artifacts.
+   - Acceptance: pytest passes and no proof-of-causality language is added.
 
-2. `docs: document h2 thesis interpretation limits`
+2. `docs: review h3 granger outputs and interpretation limits`
+   - Review Granger result shape, multiple-testing limits, BUY-only caveat, and
+     accepted thesis wording.
+   - Acceptance: H3 claims remain predictive and exploratory.
+
+3. `docs: document h2 thesis interpretation limits`
    - Document daily-window interpretation, event timing limitations, and
      accepted wording for H2.
    - Acceptance: thesis-facing text stays aligned with deterministic outputs.
-
-3. `docs: review h3 timing outputs before granger`
-   - Review descriptive H3 timing outputs and decide whether Granger is
-     methodologically justified.
-   - Acceptance: limitations and BUY-only caveat remain explicit.

@@ -436,3 +436,43 @@ Next step:
 
 - Compute deterministic H3 lead-lag correlations and Granger baseline outputs
   from daily tiered activity and Polymarket daily price changes.
+
+## 2026-05-18 - goal-h3-granger-baseline-001
+
+Task:
+
+- Compute deterministic H3 lead-lag correlations and Granger baseline outputs.
+
+Files changed:
+
+- `operations/analysis/h3_granger_baseline.py`
+- `tests/test_h3_granger_baseline.py`
+- `data/results/h3_lead_lag_correlations.csv`
+- `data/results/h3_granger_results.csv`
+- `data/results/h3_granger_metadata.json`
+- `docs/research/WHALE_METHOD.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_h3_granger_baseline.py tests/test_h3_lead_time_histograms.py -q` -> 13 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 173 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.h3_granger_baseline` -> 32 correlation rows and 28 Granger rows.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  173 passed.
+
+Decision:
+
+- Use daily Polymarket price changes as the H3 target measure.
+- Use daily differences of `log1p(total_amount_usd)` by wallet tier as the
+  first activity measure.
+- Keep all Granger wording limited to predictive timing diagnostics under
+  model assumptions.
+
+Next step:
+
+- Review H3 Granger outputs and interpretation limits before thesis-facing
+  conclusions or interpretation-layer work.

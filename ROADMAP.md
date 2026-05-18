@@ -125,7 +125,7 @@ Blockers:
 
 ## Phase 7: H3 Lead-Lag And Granger Tests
 
-Status: active for deterministic daily lead-lag and Granger baseline
+Status: complete for initial daily H3 baseline
 
 Done criteria:
 
@@ -142,6 +142,8 @@ Blockers:
 - Sell-side or directionality limitations need resolution or explicit scope.
 - Intraday lead-lag claims remain blocked until intraday data are added and
   validated.
+- Thesis conclusion wording remains blocked until H3 result review covers
+  multiple testing and sensitivity limits.
 
 ## Phase 8: Interpretation Layer
 

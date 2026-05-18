@@ -140,9 +140,9 @@ def test_loader_upserts_canonical_events_and_preserves_legacy_rows(
         WHERE event_id IS NULL AND event_timestamp IS NOT NULL
         """
     ).fetchone()[0]
-    title = in_memory_db.execute(
+    canonical_row = in_memory_db.execute(
         """
-        SELECT title, created_at
+        SELECT title, created_at, event_timestamp
         FROM events_timeline
         WHERE event_id = ?
         LIMIT 1
@@ -154,8 +154,9 @@ def test_loader_upserts_canonical_events_and_preserves_legacy_rows(
     assert second.to_dict() == {"inserted": 0, "updated": 1, "input_rows": 1}
     assert total_rows == 2
     assert legacy_rows == 1
-    assert title[0] == "Updated title"
-    assert title[1] is not None
+    assert canonical_row[0] == "Updated title"
+    assert canonical_row[1] is not None
+    assert canonical_row[2] == "2024-01-15T12:00:00.000000Z"
 
 
 def test_loader_rejects_missing_canonical_fields() -> None:

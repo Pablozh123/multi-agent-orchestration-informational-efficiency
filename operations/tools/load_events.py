@@ -120,6 +120,7 @@ def upsert_events(
 
     with conn:
         for row in validated:
+            event_timestamp = _canonical_event_timestamp(row)
             existing = conn.execute(
                 """
                 SELECT id
@@ -145,7 +146,8 @@ def upsert_events(
                         event_type = ?,
                         source_url = ?,
                         expected_direction = ?,
-                        relevance_score = ?
+                        relevance_score = ?,
+                        event_timestamp = ?
                     WHERE event_id = ?
                     """,
                     (
@@ -157,6 +159,7 @@ def upsert_events(
                         row["source_url"],
                         row["expected_direction"],
                         row["relevance_score"],
+                        event_timestamp,
                         row["event_id"],
                     ),
                 )
@@ -167,8 +170,9 @@ def upsert_events(
                     INSERT INTO events_timeline
                         (event_id, event_date, event_time_utc, title,
                          description, event_type, source_url,
-                         expected_direction, relevance_score, created_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                         expected_direction, relevance_score, event_timestamp,
+                         created_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
                     """,
                     (
                         row["event_id"],
@@ -180,6 +184,7 @@ def upsert_events(
                         row["source_url"],
                         row["expected_direction"],
                         row["relevance_score"],
+                        event_timestamp,
                     ),
                 )
                 inserted += 1
@@ -260,6 +265,11 @@ def _normalize_relevance_score(value: str, row_number: int) -> float:
             f"event row {row_number} relevance_score must be between 0 and 1"
         )
     return score
+
+
+def _canonical_event_timestamp(row: dict[str, str | float]) -> str:
+    """Return the legacy timestamp value for a validated canonical event row."""
+    return f"{row['event_date']}T{row['event_time_utc']}.000000Z"
 
 
 if __name__ == "__main__":

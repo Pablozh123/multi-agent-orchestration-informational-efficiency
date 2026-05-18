@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wc -l /c/Users/chole/ba-thesis/init_db.py /c/Users/chole/ba-thesis/ingest/*.py /c/Users/chole/ba-thesis/tests/*.py)",
+      "Bash(wc -l /c/Users/chole/ba-thesis/mcp_servers/*/*.py)",
+      "Bash(grep -v \"^\\\\.$\")",
+      "Bash(ls -la c:/Users/chole/ba-thesis/*.py)",
+      "Bash(python3)",
+      "Bash(grep \"\\\\.py$\")",
+      "Bash(xargs grep:*)",
+      "Bash(python -c \"import operations.agents, operations.tools, operations.validation, operations.analysis, operations.mcp, operations.audit; print\\('imports ok'\\)\")",
+      "Bash(git add:*)",
+      "Bash(gh auth:*)",
+      "Bash(git config:*)",
+      "Bash(git branch:*)",
+      "Bash(gh repo:*)",
+      "Bash(git push:*)",
+      "Bash(python -c \"import sqlite3; c=sqlite3.connect\\('data/thesis.db'\\); [print\\(f'{t}: {c.execute\\(f\\\\\"SELECT COUNT\\(*\\) FROM {t}\\\\\"\\).fetchone\\(\\)[0]}'\\) for t in \\('polymarket_prices','whale_trades','sentiment_scores','poll_forecasts','events_timeline','analysis_summaries','llm_audit_log'\\)]\")",
+      "Bash(ls -la .planning/phases/02-*)",
+      "Bash(python -c \"import sqlite3; conn = sqlite3.connect\\('data/thesis.db'\\); rows = conn.execute\\(\\\\\"SELECT source, MIN\\(date\\), MAX\\(date\\), COUNT\\(*\\) FROM poll_forecasts GROUP BY source\\\\\"\\).fetchall\\(\\); [print\\(f'{r[0]}: {r[3]} rows, {r[1]} to {r[2]}'\\) for r in rows]; conn.close\\(\\)\")",
+      "Bash(python -m pytest tests/test_ingest.py -v)",
+      "Bash(python -c \"import sqlite3; c=sqlite3.connect\\('data/thesis.db'\\); print\\('fe:', c.execute\\(\\\\\"SELECT COUNT\\(*\\) FROM poll_forecasts WHERE source='fivethirtyeight'\\\\\"\\).fetchone\\(\\)[0], 'rcp:', c.execute\\(\\\\\"SELECT COUNT\\(*\\) FROM poll_forecasts WHERE source='rcp'\\\\\"\\).fetchone\\(\\)[0]\\)\")",
+      "Bash(python -m operations.validation.report)",
+      "Bash(python -c ':*)",
+      "Bash(python -m operations.analysis.generate_summaries)",
+      "Bash(python -c \"import sqlite3; c=sqlite3.connect\\('data/thesis.db'\\); print\\('summaries:', c.execute\\('SELECT metric_name, COUNT\\(*\\) FROM analysis_summaries GROUP BY metric_name'\\).fetchall\\(\\)\\)\")",
+      "Bash(python -c \"from dotenv import load_dotenv; load_dotenv\\(\\); import os; key = os.getenv\\('ANTHROPIC_API_KEY', ''\\); print\\('key set:', bool\\(key\\), 'len:', len\\(key\\)\\)\")",
+      "Bash(python -c \"import scipy, statsmodels, duckdb; print\\('scipy:', scipy.__version__, 'statsmodels:', statsmodels.__version__, 'duckdb:', duckdb.__version__\\)\")",
+      "Bash(python -m pytest tests/test_brier_score.py -v)",
+      "Bash(python -m operations.analysis.brier_score)",
+      "Bash(python -m operations.analysis.calibrate)",
+      "Bash(python -m pytest tests/ -q)"
+    ]
+  }
+}

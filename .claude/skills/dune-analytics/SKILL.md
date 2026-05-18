@@ -1,27 +1,30 @@
 ---
 name: dune-analytics
-description: Dune Analytics für Blockchain-Daten. Nutze bei Whale-Tracking, Polygon-Transaktionen, On-Chain-Analyse.
+description: Interpret precomputed Dune or wallet-trade outputs. Do not define whale thresholds or fetch data from the prompt.
 ---
 
-# Dune Analytics
+Status: active
+Source of truth: AGENTS.md and ARCHITECTURE_DECISIONS.md
+Role: Dune and wallet-data interpretation
+Allowed scope: interpretation only, no deterministic calculations
 
-## API Workflow
-1. Query erstellen/finden auf dune.com
-2. Ausführen: POST https://api.dune.com/api/v1/query/{id}/execute
-3. Status prüfen: GET https://api.dune.com/api/v1/execution/{execution_id}/status
-4. Ergebnisse: GET https://api.dune.com/api/v1/execution/{execution_id}/results
-5. CSV exportieren und in SQLite laden
+# Dune And Wallet Data Interpretation
 
-## Auth
-- Header: x-dune-api-key: {DUNE_API_KEY}
-- Free Tier: 2.500 Credits/Monat
+Use this skill only to interpret wallet or trade summaries already collected,
+validated, and processed by deterministic Python code.
 
-## Nützliche Community Queries
-- Polymarket Top Wallets by Volume
-- Large Trades (>$10k) Timeline
-- Eigene Queries: SQL auf Polygon-Daten
+## Rules
 
-## Kostenoptimierung
-- Queries auf Dune Website entwickeln (kostenlos)
-- Nur finale Queries via API ausführen
-- Ergebnisse in SQLite cachen
+- Do not run live Dune queries from prompt context.
+- Do not define whales using arbitrary fixed thresholds.
+- Treat any fixed source filter as an ingestion constraint, not as an analytical
+  whale classification.
+- Use only distribution-derived wallet tiers from deterministic outputs.
+- Do not speculate about wallet owner identity.
+- Do not describe wallet timing as proof of insider trading.
+
+## Safe Interpretation Language
+
+- "The distribution-derived top tier shows ..."
+- "The timing pattern is consistent with a lead-lag signal under this model ..."
+- "The result requires robustness checks before thesis-level claims ..."

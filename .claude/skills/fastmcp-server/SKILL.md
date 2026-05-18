@@ -1,39 +1,24 @@
 ---
 name: fastmcp-server
-description: FastMCP Server Entwicklung. Nutze beim Erstellen von MCP-Servern, Agent-Tools, MCP-Konfiguration.
+description: Deferred MCP reference for this thesis repository. Do not implement or extend MCP before the deterministic core is approved.
 ---
 
-# FastMCP Server Entwicklung
+Status: active
+Source of truth: AGENTS.md and ARCHITECTURE_DECISIONS.md
+Role: deferred MCP reference
+Allowed scope: interpretation only, no deterministic calculations
 
-## Minimales Beispiel
-```python
-from fastmcp import FastMCP
+# MCP Deferred
 
-mcp = FastMCP("ServerName")
+MCP is not part of the current implementation priority for this repository.
+The deterministic analysis core must be stable, tested, and explicitly approved
+before any MCP demo layer is implemented or extended.
 
-@mcp.tool()
-async def my_tool(param: str) -> str:
-    """Beschreibung für Claude — IMMER Docstring schreiben."""
-    return result
+## Rules
 
-if __name__ == "__main__":
-    mcp.run(transport="streamable-http", port=8001)
-```
-
-## Regeln
-- IMMER async/await für I/O (DB, HTTP)
-- IMMER Type Hints auf allen Parametern
-- IMMER Docstrings (Claude nutzt sie als Tool-Beschreibung)
-- Pydantic-Models für komplexe Inputs
-- JSON-Output bevorzugen
-- Error Messages actionable formulieren
-- Jeden Server auf eigenem Port laufen lassen
-
-## Testing
-```python
-from fastmcp import Client
-
-async def test():
-    async with Client("http://localhost:8001/mcp") as client:
-        result = await client.call_tool("my_tool", {"param": "test"})
-```
+- Do not create MCP servers.
+- Do not add Claude Desktop integration.
+- Do not expose raw database tables through MCP tools.
+- Do not use MCP as a statistical calculation path.
+- If asked for MCP work before approval, point back to `AGENTS.md` and
+  `ARCHITECTURE_DECISIONS.md`.

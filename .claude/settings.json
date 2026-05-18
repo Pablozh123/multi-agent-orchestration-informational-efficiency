@@ -1,35 +1,11 @@
 {
-  "env": {
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
-  },
   "permissions": {
     "allow": [
-      "Bash(mkdir -p mcp_servers/market_agent mcp_servers/sentiment_agent mcp_servers/whale_agent mcp_servers/orchestrator analysis tests)",
-      "Bash(touch mcp_servers/__init__.py mcp_servers/market_agent/__init__.py mcp_servers/sentiment_agent/__init__.py mcp_servers/whale_agent/__init__.py mcp_servers/orchestrator/__init__.py analysis/__init__.py tests/__init__.py)",
-      "Bash(python -m venv .venv)",
-      "Bash(.venv/Scripts/pip install --upgrade pip)",
-      "Bash(.venv/Scripts/python.exe -m pip install --upgrade pip)",
-      "Bash(.venv/Scripts/pip install -r requirements.txt)",
-      "Bash(.venv/Scripts/pip install black)",
-      "Bash(.venv/Scripts/python init_db.py)",
-      "Bash(node \"$HOME/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs: initialize project\" --files .planning/PROJECT.md)",
-      "Read(//c/Users/chole/ba-thesis/$HOME/.gsd/**)",
-      "Read(//c/Users/chole/.claude/get-shit-done/templates/research-project/**)",
-      "Bash(node \"$HOME/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs: complete project research\" --files .planning/research/)",
-      "Bash(git add .planning/research/)",
-      "Bash(git commit:*)",
-      "Read(//c/Users/chole/.claude/get-shit-done/templates/**)",
-      "WebSearch",
-      "Bash(cat c:/Users/chole/ba-thesis/.planning/phases/01-data-foundation/*-PLAN.md)",
-      "Bash(git add .planning/phases/01-data-foundation/01-05-SUMMARY.md .planning/STATE.md)",
-      "Bash(git add .planning/phases/01-data-foundation/01-04-SUMMARY.md)",
-      "Bash(node \"$HOME/.claude/get-shit-done/bin/gsd-tools.cjs\" roadmap update-plan-progress \"1\")",
-      "Bash(node \"C:/Users/chole/.claude/get-shit-done/bin/gsd-tools.cjs\" roadmap update-plan-progress \"1\")",
-      "Bash(git add .planning/phases/01-data-foundation/01-03-SUMMARY.md .planning/ROADMAP.md)",
-      "Bash(sqlite3 /c/Users/chole/ba-thesis/data/thesis.db \"SELECT COUNT\\(*\\), MIN\\(price_timestamp\\), MAX\\(price_timestamp\\) FROM whale_trades LIMIT 1;\")",
-      "Bash(ls /c/Users/chole/ba-thesis/.planning/phases/01-data-foundation/*VERIFICATION*)",
-      "Skill(gsd:plan-phase)",
-      "Skill(gsd:plan-phase:*)"
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(rg:*)",
+      "Bash(.venv/Scripts/python.exe -m pytest:*)",
+      "Bash(python -m pytest:*)"
     ],
     "additionalDirectories": [
       "c:\\Users\\chole\\ba-thesis\\.claude\\skills",
@@ -37,24 +13,13 @@
     ]
   },
   "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write(*.py)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python -m black --quiet $CHANGED_FILE 2>/dev/null || true"
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "Write(.env*)",
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'BLOCKED: .env Dateien dürfen nicht von Claude geschrieben werden. Keys manuell eintragen!' >&2; exit 2"
+            "command": "echo 'BLOCKED: env files must not be written by Claude. Add keys manually.' >&2; exit 2"
           }
         ]
       }

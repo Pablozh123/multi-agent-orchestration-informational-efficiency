@@ -1,35 +1,30 @@
 ---
 name: brier-score
-description: Brier Score Berechnung und Kalibrierungsanalyse. Nutze bei Forecast-Vergleichen, Prognosequalität, Calibration Curves.
+description: Interpret precomputed Brier Score and calibration outputs for the thesis. Do not compute scores in the prompt.
 ---
 
-# Brier Score & Kalibrierung
+Status: active
+Source of truth: AGENTS.md and ARCHITECTURE_DECISIONS.md
+Role: Brier Score interpretation
+Allowed scope: interpretation only, no deterministic calculations
 
-## Brier Score Formel
-BS = (1/N) × Σ(forecast_i - outcome_i)²
-- forecast_i: Vorhersage zwischen 0.0 und 1.0
-- outcome_i: Tatsächliches Ergebnis (0 oder 1)
-- BS = 0: Perfekte Vorhersage
-- BS = 1: Maximal falsch
+# Brier Score Interpretation
 
-## Brier Skill Score
-BSS = 1 - (BS_modell / BS_referenz)
-- BSS > 0: Besser als Referenz
-- BSS = 0: Gleich wie Referenz
-- BSS < 0: Schlechter als Referenz
+Use this skill only to interpret Brier Score, calibration, reliability, or
+Diebold-Mariano outputs already computed by deterministic Python modules.
 
-## Python-Implementierung
-```python
-from sklearn.metrics import brier_score_loss
-from sklearn.calibration import calibration_curve
+## Rules
 
-bs = brier_score_loss(outcomes, forecasts)
-prob_true, prob_pred = calibration_curve(outcomes, forecasts, n_bins=10)
-```
+- Do not calculate Brier scores, Brier Skill Scores, calibration bins, p-values,
+  or reliability decompositions in the prompt.
+- Do not invent missing benchmark values.
+- Treat RCP results as valid only if the RCP probability transformation is
+  documented.
+- State sample-size and single-event limitations when interpreting calibration.
+- Refer back to the result artifact or Python module that produced the value.
 
-## Kalibrierungskurve (Reliability Diagram)
-- X-Achse: Vorhergesagte Wahrscheinlichkeit (binned)
-- Y-Achse: Tatsächliche Häufigkeit
-- Perfekte Kalibrierung = Diagonale
-- Über der Diagonale = Underconfident
-- Unter der Diagonale = Overconfident
+## Safe Interpretation Language
+
+- "The precomputed Brier Score is lower for ..."
+- "This suggests better forecast accuracy under the implemented metric ..."
+- "This does not by itself prove broader market efficiency ..."

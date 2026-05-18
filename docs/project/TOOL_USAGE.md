@@ -24,6 +24,21 @@ Before stopping, Codex must run the project-control workflow:
 Use `--skip-pytest "reason"` only when the user explicitly accepts skipping
 tests or when running pytest would be misleading.
 
+## Codex Workflow Roles
+
+Codex may operate in these development-process roles:
+
+- Planner: converts the active goal into an implementation plan without editing
+  files unless execution is explicitly requested.
+- Implementer: makes scoped code or documentation changes for the active goal.
+- Reviewer: checks diffs, tests, deterministic-core rules, data assumptions, and
+  commit boundaries.
+- Verifier: runs tests and project-control checks before stopping.
+
+These roles are workflow modes for repository work. They are not thesis runtime
+agents, do not replace deterministic Python analysis, and must not activate MCP,
+model routing, or multi-agent interpretation.
+
 ## Superpowers Usage
 
 Use Superpowers for planning discipline and execution structure when helpful:

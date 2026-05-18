@@ -56,6 +56,15 @@ H3 outputs exist, pass tests, and have written methodology notes. Active
 multi-agent or MCP entry points must raise:
 `RuntimeError("Deferred until deterministic analysis core is complete")`.
 
+Codex workflow roles such as planner, implementer, reviewer, and verifier are
+allowed as development-process roles. They are not thesis runtime agents and
+must not call tools, route models, or interpret thesis outputs as an automated
+agent layer.
+
+Future thesis runtime agents may only be specified at a high level while the
+deterministic core is incomplete. Do not implement or activate them before H1,
+H2, and H3 deterministic outputs exist.
+
 ## Do Not Implement Yet
 
 - Multi-agent orchestration

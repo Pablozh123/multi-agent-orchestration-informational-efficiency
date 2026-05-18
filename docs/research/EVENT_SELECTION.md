@@ -7,11 +7,12 @@ It exists to prevent cherry-picking and to keep the event study reproducible.
 
 ## Decision Status
 
-- h2_window_status: blocked
-- selected_primary_window: not_selected
-- selected_secondary_windows: not_selected
-- blocking_reason: canonical event catalog and final window choice are not yet
-  reviewed.
+- h2_window_status: selected
+- selected_primary_window: [0d, +1d]
+- selected_secondary_windows: [-1d, +3d]
+- not_selected_windows: [-1h, +1h]
+- decision_reason: current Polymarket price data are daily, so the primary H2
+  event window must be daily rather than intraday.
 - required_before_code: CAR or event-study implementation.
 
 ## Inclusion Criteria
@@ -76,14 +77,18 @@ fill it. Add events only after manual source review.
 
 Window definitions must be fixed before CAR code runs.
 
-Initial candidate windows for review:
+Selected windows:
+
+- Primary daily window: `[0d, +1d]`
+- Secondary sensitivity window: `[-1d, +3d]`
+
+Not selected for the current dataset:
 
 - Intraday short window: `[-1h, +1h]`
-- Same-day window: `[0h, +24h]`
-- Multi-day window: `[-1d, +3d]`
 
-The final analysis may use one or more of these windows, but the selected set
-must be documented before results are inspected.
+Reason: current Polymarket price data are daily. Intraday windows require
+intraday price observations and must not be used unless such data are added and
+validated later.
 
 ## Source Quality Rules
 

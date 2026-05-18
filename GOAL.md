@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-h3-wallet-tier-classification-001
-title: Implement H3 wallet tier classification
+goal_id: goal-h3-tiered-activity-series-001
+title: Prepare H3 tiered wallet activity series
 status: active
 phase: Phase 6: H3 Whale Distribution And Classification
 why:
@@ -12,13 +12,14 @@ why:
   percentiles.
 - The wallet distribution inventory now documents observed source filters,
   percentile thresholds, and tier counts.
+- Wallet tier classification now assigns observed wallets to deterministic
+  distribution tiers.
 deliverables:
-- Deterministic wallet-tier classification output for observed wallets.
-- Tests proving threshold application, tie handling, and no hardcoded USD
-  thresholds.
-- Compact output metadata suitable for later H3 timing analysis.
+- Deterministic daily wallet activity series aggregated by selected tier.
+- Output metadata documenting BUY-only limitations and tier coverage.
+- Tests proving tier joins and daily aggregation are reproducible.
 scope:
-- Apply the selected percentile tier method to wallet-level aggregates.
+- Prepare tiered wallet activity inputs for later timing analysis.
 - Keep source-filter metadata separate from analytical tier definitions.
 out_of_scope:
 - H3 lead-lag or Granger implementation.
@@ -27,13 +28,14 @@ out_of_scope:
 - Treating the source-filter minimum `amount_usd` as a whale threshold.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Wallet tier classification uses thresholds computed from observed data.
-- Ties at percentile thresholds are assigned to the higher tier.
+- Tiered activity series uses existing wallet classification outputs.
+- Aggregation is deterministic and does not calculate lead-lag or Granger
+  statistics.
 - Output avoids raw table dumps into prompts and preserves source-filter
   metadata separately.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: classify h3 wallets by distribution tier
+next_commit: feat: prepare h3 tiered wallet activity series
 
 ## Decision Inputs For This Goal
 
@@ -43,13 +45,14 @@ next_commit: feat: classify h3 wallets by distribution tier
 - The default H2 event source is the tracked `data/events_timeline_seed.csv`.
 - H3 wallet-tier method is selected in `docs/research/WHALE_METHOD.md`.
 - H3 wallet distribution inventory exists in `data/results/`.
+- H3 wallet tier classification exists in `data/results/`.
 - ML scope and re-entry conditions are explicit in `docs/research/RESEARCH_SPEC.md`.
 - Codex workflow roles are separate from deferred thesis runtime agents.
 
 ## Done Means
 
-- Wallet-tier classification exists before lead-lag or Granger code.
-- Percentile thresholds are applied from observed data, not hardcoded.
+- Tiered wallet activity series exists before lead-lag or Granger code.
+- Wallet tiers are applied from deterministic classification outputs.
 - Source filters and analytical tier definitions remain separated.
 - Project review checks still detect premature H3, ML, agent, or MCP work.
 
@@ -74,3 +77,5 @@ next_commit: feat: classify h3 wallets by distribution tier
   `amount_usd` percentiles.
 - H3 wallet distribution inventory exists with source-filter metadata,
   percentile thresholds, and tier counts.
+- H3 wallet tier classification exists for observed wallets with compact
+  metadata and deterministic tier counts.

@@ -133,6 +133,44 @@ Resulting tier counts:
 The inventory file is compact metadata and does not contain raw wallet address
 lists.
 
+## Wallet Tier Classification
+
+Classification status: complete for the initial observed H3 dataset.
+
+Output files:
+
+- `data/results/h3_wallet_tiers.csv`
+- `data/results/h3_wallet_tiers_metadata.json`
+
+The classification CSV contains one row per observed wallet with:
+
+- `wallet_address`,
+- assigned `tier`,
+- wallet-level cumulative observed `amount_usd`,
+- `trade_count`,
+- `max_trade_amount_usd`,
+- first and last observed trade timestamps.
+
+This file is a deterministic H3 analysis input and may contain wallet
+addresses. It must not be pasted into LLM prompts or treated as a raw prompt
+source. Use compact summaries or bounded aggregates for interpretation layers.
+
+Classification metadata confirms:
+
+- wallets classified: 3006
+- trade rows represented: 25113
+- tier method: wallet-level cumulative observed `amount_usd` percentiles
+- tie policy: thresholds assign ties to the higher tier
+- source-filter minimum observed `amount_usd`: 10000.0, not an analytical
+  threshold
+
+Resulting tier counts:
+
+- `tier_1_top_1pct`: 32
+- `tier_2_top_5pct`: 120
+- `tier_3_top_10pct`: 150
+- `tier_4_observed_baseline`: 2704
+
 ## No Insider Wording
 
 The thesis may discuss whether wallet data provide early signals. It must not

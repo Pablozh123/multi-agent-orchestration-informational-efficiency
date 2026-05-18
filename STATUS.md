@@ -3,50 +3,63 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-18 18:22
+Generated: 2026-05-18 18:52
 
-Current goal: `goal-h3-wallet-tier-classification-001` - Implement H3 wallet tier classification
+Current goal: `goal-h3-tiered-activity-series-001` - Prepare H3 tiered wallet activity series
 
 Current roadmap phase: Phase 6: H3 Whale Distribution And Classification
 
 Test status: PASS
 
-Pytest summary: `150 passed in 5.83s`
+Pytest summary: `154 passed in 5.97s`
 
 Git branch: `main`
 
-Latest commit: `eca70c2`
+Latest commit: `5682f31`
 
 Git status:
 
 ```text
-clean
+ M GOAL.md
+ M ROADMAP.md
+ M STATUS.md
+ M docs/project/WORK_LOG.md
+ M docs/research/WHALE_METHOD.md
+?? data/results/h3_wallet_tiers.csv
+?? data/results/h3_wallet_tiers_metadata.json
+?? operations/analysis/classify_wallet_tiers.py
+?? tests/test_wallet_tier_classification.py
 ```
 
 Git diff stat:
 
 ```text
-no unstaged diff
+ GOAL.md                       | 29 ++++++++++++++----------
+ ROADMAP.md                    |  5 +++--
+ STATUS.md                     | 52 ++++++++++++++++++++++++++++---------------
+ docs/project/WORK_LOG.md      | 40 +++++++++++++++++++++++++++++++++
+ docs/research/WHALE_METHOD.md | 38 +++++++++++++++++++++++++++++++
+ 5 files changed, 132 insertions(+), 32 deletions(-)
 ```
 
 Blockers:
 
-- None detected.
+- Worktree has uncommitted changes that need review before commit.
 
 Next recommended action:
 
-- feat: classify h3 wallets by distribution tier
+- feat: prepare h3 tiered wallet activity series
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status
 
 Status date: 2026-05-18
 
-The project is moving from H3 wallet distribution inventory into deterministic
-wallet tier classification. H2 event windows are selected, curated seed events
-exist, deterministic H2 CSV outputs have been generated, and compact H2
+The project is moving from H3 wallet tier classification into deterministic
+tiered wallet activity series. H2 event windows are selected, curated seed
+events exist, deterministic H2 CSV outputs have been generated, and compact H2
 summaries are persisted into `analysis_summaries`. H3 lead-lag and Granger code
-remain blocked until wallet tiers are implemented and tested.
+remain blocked until tiered activity inputs are prepared and tested.
 
 Current implemented foundation and H2 baseline:
 
@@ -65,6 +78,7 @@ Current implemented foundation and H2 baseline:
 - H3 wallet-tier method is selected as wallet-level cumulative observed
   `amount_usd` percentiles.
 - H3 wallet distribution inventory exists under `data/results/`.
+- H3 wallet tier classification exists under `data/results/`.
 
 ## Event Catalog Audit Result
 
@@ -102,14 +116,15 @@ for H2 outputs.
 - H3 wallet data currently has a BUY-only limitation and a minimum observed
   `amount_usd` of 10000, which remain source-filter metadata rather than
   analytical tier thresholds.
-- Wallet tier classification is not implemented yet.
+- Tiered wallet activity series is not implemented yet.
 - Granger and lead-time pipelines are not implemented.
 - Agent and MCP layers remain deferred.
 
 ## Next Recommended Commits
 
-1. `feat: classify h3 wallets by distribution tier`
-   - Apply selected percentile thresholds to wallet-level aggregates.
+1. `feat: prepare h3 tiered wallet activity series`
+   - Join wallet tiers back to trade rows and aggregate activity by day and
+     tier.
    - Acceptance: no Granger or lead-lag code yet.
 
 2. `docs: document h2 thesis interpretation limits`
@@ -117,6 +132,7 @@ for H2 outputs.
      accepted wording for H2.
    - Acceptance: thesis-facing text stays aligned with deterministic outputs.
 
-3. `feat: prepare h3 tiered wallet activity series`
-   - Aggregate wallet activity by selected tier for later timing analysis.
-   - Acceptance: no causal language and no Granger code yet.
+3. `feat: compute h3 lead-time histograms`
+   - Measure descriptive lead-time distributions after tiered activity inputs
+     exist.
+   - Acceptance: descriptive timing only, no causal language.

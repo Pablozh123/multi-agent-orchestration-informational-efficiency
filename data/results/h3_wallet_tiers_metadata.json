@@ -1,0 +1,49 @@
+{
+  "diagnostic_fields": [
+    "trade_count",
+    "max_trade_amount_usd"
+  ],
+  "method": {
+    "boundary_policy": "ties_at_threshold_assigned_to_higher_tier",
+    "name": "wallet_cumulative_amount_usd_percentiles",
+    "threshold_policy": "runtime_observed_value_percentiles",
+    "tier_field": "wallet_cumulative_amount_usd"
+  },
+  "output": {
+    "classification_columns": [
+      "wallet_address",
+      "tier",
+      "cumulative_amount_usd",
+      "trade_count",
+      "max_trade_amount_usd",
+      "first_trade_timestamp",
+      "last_trade_timestamp"
+    ],
+    "contains_wallet_addresses": true,
+    "intended_use": "deterministic_h3_timing_inputs_not_llm_prompts"
+  },
+  "percentile_thresholds": {
+    "p90": 120698.45799999998,
+    "p95": 234234.58379,
+    "p99": 866859.93675
+  },
+  "source_filter_metadata": {
+    "buy_only": true,
+    "direction_distribution": {
+      "BUY": {
+        "trade_rows": 25113,
+        "wallets": 3006
+      }
+    },
+    "minimum_observed_amount_note": "Observed source-filter metadata only; not an analytical tier threshold.",
+    "minimum_observed_amount_usd": 10000.0,
+    "trade_row_count": 25113,
+    "wallet_count": 3006
+  },
+  "tier_counts": {
+    "tier_1_top_1pct": 32,
+    "tier_2_top_5pct": 120,
+    "tier_3_top_10pct": 150,
+    "tier_4_observed_baseline": 2704
+  }
+}

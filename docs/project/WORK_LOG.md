@@ -316,3 +316,43 @@ Next step:
 
 - Implement deterministic H3 wallet tier classification from the selected
   percentile method.
+
+## 2026-05-18 - goal-h3-wallet-tier-classification-001
+
+Task:
+
+- Classify observed wallets into deterministic H3 distribution tiers.
+
+Files changed:
+
+- `operations/analysis/classify_wallet_tiers.py`
+- `tests/test_wallet_tier_classification.py`
+- `data/results/h3_wallet_tiers.csv`
+- `data/results/h3_wallet_tiers_metadata.json`
+- `docs/research/WHALE_METHOD.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_wallet_tier_classification.py -q` -> 4 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 154 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.classify_wallet_tiers` -> 3006 wallets classified.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  154 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check` -> PASS,
+  154 passed.
+
+Decision:
+
+- Store wallet-level tier assignments in `data/results/h3_wallet_tiers.csv` for
+  deterministic H3 timing inputs.
+- Keep metadata compact in `data/results/h3_wallet_tiers_metadata.json`.
+- Do not run lead-lag or Granger analysis in this step.
+
+Next step:
+
+- Prepare deterministic tiered wallet activity series by joining wallet tiers
+  back to observed trade rows.

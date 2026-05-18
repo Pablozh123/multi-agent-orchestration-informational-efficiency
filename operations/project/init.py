@@ -263,7 +263,7 @@ def replace_generated_block(markdown: str, block: str) -> str:
             + re.escape(STATUS_BLOCK_END),
             re.DOTALL,
         )
-        return pattern.sub(generated, markdown, count=1)
+        return pattern.sub(lambda _match: generated, markdown, count=1)
 
     lines = markdown.splitlines()
     if lines and lines[0].startswith("# "):

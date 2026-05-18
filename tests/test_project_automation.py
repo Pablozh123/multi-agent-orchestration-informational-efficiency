@@ -109,6 +109,20 @@ def test_replace_generated_block_preserves_manual_content() -> None:
     assert updated_again.count("<!-- PROJECT_STATUS:START -->") == 1
 
 
+def test_replace_generated_block_treats_backslashes_literally() -> None:
+    original = (
+        "# STATUS.md\n\n"
+        "<!-- PROJECT_STATUS:START -->\n"
+        "old\n"
+        "<!-- PROJECT_STATUS:END -->\n"
+    )
+    block = "## Automation Snapshot\n\n```text\n M C:\\Project\\GOAL.md\n```"
+
+    updated = replace_generated_block(original, block)
+
+    assert "C:\\Project\\GOAL.md" in updated
+
+
 def test_detect_roadmap_phase_prefers_goal_phase() -> None:
     goal = parse_active_goal(GOAL_TEXT)
     assert detect_roadmap_phase("", goal) == "Phase 1: Project Synchronization And Foundation"

@@ -43,3 +43,35 @@ Decision:
 Next step:
 
 - Commit the project automation and control-doc updates as one coherent workflow change.
+
+## 2026-05-18 - goal-empirical-scope-001
+
+Task:
+
+- Define the project goal system, workflow roles, empirical decision markers,
+  and automated meta-logic using existing files only.
+
+Files changed:
+
+- `AGENTS.md`
+- `GOAL.md`
+- `docs/project/TOOL_USAGE.md`
+- `docs/research/EVENT_SELECTION.md`
+- `docs/research/WHALE_METHOD.md`
+- `docs/research/RESEARCH_SPEC.md`
+- `operations/project/review_check.py`
+- `tests/test_project_automation.py`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 127 passed.
+- `python -m operations.project.update_status` -> PASS.
+
+Decision:
+
+- Use existing files only for the goal system, research decision markers, and
+  meta-model. Keep thesis runtime agents deferred.
+
+Next step:
+
+- Finalize H2 event selection and window specification before CAR code.

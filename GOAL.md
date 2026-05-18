@@ -2,10 +2,10 @@
 
 ## Active Goal
 
-goal_id: goal-h3-tiered-activity-series-001
-title: Prepare H3 tiered wallet activity series
+goal_id: goal-h3-lead-time-histograms-001
+title: Compute descriptive H3 lead-time histograms
 status: active
-phase: Phase 6: H3 Whale Distribution And Classification
+phase: Phase 7: H3 Lead-Lag And Granger Tests
 why:
 - H2 deterministic outputs and compact summary persistence now exist.
 - The H3 tier method is selected as wallet-level cumulative `amount_usd`
@@ -14,28 +14,31 @@ why:
   percentile thresholds, and tier counts.
 - Wallet tier classification now assigns observed wallets to deterministic
   distribution tiers.
+- Tiered wallet activity series now exists as a deterministic daily input.
 deliverables:
-- Deterministic daily wallet activity series aggregated by selected tier.
-- Output metadata documenting BUY-only limitations and tier coverage.
-- Tests proving tier joins and daily aggregation are reproducible.
+- Descriptive lead-time histograms for tiered wallet activity around curated
+  H2 events.
+- Tests proving event alignment and histogram bins are deterministic.
+- Documentation that results are descriptive timing patterns, not causal proof.
 scope:
-- Prepare tiered wallet activity inputs for later timing analysis.
+- Descriptive timing histograms using existing H2 events and H3 tiered activity
+  inputs.
 - Keep source-filter metadata separate from analytical tier definitions.
 out_of_scope:
-- H3 lead-lag or Granger implementation.
+- Granger implementation.
 - Agents, MCP, model routing, ML, cloud deployment, and interpretation workflows.
 - Adding or removing curated events based on observed results.
 - Treating the source-filter minimum `amount_usd` as a whale threshold.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Tiered activity series uses existing wallet classification outputs.
-- Aggregation is deterministic and does not calculate lead-lag or Granger
-  statistics.
+- Histogram calculations are deterministic Python and use pre-existing curated
+  events.
+- No causal language or Granger statistics are introduced.
 - Output avoids raw table dumps into prompts and preserves source-filter
   metadata separately.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: prepare h3 tiered wallet activity series
+next_commit: feat: compute h3 lead-time histograms
 
 ## Decision Inputs For This Goal
 
@@ -46,13 +49,14 @@ next_commit: feat: prepare h3 tiered wallet activity series
 - H3 wallet-tier method is selected in `docs/research/WHALE_METHOD.md`.
 - H3 wallet distribution inventory exists in `data/results/`.
 - H3 wallet tier classification exists in `data/results/`.
+- H3 tiered wallet activity series exists in `data/results/`.
 - ML scope and re-entry conditions are explicit in `docs/research/RESEARCH_SPEC.md`.
 - Codex workflow roles are separate from deferred thesis runtime agents.
 
 ## Done Means
 
-- Tiered wallet activity series exists before lead-lag or Granger code.
-- Wallet tiers are applied from deterministic classification outputs.
+- Descriptive H3 timing histograms exist before Granger code.
+- Event alignment uses pre-curated H2 events.
 - Source filters and analytical tier definitions remain separated.
 - Project review checks still detect premature H3, ML, agent, or MCP work.
 
@@ -79,3 +83,4 @@ next_commit: feat: prepare h3 tiered wallet activity series
   percentile thresholds, and tier counts.
 - H3 wallet tier classification exists for observed wallets with compact
   metadata and deterministic tier counts.
+- H3 tiered wallet activity series exists as a complete daily tier panel.

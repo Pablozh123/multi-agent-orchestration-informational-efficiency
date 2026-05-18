@@ -3,50 +3,63 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-18 18:52
+Generated: 2026-05-18 18:59
 
-Current goal: `goal-h3-tiered-activity-series-001` - Prepare H3 tiered wallet activity series
+Current goal: `goal-h3-lead-time-histograms-001` - Compute descriptive H3 lead-time histograms
 
-Current roadmap phase: Phase 6: H3 Whale Distribution And Classification
+Current roadmap phase: Phase 7: H3 Lead-Lag And Granger Tests
 
 Test status: PASS
 
-Pytest summary: `154 passed in 6.12s`
+Pytest summary: `160 passed in 5.92s`
 
 Git branch: `main`
 
-Latest commit: `84aba24`
+Latest commit: `c172527`
 
 Git status:
 
 ```text
-clean
+ M GOAL.md
+ M ROADMAP.md
+ M STATUS.md
+ M docs/project/WORK_LOG.md
+ M docs/research/WHALE_METHOD.md
+?? data/results/h3_tiered_wallet_activity_daily.csv
+?? data/results/h3_tiered_wallet_activity_metadata.json
+?? operations/analysis/tiered_wallet_activity.py
+?? tests/test_tiered_wallet_activity.py
 ```
 
 Git diff stat:
 
 ```text
-no unstaged diff
+ GOAL.md                       | 33 +++++++++++++----------
+ ROADMAP.md                    | 13 ++++-----
+ STATUS.md                     | 62 ++++++++++++++++++++++++++-----------------
+ docs/project/WORK_LOG.md      | 40 ++++++++++++++++++++++++++++
+ docs/research/WHALE_METHOD.md | 36 +++++++++++++++++++++++++
+ 5 files changed, 140 insertions(+), 44 deletions(-)
 ```
 
 Blockers:
 
-- None detected.
+- Worktree has uncommitted changes that need review before commit.
 
 Next recommended action:
 
-- feat: prepare h3 tiered wallet activity series
+- feat: compute h3 lead-time histograms
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status
 
 Status date: 2026-05-18
 
-The project is moving from H3 wallet tier classification into deterministic
-tiered wallet activity series. H2 event windows are selected, curated seed
-events exist, deterministic H2 CSV outputs have been generated, and compact H2
-summaries are persisted into `analysis_summaries`. H3 lead-lag and Granger code
-remain blocked until tiered activity inputs are prepared and tested.
+The project is moving from H3 tiered wallet activity inputs into descriptive
+H3 lead-time histograms. H2 event windows are selected, curated seed events
+exist, deterministic H2 CSV outputs have been generated, and compact H2
+summaries are persisted into `analysis_summaries`. H3 Granger code remains
+blocked until descriptive timing outputs are implemented and reviewed.
 
 Current implemented foundation and H2 baseline:
 
@@ -66,6 +79,7 @@ Current implemented foundation and H2 baseline:
   `amount_usd` percentiles.
 - H3 wallet distribution inventory exists under `data/results/`.
 - H3 wallet tier classification exists under `data/results/`.
+- H3 tiered daily wallet activity series exists under `data/results/`.
 
 ## Event Catalog Audit Result
 
@@ -103,23 +117,23 @@ for H2 outputs.
 - H3 wallet data currently has a BUY-only limitation and a minimum observed
   `amount_usd` of 10000, which remain source-filter metadata rather than
   analytical tier thresholds.
-- Tiered wallet activity series is not implemented yet.
-- Granger and lead-time pipelines are not implemented.
+- Descriptive H3 lead-time histograms are not implemented yet.
+- Granger pipeline is not implemented.
 - Agent and MCP layers remain deferred.
 
 ## Next Recommended Commits
 
-1. `feat: prepare h3 tiered wallet activity series`
-   - Join wallet tiers back to trade rows and aggregate activity by day and
-     tier.
-   - Acceptance: no Granger or lead-lag code yet.
+1. `feat: compute h3 lead-time histograms`
+   - Align tiered wallet activity to curated H2 events and compute descriptive
+     lead-time histograms.
+   - Acceptance: no Granger code and no causal language.
 
 2. `docs: document h2 thesis interpretation limits`
    - Document daily-window interpretation, event timing limitations, and
      accepted wording for H2.
    - Acceptance: thesis-facing text stays aligned with deterministic outputs.
 
-3. `feat: compute h3 lead-time histograms`
-   - Measure descriptive lead-time distributions after tiered activity inputs
-     exist.
-   - Acceptance: descriptive timing only, no causal language.
+3. `docs: review h3 timing outputs before granger`
+   - Review descriptive H3 timing outputs and decide whether Granger is
+     methodologically justified.
+   - Acceptance: limitations and BUY-only caveat remain explicit.

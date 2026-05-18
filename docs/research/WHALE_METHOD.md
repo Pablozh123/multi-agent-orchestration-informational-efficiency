@@ -171,6 +171,42 @@ Resulting tier counts:
 - `tier_3_top_10pct`: 150
 - `tier_4_observed_baseline`: 2704
 
+## Tiered Wallet Activity Series
+
+Activity series status: complete for the initial observed H3 dataset.
+
+Output files:
+
+- `data/results/h3_tiered_wallet_activity_daily.csv`
+- `data/results/h3_tiered_wallet_activity_metadata.json`
+
+The daily activity series joins deterministic wallet tiers back to observed
+trade rows and aggregates by `date` and `tier`. It is a complete daily tier
+panel, so tier-days without observed activity are represented with zero values.
+
+Columns:
+
+- `date`
+- `tier`
+- `trade_rows`
+- `active_wallets`
+- `total_amount_usd`
+- `buy_amount_usd`
+- `sell_amount_usd`
+- `net_amount_usd`
+
+Metadata confirms:
+
+- trade rows represented: 25113
+- wallets with tiers: 3006
+- date range: 2024-01-01 to 2024-11-04
+- daily tier rows: 1236
+- wallet addresses are not present in the daily activity output
+- BUY-only source limitation remains documented
+
+This series is an input for later descriptive H3 timing work. It does not
+contain Granger tests, causal claims, or proof of misconduct.
+
 ## No Insider Wording
 
 The thesis may discuss whether wallet data provide early signals. It must not

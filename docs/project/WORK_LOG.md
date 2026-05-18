@@ -356,3 +356,43 @@ Next step:
 
 - Prepare deterministic tiered wallet activity series by joining wallet tiers
   back to observed trade rows.
+
+## 2026-05-18 - goal-h3-tiered-activity-series-001
+
+Task:
+
+- Prepare deterministic H3 tiered daily wallet activity series.
+
+Files changed:
+
+- `operations/analysis/tiered_wallet_activity.py`
+- `tests/test_tiered_wallet_activity.py`
+- `data/results/h3_tiered_wallet_activity_daily.csv`
+- `data/results/h3_tiered_wallet_activity_metadata.json`
+- `docs/research/WHALE_METHOD.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_tiered_wallet_activity.py -q` -> 6 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 160 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.tiered_wallet_activity` -> 1236 daily tier rows.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  160 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check` -> PASS,
+  160 passed.
+
+Decision:
+
+- Produce a complete daily tier panel with zero rows for tier-days without
+  observed activity.
+- Keep wallet addresses out of the daily activity output.
+- Do not compute Granger statistics or make causal claims in this step.
+
+Next step:
+
+- Compute descriptive H3 lead-time histograms from curated events and the
+  tiered activity series.

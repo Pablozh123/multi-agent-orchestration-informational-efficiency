@@ -103,7 +103,7 @@ Blockers:
 
 ## Phase 6: H3 Whale Distribution And Classification
 
-Status: wallet tier classification complete; ready for tiered activity series
+Status: complete for initial daily H3 tier inputs
 
 Done criteria:
 
@@ -114,18 +114,18 @@ Done criteria:
 - Primary tier method is selected before classification code.
 - Wallet distribution inventory output exists before classification code.
 - Wallet tier classification output exists before tiered timing inputs.
+- Tiered daily wallet activity series exists before descriptive timing analysis.
 
 Blockers:
 
 - Current whale data appears BUY-only.
 - Current minimum `amount_usd` is 10000, likely reflecting an upstream filter.
-- Lead-lag and Granger code must wait until wallet tiering is implemented and
-  tested.
-- Tiered wallet activity series is not implemented yet.
+- Granger code must wait until descriptive timing outputs are implemented and
+  reviewed.
 
 ## Phase 7: H3 Lead-Lag And Granger Tests
 
-Status: not started
+Status: active for descriptive lead-time histograms
 
 Done criteria:
 
@@ -137,8 +137,9 @@ Done criteria:
 
 Blockers:
 
-- Phase 6 is not complete.
 - Sell-side or directionality limitations need resolution or explicit scope.
+- Granger tests remain blocked until descriptive lead-time histograms are
+  implemented and reviewed.
 
 ## Phase 8: Interpretation Layer
 

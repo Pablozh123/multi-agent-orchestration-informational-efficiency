@@ -1,0 +1,54 @@
+{
+  "input": {
+    "classification_metadata_path": "data\\results\\h3_wallet_tiers_metadata.json",
+    "classification_path": "data\\results\\h3_wallet_tiers.csv",
+    "date_range_end": "2024-11-04",
+    "date_range_start": "2024-01-01",
+    "trade_rows": 25113,
+    "wallets_with_tiers": 3006
+  },
+  "output": {
+    "activity_columns": [
+      "date",
+      "tier",
+      "trade_rows",
+      "active_wallets",
+      "total_amount_usd",
+      "buy_amount_usd",
+      "sell_amount_usd",
+      "net_amount_usd"
+    ],
+    "complete_daily_tier_panel": true,
+    "contains_wallet_addresses": false,
+    "intended_use": "deterministic_h3_tiered_activity_inputs"
+  },
+  "source_filter_metadata": {
+    "buy_only": true,
+    "direction_distribution": {
+      "BUY": {
+        "trade_rows": 25113,
+        "wallets": 3006
+      }
+    },
+    "minimum_observed_amount_note": "Observed source-filter metadata only; not an analytical tier threshold.",
+    "minimum_observed_amount_usd": 10000.0
+  },
+  "tier_coverage": {
+    "tier_1_top_1pct": {
+      "active_days": 303,
+      "wallet_count": 32
+    },
+    "tier_2_top_5pct": {
+      "active_days": 229,
+      "wallet_count": 120
+    },
+    "tier_3_top_10pct": {
+      "active_days": 171,
+      "wallet_count": 150
+    },
+    "tier_4_observed_baseline": {
+      "active_days": 262,
+      "wallet_count": 2704
+    }
+  }
+}

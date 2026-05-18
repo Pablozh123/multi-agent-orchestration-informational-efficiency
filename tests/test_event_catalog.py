@@ -92,10 +92,15 @@ def test_event_audit_cli_outputs_json(tmp_path: Path, capsys: pytest.CaptureFixt
     assert '"row_count": 0' in captured.out
 
 
-def test_event_seed_csv_exists_and_is_header_only() -> None:
+def test_event_seed_csv_contains_valid_curated_rows() -> None:
     rows = read_event_seed(Path("data/events_timeline_seed.csv"))
 
-    assert rows == []
+    assert len(rows) >= 1
+    event_ids = [row["event_id"] for row in rows]
+    assert len(event_ids) == len(set(event_ids))
+    for index, row in enumerate(rows, start=1):
+        validated = validate_event_row(row, index)
+        assert validated["source_url"].startswith("https://")
 
 
 def test_loader_upserts_canonical_events_and_preserves_legacy_rows(

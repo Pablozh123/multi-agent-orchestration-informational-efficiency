@@ -243,3 +243,36 @@ Next step:
 
 - Select and document the H3 wallet-tier method before implementing wallet
   classification, lead-lag, or Granger analysis.
+
+## 2026-05-18 - goal-h3-tier-method-001
+
+Task:
+
+- Select the H3 wallet-tier method before wallet classification code.
+
+Files changed:
+
+- `docs/research/WHALE_METHOD.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  145 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check` -> PASS,
+  145 passed and `h3_tier_status=selected`.
+
+Decision:
+
+- Use wallet-level cumulative observed `amount_usd` percentiles as the primary
+  H3 tier method.
+- Assign ties at percentile boundaries to the higher tier.
+- Keep `trade_count` and `max_trade_amount_usd` as diagnostics, not primary
+  tier fields.
+
+Next step:
+
+- Implement deterministic wallet distribution inventory for H3 tiering.

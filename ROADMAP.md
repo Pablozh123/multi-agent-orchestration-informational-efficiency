@@ -103,7 +103,7 @@ Blockers:
 
 ## Phase 6: H3 Whale Distribution And Classification
 
-Status: active for method decision
+Status: method selected; ready for distribution inventory
 
 Done criteria:
 
@@ -111,14 +111,15 @@ Done criteria:
 - Tiers are dataset-relative and reproducible.
 - Current source filters are documented separately from analytical tiers.
 - BUY-only limitation is explicitly addressed.
+- Primary tier method is selected before classification code.
 
 Blockers:
 
 - Current whale data appears BUY-only.
 - Current minimum `amount_usd` is 10000, likely reflecting an upstream filter.
-- The distribution-derived wallet-tier method is not selected yet.
-- Wallet classification code must wait until the method is selected and
-  documented.
+- Wallet distribution inventory is not implemented yet.
+- Lead-lag and Granger code must wait until wallet tiering is implemented and
+  tested.
 
 ## Phase 7: H3 Lead-Lag And Granger Tests
 

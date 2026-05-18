@@ -12,13 +12,14 @@ verified. They must not be silently converted into analytical whale definitions.
 
 ## Decision Status
 
-- h3_tier_status: blocked
-- selected_tier_method: not_selected
+- h3_tier_status: selected
+- selected_tier_method: wallet_cumulative_amount_usd_percentiles
 - lead_lag_status: blocked
 - granger_status: blocked
-- blocking_reason: wallet tiers are not yet derived from the observed wallet or
-  trade distribution.
-- required_before_code: H3 lead-lag or Granger implementation.
+- blocking_reason: lead-lag and Granger remain blocked until the selected
+  wallet-tier method is implemented and tested.
+- required_before_code: H3 wallet classification, lead-lag, or Granger
+  implementation.
 
 ## Allowed Claims
 
@@ -45,16 +46,39 @@ Avoid insider wording in empirical claims. Use neutral terms such as
 
 ## Dataset-Relative Wallet Tiers
 
-Wallet tiers must be derived from the actual observed distribution. Candidate
-approaches for later implementation:
+Wallet tiers must be derived from the actual observed distribution. The
+selected primary method is wallet-level cumulative observed `amount_usd`
+percentiles.
 
-- Percentile tiers by cumulative `amount_usd`.
-- Percentile tiers by trade count.
-- Percentile tiers by maximum single-trade size.
-- Combined rank score across volume, count, and concentration.
+Tier field:
 
-The final tier method must be deterministic, documented, and tested before H3
-lead-lag or Granger analysis.
+- Group rows by `wallet_address`.
+- Compute `SUM(amount_usd)` per wallet over the observed H3 dataset.
+- Compute percentile thresholds from that wallet-level distribution at runtime.
+- Do not hardcode USD threshold values.
+
+Selected tiers:
+
+- `tier_1_top_1pct`: wallets at or above the 99th percentile.
+- `tier_2_top_5pct`: wallets at or above the 95th percentile and below the
+  99th percentile.
+- `tier_3_top_10pct`: wallets at or above the 90th percentile and below the
+  95th percentile.
+- `tier_4_observed_baseline`: wallets below the 90th percentile.
+
+Boundary rule:
+
+- Ties at a percentile boundary are assigned to the higher tier.
+- Thresholds are calculated from the observed wallet distribution in the
+  filtered dataset used for H3, then documented in output metadata.
+
+Diagnostics:
+
+- `trade_count` and `max_trade_amount_usd` are retained as diagnostics for the
+  first H3 implementation.
+- They do not define tiers in the primary method.
+- Combined rank scores may be considered later as sensitivity analysis, not as
+  the primary H3 tier rule.
 
 ## Future Distribution-Derived Classification
 
@@ -63,9 +87,18 @@ Before H3 implementation:
 - Inspect wallet-level distributions.
 - Document whether sell-side rows are absent, unavailable, or filtered out.
 - Separate source filters from analytical definitions.
-- Choose tier thresholds from observed percentiles or another reproducible
-  distribution-based rule.
+- Compute tier thresholds from observed wallet-level cumulative `amount_usd`
+  percentiles.
 - Add tests for boundary cases.
+
+Implementation must verify:
+
+- the number of observed wallets,
+- the direction distribution,
+- the minimum observed `amount_usd` as source-filter metadata,
+- percentile thresholds used for tiers,
+- tier membership counts,
+- boundary behavior for wallets exactly on threshold values.
 
 ## No Insider Wording
 

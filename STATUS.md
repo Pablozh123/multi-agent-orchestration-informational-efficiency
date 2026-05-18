@@ -3,50 +3,59 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-18 18:05
+Generated: 2026-05-18 18:13
 
-Current goal: `goal-h3-tier-method-001` - Select distribution-derived H3 wallet-tier method
+Current goal: `goal-h3-wallet-distribution-inventory-001` - Inventory wallet distribution for H3 tiering
 
 Current roadmap phase: Phase 6: H3 Whale Distribution And Classification
 
 Test status: PASS
 
-Pytest summary: `145 passed in 5.38s`
+Pytest summary: `145 passed in 5.44s`
 
 Git branch: `main`
 
-Latest commit: `245a499`
+Latest commit: `1c7f816`
 
 Git status:
 
 ```text
-clean
+ M GOAL.md
+ M ROADMAP.md
+ M STATUS.md
+ M docs/project/WORK_LOG.md
+ M docs/research/WHALE_METHOD.md
 ```
 
 Git diff stat:
 
 ```text
-no unstaged diff
+ GOAL.md                       | 46 ++++++++++++++++---------------
+ ROADMAP.md                    |  9 ++++---
+ STATUS.md                     | 54 ++++++++++++++++++++++---------------
+ docs/project/WORK_LOG.md      | 33 +++++++++++++++++++++++
+ docs/research/WHALE_METHOD.md | 63 ++++++++++++++++++++++++++++++++-----------
+ 5 files changed, 142 insertions(+), 63 deletions(-)
 ```
 
 Blockers:
 
-- None detected.
+- Worktree has uncommitted changes that need review before commit.
 
 Next recommended action:
 
-- docs: select h3 wallet-tier method
+- feat: inventory wallet distribution for h3 tiering
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status
 
 Status date: 2026-05-18
 
-The project is moving from the deterministic H2 event-study baseline into H3
-method selection. H2 event windows are selected, curated seed events exist,
-deterministic H2 CSV outputs have been generated, and compact H2 summaries are
-persisted into `analysis_summaries`. H3 code remains blocked until the wallet
-tier method is selected.
+The project is moving from H3 method selection into deterministic wallet
+distribution inventory. H2 event windows are selected, curated seed events
+exist, deterministic H2 CSV outputs have been generated, and compact H2
+summaries are persisted into `analysis_summaries`. H3 lead-lag and Granger code
+remain blocked until wallet tiers are implemented and tested.
 
 Current implemented foundation and H2 baseline:
 
@@ -62,6 +71,8 @@ Current implemented foundation and H2 baseline:
 - The H2 row-level and summary CSV shapes are accepted for the initial daily
   baseline.
 - Compact H2 summaries are persisted idempotently into `analysis_summaries`.
+- H3 wallet-tier method is selected as wallet-level cumulative observed
+  `amount_usd` percentiles.
 
 ## Event Catalog Audit Result
 
@@ -98,23 +109,22 @@ for H2 outputs.
   documented and tested probability transformation exists.
 - H3 whale data currently has a BUY-only limitation and a minimum
   `amount_usd` of 10000, so analytical whale tiers are not yet valid.
-- Distribution-derived wallet-tier selection is not documented yet.
+- Wallet distribution inventory is not implemented yet.
 - Granger and lead-time pipelines are not implemented.
 - Agent and MCP layers remain deferred.
 
 ## Next Recommended Commits
 
-1. `docs: select h3 wallet-tier method`
-   - Select one distribution-derived wallet-tier method before H3 code.
-   - Acceptance: no arbitrary whale thresholds and BUY-only limitations remain
-     separate from analytical tier definitions.
+1. `feat: inventory wallet distribution for h3 tiering`
+   - Compute deterministic wallet/trade distribution summaries needed for H3
+     tier implementation.
+   - Acceptance: no Granger or lead-lag code yet.
 
 2. `docs: document h2 thesis interpretation limits`
    - Document daily-window interpretation, event timing limitations, and
      accepted wording for H2.
    - Acceptance: thesis-facing text stays aligned with deterministic outputs.
 
-3. `feat: inventory wallet distribution for h3 tiering`
-   - Compute deterministic wallet/trade distribution summaries needed for H3
-     tier implementation.
-   - Acceptance: no Granger or lead-lag code yet.
+3. `feat: implement h3 wallet tier classification`
+   - Apply the selected percentile tier method to wallet-level aggregates.
+   - Acceptance: thresholds are computed from observed data, not hardcoded.

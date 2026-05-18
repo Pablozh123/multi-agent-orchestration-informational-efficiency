@@ -5,6 +5,15 @@
 This document controls event selection before H2 event-window and CAR analysis.
 It exists to prevent cherry-picking and to keep the event study reproducible.
 
+## Decision Status
+
+- h2_window_status: blocked
+- selected_primary_window: not_selected
+- selected_secondary_windows: not_selected
+- blocking_reason: canonical event catalog and final window choice are not yet
+  reviewed.
+- required_before_code: CAR or event-study implementation.
+
 ## Inclusion Criteria
 
 An event may be included only if it meets all criteria:
@@ -97,4 +106,3 @@ Events must be selected by predefined criteria before event-window results are
 computed. If an event is added, removed, merged, or reclassified after seeing
 market reactions, that change must be documented as a post-hoc sensitivity
 decision and must not be presented as part of the primary specification.
-

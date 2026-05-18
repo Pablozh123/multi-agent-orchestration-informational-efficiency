@@ -10,6 +10,16 @@ Current whale-trade inventory has two important limitations:
 These facts must be treated as data-source or ingestion constraints until
 verified. They must not be silently converted into analytical whale definitions.
 
+## Decision Status
+
+- h3_tier_status: blocked
+- selected_tier_method: not_selected
+- lead_lag_status: blocked
+- granger_status: blocked
+- blocking_reason: wallet tiers are not yet derived from the observed wallet or
+  trade distribution.
+- required_before_code: H3 lead-lag or Granger implementation.
+
 ## Allowed Claims
 
 Allowed language:
@@ -63,4 +73,3 @@ The thesis may discuss whether wallet data provide early signals. It must not
 describe wallets as insiders, insider traders, or proof of insider activity
 unless there is independent non-market evidence, which is not currently in
 scope.
-

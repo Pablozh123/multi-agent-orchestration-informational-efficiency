@@ -65,9 +65,12 @@ Machine learning is not in scope yet. Do not add ML models, feature stores,
 training pipelines, embeddings, vector databases, or automated classifiers until
 the deterministic empirical pipeline is complete and reviewed.
 
+- ml_scope_status: deferred
+- ml_reentry_condition: deterministic H1, H2, and H3 outputs exist, pass tests,
+  and have written methodology notes.
+
 ## Agent And MCP Deferred Rule
 
 Agents and MCP are interpretation and demo layers only. They remain deferred
 until deterministic H1, H2, and H3 outputs exist, pass tests, and have written
 methodology notes.
-

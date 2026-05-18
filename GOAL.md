@@ -3,49 +3,57 @@
 ## Active Goal
 
 goal_id: goal-empirical-scope-001
-title: Define empirical research scope before H2/H3 implementation
+title: Generate deterministic H2 event-window outputs
 status: active
-phase: Phase 4: Event Catalog And H2 Method
+phase: Phase 5: H2 Event Study And CAR
 why:
-- H2 and H3 are blocked by research-design decisions, not code volume.
-- Event selection, event windows, RCP treatment, and wallet-tier rules must be fixed before CAR, lead-lag, or Granger code is written.
+- H2 event windows are selected and the canonical event seed is curated.
+- The next thesis artifact should be reproducible event-window output generated
+  from tracked events and deterministic Polymarket price data.
 deliverables:
-- Final event inclusion and exclusion criteria.
-- Fixed event-window definitions for H2.
-- RCP treatment documented as polling signal unless a tested transformation is added later.
-- Whale method documented with dataset-relative tiers and current BUY-only limitations.
+- `data/results/h2_event_window_rows.csv`.
+- `data/results/h2_event_window_summary.csv`.
+- A deterministic CLI that regenerates the H2 CSV outputs from
+  `data/events_timeline_seed.csv` and `data/thesis.db`.
+- Tests proving the runner is deterministic and uses the curated seed as the
+  event source.
 scope:
-- Research design, project-control automation, and documentation needed before deterministic H2/H3 code.
-- Deterministic foundation guardrails that keep work aligned with AGENTS.md.
+- Deterministic H2 output generation from the curated event seed and daily
+  Polymarket price series.
+- Project-control documentation updates needed to reflect the H2 implementation
+  step.
 out_of_scope:
-- H2 CAR implementation.
 - H3 lead-lag or Granger implementation.
 - Agents, MCP, model routing, ML, cloud deployment, and interpretation workflows.
+- Writing H2 summaries into `analysis_summaries`.
+- Adding or removing curated events based on observed results.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Project-control scripts can update status, run review checks, and suggest commit groups.
+- H2 outputs can be regenerated with a local CLI.
+- H2 output tests and full pytest pass.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
 next_commit: feat: generate h2 event-window outputs from curated catalog
 
-## Decision Outputs For This Goal
+## Decision Inputs For This Goal
 
 - H2 event-study window status is explicit in `docs/research/EVENT_SELECTION.md`.
+- The default H2 event source is the tracked `data/events_timeline_seed.csv`.
 - H3 wallet-tier method status is explicit in `docs/research/WHALE_METHOD.md`.
 - ML scope and re-entry conditions are explicit in `docs/research/RESEARCH_SPEC.md`.
 - Codex workflow roles are separate from deferred thesis runtime agents.
 
 ## Done Means
 
-- The active goal defines the research-scope decisions needed before H2/H3 code.
-- Blocked follow-up goals are visible without becoming active goals.
-- Project review checks can detect premature H2, H3, ML, agent, or MCP work.
-- No new markdown control files are required for the goal system.
+- The H2 event-window CSV outputs exist under `data/results/`.
+- The H2 runner reads explicit SQLite columns and never mutates the database.
+- The H2 runner uses the curated seed CSV by default.
+- Project review checks still detect premature H3, ML, agent, or MCP work.
 
 ## Blocked Follow-Up Goals
 
-- H2 CAR implementation is blocked until event windows are selected and the
-  canonical event catalog is curated.
+- Persisting H2 outputs into `analysis_summaries` is blocked until CSV output
+  shape is reviewed.
 - H3 lead-lag and Granger implementation is blocked until wallet tiers are
   distribution-derived and documented.
 - ML, runtime agents, MCP, and interpretation workflows are blocked until

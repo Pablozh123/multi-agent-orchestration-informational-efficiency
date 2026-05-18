@@ -63,7 +63,7 @@ Blockers:
 
 ## Phase 4: Event Catalog And H2 Method
 
-Status: blocked
+Status: complete for initial daily H2 baseline
 
 Done criteria:
 
@@ -76,14 +76,13 @@ Done criteria:
 
 Blockers:
 
-- Current event audit reports 20 missing values for each required canonical
-  field.
-- Source URLs and expected directions are not curated.
-- Active goal remains research-scope definition before H2/H3 implementation.
+- Legacy event rows still have missing canonical fields, but the tracked seed
+  CSV contains the curated H2 event set used for the first deterministic output.
+- Any future event additions must be reviewed before H2 outputs are regenerated.
 
 ## Phase 5: H2 Event Study And CAR
 
-Status: not started
+Status: in progress
 
 Done criteria:
 
@@ -91,10 +90,12 @@ Done criteria:
 - Event windows are pre-specified and tested on toy data.
 - Outputs separate event-level movement, source timing, and limitations.
 - No event is added or removed after seeing results without documentation.
+- H2 output CSVs can be regenerated from tracked seed events and SQLite prices.
 
 Blockers:
 
-- Phase 4 is not complete.
+- Do not persist H2 rows into `analysis_summaries` until CSV output shape is
+  reviewed.
 
 ## Phase 6: H3 Whale Distribution And Classification
 

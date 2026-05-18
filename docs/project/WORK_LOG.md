@@ -109,3 +109,31 @@ Next step:
 
 - Generate H2 event-window result artifacts from the curated catalog and daily
   price series.
+
+## 2026-05-18 - goal-empirical-scope-001
+
+Task:
+
+- Advance the active project goal from empirical scope definition to
+  deterministic H2 event-window output generation.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  134 passed.
+
+Decision:
+
+- Treat the tracked curated seed CSV as the default event source for the first
+  H2 output generator.
+
+Next step:
+
+- Implement the deterministic H2 output runner and generated CSV artifacts.

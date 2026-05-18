@@ -35,6 +35,13 @@ DATE_COLUMNS = {
 }
 
 COVERAGE_COLUMNS = ("source", "candidate", "event_category", "direction")
+DATE_NAME_HINTS = ("date", "timestamp", "time", "created_at", "computed_at", "fetched_at")
+
+
+def _is_likely_date_column(column: str) -> bool:
+    """Return True when a column name looks like a date or timestamp field."""
+    lowered = column.lower()
+    return lowered.endswith("_at") or any(hint in lowered for hint in DATE_NAME_HINTS)
 
 
 @dataclass(frozen=True)
@@ -112,20 +119,35 @@ def _date_range(
     table: str,
     columns: set[str],
 ) -> tuple[str | None, str | None, str | None]:
-    date_column = DATE_COLUMNS.get(table)
-    if date_column is None or date_column not in columns:
-        return None, None, None
-
     quoted_table = _quote_identifier(table)
-    quoted_column = _quote_identifier(date_column)
-    row = conn.execute(
-        f"""
-        SELECT MIN({quoted_column}) AS date_min, MAX({quoted_column}) AS date_max
-        FROM {quoted_table}
-        WHERE {quoted_column} IS NOT NULL
-        """
-    ).fetchone()
-    return date_column, row[0], row[1]
+    preferred = DATE_COLUMNS.get(table)
+    candidates: list[str] = []
+
+    if preferred in columns:
+        candidates.append(preferred)
+
+    candidates.extend(
+        column
+        for column in sorted(columns)
+        if column not in candidates
+        and _is_likely_date_column(column)
+    )
+
+    for date_column in candidates:
+        quoted_column = _quote_identifier(date_column)
+        row = conn.execute(
+            f"""
+            SELECT MIN({quoted_column}) AS date_min, MAX({quoted_column}) AS date_max
+            FROM {quoted_table}
+            WHERE {quoted_column} IS NOT NULL
+            """
+        ).fetchone()
+        if row[0] is not None or row[1] is not None:
+            return date_column, row[0], row[1]
+
+    if candidates:
+        return candidates[0], None, None
+    return None, None, None
 
 
 def _coverage_counts(

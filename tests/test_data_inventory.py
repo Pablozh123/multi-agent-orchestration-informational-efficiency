@@ -73,6 +73,35 @@ def test_inventory_uses_aggregate_coverage_only(tmp_path):
     assert "probability" not in table["coverage"]
 
 
+def test_inventory_detects_likely_date_column_without_static_mapping(tmp_path):
+    """Inventory detects date-like columns on ad hoc tables."""
+    from operations.analysis.data_inventory import generate_inventory
+
+    db_path = tmp_path / "inventory.db"
+    conn = sqlite3.connect(db_path)
+    conn.executescript(
+        """
+        CREATE TABLE custom_source (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            observed_at TEXT NOT NULL,
+            value REAL NOT NULL
+        );
+        INSERT INTO custom_source (observed_at, value)
+        VALUES
+            ('2024-01-02T00:00:00Z', 1.0),
+            ('2024-01-03T00:00:00Z', 2.0);
+        """
+    )
+    conn.close()
+
+    inventory = generate_inventory(db_path)
+    table = inventory["tables"][0]
+
+    assert table["date_column"] == "observed_at"
+    assert table["date_min"] == "2024-01-02T00:00:00Z"
+    assert table["date_max"] == "2024-01-03T00:00:00Z"
+
+
 def test_inventory_rejects_unsafe_identifiers():
     """Dynamic SQLite identifiers are allow-listed by syntax."""
     from operations.analysis.data_inventory import _quote_identifier

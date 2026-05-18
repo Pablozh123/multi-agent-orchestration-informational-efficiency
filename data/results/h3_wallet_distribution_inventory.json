@@ -1,0 +1,83 @@
+{
+  "diagnostics": {
+    "concentration": {
+      "top_10_wallet_share": 0.7243878880536877,
+      "top_1_wallet_share": 0.679185718596574,
+      "top_25_wallet_share": 0.7590409095027836,
+      "top_50_wallet_share": 0.7889099735463194,
+      "top_5_wallet_share": 0.7055541916038984
+    },
+    "cumulative_amount_usd_quantiles": {
+      "max": 461587677.193898,
+      "min": 10000.0,
+      "p50": 22752.8244,
+      "p75": 49750.0,
+      "p90": 120698.45799999998,
+      "p95": 234234.58379,
+      "p99": 866859.93675
+    },
+    "max_trade_amount_usd_quantiles": {
+      "max": 1860643.07442,
+      "min": 10000.0,
+      "p50": 18434.85901,
+      "p75": 28911.764705,
+      "p90": 50828.946,
+      "p95": 82816.16364,
+      "p99": 198061.6308
+    },
+    "trade_count_quantiles": {
+      "max": 15948.0,
+      "min": 1.0,
+      "p50": 1.0,
+      "p75": 2.0,
+      "p90": 5.0,
+      "p95": 8.0,
+      "p99": 33.0
+    }
+  },
+  "input": {
+    "columns": [
+      "wallet_address",
+      "direction",
+      "amount_usd",
+      "price_timestamp"
+    ],
+    "date_range_end": "2024-11-04T23:56:30Z",
+    "date_range_start": "2024-01-01T04:24:22Z",
+    "table": "whale_trades"
+  },
+  "method": {
+    "boundary_policy": "ties_at_threshold_assigned_to_higher_tier",
+    "diagnostic_fields": [
+      "trade_count",
+      "max_trade_amount_usd"
+    ],
+    "name": "wallet_cumulative_amount_usd_percentiles",
+    "threshold_policy": "runtime_observed_value_percentiles",
+    "tier_field": "wallet_cumulative_amount_usd"
+  },
+  "percentile_thresholds": {
+    "p90": 120698.45799999998,
+    "p95": 234234.58379,
+    "p99": 866859.93675
+  },
+  "source_filter_metadata": {
+    "buy_only": true,
+    "direction_distribution": {
+      "BUY": {
+        "trade_rows": 25113,
+        "wallets": 3006
+      }
+    },
+    "minimum_observed_amount_note": "Observed source-filter metadata only; not an analytical tier threshold.",
+    "minimum_observed_amount_usd": 10000.0,
+    "trade_row_count": 25113,
+    "wallet_count": 3006
+  },
+  "tier_counts": {
+    "tier_1_top_1pct": 32,
+    "tier_2_top_5pct": 120,
+    "tier_3_top_10pct": 150,
+    "tier_4_observed_baseline": 2704
+  }
+}

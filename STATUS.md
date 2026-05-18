@@ -3,19 +3,19 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-18 18:13
+Generated: 2026-05-18 18:21
 
-Current goal: `goal-h3-wallet-distribution-inventory-001` - Inventory wallet distribution for H3 tiering
+Current goal: `goal-h3-wallet-tier-classification-001` - Implement H3 wallet tier classification
 
 Current roadmap phase: Phase 6: H3 Whale Distribution And Classification
 
 Test status: PASS
 
-Pytest summary: `145 passed in 5.44s`
+Pytest summary: `150 passed in 5.75s`
 
 Git branch: `main`
 
-Latest commit: `1c7f816`
+Latest commit: `6fabfd6`
 
 Git status:
 
@@ -25,17 +25,20 @@ Git status:
  M STATUS.md
  M docs/project/WORK_LOG.md
  M docs/research/WHALE_METHOD.md
+?? data/results/h3_wallet_distribution_inventory.json
+?? operations/analysis/wallet_distribution_inventory.py
+?? tests/test_wallet_distribution_inventory.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                       | 46 ++++++++++++++++---------------
- ROADMAP.md                    |  9 ++++---
- STATUS.md                     | 54 ++++++++++++++++++++++---------------
- docs/project/WORK_LOG.md      | 33 +++++++++++++++++++++++
- docs/research/WHALE_METHOD.md | 63 ++++++++++++++++++++++++++++++++-----------
- 5 files changed, 142 insertions(+), 63 deletions(-)
+ GOAL.md                       | 37 ++++++++++++++++++---------------
+ ROADMAP.md                    |  5 +++--
+ STATUS.md                     | 48 +++++++++++++++++++++++--------------------
+ docs/project/WORK_LOG.md      | 40 ++++++++++++++++++++++++++++++++++++
+ docs/research/WHALE_METHOD.md | 33 +++++++++++++++++++++++++++++
+ 5 files changed, 122 insertions(+), 41 deletions(-)
 ```
 
 Blockers:
@@ -44,15 +47,15 @@ Blockers:
 
 Next recommended action:
 
-- feat: inventory wallet distribution for h3 tiering
+- feat: classify h3 wallets by distribution tier
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status
 
 Status date: 2026-05-18
 
-The project is moving from H3 method selection into deterministic wallet
-distribution inventory. H2 event windows are selected, curated seed events
+The project is moving from H3 wallet distribution inventory into deterministic
+wallet tier classification. H2 event windows are selected, curated seed events
 exist, deterministic H2 CSV outputs have been generated, and compact H2
 summaries are persisted into `analysis_summaries`. H3 lead-lag and Granger code
 remain blocked until wallet tiers are implemented and tested.
@@ -73,6 +76,7 @@ Current implemented foundation and H2 baseline:
 - Compact H2 summaries are persisted idempotently into `analysis_summaries`.
 - H3 wallet-tier method is selected as wallet-level cumulative observed
   `amount_usd` percentiles.
+- H3 wallet distribution inventory exists under `data/results/`.
 
 ## Event Catalog Audit Result
 
@@ -107,17 +111,17 @@ for H2 outputs.
 
 - RCP is not a native probability forecast. It remains a polling signal until a
   documented and tested probability transformation exists.
-- H3 whale data currently has a BUY-only limitation and a minimum
-  `amount_usd` of 10000, so analytical whale tiers are not yet valid.
-- Wallet distribution inventory is not implemented yet.
+- H3 wallet data currently has a BUY-only limitation and a minimum observed
+  `amount_usd` of 10000, which remain source-filter metadata rather than
+  analytical tier thresholds.
+- Wallet tier classification is not implemented yet.
 - Granger and lead-time pipelines are not implemented.
 - Agent and MCP layers remain deferred.
 
 ## Next Recommended Commits
 
-1. `feat: inventory wallet distribution for h3 tiering`
-   - Compute deterministic wallet/trade distribution summaries needed for H3
-     tier implementation.
+1. `feat: classify h3 wallets by distribution tier`
+   - Apply selected percentile thresholds to wallet-level aggregates.
    - Acceptance: no Granger or lead-lag code yet.
 
 2. `docs: document h2 thesis interpretation limits`
@@ -125,6 +129,6 @@ for H2 outputs.
      accepted wording for H2.
    - Acceptance: thesis-facing text stays aligned with deterministic outputs.
 
-3. `feat: implement h3 wallet tier classification`
-   - Apply the selected percentile tier method to wallet-level aggregates.
-   - Acceptance: thresholds are computed from observed data, not hardcoded.
+3. `feat: prepare h3 tiered wallet activity series`
+   - Aggregate wallet activity by selected tier for later timing analysis.
+   - Acceptance: no causal language and no Granger code yet.

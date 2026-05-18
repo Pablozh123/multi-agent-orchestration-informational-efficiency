@@ -276,3 +276,43 @@ Decision:
 Next step:
 
 - Implement deterministic wallet distribution inventory for H3 tiering.
+
+## 2026-05-18 - goal-h3-wallet-distribution-inventory-001
+
+Task:
+
+- Generate deterministic H3 wallet distribution inventory metadata.
+
+Files changed:
+
+- `operations/analysis/wallet_distribution_inventory.py`
+- `tests/test_wallet_distribution_inventory.py`
+- `data/results/h3_wallet_distribution_inventory.json`
+- `docs/research/WHALE_METHOD.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_wallet_distribution_inventory.py -q` -> 5 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 150 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.wallet_distribution_inventory` -> 25113 trade rows and 3006 wallets.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  150 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check` -> PASS,
+  150 passed.
+
+Decision:
+
+- Write compact distribution metadata to
+  `data/results/h3_wallet_distribution_inventory.json`.
+- Do not output raw wallet address lists.
+- Keep BUY-only and minimum observed amount as source-filter metadata, not tier
+  definitions.
+
+Next step:
+
+- Implement deterministic H3 wallet tier classification from the selected
+  percentile method.

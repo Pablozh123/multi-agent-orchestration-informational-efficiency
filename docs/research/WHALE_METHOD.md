@@ -100,6 +100,39 @@ Implementation must verify:
 - tier membership counts,
 - boundary behavior for wallets exactly on threshold values.
 
+## Distribution Inventory
+
+Inventory status: complete for the initial observed H3 dataset.
+
+Output file:
+
+- `data/results/h3_wallet_distribution_inventory.json`
+
+Observed inventory:
+
+- trade rows: 25113
+- wallets: 3006
+- direction distribution: BUY-only in the current data extract
+- minimum observed `amount_usd`: 10000.0, documented as source-filter
+  metadata only
+
+Runtime percentile thresholds from wallet-level cumulative observed
+`amount_usd`:
+
+- `p90`: 120698.45799999998
+- `p95`: 234234.58379
+- `p99`: 866859.93675
+
+Resulting tier counts:
+
+- `tier_1_top_1pct`: 32
+- `tier_2_top_5pct`: 120
+- `tier_3_top_10pct`: 150
+- `tier_4_observed_baseline`: 2704
+
+The inventory file is compact metadata and does not contain raw wallet address
+lists.
+
 ## No Insider Wording
 
 The thesis may discuss whether wallet data provide early signals. It must not

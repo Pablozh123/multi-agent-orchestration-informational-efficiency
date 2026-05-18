@@ -2,24 +2,24 @@
 
 ## Active Goal
 
-goal_id: goal-h3-wallet-distribution-inventory-001
-title: Inventory wallet distribution for H3 tiering
+goal_id: goal-h3-wallet-tier-classification-001
+title: Implement H3 wallet tier classification
 status: active
 phase: Phase 6: H3 Whale Distribution And Classification
 why:
 - H2 deterministic outputs and compact summary persistence now exist.
 - The H3 tier method is selected as wallet-level cumulative `amount_usd`
   percentiles.
-- Before wallet classification code, the observed wallet distribution needs a
-  reproducible deterministic inventory.
+- The wallet distribution inventory now documents observed source filters,
+  percentile thresholds, and tier counts.
 deliverables:
-- Deterministic wallet distribution inventory for the observed H3 dataset.
-- Output metadata with wallet count, direction distribution, observed source
-  filters, percentile thresholds, and tier membership counts.
-- Tests proving percentile thresholds and boundary behavior are reproducible.
+- Deterministic wallet-tier classification output for observed wallets.
+- Tests proving threshold application, tie handling, and no hardcoded USD
+  thresholds.
+- Compact output metadata suitable for later H3 timing analysis.
 scope:
-- Deterministic distribution inventory needed before wallet classification.
-- No lead-lag, Granger, or timing analysis.
+- Apply the selected percentile tier method to wallet-level aggregates.
+- Keep source-filter metadata separate from analytical tier definitions.
 out_of_scope:
 - H3 lead-lag or Granger implementation.
 - Agents, MCP, model routing, ML, cloud deployment, and interpretation workflows.
@@ -27,13 +27,13 @@ out_of_scope:
 - Treating the source-filter minimum `amount_usd` as a whale threshold.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Distribution inventory code computes thresholds from observed data.
-- Output metadata documents source-filter limitations separately from tier
-  definitions.
-- Tests cover percentile boundary behavior and BUY-only limitations.
+- Wallet tier classification uses thresholds computed from observed data.
+- Ties at percentile thresholds are assigned to the higher tier.
+- Output avoids raw table dumps into prompts and preserves source-filter
+  metadata separately.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: inventory wallet distribution for h3 tiering
+next_commit: feat: classify h3 wallets by distribution tier
 
 ## Decision Inputs For This Goal
 
@@ -42,13 +42,14 @@ next_commit: feat: inventory wallet distribution for h3 tiering
 - Compact H2 summary persistence exists in `analysis_summaries`.
 - The default H2 event source is the tracked `data/events_timeline_seed.csv`.
 - H3 wallet-tier method is selected in `docs/research/WHALE_METHOD.md`.
+- H3 wallet distribution inventory exists in `data/results/`.
 - ML scope and re-entry conditions are explicit in `docs/research/RESEARCH_SPEC.md`.
 - Codex workflow roles are separate from deferred thesis runtime agents.
 
 ## Done Means
 
-- Wallet-level distributions are inventoried before classification.
-- Percentile thresholds are calculated from observed data, not hardcoded.
+- Wallet-tier classification exists before lead-lag or Granger code.
+- Percentile thresholds are applied from observed data, not hardcoded.
 - Source filters and analytical tier definitions remain separated.
 - Project review checks still detect premature H3, ML, agent, or MCP work.
 
@@ -71,3 +72,5 @@ next_commit: feat: inventory wallet distribution for h3 tiering
   while full row-level H2 traces remain file-based.
 - H3 wallet-tier method is selected as wallet-level cumulative observed
   `amount_usd` percentiles.
+- H3 wallet distribution inventory exists with source-filter metadata,
+  percentile thresholds, and tier counts.

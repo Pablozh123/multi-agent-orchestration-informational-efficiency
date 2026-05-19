@@ -230,6 +230,111 @@ Approved thesis-facing wording remains:
 - `predictive timing diagnostic`
 - `historical backtest prototype`
 
+## Thesis Tables And Figures Plan
+
+This plan lists the first thesis-facing tables and figures. It uses existing
+deterministic artifacts only and does not request new calculations.
+
+### Core Tables
+
+Table 1: Data and source inventory
+
+- Source artifact: `data/results/thesis_result_summary_metadata.json`
+- Supporting artifacts: `data/events_timeline_seed.csv`,
+  `data/literature/literature_index.csv`
+- Thesis role: describe empirical sources, result artifacts, and literature
+  source control.
+- Status: ready as a compact descriptive table.
+
+Table 2: H1 forecast-quality summary
+
+- Source artifact: `data/results/thesis_h1_summary.csv`
+- Supporting artifacts: `data/results/h1_brier_scores.csv`,
+  `data/results/h1_diebold_mariano.json`
+- Thesis role: report Brier, baseline, and Diebold-Mariano comparison outputs.
+- Status: ready with RCP exclusion caveat.
+
+Table 3: H2 daily event-window summary
+
+- Source artifact: `data/results/thesis_h2_summary.csv`
+- Supporting artifacts: `data/results/h2_event_window_summary.csv`,
+  `data/results/h2_event_window_rows.csv`
+- Thesis role: report selected daily event-window responses and limitations.
+- Status: ready with daily-window caveat.
+
+Table 4: H3 wallet-tier and timing summary
+
+- Source artifact: `data/results/thesis_h3_summary.csv`
+- Supporting artifacts: `data/results/h3_wallet_distribution_inventory.json`,
+  `data/results/h3_lead_time_histograms.csv`,
+  `data/results/h3_lead_lag_correlations.csv`,
+  `data/results/h3_granger_results.csv`
+- Thesis role: report dataset-relative wallet tiers, timing patterns, and
+  Granger diagnostic shape.
+- Status: ready with BUY-only, daily-alignment, and non-causal caveats.
+
+Table 5: Literature-to-methodology map
+
+- Source artifact: `data/literature/literature_index.csv`
+- Supporting artifact: `docs/research/LITERATURE_MAP.md`
+- Thesis role: show which sources support H1, H2, H3, strategy prototype, and
+  architecture framing.
+- Status: ready for internal thesis planning; final citation table requires
+  full-paper review before sources move from `skimmed` to `reviewed` or
+  `cited`.
+
+### Core Figures
+
+Figure 1: H1 reliability curve
+
+- Source artifact: `data/results/h1_reliability_curve.png`
+- Supporting artifact: `data/results/h1_brier_scores.csv`
+- Thesis role: visualise calibration/reliability for H1.
+- Status: ready.
+
+Figure 2: H2 event-window movement overview
+
+- Source artifact: `data/results/h2_event_window_summary.csv`
+- Supporting artifact: `data/results/h2_event_window_rows.csv`
+- Thesis role: visualise final CAR-style daily event-window movements.
+- Status: optional future figure; currently table-ready, no figure artifact
+  exists yet.
+
+Figure 3: H3 wallet-tier distribution
+
+- Source artifact: `data/results/h3_wallet_distribution_inventory.json`
+- Supporting artifact: `data/results/h3_wallet_tiers.csv`
+- Thesis role: visualise dataset-relative wallet tier cutoffs and counts.
+- Status: optional future figure; current summary is table-ready.
+
+Figure 4: H3 lead-time histogram
+
+- Source artifact: `data/results/h3_lead_time_histograms.csv`
+- Supporting artifact: `data/results/h3_lead_time_event_rows.csv`
+- Thesis role: visualise descriptive tier activity around selected movements or
+  events.
+- Status: optional future figure; no new interpretation beyond descriptive
+  timing patterns.
+
+Figure 5: H3 lead-lag or Granger diagnostic overview
+
+- Source artifact: `data/results/h3_granger_results.csv`
+- Supporting artifacts: `data/results/h3_lead_lag_correlations.csv`,
+  `data/results/h3_granger_metadata.json`
+- Thesis role: summarise predictive timing diagnostics.
+- Status: optional future figure; must include multiple-testing and non-causal
+  caveats.
+
+### Excluded Or Deferred Visuals
+
+- No RCP probability-comparison figure until a probability transformation is
+  documented.
+- No intraday H2 reaction-speed figure until intraday Polymarket data are
+  collected and validated.
+- No wallet-address-level figure in the thesis-facing layer.
+- No strategy PnL, drawdown, or agent-orchestration figure until a historical
+  backtest prototype exists and is tested in Python.
+
 ## Hypotheses
 
 H1: Brier Score calibration

@@ -186,7 +186,7 @@ Blockers:
 
 ## Phase 10: Strategy Research Prototype
 
-Status: active for thesis table and figure planning
+Status: active for thesis figure generation
 
 Done criteria:
 
@@ -201,7 +201,8 @@ Done criteria:
 
 Blockers:
 
-- Thesis table and figure plan is not prepared yet.
+- Thesis figure artifacts beyond the existing H1 reliability curve are not
+  generated yet.
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.

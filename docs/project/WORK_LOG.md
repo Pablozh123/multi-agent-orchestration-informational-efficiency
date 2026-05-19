@@ -795,3 +795,33 @@ Decision:
 Next step:
 
 - Plan thesis-facing tables and figures from deterministic result artifacts.
+
+## 2026-05-19 - goal-thesis-tables-figures-plan-001
+
+Task:
+
+- Prepare the thesis-facing tables and figures plan.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/RESEARCH_SPEC.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- Documentation-only change; project checks run after status refresh.
+
+Decision:
+
+- Core thesis tables are ready from existing H1-H2-H3 summary artifacts.
+- Existing H1 reliability figure is ready.
+- H2 movement, H3 tier distribution, H3 lead-time, and H3 diagnostic figures
+  are optional future artifacts generated only from existing result files.
+- RCP, intraday, wallet-address-level, and strategy PnL figures remain blocked
+  or deferred.
+
+Next step:
+
+- Generate thesis-ready result figures from existing deterministic artifacts.

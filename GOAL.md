@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-thesis-tables-figures-plan-001
-title: Prepare thesis tables and figures plan
+goal_id: goal-thesis-figures-001
+title: Generate thesis-ready figures from existing artifacts
 status: active
 phase: Phase 10: Strategy Research Prototype
 why:
@@ -12,27 +12,29 @@ why:
   live trading.
 - The literature-backed thesis methodology outline now exists.
 - A canonical EMH source now exists in the literature index.
-- The thesis now needs a concise plan for which deterministic tables and figures
-  will enter the written bachelor thesis.
+- The thesis tables and figures plan now identifies ready tables and optional
+  figures.
+- Several thesis figures can be generated from existing result artifacts without
+  new statistical calculations.
 deliverables:
-- Identify thesis-facing H1, H2, and H3 tables and figures.
-- Map each table or figure to a deterministic source artifact.
-- Mark missing or optional visuals without generating new analysis.
+- Generate thesis-ready figure artifacts from existing H1-H3 result files.
+- Keep figure generation deterministic and reproducible.
+- Do not compute new statistical metrics.
 scope:
-- Documentation-only table and figure planning.
-- No empirical results change.
+- Deterministic plotting from existing result artifacts.
+- Figure metadata and documentation updates.
 out_of_scope:
 - New statistical code, new event selection, or backtest implementation.
 - Agents, MCP, model routing, ML, cloud deployment, and live trading.
 - Treating Perplexity summaries as cited evidence.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Each proposed thesis table or figure has a source artifact path.
-- Optional or missing visuals are clearly labelled as future work.
-- No new statistical results are generated.
+- Generated figures reference existing source artifacts.
+- Figure code has focused tests where reasonable.
+- No new statistical metrics are calculated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: plan thesis tables and figures
+next_commit: feat: generate thesis-ready result figures
 
 ## Decision Inputs For This Goal
 
@@ -65,6 +67,7 @@ next_commit: docs: plan thesis tables and figures
 - Thesis methodology outline exists in `docs/research/RESEARCH_SPEC.md`.
 - Canonical EMH source `lit_emh_001` exists in
   `data/literature/literature_index.csv`.
+- Thesis tables and figures plan exists in `docs/research/RESEARCH_SPEC.md`.
 - ML scope and re-entry conditions are explicit in `docs/research/RESEARCH_SPEC.md`.
 - Codex workflow roles are separate from deferred thesis runtime agents.
 
@@ -115,4 +118,5 @@ next_commit: docs: plan thesis tables and figures
   source.
 - Literature-backed thesis methodology outline exists.
 - Canonical EMH source is indexed; rejected local `EMH.pdf` remains non-citable.
+- Thesis tables and figures plan exists.
 - Strategy/agent guardrails are enforced by project review checks.

@@ -2,49 +2,37 @@
 
 ## Active Goal
 
-goal_id: goal-thesis-result-summaries-001
-title: Prepare thesis-facing H1-H3 result summaries
+goal_id: goal-literature-intake-001
+title: Import and map Perplexity literature sources
 status: active
-phase: Phase 9: Thesis Export
+phase: Phase 10: Strategy Research Prototype
 why:
-- H1, H2, and H3 deterministic baseline outputs exist.
-- The empirical baseline package has been reviewed in
-  `docs/research/RESEARCH_SPEC.md`.
-- Thesis-facing result tables need compact, reproducible summaries before
-  Overleaf export or interpretation-layer work.
-- The strategy/agent idea is now scoped as a later backtested research
-  prototype, not as live trading.
+- H1-H3 thesis-facing result summaries now exist.
+- The strategy/agent idea is scoped as a backtested research prototype, not as
+  live trading.
+- Literature intake structure exists, but downloaded Perplexity/PDF sources are
+  not indexed yet.
 deliverables:
-- Compact thesis-facing summary tables for H1, H2, and H3 baseline outputs.
-- Clear mapping from each summary table to its deterministic source artifact.
-- German thesis wording notes using Swiss spelling where thesis-facing text is
-  introduced.
-- Figure/table readiness checklist for Overleaf export.
-- Literature intake and strategy-agent architecture docs that preserve the
-  deterministic-core rule.
+- Add local Perplexity/PDF source metadata to `data/literature/literature_index.csv`.
+- Map each source to H1, H2, H3, strategy prototype, or architecture.
+- Mark unreviewed discoveries as `candidate` until the paper is checked.
+- Keep raw PDFs and exports in ignored local storage only.
 scope:
-- Summarise existing deterministic outputs only.
-- Keep source-filter metadata separate from analytical tier definitions.
+- Literature metadata and research mapping only.
+- Perplexity output may guide discovery but not thesis claims.
 out_of_scope:
-- New statistical code.
-- Agents, MCP, model routing, ML, cloud deployment, and interpretation workflows.
-- Adding or removing curated events based on observed results.
-- Treating the source-filter minimum `amount_usd` as a whale threshold.
-- RCP probability transformation.
-- Intraday lead-lag claims.
-- Live trading, autonomous trading, or profitability guarantees.
+- New statistical code, new event selection, or backtest implementation.
+- Agents, MCP, model routing, ML, cloud deployment, and live trading.
+- Treating Perplexity summaries as cited evidence.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- H1-H3 thesis-facing summary tables are traceable to deterministic outputs.
-- H3 wording remains limited to predictive timing diagnostics.
-- RCP and intraday limitations remain explicit.
-- Strategy agents are scoped as signal generators whose hypotheses are
-  validated by Python backtests.
-- Output avoids raw table dumps into prompts and preserves source-filter
-  metadata separately.
+- Literature index has one metadata row per imported source.
+- Every source has a topic, thesis mapping, status, and notes.
+- Raw PDFs/exports remain untracked.
+- No thesis claim is added from an unchecked Perplexity summary.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: prepare h1 h2 h3 thesis result summaries
+next_commit: docs: index imported literature sources
 
 ## Decision Inputs For This Goal
 
@@ -66,14 +54,18 @@ next_commit: docs: prepare h1 h2 h3 thesis result summaries
   `docs/research/RESEARCH_SPEC.md`.
 - Backtested strategy prototype boundaries are recorded in
   `ARCHITECTURE_DECISIONS.md` and `ROADMAP.md`.
+- Thesis-facing H1-H3 summaries exist in `data/results/`.
+- Strategy agent architecture is specified in
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+- Literature intake structure exists in `docs/research/LITERATURE_MAP.md` and
+  `data/literature/literature_index.csv`.
 - ML scope and re-entry conditions are explicit in `docs/research/RESEARCH_SPEC.md`.
 - Codex workflow roles are separate from deferred thesis runtime agents.
 
 ## Done Means
 
-- H1-H3 summary tables are prepared for thesis drafting.
-- Each summary is traceable to deterministic result artifacts.
-- Source filters and analytical tier definitions remain separated.
+- Downloaded literature sources are indexed and mapped.
+- Perplexity discoveries are separated from checked academic sources.
 - Project review checks still detect premature H3, ML, agent, or MCP work.
 
 ## Blocked Follow-Up Goals
@@ -105,3 +97,7 @@ next_commit: docs: prepare h1 h2 h3 thesis result summaries
 - H3 Granger interpretation limits, persistence decision, and sensitivity needs
   are documented.
 - H1-H3 deterministic baseline package is reviewed for thesis readiness.
+- Thesis-facing H1-H3 summary tables exist and are traceable to deterministic
+  source artifacts.
+- Literature intake structure and strategy-agent architecture are documented.
+- Strategy/agent guardrails are enforced by project review checks.

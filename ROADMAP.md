@@ -169,7 +169,7 @@ Blockers:
 
 ## Phase 9: Thesis Export
 
-Status: active for thesis-facing result summaries
+Status: complete for initial thesis-facing result summaries
 
 Done criteria:
 
@@ -180,14 +180,13 @@ Done criteria:
 
 Blockers:
 
-- H1-H3 empirical baseline is reviewed, but thesis-facing result summary tables
-  and figure decisions are not prepared yet.
+- Figure decisions and Overleaf prose are not prepared yet.
 - Strong H3 conclusion wording remains limited by BUY-only source data, daily
   alignment, and multiple-testing sensitivity.
 
 ## Phase 10: Strategy Research Prototype
 
-Status: planned after thesis-facing H1-H3 summaries
+Status: active for literature intake and strategy specification
 
 Done criteria:
 
@@ -202,7 +201,6 @@ Done criteria:
 
 Blockers:
 
-- Thesis-facing H1-H3 summaries are not prepared yet.
 - Literature intake from local Perplexity/PDF sources is not indexed yet.
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of

@@ -546,3 +546,56 @@ Next step:
 
 - Prepare compact, traceable H1-H2-H3 result summary tables for thesis
   drafting.
+
+## 2026-05-19 - goal-thesis-result-summaries-001
+
+Task:
+
+- Align thesis methodology, literature intake, result summaries, and strategy
+  agent prototype architecture.
+
+Files changed:
+
+- `docs/research/RESEARCH_SPEC.md`
+- `ARCHITECTURE_DECISIONS.md`
+- `ROADMAP.md`
+- `GOAL.md`
+- `.gitignore`
+- `data/literature/literature_index.csv`
+- `docs/research/LITERATURE_MAP.md`
+- `operations/analysis/thesis_result_summaries.py`
+- `tests/test_thesis_result_summaries.py`
+- `data/results/thesis_h1_summary.csv`
+- `data/results/thesis_h2_summary.csv`
+- `data/results/thesis_h3_summary.csv`
+- `data/results/thesis_result_summary_metadata.json`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `operations/project/review_check.py`
+- `tests/test_project_automation.py`
+- `directives/roles/reviewer.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_thesis_result_summaries.py -q` -> 5 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_project_automation.py -q` -> 17 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 181 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_result_summaries` -> H1 9 rows, H2 15 rows, H3 13 rows.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check` -> PASS.
+
+Decision:
+
+- Operationalise informationelle Effizienz through deterministic H1, H2, and
+  H3 proxy tests.
+- Treat the strategy component as a backtested research prototype within the
+  thesis, not as live trading.
+- Treat future agents as signal generators whose hypotheses are validated by
+  Python backtests.
+- Keep Perplexity as discovery input only until local papers are indexed and
+  reviewed.
+
+Next step:
+
+- Import downloaded Perplexity/PDF literature sources locally and index them in
+  `data/literature/literature_index.csv`.

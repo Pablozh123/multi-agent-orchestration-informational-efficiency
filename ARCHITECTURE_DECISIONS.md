@@ -171,3 +171,18 @@ indexed papers or primary sources, not to unverified LLM summaries.
 
 Reason: literature grounding needs citation discipline and should not become an
 untracked prompt-memory dependency.
+
+### 19. Literature RAG Is Index-Bounded
+
+Future RAG-style literature use must retrieve only from sources listed in
+`data/literature/literature_index.csv`. Candidate sources may support discovery
+and question formation, but thesis-facing claims require reviewed or cited
+status. Retrieved snippets must remain traceable to `source_id`, local file, or
+URL.
+
+No vector database, embedding pipeline, agent orchestration, or MCP literature
+tool is active until the deterministic result summaries and audit boundaries are
+stable.
+
+Reason: local literature can support research without becoming an uncontrolled
+or unverifiable memory layer.

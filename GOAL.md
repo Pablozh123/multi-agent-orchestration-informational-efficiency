@@ -3,36 +3,38 @@
 ## Active Goal
 
 goal_id: goal-literature-intake-001
-title: Import and map Perplexity literature sources
+title: Review indexed Zotero literature for thesis synthesis
 status: active
 phase: Phase 10: Strategy Research Prototype
 why:
 - H1-H3 thesis-facing result summaries now exist.
 - The strategy/agent idea is scoped as a backtested research prototype, not as
   live trading.
-- Literature intake structure exists, but downloaded Perplexity/PDF sources are
-  not indexed yet.
+- The Zotero Polymarket source folder is indexed, but all imported sources are
+  still marked as `candidate`.
 deliverables:
-- Add local Perplexity/PDF source metadata to `data/literature/literature_index.csv`.
-- Map each source to H1, H2, H3, strategy prototype, or architecture.
-- Mark unreviewed discoveries as `candidate` until the paper is checked.
-- Keep raw PDFs and exports in ignored local storage only.
+- Review indexed Zotero sources one by one.
+- Keep source-level notes traceable to `source_id`.
+- Promote a source from `candidate` only after the underlying file or primary
+  source is checked.
+- Use literature to refine thesis framing, not to change empirical results
+  after seeing outputs.
 scope:
-- Literature metadata and research mapping only.
-- Perplexity output may guide discovery but not thesis claims.
+- Literature review, metadata cleanup, and RAG-ready source mapping only.
+- Zotero and Perplexity output may guide discovery but not thesis claims.
 out_of_scope:
 - New statistical code, new event selection, or backtest implementation.
 - Agents, MCP, model routing, ML, cloud deployment, and live trading.
 - Treating Perplexity summaries as cited evidence.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Literature index has one metadata row per imported source.
-- Every source has a topic, thesis mapping, status, and notes.
+- Indexed sources have reviewed notes before they are cited.
+- Every reviewed source has a topic, thesis mapping, status, and notes.
 - Raw PDFs/exports remain untracked.
 - No thesis claim is added from an unchecked Perplexity summary.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: index imported literature sources
+next_commit: docs: synthesize indexed literature for thesis methodology
 
 ## Decision Inputs For This Goal
 
@@ -59,6 +61,7 @@ next_commit: docs: index imported literature sources
   `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
 - Literature intake structure exists in `docs/research/LITERATURE_MAP.md` and
   `data/literature/literature_index.csv`.
+- Zotero Polymarket sources are indexed in `data/literature/literature_index.csv`.
 - ML scope and re-entry conditions are explicit in `docs/research/RESEARCH_SPEC.md`.
 - Codex workflow roles are separate from deferred thesis runtime agents.
 
@@ -100,4 +103,6 @@ next_commit: docs: index imported literature sources
 - Thesis-facing H1-H3 summary tables exist and are traceable to deterministic
   source artifacts.
 - Literature intake structure and strategy-agent architecture are documented.
+- Zotero Polymarket sources are indexed as candidate literature for RAG-ready
+  review.
 - Strategy/agent guardrails are enforced by project review checks.

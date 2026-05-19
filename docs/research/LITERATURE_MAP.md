@@ -37,6 +37,32 @@ Put downloaded PDFs, Perplexity exports, and other large local files in:
 That folder is intentionally ignored by Git. The tracked index stores only file
 names, metadata, and review notes.
 
+The current Zotero source folder is:
+
+- `C:\Users\chole\Zotero\Polymarket`
+
+Files may stay in Zotero instead of being copied into the repository. In that
+case, `data/literature/literature_index.csv` stores the local Zotero path and
+the same review-status rules apply.
+
+## RAG-Ready Use Policy
+
+The literature index is the retrieval boundary for future RAG-style work. A
+future literature assistant may retrieve from indexed sources, but it must obey
+these limits:
+
+- Only sources listed in `data/literature/literature_index.csv` are in scope.
+- `candidate` sources may be used for discovery and question formation only.
+- Thesis-facing claims require `reviewed` or `cited` status.
+- Web articles and Perplexity exports are context sources, not academic proof.
+- Retrieved snippets must be traced back to `source_id` and `local_file` or
+  `url`.
+- No vector database, embedding pipeline, agent orchestration, or MCP tool is
+  active yet.
+
+This gives the project a local RAG-ready source map without activating the
+deferred agent and MCP layers.
+
 ## Topic Categories
 
 Use one primary topic per source:
@@ -81,9 +107,8 @@ Use these `status` values in the CSV:
 
 ## Initial Open Tasks
 
-- Add the downloaded Polymarket, Kalshi, prediction-market, and backtesting
-  papers to `data/literature/raw/`.
-- Fill `data/literature/literature_index.csv` with one row per source.
+- Review the imported Zotero Polymarket sources one by one.
+- Extract thesis-relevant notes with `source_id` references.
 - Mark every imported Perplexity item as `candidate` until the underlying paper
   has been checked.
 - Link each reviewed paper to H1, H2, H3, strategy prototype, or architecture.

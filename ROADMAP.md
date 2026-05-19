@@ -186,7 +186,7 @@ Blockers:
 
 ## Phase 10: Strategy Research Prototype
 
-Status: active for literature intake and strategy specification
+Status: active for literature review and strategy specification
 
 Done criteria:
 
@@ -201,7 +201,8 @@ Done criteria:
 
 Blockers:
 
-- Literature intake from local Perplexity/PDF sources is not indexed yet.
+- Zotero Polymarket sources are indexed as `candidate`, but their claims are
+  not reviewed or citation-ready yet.
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.

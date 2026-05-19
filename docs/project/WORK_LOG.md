@@ -631,3 +631,39 @@ Next step:
 
 - Index the downloaded literature sources in
   `data/literature/literature_index.csv`.
+
+## 2026-05-19 - goal-literature-intake-001
+
+Task:
+
+- Index the local Zotero Polymarket folder as a RAG-ready literature source map.
+
+Files changed:
+
+- `ARCHITECTURE_DECISIONS.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `data/literature/literature_index.csv`
+- `docs/research/LITERATURE_MAP.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- CSV validation check -> 9 indexed sources, no missing required mapping fields.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> 181
+  passed through the project status run.
+
+Decision:
+
+- Treat `C:\Users\chole\Zotero\Polymarket` as the current local literature
+  source folder.
+- Keep all imported Zotero sources as `candidate` until the underlying source
+  is reviewed.
+- Allow future RAG-style use only through the tracked literature index; do not
+  activate embeddings, agents, MCP, or thesis claims from unchecked sources.
+
+Next step:
+
+- Read and synthesize indexed sources into thesis-methodology notes with
+  `source_id` references.

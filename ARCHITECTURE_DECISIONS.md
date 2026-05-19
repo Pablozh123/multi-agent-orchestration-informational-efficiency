@@ -2,7 +2,7 @@
 
 ## Status
 
-Binding architecture decisions for the thesis codebase as of 2026-05-17.
+Binding architecture decisions for the thesis codebase as of 2026-05-19.
 
 If this file conflicts with older prompt contracts, roadmap notes, Claude
 settings, or agent instructions, this file and `AGENTS.md` win.
@@ -137,3 +137,37 @@ Commits should be small and focused. Do not mix documentation synchronization,
 schema migrations, statistical pipelines, and agent changes in one commit.
 
 Reason: atomic commits make thesis development auditable and easier to review.
+
+### 16. Strategy Prototype Is Backtested Research Only
+
+A strategy component may be included in the thesis only as a historical
+backtest prototype. It must not execute live trades, manage real funds, or be
+described as a guaranteed profitable system.
+
+Required strategy backtest outputs include risk measures such as transaction
+cost assumptions, slippage assumptions, position limits, and maximum drawdown.
+Out-of-sample or walk-forward evaluation is required before any strategy claim
+is thesis-facing.
+
+Reason: a backtest can support research on signal usefulness, while live
+trading would introduce operational, legal, and risk-management scope that is
+too broad for the thesis.
+
+### 17. Agents May Propose Signals But Python Decides
+
+Future strategy agents may propose news, market-pattern, or wallet-signal
+hypotheses. They must not calculate Brier scores, CAR, Granger tests, wallet
+tiers, PnL, drawdown, or backtest metrics. Deterministic Python modules own
+validation and backtesting.
+
+Reason: this preserves reproducibility while still allowing an agent
+orchestration layer to support research discovery.
+
+### 18. Literature Intake Must Be Traceable
+
+Perplexity output, local PDFs, Zotero notes, and other literature sources are
+used for discovery and methodology support. Thesis claims must be traceable to
+indexed papers or primary sources, not to unverified LLM summaries.
+
+Reason: literature grounding needs citation discipline and should not become an
+untracked prompt-memory dependency.

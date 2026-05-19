@@ -8,6 +8,8 @@
   documented and tested.
 - Events must be curated before H2 event-window analysis.
 - Whale thresholds must be distribution-derived, not arbitrary.
+- Strategy work is a backtested research prototype only; no live trading or
+  profit guarantee belongs in the thesis.
 
 ## Phase 1: Project Synchronization And Foundation
 
@@ -182,3 +184,26 @@ Blockers:
   and figure decisions are not prepared yet.
 - Strong H3 conclusion wording remains limited by BUY-only source data, daily
   alignment, and multiple-testing sensitivity.
+
+## Phase 10: Strategy Research Prototype
+
+Status: planned after thesis-facing H1-H3 summaries
+
+Done criteria:
+
+- Signal hypotheses are generated from bounded summaries, literature notes, or
+  curated event candidates.
+- Python owns signal validation, backtesting, PnL, drawdown, and risk metrics.
+- Backtests include transaction costs, slippage assumptions, position limits,
+  and out-of-sample or walk-forward evaluation.
+- Agents are signal generators and reviewers only, not autonomous traders.
+- MCP tools expose read-only summaries and tested backtest results, not raw
+  table dumps or live trading functions.
+
+Blockers:
+
+- Thesis-facing H1-H3 summaries are not prepared yet.
+- Literature intake from local Perplexity/PDF sources is not indexed yet.
+- Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
+- Live trading, automated order execution, and profit guarantees are out of
+  scope.

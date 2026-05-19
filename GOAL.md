@@ -12,12 +12,16 @@ why:
   `docs/research/RESEARCH_SPEC.md`.
 - Thesis-facing result tables need compact, reproducible summaries before
   Overleaf export or interpretation-layer work.
+- The strategy/agent idea is now scoped as a later backtested research
+  prototype, not as live trading.
 deliverables:
 - Compact thesis-facing summary tables for H1, H2, and H3 baseline outputs.
 - Clear mapping from each summary table to its deterministic source artifact.
 - German thesis wording notes using Swiss spelling where thesis-facing text is
   introduced.
 - Figure/table readiness checklist for Overleaf export.
+- Literature intake and strategy-agent architecture docs that preserve the
+  deterministic-core rule.
 scope:
 - Summarise existing deterministic outputs only.
 - Keep source-filter metadata separate from analytical tier definitions.
@@ -28,11 +32,14 @@ out_of_scope:
 - Treating the source-filter minimum `amount_usd` as a whale threshold.
 - RCP probability transformation.
 - Intraday lead-lag claims.
+- Live trading, autonomous trading, or profitability guarantees.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
 - H1-H3 thesis-facing summary tables are traceable to deterministic outputs.
 - H3 wording remains limited to predictive timing diagnostics.
 - RCP and intraday limitations remain explicit.
+- Strategy agents are scoped as signal generators whose hypotheses are
+  validated by Python backtests.
 - Output avoids raw table dumps into prompts and preserves source-filter
   metadata separately.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
@@ -57,6 +64,8 @@ next_commit: docs: prepare h1 h2 h3 thesis result summaries
   `docs/research/WHALE_METHOD.md`.
 - H1-H3 empirical baseline review is accepted in
   `docs/research/RESEARCH_SPEC.md`.
+- Backtested strategy prototype boundaries are recorded in
+  `ARCHITECTURE_DECISIONS.md` and `ROADMAP.md`.
 - ML scope and re-entry conditions are explicit in `docs/research/RESEARCH_SPEC.md`.
 - Codex workflow roles are separate from deferred thesis runtime agents.
 

@@ -11,6 +11,63 @@ whether Polymarket prices are better calibrated, react faster to curated public
 events, and whether wallet activity contains dataset-relative early signal
 patterns.
 
+## Operationalising Informational Efficiency
+
+Informational efficiency is measured through deterministic proxy tests rather
+than asserted directly. The thesis treats Polymarket's probability path as the
+primary market time series and asks whether that path is accurate, responsive,
+and preceded by observable wallet activity.
+
+H1 measures forecast quality:
+
+- Primary object: daily Polymarket probability for the 2024 US presidential
+  election outcome.
+- Comparison sources: FiveThirtyEight probability rows and deterministic
+  baselines.
+- Metric family: Brier Score, calibration/reliability where appropriate, and
+  Diebold-Mariano comparison of loss series.
+- Interpretation: lower loss supports better forecast quality over the tested
+  overlap window, not faster information integration by itself.
+
+H2 measures event-window response:
+
+- Primary object: Polymarket daily probability changes around pre-curated
+  public events.
+- News handling: news articles are not interpreted freely by an LLM; they enter
+  the empirical design only as curated, sourced events with fixed timestamps.
+- Metric family: daily event-window abnormal changes and compact CAR-style
+  summaries.
+- Interpretation: event-window movement supports claims about daily reaction
+  patterns, not intraday speed unless intraday prices are added later.
+
+H3 measures early-signal structure:
+
+- Primary object: dataset-relative wallet-tier activity before or around market
+  price changes.
+- Metric family: distribution-derived wallet tiers, daily activity panels,
+  lead-time histograms, lead-lag correlations, and Granger tests.
+- Interpretation: results can support predictive timing diagnostics under model
+  assumptions, not proof of true causality or private information.
+
+Context sources:
+
+- Traditional polls and forecasts provide comparison signals when their
+  probability interpretation is documented.
+- GDELT/news sentiment remains contextual until a separate validation note
+  justifies using it as a deterministic empirical variable.
+- Literature from Perplexity, Zotero, or local PDFs informs theory and
+  methodology. It is not an empirical result unless translated into a
+  deterministic, tested data pipeline.
+
+Strategy prototype boundary:
+
+- A backtested strategy prototype may be included as a research extension after
+  H1-H3 summaries are stable.
+- Agents may propose signal hypotheses, but Python must validate, backtest, and
+  calculate all results.
+- No live trading, no profit guarantee, and no autonomous trading claims are in
+  scope for the thesis.
+
 ## Hypotheses
 
 H1: Brier Score calibration
@@ -74,6 +131,11 @@ the deterministic empirical pipeline is complete and reviewed.
 Agents and MCP are interpretation and demo layers only. They remain deferred
 until deterministic H1, H2, and H3 outputs exist, pass tests, and have written
 methodology notes.
+
+Signal-generating agents may be specified as a thesis research prototype only
+after the deterministic summaries and bounded tool contracts exist. They may
+suggest hypotheses for Python backtests; they must not calculate metrics or
+execute trades.
 
 ## Empirical Baseline Review
 

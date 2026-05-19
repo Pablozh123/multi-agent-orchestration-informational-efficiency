@@ -95,8 +95,8 @@ Literature anchors:
 - `zotero_poly_002` for the prediction-market-versus-polling comparison frame.
 - `zotero_poly_006` and `zotero_poly_007` for microstructure, volatility, bias,
   and risk caveats.
-- `zotero_poly_004` is rejected until replaced by a verifiable canonical EMH
-  source.
+- `lit_emh_001` for the canonical efficient-market-hypothesis framing.
+- `zotero_poly_004` is rejected and must not be cited.
 
 ### 2. Data Sources
 

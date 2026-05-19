@@ -186,7 +186,7 @@ Blockers:
 
 ## Phase 10: Strategy Research Prototype
 
-Status: active for citation cleanup and strategy specification
+Status: active for thesis table and figure planning
 
 Done criteria:
 
@@ -201,8 +201,7 @@ Done criteria:
 
 Blockers:
 
-- A canonical EMH source should replace the rejected local `EMH.pdf` before
-  final thesis prose cites EMH theory.
+- Thesis table and figure plan is not prepared yet.
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.

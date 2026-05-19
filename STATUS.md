@@ -3,37 +3,41 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-19 14:55
+Generated: 2026-05-19 14:57
 
-Current goal: `goal-canonical-emh-source-001` - Add canonical EMH source before thesis prose
+Current goal: `goal-thesis-tables-figures-plan-001` - Prepare thesis tables and figures plan
 
 Current roadmap phase: Phase 10: Strategy Research Prototype
 
 Test status: PASS
 
-Pytest summary: `181 passed in 6.59s`
+Pytest summary: `181 passed in 6.62s`
 
 Git branch: `main`
 
-Latest commit: `e025b4d`
+Latest commit: `f6bd452`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
+ M data/literature/literature_index.csv
  M docs/project/WORK_LOG.md
+ M docs/research/LITERATURE_MAP.md
  M docs/research/RESEARCH_SPEC.md
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                        |  42 +++++------
- ROADMAP.md                     |   4 +-
- docs/project/WORK_LOG.md       |  32 ++++++++
- docs/research/RESEARCH_SPEC.md | 162 +++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 213 insertions(+), 27 deletions(-)
+ GOAL.md                              | 30 ++++++++++++++++--------------
+ ROADMAP.md                           |  5 ++---
+ data/literature/literature_index.csv |  3 ++-
+ docs/project/WORK_LOG.md             | 31 +++++++++++++++++++++++++++++++
+ docs/research/LITERATURE_MAP.md      | 13 +++++++++----
+ docs/research/RESEARCH_SPEC.md       |  4 ++--
+ 6 files changed, 62 insertions(+), 24 deletions(-)
 ```
 
 Blockers:
@@ -42,7 +46,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: add canonical emh literature source
+- docs: plan thesis tables and figures
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

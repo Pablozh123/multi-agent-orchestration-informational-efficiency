@@ -105,8 +105,15 @@ Rejected or blocked local PDFs:
 
 - `zotero_poly_004` is rejected for thesis use in its current form. The local
   `EMH.pdf` metadata/text could not be reliably read, so it must not be cited.
-  Replace it with a canonical EMH source such as Fama's 1970 review before
-  thesis prose relies on EMH theory.
+  It is replaced for citation planning by `lit_emh_001`.
+
+Canonical theory source:
+
+- `lit_emh_001`: Fama's 1970 review is the canonical EMH source for defining
+  informational market efficiency. In this thesis it should be used to motivate
+  the research question and proxy-test logic, not to assume that Polymarket is
+  efficient. The empirical evidence remains the deterministic H1-H2-H3 output
+  package.
 
 Remaining PDF review:
 
@@ -177,8 +184,6 @@ Use these `status` values in the CSV:
 
 ## Initial Open Tasks
 
-- Replace or supplement `zotero_poly_004` with a verifiable canonical EMH
-  source before citing EMH theory.
 - Convert the literature synthesis into the thesis methodology outline.
 - Extract full-paper notes for high-relevance academic sources before marking
   them `reviewed` or `cited`.

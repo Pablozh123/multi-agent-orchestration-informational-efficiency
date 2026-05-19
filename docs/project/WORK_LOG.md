@@ -764,3 +764,34 @@ Next step:
 
 - Add a canonical EMH literature source to replace the rejected local
   `EMH.pdf`.
+
+## 2026-05-19 - goal-canonical-emh-source-001
+
+Task:
+
+- Add a canonical EMH source for thesis citation planning.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `data/literature/literature_index.csv`
+- `docs/research/LITERATURE_MAP.md`
+- `docs/research/RESEARCH_SPEC.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- Literature CSV validation -> 10 rows, 8 `skimmed`, 1 `candidate`, 1
+  `rejected`, no missing required fields.
+
+Decision:
+
+- Keep rejected local `EMH.pdf` non-citable.
+- Add `lit_emh_001` for Fama's 1970 efficient capital markets review.
+- Use EMH theory to frame the research question and proxy tests, not to assume
+  that Polymarket is efficient.
+
+Next step:
+
+- Plan thesis-facing tables and figures from deterministic result artifacts.

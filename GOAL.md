@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-canonical-emh-source-001
-title: Add canonical EMH source before thesis prose
+goal_id: goal-thesis-tables-figures-plan-001
+title: Prepare thesis tables and figures plan
 status: active
 phase: Phase 10: Strategy Research Prototype
 why:
@@ -11,15 +11,15 @@ why:
 - The strategy/agent idea is scoped as a backtested research prototype, not as
   live trading.
 - The literature-backed thesis methodology outline now exists.
-- The local `EMH.pdf` source was rejected because it could not be verified.
-- Final thesis prose still needs a verifiable canonical EMH reference before
-  relying on market-efficiency theory.
+- A canonical EMH source now exists in the literature index.
+- The thesis now needs a concise plan for which deterministic tables and figures
+  will enter the written bachelor thesis.
 deliverables:
-- Add or replace the rejected EMH source with a verifiable canonical reference.
-- Keep the replacement traceable in `data/literature/literature_index.csv`.
-- Update literature notes so EMH theory is citation-safe.
+- Identify thesis-facing H1, H2, and H3 tables and figures.
+- Map each table or figure to a deterministic source artifact.
+- Mark missing or optional visuals without generating new analysis.
 scope:
-- Literature metadata and citation safety only.
+- Documentation-only table and figure planning.
 - No empirical results change.
 out_of_scope:
 - New statistical code, new event selection, or backtest implementation.
@@ -27,13 +27,12 @@ out_of_scope:
 - Treating Perplexity summaries as cited evidence.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- EMH source has title, author, year, venue, URL or DOI, thesis mapping, status,
-  and notes.
-- The rejected local `EMH.pdf` is not cited as evidence.
-- Literature map records how EMH theory may be used cautiously in this thesis.
+- Each proposed thesis table or figure has a source artifact path.
+- Optional or missing visuals are clearly labelled as future work.
+- No new statistical results are generated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add canonical emh literature source
+next_commit: docs: plan thesis tables and figures
 
 ## Decision Inputs For This Goal
 
@@ -64,6 +63,8 @@ next_commit: docs: add canonical emh literature source
 - Remaining local Zotero PDFs are classified as skimmed or rejected for thesis
   use.
 - Thesis methodology outline exists in `docs/research/RESEARCH_SPEC.md`.
+- Canonical EMH source `lit_emh_001` exists in
+  `data/literature/literature_index.csv`.
 - ML scope and re-entry conditions are explicit in `docs/research/RESEARCH_SPEC.md`.
 - Codex workflow roles are separate from deferred thesis runtime agents.
 
@@ -113,4 +114,5 @@ next_commit: docs: add canonical emh literature source
   are skimmed; `zotero_poly_004` is rejected until replaced by a verifiable EMH
   source.
 - Literature-backed thesis methodology outline exists.
+- Canonical EMH source is indexed; rejected local `EMH.pdf` remains non-citable.
 - Strategy/agent guardrails are enforced by project review checks.

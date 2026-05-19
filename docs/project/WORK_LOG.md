@@ -667,3 +667,35 @@ Next step:
 
 - Read and synthesize indexed sources into thesis-methodology notes with
   `source_id` references.
+
+## 2026-05-19 - goal-literature-intake-001
+
+Task:
+
+- Create an initial thesis-methodology synthesis from indexed Zotero sources.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `data/literature/literature_index.csv`
+- `docs/research/LITERATURE_MAP.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- Literature CSV validation -> 9 rows, 5 `skimmed`, 4 `candidate`, no missing
+  required fields.
+
+Decision:
+
+- Use skimmed arXiv, SSRN, and local HTML sources to frame H1-H3 and the
+  strategy prototype.
+- Keep remaining unverified local PDFs as `candidate`.
+- Do not treat industry articles or AI-assisted articles as academic evidence.
+- Keep RAG-style use index-bound and inactive until a future reviewed retrieval
+  layer is specified.
+
+Next step:
+
+- Verify the remaining local PDFs and add source-level notes before citation.

@@ -10,8 +10,10 @@ why:
 - H1-H3 thesis-facing result summaries now exist.
 - The strategy/agent idea is scoped as a backtested research prototype, not as
   live trading.
-- The Zotero Polymarket source folder is indexed, but all imported sources are
-  still marked as `candidate`.
+- The Zotero Polymarket source folder is indexed and an initial source-page
+  synthesis exists.
+- Several local PDFs still need bibliographic verification and source-level
+  notes before they can be used in thesis prose.
 deliverables:
 - Review indexed Zotero sources one by one.
 - Keep source-level notes traceable to `source_id`.
@@ -34,7 +36,7 @@ acceptance_criteria:
 - No thesis claim is added from an unchecked Perplexity summary.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: synthesize indexed literature for thesis methodology
+next_commit: docs: review remaining zotero pdf sources
 
 ## Decision Inputs For This Goal
 
@@ -105,4 +107,6 @@ next_commit: docs: synthesize indexed literature for thesis methodology
 - Literature intake structure and strategy-agent architecture are documented.
 - Zotero Polymarket sources are indexed as candidate literature for RAG-ready
   review.
+- Initial literature synthesis exists for skimmed source pages and local HTML
+  files.
 - Strategy/agent guardrails are enforced by project review checks.

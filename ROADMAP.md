@@ -201,8 +201,8 @@ Done criteria:
 
 Blockers:
 
-- Zotero Polymarket sources are indexed as `candidate`, but their claims are
-  not reviewed or citation-ready yet.
+- Initial Zotero literature synthesis exists, but several local PDFs still need
+  bibliographic verification before thesis citation.
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.

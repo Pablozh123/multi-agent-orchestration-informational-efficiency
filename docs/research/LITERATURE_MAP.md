@@ -63,6 +63,62 @@ these limits:
 This gives the project a local RAG-ready source map without activating the
 deferred agent and MCP layers.
 
+## Initial Literature Synthesis
+
+Review date: 2026-05-19
+
+Review level: skimmed source pages and local HTML where available. Full-paper
+claims remain blocked until each source is read and moved to `reviewed` or
+`cited`.
+
+High-relevance academic sources:
+
+- `zotero_poly_001`: The Polymarket transaction-level paper is central for H3
+  and useful for H2. Its main methodological value is that on-chain activity is
+  not automatically equal to exchange-equivalent trading volume; minting,
+  burning, conversion, and exchange activity need to be distinguished before
+  strong wallet or volume claims are made. This supports the current caution
+  around BUY-only wallet data and argues for careful source-filter metadata.
+- `zotero_poly_002`: The betting-markets-versus-polling paper supports the H1
+  comparison frame between market probabilities and traditional polling or
+  forecast sources. It does not remove the project rule that RCP needs a
+  documented probability transformation before Brier or calibration use.
+- `zotero_poly_006`: The Kalshi microstructure paper is most useful for the
+  later strategy prototype and risk discussion. Its maker/taker and
+  favourite-longshot framing supports adding microstructure caveats before any
+  backtested strategy claim.
+
+Context and discovery sources:
+
+- `zotero_poly_003`: Useful as a non-academic industry framing source for why
+  prediction markets are often compared with polls. It should not be used as
+  evidence for H1.
+- `zotero_poly_008`: Useful mainly as a warning example. The article contains
+  strong claims about whales, insider information, and profits, so it reinforces
+  the repository rule that H3 language must stay with predictive timing
+  diagnostics rather than misconduct or profitability claims.
+- `zotero_poly_009`: Useful for contextual framing of Polymarket as an
+  information-discovery product and for product/market background. It is not a
+  substitute for peer-reviewed or primary-source evidence.
+
+Unverified local PDFs:
+
+- `zotero_poly_004`, `zotero_poly_005`, and `zotero_poly_007` still require
+  bibliographic verification and full reading before thesis use.
+
+Methodological implications:
+
+- H1 remains a forecast-quality comparison. Literature can motivate the
+  Polymarket-versus-polls question, but deterministic Brier and Diebold-Mariano
+  outputs remain the evidence.
+- H2 remains event-window analysis over curated events. Literature may explain
+  why events matter, but it must not be used to add or remove events after
+  seeing the Polymarket reaction.
+- H3 remains a dataset-relative timing analysis. Literature on whale episodes
+  and transaction accounting supports caution, not stronger causal wording.
+- Strategy work remains a historical backtest prototype with explicit risk and
+  microstructure assumptions.
+
 ## Topic Categories
 
 Use one primary topic per source:

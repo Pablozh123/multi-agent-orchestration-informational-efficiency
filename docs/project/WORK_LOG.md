@@ -825,3 +825,43 @@ Decision:
 Next step:
 
 - Generate thesis-ready result figures from existing deterministic artifacts.
+
+## 2026-05-19 - goal-thesis-figures-001
+
+Task:
+
+- Generate thesis-ready H2 and H3 figures from existing deterministic result
+  artifacts.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/RESEARCH_SPEC.md`
+- `docs/project/WORK_LOG.md`
+- `operations/analysis/thesis_figures.py`
+- `tests/test_thesis_figures.py`
+- `data/results/thesis_h2_event_window_car.png`
+- `data/results/thesis_h3_wallet_tier_counts.png`
+- `data/results/thesis_h3_lead_time_amount.png`
+- `data/results/thesis_h3_granger_pvalues.png`
+- `data/results/thesis_figures_metadata.json`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_thesis_figures.py -q` -> 2
+  passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_figures` -> 4
+  PNG figures and metadata generated.
+
+Decision:
+
+- Generate only visualisations from existing H2/H3 result artifacts.
+- Do not calculate new statistics or alter empirical outputs.
+- Keep figure interpretations bound to the existing daily-window, BUY-only,
+  non-causal, and multiple-testing caveats.
+
+Next step:
+
+- Draft the thesis results narrative skeleton from the deterministic tables and
+  figures.

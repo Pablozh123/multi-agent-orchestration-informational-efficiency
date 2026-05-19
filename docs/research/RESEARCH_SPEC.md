@@ -294,36 +294,42 @@ Figure 1: H1 reliability curve
 
 Figure 2: H2 event-window movement overview
 
+- Figure artifact: `data/results/thesis_h2_event_window_car.png`
 - Source artifact: `data/results/h2_event_window_summary.csv`
 - Supporting artifact: `data/results/h2_event_window_rows.csv`
 - Thesis role: visualise final CAR-style daily event-window movements.
-- Status: optional future figure; currently table-ready, no figure artifact
-  exists yet.
+- Status: ready.
 
 Figure 3: H3 wallet-tier distribution
 
+- Figure artifact: `data/results/thesis_h3_wallet_tier_counts.png`
 - Source artifact: `data/results/h3_wallet_distribution_inventory.json`
 - Supporting artifact: `data/results/h3_wallet_tiers.csv`
 - Thesis role: visualise dataset-relative wallet tier cutoffs and counts.
-- Status: optional future figure; current summary is table-ready.
+- Status: ready.
 
 Figure 4: H3 lead-time histogram
 
+- Figure artifact: `data/results/thesis_h3_lead_time_amount.png`
 - Source artifact: `data/results/h3_lead_time_histograms.csv`
 - Supporting artifact: `data/results/h3_lead_time_event_rows.csv`
 - Thesis role: visualise descriptive tier activity around selected movements or
   events.
-- Status: optional future figure; no new interpretation beyond descriptive
-  timing patterns.
+- Status: ready; no new interpretation beyond descriptive timing patterns.
 
 Figure 5: H3 lead-lag or Granger diagnostic overview
 
+- Figure artifact: `data/results/thesis_h3_granger_pvalues.png`
 - Source artifact: `data/results/h3_granger_results.csv`
 - Supporting artifacts: `data/results/h3_lead_lag_correlations.csv`,
   `data/results/h3_granger_metadata.json`
 - Thesis role: summarise predictive timing diagnostics.
-- Status: optional future figure; must include multiple-testing and non-causal
-  caveats.
+- Status: ready; must include multiple-testing and non-causal caveats.
+
+Figure metadata:
+
+- Source artifact: `data/results/thesis_figures_metadata.json`
+- Status: ready.
 
 ### Excluded Or Deferred Visuals
 

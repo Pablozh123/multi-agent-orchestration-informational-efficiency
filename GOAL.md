@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-thesis-figures-001
-title: Generate thesis-ready figures from existing artifacts
+goal_id: goal-thesis-results-narrative-001
+title: Draft thesis results narrative skeleton
 status: active
 phase: Phase 10: Strategy Research Prototype
 why:
@@ -12,29 +12,31 @@ why:
   live trading.
 - The literature-backed thesis methodology outline now exists.
 - A canonical EMH source now exists in the literature index.
-- The thesis tables and figures plan now identifies ready tables and optional
-  figures.
-- Several thesis figures can be generated from existing result artifacts without
-  new statistical calculations.
+- Thesis-ready figures now exist for H2 and H3 in addition to the existing H1
+  reliability curve.
+- The thesis now needs a safe results narrative skeleton that states what can
+  and cannot be concluded from H1-H3.
 deliverables:
-- Generate thesis-ready figure artifacts from existing H1-H3 result files.
-- Keep figure generation deterministic and reproducible.
-- Do not compute new statistical metrics.
+- Draft a results narrative skeleton for H1, H2, H3, and the strategy prototype
+  boundary.
+- Tie each narrative block to deterministic tables, figures, and limitations.
+- Keep wording compatible with the approved claim boundaries.
 scope:
-- Deterministic plotting from existing result artifacts.
-- Figure metadata and documentation updates.
+- Documentation-only thesis writing structure.
+- Existing deterministic tables, figures, and literature sources only.
 out_of_scope:
 - New statistical code, new event selection, or backtest implementation.
 - Agents, MCP, model routing, ML, cloud deployment, and live trading.
 - Treating Perplexity summaries as cited evidence.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Generated figures reference existing source artifacts.
-- Figure code has focused tests where reasonable.
-- No new statistical metrics are calculated.
+- Results narrative skeleton separates evidence, interpretation, and
+  limitations.
+- No causal, insider-trading, intraday, RCP-probability, live-trading, or profit
+  guarantee claims are introduced.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: generate thesis-ready result figures
+next_commit: docs: draft thesis results narrative skeleton
 
 ## Decision Inputs For This Goal
 
@@ -68,6 +70,7 @@ next_commit: feat: generate thesis-ready result figures
 - Canonical EMH source `lit_emh_001` exists in
   `data/literature/literature_index.csv`.
 - Thesis tables and figures plan exists in `docs/research/RESEARCH_SPEC.md`.
+- Thesis-ready figure artifacts exist in `data/results/`.
 - ML scope and re-entry conditions are explicit in `docs/research/RESEARCH_SPEC.md`.
 - Codex workflow roles are separate from deferred thesis runtime agents.
 
@@ -119,4 +122,6 @@ next_commit: feat: generate thesis-ready result figures
 - Literature-backed thesis methodology outline exists.
 - Canonical EMH source is indexed; rejected local `EMH.pdf` remains non-citable.
 - Thesis tables and figures plan exists.
+- Thesis-ready H2 and H3 figure artifacts are generated from existing result
+  files.
 - Strategy/agent guardrails are enforced by project review checks.

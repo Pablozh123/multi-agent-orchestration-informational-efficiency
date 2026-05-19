@@ -599,3 +599,35 @@ Next step:
 
 - Import downloaded Perplexity/PDF literature sources locally and index them in
   `data/literature/literature_index.csv`.
+
+## 2026-05-19 - goal-literature-intake-001
+
+Task:
+
+- Verify that the thesis-goal, literature-intake, strategy-agent, and
+  backtest-prototype alignment plan is already implemented and current.
+
+Files changed:
+
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check` -> 181 passed
+  through the project guardrail check.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan` -> no
+  unstaged file changes detected before the status/work-log refresh.
+
+Decision:
+
+- No additional architecture files are needed for this plan.
+- The current active goal remains literature intake and source indexing.
+- Do not invent literature rows; wait for actual local PDFs or Perplexity
+  exports before filling `data/literature/literature_index.csv`.
+
+Next step:
+
+- Index the downloaded literature sources in
+  `data/literature/literature_index.csv`.

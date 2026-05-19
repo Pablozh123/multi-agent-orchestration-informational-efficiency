@@ -2,41 +2,46 @@
 
 ## Active Goal
 
-goal_id: goal-literature-intake-001
-title: Review indexed Zotero literature for thesis synthesis
+goal_id: goal-methodology-outline-001
+title: Prepare literature-backed thesis methodology outline
 status: active
 phase: Phase 10: Strategy Research Prototype
 why:
 - H1-H3 thesis-facing result summaries now exist.
 - The strategy/agent idea is scoped as a backtested research prototype, not as
   live trading.
-- The Zotero Polymarket source folder is indexed and an initial source-page
+- The Zotero Polymarket source folder is indexed and initial literature
   synthesis exists.
-- Several local PDFs still need bibliographic verification and source-level
-  notes before they can be used in thesis prose.
+- Remaining local PDFs have been classified as skimmed or rejected for thesis
+  use.
+- The thesis now needs a clear methodology outline that connects literature,
+  H1-H3 deterministic outputs, limitations, and the deferred strategy-agent
+  prototype.
 deliverables:
-- Review indexed Zotero sources one by one.
-- Keep source-level notes traceable to `source_id`.
-- Promote a source from `candidate` only after the underlying file or primary
-  source is checked.
-- Use literature to refine thesis framing, not to change empirical results
-  after seeing outputs.
+- Draft a methodology outline for the thesis.
+- Map each methodology section to deterministic source artifacts and literature
+  `source_id`s.
+- Separate empirical evidence from contextual literature.
+- Keep strategy-agent orchestration as a future research prototype section, not
+  as part of H1-H3 calculation.
 scope:
-- Literature review, metadata cleanup, and RAG-ready source mapping only.
-- Zotero and Perplexity output may guide discovery but not thesis claims.
+- Thesis methodology structure and citation-safe framing.
+- Existing deterministic outputs and indexed literature only.
 out_of_scope:
 - New statistical code, new event selection, or backtest implementation.
 - Agents, MCP, model routing, ML, cloud deployment, and live trading.
 - Treating Perplexity summaries as cited evidence.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Indexed sources have reviewed notes before they are cited.
-- Every reviewed source has a topic, thesis mapping, status, and notes.
-- Raw PDFs/exports remain untracked.
-- No thesis claim is added from an unchecked Perplexity summary.
+- Methodology outline distinguishes H1, H2, H3, limitations, and strategy
+  prototype scope.
+- Every thesis-facing claim type points to a deterministic artifact or an
+  indexed literature source.
+- RCP, intraday H2, H3 causal wording, ML, agents, MCP, and live trading remain
+  scoped correctly.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: review remaining zotero pdf sources
+next_commit: docs: draft thesis methodology outline
 
 ## Decision Inputs For This Goal
 
@@ -64,6 +69,8 @@ next_commit: docs: review remaining zotero pdf sources
 - Literature intake structure exists in `docs/research/LITERATURE_MAP.md` and
   `data/literature/literature_index.csv`.
 - Zotero Polymarket sources are indexed in `data/literature/literature_index.csv`.
+- Remaining local Zotero PDFs are classified as skimmed or rejected for thesis
+  use.
 - ML scope and re-entry conditions are explicit in `docs/research/RESEARCH_SPEC.md`.
 - Codex workflow roles are separate from deferred thesis runtime agents.
 
@@ -109,4 +116,7 @@ next_commit: docs: review remaining zotero pdf sources
   review.
 - Initial literature synthesis exists for skimmed source pages and local HTML
   files.
+- Remaining local PDFs are reviewed: `zotero_poly_005` and `zotero_poly_007`
+  are skimmed; `zotero_poly_004` is rejected until replaced by a verifiable EMH
+  source.
 - Strategy/agent guardrails are enforced by project review checks.

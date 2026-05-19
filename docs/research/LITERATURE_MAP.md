@@ -101,10 +101,24 @@ Context and discovery sources:
   information-discovery product and for product/market background. It is not a
   substitute for peer-reviewed or primary-source evidence.
 
-Unverified local PDFs:
+Rejected or blocked local PDFs:
 
-- `zotero_poly_004`, `zotero_poly_005`, and `zotero_poly_007` still require
-  bibliographic verification and full reading before thesis use.
+- `zotero_poly_004` is rejected for thesis use in its current form. The local
+  `EMH.pdf` metadata/text could not be reliably read, so it must not be cited.
+  Replace it with a canonical EMH source such as Fama's 1970 review before
+  thesis prose relies on EMH theory.
+
+Remaining PDF review:
+
+- `zotero_poly_005`: Robin Hanson's insider-trading and prediction-market paper
+  is relevant as conceptual/legal background for H3. It reinforces the need to
+  distinguish information aggregation from legal or misconduct claims. It does
+  not justify calling observed wallet timing `insider trading`.
+- `zotero_poly_007`: The Charles University diploma thesis on Polymarket
+  convergence, volatility, and biases is useful for positioning this project
+  against prior Polymarket research. It supports keeping volatility,
+  behavioural-bias, and risk-management caveats visible in H1/H2/strategy
+  wording. It does not replace this project's deterministic outputs.
 
 Methodological implications:
 
@@ -163,8 +177,9 @@ Use these `status` values in the CSV:
 
 ## Initial Open Tasks
 
-- Review the imported Zotero Polymarket sources one by one.
-- Extract thesis-relevant notes with `source_id` references.
-- Mark every imported Perplexity item as `candidate` until the underlying paper
-  has been checked.
-- Link each reviewed paper to H1, H2, H3, strategy prototype, or architecture.
+- Replace or supplement `zotero_poly_004` with a verifiable canonical EMH
+  source before citing EMH theory.
+- Convert the literature synthesis into the thesis methodology outline.
+- Extract full-paper notes for high-relevance academic sources before marking
+  them `reviewed` or `cited`.
+- Keep every thesis-facing literature claim traceable to `source_id`.

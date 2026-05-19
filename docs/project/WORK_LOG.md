@@ -699,3 +699,36 @@ Decision:
 Next step:
 
 - Verify the remaining local PDFs and add source-level notes before citation.
+
+## 2026-05-19 - goal-literature-intake-001
+
+Task:
+
+- Review remaining Zotero PDF sources and advance the active goal.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `data/literature/literature_index.csv`
+- `docs/research/LITERATURE_MAP.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- Literature CSV validation -> 9 rows, 7 `skimmed`, 1 `candidate`, 1
+  `rejected`, no missing required fields.
+
+Decision:
+
+- `zotero_poly_005` is Robin Hanson's prediction-market insider-trading paper
+  and is useful only for conceptual/legal H3 framing.
+- `zotero_poly_007` is Pavel Rezabek's Charles University Polymarket diploma
+  thesis and is useful for volatility, convergence, and bias framing.
+- `zotero_poly_004` is rejected for thesis use because the local `EMH.pdf`
+  could not be verified.
+
+Next step:
+
+- Draft the thesis methodology outline using deterministic outputs and indexed
+  literature sources.

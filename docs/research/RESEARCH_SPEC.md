@@ -555,6 +555,185 @@ The first empirical package should close with a balanced statement:
   market efficiency, insider activity, intraday speed, or strategy
   profitability.
 
+## Overleaf-Ready Results Chapter Draft
+
+This draft is thesis-facing prose prepared for later Overleaf transfer. It uses
+Swiss spelling conventions and keeps the interpretation tied to deterministic
+source artifacts. Table and figure references are placeholders and should be
+renumbered in the final LaTeX document.
+
+### Kapitelauftakt
+
+Die empirische Analyse operationalisiert informationelle Effizienz nicht als
+direkt beobachtbare Eigenschaft, sondern ueber drei nachvollziehbare
+Teilperspektiven. Erstens wird geprueft, ob die Polymarket-Wahrscheinlichkeiten
+im untersuchten Ueberlappungszeitraum eine geringere Prognoseabweichung
+aufweisen als vergleichbare traditionelle Prognosequellen. Zweitens wird
+untersucht, ob sich die Polymarket-Wahrscheinlichkeiten in taeglichen
+Event-Fenstern um vorab kuratierte politische Ereignisse in plausibler Weise
+bewegen. Drittens wird analysiert, ob aggregierte Wallet-Aktivitaet
+dataset-relativer Wallet-Tiers zeitliche Muster vor oder um Preisbewegungen
+zeigt.
+
+Alle Resultate in diesem Kapitel stammen aus deterministischen Python-Outputs
+unter `data/results/`. Die verwendeten Tabellen und Abbildungen sind deshalb
+nicht als freie Interpretation eines Sprachmodells zu verstehen, sondern als
+kompakte Darstellung reproduzierbarer Artefakte. Die Resultate erlauben eine
+strukturierte Diskussion der informationellen Effizienz im Fall Polymarket
+waehrend der US-Wahl 2024. Sie beweisen jedoch nicht, dass Polymarket allgemein,
+in allen Maerkten oder in zukuenftigen Wahlzyklen effizient ist.
+
+### H1: Prognosequalitaet
+
+Die erste Hypothese vergleicht die Prognosequalitaet von Polymarket mit
+FiveThirtyEight und einfachen deterministischen Baselines. Grundlage ist ein
+taeglicher Ueberlappungszeitraum von 194 Beobachtungen zwischen dem
+1. Maerz 2024 und dem 12. September 2024. Fuer jede Quelle wurde der Brier
+Score als quadrierter Prognosefehler berechnet; zusaetzlich wurden
+Diebold-Mariano-Vergleiche der Verlustreihen erstellt. Die entsprechenden
+Artefakte sind `data/results/thesis_h1_summary.csv`,
+`data/results/h1_brier_scores.csv`, `data/results/h1_diebold_mariano.json` und
+`data/results/h1_reliability_curve.png`.
+
+Im aktuellen Baseline-Output liegt der mittlere Brier Score von Polymarket bei
+0.2303, waehrend FiveThirtyEight bei 0.3324 liegt. Die einfache 50-Prozent-
+Baseline liegt bei 0.2500. Damit zeigt die erste Auswertung, dass Polymarket im
+getesteten Ueberlappungszeitraum eine tiefere quadratische
+Prognoseabweichung aufweist als FiveThirtyEight und auch besser abschneidet als
+die konstante 50-Prozent-Baseline. Der Diebold-Mariano-Vergleich zwischen
+Polymarket und FiveThirtyEight weist im Output einen sehr kleinen p-Wert aus
+(`6.71e-61`), was auf deutliche Unterschiede in den berechneten Verlustreihen
+hinweist.
+
+Diese Evidenz stuetzt eine vorsichtige Aussage zur Prognosequalitaet:
+Polymarket war im untersuchten Zeitraum gemaess Brier Score besser kalibriert
+bzw. hatte tiefere Prognoseverluste als die beruecksichtigte
+FiveThirtyEight-Reihe. Daraus folgt jedoch noch keine Aussage zur
+Reaktionsgeschwindigkeit. Besonders wichtig ist, dass der Brier Score der
+Vortags-Polymarket-Baseline mit 0.2303 nahezu identisch zum aktuellen
+Polymarket-Wert ist; der Diebold-Mariano-Vergleich zwischen Polymarket und der
+Vortags-Baseline ist entsprechend nicht auffaellig (`p = 0.9822`). H1 sollte
+daher als Prognosequalitaetsvergleich und nicht als Speed-Test interpretiert
+werden. RealClearPolitics bleibt in dieser Auswertung ausgeschlossen, bis eine
+dokumentierte und getestete Wahrscheinlichkeitstransformation vorliegt.
+
+Weitere Untersuchungen sollten pruefen, ob die H1-Resultate bei anderen
+Zeitraeumen, alternativen Forecast-Horizonten oder zusaetzlichen kompatiblen
+Probability-Forecasts stabil bleiben. Eine Erweiterung um RCP ist erst sinnvoll,
+wenn klar dokumentiert ist, wie Polling-Averages in Wahrscheinlichkeiten
+ueberfuehrt werden.
+
+### H2: Taegliche Event-Window-Reaktion
+
+Die zweite Hypothese untersucht, ob Polymarket-Wahrscheinlichkeiten um
+vorab kuratierte politische Ereignisse herum reagieren. Fuer den ersten
+Baseline-Lauf wurden sieben Ereignisse in `data/events_timeline_seed.csv`
+festgelegt. Die Analyse verwendet zwei taegliche Fenster: ein primaeres Fenster
+von `[0d, +1d]` und ein Sensitivitaetsfenster von `[-1d, +3d]`. Die Ergebnisse
+liegen in `data/results/thesis_h2_summary.csv`,
+`data/results/h2_event_window_summary.csv`,
+`data/results/h2_event_window_rows.csv` und der Abbildung
+`data/results/thesis_h2_event_window_car.png`.
+
+Die Resultate zeigen, dass die Polymarket-Zeitreihe um mehrere Ereignisse
+messbare taegliche Bewegungen aufweist. Beispielsweise ist fuer das Ereignis
+`evt_2024_07_13_trump_shooting` im primaeren Fenster ein finaler kumulierter
+abnormaler Change von 0.0719 dokumentiert. Fuer `evt_2024_07_15_vance_vp_pick`
+liegt der Wert im Sensitivitaetsfenster bei 0.0915. Andere Ereignisse weisen
+negative Bewegungen aus, etwa `evt_2024_05_30_trump_conviction` mit -0.0408 im
+primaeren Fenster und `evt_2024_09_11_harris_trump_debate` mit -0.0293 im
+primaeren Fenster.
+
+Diese Befunde duerfen als taegliche Event-Window-Reaktionen interpretiert
+werden. Sie zeigen, dass die Markt-Wahrscheinlichkeiten in den definierten
+Fenstern nicht statisch bleiben und dass einzelne kuratierte Ereignisse mit
+erkennbaren Bewegungen in der Polymarket-Zeitreihe verbunden sind. Die Analyse
+belegt jedoch keine Intraday-Reaktionsgeschwindigkeit, weil die aktuelle
+Zeitreihe taeglich aggregiert ist. Ebenso duerfen Ereignisse nicht nachtraeglich
+auf Basis beobachteter Preisreaktionen hinzugefuegt oder entfernt werden, ohne
+einen separaten Sensitivitaetslauf zu dokumentieren.
+
+Weitere Untersuchungen koennten die Event-Auswahl erweitern, sofern die
+Inklusionsregeln vorab festgelegt werden. Fuer echte Aussagen zur
+Reaktionsgeschwindigkeit waeren intraday Polymarket-Daten notwendig. Zusaetzlich
+koennte spaeter geprueft werden, ob validierte News- oder Sentiment-Variablen
+die taeglichen Event-Reaktionen erklaeren oder ergaenzen.
+
+### H3: Wallet-Tier-Timing-Diagnostik
+
+Die dritte Hypothese untersucht, ob aggregierte Wallet-Aktivitaet zeitliche
+Muster vor oder um Polymarket-Preisbewegungen zeigt. Die Wallets werden nicht
+ueber fixe USD-Grenzen klassifiziert, sondern ueber dataset-relative
+Perzentile der kumulierten beobachteten `amount_usd` je Wallet. Dadurch bleibt
+die Tier-Definition an die beobachtete Verteilung gebunden. Die zentralen
+Artefakte sind `data/results/thesis_h3_summary.csv`,
+`data/results/h3_wallet_distribution_inventory.json`,
+`data/results/h3_wallet_tiers.csv`,
+`data/results/h3_tiered_wallet_activity_daily.csv`,
+`data/results/h3_lead_time_histograms.csv`,
+`data/results/h3_lead_lag_correlations.csv` und
+`data/results/h3_granger_results.csv`.
+
+Der aktuelle Output unterscheidet vier Wallet-Tiers. Das oberste
+`tier_1_top_1pct` enthaelt 32 Wallets, `tier_2_top_5pct` enthaelt 120 Wallets,
+`tier_3_top_10pct` enthaelt 150 Wallets und die beobachtete Baseline darunter
+enthaelt 2704 Wallets. Fuer die Modellierung wurden 1216 taeglich alignierte
+Beobachtungen zwischen Tier-Aktivitaet und Polymarket-Preisveraenderungen
+verwendet. Die staerkste absolute Lead-Lag-Korrelation im aktuellen
+Summary-Output liegt beim obersten Tier bei Lag 1 und betraegt 0.1858. Im
+Granger-Output weist dasselbe Tier bei Lag 1 den kleinsten dokumentierten
+p-Wert von 0.0012 auf.
+
+Diese Ergebnisse koennen als erste Timing-Diagnostik gelesen werden: Bestimmte
+dataset-relative Wallet-Tiers, insbesondere das oberste Tier, zeigen im
+aktuellen Baseline-Output messbare zeitliche Zusammenhaenge mit taeglichen
+Polymarket-Preisveraenderungen. Die Formulierung muss jedoch streng bleiben.
+Korrelationen und Granger-Tests zeigen keine echte Kausalitaet, keine private
+Information und kein Fehlverhalten. Sie zeigen nur, dass die getesteten
+Zeitreihen unter den Modellannahmen eine predictive timing diagnostic liefern
+koennen.
+
+Die wichtigsten Einschraenkungen sind die BUY-only-Struktur des aktuellen
+Wallet-Extracts, die taegliche Aggregation und die Gefahr multipler Tests.
+Deshalb sollten H3-Resultate vor starken Schlussfolgerungen mit
+Multiple-Testing-Korrekturen, alternativen Lag-Spezifikationen und wenn
+moeglich vollstaendigerer Kauf-/Verkaufsrichtung geprueft werden. Ein weiterer
+naheliegender Schritt ist ein historischer Backtest, der testet, ob
+Tier-Aktivitaet ausserhalb der Stichprobe eine verwertbare Signalinformation
+enthaelt.
+
+### Bruecke Zum Strategie-Prototyp
+
+Die bisherigen Resultate liefern noch keine Handelsstrategie. Sie liefern aber
+drei Arten von geprueften Inputs fuer einen spaeteren historischen
+Research-Prototyp: Prognosequalitaet aus H1, taegliche Event-Reaktionen aus H2
+und Wallet-Timing-Diagnostik aus H3. Ein solcher Prototyp darf nur als
+historischer Backtest formuliert werden. Agenten koennten spaeter
+Signalhypothesen vorschlagen, aber Python muss jede Signal-Spezifikation
+validieren und alle Backtest-, PnL-, Drawdown- und Risikometriken berechnen.
+
+Fuer die Thesis ist deshalb zentral, den Strategie-Prototyp nicht als
+Live-Trading-System und nicht als Profitversprechen zu praesentieren. Ein
+wissenschaftlich sauberer naechster Schritt waere ein deterministischer
+Backtest mit expliziten Transaktionskosten, Slippage-Annahmen, Positionslimits
+und Out-of-Sample- oder Walk-forward-Auswertung. Erst danach waere eine
+Interpretation moeglich, ob die beobachteten Signale historisch nutzbare
+predictive information enthalten.
+
+### Zwischenfazit Fuer Das Resultatkapitel
+
+Zusammenfassend zeigt die erste empirische Baseline drei komplementaere
+Perspektiven auf informationelle Effizienz. H1 spricht fuer eine bessere
+Forecast-Qualitaet von Polymarket im getesteten Ueberlappungsfenster, darf aber
+nicht als Speed-Test interpretiert werden. H2 dokumentiert taegliche
+Event-Window-Reaktionen um kuratierte politische Ereignisse, erlaubt jedoch
+keine Intraday-Aussage. H3 zeigt dataset-relative Wallet-Timing-Diagnostik,
+bleibt aber durch BUY-only-Daten, taegliche Aggregation und
+Multiple-Testing-Fragen eingeschraenkt. Gemeinsam bilden diese Resultate eine
+reproduzierbare Grundlage fuer die Diskussion, ob und in welcher Form
+Polymarket im untersuchten Wahlmarkt Informationen widerspiegelt, integriert
+oder vorwegnimmt.
+
 ## Hypotheses
 
 H1: Brier Score calibration

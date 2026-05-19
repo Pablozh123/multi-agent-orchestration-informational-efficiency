@@ -3,19 +3,19 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-19 15:19
+Generated: 2026-05-19 15:32
 
-Current goal: `goal-overleaf-results-prose-001` - Prepare Overleaf-ready results chapter draft
+Current goal: `goal-strategy-backtest-plan-001` - Plan first deterministic strategy backtest baseline
 
-Current roadmap phase: Phase 9: Thesis Export
+Current roadmap phase: Phase 10: Strategy Research Prototype
 
 Test status: PASS
 
-Pytest summary: `183 passed in 8.77s`
+Pytest summary: `183 passed in 9.13s`
 
 Git branch: `main`
 
-Latest commit: `801983f`
+Latest commit: `cbec4be`
 
 Git status:
 
@@ -23,17 +23,17 @@ Git status:
  M GOAL.md
  M ROADMAP.md
  M docs/project/WORK_LOG.md
- M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
+ M docs/research/RESEARCH_SPEC.md
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      |  58 +++++++-------
- ROADMAP.md                                   |   9 ++-
- docs/project/WORK_LOG.md                     |  35 +++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 108 +++++++++++++++++++++++++++
- 4 files changed, 178 insertions(+), 32 deletions(-)
+ GOAL.md                        |  48 ++++++-----
+ ROADMAP.md                     |  10 ++-
+ docs/project/WORK_LOG.md       |  32 ++++++++
+ docs/research/RESEARCH_SPEC.md | 179 +++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 244 insertions(+), 25 deletions(-)
 ```
 
 Blockers:
@@ -42,7 +42,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: prepare overleaf results chapter draft
+- docs: plan first deterministic strategy backtest baseline
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

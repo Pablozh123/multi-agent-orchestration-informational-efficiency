@@ -169,7 +169,7 @@ Blockers:
 
 ## Phase 9: Thesis Export
 
-Status: active for Overleaf-ready results prose
+Status: complete for initial Overleaf-ready results prose
 
 Done criteria:
 
@@ -180,16 +180,18 @@ Done criteria:
 - The first results narrative skeleton separates evidence, interpretation,
   limitations, and further investigations for H1, H2, H3, and the strategy
   prototype boundary.
+- Overleaf-ready draft prose exists for the H1, H2, H3, strategy bridge, and
+  interim results conclusion.
 
 Blockers:
 
-- Overleaf-ready results prose is not drafted yet.
+- Final Overleaf integration and citation formatting are not done yet.
 - Strong H3 conclusion wording remains limited by BUY-only source data, daily
   alignment, and multiple-testing sensitivity.
 
 ## Phase 10: Strategy Research Prototype
 
-Status: complete for deterministic strategy prototype specification
+Status: active for first deterministic backtest baseline planning
 
 Done criteria:
 
@@ -206,6 +208,8 @@ Done criteria:
 
 Blockers:
 
+- The first deterministic backtest baseline implementation plan is not written
+  yet.
 - No `SignalSpec`, `BacktestConfig`, or `BacktestResult` implementation exists
   yet.
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.

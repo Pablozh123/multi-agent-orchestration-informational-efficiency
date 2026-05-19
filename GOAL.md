@@ -2,49 +2,51 @@
 
 ## Active Goal
 
-goal_id: goal-overleaf-results-prose-001
-title: Prepare Overleaf-ready results chapter draft
+goal_id: goal-strategy-backtest-plan-001
+title: Plan first deterministic strategy backtest baseline
 status: active
-phase: Phase 9: Thesis Export
+phase: Phase 10: Strategy Research Prototype
 why:
 - H1-H3 thesis-facing result summaries and figures now exist.
 - The results narrative skeleton now states what was investigated, how the
   results were derived, what can be interpreted, and what remains open.
 - The deterministic strategy prototype is now specified as a future historical
   backtest contract, not as an agent or live-trading system.
-- The next step is to turn the accepted narrative skeleton into thesis-facing
-  prose blocks that can later move to Overleaf.
+- Overleaf-ready results prose now exists for H1, H2, H3, and the strategy
+  bridge.
+- The next step is to plan the first deterministic strategy backtest baseline
+  before writing implementation code.
 deliverables:
-- Draft thesis-facing results prose for H1, H2, and H3.
-- Include short bridge text for the strategy prototype as future research.
-- Tie prose to tables, figures, deterministic artifacts, and limitations.
-- Keep wording suitable for Swiss German thesis style when German prose is
-  added.
+- Define the first backtest baseline to implement.
+- Specify source artifacts, input fields, signal rule, benchmark, evaluation
+  split, costs, slippage, position limits, and required outputs.
+- Define focused tests and output artifact names for the future Python module.
+- Keep agents, MCP, ML, and live trading deferred.
 scope:
-- Documentation-only thesis drafting.
+- Documentation-only implementation planning.
 - Existing deterministic result summaries, figures, and literature sources
   only.
-- Result interpretation and limitation wording only.
+- Backtest design, tests, and artifact contract only.
 out_of_scope:
 - New statistical code, new event selection, or backtest implementation.
 - Agents, MCP, model routing, ML, cloud deployment, and live trading.
 - Treating Perplexity summaries as cited evidence.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Draft prose separates evidence, interpretation, limitations, and further
-  investigations.
-- No causal, insider-trading, intraday, RCP-probability, live-trading, or profit
-  guarantee claims are introduced.
-- Every result statement points to a deterministic artifact or documented
-  limitation.
+- Backtest baseline plan defines one minimal deterministic implementation path.
+- Plan includes explicit rejection of lookahead bias, raw prompt data, live
+  execution, and agent-calculated metrics.
+- Plan includes transaction costs, slippage, position limits, drawdown, and
+  out-of-sample or walk-forward evaluation assumptions.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: prepare overleaf results chapter draft
+next_commit: docs: plan first deterministic strategy backtest baseline
 
 ## Decision Inputs For This Goal
 
 - Thesis-facing H1-H3 summaries and figures exist in `data/results/`.
 - Thesis results narrative skeleton exists in `docs/research/RESEARCH_SPEC.md`.
+- Overleaf-ready results prose exists in `docs/research/RESEARCH_SPEC.md`.
 - Deterministic strategy prototype specification exists in
   `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
 - H1-H3 empirical baseline review exists in `docs/research/RESEARCH_SPEC.md`.
@@ -58,9 +60,9 @@ next_commit: docs: prepare overleaf results chapter draft
 
 ## Done Means
 
-- H1, H2, and H3 prose blocks are ready for Overleaf drafting.
-- Each block cites the intended table, figure, and source artifact.
-- Limitations and further investigations are explicit in the draft.
+- The first strategy backtest implementation plan is ready.
+- Required future input artifacts, tests, and result outputs are explicit.
+- The plan explains why the first baseline is scientifically bounded.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   or profit-guarantee work.
 
@@ -112,6 +114,8 @@ next_commit: docs: prepare overleaf results chapter draft
   files.
 - Thesis results narrative skeleton exists and separates evidence,
   interpretation, limitations, and further investigations.
+- Overleaf-ready results chapter draft exists for H1, H2, H3, the strategy
+  bridge, and the empirical interim conclusion.
 - Deterministic strategy prototype specification exists with candidate signal
   families, interface fields, risk assumptions, and rejection criteria.
 - Strategy/agent guardrails are enforced by project review checks.

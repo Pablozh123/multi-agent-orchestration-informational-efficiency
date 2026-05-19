@@ -934,3 +934,35 @@ Next step:
 
 - Prepare Overleaf-ready results chapter prose from the accepted narrative
   skeleton.
+
+## 2026-05-19 - goal-overleaf-results-prose-001
+
+Task:
+
+- Prepare Overleaf-ready results chapter prose from existing deterministic H1,
+  H2, and H3 artifacts.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/RESEARCH_SPEC.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- Documentation-only change; project checks run after status refresh.
+
+Decision:
+
+- Draft German thesis-facing prose for the chapter opening, H1, H2, H3, the
+  strategy-prototype bridge, and the interim conclusion.
+- Include concrete values only from existing summary artifacts.
+- Keep all claims bounded: H1 is forecast quality, H2 is daily event-window
+  response, H3 is wallet-tier timing diagnostics, and strategy work remains a
+  future historical backtest.
+
+Next step:
+
+- Plan the first deterministic strategy backtest baseline before writing any
+  implementation code.

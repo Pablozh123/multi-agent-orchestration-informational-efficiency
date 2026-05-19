@@ -966,3 +966,34 @@ Next step:
 
 - Plan the first deterministic strategy backtest baseline before writing any
   implementation code.
+
+## 2026-05-19 - goal-strategy-backtest-plan-001
+
+Task:
+
+- Plan the first deterministic strategy backtest baseline before implementation.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- Documentation-only change; project checks run after status refresh.
+
+Decision:
+
+- Select `h3_top_1pct_lag1_daily_timing_baseline` as the first minimal
+  strategy baseline.
+- Use previous-day `tier_1_top_1pct` activity change to avoid lookahead.
+- Estimate the activity threshold from the chronological training split only
+  and evaluate thesis-facing performance on the final split.
+- Require explicit costs, slippage, position limits, benchmarks, drawdown,
+  output metadata, and no-LLM/no-agent/no-MCP declarations.
+
+Next step:
+
+- Implement the deterministic H3 strategy backtest baseline in Python.

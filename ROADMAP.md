@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Strategy Research Prototype
 
-Status: active for first deterministic backtest baseline planning
+Status: active for first deterministic backtest baseline implementation
 
 Done criteria:
 
@@ -205,13 +205,12 @@ Done criteria:
   table dumps or live trading functions.
 - First prototype signal families, interface fields, risk assumptions, and
   rejection criteria are specified before code exists.
+- First deterministic H3-derived backtest baseline plan defines source
+  artifacts, signal rule, evaluation split, output files, and focused tests.
 
 Blockers:
 
-- The first deterministic backtest baseline implementation plan is not written
-  yet.
-- No `SignalSpec`, `BacktestConfig`, or `BacktestResult` implementation exists
-  yet.
+- The first deterministic H3-derived backtest baseline is not implemented yet.
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.

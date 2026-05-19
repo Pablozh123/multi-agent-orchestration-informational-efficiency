@@ -130,6 +130,222 @@ A proposed signal specification must be rejected before backtesting if it:
 - asks an agent or LLM to calculate metrics,
 - cannot cite the deterministic source artifacts it depends on.
 
+## First Deterministic Backtest Baseline Plan
+
+backtest_baseline_status: planned
+
+The first implementation should be a small H3-derived daily timing baseline. It
+is a historical research backtest, not a live strategy. The purpose is to test
+whether one pre-specified wallet-tier activity signal has out-of-sample
+predictive value under explicit assumptions.
+
+### Baseline Name
+
+`h3_top_1pct_lag1_daily_timing_baseline`
+
+### Research Question
+
+Does yesterday's activity change in `tier_1_top_1pct` predict today's daily
+Polymarket probability change strongly enough to survive a simple historical
+backtest with costs, slippage, position limits, and chronological evaluation?
+
+### Source Artifacts
+
+Required inputs:
+
+- `data/results/h3_tiered_wallet_activity_daily.csv`
+- `data/thesis.db`, table `polymarket_prices`
+
+Supporting diagnostics:
+
+- `data/results/h3_lead_lag_correlations.csv`
+- `data/results/h3_granger_results.csv`
+- `data/results/h3_granger_metadata.json`
+- `data/results/thesis_h3_summary.csv`
+
+The implementation must read explicit columns only. It must not use
+`SELECT *`, unrestricted SQL, agents, MCP, LLMs, RCP, event catalogs, or raw
+wallet-address prompt data.
+
+### Required Input Fields
+
+From `h3_tiered_wallet_activity_daily.csv`:
+
+- `date`
+- `tier`
+- `total_amount_usd`
+- `active_wallets`
+- `trade_rows`
+
+From `polymarket_prices`:
+
+- `price_timestamp`
+- `price`
+- `market_id` only if needed to disambiguate the series.
+
+Derived deterministic fields:
+
+- `daily_price`: one daily closing or last observed Polymarket price per date.
+- `price_change`: `daily_price_t - daily_price_t_minus_1`.
+- `activity_log`: `log1p(total_amount_usd)`.
+- `activity_change`: `activity_log_t - activity_log_t_minus_1`.
+- `signal_activity_change`: previous day's `activity_change` shifted forward by
+  one day to prevent lookahead.
+
+### Signal Rule
+
+The first baseline is long-only and tier-specific:
+
+- tier: `tier_1_top_1pct`
+- signal family: `h3_wallet_timing_signal`
+- signal direction: long Trump/YES probability exposure
+- decision date: date `t`
+- information allowed at decision: activity and price data available through
+  date `t-1`
+- trigger: `signal_activity_change_t >= training_activity_threshold`
+- threshold source: 90th percentile of non-missing `activity_change` values in
+  the training split only
+- position: `1.0` unit when triggered, otherwise `0.0`
+- holding period: one daily close-to-close interval
+- outcome: `price_change_t`
+
+The threshold is not a whale threshold. It is a backtest signal threshold
+estimated only from the training period. The implementation must report the
+threshold value and the split used to estimate it.
+
+### Evaluation Split
+
+The first baseline should use a chronological split:
+
+- training window: first 70 percent of aligned observations,
+- evaluation window: final 30 percent of aligned observations,
+- threshold estimation: training window only,
+- thesis-facing performance summary: evaluation window only,
+- optional diagnostic rows: training and full-period rows may be emitted only if
+  clearly labelled as diagnostics.
+
+If the evaluation window has too few observations or too few signal days, the
+run must return a clear status instead of a strong performance claim.
+
+### Cost, Slippage, And Position Rules
+
+The implementation must make costs explicit and configurable. The first output
+should report both gross and net variants:
+
+- gross result: no cost or slippage deducted,
+- net result: deduct configured transaction cost and slippage assumptions,
+- transaction cost field: `transaction_cost_bps`,
+- slippage field: `slippage_probability_points`,
+- max position: `1.0` unit exposure,
+- no leverage,
+- no compounding,
+- no short exposure in the first baseline,
+- no overlapping positions because holding period is one daily interval.
+
+If no empirically justified cost and slippage assumptions are available, the
+metadata must label them as sensitivity assumptions rather than market facts.
+
+### Benchmarks
+
+Required benchmarks:
+
+- `no_position`: always zero exposure and zero PnL.
+- `always_long`: one unit exposure over the same evaluation dates.
+
+Optional benchmark:
+
+- `random_signal_same_frequency`, only if a fixed seed is specified and the
+  output is clearly labelled as a diagnostic robustness check.
+
+### Required Outputs
+
+Future output artifacts:
+
+- `data/results/strategy_h3_wallet_timing_backtest_rows.csv`
+- `data/results/strategy_h3_wallet_timing_backtest_summary.csv`
+- `data/results/strategy_h3_wallet_timing_backtest_metadata.json`
+
+Required row-level columns:
+
+- `date`
+- `split`
+- `daily_price`
+- `price_change`
+- `signal_activity_change`
+- `training_activity_threshold`
+- `position`
+- `gross_pnl`
+- `transaction_cost`
+- `slippage_cost`
+- `net_pnl`
+- `benchmark_always_long_pnl`
+
+Required summary fields:
+
+- `signal_id`
+- `split`
+- `observation_count`
+- `signal_day_count`
+- `gross_total_pnl`
+- `net_total_pnl`
+- `benchmark_always_long_total_pnl`
+- `hit_rate`
+- `mean_net_pnl`
+- `max_drawdown`
+- `turnover`
+- `transaction_cost_bps`
+- `slippage_probability_points`
+- `training_activity_threshold`
+- `status`
+- `limitation`
+
+Required metadata fields:
+
+- source artifact paths,
+- generation timestamp,
+- code version or latest git commit if available,
+- split dates,
+- cost and slippage assumptions,
+- lookahead prevention rule,
+- no-LLM/no-agent/no-MCP declaration,
+- BUY-only and daily-alignment limitations.
+
+### Focused Tests For Future Implementation
+
+The future module should add `tests/test_strategy_backtest_baseline.py` and
+cover:
+
+- toy data where a previous-day activity spike triggers the next-day position,
+- no lookahead: same-day activity must not affect same-day position,
+- threshold is estimated from training rows only,
+- missing required columns fail with clear errors,
+- net PnL is lower than gross PnL when costs or slippage are positive,
+- max drawdown is deterministic on a known PnL sequence,
+- no signal days produce a clear non-claim status,
+- output rows contain no wallet addresses,
+- outputs are deterministic across repeated runs.
+
+### Thesis Interpretation Boundary
+
+Allowed wording after implementation:
+
+- `historical daily backtest baseline`
+- `exploratory H3-derived signal test`
+- `net result under stated cost and slippage assumptions`
+- `out-of-sample evaluation window`
+
+Blocked wording:
+
+- `profitable strategy`
+- `live trading ready`
+- `agent-discovered alpha`
+- `proof that whales have private information`
+- `guaranteed predictive edge`
+
+The first baseline can support a thesis statement about whether a simple H3
+wallet-tier timing signal survives a constrained historical test. It cannot
+prove future profitability or autonomous agent value.
+
 ## Agent Roles
 
 Agent role type: `Signal Generator`.

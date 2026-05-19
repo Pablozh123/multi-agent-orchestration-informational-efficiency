@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-strategy-backtest-plan-001
-title: Plan first deterministic strategy backtest baseline
+goal_id: goal-strategy-backtest-implementation-001
+title: Implement first deterministic strategy backtest baseline
 status: active
 phase: Phase 10: Strategy Research Prototype
 why:
@@ -14,33 +14,36 @@ why:
   backtest contract, not as an agent or live-trading system.
 - Overleaf-ready results prose now exists for H1, H2, H3, and the strategy
   bridge.
-- The next step is to plan the first deterministic strategy backtest baseline
-  before writing implementation code.
+- The first deterministic backtest baseline plan now defines the source
+  artifacts, signal rule, evaluation split, cost assumptions, outputs, and
+  tests.
+- The next step is to implement that one baseline in Python without activating
+  agents, MCP, ML, or live trading.
 deliverables:
-- Define the first backtest baseline to implement.
-- Specify source artifacts, input fields, signal rule, benchmark, evaluation
-  split, costs, slippage, position limits, and required outputs.
-- Define focused tests and output artifact names for the future Python module.
-- Keep agents, MCP, ML, and live trading deferred.
+- Add a deterministic Python module for
+  `h3_top_1pct_lag1_daily_timing_baseline`.
+- Add focused toy-data tests for signal construction, lookahead prevention,
+  costs, slippage, drawdown, and output shape.
+- Generate reproducible CSV/JSON artifacts under `data/results/`.
+- Keep output interpretation bounded as an exploratory historical backtest.
 scope:
-- Documentation-only implementation planning.
-- Existing deterministic result summaries, figures, and literature sources
-  only.
-- Backtest design, tests, and artifact contract only.
+- Deterministic Python implementation only.
+- H3 tier-level daily activity and Polymarket daily prices only.
+- File-based result artifacts only.
+- No database writes unless a separate persistence decision is documented.
 out_of_scope:
-- New statistical code, new event selection, or backtest implementation.
 - Agents, MCP, model routing, ML, cloud deployment, and live trading.
-- Treating Perplexity summaries as cited evidence.
+- New event selection, RCP usage, intraday claims, or wallet-address-level
+  prompts.
+- Treating the backtest as proof of future profitability.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Backtest baseline plan defines one minimal deterministic implementation path.
-- Plan includes explicit rejection of lookahead bias, raw prompt data, live
-  execution, and agent-calculated metrics.
-- Plan includes transaction costs, slippage, position limits, drawdown, and
-  out-of-sample or walk-forward evaluation assumptions.
+- Tests cover the planned signal rule, no-lookahead shift, costs, slippage,
+  drawdown, missing fields, and deterministic outputs.
+- Generated outputs contain no wallet addresses and no raw table dumps.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: plan first deterministic strategy backtest baseline
+next_commit: feat: add deterministic h3 strategy backtest baseline
 
 ## Decision Inputs For This Goal
 
@@ -48,6 +51,8 @@ next_commit: docs: plan first deterministic strategy backtest baseline
 - Thesis results narrative skeleton exists in `docs/research/RESEARCH_SPEC.md`.
 - Overleaf-ready results prose exists in `docs/research/RESEARCH_SPEC.md`.
 - Deterministic strategy prototype specification exists in
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+- First deterministic backtest baseline plan exists in
   `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
 - H1-H3 empirical baseline review exists in `docs/research/RESEARCH_SPEC.md`.
 - Strategy prototype boundaries are recorded in `ARCHITECTURE_DECISIONS.md`,
@@ -60,9 +65,10 @@ next_commit: docs: plan first deterministic strategy backtest baseline
 
 ## Done Means
 
-- The first strategy backtest implementation plan is ready.
-- Required future input artifacts, tests, and result outputs are explicit.
-- The plan explains why the first baseline is scientifically bounded.
+- The first H3-derived strategy backtest module is implemented and tested.
+- Result CSV/JSON artifacts can be regenerated deterministically.
+- The output reports gross and net variants, drawdown, signal count, benchmark
+  comparison, and limitations.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   or profit-guarantee work.
 
@@ -118,4 +124,6 @@ next_commit: docs: plan first deterministic strategy backtest baseline
   bridge, and the empirical interim conclusion.
 - Deterministic strategy prototype specification exists with candidate signal
   families, interface fields, risk assumptions, and rejection criteria.
+- First deterministic strategy backtest baseline plan exists for
+  `h3_top_1pct_lag1_daily_timing_baseline`.
 - Strategy/agent guardrails are enforced by project review checks.

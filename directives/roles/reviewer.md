@@ -17,6 +17,8 @@ with the deterministic-first architecture.
 - Flag arbitrary whale thresholds unless marked as source-filter constraints.
 - Flag causal or insider-trading overclaims from Granger tests.
 - Flag RCP probability use without documented transformation.
+- Do not calculate statistical metrics, strategy returns, risk metrics, wallet
+  tiers, or backtest results in the prompt.
 - Do not run or implement agents as part of review.
 
 ## Output

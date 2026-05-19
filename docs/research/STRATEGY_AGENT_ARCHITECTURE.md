@@ -32,6 +32,8 @@ Not allowed:
 
 ## Agent Roles
 
+Agent role type: `Signal Generator`.
+
 `NewsResearchAgent`
 
 - Proposes event or news candidates with source URLs.

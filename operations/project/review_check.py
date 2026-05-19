@@ -293,6 +293,90 @@ def _check_runtime_agent_guards(repo_root: Path) -> CheckResult:
     return CheckResult("runtime agent guards", True, "orchestrator and MCP entry points remain guarded")
 
 
+def _check_strategy_architecture_contract(repo_root: Path) -> CheckResult:
+    path = repo_root / "docs" / "research" / "STRATEGY_AGENT_ARCHITECTURE.md"
+    if not path.exists():
+        return CheckResult(
+            "strategy architecture",
+            False,
+            "docs/research/STRATEGY_AGENT_ARCHITECTURE.md missing",
+        )
+    text = read_text(path).lower()
+    required_terms = (
+        "signal generator",
+        "signalspec",
+        "backtestconfig",
+        "backtestresult",
+        "llm_audit_log",
+        "raw table dumps",
+        "autonomous trading",
+    )
+    missing = [term for term in required_terms if term not in text]
+    if missing:
+        return CheckResult(
+            "strategy architecture",
+            False,
+            "missing required contract terms: " + ", ".join(missing),
+        )
+    return CheckResult(
+        "strategy architecture",
+        True,
+        "strategy prototype is scoped as bounded signal generation and Python backtesting",
+    )
+
+
+def _check_no_live_trading_implementation(repo_root: Path) -> CheckResult:
+    patterns = (
+        "live_trading",
+        "live trading",
+        "place_order",
+        "execute_order",
+        "market_order",
+        "limit_order",
+        "autonomous trader",
+        "guaranteed profitable",
+        "profit guarantee",
+    )
+    matches: list[str] = []
+    for path in _python_files(repo_root / "operations"):
+        if "project" in path.relative_to(repo_root / "operations").parts:
+            continue
+        text = read_text(path).lower()
+        for line_no, line in enumerate(text.splitlines(), start=1):
+            if any(pattern in line for pattern in patterns):
+                matches.append(f"{path.relative_to(repo_root)}:{line_no}")
+    if matches:
+        return CheckResult("live trading guard", False, "; ".join(matches))
+    return CheckResult(
+        "live trading guard",
+        True,
+        "no active live-trading or order-execution implementation found",
+    )
+
+
+def _check_active_prompt_metric_scope(repo_root: Path) -> CheckResult:
+    prompt_root = repo_root / "directives" / "roles"
+    if not prompt_root.exists():
+        return CheckResult("active prompt metric scope", True, "no active role prompts found")
+
+    failures: list[str] = []
+    for path in sorted(prompt_root.glob("*.md")):
+        text = read_text(path).lower()
+        if "status: active" not in text:
+            continue
+        if "allowed scope: interpretation only, no deterministic calculations" not in text:
+            failures.append(f"{path.relative_to(repo_root)} missing allowed scope header")
+        if "do not calculate" not in text and "must not calculate" not in text:
+            failures.append(f"{path.relative_to(repo_root)} missing no-calculation rule")
+    if failures:
+        return CheckResult("active prompt metric scope", False, "; ".join(failures))
+    return CheckResult(
+        "active prompt metric scope",
+        True,
+        "active prompts remain interpretation-only",
+    )
+
+
 def _check_pytest(repo_root: Path, skip_reason: str | None) -> CheckResult:
     if skip_reason:
         return CheckResult("pytest", True, f"skipped with reason: {skip_reason}")
@@ -317,6 +401,9 @@ def run_checks(repo_root: Path, skip_pytest: str | None = None) -> list[CheckRes
         _check_h3_tier_guard,
         _check_ml_scope_guard,
         _check_runtime_agent_guards,
+        _check_strategy_architecture_contract,
+        _check_no_live_trading_implementation,
+        _check_active_prompt_metric_scope,
     ]
     results = [check(repo_root) for check in checks]
     results.append(_check_pytest(repo_root, skip_pytest))

@@ -73,6 +73,13 @@ def _write_minimal_project(root: Path) -> None:
         "# RESEARCH_SPEC.md\n\n## ML Scope Rule\n\n- ml_scope_status: deferred\n",
         encoding="utf-8",
     )
+    (root / "docs" / "research" / "STRATEGY_AGENT_ARCHITECTURE.md").write_text(
+        "# STRATEGY_AGENT_ARCHITECTURE.md\n\n"
+        "Signal generator contracts use SignalSpec, BacktestConfig, and "
+        "BacktestResult. Calls are logged in llm_audit_log. No raw table dumps, "
+        "autonomous trading, or live trading.\n",
+        encoding="utf-8",
+    )
     (root / "GOAL.md").write_text(GOAL_TEXT, encoding="utf-8")
     (root / "AGENTS.md").write_text("# AGENTS.md\n", encoding="utf-8")
     (root / "ROADMAP.md").write_text(
@@ -209,6 +216,41 @@ def test_review_check_fails_for_ml_scope_before_h1_h2_h3_outputs(tmp_path: Path)
     )
     results = run_checks(tmp_path, skip_pytest="unit test")
     assert any(result.name == "ml scope guard" and not result.passed for result in results)
+
+
+def test_review_check_fails_without_strategy_architecture_doc(tmp_path: Path) -> None:
+    _write_minimal_project(tmp_path)
+    (tmp_path / "docs" / "research" / "STRATEGY_AGENT_ARCHITECTURE.md").unlink()
+
+    results = run_checks(tmp_path, skip_pytest="unit test")
+
+    assert any(result.name == "strategy architecture" and not result.passed for result in results)
+
+
+def test_review_check_fails_for_live_trading_implementation(tmp_path: Path) -> None:
+    _write_minimal_project(tmp_path)
+    (tmp_path / "operations" / "analysis" / "trade.py").write_text(
+        "def place_order():\n    return 'blocked'\n",
+        encoding="utf-8",
+    )
+
+    results = run_checks(tmp_path, skip_pytest="unit test")
+
+    assert any(result.name == "live trading guard" and not result.passed for result in results)
+
+
+def test_review_check_fails_for_active_prompt_without_metric_scope(tmp_path: Path) -> None:
+    _write_minimal_project(tmp_path)
+    prompt_root = tmp_path / "directives" / "roles"
+    prompt_root.mkdir(parents=True)
+    (prompt_root / "bad_agent.md").write_text(
+        "# Bad Agent\n\nStatus: active\n\nCalculate metrics in the prompt.\n",
+        encoding="utf-8",
+    )
+
+    results = run_checks(tmp_path, skip_pytest="unit test")
+
+    assert any(result.name == "active prompt metric scope" and not result.passed for result in results)
 
 
 def test_group_changed_paths_suggests_project_automation_group() -> None:

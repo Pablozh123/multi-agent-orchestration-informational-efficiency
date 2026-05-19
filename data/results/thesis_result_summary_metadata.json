@@ -1,0 +1,40 @@
+{
+  "limitations": {
+    "daily_h2_and_h3_alignment_only": true,
+    "h3_buy_only_source_extract": true,
+    "no_profitability_claim": true,
+    "rcp_probability_transform_missing": true
+  },
+  "method": {
+    "calculation_scope": "aggregation_of_existing_deterministic_outputs",
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "name": "thesis_facing_h1_h2_h3_summary_aggregation"
+  },
+  "outputs": {
+    "columns": [
+      "summary_id",
+      "hypothesis",
+      "summary_type",
+      "label",
+      "metric",
+      "value",
+      "source_artifact",
+      "allowed_interpretation",
+      "limitation",
+      "thesis_readiness"
+    ],
+    "h1_rows": 9,
+    "h2_rows": 15,
+    "h3_rows": 13
+  },
+  "source_artifacts": [
+    "data\\results\\h1_brier_scores.csv",
+    "data\\results\\h1_diebold_mariano.json",
+    "data\\results\\h2_event_window_summary.csv",
+    "data\\results\\h3_granger_metadata.json",
+    "data\\results\\h3_granger_results.csv",
+    "data\\results\\h3_lead_lag_correlations.csv",
+    "data\\results\\h3_wallet_distribution_inventory.json"
+  ]
+}

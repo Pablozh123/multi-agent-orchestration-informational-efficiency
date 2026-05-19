@@ -30,6 +30,106 @@ Not allowed:
 - Treating exploratory backtest output as proof that a strategy will work
   out-of-sample.
 
+## First Prototype Specification
+
+strategy_prototype_status: specified
+
+The first prototype is a deterministic historical research backtest design. It
+does not implement a strategy yet. It defines what a later Python module must
+accept, reject, compute, and report before any agent or MCP layer can use the
+result.
+
+Primary objective:
+
+- Test whether bounded signal hypotheses derived from H1, H2, or H3 summaries
+  have historical predictive value under explicit transaction-cost, slippage,
+  position-limit, and evaluation-split assumptions.
+
+Non-objectives:
+
+- No live trading.
+- No autonomous execution.
+- No guarantee of profitability.
+- No agent-computed PnL, drawdown, or risk metrics.
+- No use of raw wallet addresses or unrestricted SQL in prompts.
+
+### Candidate Signal Families
+
+These are candidate families for future specification and review. They are not
+implemented and are not thesis conclusions.
+
+`h1_forecast_disagreement_signal`
+
+- Source summaries: `data/results/thesis_h1_summary.csv`,
+  `data/results/h1_brier_scores.csv`.
+- Idea: compare Polymarket probability with a compatible probability forecast
+  such as FiveThirtyEight.
+- Guardrail: RCP remains excluded until a probability transformation is
+  documented and tested.
+- Main risk: forecast disagreement may reflect model timing or source
+  construction rather than tradable inefficiency.
+
+`h2_event_follow_through_signal`
+
+- Source summaries: `data/results/thesis_h2_summary.csv`,
+  `data/results/h2_event_window_summary.csv`.
+- Idea: test whether pre-curated event classes produce daily follow-through or
+  reversal patterns after the selected event windows.
+- Guardrail: no events may be added after looking at returns unless the run is
+  explicitly marked as a new sensitivity analysis.
+- Main risk: small event count and daily data make overfitting easy.
+
+`h3_wallet_timing_signal`
+
+- Source summaries: `data/results/thesis_h3_summary.csv`,
+  `data/results/h3_lead_lag_correlations.csv`,
+  `data/results/h3_granger_results.csv`.
+- Idea: test whether dataset-relative tier activity predicts next-day or
+  multi-day Polymarket probability changes.
+- Guardrail: use tier-level aggregates only, not wallet-address-level prompts.
+- Main risk: BUY-only source data, daily alignment, and multiple testing.
+
+`combined_summary_signal`
+
+- Source summaries: H1, H2, and H3 thesis summaries only.
+- Idea: combine one H1 disagreement condition, one H2 event condition, and one
+  H3 tier-activity condition into a sparse hypothesis.
+- Guardrail: this is a later sensitivity candidate, not the first baseline.
+- Main risk: too many degrees of freedom for the current sample.
+
+### First Baseline Recommendation
+
+The first future backtest should be the simplest H3-derived daily timing
+baseline:
+
+- input: tier-level daily activity and daily Polymarket price changes,
+- trigger: one pre-specified tier-activity condition,
+- horizon: next daily close-to-close probability change,
+- benchmark: no-position baseline plus simple always-exposed benchmark if
+  methodologically justified,
+- output: deterministic `BacktestResult` with costs, slippage, position limit,
+  maximum drawdown, and observation count.
+
+Reason:
+
+- H3 already has tier-level daily activity, lead-lag, and Granger diagnostic
+  artifacts.
+- This avoids introducing RCP, new event selection, intraday data, ML, or raw
+  wallet-address prompts.
+
+### Rejection Criteria
+
+A proposed signal specification must be rejected before backtesting if it:
+
+- uses information unavailable at the simulated decision time,
+- depends on raw table dumps or wallet-address prompt inspection,
+- uses RCP as a probability without the documented transformation flags,
+- changes event inclusion after inspecting returns,
+- omits transaction costs, slippage, position limits, or evaluation split,
+- requires live order execution,
+- asks an agent or LLM to calculate metrics,
+- cannot cite the deterministic source artifacts it depends on.
+
 ## Agent Roles
 
 Agent role type: `Signal Generator`.
@@ -96,12 +196,17 @@ The future strategy track should define typed interfaces before implementation:
 `SignalSpec`
 
 - signal identifier,
+- signal family,
+- hypothesis statement,
+- deterministic source artifacts,
 - input summary sources,
 - market side or probability direction,
 - trigger rule,
 - holding or exit rule,
 - maximum position size,
 - evaluation window,
+- lookahead prevention rule,
+- rejection criteria,
 - assumptions.
 
 `BacktestConfig`
@@ -112,6 +217,8 @@ The future strategy track should define typed interfaces before implementation:
 - position limit,
 - evaluation split,
 - benchmark,
+- minimum observation count,
+- treatment of missing prices or missing signal days,
 - random seed if needed.
 
 `BacktestResult`
@@ -124,6 +231,7 @@ The future strategy track should define typed interfaces before implementation:
 - turnover,
 - cost impact,
 - benchmark comparison,
+- out-of-sample or walk-forward summary if configured,
 - limitations,
 - source artifact references.
 

@@ -899,3 +899,38 @@ Next step:
 
 - Define the deterministic strategy prototype specification before any
   backtest, agent, or MCP implementation.
+
+## 2026-05-19 - goal-strategy-prototype-spec-001
+
+Task:
+
+- Define the deterministic strategy prototype specification at the
+  documentation level.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- Documentation-only change; project checks run after status refresh.
+
+Decision:
+
+- Treat the first strategy prototype as a historical Python backtest design,
+  not an agent or live-trading system.
+- Candidate signal families are H1 forecast disagreement, H2 event
+  follow-through, H3 wallet timing, and a later combined-summary signal.
+- The first baseline recommendation is a simple H3-derived daily timing
+  backtest because existing H3 artifacts already provide tier-level daily
+  activity and diagnostic outputs.
+- Future `SignalSpec`, `BacktestConfig`, and `BacktestResult` fields must be
+  specified before strategy code exists.
+
+Next step:
+
+- Prepare Overleaf-ready results chapter prose from the accepted narrative
+  skeleton.

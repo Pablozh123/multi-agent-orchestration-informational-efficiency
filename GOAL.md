@@ -2,52 +2,54 @@
 
 ## Active Goal
 
-goal_id: goal-strategy-prototype-spec-001
-title: Define deterministic strategy prototype specification
+goal_id: goal-overleaf-results-prose-001
+title: Prepare Overleaf-ready results chapter draft
 status: active
-phase: Phase 10: Strategy Research Prototype
+phase: Phase 9: Thesis Export
 why:
 - H1-H3 thesis-facing result summaries and figures now exist.
 - The results narrative skeleton now states what was investigated, how the
   results were derived, what can be interpreted, and what remains open.
-- The strategy/agent idea is scoped as a historical backtested research
-  prototype, not live trading.
-- The next step is to define the deterministic strategy prototype contract
-  before any backtest, agent, or MCP implementation.
+- The deterministic strategy prototype is now specified as a future historical
+  backtest contract, not as an agent or live-trading system.
+- The next step is to turn the accepted narrative skeleton into thesis-facing
+  prose blocks that can later move to Overleaf.
 deliverables:
-- Define the first thesis-safe strategy prototype scope.
-- Specify candidate signal families that may be derived from H1, H2, and H3
-  summaries.
-- Define required fields for `SignalSpec`, `BacktestConfig`, and
-  `BacktestResult` at the documentation level.
-- Define acceptance criteria for a future deterministic Python backtest.
+- Draft thesis-facing results prose for H1, H2, and H3.
+- Include short bridge text for the strategy prototype as future research.
+- Tie prose to tables, figures, deterministic artifacts, and limitations.
+- Keep wording suitable for Swiss German thesis style when German prose is
+  added.
 scope:
-- Documentation-only research design.
+- Documentation-only thesis drafting.
 - Existing deterministic result summaries, figures, and literature sources
   only.
-- Backtest specification and claim boundaries only.
+- Result interpretation and limitation wording only.
 out_of_scope:
 - New statistical code, new event selection, or backtest implementation.
 - Agents, MCP, model routing, ML, cloud deployment, and live trading.
 - Treating Perplexity summaries as cited evidence.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Strategy prototype scope separates signal hypotheses from deterministic
-  backtest calculation.
-- No agent, MCP, live-trading, or profit-guarantee claims are introduced.
-- Future backtest outputs require transaction costs, slippage, position limits,
-  drawdown, and out-of-sample or walk-forward evaluation assumptions.
+- Draft prose separates evidence, interpretation, limitations, and further
+  investigations.
+- No causal, insider-trading, intraday, RCP-probability, live-trading, or profit
+  guarantee claims are introduced.
+- Every result statement points to a deterministic artifact or documented
+  limitation.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: define strategy prototype specification
+next_commit: docs: prepare overleaf results chapter draft
 
 ## Decision Inputs For This Goal
 
-- H1-H3 empirical baseline review exists in `docs/research/RESEARCH_SPEC.md`.
+- Thesis-facing H1-H3 summaries and figures exist in `data/results/`.
 - Thesis results narrative skeleton exists in `docs/research/RESEARCH_SPEC.md`.
+- Deterministic strategy prototype specification exists in
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+- H1-H3 empirical baseline review exists in `docs/research/RESEARCH_SPEC.md`.
 - Strategy prototype boundaries are recorded in `ARCHITECTURE_DECISIONS.md`,
   `ROADMAP.md`, and `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
-- Thesis-facing H1-H3 summaries and figures exist in `data/results/`.
 - Literature intake structure exists in `docs/research/LITERATURE_MAP.md` and
   `data/literature/literature_index.csv`.
 - ML scope and re-entry conditions are explicit in
@@ -56,11 +58,9 @@ next_commit: docs: define strategy prototype specification
 
 ## Done Means
 
-- The first strategy prototype is defined as a historical research backtest,
-  not live trading.
-- Candidate signal families are linked to H1, H2, or H3 result summaries.
-- Required backtest inputs, outputs, risk assumptions, and rejection criteria
-  are documented before code exists.
+- H1, H2, and H3 prose blocks are ready for Overleaf drafting.
+- Each block cites the intended table, figure, and source artifact.
+- Limitations and further investigations are explicit in the draft.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   or profit-guarantee work.
 
@@ -112,4 +112,6 @@ next_commit: docs: define strategy prototype specification
   files.
 - Thesis results narrative skeleton exists and separates evidence,
   interpretation, limitations, and further investigations.
+- Deterministic strategy prototype specification exists with candidate signal
+  families, interface fields, risk assumptions, and rejection criteria.
 - Strategy/agent guardrails are enforced by project review checks.

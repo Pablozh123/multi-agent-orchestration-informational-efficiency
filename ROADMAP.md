@@ -169,7 +169,7 @@ Blockers:
 
 ## Phase 9: Thesis Export
 
-Status: complete for initial thesis-facing result summaries and narrative skeleton
+Status: active for Overleaf-ready results prose
 
 Done criteria:
 
@@ -183,13 +183,13 @@ Done criteria:
 
 Blockers:
 
-- Overleaf prose is not exported yet.
+- Overleaf-ready results prose is not drafted yet.
 - Strong H3 conclusion wording remains limited by BUY-only source data, daily
   alignment, and multiple-testing sensitivity.
 
 ## Phase 10: Strategy Research Prototype
 
-Status: active for deterministic strategy prototype specification
+Status: complete for deterministic strategy prototype specification
 
 Done criteria:
 
@@ -201,10 +201,11 @@ Done criteria:
 - Agents are signal generators and reviewers only, not autonomous traders.
 - MCP tools expose read-only summaries and tested backtest results, not raw
   table dumps or live trading functions.
+- First prototype signal families, interface fields, risk assumptions, and
+  rejection criteria are specified before code exists.
 
 Blockers:
 
-- The deterministic strategy prototype contract is not specified yet.
 - No `SignalSpec`, `BacktestConfig`, or `BacktestResult` implementation exists
   yet.
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.

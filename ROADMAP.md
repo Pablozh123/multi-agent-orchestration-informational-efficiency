@@ -46,7 +46,7 @@ Blockers:
 
 ## Phase 3: H1 Forecast Calibration
 
-Status: started
+Status: complete for initial daily baseline
 
 Done criteria:
 
@@ -59,7 +59,8 @@ Done criteria:
 Blockers:
 
 - RCP transformation is not defined.
-- Existing H1 result artifacts should be regenerated only after commit cleanup.
+- H1 should not be interpreted as a reaction-speed result; the current
+  Polymarket and prior-day Polymarket Brier means are nearly identical.
 
 ## Phase 4: Event Catalog And H2 Method
 
@@ -159,12 +160,14 @@ Done criteria:
 
 Blockers:
 
-- Deterministic core is incomplete.
-- Agent and MCP modules remain deferred.
+- Deterministic H1-H3 outputs now exist, but thesis-facing result tables and
+  interpretation limits must be finalised first.
+- Agent and MCP modules remain deferred until the interpretation layer has a
+  bounded prompt design and `llm_audit_log` integration.
 
 ## Phase 9: Thesis Export
 
-Status: active for empirical baseline review
+Status: active for thesis-facing result summaries
 
 Done criteria:
 
@@ -175,4 +178,7 @@ Done criteria:
 
 Blockers:
 
-- Empirical scope and H2/H3 outputs are not yet finalized.
+- H1-H3 empirical baseline is reviewed, but thesis-facing result summary tables
+  and figure decisions are not prepared yet.
+- Strong H3 conclusion wording remains limited by BUY-only source data, daily
+  alignment, and multiple-testing sensitivity.

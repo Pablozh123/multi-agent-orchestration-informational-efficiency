@@ -3,19 +3,19 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-18 19:22
+Generated: 2026-05-19 13:11
 
-Current goal: `goal-empirical-baseline-review-001` - Review H1-H3 deterministic baseline before thesis export
+Current goal: `goal-thesis-result-summaries-001` - Prepare thesis-facing H1-H3 result summaries
 
 Current roadmap phase: Phase 9: Thesis Export
 
 Test status: PASS
 
-Pytest summary: `173 passed in 6.85s`
+Pytest summary: `173 passed in 7.69s`
 
 Git branch: `main`
 
-Latest commit: `e7ea25f`
+Latest commit: `f520262`
 
 Git status:
 
@@ -24,18 +24,18 @@ Git status:
  M ROADMAP.md
  M STATUS.md
  M docs/project/WORK_LOG.md
- M docs/research/WHALE_METHOD.md
+ M docs/research/RESEARCH_SPEC.md
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                       | 37 ++++++++++++++++++-----------
- ROADMAP.md                    |  9 ++++----
- STATUS.md                     | 54 ++++++++++++++++++++-----------------------
- docs/project/WORK_LOG.md      | 34 +++++++++++++++++++++++++++
- docs/research/WHALE_METHOD.md | 38 ++++++++++++++++++++++++++++++
- 5 files changed, 125 insertions(+), 47 deletions(-)
+ GOAL.md                        | 44 +++++++++++++---------------
+ ROADMAP.md                     | 18 ++++++++----
+ STATUS.md                      | 28 +++++++++---------
+ docs/project/WORK_LOG.md       | 36 +++++++++++++++++++++++
+ docs/research/RESEARCH_SPEC.md | 66 ++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 148 insertions(+), 44 deletions(-)
 ```
 
 Blockers:
@@ -44,18 +44,18 @@ Blockers:
 
 Next recommended action:
 
-- docs: review h1 h2 h3 empirical baseline
+- docs: prepare h1 h2 h3 thesis result summaries
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status
 
 Status date: 2026-05-18
 
-The project now has deterministic daily H1, H2, and H3 baseline outputs. H3
-trade analysis includes wallet tiers, daily tiered activity, descriptive
-lead-time histograms, lead-lag correlations, and Granger outputs. The active
-work is reviewing the complete empirical baseline before thesis export or any
-interpretation layer.
+The project now has deterministic daily H1, H2, and H3 baseline outputs, and
+the empirical baseline package has been reviewed in
+`docs/research/RESEARCH_SPEC.md`. The active work is preparing compact
+thesis-facing result summaries before Overleaf export or interpretation-layer
+work.
 
 Current implemented foundation and H2 baseline:
 
@@ -80,6 +80,8 @@ Current implemented foundation and H2 baseline:
 - H3 daily lead-lag correlations and Granger outputs exist under
   `data/results/`.
 - H3 Granger interpretation limits and sensitivity needs are documented.
+- H1-H3 empirical baseline review is documented in
+  `docs/research/RESEARCH_SPEC.md`.
 
 ## Event Catalog Audit Result
 
@@ -117,20 +119,18 @@ for H2 outputs.
 - H3 wallet data currently has a BUY-only limitation and a minimum observed
   `amount_usd` of 10000, which remain source-filter metadata rather than
   analytical tier thresholds.
-- H1-H3 baseline outputs still need a coherent thesis-facing review before
-  final result tables and interpretation text are prepared.
+- Thesis-facing H1-H3 result summary tables are not prepared yet.
 - Agent and MCP layers remain deferred.
 
 ## Next Recommended Commits
 
-1. `docs: review h3 granger outputs and interpretation limits`
-   - Commit the H3 Granger interpretation limits, persistence decision, and
-     next active goal.
-   - Acceptance: H3 claims remain predictive and exploratory.
-
-2. `docs: review h1 h2 h3 empirical baseline`
-   - Review all deterministic outputs as one thesis-facing empirical package.
+1. `docs: review h1 h2 h3 empirical baseline`
+   - Commit the empirical baseline review and next active thesis-summary goal.
    - Acceptance: thesis-ready result tables and sensitivity gaps are explicit.
+
+2. `docs: prepare h1 h2 h3 thesis result summaries`
+   - Prepare compact, traceable result summaries for thesis drafting.
+   - Acceptance: each summary maps to deterministic source artifacts.
 
 3. `docs: document h2 thesis interpretation limits`
    - Document daily-window interpretation, event timing limitations, and

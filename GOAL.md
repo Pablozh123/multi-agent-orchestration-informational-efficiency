@@ -2,30 +2,24 @@
 
 ## Active Goal
 
-goal_id: goal-empirical-baseline-review-001
-title: Review H1-H3 deterministic baseline before thesis export
+goal_id: goal-thesis-result-summaries-001
+title: Prepare thesis-facing H1-H3 result summaries
 status: active
 phase: Phase 9: Thesis Export
 why:
-- H2 deterministic outputs and compact summary persistence now exist.
-- The H3 tier method is selected as wallet-level cumulative `amount_usd`
-  percentiles.
-- H3 wallet distribution inventory, tier classification, and daily tiered
-  activity inputs exist.
-- Descriptive H3 lead-time histograms exist and their shape is accepted for
-  the first daily baseline.
-- Deterministic H3 lead-lag and Granger output files now exist.
-- H3 Granger interpretation limits and accepted wording are documented.
+- H1, H2, and H3 deterministic baseline outputs exist.
+- The empirical baseline package has been reviewed in
+  `docs/research/RESEARCH_SPEC.md`.
+- Thesis-facing result tables need compact, reproducible summaries before
+  Overleaf export or interpretation-layer work.
 deliverables:
-- Review H1, H2, and H3 deterministic baseline outputs as a coherent empirical
-  package.
-- Identify which result tables are thesis-ready and which need regeneration or
-  sensitivity checks.
-- Decide whether compact H3 summaries should be persisted into
-  `analysis_summaries`.
-- Prepare the next thesis-facing result-summary commit.
+- Compact thesis-facing summary tables for H1, H2, and H3 baseline outputs.
+- Clear mapping from each summary table to its deterministic source artifact.
+- German thesis wording notes using Swiss spelling where thesis-facing text is
+  introduced.
+- Figure/table readiness checklist for Overleaf export.
 scope:
-- Review existing deterministic outputs and methodology notes.
+- Summarise existing deterministic outputs only.
 - Keep source-filter metadata separate from analytical tier definitions.
 out_of_scope:
 - New statistical code.
@@ -36,15 +30,14 @@ out_of_scope:
 - Intraday lead-lag claims.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- H1-H3 baseline outputs are reviewed before thesis export or interpretation
-  work.
+- H1-H3 thesis-facing summary tables are traceable to deterministic outputs.
 - H3 wording remains limited to predictive timing diagnostics.
 - RCP and intraday limitations remain explicit.
 - Output avoids raw table dumps into prompts and preserves source-filter
   metadata separately.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: review h1 h2 h3 empirical baseline
+next_commit: docs: prepare h1 h2 h3 thesis result summaries
 
 ## Decision Inputs For This Goal
 
@@ -62,13 +55,15 @@ next_commit: docs: review h1 h2 h3 empirical baseline
 - H3 daily lead-lag and Granger outputs exist in `data/results/`.
 - H3 Granger output interpretation limits are accepted in
   `docs/research/WHALE_METHOD.md`.
+- H1-H3 empirical baseline review is accepted in
+  `docs/research/RESEARCH_SPEC.md`.
 - ML scope and re-entry conditions are explicit in `docs/research/RESEARCH_SPEC.md`.
 - Codex workflow roles are separate from deferred thesis runtime agents.
 
 ## Done Means
 
-- H1-H3 deterministic baseline package is reviewed.
-- Thesis-facing empirical wording and output-table readiness are documented.
+- H1-H3 summary tables are prepared for thesis drafting.
+- Each summary is traceable to deterministic result artifacts.
 - Source filters and analytical tier definitions remain separated.
 - Project review checks still detect premature H3, ML, agent, or MCP work.
 
@@ -100,3 +95,4 @@ next_commit: docs: review h1 h2 h3 empirical baseline
   tests and compact metadata.
 - H3 Granger interpretation limits, persistence decision, and sensitivity needs
   are documented.
+- H1-H3 deterministic baseline package is reviewed for thesis readiness.

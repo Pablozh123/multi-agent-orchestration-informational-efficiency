@@ -510,3 +510,39 @@ Next step:
 
 - Review H1, H2, and H3 deterministic baseline outputs as one empirical
   package before thesis export work.
+
+## 2026-05-19 - goal-empirical-baseline-review-001
+
+Task:
+
+- Review H1, H2, and H3 deterministic baseline outputs as one empirical
+  package before thesis export.
+
+Files changed:
+
+- `docs/research/RESEARCH_SPEC.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 173 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check` -> PASS.
+
+Decision:
+
+- Accept H1-H3 as the first deterministic empirical baseline package.
+- Treat H1 Brier, H2 daily event windows, and H3 daily timing diagnostics as
+  thesis-ready baseline shapes.
+- Keep RCP, intraday claims, strong H3 causal wording, and ML/agent/MCP layers
+  out of scope.
+- Do not persist compact H3 summaries until a tested summary payload is
+  specified.
+
+Next step:
+
+- Prepare compact, traceable H1-H2-H3 result summary tables for thesis
+  drafting.

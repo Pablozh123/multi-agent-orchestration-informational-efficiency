@@ -732,3 +732,35 @@ Next step:
 
 - Draft the thesis methodology outline using deterministic outputs and indexed
   literature sources.
+
+## 2026-05-19 - goal-methodology-outline-001
+
+Task:
+
+- Draft the literature-backed thesis methodology outline.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/RESEARCH_SPEC.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- Documentation-only change; project checks run after status refresh.
+
+Decision:
+
+- Structure the thesis methodology around H1 forecast quality, H2 daily
+  event-window response, H3 wallet-tier timing diagnostics, and a separate
+  historical strategy research prototype.
+- Use deterministic artifacts as empirical evidence and indexed literature as
+  motivation/context.
+- Keep RCP, intraday H2, H3 causal wording, ML, agents, MCP, and live trading
+  outside the current empirical method.
+
+Next step:
+
+- Add a canonical EMH literature source to replace the rejected local
+  `EMH.pdf`.

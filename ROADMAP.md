@@ -186,7 +186,7 @@ Blockers:
 
 ## Phase 10: Strategy Research Prototype
 
-Status: active for methodology outline and strategy specification
+Status: active for citation cleanup and strategy specification
 
 Done criteria:
 
@@ -203,8 +203,6 @@ Blockers:
 
 - A canonical EMH source should replace the rejected local `EMH.pdf` before
   final thesis prose cites EMH theory.
-- The methodology outline still needs to connect H1-H3 outputs, literature
-  sources, and limitations in thesis order.
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.

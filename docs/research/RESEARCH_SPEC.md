@@ -68,6 +68,168 @@ Strategy prototype boundary:
 - No live trading, no profit guarantee, and no autonomous trading claims are in
   scope for the thesis.
 
+## Thesis Methodology Outline
+
+This outline is the working bridge from deterministic outputs and indexed
+literature to the thesis methods chapter. It is not a new analysis pipeline.
+
+### 1. Research Design
+
+Core question:
+
+- To what extent do decentralized prediction-market prices on Polymarket
+  reflect, integrate, and anticipate information during the 2024 US election?
+
+Operational design:
+
+- Informational efficiency is not treated as directly observable.
+- The thesis uses three deterministic proxy layers: H1 forecast quality, H2
+  event-window response, and H3 wallet-tier timing diagnostics.
+- Literature motivates the proxy choice; Python result artifacts provide the
+  empirical evidence.
+
+Literature anchors:
+
+- `zotero_poly_001` for Polymarket-specific transaction accounting and market
+  maturation context.
+- `zotero_poly_002` for the prediction-market-versus-polling comparison frame.
+- `zotero_poly_006` and `zotero_poly_007` for microstructure, volatility, bias,
+  and risk caveats.
+- `zotero_poly_004` is rejected until replaced by a verifiable canonical EMH
+  source.
+
+### 2. Data Sources
+
+Primary empirical sources:
+
+- Daily Polymarket probabilities from `data/thesis.db`.
+- FiveThirtyEight probability forecasts where rows are probability forecasts.
+- Curated event seed from `data/events_timeline_seed.csv`.
+- Wallet transaction extract from `data/thesis.db`, with BUY-only and upstream
+  minimum-amount limitations documented.
+
+Context sources:
+
+- RCP remains a polling signal until a probability transformation exists.
+- GDELT/news sentiment remains contextual until a separate validation note
+  makes it an empirical variable.
+- Literature and web articles are used for framing and hypothesis discipline,
+  not as replacements for deterministic outputs.
+
+### 3. H1 Forecast Quality
+
+Question:
+
+- Are Polymarket probabilities better calibrated or lower-loss forecasts than
+  comparable traditional probability forecasts?
+
+Deterministic artifacts:
+
+- `data/results/h1_brier_scores.csv`
+- `data/results/h1_diebold_mariano.json`
+- `data/results/h1_reliability_curve.png`
+- `data/results/thesis_h1_summary.csv`
+
+Allowed claim type:
+
+- Polymarket has lower or higher forecast loss over the tested overlap window.
+
+Blocked claim type:
+
+- H1 alone does not prove faster information integration.
+- RCP must not enter H1 until its probability transformation is documented.
+
+### 4. H2 Event-Window Response
+
+Question:
+
+- Do Polymarket probabilities move around pre-curated public events in the
+  expected direction and within selected daily windows?
+
+Deterministic artifacts:
+
+- `data/events_timeline_seed.csv`
+- `data/results/h2_event_window_rows.csv`
+- `data/results/h2_event_window_summary.csv`
+- `data/results/thesis_h2_summary.csv`
+
+Allowed claim type:
+
+- Daily event-window movements are consistent or inconsistent with fast public
+  information integration at daily resolution.
+
+Blocked claim type:
+
+- No intraday reaction-speed claim is allowed without intraday data.
+- Events must not be added or removed after inspecting Polymarket reactions.
+
+### 5. H3 Wallet-Tier Timing Diagnostics
+
+Question:
+
+- Do dataset-relative wallet tiers show activity patterns before or around
+  Polymarket price changes?
+
+Deterministic artifacts:
+
+- `data/results/h3_wallet_distribution_inventory.json`
+- `data/results/h3_wallet_tiers.csv`
+- `data/results/h3_tiered_wallet_activity_daily.csv`
+- `data/results/h3_lead_time_histograms.csv`
+- `data/results/h3_lead_lag_correlations.csv`
+- `data/results/h3_granger_results.csv`
+- `data/results/thesis_h3_summary.csv`
+
+Allowed claim type:
+
+- Wallet-tier activity contains descriptive timing patterns or predictive
+  lead-lag diagnostics under the tested model.
+
+Blocked claim type:
+
+- No proof of true causality, private information, misconduct, or insider
+  trading.
+- No fixed USD whale threshold as the analytical tier definition.
+
+### 6. Strategy Research Prototype
+
+Question:
+
+- Can H1-H3 outputs motivate bounded signal hypotheses that are later tested in
+  historical Python backtests?
+
+Scope:
+
+- Strategy work is a research extension after H1-H3, not the core proof of
+  informational efficiency.
+- Agents may later draft `SignalSpec` hypotheses from bounded summaries.
+- Python must validate all signal specs and calculate all backtest, PnL, and
+  risk metrics.
+
+Blocked claim type:
+
+- No live trading, autonomous order execution, profit guarantee, or
+  agent-calculated metrics.
+
+### 7. Interpretation And Thesis Wording
+
+Result interpretation must follow this hierarchy:
+
+- Deterministic source artifact first.
+- Method note and limitation second.
+- Literature support third.
+- LLM or agent interpretation only later, from bounded summaries and logged in
+  `llm_audit_log`.
+
+Approved thesis-facing wording remains:
+
+- `forecast-quality comparison`
+- `daily event-window response`
+- `dataset-relative wallet tier`
+- `descriptive timing pattern`
+- `predictive timing diagnostic`
+- `historical backtest prototype`
+
 ## Hypotheses
 
 H1: Brier Score calibration

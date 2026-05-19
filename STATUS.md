@@ -3,39 +3,37 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-19 14:53
+Generated: 2026-05-19 14:55
 
-Current goal: `goal-methodology-outline-001` - Prepare literature-backed thesis methodology outline
+Current goal: `goal-canonical-emh-source-001` - Add canonical EMH source before thesis prose
 
 Current roadmap phase: Phase 10: Strategy Research Prototype
 
 Test status: PASS
 
-Pytest summary: `181 passed in 8.06s`
+Pytest summary: `181 passed in 6.59s`
 
 Git branch: `main`
 
-Latest commit: `c5676a1`
+Latest commit: `e025b4d`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
- M data/literature/literature_index.csv
  M docs/project/WORK_LOG.md
- M docs/research/LITERATURE_MAP.md
+ M docs/research/RESEARCH_SPEC.md
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                              | 46 ++++++++++++++++++++++--------------
- ROADMAP.md                           |  8 ++++---
- data/literature/literature_index.csv |  6 ++---
- docs/project/WORK_LOG.md             | 33 ++++++++++++++++++++++++++
- docs/research/LITERATURE_MAP.md      | 31 +++++++++++++++++-------
- 5 files changed, 92 insertions(+), 32 deletions(-)
+ GOAL.md                        |  42 +++++------
+ ROADMAP.md                     |   4 +-
+ docs/project/WORK_LOG.md       |  32 ++++++++
+ docs/research/RESEARCH_SPEC.md | 162 +++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 213 insertions(+), 27 deletions(-)
 ```
 
 Blockers:
@@ -44,7 +42,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: draft thesis methodology outline
+- docs: add canonical emh literature source
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

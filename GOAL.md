@@ -2,46 +2,38 @@
 
 ## Active Goal
 
-goal_id: goal-methodology-outline-001
-title: Prepare literature-backed thesis methodology outline
+goal_id: goal-canonical-emh-source-001
+title: Add canonical EMH source before thesis prose
 status: active
 phase: Phase 10: Strategy Research Prototype
 why:
 - H1-H3 thesis-facing result summaries now exist.
 - The strategy/agent idea is scoped as a backtested research prototype, not as
   live trading.
-- The Zotero Polymarket source folder is indexed and initial literature
-  synthesis exists.
-- Remaining local PDFs have been classified as skimmed or rejected for thesis
-  use.
-- The thesis now needs a clear methodology outline that connects literature,
-  H1-H3 deterministic outputs, limitations, and the deferred strategy-agent
-  prototype.
+- The literature-backed thesis methodology outline now exists.
+- The local `EMH.pdf` source was rejected because it could not be verified.
+- Final thesis prose still needs a verifiable canonical EMH reference before
+  relying on market-efficiency theory.
 deliverables:
-- Draft a methodology outline for the thesis.
-- Map each methodology section to deterministic source artifacts and literature
-  `source_id`s.
-- Separate empirical evidence from contextual literature.
-- Keep strategy-agent orchestration as a future research prototype section, not
-  as part of H1-H3 calculation.
+- Add or replace the rejected EMH source with a verifiable canonical reference.
+- Keep the replacement traceable in `data/literature/literature_index.csv`.
+- Update literature notes so EMH theory is citation-safe.
 scope:
-- Thesis methodology structure and citation-safe framing.
-- Existing deterministic outputs and indexed literature only.
+- Literature metadata and citation safety only.
+- No empirical results change.
 out_of_scope:
 - New statistical code, new event selection, or backtest implementation.
 - Agents, MCP, model routing, ML, cloud deployment, and live trading.
 - Treating Perplexity summaries as cited evidence.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Methodology outline distinguishes H1, H2, H3, limitations, and strategy
-  prototype scope.
-- Every thesis-facing claim type points to a deterministic artifact or an
-  indexed literature source.
-- RCP, intraday H2, H3 causal wording, ML, agents, MCP, and live trading remain
-  scoped correctly.
+- EMH source has title, author, year, venue, URL or DOI, thesis mapping, status,
+  and notes.
+- The rejected local `EMH.pdf` is not cited as evidence.
+- Literature map records how EMH theory may be used cautiously in this thesis.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: draft thesis methodology outline
+next_commit: docs: add canonical emh literature source
 
 ## Decision Inputs For This Goal
 
@@ -71,6 +63,7 @@ next_commit: docs: draft thesis methodology outline
 - Zotero Polymarket sources are indexed in `data/literature/literature_index.csv`.
 - Remaining local Zotero PDFs are classified as skimmed or rejected for thesis
   use.
+- Thesis methodology outline exists in `docs/research/RESEARCH_SPEC.md`.
 - ML scope and re-entry conditions are explicit in `docs/research/RESEARCH_SPEC.md`.
 - Codex workflow roles are separate from deferred thesis runtime agents.
 
@@ -119,4 +112,5 @@ next_commit: docs: draft thesis methodology outline
 - Remaining local PDFs are reviewed: `zotero_poly_005` and `zotero_poly_007`
   are skimmed; `zotero_poly_004` is rejected until replaced by a verifiable EMH
   source.
+- Literature-backed thesis methodology outline exists.
 - Strategy/agent guardrails are enforced by project review checks.

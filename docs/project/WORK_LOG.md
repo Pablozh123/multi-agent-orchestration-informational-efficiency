@@ -865,3 +865,37 @@ Next step:
 
 - Draft the thesis results narrative skeleton from the deterministic tables and
   figures.
+
+## 2026-05-19 - goal-thesis-results-narrative-001
+
+Task:
+
+- Draft the thesis results narrative skeleton from existing deterministic H1,
+  H2, and H3 result artifacts.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/RESEARCH_SPEC.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- Documentation-only change; project checks run after status refresh.
+
+Decision:
+
+- Explain the results chapter through four bounded blocks: H1 forecast quality,
+  H2 daily event-window response, H3 wallet-tier timing diagnostics, and the
+  strategy prototype boundary.
+- Each block states what was investigated, how the result was derived, which
+  artifacts to cite, allowed interpretation, required caution, and further
+  investigations.
+- Keep RCP, intraday H2, causal insider wording, live trading, and profit
+  guarantees blocked.
+
+Next step:
+
+- Define the deterministic strategy prototype specification before any
+  backtest, agent, or MCP implementation.

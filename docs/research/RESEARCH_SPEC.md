@@ -341,6 +341,220 @@ Figure metadata:
 - No strategy PnL, drawdown, or agent-orchestration figure until a historical
   backtest prototype exists and is tested in Python.
 
+## Thesis Results Narrative Skeleton
+
+This skeleton defines how the first results chapter can explain what was
+investigated, how the result was derived, what the thesis may conclude, and
+which follow-up analyses remain open. It does not add new empirical results.
+
+### Results Chapter Opening
+
+Purpose:
+
+- State that informational efficiency is evaluated through three deterministic
+  proxy layers rather than assumed directly.
+- Explain that Polymarket's daily probability path is the primary market
+  series, while FiveThirtyEight, curated events, and wallet activity provide
+  comparison, information-integration, and timing-diagnostic views.
+- Emphasise that all reported metrics come from versioned Python outputs under
+  `data/results/`.
+
+Evidence to cite:
+
+- Table 1: data and source inventory.
+- `data/results/thesis_result_summary_metadata.json`.
+- Literature anchors `lit_emh_001`, `zotero_poly_001`, `zotero_poly_002`, and
+  `zotero_poly_006`.
+
+Allowed interpretation:
+
+- The thesis tests observable efficiency proxies in one election case study.
+
+Limitation:
+
+- The design does not prove that Polymarket is efficient in all markets or
+  future elections.
+
+### H1 Results: Forecast Quality
+
+What was investigated:
+
+- Whether Polymarket daily probabilities have lower forecast loss than
+  comparable probability forecasts and deterministic baselines.
+
+How the result was derived:
+
+- Daily Polymarket and FiveThirtyEight probability rows were aligned over the
+  overlapping 2024 window.
+- Python computed Brier loss series, mean Brier Scores, Diebold-Mariano
+  comparisons, and the reliability figure.
+- RCP was excluded because no probability transformation is documented.
+
+Evidence to cite:
+
+- Table 2: H1 forecast-quality summary.
+- Figure 1: H1 reliability curve.
+- `data/results/thesis_h1_summary.csv`.
+- `data/results/h1_brier_scores.csv`.
+- `data/results/h1_diebold_mariano.json`.
+
+Allowed interpretation:
+
+- The current baseline supports a forecast-quality comparison over the tested
+  overlap window.
+- A lower Brier Score indicates lower squared forecast error in that window.
+
+Required caution:
+
+- H1 is not a reaction-speed test.
+- The Polymarket and prior-day Polymarket Brier means are nearly identical in
+  the current output, so H1 should not be used as evidence of faster
+  information integration.
+
+Further investigations:
+
+- Document and test an RCP probability transformation before adding RCP to H1.
+- Add sensitivity checks for alternative forecast horizons or market
+  definitions if additional probability series become available.
+
+### H2 Results: Daily Event-Window Response
+
+What was investigated:
+
+- Whether Polymarket probabilities moved in the expected direction around
+  pre-curated public events.
+
+How the result was derived:
+
+- Seven source-backed events were fixed in `data/events_timeline_seed.csv`
+  before the first H2 output run.
+- Python generated daily event-window rows and compact CAR-style summaries for
+  the selected `[0d, +1d]` primary window and `[-1d, +3d]` sensitivity window.
+- Full row-level traces remain file-based, while compact H2 summaries are
+  persisted in `analysis_summaries`.
+
+Evidence to cite:
+
+- Table 3: H2 daily event-window summary.
+- Figure 2: H2 event-window movement overview.
+- `data/results/thesis_h2_summary.csv`.
+- `data/results/h2_event_window_summary.csv`.
+- `data/results/h2_event_window_rows.csv`.
+
+Allowed interpretation:
+
+- H2 can describe daily market movement around pre-curated public events.
+- Results may be discussed as daily event-window response patterns.
+
+Required caution:
+
+- Daily data cannot support intraday reaction-speed claims.
+- Events must not be added or removed after inspecting price reactions unless
+  the change is documented as a new sensitivity run.
+
+Further investigations:
+
+- Add intraday Polymarket price data before making intraday speed claims.
+- Expand the event catalog only through pre-specified inclusion rules and
+  source review.
+- Compare event responses with validated polling or news-sentiment variables
+  only after their transformations are documented.
+
+### H3 Results: Wallet-Tier Timing Diagnostics
+
+What was investigated:
+
+- Whether dataset-relative wallet tiers show observable activity before or
+  around Polymarket price changes.
+
+How the result was derived:
+
+- Wallet tiers were defined from wallet-level cumulative observed `amount_usd`
+  percentiles, not fixed USD thresholds.
+- Python generated wallet distribution inventory, tier classifications, daily
+  tier activity, lead-time histograms, lead-lag correlations, and Granger
+  diagnostic outputs.
+- Wallet-address-level raw rows are not part of the thesis-facing narrative.
+
+Evidence to cite:
+
+- Table 4: H3 wallet-tier and timing summary.
+- Figure 3: H3 wallet-tier distribution.
+- Figure 4: H3 lead-time histogram.
+- Figure 5: H3 Granger diagnostic overview.
+- `data/results/thesis_h3_summary.csv`.
+- `data/results/h3_wallet_distribution_inventory.json`.
+- `data/results/h3_lead_time_histograms.csv`.
+- `data/results/h3_lead_lag_correlations.csv`.
+- `data/results/h3_granger_results.csv`.
+
+Allowed interpretation:
+
+- H3 can report descriptive timing patterns and predictive timing diagnostics
+  under the tested daily model.
+- Granger outputs may be discussed as lead-lag diagnostics, not as proof of true
+  causality.
+
+Required caution:
+
+- The current wallet extract is BUY-only and daily-aligned.
+- Granger results require multiple-testing and sensitivity discussion before
+  any strong thesis wording.
+- No result proves insider trading, misconduct, private information, or future
+  profitability.
+
+Further investigations:
+
+- Add sell-side or directionally complete wallet activity if available.
+- Run multiple-testing adjustments and robustness checks across lag choices.
+- Test whether wallet-tier signals remain informative in out-of-sample or
+  walk-forward strategy backtests.
+
+### Strategy Prototype Boundary
+
+What was investigated so far:
+
+- The thesis has not yet backtested a trading strategy.
+- The current strategy work is an architecture and research-design boundary:
+  agents may later propose signal hypotheses, but Python must validate and
+  backtest them.
+
+Evidence to cite:
+
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+- `ARCHITECTURE_DECISIONS.md`.
+
+Allowed interpretation:
+
+- H1-H3 outputs can motivate future bounded signal hypotheses.
+- A later strategy prototype may test whether those hypotheses have historical
+  predictive value under explicit cost, slippage, position-limit, and
+  evaluation-split assumptions.
+
+Required caution:
+
+- No live trading, autonomous execution, profit guarantee, or agent-computed
+  metric belongs in the thesis.
+
+Further investigations:
+
+- Define `SignalSpec`, `BacktestConfig`, and `BacktestResult` before writing
+  strategy code.
+- Start with one deterministic historical backtest baseline and compare it
+  against simple benchmarks.
+
+### Chapter Closing
+
+The first empirical package should close with a balanced statement:
+
+- H1 provides forecast-quality evidence.
+- H2 provides daily event-window response evidence.
+- H3 provides wallet-tier timing diagnostics.
+- Together, these layers support a structured discussion of informational
+  efficiency in the studied Polymarket case, but they do not prove universal
+  market efficiency, insider activity, intraday speed, or strategy
+  profitability.
+
 ## Hypotheses
 
 H1: Brier Score calibration

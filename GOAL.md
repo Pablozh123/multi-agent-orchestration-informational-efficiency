@@ -2,88 +2,74 @@
 
 ## Active Goal
 
-goal_id: goal-thesis-results-narrative-001
-title: Draft thesis results narrative skeleton
+goal_id: goal-strategy-prototype-spec-001
+title: Define deterministic strategy prototype specification
 status: active
 phase: Phase 10: Strategy Research Prototype
 why:
-- H1-H3 thesis-facing result summaries now exist.
-- The strategy/agent idea is scoped as a backtested research prototype, not as
-  live trading.
-- The literature-backed thesis methodology outline now exists.
-- A canonical EMH source now exists in the literature index.
-- Thesis-ready figures now exist for H2 and H3 in addition to the existing H1
-  reliability curve.
-- The thesis now needs a safe results narrative skeleton that states what can
-  and cannot be concluded from H1-H3.
+- H1-H3 thesis-facing result summaries and figures now exist.
+- The results narrative skeleton now states what was investigated, how the
+  results were derived, what can be interpreted, and what remains open.
+- The strategy/agent idea is scoped as a historical backtested research
+  prototype, not live trading.
+- The next step is to define the deterministic strategy prototype contract
+  before any backtest, agent, or MCP implementation.
 deliverables:
-- Draft a results narrative skeleton for H1, H2, H3, and the strategy prototype
-  boundary.
-- Tie each narrative block to deterministic tables, figures, and limitations.
-- Keep wording compatible with the approved claim boundaries.
+- Define the first thesis-safe strategy prototype scope.
+- Specify candidate signal families that may be derived from H1, H2, and H3
+  summaries.
+- Define required fields for `SignalSpec`, `BacktestConfig`, and
+  `BacktestResult` at the documentation level.
+- Define acceptance criteria for a future deterministic Python backtest.
 scope:
-- Documentation-only thesis writing structure.
-- Existing deterministic tables, figures, and literature sources only.
+- Documentation-only research design.
+- Existing deterministic result summaries, figures, and literature sources
+  only.
+- Backtest specification and claim boundaries only.
 out_of_scope:
 - New statistical code, new event selection, or backtest implementation.
 - Agents, MCP, model routing, ML, cloud deployment, and live trading.
 - Treating Perplexity summaries as cited evidence.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Results narrative skeleton separates evidence, interpretation, and
-  limitations.
-- No causal, insider-trading, intraday, RCP-probability, live-trading, or profit
-  guarantee claims are introduced.
+- Strategy prototype scope separates signal hypotheses from deterministic
+  backtest calculation.
+- No agent, MCP, live-trading, or profit-guarantee claims are introduced.
+- Future backtest outputs require transaction costs, slippage, position limits,
+  drawdown, and out-of-sample or walk-forward evaluation assumptions.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: draft thesis results narrative skeleton
+next_commit: docs: define strategy prototype specification
 
 ## Decision Inputs For This Goal
 
-- H2 event-study window status is explicit in `docs/research/EVENT_SELECTION.md`.
-- H2 output shape is accepted in `docs/research/EVENT_SELECTION.md`.
-- Compact H2 summary persistence exists in `analysis_summaries`.
-- The default H2 event source is the tracked `data/events_timeline_seed.csv`.
-- H3 wallet-tier method is selected in `docs/research/WHALE_METHOD.md`.
-- H3 wallet distribution inventory exists in `data/results/`.
-- H3 wallet tier classification exists in `data/results/`.
-- H3 tiered wallet activity series exists in `data/results/`.
-- H3 descriptive lead-time histograms exist in `data/results/`.
-- H3 lead-time output shape is reviewed and accepted in
-  `docs/research/WHALE_METHOD.md`.
-- H3 daily lead-lag and Granger outputs exist in `data/results/`.
-- H3 Granger output interpretation limits are accepted in
-  `docs/research/WHALE_METHOD.md`.
-- H1-H3 empirical baseline review is accepted in
-  `docs/research/RESEARCH_SPEC.md`.
-- Backtested strategy prototype boundaries are recorded in
-  `ARCHITECTURE_DECISIONS.md` and `ROADMAP.md`.
-- Thesis-facing H1-H3 summaries exist in `data/results/`.
-- Strategy agent architecture is specified in
-  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+- H1-H3 empirical baseline review exists in `docs/research/RESEARCH_SPEC.md`.
+- Thesis results narrative skeleton exists in `docs/research/RESEARCH_SPEC.md`.
+- Strategy prototype boundaries are recorded in `ARCHITECTURE_DECISIONS.md`,
+  `ROADMAP.md`, and `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+- Thesis-facing H1-H3 summaries and figures exist in `data/results/`.
 - Literature intake structure exists in `docs/research/LITERATURE_MAP.md` and
   `data/literature/literature_index.csv`.
-- Zotero Polymarket sources are indexed in `data/literature/literature_index.csv`.
-- Remaining local Zotero PDFs are classified as skimmed or rejected for thesis
-  use.
-- Thesis methodology outline exists in `docs/research/RESEARCH_SPEC.md`.
-- Canonical EMH source `lit_emh_001` exists in
-  `data/literature/literature_index.csv`.
-- Thesis tables and figures plan exists in `docs/research/RESEARCH_SPEC.md`.
-- Thesis-ready figure artifacts exist in `data/results/`.
-- ML scope and re-entry conditions are explicit in `docs/research/RESEARCH_SPEC.md`.
+- ML scope and re-entry conditions are explicit in
+  `docs/research/RESEARCH_SPEC.md`.
 - Codex workflow roles are separate from deferred thesis runtime agents.
 
 ## Done Means
 
-- Downloaded literature sources are indexed and mapped.
-- Perplexity discoveries are separated from checked academic sources.
-- Project review checks still detect premature H3, ML, agent, or MCP work.
+- The first strategy prototype is defined as a historical research backtest,
+  not live trading.
+- Candidate signal families are linked to H1, H2, or H3 result summaries.
+- Required backtest inputs, outputs, risk assumptions, and rejection criteria
+  are documented before code exists.
+- Project review checks still detect premature ML, agent, MCP, live-trading,
+  or profit-guarantee work.
 
 ## Blocked Follow-Up Goals
 
-- ML, runtime agents, MCP, and interpretation workflows remain blocked until
-  H3 result interpretation limits are reviewed and explicitly approved.
+- Runtime agents and MCP remain blocked until bounded summary contracts,
+  `llm_audit_log` usage, and deterministic backtest outputs exist.
+- ML remains blocked until deterministic H1-H3 outputs and any strategy
+  prototype baseline have written methodology and review notes.
 
 ## Completed Goals
 
@@ -124,4 +110,6 @@ next_commit: docs: draft thesis results narrative skeleton
 - Thesis tables and figures plan exists.
 - Thesis-ready H2 and H3 figure artifacts are generated from existing result
   files.
+- Thesis results narrative skeleton exists and separates evidence,
+  interpretation, limitations, and further investigations.
 - Strategy/agent guardrails are enforced by project review checks.

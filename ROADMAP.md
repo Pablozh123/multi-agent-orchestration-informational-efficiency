@@ -169,7 +169,7 @@ Blockers:
 
 ## Phase 9: Thesis Export
 
-Status: complete for initial thesis-facing result summaries
+Status: complete for initial thesis-facing result summaries and narrative skeleton
 
 Done criteria:
 
@@ -177,16 +177,19 @@ Done criteria:
 - Method sections document assumptions, exclusions, and limitations.
 - Thesis-facing German uses Swiss spelling.
 - Overleaf export artifacts are traceable to deterministic outputs.
+- The first results narrative skeleton separates evidence, interpretation,
+  limitations, and further investigations for H1, H2, H3, and the strategy
+  prototype boundary.
 
 Blockers:
 
-- Figure decisions and Overleaf prose are not prepared yet.
+- Overleaf prose is not exported yet.
 - Strong H3 conclusion wording remains limited by BUY-only source data, daily
   alignment, and multiple-testing sensitivity.
 
 ## Phase 10: Strategy Research Prototype
 
-Status: active for thesis results narrative drafting
+Status: active for deterministic strategy prototype specification
 
 Done criteria:
 
@@ -201,7 +204,9 @@ Done criteria:
 
 Blockers:
 
-- Thesis results narrative skeleton is not drafted yet.
+- The deterministic strategy prototype contract is not specified yet.
+- No `SignalSpec`, `BacktestConfig`, or `BacktestResult` implementation exists
+  yet.
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.

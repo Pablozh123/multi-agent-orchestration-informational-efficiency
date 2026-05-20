@@ -1302,3 +1302,37 @@ Decision:
 Next step:
 
 - Review the monitor v2 snapshot output shape and threshold behaviour.
+
+## 2026-05-20 - goal-monitor-v2-snapshot-review-001
+
+Task:
+
+- Review deterministic monitor v2 snapshot prototype outputs.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- Output inspection of `data/results/monitor_v2_alert_rows.csv`.
+- Output inspection of `data/results/monitor_v2_alert_summary.csv`.
+- Output inspection of `data/results/monitor_v2_metadata.json`.
+
+Decision:
+
+- Accept the row and summary column shape for the first deterministic monitor
+  v2 snapshot prototype.
+- Keep the output as descriptive, mocked, aggregate-only, and not a live
+  monitoring or trading signal.
+- Treat percentile-only `watch` alerts as too sensitive for real replay data
+  until deterministic threshold sensitivity is reviewed.
+
+Next step:
+
+- Compare current and stricter monitor v2 alert threshold rules before adding
+  real replay data or live collection.

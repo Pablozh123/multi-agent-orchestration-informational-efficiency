@@ -425,6 +425,16 @@ Snapshot prototype status:
 - The current output is a mocked contract test, not a real-time wallet monitor
   and not evidence of wallet performance.
 
+Snapshot output review:
+
+- The wallet-facing output shape is accepted for aggregate monitor use.
+- Wallet-related monitor rows stay at tier or concentration level.
+- No wallet addresses appear in monitor v2 row or summary outputs.
+- The current mock output contains percentile-only `watch` alerts. Before
+  wallet-tier replay data are used, threshold sensitivity must decide whether
+  percentile-only wallet alerts need a minimum robust z-score or confirmation
+  from another anomaly family.
+
 ## Event-Centred Wallet Anomaly Monitor
 
 Anomaly-monitor status: complete for the first historical daily output.

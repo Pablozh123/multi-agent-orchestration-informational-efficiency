@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-snapshot-review-001
-title: Review deterministic monitor v2 snapshot prototype outputs
+goal_id: goal-monitor-v2-threshold-sensitivity-001
+title: Review monitor v2 alert threshold sensitivity
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -14,35 +14,37 @@ why:
 - The near-real-time monitor v2 contract is documented before implementation.
 - The deterministic monitor v2 snapshot prototype now exists and emits
   row-level diagnostics, compact summaries, and metadata from mocked snapshots.
-- The next safe step is reviewing output shape, threshold behaviour, and
-  interpretation limits before live collection or real replay data.
+- The monitor v2 snapshot output shape is reviewed and accepted.
+- The review found percentile-only `watch` alerts where percentile rank is 1.0
+  but robust z-score is only about 1.35.
+- The next safe step is a deterministic threshold-sensitivity review before
+  real replay data or live collection.
 deliverables:
-- Review `data/results/monitor_v2_alert_rows.csv`.
-- Review `data/results/monitor_v2_alert_summary.csv`.
-- Review `data/results/monitor_v2_metadata.json`.
-- Document whether the row and summary columns are accepted.
-- Document whether percentile-only `watch` alerts need a stricter combined
-  rule before real replay data.
-- Decide the next implementation step: recorded-snapshot input file, historical
-  replay from existing artifacts, or threshold-sensitivity review.
+- Compare the current alert rule with stricter alternatives on the existing
+  mock snapshot output.
+- Keep the review deterministic and file-based.
+- Report how many alerts each candidate rule would produce.
+- Recommend the default rule before real replay data are added.
 scope:
-- Documentation and output review only.
-- Existing monitor v2 prototype artifacts only.
-- Existing mock-snapshot results only.
+- Deterministic threshold-sensitivity review only.
+- Existing mock-snapshot results only unless a small derived sensitivity table
+  is needed.
+- No real replay data yet.
 out_of_scope:
 - Agents, MCP, model routing, ML, cloud deployment, live trading, and order
   execution.
 - Live WebSocket or API collection.
 - Database writes.
 - New real events in the canonical seed unless they are separately curated.
-- New monitor scoring code unless the review finds a concrete defect.
+- Large monitor refactor or live collector code.
 - Strategy backtest implementation, PnL, profitability claims, insider claims,
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- The prototype outputs are reviewed before any live collector or real replay
+- Threshold alternatives are compared before any live collector or real replay
   implementation.
-- Accepted columns, limitations, and threshold caveats are documented.
+- Percentile-only alert behaviour is accepted, changed, or explicitly deferred
+  with a reason.
 - Output files remain aggregate-only and contain no wallet addresses or order
   instructions.
 - No live collector, agent, MCP, ML, live-trading, or order-execution path is
@@ -50,7 +52,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: review monitor v2 snapshot prototype outputs
+next_commit: test: review monitor v2 threshold sensitivity
 
 ## Decision Inputs For This Goal
 
@@ -84,10 +86,10 @@ next_commit: docs: review monitor v2 snapshot prototype outputs
 
 ## Done Means
 
-- The monitor v2 snapshot prototype output shape is accepted or concrete
-  corrections are specified.
-- The next implementation decision is recorded before live collection or real
-  replay data are added.
+- A default monitor v2 alert threshold rule is selected or a concrete
+  correction is specified.
+- The next implementation decision is recorded before real replay data or live
+  collection are added.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, or profit-guarantee work.
 
@@ -159,3 +161,5 @@ next_commit: docs: review monitor v2 snapshot prototype outputs
   collection.
 - Deterministic monitor v2 snapshot prototype exists with row-level alert
   diagnostics, summary rows, metadata, and tests.
+- Monitor v2 snapshot prototype output shape is reviewed and accepted with a
+  threshold-sensitivity caveat.

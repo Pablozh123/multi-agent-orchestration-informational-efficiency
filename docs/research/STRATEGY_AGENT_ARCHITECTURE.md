@@ -467,6 +467,92 @@ Review needed before real replay data:
   threshold sensitivity before a live collector or real politics/geo replay
   input is added.
 
+### Snapshot Prototype Output Review
+
+Review date: 2026-05-20
+
+Review status: accepted with threshold-sensitivity caveat.
+
+Reviewed artifacts:
+
+- `data/results/monitor_v2_alert_rows.csv`
+- `data/results/monitor_v2_alert_summary.csv`
+- `data/results/monitor_v2_metadata.json`
+
+Accepted row shape:
+
+- `timestamp_utc`
+- `market_id`
+- `tier`
+- `anomaly_family`
+- `metric_name`
+- `observed_value`
+- `baseline_window`
+- `baseline_observations`
+- `rolling_median`
+- `rolling_mad`
+- `robust_z`
+- `rolling_percentile_rank`
+- `severity`
+- `status`
+- `event_candidate_id`
+- `event_review_status`
+- `evidence_refs`
+- `limitation`
+- `review_status`
+- `claim_scope`
+
+Accepted summary shape:
+
+- market and metric identifiers,
+- row and alert counts,
+- maximum severity,
+- maximum robust z-score,
+- maximum percentile rank,
+- first and latest alert timestamps,
+- limitation and claim scope.
+
+Reviewed output:
+
+- 124 row-level diagnostics.
+- 4 compact summary rows.
+- 112 `none` rows, 8 `watch` rows, and 4 `critical` rows.
+- 80 rows have `insufficient_baseline`, which is expected because the mock run
+  requires at least 20 prior observations.
+- 44 rows have `ok` scoring status.
+- The final mock event day has 4 `critical` alerts, one each for market move,
+  wallet-tier activity, active-wallet activity, and concentration.
+
+Interpretation:
+
+- The prototype output shape is accepted for the first deterministic v2
+  contract implementation.
+- The metadata correctly states that the run uses mocked or recorded snapshots
+  only, does not write to the database, does not use LLMs, agents, MCP, ML, or
+  RCP, and contains no wallet addresses or order instructions.
+- The final mock event-day cluster shows that the contract can represent a
+  combined politics/geo anomaly alert when reviewed event context coincides
+  with multiple metric families.
+
+Threshold caveat:
+
+- The 8 non-final `watch` rows are produced by percentile rank equal to 1.0
+  while robust z-score is about 1.35.
+- This is acceptable for a contract fixture, but likely too sensitive for real
+  replay or live data.
+- Before using real replay data, run a deterministic threshold-sensitivity
+  review that compares the current rule with stricter alternatives, such as:
+  minimum robust z-score for percentile-only alerts, combined-family
+  confirmation for `watch`, or separate `percentile_info` labelling.
+
+Decision:
+
+- Accept the output columns and metadata.
+- Do not add live collection yet.
+- Do not add agents or MCP yet.
+- Next step: deterministic threshold-sensitivity review on the existing mock
+  snapshot output before real replay data is added.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

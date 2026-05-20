@@ -1263,3 +1263,42 @@ Next step:
 
 - Implement a deterministic v2 snapshot prototype using recorded or mocked
   inputs before any live collector.
+
+## 2026-05-20 - goal-monitor-v2-snapshot-prototype-001
+
+Task:
+
+- Implement the deterministic monitor v2 snapshot prototype.
+
+Files changed:
+
+- `operations/analysis/monitor_v2_snapshot.py`
+- `tests/test_monitor_v2_snapshot.py`
+- `data/results/monitor_v2_alert_rows.csv`
+- `data/results/monitor_v2_alert_summary.csv`
+- `data/results/monitor_v2_metadata.json`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_v2_snapshot.py -q`
+  -> 8 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_snapshot`
+  -> 124 rows, 12 alerts, 4 summary rows.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 186 passed.
+
+Decision:
+
+- Keep the first v2 implementation on mocked or recorded snapshots only.
+- Use completed prior observations for robust rolling scores and percentile
+  ranks.
+- Treat the current output as a contract prototype, not live monitoring or a
+  trading signal.
+- Review percentile-only `watch` behaviour before adding real replay data.
+
+Next step:
+
+- Review the monitor v2 snapshot output shape and threshold behaviour.

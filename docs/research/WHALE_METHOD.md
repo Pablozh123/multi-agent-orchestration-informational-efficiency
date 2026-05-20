@@ -412,6 +412,19 @@ Implementation gate:
 - Alert scoring must be deterministic Python and tested on toy data before it
   reads live or replayed Polymarket snapshots.
 
+Snapshot prototype status:
+
+- A first deterministic snapshot prototype exists in
+  `operations/analysis/monitor_v2_snapshot.py`.
+- It produces aggregate mock wallet-tier, active-wallet, and concentration
+  diagnostics without wallet addresses.
+- Output files are:
+  `data/results/monitor_v2_alert_rows.csv`,
+  `data/results/monitor_v2_alert_summary.csv`, and
+  `data/results/monitor_v2_metadata.json`.
+- The current output is a mocked contract test, not a real-time wallet monitor
+  and not evidence of wallet performance.
+
 ## Event-Centred Wallet Anomaly Monitor
 
 Anomaly-monitor status: complete for the first historical daily output.

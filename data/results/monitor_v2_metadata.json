@@ -1,0 +1,84 @@
+{
+  "generated_at_utc": "2026-05-20T14:27:22+00:00",
+  "inputs": {
+    "columns": [
+      "timestamp_utc",
+      "market_id",
+      "tier",
+      "anomaly_family",
+      "metric_name",
+      "observed_value",
+      "event_candidate_id",
+      "event_review_status",
+      "evidence_ref",
+      "limitation",
+      "review_status"
+    ],
+    "snapshot_rows": 124,
+    "snapshots_path": ""
+  },
+  "limitations": {
+    "does_not_send_orders": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_use_rcp": true,
+    "does_not_write_database": true,
+    "mock_or_recorded_snapshots_only": true,
+    "no_live_websocket_or_api_collection": true,
+    "no_profitability_or_private_information_claim": true
+  },
+  "method": {
+    "baseline_observations": 30,
+    "input_mode": "built_in_mock_snapshot_fixture",
+    "min_baseline_observations": 20,
+    "name": "monitor_v2_deterministic_snapshot_prototype",
+    "percentile_score": "rolling empirical percentile rank",
+    "robust_score": "robust_z = (value - rolling_median) / (1.4826 * MAD)",
+    "uses_completed_prior_observations": true
+  },
+  "outputs": {
+    "alert_count": 12,
+    "alert_row_count": 124,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "row_columns": [
+      "timestamp_utc",
+      "market_id",
+      "tier",
+      "anomaly_family",
+      "metric_name",
+      "observed_value",
+      "baseline_window",
+      "baseline_observations",
+      "rolling_median",
+      "rolling_mad",
+      "robust_z",
+      "rolling_percentile_rank",
+      "severity",
+      "status",
+      "event_candidate_id",
+      "event_review_status",
+      "evidence_refs",
+      "limitation",
+      "review_status",
+      "claim_scope"
+    ],
+    "summary_columns": [
+      "market_id",
+      "tier",
+      "anomaly_family",
+      "metric_name",
+      "row_count",
+      "alert_count",
+      "max_severity",
+      "max_robust_z",
+      "max_percentile_rank",
+      "first_alert_at",
+      "latest_alert_at",
+      "limitation",
+      "claim_scope"
+    ],
+    "summary_row_count": 4
+  }
+}

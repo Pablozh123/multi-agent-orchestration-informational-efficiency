@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-snapshot-prototype-001
-title: Implement deterministic monitor v2 snapshot prototype
+goal_id: goal-monitor-v2-snapshot-review-001
+title: Review deterministic monitor v2 snapshot prototype outputs
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -12,45 +12,45 @@ why:
 - The first historical anomaly-output artifacts are reviewed and accepted as a
   descriptive daily baseline.
 - The near-real-time monitor v2 contract is documented before implementation.
-- The next safe step is a deterministic Python prototype over recorded or
-  mocked snapshots, not a live collector.
+- The deterministic monitor v2 snapshot prototype now exists and emits
+  row-level diagnostics, compact summaries, and metadata from mocked snapshots.
+- The next safe step is reviewing output shape, threshold behaviour, and
+  interpretation limits before live collection or real replay data.
 deliverables:
-- Add tested monitor v2 data-contract helpers or a small runner using recorded
-  or mocked snapshots.
-- Implement robust rolling score and rolling percentile diagnostics on toy
-  snapshot data.
-- Emit deterministic alert rows, summary rows, and metadata without writing to
-  the database.
-- Ensure missing or unstable baselines return explicit diagnostic statuses.
-- Keep outputs aggregate-only and free of wallet addresses.
+- Review `data/results/monitor_v2_alert_rows.csv`.
+- Review `data/results/monitor_v2_alert_summary.csv`.
+- Review `data/results/monitor_v2_metadata.json`.
+- Document whether the row and summary columns are accepted.
+- Document whether percentile-only `watch` alerts need a stricter combined
+  rule before real replay data.
+- Decide the next implementation step: recorded-snapshot input file, historical
+  replay from existing artifacts, or threshold-sensitivity review.
 scope:
-- Deterministic Python prototype only.
-- Recorded or mocked snapshots only.
-- Polymarket politics/geopolitical monitor contract only.
-- Existing historical anomaly artifacts and v2 contract can be used as design
-  inputs.
+- Documentation and output review only.
+- Existing monitor v2 prototype artifacts only.
+- Existing mock-snapshot results only.
 out_of_scope:
 - Agents, MCP, model routing, ML, cloud deployment, live trading, and order
   execution.
 - Live WebSocket or API collection.
 - Database writes.
 - New real events in the canonical seed unless they are separately curated.
+- New monitor scoring code unless the review finds a concrete defect.
 - Strategy backtest implementation, PnL, profitability claims, insider claims,
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- The prototype follows the documented v2 contract.
-- Robust rolling score tests cover normal, spike, zero-MAD, and insufficient
-  baseline cases.
-- Alert output includes severity, evidence references, limitations, and review
-  status.
-- Output files contain no wallet addresses and no order instructions.
+- The prototype outputs are reviewed before any live collector or real replay
+  implementation.
+- Accepted columns, limitations, and threshold caveats are documented.
+- Output files remain aggregate-only and contain no wallet addresses or order
+  instructions.
 - No live collector, agent, MCP, ML, live-trading, or order-execution path is
   activated.
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add deterministic monitor v2 snapshot prototype
+next_commit: docs: review monitor v2 snapshot prototype outputs
 
 ## Decision Inputs For This Goal
 
@@ -74,6 +74,8 @@ next_commit: feat: add deterministic monitor v2 snapshot prototype
 - Near-real-time monitor v2 contract exists in
   `docs/research/STRATEGY_AGENT_ARCHITECTURE.md` and
   `docs/research/WHALE_METHOD.md`.
+- Deterministic monitor v2 snapshot prototype outputs exist under
+  `data/results/`.
 - Literature intake structure exists in `docs/research/LITERATURE_MAP.md` and
   `data/literature/literature_index.csv`.
 - ML scope and re-entry conditions are explicit in
@@ -82,10 +84,10 @@ next_commit: feat: add deterministic monitor v2 snapshot prototype
 
 ## Done Means
 
-- A deterministic snapshot prototype can generate monitor alert rows, summary
-  rows, and metadata from recorded or mocked inputs.
-- The prototype demonstrates robust rolling score, percentile rank, alert
-  level, and review-status handling without live collection.
+- The monitor v2 snapshot prototype output shape is accepted or concrete
+  corrections are specified.
+- The next implementation decision is recorded before live collection or real
+  replay data are added.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, or profit-guarantee work.
 
@@ -155,3 +157,5 @@ next_commit: feat: add deterministic monitor v2 snapshot prototype
 - Near-real-time monitor v2 contract is specified as Polymarket-first,
   read-only, robust-score based, human-reviewed, and file-based before live
   collection.
+- Deterministic monitor v2 snapshot prototype exists with row-level alert
+  diagnostics, summary rows, metadata, and tests.

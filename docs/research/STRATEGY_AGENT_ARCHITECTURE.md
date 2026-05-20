@@ -412,6 +412,61 @@ Future implementation tests:
 - market-maker exclusions are applied only as documented filter metadata,
 - no order execution, agents, MCP, ML, or RCP probability use.
 
+## Monitor V2 Snapshot Prototype
+
+monitor_v2_snapshot_prototype_status: complete for mocked snapshots
+
+Implemented prototype module:
+
+- `operations/analysis/monitor_v2_snapshot.py`
+
+Implemented test module:
+
+- `tests/test_monitor_v2_snapshot.py`
+
+Generated artifacts:
+
+- `data/results/monitor_v2_alert_rows.csv`
+- `data/results/monitor_v2_alert_summary.csv`
+- `data/results/monitor_v2_metadata.json`
+
+Prototype scope:
+
+- Uses a deterministic built-in mock snapshot fixture by default.
+- Also accepts a CSV snapshot file through the CLI for later recorded replay.
+- Uses completed prior observations for rolling baselines.
+- Computes robust z-scores with median absolute deviation and rolling
+  percentile ranks.
+- Emits descriptive alert severities only.
+- Writes no database rows and calls no external API.
+
+Current mock-output shape:
+
+- 124 row-level diagnostics.
+- 4 compact summary rows.
+- 12 non-`none` alert rows.
+- 4 `critical` rows on the final mock event day, where market movement,
+  wallet-tier activity, active-wallet activity, concentration, and accepted
+  event context coincide.
+
+Interpretation:
+
+- The prototype proves the v2 contract can be translated into deterministic
+  Python outputs without live collection.
+- It demonstrates explicit `insufficient_baseline`, `zero_mad`, robust-score,
+  percentile-rank, event-review, and severity handling.
+
+Review needed before real replay data:
+
+- The mock fixture also produces earlier `watch` alerts when percentile rank is
+  high even though robust z-score is modest. This follows the documented
+  contract, but it should be reviewed before real monitoring to decide whether
+  percentile-only alerts need an additional minimum robust-z or combined-family
+  condition.
+- The next step should review output columns, severity behaviour, and
+  threshold sensitivity before a live collector or real politics/geo replay
+  input is added.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

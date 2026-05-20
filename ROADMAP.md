@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: ready for deterministic v2 snapshot prototype after contract review
+Status: active for monitor v2 snapshot output review
 
 Done criteria:
 
@@ -225,6 +225,8 @@ Done criteria:
 - The v2 scoring contract uses robust rolling baselines, percentile ranks,
   explicit insufficient-baseline statuses, and descriptive alert levels.
 - Human review states are specified before canonical event or alert reporting.
+- A deterministic snapshot prototype exists and generates mock/replay-style
+  alert rows, summaries, and metadata.
 
 Blockers:
 
@@ -234,5 +236,5 @@ Blockers:
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.
-- The first v2 implementation must start with recorded or mocked snapshots
-  before any live collector.
+- The snapshot output shape and percentile-only `watch` behaviour must be
+  reviewed before real replay data or a live collector.

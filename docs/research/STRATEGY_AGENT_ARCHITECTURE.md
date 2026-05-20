@@ -1168,6 +1168,67 @@ Next implementation step:
   access contract, MCP contract, agent interpretation layer, or live collector
   design uses monitor-v2 outputs.
 
+### Bounded Summary Output Review
+
+Review date: 2026-05-20
+
+Review status: accepted as the first monitor-v2 summary boundary.
+
+Reviewed artifacts:
+
+- `data/results/monitor_v2_bounded_summary.csv`
+- `data/results/monitor_v2_bounded_summary_metadata.json`
+
+Accepted shape:
+
+- The CSV contains 19 compact rows.
+- Each row contains a stable `summary_id`, `summary_type`, human-readable
+  label, metric name, value, source artifact, allowed interpretation,
+  limitation, and claim scope.
+- The metadata records the source artifacts, summary columns, row count, and
+  non-use of LLMs, agents, MCP, ML, live collection, and database writes.
+- The summary includes validation, coverage, direct severity counts,
+  event-context label counts, metric-family counts, and strongest metric
+  diagnostics.
+
+Review result:
+
+- Validation status is `pass`.
+- Summary coverage records 3394 scoring snapshots and 3394 alert rows.
+- Direct severity counts remain 2813 `none`, 334 `info`, 169 `watch`, 78
+  `high`, and 0 `critical`.
+- Event-context labels remain 9 `no_event_alert`, 1 `context_alert`, 8
+  `event_watch_candidate`, and 3 `critical_proximity_candidate`.
+- Metric-family counts show active-wallet activity as the largest family with
+  259 alert rows, followed by wallet-tier activity with 187, concentration
+  with 107, and market movement with 28.
+- The largest robust-score diagnostic is market movement, but this remains a
+  descriptive recorded-value diagnostic.
+
+Decision:
+
+- Accept the bounded summary shape for future read-only access contracts.
+- Treat `monitor_v2_bounded_summary.csv` as the default monitor-v2
+  interpretation surface.
+- Keep `monitor_v2_recorded_alert_rows.csv` and other row-level outputs as
+  deterministic source artifacts, not prompt-facing defaults.
+- Do not expose unrestricted raw alert rows through future MCP or agent tools.
+
+Limitations:
+
+- The summary is daily replay, not live monitoring.
+- It uses aggregate observed BUY-side wallet-tier activity.
+- Event context is a daily `[-1d, +1d]` proximity label, not intraday
+  reaction-speed evidence.
+- The accepted summary does not support trading, private-information,
+  misconduct, causality, or future-performance claims.
+
+Next implementation step:
+
+- Specify a read-only monitor-v2 summary access contract that describes which
+  bounded files a future MCP or agent layer may read, while keeping the actual
+  MCP and agent implementations deferred.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

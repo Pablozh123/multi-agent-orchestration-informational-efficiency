@@ -1808,3 +1808,37 @@ Next step:
 
 - Review the bounded monitor-v2 summary shape and decide whether it is
   accepted for future read-only access contracts.
+
+## 2026-05-20 - goal-monitor-v2-bounded-summary-review-001
+
+Task:
+
+- Review bounded monitor-v2 summary outputs and accept the summary boundary.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- Direct review of `data/results/monitor_v2_bounded_summary.csv`.
+- Direct review of `data/results/monitor_v2_bounded_summary_metadata.json`.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+
+Decision:
+
+- Accept `monitor_v2_bounded_summary.csv` as the default monitor-v2
+  interpretation surface.
+- Keep row-level alert files deterministic and file-based, but not
+  prompt-facing by default.
+- Require a read-only access contract before MCP, agents, live collection, or
+  strategy backtest work.
+
+Next step:
+
+- Specify the read-only monitor-v2 summary access contract.

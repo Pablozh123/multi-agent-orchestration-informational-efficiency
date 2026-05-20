@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-live-input-contract-001
-title: Specify monitor v2 live input collection contract
+goal_id: goal-monitor-v2-live-input-contract-review-001
+title: Review monitor v2 live input collection contract
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -13,20 +13,20 @@ why:
   figures, and bounded summaries exist.
 - The read-only monitor-v2 summary access contract is specified, reviewed, and
   now enforceable through project review checks.
-- The next safe step is to specify how live or replayed Polymarket inputs would
-  be collected before any collector, API client, WebSocket loop, MCP tool,
-  runtime agent, strategy backtest, or execution path is implemented.
+- The monitor-v2 live input collection contract is now specified as read-only,
+  replay-first, timestamped, bucketed, and validation-first.
+- The next safe step is to review whether the contract is specific enough
+  before any collector, API client, WebSocket loop, MCP tool, runtime agent,
+  strategy backtest, or execution path is implemented.
 deliverables:
-- Document the future monitor-v2 input collection contract in existing
-  research/architecture docs.
-- Define allowed input sources, polling/WebSocket boundary, timestamping,
-  bucket cadence, replay storage, validation, and mock/replay test strategy.
-- Distinguish recorded replay files, future live collection, and future
-  read-only interpretation surfaces.
-- Preserve the rule that all live collection implementation remains deferred.
+- Review and accept or block the monitor-v2 live input collection contract.
+- Confirm the selected source classes, 15-minute default alert bucket,
+  timestamp policy, replay storage, validation rules, and no-lookahead rule.
+- Decide the next step after review: replay-first input batch prototype,
+  additional documentation, or keep implementation blocked.
 scope:
-- Documentation only unless the user explicitly asks for implementation after
-  the contract is reviewed.
+- Documentation review only unless the user explicitly asks for implementation
+  after the contract is accepted.
 - Existing monitor-v2 architecture, research, and project-control docs.
 - Existing curated US-election event seed only.
 - No new live data, no external API calls, and no new event curation.
@@ -42,17 +42,17 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- The future live-input contract states which Polymarket inputs are allowed,
-  how they are timestamped, and how replayable files are produced.
-- The contract states how rolling-baseline scoring avoids lookahead.
-- The contract specifies validation and mock/replay tests before live
-  collection.
+- The live-input contract is explicitly accepted, revised, or blocked.
+- Review notes state whether the selected 15-minute bucket and daily bridge are
+  acceptable for the first live-capable prototype.
+- Review notes state whether replay storage and validation rules are complete
+  enough for implementation planning.
 - No live collector, external API call, WebSocket loop, agent, MCP, ML,
   live-trading, strategy backtest, or order-execution path is activated.
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: specify monitor v2 live input collection contract
+next_commit: docs: review monitor v2 live input collection contract
 
 ## Decision Inputs For This Goal
 
@@ -63,16 +63,19 @@ next_commit: docs: specify monitor v2 live input collection contract
   wallet-address exposure, and blocked raw monitor files.
 - The v2 scoring contract already defines robust rolling scores, percentile
   ranks, alert levels, and human review states.
-- Polymarket API, Market WebSocket, PolyBench, and microstructure papers are
-  documented as contract anchors, but no current live API behaviour is assumed
-  without later verification.
+- The live-input collection contract exists in
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+- The wallet-specific live input boundary exists in
+  `docs/research/WHALE_METHOD.md`.
+- Architecture decision 22 records the replay-first live-input rule.
 
 ## Done Means
 
-- The live-input contract is specific enough that a later deterministic Python
-  prototype can be built without deciding API scope, timestamp policy,
-  baseline lookback policy, or validation rules during implementation.
-- The contract remains read-only and replay-first.
+- The contract review produces a clear go/no-go for a replay-first input batch
+  prototype.
+- If accepted, implementation can proceed without deciding source classes,
+  timestamp policy, bucket policy, replay storage, validation, or lookahead
+  policy during coding.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -180,3 +183,6 @@ next_commit: docs: specify monitor v2 live input collection contract
 - Project review checks enforce the monitor-v2 read-only summary access
   boundary, including bounded summary artifacts, row limits, no wallet-address
   exposure, and blocked raw monitor files.
+- Monitor-v2 live input collection contract is specified as read-only,
+  replay-first, UTC timestamped, 15-minute bucketed for first live-capable
+  alerts, validation-first, and no-lookahead.

@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for monitor v2 live input collection contract
+Status: active for monitor v2 live input collection contract review
 
 Done criteria:
 
@@ -270,6 +270,9 @@ Done criteria:
 - Automated project checks enforce the monitor-v2 read-only access boundary,
   bounded summary artifacts, row limits, no wallet-address exposure, and
   blocked raw monitor files.
+- A monitor-v2 live input collection contract is specified as read-only,
+  replay-first, UTC timestamped, 15-minute bucketed for first live-capable
+  alerts, validation-first, and no-lookahead.
 
 Blockers:
 
@@ -279,6 +282,6 @@ Blockers:
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.
-- MCP, agents, live collection, and strategy backtests remain blocked until a
-  reviewed live-input contract and deterministic replay-first implementation
-  path exist.
+- MCP, agents, live collection, and strategy backtests remain blocked until the
+  live-input contract is reviewed and a deterministic replay-first
+  implementation path is selected.

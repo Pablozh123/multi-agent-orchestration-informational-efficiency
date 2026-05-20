@@ -1947,3 +1947,43 @@ Next step:
 
 - Specify the monitor-v2 live input collection contract as a documentation-only
   step before any collector implementation.
+
+## 2026-05-20 - goal-monitor-v2-live-input-contract-001
+
+Task:
+
+- Specify the monitor-v2 live input collection contract before any live
+  collector, API client, WebSocket loop, MCP tool, runtime agent, or strategy
+  backtest is implemented.
+
+Files changed:
+
+- `ARCHITECTURE_DECISIONS.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.project.review_check --skip-pytest "docs-only contract update; full pytest will run via update_status"`
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+
+Decision:
+
+- The live-input contract is read-only and replay-first.
+- The first live-capable alert-scoring bucket is 15 minutes, while daily
+  buckets remain the bridge to current thesis outputs.
+- Every future input row must carry UTC timestamp fields, deterministic bucket
+  boundaries, source metadata, and validation status.
+- Scoring for bucket `t` must use completed prior buckets for the rolling
+  baseline and may only use event context available at or before `t`.
+- Raw live input files remain source artifacts, not prompt-facing or
+  MCP-facing defaults.
+
+Next step:
+
+- Review and accept, revise, or block the live-input collection contract
+  before any replay-first input batch prototype is implemented.

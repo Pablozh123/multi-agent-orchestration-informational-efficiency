@@ -412,6 +412,25 @@ Implementation gate:
 - Alert scoring must be deterministic Python and tested on toy data before it
   reads live or replayed Polymarket snapshots.
 
+Live input contract:
+
+- Wallet inputs for any future running monitor must remain aggregate
+  `WalletTierSnapshot` rows.
+- The default alert-scoring bucket for a first live-capable prototype is 15
+  minutes, but daily buckets remain the bridge to current thesis outputs.
+- Wallet-tier snapshots must include `collector_received_at_utc`,
+  `source_timestamp_utc` when available, `bucket_start_utc`, `bucket_end_utc`,
+  `timestamp_source`, `market_id`, `tier`, `active_wallets`, `trade_count`,
+  `total_observed_amount_usd`, concentration fields, source, and
+  filter-metadata references.
+- Any live or replayed wallet row containing a `wallet_address` field must fail
+  monitor-facing validation.
+- Baselines for bucket `t` must use completed prior buckets only; open buckets
+  may be recorded as diagnostics but must not produce production-like alert
+  severities.
+- Raw wallet snapshot files remain source artifacts and must not become
+  prompt-facing or MCP-facing defaults.
+
 Snapshot prototype status:
 
 - A first deterministic snapshot prototype exists in

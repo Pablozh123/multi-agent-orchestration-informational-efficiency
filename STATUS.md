@@ -3,43 +3,43 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-20 19:04
+Generated: 2026-05-20 19:26
 
-Current goal: `goal-monitor-v2-live-input-contract-001` - Specify monitor v2 live input collection contract
+Current goal: `goal-monitor-v2-live-input-contract-review-001` - Review monitor v2 live input collection contract
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `220 passed in 8.04s`
+Pytest summary: `220 passed in 7.50s`
 
 Git branch: `main`
 
-Latest commit: `d5bd522`
+Latest commit: `300eb61`
 
 Git status:
 
 ```text
+ M ARCHITECTURE_DECISIONS.md
  M GOAL.md
  M ROADMAP.md
  M STATUS.md
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
- M operations/project/review_check.py
- M tests/test_project_automation.py
+ M docs/research/WHALE_METHOD.md
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      | 167 +++++++----------------
- ROADMAP.md                                   |  12 +-
- STATUS.md                                    |  24 ++--
- docs/project/WORK_LOG.md                     |  36 +++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md |  42 ++++++
- operations/project/review_check.py           | 194 +++++++++++++++++++++++++++
- tests/test_project_automation.py             |  93 ++++++++++++-
- 7 files changed, 431 insertions(+), 137 deletions(-)
+ ARCHITECTURE_DECISIONS.md                    |  29 +++++
+ GOAL.md                                      |  60 +++++----
+ ROADMAP.md                                   |  11 +-
+ STATUS.md                                    |  30 ++---
+ docs/project/WORK_LOG.md                     |  40 ++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 188 +++++++++++++++++++++++++++
+ docs/research/WHALE_METHOD.md                |  19 +++
+ 7 files changed, 329 insertions(+), 48 deletions(-)
 ```
 
 Blockers:
@@ -48,7 +48,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: specify monitor v2 live input collection contract
+- docs: review monitor v2 live input collection contract
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

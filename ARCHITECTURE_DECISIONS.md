@@ -231,3 +231,32 @@ summary contracts plus audit logging are specified.
 
 Reason: the monitor should become a reproducible empirical instrument, not an
 uncontrolled live-trading or agent-orchestration layer.
+
+### 22. Live Monitor Inputs Are Replay-First
+
+Future monitor-v2 live input collection must be specified, validated, and
+replayable before any collector is implemented. The first live-capable design
+uses read-only source classes only: market discovery metadata, market-state or
+orderbook observations, aggregate wallet-tier activity, and sourced event
+candidates.
+
+Required input rows must carry UTC timestamps, deterministic bucket boundaries,
+source-class metadata, and validation status. The first live-capable prototype
+uses 15-minute alert-scoring buckets, while daily buckets remain the bridge to
+the current thesis outputs. Lower-latency market-state observations may be
+recorded as diagnostics only until rate limits, missingness, and microstructure
+interpretation are reviewed.
+
+Scoring must avoid lookahead: bucket `t` may be scored only after the bucket is
+closed, rolling baselines for `t` use completed prior buckets, and event
+context may only use candidates detected or published at or before the alert
+bucket.
+
+The initial implementation path remains file-based and replay-first. Raw live
+input files are source artifacts, not prompt-facing or MCP-facing outputs.
+Future LLM, MCP, or agent access may use bounded summaries only and must
+preserve audit and claim boundaries.
+
+Reason: a running monitor is only scientifically useful if its inputs can be
+replayed, validated, and checked for lookahead before any interpretation or
+automation layer depends on it.

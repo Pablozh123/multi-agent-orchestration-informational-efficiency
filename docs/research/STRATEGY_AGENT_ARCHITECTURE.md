@@ -1444,6 +1444,194 @@ Decision:
   that defines future source inputs, timestamp rules, replay storage,
   validation, and mock/replay tests before any live collector is implemented.
 
+## Monitor V2 Live Input Collection Contract
+
+live_input_collection_contract_status: specified, implementation deferred
+
+Contract date: 2026-05-20
+
+Purpose:
+
+- Define how a future running Polymarket politics/geo anomaly monitor may
+  collect read-only inputs.
+- Keep the first live-capable design replay-first, testable, and auditable.
+- Prevent collector implementation from deciding API scope, timestamp policy,
+  bucket cadence, validation, or no-lookahead behaviour during coding.
+
+Verification note:
+
+- API endpoints, authentication requirements, rate limits, and response fields
+  must be re-verified against official Polymarket documentation on the
+  implementation date.
+- This contract fixes source classes and data boundaries, not a hidden
+  dependency on the current shape of any live endpoint.
+
+### Allowed Source Classes
+
+`market_discovery`
+
+- Purpose: build and refresh the monitored politics/geopolitical watchlist.
+- Allowed source class: Polymarket market/event discovery metadata, such as
+  Gamma-style market and event records.
+- Output contract: `MarketWatchItem` rows.
+- Implementation rule: watchlist membership must be recorded before alerts are
+  scored; post-hoc additions must be labelled as diagnostics.
+
+`market_state`
+
+- Purpose: observe market probability, midpoint, best bid/ask, spread, volume,
+  open interest, and orderbook-derived diagnostics where validated.
+- Allowed source class: public market-state, CLOB, or Market WebSocket data.
+- Output contract: `MarketSnapshot` rows.
+- Implementation rule: no order placement, no private key, no authenticated
+  trading route, and no execution endpoint may be used.
+
+`wallet_activity`
+
+- Purpose: observe aggregate tier-level wallet activity, not individual wallet
+  identities.
+- Allowed source class: validated local aggregates, Data API style activity
+  exports, or later deterministic on-chain aggregation.
+- Output contract: `WalletTierSnapshot` rows.
+- Implementation rule: alert-facing outputs must never expose wallet-address
+  fields. Market-maker exclusions may be filter metadata only.
+
+`event_candidates`
+
+- Purpose: track political/geopolitical news items that may provide reviewed
+  event context.
+- Allowed source class: manually reviewed sources, news feeds, or later
+  discovery agents that produce sourced candidates.
+- Output contract: `EventCandidate` rows.
+- Implementation rule: machine-collected candidates start as `candidate`.
+  They cannot become `accepted` without a source URL, timestamp, and market
+  mapping checked before alert interpretation.
+
+### Timestamp And Bucket Policy
+
+Required timestamp fields:
+
+- `collector_received_at_utc`: when the local collector received or wrote the
+  observation.
+- `source_timestamp_utc`: timestamp supplied by the source, if available.
+- `bucket_start_utc` and `bucket_end_utc`: deterministic aggregation window.
+- `timestamp_source`: one of `source`, `collector`, or `derived`.
+
+Default bucket cadence:
+
+- First live-capable prototype: 15-minute buckets for alert scoring.
+- Daily buckets remain the bridge to current thesis outputs.
+- Lower-latency buckets, such as 1-minute or 5-minute market-state snapshots,
+  may be recorded as diagnostics only until rate limits, missingness, and
+  microstructure interpretation are reviewed.
+
+No-lookahead rule:
+
+- A score for bucket `t` may use the observed value from bucket `t` only after
+  that bucket is closed.
+- The rolling baseline for bucket `t` must use completed buckets strictly
+  before `t`.
+- Event candidates may provide context only if their `published_at_utc` or
+  `detected_at_utc` is at or before the alert bucket.
+- Open buckets may be stored as diagnostics, but they must not produce
+  production-like alert severities.
+
+### Replay Storage Contract
+
+The first implementation after this contract should still write recorded files
+before any live collector is enabled.
+
+Future replay-first input files:
+
+- `data/results/monitor_v2_live_watchlist.csv`
+- `data/results/monitor_v2_live_market_snapshots.csv`
+- `data/results/monitor_v2_live_wallet_tier_snapshots.csv`
+- `data/results/monitor_v2_live_event_candidates.csv`
+- `data/results/monitor_v2_live_input_validation_report.json`
+- `data/results/monitor_v2_live_inputs_metadata.json`
+
+Storage rules:
+
+- Files are append-capable source artifacts, not prompt-facing outputs.
+- Every row must include source class, source name, timestamp fields, and
+  bucket fields.
+- Duplicate source rows must be resolved by deterministic primary keys, not by
+  row order.
+- Collector metadata must record whether rows are mocked, replayed, polled, or
+  streamed.
+- Raw live input files remain blocked by default under the read-only access
+  contract. Future LLM, MCP, or agent layers may read bounded summaries only.
+
+### Validation Contract
+
+`MarketWatchItem` validation:
+
+- market identifiers and token identifiers must be present where available,
+  status must be known, and politics/geo category tagging must be explicit.
+
+`MarketSnapshot` validation:
+
+- timestamps must parse to UTC,
+- prices, midpoints, and probabilities must be between 0 and 1,
+- best bid must not exceed best ask when both are present,
+- spread must be non-negative,
+- market id and source must be present.
+
+`WalletTierSnapshot` validation:
+
+- timestamp and bucket fields must parse to UTC,
+- tier must be one of the documented dataset-relative tiers or an explicit
+  aggregate tier,
+- active-wallet count, trade count, amount, and concentration fields must be
+  non-negative,
+- no `wallet_address` field is allowed in monitor-facing input or output
+  contracts.
+
+`EventCandidate` validation:
+
+- title, source URL, timestamp, event type, related market ids, and review
+  status must be present before the candidate can be used as alert context.
+- `accepted` candidates require source and market mapping review.
+
+Validation output:
+
+- validation reports must count accepted rows, rejected rows, duplicates,
+  missing fields, invalid timestamps, and invalid numeric ranges.
+- invalid rows are excluded from scoring and preserved only as validation
+  diagnostics.
+
+### Mock And Replay Test Strategy
+
+Tests required before live collection:
+
+- mocked market snapshots produce known robust-score and percentile outputs,
+- repeated replay of the same input files is deterministic,
+- baseline windows use only completed prior buckets,
+- open buckets cannot produce production-like alerts,
+- event candidates after the alert bucket cannot upgrade alert context,
+- invalid rows fail validation clearly,
+- wallet-address columns fail validation,
+- missing baseline returns `insufficient_baseline`,
+- no raw live input file becomes a default read-only summary surface.
+
+### Implementation Gate
+
+Before any live API or WebSocket collector is implemented:
+
+- this contract must be reviewed and accepted,
+- official API documentation must be checked on the implementation date,
+- mock/replay tests must exist,
+- validator functions must run without external calls,
+- collector output must be replayable from files,
+- no order endpoint, private key, trading credential, MCP tool, runtime agent,
+  ML model, or strategy backtest may be activated.
+
+Next phase selected:
+
+- Review this live-input collection contract, then decide whether to implement
+  a replay-first input batch prototype or to draft the MCP/agent summary
+  contract.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

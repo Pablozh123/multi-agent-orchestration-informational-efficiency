@@ -360,12 +360,12 @@ Required sensitivity review before final thesis conclusions:
 
 ## Event-Centred Wallet Anomaly Monitor
 
-Anomaly-monitor status: specification for the next H3/strategy bridge.
+Anomaly-monitor status: complete for the first historical daily output.
 
-The next H3-adjacent research step should not start with wallet-level
-profitability. The current data are BUY-only and lack complete exit,
-sell-side, and position information. The next safe step is therefore an
-event-centred anomaly monitor over aggregate wallet-tier activity.
+The H3-adjacent monitor does not start with wallet-level profitability. The
+current data are BUY-only and lack complete exit, sell-side, and position
+information. The safe first step is therefore an event-centred anomaly monitor
+over aggregate wallet-tier activity.
 
 Primary question:
 
@@ -399,6 +399,31 @@ Required limitations:
 The monitor may later feed a deterministic backtest, but only after the
 anomaly definition, baseline windows, alert thresholds, and validation windows
 are specified before inspecting results.
+
+Implemented v1 output files:
+
+- `data/results/h3_event_wallet_anomaly_rows.csv`
+- `data/results/h3_event_wallet_anomaly_summary.csv`
+- `data/results/h3_event_wallet_anomaly_metadata.json`
+
+Implemented v1 shape:
+
+- 7 curated US-election events.
+- 5 daily event-window days from `-1` through `+3`.
+- Baseline window `[-30d, -8d]`, separated from the event window.
+- 350 row-level diagnostics.
+- 70 compact summary rows.
+- No wallet addresses in the output files.
+
+Implemented v1 diagnostic families:
+
+- market-move anomaly,
+- wallet-tier amount anomaly,
+- active-wallet anomaly,
+- top-tier concentration anomaly.
+
+The output is descriptive and historical. It is not a near-real-time collector,
+not a backtest, and not evidence of wallet profitability.
 
 ## No Insider Wording
 

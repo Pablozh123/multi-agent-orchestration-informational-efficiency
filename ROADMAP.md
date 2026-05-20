@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for first historical anomaly output implementation
+Status: active for historical anomaly output review
 
 Done criteria:
 
@@ -216,10 +216,13 @@ Done criteria:
   metadata artifacts.
 - Outputs include market-move, wallet-tier amount, active-wallet, and top-tier
   concentration diagnostics.
+- The historical output shape is reviewed before v2 monitor design or backtest
+  validation begins.
 
 Blockers:
 
-- The first deterministic historical anomaly output is not implemented yet.
+- The first deterministic historical anomaly output needs methodology review.
+- The next v2 direction is not selected yet.
 - The Polybench PDF is indexed only as a candidate and needs review before it
   supports thesis wording.
 - Real-time data collection is not implemented and is not required for v1.

@@ -1138,3 +1138,46 @@ Decision:
 Next step:
 
 - Implement the historical event-centred anomaly output module and tests.
+
+## 2026-05-20 - historical-politics-geo-anomaly-output
+
+Task:
+
+- Implement the first deterministic historical politics/geo anomaly output.
+
+Files changed:
+
+- `operations/analysis/h3_event_wallet_anomalies.py`
+- `tests/test_h3_event_wallet_anomalies.py`
+- `data/results/h3_event_wallet_anomaly_rows.csv`
+- `data/results/h3_event_wallet_anomaly_summary.csv`
+- `data/results/h3_event_wallet_anomaly_metadata.json`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_h3_event_wallet_anomalies.py -q`
+- Result: `6 passed`
+- `.\.venv\Scripts\python.exe -m pytest -q`
+- Result: `178 passed in 5.20s`
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+- Result: `178 passed in 6.40s`
+
+Decision:
+
+- Use baseline window `[-30d, -8d]` and event window `[-1d, +3d]`.
+- Score four descriptive anomaly families: market move, wallet-tier amount,
+  active-wallet count, and top-tier concentration.
+- Keep the output file-based and descriptive; no database write, no agents,
+  no MCP, no RCP, and no order sending.
+
+Next step:
+
+- Review the output shape and decide whether v2 should be a near-real-time
+  collector contract, an alert-threshold review, or a backtest validation
+  contract.

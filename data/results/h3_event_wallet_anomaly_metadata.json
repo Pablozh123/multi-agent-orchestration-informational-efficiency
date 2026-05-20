@@ -1,0 +1,101 @@
+{
+  "input": {
+    "activity_path": "data\\results\\h3_tiered_wallet_activity_daily.csv",
+    "activity_row_count": 1236,
+    "db_path": "data\\thesis.db",
+    "event_count": 7,
+    "events_csv_path": "data\\events_timeline_seed.csv",
+    "market_id": "",
+    "price_row_count": 139,
+    "token_id": ""
+  },
+  "limitations": {
+    "daily_alignment_only": true,
+    "does_not_measure_wallet_performance": true,
+    "does_not_send_orders": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_rcp": true,
+    "uses_existing_curated_us_election_events": true,
+    "uses_observed_buy_side_activity_extract": true
+  },
+  "method": {
+    "anomaly_rule": {
+      "percentile_rank_threshold": 0.95,
+      "tail": "upper_tail_for_all_reported_non_negative_metrics",
+      "z_score_threshold": 2.0
+    },
+    "baseline_window_days": {
+      "end": -8,
+      "label": "baseline_minus_30d_to_minus_8d",
+      "start": -30
+    },
+    "event_window_days": {
+      "end": 3,
+      "label": "event_minus_1d_to_plus_3d",
+      "start": -1
+    },
+    "min_baseline_observations": 3,
+    "name": "deterministic_historical_politics_geo_anomaly_output"
+  },
+  "output": {
+    "anomaly_counts_by_type": {
+      "active_wallet_anomaly": 43,
+      "market_move_anomaly": 5,
+      "top_tier_concentration_anomaly": 4,
+      "wallet_tier_amount_anomaly": 40
+    },
+    "claim_scope": "descriptive_historical_anomaly_diagnostics_only",
+    "contains_wallet_addresses": false,
+    "row_columns": [
+      "event_id",
+      "event_date",
+      "title",
+      "event_type",
+      "source_url",
+      "market_id",
+      "date",
+      "relative_day",
+      "event_window_label",
+      "baseline_window_label",
+      "anomaly_type",
+      "tier",
+      "metric_name",
+      "observed_value",
+      "baseline_observations",
+      "baseline_mean",
+      "baseline_std",
+      "z_score",
+      "percentile_rank",
+      "is_anomaly",
+      "status",
+      "source_artifact",
+      "limitation"
+    ],
+    "row_count": 350,
+    "summary_columns": [
+      "event_id",
+      "event_date",
+      "title",
+      "event_type",
+      "source_url",
+      "market_id",
+      "event_window_label",
+      "baseline_window_label",
+      "anomaly_type",
+      "tier",
+      "metric_name",
+      "event_window_days",
+      "observed_day_count",
+      "baseline_observations",
+      "max_observed_value",
+      "max_z_score",
+      "max_percentile_rank",
+      "anomaly_day_count",
+      "source_artifact",
+      "limitation",
+      "claim_scope"
+    ],
+    "summary_row_count": 70
+  }
+}

@@ -2,31 +2,30 @@
 
 ## Active Goal
 
-goal_id: goal-historical-politics-geo-anomaly-output-001
-title: Generate first historical politics/geo anomaly outputs
+goal_id: goal-review-historical-anomaly-output-001
+title: Review historical anomaly outputs and decide monitor v2 contract
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
 - H1-H3 deterministic baseline outputs and thesis-facing summaries exist.
 - The politics/geopolitics anomaly-monitor specification is now recorded.
-- The first implementation should show how the monitor scores historical
-  anomalies before any near-real-time collectors, agents, MCP, or backtests.
-- Existing curated US-election events provide the first reproducible validation
-  bed without inventing new political/geopolitical cases.
+- The first historical anomaly-output artifacts now exist and need a
+  methodology review before near-real-time design or backtest validation.
+- The next decision is whether v2 should specify near-real-time collectors,
+  alert thresholds, or a historical backtest validation contract.
 deliverables:
-- Add a deterministic Python module for historical event-centred anomaly
-  outputs.
-- Generate row, summary, and metadata artifacts under `data/results/`.
-- Include market-move, wallet-tier amount, active-wallet, and top-tier
-  concentration diagnostics.
-- Add tests for toy spikes, baseline/event separation, missing inputs,
-  no-wallet-address outputs, and BUY-only metadata limitations.
+- Review the accepted shape of `h3_event_wallet_anomaly_*` outputs.
+- Record what the anomalies mean and what they do not mean.
+- Decide the next v2 contract: near-real-time monitor spec, alert-threshold
+  review, or deterministic backtest validation.
+- Keep thesis wording descriptive and bounded.
 scope:
-- Deterministic Python implementation only.
-- Historical daily Polymarket and wallet-tier data only.
-- Existing curated US-election event seed only.
-- File-based result artifacts only.
+- Documentation and methodology review only.
+- Existing historical anomaly artifacts only.
+- No new events unless separately curated.
 out_of_scope:
+- New analysis modules, database writes, and regenerated artifacts unless the
+  output review finds a concrete defect.
 - Agents, MCP, model routing, ML, cloud deployment, live trading, and order
   execution.
 - New real events in the canonical seed unless they are separately curated.
@@ -34,14 +33,12 @@ out_of_scope:
   intraday claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- The new CLI writes deterministic historical anomaly CSV/JSON artifacts.
-- Output summaries contain no wallet addresses and no raw table dumps.
-- Metadata states daily alignment, BUY-only wallet source limitation, no RCP,
-  no LLMs, no agents, and no MCP.
-- Tests cover the planned toy cases and full pytest passes.
+- The output shape, limitations, and allowed interpretation are documented.
+- The next v2 direction is selected before any further implementation.
+- Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add historical politics geo anomaly outputs
+next_commit: docs: review historical anomaly output shape
 
 ## Decision Inputs For This Goal
 
@@ -58,6 +55,7 @@ next_commit: feat: add historical politics geo anomaly outputs
   `ARCHITECTURE_DECISIONS.md`, `ROADMAP.md`, and
   `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
 - The anomaly-monitor specification is committed before this implementation.
+- Historical anomaly output artifacts exist under `data/results/`.
 - Literature intake structure exists in `docs/research/LITERATURE_MAP.md` and
   `data/literature/literature_index.csv`.
 - ML scope and re-entry conditions are explicit in
@@ -66,12 +64,9 @@ next_commit: feat: add historical politics geo anomaly outputs
 
 ## Done Means
 
-- Historical anomaly rows, summaries, and metadata exist and can be regenerated.
-- The output separates market anomalies, wallet-tier anomalies, active-wallet
-  anomalies, and top-tier concentration diagnostics.
-- No output used for interpretation contains wallet addresses.
-- Output language remains descriptive anomaly diagnostics, not causality,
-  private-information, or profitability evidence.
+- The historical anomaly output shape is reviewed and accepted or revised.
+- The next v2 contract is chosen without activating agents, MCP, ML, or
+  near-real-time collectors prematurely.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, or profit-guarantee work.
 
@@ -132,3 +127,7 @@ next_commit: feat: add historical politics geo anomaly outputs
 - Strategy/agent guardrails are enforced by project review checks.
 - Politics/geo anomaly-monitor specification is documented, Polymarket-first,
   and keeps Kalshi, near-real-time monitoring, agents, and MCP deferred.
+- Historical politics/geo anomaly outputs exist:
+  `h3_event_wallet_anomaly_rows.csv`,
+  `h3_event_wallet_anomaly_summary.csv`, and
+  `h3_event_wallet_anomaly_metadata.json`.

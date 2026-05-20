@@ -3,33 +3,42 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-20 15:29
+Generated: 2026-05-20 15:35
 
-Current goal: `goal-historical-politics-geo-anomaly-output-001` - Generate first historical politics/geo anomaly outputs
+Current goal: `goal-review-historical-anomaly-output-001` - Review historical anomaly outputs and decide monitor v2 contract
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `172 passed in 5.10s`
+Pytest summary: `178 passed in 6.40s`
 
 Git branch: `main`
 
-Latest commit: `cd7fdc5`
+Latest commit: `7a9fc96`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
+ M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
+ M docs/research/WHALE_METHOD.md
+?? data/results/h3_event_wallet_anomaly_metadata.json
+?? data/results/h3_event_wallet_anomaly_rows.csv
+?? data/results/h3_event_wallet_anomaly_summary.csv
+?? operations/analysis/h3_event_wallet_anomalies.py
+?? tests/test_h3_event_wallet_anomalies.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md    | 74 +++++++++++++++++++++++++++++---------------------------------
- ROADMAP.md |  7 ++++--
- 2 files changed, 40 insertions(+), 41 deletions(-)
+ GOAL.md                                      | 57 ++++++++++++++--------------
+ ROADMAP.md                                   |  7 +++-
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 12 ++++--
+ docs/research/WHALE_METHOD.md                | 35 ++++++++++++++---
+ 4 files changed, 72 insertions(+), 39 deletions(-)
 ```
 
 Blockers:
@@ -38,7 +47,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: add historical politics geo anomaly outputs
+- docs: review historical anomaly output shape
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

@@ -106,14 +106,16 @@ Blocked:
 
 ### Historical Validation Path
 
-The first implementation after this specification should not be a trading
-backtest. It should produce deterministic historical anomaly outputs such as:
+Historical anomaly output status: complete for v1 daily baseline.
+
+The first implementation after this specification is a deterministic historical
+anomaly output, not a trading backtest. It produces:
 
 - `h3_event_wallet_anomaly_rows.csv`
 - `h3_event_wallet_anomaly_summary.csv`
 - `h3_event_wallet_anomaly_metadata.json`
 
-Expected output fields:
+Implemented output fields:
 
 - event or market identifier,
 - anomaly type,
@@ -123,6 +125,10 @@ Expected output fields:
 - source artifact,
 - limitation,
 - no causal, insider, or profit claim.
+
+The v1 output contains 350 row-level diagnostics and 70 compact summary rows
+for the seven curated US-election events. It includes market-move,
+wallet-tier-amount, active-wallet, and top-tier-concentration diagnostics.
 
 Historical anomaly outputs can later motivate a stricter backtest, but they are
 first a monitoring and research-control layer.

@@ -2013,6 +2013,83 @@ Next phase selected:
   live-style contract, what bucket frequency is allowed, and what minimum
   baseline is required before user-facing alert levels can be interpreted.
 
+### First Real-Data Replay Boundary
+
+real_data_replay_boundary_status: selected
+
+Selected boundary:
+
+- `daily_recorded_replay_v1`
+
+Allowed source artifacts:
+
+- `data/results/monitor_v2_recorded_watchlist.csv`
+- `data/results/monitor_v2_recorded_market_snapshots.csv`
+- `data/results/monitor_v2_recorded_wallet_tier_snapshots.csv`
+- `data/results/monitor_v2_recorded_event_candidates.csv`
+- `data/results/monitor_v2_recorded_input_validation_report.json`
+- `data/results/monitor_v2_recorded_inputs_metadata.json`
+
+Source provenance:
+
+- Market snapshots are derived from `data/thesis.db`, table
+  `polymarket_prices`, through the existing recorded-input adapter.
+- Wallet-tier snapshots are derived from
+  `data/results/h3_tiered_wallet_activity_daily.csv`.
+- Event candidates are derived from the existing curated US-election seed.
+- No new real events, external APIs, WebSockets, credentials, or live
+  collection are added by this boundary.
+
+Bucket frequency:
+
+- Use daily closed replay buckets for the first real-data boundary.
+- Do not call this intraday or near-real-time monitoring.
+- The 15-minute live-style fixture remains a shape test only until real
+  15-minute market and wallet inputs exist with source provenance.
+
+Baseline requirements:
+
+- Use the v2 production-like defaults for daily recorded replay:
+  30 prior completed observations and minimum 20 baseline observations.
+- If fewer than 20 prior observations exist for a metric, the output must
+  report `insufficient_baseline`, not a user-facing production-like alert.
+- Diagnostic lower-baseline settings may be used only in tests or mocked
+  fixtures and must be labelled diagnostic.
+
+Allowed implementation after this boundary:
+
+- A deterministic Python review or wrapper may compare existing recorded
+  scoring outputs against this boundary.
+- A future adapter may transform recorded daily inputs into live-style closed
+  bucket rows only if it clearly labels the bucket frequency as daily.
+- Outputs may be file-based rows, summaries, validation report, metadata, and
+  thesis-facing figures.
+
+Blocked after this boundary:
+
+- Live Polymarket API polling.
+- WebSocket streaming.
+- Runtime agents.
+- MCP tools.
+- Strategy backtests.
+- Order execution or trading credentials.
+- Intraday response-speed claims.
+- Profitability, causal, insider, private-information, or misconduct claims.
+
+Interpretation:
+
+- The first real-data replay boundary evaluates whether the monitor design can
+  reproduce bounded, historical daily alerts from already validated local
+  artifacts.
+- It is a bridge from thesis evidence to tool design, not a live anomaly
+  detector yet.
+
+Next phase selected:
+
+- Review existing recorded daily replay/scoring outputs against
+  `daily_recorded_replay_v1` and decide whether the boundary is already
+  satisfied or whether a small daily live-style adapter is needed.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

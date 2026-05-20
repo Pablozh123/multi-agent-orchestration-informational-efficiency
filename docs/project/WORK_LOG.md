@@ -2266,3 +2266,41 @@ Next step:
 
 - Specify the first real-data replay boundary before implementing another
   adapter or collector.
+
+## 2026-05-20 - goal-monitor-v2-real-data-replay-boundary-001
+
+Task:
+
+- Specify the first real-data replay boundary for monitor v2.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+
+Decision:
+
+- Select `daily_recorded_replay_v1` as the first real-data replay boundary.
+- Allowed source artifacts are the existing recorded watchlist, market
+  snapshots, wallet-tier snapshots, event candidates, validation report, and
+  metadata under `data/results/`.
+- Allowed bucket frequency is daily closed replay buckets.
+- Production-like interpretation requires the v2 30 prior observations and
+  minimum 20 baseline observations rule.
+- Live API polling, WebSocket streaming, MCP, runtime agents, strategy
+  backtests, order execution, intraday claims, and profitability claims remain
+  blocked.
+
+Next step:
+
+- Review whether the existing recorded daily replay/scoring outputs already
+  satisfy `daily_recorded_replay_v1`.

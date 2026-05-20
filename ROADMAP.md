@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for real-data replay boundary specification
+Status: active for real-data replay boundary review
 
 Done criteria:
 
@@ -289,6 +289,9 @@ Done criteria:
   report, and metadata from mocked local input files.
 - The local replay-first monitor-v2 live input scoring output shape is
   reviewed and accepted as a pipeline diagnostic, not empirical evidence.
+- The first real-data replay boundary is selected as
+  `daily_recorded_replay_v1`, using existing recorded daily inputs and the v2
+  30/20 baseline rule.
 
 Blockers:
 
@@ -299,5 +302,5 @@ Blockers:
 - Live trading, automated order execution, and profit guarantees are out of
   scope.
 - MCP, agents, live collection, and strategy backtests remain blocked until the
-  first real-data replay boundary is specified, implemented deterministically,
-  and reviewed.
+  existing recorded daily replay outputs are reviewed against the selected
+  real-data replay boundary.

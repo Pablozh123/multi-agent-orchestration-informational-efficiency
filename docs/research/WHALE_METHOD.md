@@ -531,6 +531,23 @@ Live wallet input scoring review:
   daily H3 aggregates, a recorded local ingestion file, or a future validated
   Data API/CLOB-derived aggregate. It must not expose raw wallet addresses.
 
+First wallet real-data replay boundary:
+
+- Selected boundary: `daily_recorded_replay_v1`.
+- Allowed wallet source:
+  `data/results/monitor_v2_recorded_wallet_tier_snapshots.csv`, derived from
+  `data/results/h3_tiered_wallet_activity_daily.csv`.
+- Allowed bucket frequency: daily closed replay buckets only.
+- Minimum baseline: 20 prior completed daily observations for
+  production-like alert interpretation.
+- The replay remains aggregate and tier-level. It does not expose wallet
+  addresses.
+- The BUY-only source limitation and upstream minimum observed `amount_usd`
+  remain visible as source-filter metadata, not analytical whale thresholds.
+- Future 15-minute wallet monitoring requires a separately validated aggregate
+  wallet ingestion source. It cannot be inferred from the current daily H3
+  panel.
+
 Snapshot prototype status:
 
 - A first deterministic snapshot prototype exists in

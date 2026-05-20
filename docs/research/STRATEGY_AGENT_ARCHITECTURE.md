@@ -1741,6 +1741,56 @@ Next phase selected:
 - Review the validator shape and decide whether to build a replay-first live
   input batch prototype using local mocked files.
 
+### Live Input Validator Review
+
+Review date: 2026-05-20
+
+Review status: accepted for local replay-first batch prototype.
+
+Reviewed implementation:
+
+- `operations/analysis/monitor_v2_live_input_validation.py`
+- `tests/test_monitor_v2_live_input_validation.py`
+
+Accepted coverage:
+
+- Watchlist rows validate source class, market identifiers, token identifiers,
+  category, status, timestamp fields, and bucket boundaries.
+- Market snapshots validate source class, market and token identifiers,
+  probabilities, midpoints, bid/ask values, spread, volume, open interest,
+  timestamp fields, and bucket boundaries.
+- Wallet-tier snapshots validate aggregate tier fields, non-negative counts
+  and amounts, concentration ranges, source/filter metadata, timestamp fields,
+  bucket boundaries, and wallet-address exclusion.
+- Event candidates validate source class, source URL and market mapping
+  requirements for checked or accepted candidates, review states, timestamp
+  fields, and bucket boundaries.
+- Structured reports record row counts, source classes, bucket-status counts,
+  and no-live/no-agent/no-MCP/no-order limitations.
+
+Accepted limitations:
+
+- The validators do not verify current live API response fields.
+- The validators do not enforce cross-file market consistency yet; that can be
+  added in the local replay-first batch prototype.
+- The validators do not score alerts and do not generate market or wallet
+  observations.
+- Live API/WebSocket collection remains blocked.
+
+Go/no-go decision:
+
+- Go for a local replay-first input batch prototype that generates mocked or
+  fixture-based live-style input files, validates them, and writes structured
+  metadata.
+- No-go for live API calls, WebSocket streaming, MCP tools, runtime agents,
+  strategy backtests, order execution, trading credentials, or live alerting.
+
+Next phase selected:
+
+- Implement a local replay-first monitor-v2 input batch prototype that writes
+  `monitor_v2_live_*` input files from mocked or fixture data and validates
+  them with the accepted validators.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

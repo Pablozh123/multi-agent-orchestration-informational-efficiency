@@ -460,6 +460,18 @@ Live wallet input validator status:
 - The validator returns structured reports and does not connect to external
   APIs, WebSockets, databases, agents, MCP tools, or order paths.
 
+Live wallet input validator review:
+
+- Review status: accepted for local replay-first batch prototype.
+- The validator is sufficient for aggregate `WalletTierSnapshot` fixture rows
+  because it preserves tier-level monitoring and rejects wallet-address
+  exposure.
+- Remaining gap: cross-file market consistency should be checked in the local
+  batch prototype so wallet snapshots cannot reference markets absent from the
+  watchlist.
+- Live wallet ingestion remains blocked until the local batch prototype
+  validates mocked or fixture files deterministically.
+
 Snapshot prototype status:
 
 - A first deterministic snapshot prototype exists in

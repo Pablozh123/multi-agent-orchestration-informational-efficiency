@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for monitor v2 event-proximity sensitivity
+Status: active for monitor v2 event-proximity label integration
 
 Done criteria:
 
@@ -238,6 +238,11 @@ Done criteria:
   replay baseline.
 - Zero `critical` rows are interpreted as strict same-day event-context
   behaviour, not as an implementation defect.
+- Event-proximity sensitivity compares same-day context with `[-1d, +1d]`
+  daily context.
+- `[-1d, +1d]` is selected for reviewed daily event context in replay outputs.
+- `event_watch` is selected as a separate descriptive label for reviewed
+  event-proximity wallet clusters without market-move confirmation.
 
 Blockers:
 
@@ -247,6 +252,7 @@ Blockers:
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.
-- Event-proximity sensitivity is not implemented or reviewed yet.
-- Live collection remains blocked until event-proximity and `event_watch`
-  rules are tested and reviewed.
+- Event-proximity labels are not yet integrated into the main historical replay
+  output contract.
+- Live collection remains blocked until proximity-aware replay labels are
+  implemented and reviewed.

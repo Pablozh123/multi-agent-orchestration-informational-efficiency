@@ -1,0 +1,85 @@
+{
+  "decision": {
+    "event_watch_decision": "use_as_separate_descriptive_label_not_severity_upgrade",
+    "keep_critical_strict": true,
+    "recommended_event_window": "[-1d,+1d]",
+    "use_event_proximity_window": true
+  },
+  "generated_at_utc": "2026-05-20T15:40:00+00:00",
+  "inputs": {
+    "alert_row_count": 3040,
+    "alert_rows_path": "data\\results\\monitor_v2_historical_replay_alert_rows.csv",
+    "event_count": 7,
+    "events_csv_path": "data\\events_timeline_seed.csv"
+  },
+  "limitations": {
+    "daily_replay_only": true,
+    "does_not_send_orders": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_live_websocket_or_api_collection": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_use_rcp": true,
+    "does_not_write_database": true,
+    "no_profitability_or_private_information_claim": true,
+    "uses_existing_curated_events": true,
+    "uses_existing_replay_alert_rows": true
+  },
+  "method": {
+    "critical_rule": "proximity critical candidate requires market_move and wallet/concentration watch-or-higher rows in the event-proximity window",
+    "does_not_rescore_alert_rows": true,
+    "event_watch_rule": "event_watch candidate marks wallet/concentration watch-or-higher event-proximity clusters without market_move confirmation",
+    "event_window": "[-1d,+1d]",
+    "input_mode": "existing_historical_replay_alert_rows",
+    "name": "monitor_v2_event_proximity_sensitivity"
+  },
+  "outputs": {
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "event_watch_candidates": 6,
+    "proximity_critical_candidates": 6,
+    "row_columns": [
+      "event_id",
+      "event_date",
+      "proximity_date",
+      "relative_day",
+      "timestamp_utc",
+      "market_id",
+      "tier",
+      "anomaly_family",
+      "metric_name",
+      "observed_value",
+      "robust_z",
+      "rolling_percentile_rank",
+      "severity",
+      "status",
+      "same_day_context",
+      "proximity_window",
+      "market_watch_at_timestamp",
+      "wallet_or_concentration_watch_at_timestamp",
+      "proximity_critical_candidate",
+      "event_watch_candidate",
+      "suggested_context_label",
+      "claim_scope"
+    ],
+    "row_count": 210,
+    "same_day_critical_candidates": 0,
+    "summary_columns": [
+      "event_id",
+      "event_date",
+      "proximity_date",
+      "relative_day",
+      "market_id",
+      "max_existing_severity",
+      "watch_or_high_rows",
+      "high_rows",
+      "market_watch_at_timestamp",
+      "wallet_or_concentration_watch_at_timestamp",
+      "same_day_critical_candidate",
+      "proximity_critical_candidate",
+      "event_watch_candidate",
+      "suggested_context_label"
+    ],
+    "summary_row_count": 21
+  }
+}

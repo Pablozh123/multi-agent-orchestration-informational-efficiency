@@ -471,6 +471,30 @@ Historical replay status:
   wallet clusters that do not also have confirmed market-move anomalies.
 - No wallet addresses may appear in monitor-facing summaries.
 
+Event-proximity sensitivity status:
+
+- Sensitivity module:
+  `operations/analysis/monitor_v2_event_proximity_sensitivity.py`.
+- Output files:
+  `data/results/monitor_v2_event_proximity_sensitivity_rows.csv`,
+  `data/results/monitor_v2_event_proximity_sensitivity_summary.csv`, and
+  `data/results/monitor_v2_event_proximity_sensitivity_metadata.json`.
+- Same-day `critical` candidates: 0.
+- `[-1d, +1d]` event-proximity `critical` candidates: 6.
+- `[-1d, +1d]` event-proximity `event_watch` candidates: 6.
+
+Decision:
+
+- Use `[-1d, +1d]` as the daily event-context window for reviewed replay
+  outputs.
+- Keep `critical` strict and require market movement plus wallet or
+  concentration anomaly plus reviewed event context.
+- Use `event_watch` only as a separate descriptive label for wallet or
+  concentration clusters near reviewed events without market-move
+  confirmation.
+- Do not treat `event_watch` as evidence of causality, misconduct,
+  profitability, or private information.
+
 ## Event-Centred Wallet Anomaly Monitor
 
 Anomaly-monitor status: complete for the first historical daily output.

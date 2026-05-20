@@ -1458,3 +1458,52 @@ Next step:
 
 - Implement deterministic monitor v2 event-proximity sensitivity using existing
   replay artifacts.
+
+## 2026-05-20 - goal-monitor-v2-event-proximity-sensitivity-001
+
+Task:
+
+- Compare same-day monitor v2 event context with a daily `[-1d, +1d]`
+  event-proximity window.
+
+Files changed:
+
+- `operations/analysis/monitor_v2_event_proximity_sensitivity.py`
+- `tests/test_monitor_v2_event_proximity_sensitivity.py`
+- `data/results/monitor_v2_event_proximity_sensitivity_rows.csv`
+- `data/results/monitor_v2_event_proximity_sensitivity_summary.csv`
+- `data/results/monitor_v2_event_proximity_sensitivity_metadata.json`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_v2_event_proximity_sensitivity.py -q`
+  -> 5 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_event_proximity_sensitivity`
+  -> 210 rows, 21 summary rows, 0 same-day critical candidates, 6 proximity
+  critical candidates, 6 event-watch candidates.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 197 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  197 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check` -> PASS,
+  197 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan` -> grouped
+  project-control docs, research docs, data files, deterministic analysis, and
+  tests; mixed changes accepted as one coherent sensitivity-output commit.
+
+Decision:
+
+- Use `[-1d, +1d]` as the reviewed daily event-context window for replay
+  outputs.
+- Keep `critical` strict.
+- Use `event_watch` as a separate descriptive label for wallet or
+  concentration clusters near reviewed events without market-move
+  confirmation.
+
+Next step:
+
+- Integrate proximity-aware labels into the historical replay output contract.

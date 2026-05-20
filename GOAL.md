@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-event-proximity-sensitivity-001
-title: Test monitor v2 event-proximity sensitivity
+goal_id: goal-monitor-v2-proximity-alert-labels-001
+title: Integrate monitor v2 proximity alert labels
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -20,19 +20,22 @@ why:
   artifacts.
 - The historical replay output shape is reviewed and accepted.
 - The replay produced no `critical` rows under the strict same-day event rule.
-- The next safe step is to test whether a small event-proximity window captures
-  reviewed event-adjacent wallet clusters without weakening the strict
-  `critical` definition.
-deliverables:
-- Add deterministic event-proximity sensitivity tests or outputs using only
-  existing replay artifacts.
-- Compare same-day event context against a small daily proximity window,
-  initially `[-1d, +1d]`.
-- Evaluate whether a separate `event_watch` label is useful for reviewed
+- Event-proximity sensitivity shows that daily `[-1d, +1d]` context captures
+  event-adjacent market plus wallet clusters that same-day matching misses.
+- `event_watch` is selected as a separate descriptive label for
   event-proximity wallet clusters without market-move confirmation.
-- Keep the existing strict `critical` rule unless a documented defect is found.
+- The next safe step is to integrate the selected proximity labels into the
+  historical replay output contract before any live collector.
+deliverables:
+- Add deterministic proximity-aware replay labels using existing replay
+  artifacts.
+- Preserve the strict `critical` definition.
+- Add `event_watch` as a separate descriptive label or sidecar field for
+  reviewed event-proximity wallet clusters without market-move confirmation.
+- Regenerate reviewed replay outputs or a clearly named sidecar output with the
+  selected labels.
 scope:
-- Deterministic sensitivity work on existing historical replay artifacts.
+- Deterministic label integration on existing historical replay artifacts.
 - Existing curated US-election event seed only.
 - File-based outputs or tests only.
 - No new live data and no new event curation.
@@ -47,11 +50,11 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Same-day versus event-proximity behaviour is compared deterministically.
-- The sensitivity result clearly states whether `[-1d, +1d]` should be used
-  for reviewed event context in daily replay.
-- A decision is recorded for `event_watch`: use it, reject it, or defer it with
-  a precise reason.
+- Proximity-aware output clearly distinguishes `critical` from `event_watch`.
+- `critical` still requires market movement plus wallet or concentration
+  anomaly plus reviewed event context.
+- `event_watch` does not become a trading, causality, misconduct, or
+  profitability claim.
 - Outputs remain aggregate-only and contain no wallet addresses or order
   instructions.
 - No live collector, agent, MCP, ML, live-trading, or order-execution path is
@@ -59,7 +62,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: test: add monitor v2 event-proximity sensitivity
+next_commit: feat: integrate monitor v2 event-proximity labels
 
 ## Decision Inputs For This Goal
 
@@ -88,6 +91,8 @@ next_commit: test: add monitor v2 event-proximity sensitivity
 - Monitor v2 historical replay output review is documented in
   `docs/research/STRATEGY_AGENT_ARCHITECTURE.md` and
   `docs/research/WHALE_METHOD.md`.
+- Monitor v2 event-proximity sensitivity outputs exist under `data/results/`
+  and are documented in `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
 - Literature intake structure exists in `docs/research/LITERATURE_MAP.md` and
   `data/literature/literature_index.csv`.
 - ML scope and re-entry conditions are explicit in
@@ -96,9 +101,10 @@ next_commit: test: add monitor v2 event-proximity sensitivity
 
 ## Done Means
 
-- Event-proximity sensitivity is implemented or a precise blocker is recorded.
-- The daily replay has a reviewed rule for event context before live collection
-  is added.
+- Proximity-aware replay labels are implemented or a precise blocker is
+  recorded.
+- The daily replay has labelled `critical` and `event_watch` contexts before
+  live collection is added.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, or profit-guarantee work.
 
@@ -179,3 +185,5 @@ next_commit: test: add monitor v2 event-proximity sensitivity
 - Monitor v2 historical replay outputs are reviewed and accepted as a first
   daily replay baseline; zero `critical` rows are interpreted as strict
   same-day event-context behaviour.
+- Monitor v2 event-proximity sensitivity exists and selects `[-1d, +1d]` daily
+  event context plus separate descriptive `event_watch` labels.

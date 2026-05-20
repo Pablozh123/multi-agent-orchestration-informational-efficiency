@@ -726,6 +726,60 @@ Decision:
   event-proximity wallet clusters that do not also have confirmed market-move
   anomalies.
 
+### Event-Proximity Sensitivity Review
+
+Review date: 2026-05-20
+
+Review status: accepted for daily replay rule selection.
+
+Implemented sensitivity module:
+
+- `operations/analysis/monitor_v2_event_proximity_sensitivity.py`
+
+Implemented test module:
+
+- `tests/test_monitor_v2_event_proximity_sensitivity.py`
+
+Generated artifacts:
+
+- `data/results/monitor_v2_event_proximity_sensitivity_rows.csv`
+- `data/results/monitor_v2_event_proximity_sensitivity_summary.csv`
+- `data/results/monitor_v2_event_proximity_sensitivity_metadata.json`
+
+What was compared:
+
+- Existing same-day event context from the historical replay alert rows.
+- A small daily event-proximity window: `[-1d, +1d]`.
+- The sensitivity does not rescore market or wallet values. It only maps
+  existing replay alert rows to curated event proximity dates.
+
+Result:
+
+- Same-day `critical` candidates: 0.
+- Event-proximity `critical` candidates: 6.
+- Event-proximity `event_watch` candidates: 6.
+- Row-level sensitivity rows: 210.
+- Summary rows: 21.
+
+Decision:
+
+- Use `[-1d, +1d]` as the reviewed daily event-context window for the next
+  historical replay contract.
+- Keep `critical` strict: it still requires market movement plus wallet or
+  concentration anomaly plus reviewed event context.
+- Add or preserve a separate `event_watch` concept for wallet or concentration
+  clusters near reviewed events when market-move confirmation is absent.
+- `event_watch` is descriptive context, not a trading signal, not an order
+  instruction, and not a severity upgrade to `critical`.
+
+Interpretation:
+
+- Daily snapshots are too coarse for same-day-only event matching. The
+  sensitivity shows that meaningful reviewed event context appears one day
+  before or after the curated date in several cases.
+- The result supports a proximity-aware monitor output for daily replay, but it
+  does not support intraday reaction-speed claims.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

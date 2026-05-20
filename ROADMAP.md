@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for historical monitor v2 replay output review
+Status: active for monitor v2 event-proximity sensitivity
 
 Done criteria:
 
@@ -234,6 +234,10 @@ Done criteria:
 - A first deterministic historical replay snapshot pipeline exists and
   generates snapshots, alert rows, summaries, and metadata from existing local
   artifacts.
+- Historical replay outputs are reviewed and accepted as the first daily v2
+  replay baseline.
+- Zero `critical` rows are interpreted as strict same-day event-context
+  behaviour, not as an implementation defect.
 
 Blockers:
 
@@ -243,6 +247,6 @@ Blockers:
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.
-- Historical replay output interpretation is not reviewed yet.
-- Live collection remains blocked until replay outputs and event-proximity
-  rules are reviewed.
+- Event-proximity sensitivity is not implemented or reviewed yet.
+- Live collection remains blocked until event-proximity and `event_watch`
+  rules are tested and reviewed.

@@ -1418,3 +1418,43 @@ Next step:
 
 - Review historical replay outputs, especially zero `critical` rows and
   whether event proximity should be same-day only or a small window.
+
+## 2026-05-20 - goal-monitor-v2-historical-replay-review-001
+
+Task:
+
+- Review monitor v2 historical replay outputs and set the next daily
+  event-proximity sensitivity goal.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  192 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check` -> PASS,
+  192 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan` -> grouped
+  project-control docs and research docs, no risky mixed changes.
+
+Decision:
+
+- Accept the historical replay output shape as the first daily monitor v2
+  replay baseline.
+- Interpret zero `critical` rows as strict same-day event-context behaviour,
+  not as an implementation defect.
+- Keep `critical` strict and test a small event-proximity window before live
+  collection.
+- Evaluate a separate `event_watch` label for reviewed event-proximity wallet
+  clusters without market-move confirmation.
+
+Next step:
+
+- Implement deterministic monitor v2 event-proximity sensitivity using existing
+  replay artifacts.

@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-historical-replay-review-001
-title: Review monitor v2 historical replay outputs
+goal_id: goal-monitor-v2-event-proximity-sensitivity-001
+title: Test monitor v2 event-proximity sensitivity
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -18,20 +18,23 @@ why:
 - Rule C, combined-family confirmation, is selected as the default alert rule.
 - Deterministic historical replay snapshots now exist from existing local
   artifacts.
-- The next safe step is to review the replay outputs and event-proximity rule
-  before live collection.
+- The historical replay output shape is reviewed and accepted.
+- The replay produced no `critical` rows under the strict same-day event rule.
+- The next safe step is to test whether a small event-proximity window captures
+  reviewed event-adjacent wallet clusters without weakening the strict
+  `critical` definition.
 deliverables:
-- Review `data/results/monitor_v2_historical_replay_snapshots.csv`.
-- Review `data/results/monitor_v2_historical_replay_alert_rows.csv`.
-- Review `data/results/monitor_v2_historical_replay_alert_summary.csv`.
-- Review `data/results/monitor_v2_historical_replay_metadata.json`.
-- Decide whether event context should be same-day only or use a small
-  event-proximity window.
-- Decide whether a separate `event_watch` label is needed for event-day wallet
-  clusters without market-move confirmation.
+- Add deterministic event-proximity sensitivity tests or outputs using only
+  existing replay artifacts.
+- Compare same-day event context against a small daily proximity window,
+  initially `[-1d, +1d]`.
+- Evaluate whether a separate `event_watch` label is useful for reviewed
+  event-proximity wallet clusters without market-move confirmation.
+- Keep the existing strict `critical` rule unless a documented defect is found.
 scope:
-- Documentation and output review only.
-- Existing historical replay artifacts only.
+- Deterministic sensitivity work on existing historical replay artifacts.
+- Existing curated US-election event seed only.
+- File-based outputs or tests only.
 - No new live data and no new event curation.
 out_of_scope:
 - Agents, MCP, model routing, ML, cloud deployment, live trading, and order
@@ -39,17 +42,16 @@ out_of_scope:
 - Live WebSocket or API collection.
 - Database writes.
 - New real events in the canonical seed unless they are separately curated.
-- Large monitor refactor, scoring-code changes, or live collector code unless
-  the review finds a concrete defect.
+- Large monitor refactor or live collector code.
 - Strategy backtest implementation, PnL, profitability claims, insider claims,
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Replay output shape and limitations are reviewed.
-- The zero-`critical` result is interpreted or a concrete rule correction is
-  specified.
-- Event-proximity and `event_watch` decisions are recorded before live
-  collection.
+- Same-day versus event-proximity behaviour is compared deterministically.
+- The sensitivity result clearly states whether `[-1d, +1d]` should be used
+  for reviewed event context in daily replay.
+- A decision is recorded for `event_watch`: use it, reject it, or defer it with
+  a precise reason.
 - Outputs remain aggregate-only and contain no wallet addresses or order
   instructions.
 - No live collector, agent, MCP, ML, live-trading, or order-execution path is
@@ -57,7 +59,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: review monitor v2 historical replay outputs
+next_commit: test: add monitor v2 event-proximity sensitivity
 
 ## Decision Inputs For This Goal
 
@@ -83,6 +85,9 @@ next_commit: docs: review monitor v2 historical replay outputs
   `docs/research/WHALE_METHOD.md`.
 - Deterministic monitor v2 snapshot prototype outputs exist under
   `data/results/`.
+- Monitor v2 historical replay output review is documented in
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md` and
+  `docs/research/WHALE_METHOD.md`.
 - Literature intake structure exists in `docs/research/LITERATURE_MAP.md` and
   `data/literature/literature_index.csv`.
 - ML scope and re-entry conditions are explicit in
@@ -91,8 +96,9 @@ next_commit: docs: review monitor v2 historical replay outputs
 
 ## Done Means
 
-- Historical replay outputs are accepted or concrete corrections are specified.
-- The next implementation decision is recorded before live collection is added.
+- Event-proximity sensitivity is implemented or a precise blocker is recorded.
+- The daily replay has a reviewed rule for event context before live collection
+  is added.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, or profit-guarantee work.
 
@@ -170,3 +176,6 @@ next_commit: docs: review monitor v2 historical replay outputs
   monitor v2 default alert rule.
 - Deterministic monitor v2 historical replay snapshots and alerts exist from
   existing local artifacts.
+- Monitor v2 historical replay outputs are reviewed and accepted as a first
+  daily replay baseline; zero `critical` rows are interpreted as strict
+  same-day event-context behaviour.

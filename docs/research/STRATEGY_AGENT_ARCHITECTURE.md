@@ -662,6 +662,70 @@ Review needed:
 - Do not add live WebSocket or API collection until this replay output is
   reviewed.
 
+### Historical Replay Output Review
+
+Review date: 2026-05-20
+
+Review status: accepted for the first daily monitor v2 replay baseline, with
+event-proximity sensitivity required before live collection.
+
+Reviewed artifacts:
+
+- `data/results/monitor_v2_historical_replay_snapshots.csv`
+- `data/results/monitor_v2_historical_replay_alert_rows.csv`
+- `data/results/monitor_v2_historical_replay_alert_summary.csv`
+- `data/results/monitor_v2_historical_replay_metadata.json`
+
+Accepted output shape:
+
+- 3040 daily snapshot rows.
+- 3040 scored alert rows.
+- 10 compact summary rows.
+- Date range: 2024-01-06 to 2024-11-04.
+- 7 accepted event dates from the curated event seed.
+- Aggregate-only output with no wallet addresses and no order instructions.
+
+Severity result:
+
+- `none`: 2528 rows.
+- `info`: 262 rows.
+- `watch`: 173 rows.
+- `high`: 77 rows.
+- `critical`: 0 rows.
+
+Event-day observations:
+
+- `evt_2024_06_28_biden_trump_debate`: one `high`, five `watch`, one `info`.
+- `evt_2024_07_21_biden_withdrawal`: four `high`, three `watch`.
+- `evt_2024_08_06_walz_vp_pick`: one `high`, two `watch`, one `info`.
+- `evt_2024_09_11_harris_trump_debate`: three `high`, two `watch`, one
+  `info`.
+
+Interpretation:
+
+- The replay confirms that Rule C can score a full historical daily monitor
+  panel from existing deterministic artifacts.
+- The absence of `critical` rows is not treated as an implementation defect.
+  It reflects a strict same-day event-context rule combined with daily
+  snapshots.
+- Several curated event dates still show wallet-tier or active-wallet
+  clusters at `watch` or `high` severity. These are descriptive monitoring
+  signals, not claims of causality, private information, misconduct,
+  profitability, or trade execution.
+
+Decision:
+
+- Accept the historical replay row, summary, and metadata shapes.
+- Keep `critical` strict for now.
+- Do not add live WebSocket/API collection, agents, MCP, ML, or order
+  execution.
+- Next step: run a deterministic event-proximity sensitivity check comparing
+  same-day event context with a small daily proximity window, initially
+  `[-1d, +1d]`.
+- Evaluate whether a separate `event_watch` label is useful for reviewed
+  event-proximity wallet clusters that do not also have confirmed market-move
+  anomalies.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

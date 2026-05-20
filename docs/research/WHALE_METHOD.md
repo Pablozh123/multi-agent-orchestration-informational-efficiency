@@ -457,9 +457,19 @@ Historical replay status:
   `data/results/monitor_v2_historical_replay_metadata.json`.
 - The replay produces wallet-facing `info`, `watch`, and `high` rows, but no
   `critical` rows under the strict Rule C event-context requirement.
-- This should be reviewed before any live wallet monitoring. In particular,
-  event proximity and wallet-cluster labels may need refinement before real
-  politics/geopolitical watchlists are added.
+- The replay output shape is reviewed and accepted for the first daily
+  historical monitor baseline.
+- Zero `critical` rows are interpreted as strict same-day event-context
+  behaviour, not as proof that no meaningful event-adjacent wallet clusters
+  exist.
+- Event-day wallet clusters appear in aggregate tier rows around the Biden-
+  Trump debate, Biden withdrawal, Walz VP pick, and Harris-Trump debate.
+- Before any live wallet monitoring, a deterministic event-proximity
+  sensitivity check should compare same-day event context with a small daily
+  proximity window, initially `[-1d, +1d]`.
+- A separate `event_watch` label may be useful for reviewed event-proximity
+  wallet clusters that do not also have confirmed market-move anomalies.
+- No wallet addresses may appear in monitor-facing summaries.
 
 ## Event-Centred Wallet Anomaly Monitor
 

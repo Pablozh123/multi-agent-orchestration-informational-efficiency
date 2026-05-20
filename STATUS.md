@@ -3,45 +3,41 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-20 17:16
+Generated: 2026-05-20 17:35
 
-Current goal: `goal-monitor-v2-historical-replay-review-001` - Review monitor v2 historical replay outputs
+Current goal: `goal-monitor-v2-event-proximity-sensitivity-001` - Test monitor v2 event-proximity sensitivity
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `192 passed in 5.78s`
+Pytest summary: `192 passed in 6.18s`
 
 Git branch: `main`
 
-Latest commit: `0abff49`
+Latest commit: `d46205d`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
+ M STATUS.md
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
  M docs/research/WHALE_METHOD.md
-?? data/results/monitor_v2_historical_replay_alert_rows.csv
-?? data/results/monitor_v2_historical_replay_alert_summary.csv
-?? data/results/monitor_v2_historical_replay_metadata.json
-?? data/results/monitor_v2_historical_replay_snapshots.csv
-?? operations/analysis/monitor_v2_historical_replay.py
-?? tests/test_monitor_v2_historical_replay.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      | 50 +++++++++++++---------
- ROADMAP.md                                   | 11 +++--
- docs/project/WORK_LOG.md                     | 42 ++++++++++++++++++
+ GOAL.md                                      | 57 ++++++++++++++-----------
+ ROADMAP.md                                   | 12 ++++--
+ STATUS.md                                    | 26 +++++------
+ docs/project/WORK_LOG.md                     | 40 +++++++++++++++++
  docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 64 ++++++++++++++++++++++++++++
- docs/research/WHALE_METHOD.md                | 15 +++++++
- 5 files changed, 157 insertions(+), 25 deletions(-)
+ docs/research/WHALE_METHOD.md                | 16 +++++--
+ 6 files changed, 168 insertions(+), 47 deletions(-)
 ```
 
 Blockers:
@@ -50,7 +46,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: review monitor v2 historical replay outputs
+- test: add monitor v2 event-proximity sensitivity
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

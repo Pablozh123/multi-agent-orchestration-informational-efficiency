@@ -1987,3 +1987,40 @@ Next step:
 
 - Review and accept, revise, or block the live-input collection contract
   before any replay-first input batch prototype is implemented.
+
+## 2026-05-20 - goal-monitor-v2-live-input-contract-review-001
+
+Task:
+
+- Review the monitor-v2 live input collection contract and decide the next
+  implementation path.
+
+Files changed:
+
+- `ARCHITECTURE_DECISIONS.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.project.review_check --skip-pytest "docs-only live-input contract review; full pytest will run via update_status"`
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+
+Decision:
+
+- Accept the live-input contract for replay-first implementation planning.
+- Keep the first live-capable alert-scoring bucket at 15 minutes, with daily
+  buckets as the bridge to current thesis outputs.
+- Require UTC timestamp fields, source metadata, deterministic bucket
+  boundaries, validation status, and no-lookahead behaviour.
+- Block live API collection, WebSocket streaming, MCP, agents, strategy
+  backtests, order execution, and trading credentials.
+
+Next step:
+
+- Implement replay-first monitor-v2 live input validators with local mocked or
+  fixture files only.

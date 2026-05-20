@@ -3,19 +3,19 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-20 19:26
+Generated: 2026-05-20 19:29
 
-Current goal: `goal-monitor-v2-live-input-contract-review-001` - Review monitor v2 live input collection contract
+Current goal: `goal-monitor-v2-live-input-validators-001` - Implement replay-first monitor v2 live input validators
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `220 passed in 7.50s`
+Pytest summary: `220 passed in 7.57s`
 
 Git branch: `main`
 
-Latest commit: `300eb61`
+Latest commit: `7f91d5e`
 
 Git status:
 
@@ -32,14 +32,14 @@ Git status:
 Git diff stat:
 
 ```text
- ARCHITECTURE_DECISIONS.md                    |  29 +++++
- GOAL.md                                      |  60 +++++----
- ROADMAP.md                                   |  11 +-
- STATUS.md                                    |  30 ++---
- docs/project/WORK_LOG.md                     |  40 ++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 188 +++++++++++++++++++++++++++
- docs/research/WHALE_METHOD.md                |  19 +++
- 7 files changed, 329 insertions(+), 48 deletions(-)
+ ARCHITECTURE_DECISIONS.md                    |  5 +++
+ GOAL.md                                      | 55 ++++++++++++++++------------
+ ROADMAP.md                                   |  9 +++--
+ STATUS.md                                    | 26 ++++++-------
+ docs/project/WORK_LOG.md                     | 37 +++++++++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 50 +++++++++++++++++++++++++
+ docs/research/WHALE_METHOD.md                | 15 ++++++++
+ 7 files changed, 154 insertions(+), 43 deletions(-)
 ```
 
 Blockers:
@@ -48,7 +48,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: review monitor v2 live input collection contract
+- feat: add monitor v2 live input validators
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

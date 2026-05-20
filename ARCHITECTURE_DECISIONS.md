@@ -260,3 +260,8 @@ preserve audit and claim boundaries.
 Reason: a running monitor is only scientifically useful if its inputs can be
 replayed, validated, and checked for lookahead before any interpretation or
 automation layer depends on it.
+
+Review status as of 2026-05-20: accepted for replay-first implementation
+planning. Live API collection, WebSocket streaming, MCP access, runtime agents,
+strategy backtests, order execution, and trading credentials remain blocked
+until mocked or replayed input validators exist and pass tests.

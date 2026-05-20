@@ -431,6 +431,21 @@ Live input contract:
 - Raw wallet snapshot files remain source artifacts and must not become
   prompt-facing or MCP-facing defaults.
 
+Live input contract review:
+
+- Review status: accepted for replay-first implementation planning.
+- The wallet portion of the contract is accepted because it preserves the
+  aggregate tier boundary and blocks wallet-address fields in future
+  monitor-facing inputs.
+- The 15-minute default alert bucket is acceptable for a first live-capable
+  prototype, while daily buckets remain the bridge to the current thesis
+  outputs.
+- A future validator must reject wallet-address columns, invalid timestamps,
+  negative counts or amounts, and open-bucket rows used as production-like
+  alerts.
+- Live API or WebSocket collection remains blocked until mocked or replayed
+  input validators exist and pass tests.
+
 Snapshot prototype status:
 
 - A first deterministic snapshot prototype exists in

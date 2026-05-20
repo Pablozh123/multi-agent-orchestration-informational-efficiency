@@ -1632,6 +1632,56 @@ Next phase selected:
   a replay-first input batch prototype or to draft the MCP/agent summary
   contract.
 
+### Live Input Collection Contract Review
+
+Review date: 2026-05-20
+
+Review status: accepted for replay-first implementation planning.
+
+Reviewed contract:
+
+- `Monitor V2 Live Input Collection Contract`
+
+Accepted decisions:
+
+- Source classes are accepted: `market_discovery`, `market_state`,
+  `wallet_activity`, and `event_candidates`.
+- The first live-capable alert-scoring bucket is 15 minutes.
+- Daily buckets remain the bridge to current thesis outputs and historical
+  validation.
+- UTC timestamp fields, bucket boundaries, timestamp-source labels, and source
+  metadata are mandatory for future input rows.
+- Raw input files stay source artifacts and remain blocked by default for
+  prompt-facing, MCP-facing, or agent-facing access.
+- No-lookahead is accepted: bucket `t` uses completed prior buckets for its
+  rolling baseline, and event context must be detected or published no later
+  than the alert bucket.
+- Validation rules are specific enough for implementation planning across
+  watchlist rows, market snapshots, wallet-tier snapshots, and event
+  candidates.
+
+Accepted limitations:
+
+- This review does not verify current live API response fields.
+- Official Polymarket documentation must be checked again on the actual
+  implementation date.
+- The first implementation should validate mocked or replayed files only; it
+  should not connect to live APIs or WebSockets.
+- Lower-latency market-state observations may be collected only as diagnostics
+  until missingness, rate limits, and microstructure interpretation are
+  reviewed.
+
+Go/no-go decision:
+
+- Go for a deterministic replay-first input validator/prototype.
+- No-go for live API collection, WebSocket streaming, MCP tools, runtime
+  agents, strategy backtests, order execution, or trading credentials.
+
+Next phase selected:
+
+- Implement replay-first monitor-v2 live input validators and tests using
+  mocked or local fixture files only.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

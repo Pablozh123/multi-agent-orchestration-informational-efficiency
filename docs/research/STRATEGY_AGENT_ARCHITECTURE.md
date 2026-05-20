@@ -1791,6 +1791,59 @@ Next phase selected:
   `monitor_v2_live_*` input files from mocked or fixture data and validates
   them with the accepted validators.
 
+### Local Live Input Batch Prototype
+
+live_input_batch_status: complete for mocked local fixture
+
+Implemented module:
+
+- `operations/analysis/monitor_v2_live_input_batch.py`
+
+Implemented tests:
+
+- `tests/test_monitor_v2_live_input_batch.py`
+
+Generated artifacts:
+
+- `data/results/monitor_v2_live_watchlist.csv`
+- `data/results/monitor_v2_live_market_snapshots.csv`
+- `data/results/monitor_v2_live_wallet_tier_snapshots.csv`
+- `data/results/monitor_v2_live_event_candidates.csv`
+- `data/results/monitor_v2_live_input_validation_report.json`
+- `data/results/monitor_v2_live_inputs_metadata.json`
+
+Output shape:
+
+- 1 mocked politics/geo watchlist row.
+- 4 mocked 15-minute market-state snapshot rows.
+- 8 mocked 15-minute aggregate wallet-tier snapshot rows.
+- 1 mocked reviewed event-candidate row.
+- Validation report status: `pass`.
+
+Implemented safeguards:
+
+- Generated rows use closed 15-minute buckets.
+- Generated rows include UTC timestamp fields, source classes, source names,
+  bucket boundaries, and bucket status.
+- Generated outputs are validated immediately by
+  `monitor_v2_live_input_validation.py`.
+- Cross-file market consistency is checked so market snapshots, wallet-tier
+  snapshots, and accepted event candidates reference watchlist markets.
+- Metadata states that the batch uses mocked local fixture data only.
+
+Boundary:
+
+- The prototype does not call Polymarket APIs, WebSockets, databases, LLMs,
+  agents, MCP tools, ML systems, order endpoints, or trading credentials.
+- It does not score alerts.
+- Generated `monitor_v2_live_*` files are source artifacts only and remain
+  blocked by default for prompt-facing or MCP-facing access.
+
+Next phase selected:
+
+- Review the local batch output shape before connecting these live-style input
+  files to scoring or before drafting any collector implementation.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

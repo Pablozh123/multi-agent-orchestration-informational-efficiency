@@ -1,0 +1,2 @@
+collector_received_at_utc,source_timestamp_utc,bucket_start_utc,bucket_end_utc,timestamp_source,bucket_status,source_class,source_name,watch_id,market_id,condition_id,token_ids,question,category,subcategory,status
+2026-05-20T00:15:05Z,2026-05-20T00:14:30Z,2026-05-20T00:00:00Z,2026-05-20T00:15:00Z,source,closed,market_discovery,mocked_local_replay_fixture,watch_mock_politics_geo_001,mock_polymarket_politics_geo_001,mock_condition_001,"yes_token,no_token",Mock politics/geopolitics market for replay-first monitor v2,politics,geopolitics,active

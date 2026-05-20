@@ -472,6 +472,19 @@ Live wallet input validator review:
 - Live wallet ingestion remains blocked until the local batch prototype
   validates mocked or fixture files deterministically.
 
+Live wallet input batch status:
+
+- Batch module:
+  `operations/analysis/monitor_v2_live_input_batch.py`.
+- Batch output:
+  `data/results/monitor_v2_live_wallet_tier_snapshots.csv`.
+- The mocked batch emits 8 aggregate wallet-tier rows across 4 closed
+  15-minute buckets and 2 tiers.
+- The batch validates all wallet-tier rows with the accepted live input
+  validator and checks cross-file market consistency against the watchlist.
+- The generated wallet-tier file contains no wallet-address columns and is a
+  source artifact only, not a prompt-facing or MCP-facing default.
+
 Snapshot prototype status:
 
 - A first deterministic snapshot prototype exists in

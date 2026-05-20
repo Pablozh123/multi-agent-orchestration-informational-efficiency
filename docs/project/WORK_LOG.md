@@ -2099,3 +2099,49 @@ Next step:
 
 - Build a local replay-first monitor-v2 live input batch prototype from mocked
   or fixture data only.
+
+## 2026-05-20 - goal-monitor-v2-live-input-batch-prototype-001
+
+Task:
+
+- Build a local replay-first monitor-v2 live input batch prototype from mocked
+  fixture data.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+- `operations/analysis/monitor_v2_live_input_batch.py`
+- `tests/test_monitor_v2_live_input_batch.py`
+- `data/results/monitor_v2_live_watchlist.csv`
+- `data/results/monitor_v2_live_market_snapshots.csv`
+- `data/results/monitor_v2_live_wallet_tier_snapshots.csv`
+- `data/results/monitor_v2_live_event_candidates.csv`
+- `data/results/monitor_v2_live_input_validation_report.json`
+- `data/results/monitor_v2_live_inputs_metadata.json`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_v2_live_input_batch.py tests/test_monitor_v2_live_input_validation.py -q`
+- `.\.venv\Scripts\python.exe -m pytest -q`
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+
+Decision:
+
+- Add a deterministic local fixture batch that writes live-style watchlist,
+  market snapshot, wallet-tier snapshot, and event-candidate input files.
+- Generated files use closed 15-minute buckets, UTC timestamp fields, source
+  metadata, and structured validation metadata.
+- The batch validates generated files with the accepted live-input validators
+  and checks cross-file market consistency.
+- It does not call APIs, WebSockets, databases, LLMs, agents, MCP tools, ML
+  systems, order endpoints, or trading credentials.
+
+Next step:
+
+- Review the generated local live input batch output shape before connecting
+  the files to deterministic scoring.

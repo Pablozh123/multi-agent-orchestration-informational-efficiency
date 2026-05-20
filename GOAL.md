@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-live-input-batch-prototype-001
-title: Build local replay-first monitor v2 live input batch prototype
+goal_id: goal-monitor-v2-live-input-batch-review-001
+title: Review local replay-first monitor v2 live input batch prototype
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -21,18 +21,22 @@ why:
   replay files.
 - The replay-first live input validators are reviewed and accepted for a local
   batch prototype.
-- The next safe step is to generate local live-style fixture input files and
-  validation metadata before any collector, API client, WebSocket loop, MCP
-  tool, runtime agent, strategy backtest, or execution path is implemented.
+- A local replay-first live input batch prototype now generates mocked
+  live-style fixture input files and validation metadata.
+- The next safe step is to review the generated file shape before any scoring
+  bridge, collector, API client, WebSocket loop, MCP tool, runtime agent,
+  strategy backtest, or execution path is implemented.
 deliverables:
-- Add a deterministic local batch prototype that writes replay-first
-  monitor-v2 live-style input files from mocked or fixture data.
-- Validate generated files with the accepted live input validators.
-- Write a structured validation report and metadata.
-- Keep generated files source-artifact only, not prompt-facing defaults.
+- Review and accept, revise, or block the local replay-first input batch
+  prototype.
+- Confirm generated `monitor_v2_live_*` file shapes, validation report, and
+  metadata.
+- Decide whether the next implementation step can connect local live-style
+  input files to deterministic scoring without live collection.
 scope:
-- Deterministic local fixture generation, validation, tests, and focused docs.
-- Existing monitor-v2 architecture and project-control docs where needed.
+- Documentation review only unless the user explicitly asks for implementation
+  after the batch review is accepted.
+- Existing monitor-v2 architecture and project-control docs.
 - Existing curated US-election event seed only.
 - No new live data, no external API calls, and no new event curation.
 out_of_scope:
@@ -47,17 +51,16 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Prototype writes local `monitor_v2_live_*` input files and validation report
-  from mocked or fixture data.
-- Generated files validate through `monitor_v2_live_input_validation.py`.
-- Tests prove deterministic output, missing/invalid fields fail clearly, and
-  no wallet-address fields are emitted.
+- Batch review notes accept, revise, or block the current output shape.
+- Review notes state whether generated files are sufficient for a local
+  scoring bridge.
+- Review notes preserve the block on live API/WebSocket collection.
 - No live collector, external API call, WebSocket loop, agent, MCP, ML,
   live-trading, strategy backtest, or order-execution path is activated.
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add local monitor v2 live input batch prototype
+next_commit: docs: review local monitor v2 live input batch prototype
 
 ## Decision Inputs For This Goal
 
@@ -78,13 +81,16 @@ next_commit: feat: add local monitor v2 live input batch prototype
 - Replay-first live input validator module and tests exist.
 - The validator review accepts a local replay-first batch prototype and keeps
   live API/WebSocket collection blocked.
+- Local replay-first live input batch prototype module, tests, and generated
+  artifacts exist.
 
 ## Done Means
 
-- Local live-style input files can be generated, validated, and replayed
-  deterministically without external data collection.
-- Invalid generated or supplied inputs fail clearly before future scoring or
-  collection paths can depend on them.
+- The batch review produces a clear go/no-go for connecting local live-style
+  input files to deterministic scoring.
+- If accepted, the next implementation can use local generated files without
+  deciding input shape, validation scope, or market consistency rules during
+  coding.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -205,3 +211,5 @@ next_commit: feat: add local monitor v2 live input batch prototype
 - Replay-first monitor-v2 live input validators are reviewed and accepted for a
   local batch prototype; cross-file market consistency remains a prototype
   implementation concern.
+- Local replay-first monitor-v2 live input batch prototype exists and writes
+  validated mocked fixture files plus metadata under `data/results/`.

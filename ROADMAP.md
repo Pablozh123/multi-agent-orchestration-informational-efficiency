@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for monitor v2 read-only summary access contract review
+Status: active for monitor v2 access guardrail checks
 
 Done criteria:
 
@@ -265,6 +265,8 @@ Done criteria:
   the first monitor summary boundary.
 - A read-only monitor-v2 summary access contract is specified in the strategy
   architecture document.
+- The read-only monitor-v2 summary access contract is reviewed and accepted as
+  the default monitor-v2 access boundary.
 
 Blockers:
 
@@ -274,7 +276,7 @@ Blockers:
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.
-- The read-only monitor-v2 summary access contract is specified but not
-  reviewed yet.
+- Automated project checks do not yet enforce the monitor-v2 read-only access
+  contract.
 - MCP, agents, live collection, and strategy backtests remain blocked until
-  the access contract is reviewed and a next phase is selected.
+  the access contract is enforceable by project checks.

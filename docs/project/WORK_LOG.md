@@ -1878,3 +1878,36 @@ Next step:
 
 - Review the read-only monitor-v2 summary access contract and select the next
   phase.
+
+## 2026-05-20 - goal-monitor-v2-readonly-summary-access-review-001
+
+Task:
+
+- Review and accept the monitor-v2 read-only summary access contract.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+
+Decision:
+
+- Accept `monitor_v2_bounded_summary.csv` as the default monitor-v2 access
+  surface.
+- Keep raw row-level alert files, scoring snapshots, recorded input files, and
+  direct database reads blocked by default.
+- Select automated project guardrail enforcement as the next phase before MCP,
+  agents, live collection, or strategy backtest work.
+
+Next step:
+
+- Enforce the monitor-v2 read-only access boundary in project review checks.

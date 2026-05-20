@@ -1349,6 +1349,59 @@ Next implementation step:
   documentation-only MCP/agent contract drafting, deterministic backtest
   baseline planning, or live-collector input specification.
 
+### Read-Only Summary Access Contract Review
+
+Review date: 2026-05-20
+
+Review status: accepted as the monitor-v2 read-only access boundary.
+
+Reviewed contract:
+
+- `Read-Only Monitor V2 Summary Access Contract`
+
+Accepted defaults:
+
+- `data/results/monitor_v2_bounded_summary.csv`
+- `data/results/monitor_v2_bounded_summary_metadata.json`
+- `data/results/thesis_monitor_v2_recorded_scoring.png`
+- `data/results/thesis_figures_metadata.json`
+
+Accepted restrictions:
+
+- Bounded summaries are the default access surface.
+- Raw row-level alert dumps are blocked by default.
+- Scoring snapshots and recorded input files are blocked by default.
+- Direct database reads are blocked by default.
+- Wallet addresses, unrestricted SQL, live API/WebSocket access, execution
+  paths, PnL, drawdown, and strategy outputs are blocked by default.
+- Conditional source-row access requires explicit justification, at most 50
+  rows, source artifact naming, and future audit logging.
+
+Accepted interpretation boundary:
+
+- Allowed wording remains descriptive: `daily replay`, `bounded summary`,
+  `event-proximity context`, `aggregate wallet-tier activity`, and `recorded
+  scoring diagnostic`.
+- Blocked wording remains any phrasing that implies trading action, live
+  signal status, private information, misconduct, causality, guaranteed
+  prediction, or profitability.
+
+Decision:
+
+- Accept the read-only access contract.
+- Keep MCP, agents, model routing, live collection, strategy backtests, and
+  audit-log integration deferred.
+- Treat `monitor_v2_bounded_summary.csv` as the only default monitor-v2 data
+  surface for future interpretation work.
+- Do not draft or implement MCP tools until the access contract is enforceable
+  by project checks.
+
+Next phase selected:
+
+- Add automated project guardrails for the monitor-v2 read-only summary access
+  contract before moving to MCP/agent contract drafting, deterministic
+  backtest implementation, or live-collector input specification.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

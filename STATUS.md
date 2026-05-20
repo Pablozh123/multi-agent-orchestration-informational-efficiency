@@ -3,19 +3,19 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-20 22:05
+Generated: 2026-05-20 22:07
 
-Current goal: `goal-monitor-v2-real-data-replay-boundary-review-001` - Review existing recorded replay against selected monitor v2 boundary
+Current goal: `goal-monitor-v2-live-collector-preflight-spec-001` - Specify monitor v2 live collector preflight requirements
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `245 passed in 7.86s`
+Pytest summary: `245 passed in 7.83s`
 
 Git branch: `main`
 
-Latest commit: `39a3277`
+Latest commit: `1ef1de9`
 
 Git status:
 
@@ -30,12 +30,12 @@ Git status:
 Git diff stat:
 
 ```text
- GOAL.md                                      | 48 +++++++++--------
- ROADMAP.md                                   |  9 ++--
- docs/project/WORK_LOG.md                     | 38 ++++++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 77 ++++++++++++++++++++++++++++
- docs/research/WHALE_METHOD.md                | 17 ++++++
- 5 files changed, 165 insertions(+), 24 deletions(-)
+ GOAL.md                                      | 44 ++++++++++---------
+ ROADMAP.md                                   | 10 +++--
+ docs/project/WORK_LOG.md                     | 37 ++++++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 66 ++++++++++++++++++++++++++++
+ docs/research/WHALE_METHOD.md                | 13 ++++++
+ 5 files changed, 145 insertions(+), 25 deletions(-)
 ```
 
 Blockers:
@@ -44,7 +44,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: review monitor v2 real-data replay boundary
+- docs: specify monitor v2 live collector preflight
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

@@ -2090,6 +2090,72 @@ Next phase selected:
   `daily_recorded_replay_v1` and decide whether the boundary is already
   satisfied or whether a small daily live-style adapter is needed.
 
+### Real-Data Replay Boundary Review
+
+Review date: 2026-05-20
+
+Review status: accepted; existing recorded daily replay satisfies
+`daily_recorded_replay_v1`.
+
+Reviewed artifacts:
+
+- `data/results/monitor_v2_recorded_watchlist.csv`
+- `data/results/monitor_v2_recorded_market_snapshots.csv`
+- `data/results/monitor_v2_recorded_wallet_tier_snapshots.csv`
+- `data/results/monitor_v2_recorded_event_candidates.csv`
+- `data/results/monitor_v2_recorded_scoring_snapshots.csv`
+- `data/results/monitor_v2_recorded_alert_rows.csv`
+- `data/results/monitor_v2_recorded_alert_summary.csv`
+- `data/results/monitor_v2_recorded_context_rows.csv`
+- `data/results/monitor_v2_recorded_scoring_validation_report.json`
+- `data/results/monitor_v2_recorded_scoring_metadata.json`
+
+Boundary fit:
+
+- Input validation status: `pass`.
+- Watchlist rows: 1.
+- Market snapshot rows: 305.
+- Wallet-tier snapshot rows: 1236.
+- Event candidate rows: 7.
+- Baseline: 30 prior completed observations.
+- Minimum baseline: 20 prior observations.
+- Frequency: daily recorded replay.
+- No live API, WebSocket, database write, LLM, agent, MCP, ML, RCP, or order
+  execution path.
+
+Recorded scoring output:
+
+- 3394 scoring snapshot rows.
+- 3394 alert rows.
+- 11 compact alert summary rows.
+- 581 non-`none` alert rows.
+- Severity counts: 78 `high`, 169 `watch`, 334 `info`, and 2813 `none`.
+- Event-context sidecar labels:
+  3 `critical_proximity_candidate`, 8 `event_watch_candidate`,
+  1 `context_alert`, and 9 `no_event_alert`.
+
+Decision:
+
+- Existing recorded daily replay outputs already satisfy the selected
+  real-data replay boundary.
+- No daily live-style adapter is needed for the current boundary.
+- The local 15-minute live-style fixture remains useful as an interface test,
+  while the recorded daily replay remains the real-data evidence bridge.
+
+Interpretation:
+
+- The recorded replay demonstrates that the monitor can score validated daily
+  Polymarket and aggregate wallet-tier artifacts with the v2 30/20 baseline
+  rule.
+- It does not support intraday reaction-speed claims, live monitoring claims,
+  wallet profitability claims, private-information claims, misconduct claims,
+  or order-execution decisions.
+
+Next phase selected:
+
+- Specify live collector preflight requirements with mocked API/WebSocket
+  contracts before any real external Polymarket collection is implemented.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

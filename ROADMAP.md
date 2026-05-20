@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for real-data replay boundary review
+Status: active for live collector preflight specification
 
 Done criteria:
 
@@ -292,6 +292,8 @@ Done criteria:
 - The first real-data replay boundary is selected as
   `daily_recorded_replay_v1`, using existing recorded daily inputs and the v2
   30/20 baseline rule.
+- Existing recorded daily replay outputs satisfy `daily_recorded_replay_v1`;
+  no additional daily adapter is needed for this boundary.
 
 Blockers:
 
@@ -301,6 +303,6 @@ Blockers:
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.
-- MCP, agents, live collection, and strategy backtests remain blocked until the
-  existing recorded daily replay outputs are reviewed against the selected
-  real-data replay boundary.
+- MCP, agents, live collection, and strategy backtests remain blocked until
+  live collector preflight requirements, mocked API/WebSocket contracts, and
+  audit-safe output boundaries are specified.

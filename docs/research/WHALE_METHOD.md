@@ -548,6 +548,19 @@ First wallet real-data replay boundary:
   wallet ingestion source. It cannot be inferred from the current daily H3
   panel.
 
+Wallet real-data replay boundary review:
+
+- Review status: accepted for daily recorded replay.
+- Existing `data/results/monitor_v2_recorded_wallet_tier_snapshots.csv`
+  satisfies the first wallet boundary because it is daily, aggregate,
+  tier-level, validated, and contains no wallet-address columns.
+- Existing recorded scoring keeps BUY-only and source-filter limitations in
+  metadata and summary limitations.
+- No additional daily wallet adapter is needed for the current boundary.
+- Future live or 15-minute wallet monitoring remains blocked until a validated
+  aggregate source can provide timestamped tier snapshots without exposing raw
+  wallet addresses.
+
 Snapshot prototype status:
 
 - A first deterministic snapshot prototype exists in

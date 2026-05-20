@@ -2304,3 +2304,40 @@ Next step:
 
 - Review whether the existing recorded daily replay/scoring outputs already
   satisfy `daily_recorded_replay_v1`.
+
+## 2026-05-20 - goal-monitor-v2-real-data-replay-boundary-review-001
+
+Task:
+
+- Review existing recorded daily replay/scoring outputs against the selected
+  monitor v2 real-data replay boundary.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+
+Decision:
+
+- Accept that existing recorded daily replay outputs satisfy
+  `daily_recorded_replay_v1`.
+- Reviewed recorded scoring metadata: validation `pass`, 1 watchlist row, 305
+  market snapshot rows, 1236 wallet-tier snapshot rows, 7 event candidates,
+  3394 scoring rows, 11 summary rows, and v2 30/20 baseline settings.
+- No daily live-style adapter is needed for the current boundary.
+- Intraday claims, live API/WebSocket collection, runtime agents, MCP,
+  strategy backtests, order execution, and trading credentials remain blocked.
+
+Next step:
+
+- Specify live collector preflight requirements with mocked API/WebSocket
+  contracts before any external collection code is attempted.

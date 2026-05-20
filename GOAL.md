@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-real-data-replay-boundary-review-001
-title: Review existing recorded replay against selected monitor v2 boundary
+goal_id: goal-monitor-v2-live-collector-preflight-spec-001
+title: Specify monitor v2 live collector preflight requirements
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -31,19 +31,17 @@ why:
   accepted as a pipeline diagnostic, not market evidence.
 - The first real-data replay boundary is selected as
   `daily_recorded_replay_v1`.
-- The next safe step is to review whether existing recorded daily replay and
-  scoring outputs already satisfy this boundary before any new adapter,
-  collector, API client, WebSocket loop, MCP tool, runtime agent, strategy
+- Existing recorded daily replay outputs satisfy `daily_recorded_replay_v1`.
+- The next safe step is to specify live collector preflight requirements before
+  any collector, API client, WebSocket loop, MCP tool, runtime agent, strategy
   backtest, or execution path is implemented.
 deliverables:
-- Review of existing recorded daily replay/scoring outputs against
-  `daily_recorded_replay_v1`.
-- Decision whether the boundary is already satisfied or whether a small daily
-  live-style adapter is needed.
-- Clear limitations and next implementation boundary.
+- Live collector preflight specification for monitor v2.
+- Mocked API/WebSocket contract requirements before any external connection.
+- Validation, persistence, audit, and stop/go rules for a later collector.
 scope:
 - Documentation review only unless the user explicitly asks for implementation
-  after the boundary review is accepted.
+  after the preflight specification is accepted.
 - Existing monitor-v2 architecture and project-control docs.
 - Existing historical replay, recorded-input, live-input, and scoring outputs.
 - Existing curated US-election event seed only.
@@ -60,18 +58,18 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Review states whether existing recorded daily replay outputs satisfy the
-  selected boundary.
-- Review states whether another adapter is needed.
-- Review keeps daily replay, 30/20 baseline, and interpretation limits clear.
-- Review keeps live API/WebSocket collection blocked.
+- Preflight spec states which Polymarket endpoints or feeds are candidates.
+- Preflight spec states required mock fixtures before live collection.
+- Preflight spec states validation, timestamp, bucket, and no-lookahead rules.
+- Preflight spec states hard blocks for orders, agents, MCP, ML, and raw
+  wallet-address exposure.
 - Live API/WebSocket collection remains blocked.
 - No live collector, external API call, WebSocket loop, agent, MCP, ML,
   live-trading, strategy backtest, or order-execution path is activated.
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: review monitor v2 real-data replay boundary
+next_commit: docs: specify monitor v2 live collector preflight
 
 ## Decision Inputs For This Goal
 
@@ -102,13 +100,15 @@ next_commit: docs: review monitor v2 real-data replay boundary
   accepted as a pipeline diagnostic.
 - The first real-data replay boundary is selected as
   `daily_recorded_replay_v1`.
+- Existing recorded daily replay outputs satisfy the selected real-data replay
+  boundary.
 
 ## Done Means
 
-- The review clarifies whether existing recorded daily replay outputs already
-  satisfy the selected boundary.
-- The review keeps current fixture alerts separate from empirical market
-  evidence.
+- The preflight specification defines what must be true before any live
+  collector code can be attempted.
+- The current recorded daily replay remains the real-data evidence bridge until
+  live collection is separately specified, mocked, and validated.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -240,3 +240,5 @@ next_commit: docs: review monitor v2 real-data replay boundary
   accepted as a pipeline diagnostic, not empirical market evidence.
 - First real-data replay boundary is specified as `daily_recorded_replay_v1`
   using existing recorded daily input artifacts and the v2 30/20 baseline rule.
+- Existing recorded daily replay outputs satisfy `daily_recorded_replay_v1`;
+  no additional daily adapter is needed for this boundary.

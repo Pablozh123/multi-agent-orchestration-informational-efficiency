@@ -57,6 +57,25 @@ def test_zero_mad_returns_diagnostic_not_false_alert() -> None:
     assert spike_row["severity"] == "none"
 
 
+def test_single_family_percentile_only_watch_is_downgraded_to_info() -> None:
+    snapshots = _single_metric_snapshots(
+        baseline_values=[10.0, 10.2, 9.9, 10.1, 9.8],
+        spike=10.25,
+    )
+
+    rows = build_monitor_v2_alert_rows(
+        snapshots,
+        baseline_observations=5,
+        min_baseline_observations=5,
+    )
+
+    spike_row = rows.iloc[5]
+    assert spike_row["status"] == "ok"
+    assert spike_row["rolling_percentile_rank"] == 1.0
+    assert spike_row["robust_z"] < 2.0
+    assert spike_row["severity"] == "info"
+
+
 def test_critical_requires_reviewed_event_cluster() -> None:
     rows = build_monitor_v2_alert_rows(
         build_mock_snapshot_frame(),

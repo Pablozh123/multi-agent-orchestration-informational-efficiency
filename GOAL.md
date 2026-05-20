@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-threshold-sensitivity-001
-title: Review monitor v2 alert threshold sensitivity
+goal_id: goal-monitor-v2-historical-replay-snapshots-001
+title: Build deterministic monitor v2 historical replay snapshots
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -15,21 +15,20 @@ why:
 - The deterministic monitor v2 snapshot prototype now exists and emits
   row-level diagnostics, compact summaries, and metadata from mocked snapshots.
 - The monitor v2 snapshot output shape is reviewed and accepted.
-- The review found percentile-only `watch` alerts where percentile rank is 1.0
-  but robust z-score is only about 1.35.
-- The next safe step is a deterministic threshold-sensitivity review before
-  real replay data or live collection.
+- Rule C, combined-family confirmation, is selected as the default alert rule.
+- The next safe step is to build deterministic historical replay snapshots
+  from existing artifacts before live collection.
 deliverables:
-- Compare the current alert rule with stricter alternatives on the existing
-  mock snapshot output.
-- Keep the review deterministic and file-based.
-- Report how many alerts each candidate rule would produce.
-- Recommend the default rule before real replay data are added.
+- Create deterministic replay snapshot inputs from existing historical H2/H3
+  artifacts.
+- Use only existing event, price, and aggregate wallet-tier artifacts.
+- Run the monitor v2 snapshot prototype on replay snapshots.
+- Emit replay alert rows, summary rows, and metadata as file artifacts.
+- Keep outputs aggregate-only and free of wallet addresses.
 scope:
-- Deterministic threshold-sensitivity review only.
-- Existing mock-snapshot results only unless a small derived sensitivity table
-  is needed.
-- No real replay data yet.
+- Deterministic historical replay only.
+- Existing local artifacts only.
+- File-based outputs only.
 out_of_scope:
 - Agents, MCP, model routing, ML, cloud deployment, live trading, and order
   execution.
@@ -41,10 +40,9 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Threshold alternatives are compared before any live collector or real replay
-  implementation.
-- Percentile-only alert behaviour is accepted, changed, or explicitly deferred
-  with a reason.
+- Replay snapshot generation uses existing deterministic artifacts only.
+- Monitor v2 replay outputs use Rule C.
+- Replay outputs contain no wallet addresses or order instructions.
 - Output files remain aggregate-only and contain no wallet addresses or order
   instructions.
 - No live collector, agent, MCP, ML, live-trading, or order-execution path is
@@ -52,7 +50,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: test: review monitor v2 threshold sensitivity
+next_commit: feat: build monitor v2 historical replay snapshots
 
 ## Decision Inputs For This Goal
 
@@ -86,10 +84,9 @@ next_commit: test: review monitor v2 threshold sensitivity
 
 ## Done Means
 
-- A default monitor v2 alert threshold rule is selected or a concrete
-  correction is specified.
-- The next implementation decision is recorded before real replay data or live
-  collection are added.
+- Historical replay snapshots can be generated and scored by the monitor v2
+  prototype without live collection.
+- The next implementation decision is recorded before live collection is added.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, or profit-guarantee work.
 
@@ -163,3 +160,5 @@ next_commit: test: review monitor v2 threshold sensitivity
   diagnostics, summary rows, metadata, and tests.
 - Monitor v2 snapshot prototype output shape is reviewed and accepted with a
   threshold-sensitivity caveat.
+- Rule C, combined-family confirmation, is selected and tested as the first
+  monitor v2 default alert rule.

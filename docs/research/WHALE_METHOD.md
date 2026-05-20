@@ -435,6 +435,17 @@ Snapshot output review:
   percentile-only wallet alerts need a minimum robust z-score or confirmation
   from another anomaly family.
 
+Threshold decision:
+
+- Rule C, combined-family confirmation, is selected for the first monitor v2
+  default.
+- Isolated single-family percentile-only wallet alerts are downgraded to
+  `info`.
+- Wallet-related `watch` alerts should be interpreted only when confirmed by
+  another anomaly family in the same market and timestamp, unless the wallet
+  family is itself a very strong `high` row.
+- This reduces isolated wallet-noise risk before real replay or live data.
+
 ## Event-Centred Wallet Anomaly Monitor
 
 Anomaly-monitor status: complete for the first historical daily output.

@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-20T14:27:22+00:00",
+  "generated_at_utc": "2026-05-20T14:59:33+00:00",
   "inputs": {
     "columns": [
       "timestamp_utc",
@@ -29,9 +29,11 @@
     "no_profitability_or_private_information_claim": true
   },
   "method": {
+    "alert_rule": "combined-family watch: percentile-only single-family watch alerts are downgraded to info; watch requires at least two families at watch-or-higher unless one family is high; critical requires market move plus wallet/concentration plus reviewed event",
     "baseline_observations": 30,
     "input_mode": "built_in_mock_snapshot_fixture",
     "min_baseline_observations": 20,
+    "min_confirmed_watch_families": 2,
     "name": "monitor_v2_deterministic_snapshot_prototype",
     "percentile_score": "rolling empirical percentile rank",
     "robust_score": "robust_z = (value - rolling_median) / (1.4826 * MAD)",

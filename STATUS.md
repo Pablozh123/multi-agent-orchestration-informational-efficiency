@@ -3,39 +3,45 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-20 16:42
+Generated: 2026-05-20 17:01
 
-Current goal: `goal-monitor-v2-threshold-sensitivity-001` - Review monitor v2 alert threshold sensitivity
+Current goal: `goal-monitor-v2-historical-replay-snapshots-001` - Build deterministic monitor v2 historical replay snapshots
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `186 passed in 6.22s`
+Pytest summary: `187 passed in 5.75s`
 
 Git branch: `main`
 
-Latest commit: `84cf65b`
+Latest commit: `00032dc`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
+ M data/results/monitor_v2_metadata.json
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
  M docs/research/WHALE_METHOD.md
+ M operations/analysis/monitor_v2_snapshot.py
+ M tests/test_monitor_v2_snapshot.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      | 50 ++++++++--------
- ROADMAP.md                                   |  8 ++-
- docs/project/WORK_LOG.md                     | 34 +++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 86 ++++++++++++++++++++++++++++
- docs/research/WHALE_METHOD.md                | 10 ++++
- 5 files changed, 162 insertions(+), 26 deletions(-)
+ GOAL.md                                      | 47 ++++++++++++++--------------
+ ROADMAP.md                                   |  9 ++++--
+ data/results/monitor_v2_metadata.json        |  4 ++-
+ docs/project/WORK_LOG.md                     | 40 +++++++++++++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 45 ++++++++++++++++++++++++++
+ docs/research/WHALE_METHOD.md                | 11 +++++++
+ operations/analysis/monitor_v2_snapshot.py   | 17 ++++++++++
+ tests/test_monitor_v2_snapshot.py            | 19 +++++++++++
+ 8 files changed, 164 insertions(+), 28 deletions(-)
 ```
 
 Blockers:
@@ -44,7 +50,7 @@ Blockers:
 
 Next recommended action:
 
-- test: review monitor v2 threshold sensitivity
+- feat: build monitor v2 historical replay snapshots
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

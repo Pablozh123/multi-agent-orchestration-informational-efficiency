@@ -24,6 +24,7 @@ from operations.analysis.run_h2_event_windows import RESULTS_DIR
 DEFAULT_BASELINE_OBSERVATIONS = 30
 DEFAULT_MIN_BASELINE_OBSERVATIONS = 20
 ROBUST_SCALE_FACTOR = 1.4826
+MIN_CONFIRMED_WATCH_FAMILIES = 2
 
 SNAPSHOT_COLUMNS: tuple[str, ...] = (
     "timestamp_utc",
@@ -466,6 +467,15 @@ def _apply_cluster_severity(rows: pd.DataFrame) -> pd.DataFrame:
         return rows
     upgraded = rows.copy()
     for _, group in upgraded.groupby(["timestamp_utc", "market_id"], sort=False):
+        watched_families = set(
+            group.loc[group["severity"].isin(WATCH_OR_HIGH), "anomaly_family"]
+        )
+        family_confirmed = len(watched_families) >= MIN_CONFIRMED_WATCH_FAMILIES
+        if not family_confirmed:
+            watch_rows = group.index[group["severity"] == "watch"]
+            upgraded.loc[watch_rows, "severity"] = "info"
+            group = upgraded.loc[group.index]
+
         has_reviewed_event = group["event_review_status"].isin(EVENT_ACCEPTED_STATUSES).any()
         has_market_watch = (
             (group["anomaly_family"] == "market_move")
@@ -503,6 +513,13 @@ def _build_metadata(
             "min_baseline_observations": min_baseline_observations,
             "robust_score": "robust_z = (value - rolling_median) / (1.4826 * MAD)",
             "percentile_score": "rolling empirical percentile rank",
+            "alert_rule": (
+                "combined-family watch: percentile-only single-family watch "
+                "alerts are downgraded to info; watch requires at least two "
+                "families at watch-or-higher unless one family is high; critical "
+                "requires market move plus wallet/concentration plus reviewed event"
+            ),
+            "min_confirmed_watch_families": MIN_CONFIRMED_WATCH_FAMILIES,
             "uses_completed_prior_observations": True,
         },
         "inputs": {

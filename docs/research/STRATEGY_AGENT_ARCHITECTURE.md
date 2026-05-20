@@ -553,6 +553,51 @@ Decision:
 - Next step: deterministic threshold-sensitivity review on the existing mock
   snapshot output before real replay data is added.
 
+### Threshold Sensitivity Decision
+
+Review date: 2026-05-20
+
+Selected rule: combined-family confirmation.
+
+Rule C is selected for the first monitor v2 default:
+
+- A single percentile-only `watch` row is downgraded to `info` if it is the only
+  watch-or-higher family for the market and timestamp.
+- `watch` requires at least two anomaly families at `watch` or higher in the
+  same market and timestamp.
+- A single very strong family can still remain `high`.
+- `critical` still requires market movement plus wallet or concentration
+  anomaly plus reviewed event context.
+
+Reason:
+
+- The monitor should avoid noisy single-metric percentile alerts.
+- Family confirmation better fits the tool objective: detect unusual
+  combinations of market movement, wallet-tier activity, concentration, and
+  event context.
+- The rule remains deterministic and testable before real replay data.
+
+Implemented check:
+
+- `tests/test_monitor_v2_snapshot.py` verifies that a single-family
+  percentile-only row with robust z-score below 2.0 is downgraded to `info`.
+
+Current mock-output effect:
+
+- The default mock output still contains 8 `watch` rows and 4 `critical` rows,
+  because the two early `watch` timestamps have all four anomaly families
+  elevated together.
+- This is acceptable: Rule C is not designed to remove all percentile alerts,
+  but to prevent isolated single-family percentile alerts from becoming
+  user-facing `watch` alerts.
+
+Decision:
+
+- Use Rule C as the default for the next deterministic replay prototype.
+- Do not add live collection yet.
+- Next step: build historical replay snapshots from existing deterministic
+  artifacts before any real-time collector.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

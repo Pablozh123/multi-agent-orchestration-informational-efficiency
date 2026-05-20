@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for monitor v2 threshold-sensitivity review
+Status: ready for historical monitor v2 replay snapshots
 
 Done criteria:
 
@@ -229,6 +229,8 @@ Done criteria:
   alert rows, summaries, and metadata.
 - The snapshot output row and summary columns are reviewed and accepted for the
   first deterministic v2 prototype.
+- Rule C, combined-family confirmation, is selected as the first default
+  threshold rule.
 
 Blockers:
 
@@ -238,5 +240,6 @@ Blockers:
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.
-- Percentile-only `watch` behaviour must be tested in a deterministic
-  sensitivity review before real replay data or a live collector.
+- Historical replay snapshots from existing artifacts are not built yet.
+- Live collection remains blocked until replay snapshots and output review are
+  complete.

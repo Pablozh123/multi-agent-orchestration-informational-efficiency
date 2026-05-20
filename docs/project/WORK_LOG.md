@@ -1336,3 +1336,43 @@ Next step:
 
 - Compare current and stricter monitor v2 alert threshold rules before adding
   real replay data or live collection.
+
+## 2026-05-20 - goal-monitor-v2-threshold-sensitivity-001
+
+Task:
+
+- Select and implement the monitor v2 threshold rule.
+
+Files changed:
+
+- `operations/analysis/monitor_v2_snapshot.py`
+- `tests/test_monitor_v2_snapshot.py`
+- `data/results/monitor_v2_alert_rows.csv`
+- `data/results/monitor_v2_alert_summary.csv`
+- `data/results/monitor_v2_metadata.json`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_v2_snapshot.py -q`
+  -> 9 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_snapshot`
+  -> 124 rows, 12 alerts, 4 summary rows.
+
+Decision:
+
+- Select Rule C: combined-family confirmation.
+- Downgrade isolated single-family percentile-only `watch` rows to `info`.
+- Keep `critical` restricted to market movement plus wallet or concentration
+  anomaly plus reviewed event context.
+- The current mock output still has 8 `watch` and 4 `critical` rows because the
+  elevated mock timestamps contain all four families simultaneously.
+
+Next step:
+
+- Build deterministic historical replay snapshots from existing H2/H3
+  artifacts before live collection.

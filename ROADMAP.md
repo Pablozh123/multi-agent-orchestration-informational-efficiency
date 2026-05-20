@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for local monitor v2 live input scoring review
+Status: active for real-data replay boundary specification
 
 Done criteria:
 
@@ -287,6 +287,8 @@ Done criteria:
 - A local replay-first monitor-v2 live input scoring bridge exists and writes
   diagnostic scoring snapshots, alert rows, alert summaries, validation
   report, and metadata from mocked local input files.
+- The local replay-first monitor-v2 live input scoring output shape is
+  reviewed and accepted as a pipeline diagnostic, not empirical evidence.
 
 Blockers:
 
@@ -297,5 +299,5 @@ Blockers:
 - Live trading, automated order execution, and profit guarantees are out of
   scope.
 - MCP, agents, live collection, and strategy backtests remain blocked until the
-  local replay-first live-input scoring bridge has reviewed diagnostic output
-  shape and a next real-data replay boundary is selected.
+  first real-data replay boundary is specified, implemented deterministically,
+  and reviewed.

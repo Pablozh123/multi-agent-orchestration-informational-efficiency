@@ -3,48 +3,39 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-20 22:01
+Generated: 2026-05-20 22:03
 
-Current goal: `goal-monitor-v2-live-input-scoring-review-001` - Review local replay-first monitor v2 live input scoring bridge
+Current goal: `goal-monitor-v2-real-data-replay-boundary-001` - Specify first real-data replay boundary for monitor v2
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `245 passed in 8.29s`
+Pytest summary: `245 passed in 8.10s`
 
 Git branch: `main`
 
-Latest commit: `a88ca12`
+Latest commit: `ca9b6d1`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
- M STATUS.md
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
  M docs/research/WHALE_METHOD.md
-?? data/results/monitor_v2_live_alert_rows.csv
-?? data/results/monitor_v2_live_alert_summary.csv
-?? data/results/monitor_v2_live_scoring_metadata.json
-?? data/results/monitor_v2_live_scoring_snapshots.csv
-?? data/results/monitor_v2_live_scoring_validation_report.json
-?? operations/analysis/monitor_v2_live_input_scoring.py
-?? tests/test_monitor_v2_live_input_scoring.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      | 60 +++++++++++++++-------------
- ROADMAP.md                                   | 11 +++--
- STATUS.md                                    | 33 ++++++++++-----
- docs/project/WORK_LOG.md                     | 45 +++++++++++++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 57 ++++++++++++++++++++++++++
+ GOAL.md                                      | 52 +++++++++++++-----------
+ ROADMAP.md                                   |  8 ++--
+ docs/project/WORK_LOG.md                     | 37 +++++++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 61 ++++++++++++++++++++++++++++
  docs/research/WHALE_METHOD.md                | 15 +++++++
- 6 files changed, 178 insertions(+), 43 deletions(-)
+ 5 files changed, 147 insertions(+), 26 deletions(-)
 ```
 
 Blockers:
@@ -53,7 +44,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: review local monitor v2 live input scoring bridge
+- docs: specify monitor v2 real-data replay boundary
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

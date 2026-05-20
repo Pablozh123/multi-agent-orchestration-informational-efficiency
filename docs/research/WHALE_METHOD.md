@@ -516,6 +516,21 @@ Live wallet input scoring status:
 - The output contains no wallet addresses and makes no wallet profitability,
   private-information, misconduct, insider, or live-trading claim.
 
+Live wallet input scoring review:
+
+- Review status: accepted for selecting the first real-data replay boundary.
+- The wallet-related diagnostic alerts in the mocked fixture show that the
+  bridge can score aggregate tier activity and active-wallet counts at
+  15-minute bucket granularity.
+- These alerts are not evidence about real wallet behaviour because the inputs
+  are mocked, the baseline is deliberately small, and only 4 buckets exist.
+- Production-like wallet alert wording remains blocked until a replay or live
+  dataset has at least the v2 minimum baseline observations and reviewed source
+  provenance.
+- The next boundary must decide whether wallet activity can be replayed from
+  daily H3 aggregates, a recorded local ingestion file, or a future validated
+  Data API/CLOB-derived aggregate. It must not expose raw wallet addresses.
+
 Snapshot prototype status:
 
 - A first deterministic snapshot prototype exists in

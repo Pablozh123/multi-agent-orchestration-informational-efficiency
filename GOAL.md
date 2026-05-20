@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-live-input-scoring-review-001
-title: Review local replay-first monitor v2 live input scoring bridge
+goal_id: goal-monitor-v2-real-data-replay-boundary-001
+title: Specify first real-data replay boundary for monitor v2
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -27,21 +27,22 @@ why:
   accepted for a diagnostic local scoring bridge.
 - The local replay-first live input scoring bridge now emits diagnostic
   snapshots, alert rows, alert summaries, validation report, and metadata.
-- The next safe step is to review the diagnostic scoring output shape before
-  any real-data replay boundary, collector, API client, WebSocket loop, MCP
-  tool, runtime agent, strategy backtest, or execution path is implemented.
+- The local replay-first live input scoring output shape is reviewed and
+  accepted as a pipeline diagnostic, not market evidence.
+- The next safe step is to specify the first real-data replay boundary before
+  any new adapter, collector, API client, WebSocket loop, MCP tool, runtime
+  agent, strategy backtest, or execution path is implemented.
 deliverables:
-- Review and accept, revise, or block the local live-input scoring output
-  shape.
-- Confirm whether diagnostic rows, summary rows, validation report, and
-  metadata are sufficient for the next real-data replay boundary.
-- Document that fixture alerts are pipeline-shape diagnostics, not market
-  evidence.
+- A documented first real-data replay boundary for monitor v2.
+- Decision on which source artifacts can be replayed first, at what bucket
+  frequency, and with what baseline minimum.
+- Clear no-go list for live collection, MCP, agents, strategy backtests, and
+  order paths.
 scope:
 - Documentation review only unless the user explicitly asks for implementation
-  after the scoring review is accepted.
+  after the replay boundary is accepted.
 - Existing monitor-v2 architecture and project-control docs.
-- Existing generated local live-input scoring outputs.
+- Existing historical replay, recorded-input, live-input, and scoring outputs.
 - Existing curated US-election event seed only.
 - No new live data, no external API calls, and no new event curation.
 out_of_scope:
@@ -56,18 +57,19 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Review notes accept, revise, or block the diagnostic local scoring output
-  shape.
-- Review notes state the observed row counts, alert counts, limitations, and
-  allowed interpretation.
-- Review notes state the next implementation boundary after the local fixture.
+- Replay boundary states the allowed source artifacts and bucket frequency.
+- Replay boundary states the minimum baseline requirements and interpretation
+  limits.
+- Replay boundary states what outputs a later deterministic implementation may
+  write.
+- Replay boundary keeps live API/WebSocket collection blocked.
 - Live API/WebSocket collection remains blocked.
 - No live collector, external API call, WebSocket loop, agent, MCP, ML,
   live-trading, strategy backtest, or order-execution path is activated.
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: review local monitor v2 live input scoring bridge
+next_commit: docs: specify monitor v2 real-data replay boundary
 
 ## Decision Inputs For This Goal
 
@@ -94,13 +96,15 @@ next_commit: docs: review local monitor v2 live input scoring bridge
   a diagnostic deterministic scoring bridge.
 - Local replay-first live input scoring bridge module, tests, and diagnostic
   output artifacts exist.
+- The local replay-first live input scoring output shape is reviewed and
+  accepted as a pipeline diagnostic.
 
 ## Done Means
 
-- The scoring review produces a clear go/no-go for the next real-data replay
-  boundary.
-- The review makes clear that current fixture alerts are diagnostics only and
-  not empirical market evidence.
+- A replay boundary specifies how the next deterministic implementation can
+  move from mocked fixture files to real or recorded source artifacts.
+- The boundary keeps current fixture alerts separate from empirical market
+  evidence.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -228,3 +232,5 @@ next_commit: docs: review local monitor v2 live input scoring bridge
 - Local replay-first monitor-v2 live input scoring bridge exists and writes
   diagnostic snapshots, alert rows, alert summaries, validation report, and
   metadata under `data/results/`.
+- Local replay-first monitor-v2 live input scoring output shape is reviewed and
+  accepted as a pipeline diagnostic, not empirical market evidence.

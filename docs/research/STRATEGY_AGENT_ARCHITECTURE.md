@@ -1952,6 +1952,67 @@ Next phase selected:
   collector design, MCP access, runtime agent, strategy backtest, or
   order-execution path is added.
 
+### Local Live Input Scoring Review
+
+Review date: 2026-05-20
+
+Review status: accepted for selecting the first real-data replay boundary.
+
+Reviewed artifacts:
+
+- `data/results/monitor_v2_live_scoring_snapshots.csv`
+- `data/results/monitor_v2_live_alert_rows.csv`
+- `data/results/monitor_v2_live_alert_summary.csv`
+- `data/results/monitor_v2_live_scoring_validation_report.json`
+- `data/results/monitor_v2_live_scoring_metadata.json`
+
+Observed output:
+
+- 35 scoring snapshot rows.
+- 35 alert rows.
+- 9 compact summary rows.
+- 6 non-`none` diagnostic alerts:
+  4 `high`, 1 `watch`, and 1 `info`.
+- Alert-row status counts:
+  18 `insufficient_baseline`, 11 `ok`, and 6 `zero_mad`.
+
+Interpretation:
+
+- The bridge successfully validates local live-style files, converts closed
+  15-minute buckets into scoring snapshots, applies deterministic Rule C
+  scoring, and writes bounded row/summary/metadata artifacts.
+- The mocked fixture intentionally contains a visible wallet/volume activity
+  cluster around `2026-05-20T00:45:00Z`, so the non-`none` alerts demonstrate
+  pipeline behaviour rather than empirical Polymarket evidence.
+- Event context is applied only from buckets at or after the mocked event
+  publication timestamp, preserving the no-lookahead boundary.
+
+Accepted limitations:
+
+- The fixture has only 4 buckets and therefore uses a diagnostic baseline of
+  3 observations with minimum 2 baseline observations.
+- Production-like monitor alerts still require at least 20 baseline
+  observations under the v2 contract.
+- Constant concentration and spread values produce `zero_mad` diagnostic rows,
+  which is expected for a tiny fixture.
+- The output is not evidence of market inefficiency, wallet skill,
+  private information, misconduct, profitability, or live readiness.
+
+Decision:
+
+- Accept the local scoring output columns, metadata, and no-lookahead event
+  annotation rule.
+- Do not add live API or WebSocket collection yet.
+- Do not expose raw live input files through prompts, MCP, or runtime agents.
+- The next step should specify the first real-data replay boundary before any
+  new adapter or collector implementation.
+
+Next phase selected:
+
+- Specify which real or recorded source artifacts may be replayed through the
+  live-style contract, what bucket frequency is allowed, and what minimum
+  baseline is required before user-facing alert levels can be interpreted.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

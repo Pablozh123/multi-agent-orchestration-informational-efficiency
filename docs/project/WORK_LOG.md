@@ -2229,3 +2229,40 @@ Next step:
 
 - Review the local live-input scoring output shape before selecting the next
   real-data replay boundary.
+
+## 2026-05-20 - goal-monitor-v2-live-input-scoring-review-001
+
+Task:
+
+- Review the local replay-first monitor-v2 live input scoring bridge output
+  shape and decide the next boundary.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+
+Decision:
+
+- Accept the local live-input scoring output columns, metadata, and event
+  no-lookahead annotation rule.
+- The output has 35 scoring snapshot rows, 35 alert rows, 9 summary rows, and
+  6 non-`none` diagnostic alerts.
+- Interpret the 6 alerts as mocked fixture pipeline diagnostics only, not as
+  empirical Polymarket evidence or live-readiness evidence.
+- Keep live API/WebSocket collection, runtime agents, MCP, strategy backtests,
+  order execution, and trading credentials blocked.
+
+Next step:
+
+- Specify the first real-data replay boundary before implementing another
+  adapter or collector.

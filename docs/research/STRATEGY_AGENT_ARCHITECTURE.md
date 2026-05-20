@@ -1229,6 +1229,126 @@ Next implementation step:
   bounded files a future MCP or agent layer may read, while keeping the actual
   MCP and agent implementations deferred.
 
+### Read-Only Monitor V2 Summary Access Contract
+
+Contract date: 2026-05-20
+
+Contract status: specified, implementation deferred.
+
+Purpose:
+
+- Define the narrow monitor-v2 output surface that future read-only tools,
+  MCP contracts, or agent interpretation layers may use.
+- Keep the deterministic monitor outputs useful without exposing raw alert
+  dumps, wallet-level data, unrestricted SQL, or execution paths.
+- Preserve the thesis boundary: descriptive anomaly monitoring, not live
+  trading, not private-information detection, not causality, and not
+  profitability evidence.
+
+Default allowed artifacts:
+
+- `data/results/monitor_v2_bounded_summary.csv`
+- `data/results/monitor_v2_bounded_summary_metadata.json`
+- `data/results/thesis_monitor_v2_recorded_scoring.png`
+- `data/results/thesis_figures_metadata.json`
+
+Allowed by default:
+
+- Read the full bounded summary CSV because it contains 19 compact rows.
+- Read the bounded summary metadata.
+- Read the thesis-facing monitor-v2 figure.
+- Return row counts, severity counts, event-context label counts,
+  metric-family counts, source-artifact references, allowed interpretations,
+  limitations, and claim scopes.
+- Summarise the daily replay limitation, BUY-side observed activity limitation,
+  and no-live-collection limitation.
+
+Blocked by default:
+
+- Raw row-level alert dumps.
+- Scoring snapshots.
+- Recorded input watchlist, market snapshots, wallet-tier snapshots, and event
+  candidate CSVs.
+- Direct reads from `data/thesis.db`.
+- Wallet-address fields or wallet-level exports.
+- Unrestricted SQL or `SELECT *` interfaces.
+- Live API, WebSocket, orderbook, or order-execution calls.
+- PnL, drawdown, profitability, strategy, or execution outputs.
+
+Conditional access:
+
+- Row-level source artifacts may be inspected by a human or development
+  workflow only for debugging or method review.
+- Any future tool access to row-level artifacts must be explicitly justified,
+  limited to at most 50 rows, and logged.
+- Row-level artifacts must never become the default prompt-facing or
+  MCP-facing output surface.
+
+Future read-only tool contract:
+
+- `list_monitor_v2_summary_artifacts`
+  - returns bounded artifact paths and metadata paths only.
+- `get_monitor_v2_bounded_summary`
+  - returns the 19-row bounded summary and no row-level alert dump.
+- `get_monitor_v2_summary_metadata`
+  - returns source artifacts, limitations, and output columns.
+- `get_monitor_v2_figure`
+  - returns the thesis-facing figure path or rendered image reference.
+
+These names are contracts only. They do not activate MCP, agents, model
+routing, or live collectors.
+
+Maximum exposure rules:
+
+- Default summary response: at most 50 rows.
+- Current bounded summary: 19 rows, accepted.
+- Raw source rows: blocked by default.
+- Any exception must include a reason, row limit, source artifact, and audit
+  note.
+
+Allowed interpretation wording:
+
+- `descriptive daily replay monitor summary`
+- `bounded monitor-v2 summary`
+- `event-proximity context label`
+- `aggregate wallet-tier activity`
+- `recorded scoring diagnostic`
+- `requires human review before canonical alert use`
+
+Blocked interpretation wording:
+
+- `trade now`
+- `live signal`
+- `private information`
+- `misconduct`
+- `causal proof`
+- `profitable strategy`
+- `guaranteed predictive edge`
+- `autonomous trading`
+
+Future audit requirements:
+
+- Any future LLM, MCP, or agent access must log the call in `llm_audit_log`
+  once the interpretation layer is implemented.
+- Audit records must include the system prompt version or hash, user prompt,
+  bounded artifact names, tools called, and a compact tool-result summary.
+- Prompts must cite bounded summary artifact paths, not paste raw alert rows.
+- Outputs must preserve source limitations and claim boundaries.
+
+Decision:
+
+- Accept `monitor_v2_bounded_summary.csv` as the default read-only monitor-v2
+  access surface.
+- Keep raw monitor output files as deterministic source artifacts only.
+- Keep actual MCP, agent, live collector, strategy backtest, and audit-log
+  implementation deferred.
+
+Next implementation step:
+
+- Review this access contract and decide whether the next phase should be
+  documentation-only MCP/agent contract drafting, deterministic backtest
+  baseline planning, or live-collector input specification.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

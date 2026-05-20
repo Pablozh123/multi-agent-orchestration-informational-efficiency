@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-readonly-summary-access-contract-001
-title: Specify read-only monitor v2 summary access contract
+goal_id: goal-monitor-v2-readonly-summary-access-review-001
+title: Review monitor v2 read-only summary access contract
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -41,19 +41,19 @@ why:
   source artifacts.
 - Compact monitor-v2 result summaries are reviewed and accepted as the first
   monitor summary boundary.
-- The next safe step is to specify which bounded files a future read-only
-  access layer may read before any MCP, agent, live collector, strategy
-  backtest, or trading path is added.
+- The read-only monitor-v2 summary access contract is now specified.
+- The next safe step is to review the access contract before any MCP, agent,
+  live collector, strategy backtest, or trading path is added.
 deliverables:
-- Define a docs-only read-only access contract for monitor-v2 summaries.
-- List allowed bounded artifacts and blocked raw artifacts.
-- Define maximum row exposure and interpretation wording.
-- Specify future audit requirements for any LLM, MCP, or agent access.
-- Keep actual MCP and agent implementations deferred.
+- Review the docs-only read-only access contract in
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+- Decide whether the contract is accepted or needs changes.
+- Confirm allowed bounded artifacts, blocked raw artifacts, maximum row
+  exposure, interpretation wording, and future audit requirements.
+- Select the next phase after the read-only boundary.
 scope:
 - Documentation and output review only.
-- Existing bounded monitor-v2 summary artifacts and existing architecture docs
-  only.
+- Existing read-only access contract and existing architecture docs only.
 - Existing curated US-election event seed only.
 - No new live data and no new event curation.
 out_of_scope:
@@ -67,13 +67,12 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Read-only access contract is documented.
-- The contract allows bounded summaries by default and blocks raw row-level
-  alert dumps by default.
-- The contract keeps MCP, agents, live collection, and strategy backtests
-  deferred.
-- The contract preserves daily-data and BUY-side observed activity
-  limitations.
+- Read-only access contract is reviewed.
+- The review records whether the contract is accepted or what must change.
+- The review confirms bounded summaries remain default and raw row-level alert
+  dumps remain blocked by default.
+- The review confirms MCP, agents, live collection, and strategy backtests
+  remain deferred.
 - No new live data, external API, WebSocket, database write, agent, MCP, ML, or
   order execution path is activated.
 - Outputs remain aggregate-only and contain no wallet addresses or order
@@ -83,7 +82,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: specify monitor v2 read-only summary access contract
+next_commit: docs: review monitor v2 read-only summary access contract
 
 ## Decision Inputs For This Goal
 
@@ -129,6 +128,8 @@ next_commit: docs: specify monitor v2 read-only summary access contract
   `data/results/monitor_v2_bounded_summary_metadata.json`.
 - Compact monitor-v2 bounded summary output review exists in
   `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+- Read-only monitor-v2 summary access contract exists in
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
 - Literature intake structure exists in `docs/research/LITERATURE_MAP.md` and
   `data/literature/literature_index.csv`.
 - ML scope and re-entry conditions are explicit in
@@ -137,9 +138,10 @@ next_commit: docs: specify monitor v2 read-only summary access contract
 
 ## Done Means
 
-- A read-only summary access contract exists or a precise blocker is recorded.
-- The monitor has an accepted bounded summary and access boundary before live
-  collection, MCP, or agent interpretation is added.
+- The read-only summary access contract is reviewed or a precise blocker is
+  recorded.
+- The monitor has an accepted bounded summary and reviewed access boundary
+  before live collection, MCP, or agent interpretation is added.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, or profit-guarantee work.
 
@@ -239,3 +241,6 @@ next_commit: docs: specify monitor v2 read-only summary access contract
 - Compact monitor-v2 bounded summary artifacts exist and cite source files.
 - Compact monitor-v2 bounded summary artifacts are reviewed and accepted as
   the first monitor summary boundary.
+- Read-only monitor-v2 summary access contract is specified while actual MCP,
+  agent, live collector, strategy backtest, and audit-log implementation remain
+  deferred.

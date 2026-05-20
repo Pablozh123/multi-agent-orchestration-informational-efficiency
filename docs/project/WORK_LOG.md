@@ -1842,3 +1842,39 @@ Decision:
 Next step:
 
 - Specify the read-only monitor-v2 summary access contract.
+
+## 2026-05-20 - goal-monitor-v2-readonly-summary-access-contract-001
+
+Task:
+
+- Specify a docs-only read-only access contract for monitor-v2 bounded
+  summaries.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+
+Decision:
+
+- Allow `monitor_v2_bounded_summary.csv`, its metadata, and the
+  thesis-facing monitor figure as the default read-only access surface.
+- Block raw row-level alert dumps, scoring snapshots, recorded input files,
+  direct database reads, wallet-address exports, live collection, and
+  execution paths by default.
+- Keep MCP, agents, live collection, strategy backtests, and audit-log
+  implementation deferred.
+
+Next step:
+
+- Review the read-only monitor-v2 summary access contract and select the next
+  phase.

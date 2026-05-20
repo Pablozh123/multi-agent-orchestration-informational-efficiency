@@ -98,6 +98,21 @@ def _write_inputs(path: Path) -> None:
             },
         ]
     ).to_csv(path / "h3_event_wallet_anomaly_summary.csv", index=False)
+    pd.DataFrame(
+        [
+            {"severity": "none"},
+            {"severity": "info"},
+            {"severity": "watch"},
+            {"severity": "high"},
+        ]
+    ).to_csv(path / "monitor_v2_recorded_alert_rows.csv", index=False)
+    pd.DataFrame(
+        [
+            {"suggested_context_label": "no_event_alert"},
+            {"suggested_context_label": "event_watch_candidate"},
+            {"suggested_context_label": "critical_proximity_candidate"},
+        ]
+    ).to_csv(path / "monitor_v2_recorded_context_rows.csv", index=False)
 
 
 def test_generate_figures_writes_pngs_and_metadata(tmp_path: Path) -> None:
@@ -112,6 +127,7 @@ def test_generate_figures_writes_pngs_and_metadata(tmp_path: Path) -> None:
         "h3_lead_time_amount",
         "h3_granger_pvalues",
         "h3_event_wallet_anomalies",
+        "monitor_v2_recorded_scoring",
         "metadata",
     }
     for path_text in figures.values():

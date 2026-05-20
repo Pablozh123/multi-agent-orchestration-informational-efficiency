@@ -1732,3 +1732,42 @@ Next step:
 
 - Review the recorded scoring outputs and decide whether the shape is accepted
   before live collection, MCP, agents, ML, or strategy backtest work.
+
+## 2026-05-20 - goal-monitor-v2-recorded-scoring-review-001
+
+Task:
+
+- Review monitor v2 recorded scoring outputs and generate a simple
+  thesis-facing figure.
+
+Files changed:
+
+- `operations/analysis/thesis_figures.py`
+- `tests/test_thesis_figures.py`
+- `data/results/thesis_monitor_v2_recorded_scoring.png`
+- `data/results/thesis_figures_metadata.json`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_thesis_figures.py -q`
+  -> 2 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_figures`
+  -> generated `thesis_monitor_v2_recorded_scoring.png`.
+
+Decision:
+
+- Accept the recorded scoring output shape as a bounded daily replay monitor
+  output.
+- Separate direct alert severities from event-proximity context labels.
+- Interpret 3 `critical_proximity_candidate` rows and 8
+  `event_watch_candidate` rows as descriptive daily-context labels only.
+
+Next step:
+
+- Generate compact bounded monitor-v2 summary artifacts before live collection,
+  MCP, agents, ML, or strategy backtest work.

@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for monitor v2 recorded scoring output review
+Status: active for monitor v2 bounded summary output
 
 Done criteria:
 
@@ -255,6 +255,10 @@ Done criteria:
 - The validated-input scoring runner exists and emits recorded scoring
   snapshots, alert rows, summaries, context rows, validation report, and
   metadata.
+- Recorded scoring outputs are reviewed and accepted as bounded daily replay
+  monitor outputs.
+- A simple thesis-facing figure exists for severity counts and event-context
+  labels.
 
 Blockers:
 
@@ -264,6 +268,6 @@ Blockers:
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.
-- Recorded scoring outputs are generated but not reviewed yet.
-- Live collection remains blocked until recorded scoring outputs are reviewed
-  and accepted as bounded monitor outputs.
+- Compact monitor-v2 result summaries are not generated yet.
+- Live collection remains blocked until compact bounded summaries exist and
+  are reviewed.

@@ -4,14 +4,17 @@
     "data\\results\\h3_wallet_distribution_inventory.json",
     "data\\results\\h3_lead_time_histograms.csv",
     "data\\results\\h3_granger_results.csv",
-    "data\\results\\h3_event_wallet_anomaly_summary.csv"
+    "data\\results\\h3_event_wallet_anomaly_summary.csv",
+    "data\\results\\monitor_v2_recorded_alert_rows.csv",
+    "data\\results\\monitor_v2_recorded_context_rows.csv"
   ],
   "figures": {
     "h2_event_window_car": "data\\results\\thesis_h2_event_window_car.png",
     "h3_wallet_tier_counts": "data\\results\\thesis_h3_wallet_tier_counts.png",
     "h3_lead_time_amount": "data\\results\\thesis_h3_lead_time_amount.png",
     "h3_granger_pvalues": "data\\results\\thesis_h3_granger_pvalues.png",
-    "h3_event_wallet_anomalies": "data\\results\\thesis_h3_event_wallet_anomalies.png"
+    "h3_event_wallet_anomalies": "data\\results\\thesis_h3_event_wallet_anomalies.png",
+    "monitor_v2_recorded_scoring": "data\\results\\thesis_monitor_v2_recorded_scoring.png"
   },
   "calculation_note": "Figures are deterministic visualisations of existing result artifacts; no new statistical metrics are calculated."
 }

@@ -194,6 +194,55 @@ def plot_h3_event_wallet_anomalies(input_dir: Path, output_dir: Path) -> Path:
     return _save_figure(output_dir / "thesis_h3_event_wallet_anomalies.png")
 
 
+def plot_monitor_v2_recorded_scoring(input_dir: Path, output_dir: Path) -> Path:
+    """Plot monitor v2 recorded scoring severity and context-label counts."""
+
+    alert_source = input_dir / "monitor_v2_recorded_alert_rows.csv"
+    context_source = input_dir / "monitor_v2_recorded_context_rows.csv"
+    _require_file(alert_source)
+    _require_file(context_source)
+
+    alerts = pd.read_csv(alert_source)
+    context = pd.read_csv(context_source)
+    alert_required = {"severity"}
+    context_required = {"suggested_context_label"}
+    alert_missing = alert_required.difference(alerts.columns)
+    context_missing = context_required.difference(context.columns)
+    if alert_missing:
+        raise ValueError(f"Monitor v2 alert rows are missing columns: {sorted(alert_missing)}")
+    if context_missing:
+        raise ValueError(
+            f"Monitor v2 context rows are missing columns: {sorted(context_missing)}"
+        )
+
+    severity_order = ["none", "info", "watch", "high", "critical"]
+    context_order = [
+        "no_event_alert",
+        "context_alert",
+        "event_watch_candidate",
+        "critical_proximity_candidate",
+    ]
+    severity_counts = alerts["severity"].value_counts().reindex(severity_order, fill_value=0)
+    context_counts = (
+        context["suggested_context_label"].value_counts().reindex(context_order, fill_value=0)
+    )
+
+    figure, axes = plt.subplots(1, 2, figsize=(11, 4.8))
+    axes[0].bar(severity_counts.index, severity_counts.values, color="#4c78a8")
+    axes[0].set_title("Recorded alert severities")
+    axes[0].set_xlabel("Severity")
+    axes[0].set_ylabel("Rows")
+    axes[0].tick_params(axis="x", rotation=20)
+
+    axes[1].barh(context_counts.index, context_counts.values, color="#59a14f")
+    axes[1].set_title("Event-context labels")
+    axes[1].set_xlabel("Event-window rows")
+    axes[1].set_ylabel("Context label")
+
+    figure.suptitle("Monitor v2 recorded scoring output review")
+    return _save_figure(output_dir / "thesis_monitor_v2_recorded_scoring.png")
+
+
 def generate_figures(
     input_dir: Path = DEFAULT_RESULTS_DIR,
     output_dir: Path = DEFAULT_RESULTS_DIR,
@@ -208,6 +257,7 @@ def generate_figures(
         "h3_lead_time_amount": plot_h3_lead_time_amount,
         "h3_granger_pvalues": plot_h3_granger_pvalues,
         "h3_event_wallet_anomalies": plot_h3_event_wallet_anomalies,
+        "monitor_v2_recorded_scoring": plot_monitor_v2_recorded_scoring,
     }
 
     figures = {
@@ -221,6 +271,8 @@ def generate_figures(
             str(input_dir / "h3_lead_time_histograms.csv"),
             str(input_dir / "h3_granger_results.csv"),
             str(input_dir / "h3_event_wallet_anomaly_summary.csv"),
+            str(input_dir / "monitor_v2_recorded_alert_rows.csv"),
+            str(input_dir / "monitor_v2_recorded_context_rows.csv"),
         ],
         "figures": figures,
         "calculation_note": (

@@ -1030,6 +1030,76 @@ Next implementation step:
 - Review the recorded scoring outputs before any live collector, MCP surface,
   agent layer, or strategy backtest uses them.
 
+### Recorded Scoring Output Review
+
+Review date: 2026-05-20
+
+Review status: accepted as a bounded recorded monitor output.
+
+Reviewed artifacts:
+
+- `data/results/monitor_v2_recorded_scoring_snapshots.csv`
+- `data/results/monitor_v2_recorded_alert_rows.csv`
+- `data/results/monitor_v2_recorded_alert_summary.csv`
+- `data/results/monitor_v2_recorded_context_rows.csv`
+- `data/results/monitor_v2_recorded_scoring_validation_report.json`
+- `data/results/monitor_v2_recorded_scoring_metadata.json`
+
+Figure:
+
+- `data/results/thesis_monitor_v2_recorded_scoring.png`
+
+Accepted output shape:
+
+- Row-level diagnostics stay in `monitor_v2_recorded_alert_rows.csv`.
+- Compact metric summaries stay in `monitor_v2_recorded_alert_summary.csv`.
+- Daily event-context labels stay in
+  `monitor_v2_recorded_context_rows.csv`.
+- Validation evidence stays in
+  `monitor_v2_recorded_scoring_validation_report.json`.
+- Method, limitation, and output-count metadata stay in
+  `monitor_v2_recorded_scoring_metadata.json`.
+
+Reviewed output:
+
+- 3394 scoring snapshots and 3394 alert rows were produced.
+- 581 rows have non-`none` alert severity.
+- Direct severity counts are 334 `info`, 169 `watch`, 78 `high`, and 0
+  `critical`.
+- Context labels include 3 `critical_proximity_candidate`, 8
+  `event_watch_candidate`, 1 `context_alert`, and 9 `no_event_alert`.
+- The validation report status is `pass`.
+- Outputs contain no wallet addresses and no order instructions.
+
+Interpretation:
+
+- The output shape is accepted for a first bounded monitor-v2 recorded scoring
+  baseline.
+- Direct alert severity and event-proximity context remain separate. This is
+  important because daily data can show event-adjacent clusters without
+  proving same-timestamp reaction speed.
+- The absence of direct `critical` rows is not a defect. It reflects the
+  stricter same-timestamp event requirement.
+- The three `critical_proximity_candidate` rows are descriptive daily-context
+  candidates only. They are not trading signals, profitability evidence,
+  private-information evidence, or causal claims.
+- The eight `event_watch_candidate` rows indicate event-adjacent wallet or
+  concentration clusters without market-move confirmation.
+
+Limitations:
+
+- The output is daily replay, not live or intraday monitoring.
+- Wallet metrics use aggregate observed BUY-side tier activity.
+- Event candidates are the seven curated US-election seed events only.
+- Spread, depth, and true real-time order-book dynamics are not represented in
+  this recorded baseline.
+
+Next implementation step:
+
+- Create a compact bounded monitor-v2 result summary from the accepted scoring
+  outputs before any future LLM, MCP, agent, or live collector reads monitor
+  information.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

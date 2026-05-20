@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-recorded-scoring-review-001
-title: Review monitor v2 recorded scoring outputs
+goal_id: goal-monitor-v2-bounded-summary-output-001
+title: Generate bounded monitor v2 result summaries
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -33,22 +33,25 @@ why:
   validated-input scoring runner.
 - The validated-input scoring runner now exists and produces bounded recorded
   scoring outputs.
-- The next safe step is to review the recorded scoring output shape and
-  interpretation before any live API, WebSocket, agent, MCP, strategy
-  backtest, or trading path is added.
+- Recorded scoring outputs are reviewed and accepted as bounded daily replay
+  monitor outputs.
+- A thesis-facing figure now summarises direct alert severities and
+  event-context labels.
+- The next safe step is to create compact monitor-v2 result summaries before
+  any future LLM, MCP, agent, live collector, strategy backtest, or trading
+  path reads monitor information.
 deliverables:
-- Review `data/results/monitor_v2_recorded_scoring_snapshots.csv`.
-- Review `data/results/monitor_v2_recorded_alert_rows.csv`.
-- Review `data/results/monitor_v2_recorded_alert_summary.csv`.
-- Review `data/results/monitor_v2_recorded_context_rows.csv`.
-- Review `data/results/monitor_v2_recorded_scoring_validation_report.json`.
-- Review `data/results/monitor_v2_recorded_scoring_metadata.json`.
-- Decide whether the recorded scoring output shape is accepted as a bounded
-  monitor output.
-- Interpret the alert counts and context labels with daily-data limitations.
+- Create compact summary outputs from accepted monitor v2 recorded scoring
+  artifacts.
+- Include direct severity counts, event-context label counts, strongest metric
+  families, allowed interpretation, limitations, and source artifact paths.
+- Ensure summary outputs contain no wallet addresses, order instructions,
+  live-trading wording, causal claims, insider claims, or profitability claims.
+- Keep full row-level monitor outputs file-based and separate from bounded
+  summaries.
 scope:
-- Documentation and output review only.
-- Existing recorded monitor v2 scoring artifacts only.
+- Deterministic summary generation from existing recorded monitor v2 scoring
+  artifacts only.
 - Existing curated US-election event seed only.
 - No new live data and no new event curation.
 out_of_scope:
@@ -62,11 +65,12 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Recorded scoring output shape and validation report are reviewed.
-- The review records whether the output shape is accepted or what must change.
-- The interpretation separates direct alert severities from proximity context
-  labels.
-- Daily-data and BUY-side observed activity limitations are documented.
+- Compact monitor-v2 summary artifacts are generated deterministically.
+- Summary artifacts cite their source files and preserve daily-data and
+  BUY-side observed activity limitations.
+- Summary outputs remain aggregate-only and contain no wallet addresses or
+  order instructions.
+- Focused tests and the full project test suite pass.
 - No new live data, external API, WebSocket, database write, agent, MCP, ML, or
   order execution path is activated.
 - Outputs remain aggregate-only and contain no wallet addresses or order
@@ -76,7 +80,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: review monitor v2 recorded scoring outputs
+next_commit: feat: summarize monitor v2 recorded scoring outputs
 
 ## Decision Inputs For This Goal
 
@@ -114,6 +118,9 @@ next_commit: docs: review monitor v2 recorded scoring outputs
   a validated-input scoring runner.
 - Monitor v2 recorded scoring outputs exist under `data/results/` and are
   documented in `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+- Monitor v2 recorded scoring output review exists in
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`, with a thesis-facing figure
+  in `data/results/thesis_monitor_v2_recorded_scoring.png`.
 - Literature intake structure exists in `docs/research/LITERATURE_MAP.md` and
   `data/literature/literature_index.csv`.
 - ML scope and re-entry conditions are explicit in
@@ -122,10 +129,10 @@ next_commit: docs: review monitor v2 recorded scoring outputs
 
 ## Done Means
 
-- Recorded monitor v2 scoring outputs are reviewed or a precise blocker is
-  recorded.
-- The monitor has an accepted validated-input scoring boundary before live
-  collection is added.
+- Compact monitor-v2 result summaries exist and are reviewed or a precise
+  blocker is recorded.
+- The monitor has a bounded summary boundary before live collection, MCP, or
+  agent interpretation is added.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, or profit-guarantee work.
 
@@ -220,3 +227,5 @@ next_commit: docs: review monitor v2 recorded scoring outputs
 - Monitor v2 validated-input scoring runner exists and emits recorded scoring
   snapshots, alert rows, summaries, context rows, validation report, and
   metadata.
+- Monitor v2 recorded scoring outputs are reviewed and visualised in
+  `data/results/thesis_monitor_v2_recorded_scoring.png`.

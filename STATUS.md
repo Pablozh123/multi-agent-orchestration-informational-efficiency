@@ -3,19 +3,19 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-20 17:48
+Generated: 2026-05-20 17:55
 
-Current goal: `goal-monitor-v2-recorded-input-validation-001` - Validate recorded monitor v2 input files
+Current goal: `goal-monitor-v2-recorded-input-adapter-001` - Build recorded monitor v2 input adapters
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `197 passed in 6.61s`
+Pytest summary: `205 passed in 6.02s`
 
 Git branch: `main`
 
-Latest commit: `cce67ce`
+Latest commit: `505a46a`
 
 Git status:
 
@@ -23,32 +23,21 @@ Git status:
  M GOAL.md
  M ROADMAP.md
  M STATUS.md
- M data/results/monitor_v2_event_proximity_sensitivity_metadata.json
- M data/results/monitor_v2_historical_replay_metadata.json
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
- M docs/research/WHALE_METHOD.md
- M operations/analysis/monitor_v2_event_proximity_sensitivity.py
- M operations/analysis/monitor_v2_historical_replay.py
- M tests/test_monitor_v2_historical_replay.py
-?? data/results/monitor_v2_historical_replay_context_rows.csv
+?? operations/analysis/monitor_v2_input_validation.py
+?? tests/test_monitor_v2_input_validation.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                            | 48 +++++++++++---------
- ROADMAP.md                                         | 12 ++---
- STATUS.md                                          | 40 ++++++++++-------
- ...or_v2_event_proximity_sensitivity_metadata.json |  2 +-
- .../monitor_v2_historical_replay_metadata.json     | 27 ++++++++++-
- docs/project/WORK_LOG.md                           | 52 ++++++++++++++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md       | 39 ++++++++++++++++
- docs/research/WHALE_METHOD.md                      | 10 +++++
- .../monitor_v2_event_proximity_sensitivity.py      |  5 ++-
- .../analysis/monitor_v2_historical_replay.py       | 29 ++++++++++++
- tests/test_monitor_v2_historical_replay.py         | 10 +++++
- 11 files changed, 226 insertions(+), 48 deletions(-)
+ GOAL.md                                      | 41 ++++++++++++++-----------
+ ROADMAP.md                                   | 12 +++++---
+ STATUS.md                                    | 37 ++++++++--------------
+ docs/project/WORK_LOG.md                     | 42 +++++++++++++++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 46 ++++++++++++++++++++++++++++
+ 5 files changed, 131 insertions(+), 47 deletions(-)
 ```
 
 Blockers:
@@ -57,7 +46,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: validate monitor v2 recorded inputs
+- feat: build monitor v2 recorded input adapters
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

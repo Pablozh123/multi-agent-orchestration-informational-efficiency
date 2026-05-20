@@ -819,6 +819,52 @@ Next implementation step:
 - Build deterministic validation for recorded monitor v2 input files before
   any live API or WebSocket collector is added.
 
+### Recorded Input Validation
+
+Validation date: 2026-05-20
+
+Validation status: complete for the first recorded-input contract.
+
+Implemented validation module:
+
+- `operations/analysis/monitor_v2_input_validation.py`
+
+Implemented test module:
+
+- `tests/test_monitor_v2_input_validation.py`
+
+Validated file contracts:
+
+- `MarketWatchItem`
+- `MarketSnapshot`
+- `WalletTierSnapshot`
+- `EventCandidate`
+
+Validation rules:
+
+- Critical columns must exist.
+- Timestamps must parse as datetimes.
+- Market probabilities, midpoints, best bid, and best ask must be between 0
+  and 1 when present.
+- Best bid must not exceed best ask.
+- Market snapshots require at least `price` or `midpoint`.
+- Wallet-tier snapshots require non-negative counts and amounts.
+- Wallet-tier snapshots must not contain `wallet_address`.
+- Accepted or mapped event candidates require source URLs and related market
+  ids.
+
+Boundary:
+
+- The validators read recorded CSV files only.
+- They do not connect to Polymarket APIs, WebSockets, databases, LLMs, agents,
+  MCP tools, ML systems, or order-execution paths.
+
+Next implementation step:
+
+- Build recorded monitor v2 input adapters from existing historical artifacts
+  so the validator can run on replay-derived watchlist, market snapshot,
+  wallet-tier snapshot, and event-candidate files before live collection.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

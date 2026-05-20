@@ -1559,3 +1559,45 @@ Decision:
 Next step:
 
 - Validate recorded monitor v2 input files before adding any live collector.
+
+## 2026-05-20 - goal-monitor-v2-recorded-input-validation-001
+
+Task:
+
+- Add deterministic validators for recorded monitor v2 input files.
+
+Files changed:
+
+- `operations/analysis/monitor_v2_input_validation.py`
+- `tests/test_monitor_v2_input_validation.py`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_v2_input_validation.py -q`
+  -> 8 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 205 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  205 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check` -> PASS,
+  205 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan` -> grouped
+  project-control docs, research docs, deterministic analysis, and tests; mixed
+  changes accepted as one coherent validation-boundary commit.
+
+Decision:
+
+- Validate four recorded input contracts before live collection:
+  watchlist, market snapshots, wallet-tier snapshots, and event candidates.
+- Keep validation file-based and deterministic.
+- Reject wallet addresses in wallet-tier snapshots.
+- Require source URLs and related market ids before an event candidate can be
+  treated as accepted or market-mapped.
+
+Next step:
+
+- Build recorded monitor v2 input adapters from existing historical artifacts
+  and validate the generated files.

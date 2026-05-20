@@ -65,6 +65,7 @@ def test_generate_monitor_v2_historical_replay_writes_outputs(tmp_path: Path) ->
     snapshots_path = tmp_path / "snapshots.csv"
     rows_path = tmp_path / "rows.csv"
     summary_path = tmp_path / "summary.csv"
+    context_rows_path = tmp_path / "context_rows.csv"
     metadata_path = tmp_path / "metadata.json"
     _write_price_db(db_path, _toy_prices())
     _write_event_seed(events_path)
@@ -77,6 +78,7 @@ def test_generate_monitor_v2_historical_replay_writes_outputs(tmp_path: Path) ->
         snapshots_path=snapshots_path,
         rows_path=rows_path,
         summary_path=summary_path,
+        context_rows_path=context_rows_path,
         metadata_path=metadata_path,
         baseline_observations=5,
         min_baseline_observations=5,
@@ -86,17 +88,25 @@ def test_generate_monitor_v2_historical_replay_writes_outputs(tmp_path: Path) ->
     snapshots = pd.read_csv(snapshots_path)
     rows = pd.read_csv(rows_path)
     summary = pd.read_csv(summary_path)
+    context_rows = pd.read_csv(context_rows_path)
     metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
     assert result.snapshot_count == len(snapshots)
     assert result.alert_row_count == len(rows)
     assert result.summary_row_count == len(summary)
+    assert result.context_row_count == len(context_rows)
     assert metadata["method"]["alert_rule"] == "Rule C combined-family confirmation from monitor_v2_snapshot"
     assert metadata["outputs"]["contains_wallet_addresses"] is False
     assert metadata["outputs"]["contains_order_instructions"] is False
+    assert metadata["outputs"]["event_context_window"] == "[-1d,+1d]"
+    assert metadata["outputs"]["event_watch_label"] == (
+        "separate_descriptive_label_not_severity_upgrade"
+    )
     assert metadata["limitations"]["no_live_websocket_or_api_collection"] is True
     assert "wallet_address" not in snapshots.columns
     assert "wallet_address" not in rows.columns
     assert "wallet_address" not in summary.columns
+    assert "wallet_address" not in context_rows.columns
+    assert "critical_proximity_candidate" in set(context_rows["suggested_context_label"])
 
 
 def test_missing_event_columns_fail_clearly() -> None:

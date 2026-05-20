@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-proximity-alert-labels-001
-title: Integrate monitor v2 proximity alert labels
+goal_id: goal-monitor-v2-recorded-input-validation-001
+title: Validate recorded monitor v2 input files
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -24,18 +24,18 @@ why:
   event-adjacent market plus wallet clusters that same-day matching misses.
 - `event_watch` is selected as a separate descriptive label for
   event-proximity wallet clusters without market-move confirmation.
-- The next safe step is to integrate the selected proximity labels into the
-  historical replay output contract before any live collector.
+- The selected proximity labels are integrated into the historical replay
+  output contract through a context sidecar file.
+- The next safe step toward a running monitor is deterministic validation of
+  recorded input files before any live collector.
 deliverables:
-- Add deterministic proximity-aware replay labels using existing replay
-  artifacts.
-- Preserve the strict `critical` definition.
-- Add `event_watch` as a separate descriptive label or sidecar field for
-  reviewed event-proximity wallet clusters without market-move confirmation.
-- Regenerate reviewed replay outputs or a clearly named sidecar output with the
-  selected labels.
+- Define small recorded-input schemas or validators for monitor v2 watchlist,
+  market snapshots, wallet-tier snapshots, and event candidates.
+- Add tests for valid and invalid recorded inputs.
+- Keep validation file-based and deterministic.
+- Do not connect to Polymarket APIs or WebSockets yet.
 scope:
-- Deterministic label integration on existing historical replay artifacts.
+- Deterministic validation for recorded monitor v2 input files.
 - Existing curated US-election event seed only.
 - File-based outputs or tests only.
 - No new live data and no new event curation.
@@ -50,11 +50,11 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Proximity-aware output clearly distinguishes `critical` from `event_watch`.
-- `critical` still requires market movement plus wallet or concentration
-  anomaly plus reviewed event context.
-- `event_watch` does not become a trading, causality, misconduct, or
-  profitability claim.
+- Recorded input validation rejects missing critical fields clearly.
+- Valid recorded input examples pass validation.
+- Invalid recorded inputs fail without external API calls.
+- Validators prevent wallet addresses in monitor-facing summaries where
+  applicable.
 - Outputs remain aggregate-only and contain no wallet addresses or order
   instructions.
 - No live collector, agent, MCP, ML, live-trading, or order-execution path is
@@ -62,7 +62,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: integrate monitor v2 event-proximity labels
+next_commit: feat: validate monitor v2 recorded inputs
 
 ## Decision Inputs For This Goal
 
@@ -93,6 +93,8 @@ next_commit: feat: integrate monitor v2 event-proximity labels
   `docs/research/WHALE_METHOD.md`.
 - Monitor v2 event-proximity sensitivity outputs exist under `data/results/`
   and are documented in `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+- Monitor v2 historical replay context labels exist in
+  `data/results/monitor_v2_historical_replay_context_rows.csv`.
 - Literature intake structure exists in `docs/research/LITERATURE_MAP.md` and
   `data/literature/literature_index.csv`.
 - ML scope and re-entry conditions are explicit in
@@ -101,10 +103,9 @@ next_commit: feat: integrate monitor v2 event-proximity labels
 
 ## Done Means
 
-- Proximity-aware replay labels are implemented or a precise blocker is
-  recorded.
-- The daily replay has labelled `critical` and `event_watch` contexts before
-  live collection is added.
+- Recorded monitor v2 inputs are validated or a precise blocker is recorded.
+- The monitor has a tested file-based input boundary before live collection is
+  added.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, or profit-guarantee work.
 
@@ -187,3 +188,6 @@ next_commit: feat: integrate monitor v2 event-proximity labels
   same-day event-context behaviour.
 - Monitor v2 event-proximity sensitivity exists and selects `[-1d, +1d]` daily
   event context plus separate descriptive `event_watch` labels.
+- Monitor v2 historical replay context labels are integrated as a sidecar
+  output that keeps `critical_proximity_candidate` separate from
+  `event_watch_candidate`.

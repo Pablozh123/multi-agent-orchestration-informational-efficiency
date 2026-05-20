@@ -3,19 +3,19 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-20 17:43
+Generated: 2026-05-20 17:48
 
-Current goal: `goal-monitor-v2-proximity-alert-labels-001` - Integrate monitor v2 proximity alert labels
+Current goal: `goal-monitor-v2-recorded-input-validation-001` - Validate recorded monitor v2 input files
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `197 passed in 6.20s`
+Pytest summary: `197 passed in 6.61s`
 
 Git branch: `main`
 
-Latest commit: `92c5065`
+Latest commit: `cce67ce`
 
 Git status:
 
@@ -23,26 +23,32 @@ Git status:
  M GOAL.md
  M ROADMAP.md
  M STATUS.md
+ M data/results/monitor_v2_event_proximity_sensitivity_metadata.json
+ M data/results/monitor_v2_historical_replay_metadata.json
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
  M docs/research/WHALE_METHOD.md
-?? data/results/monitor_v2_event_proximity_sensitivity_metadata.json
-?? data/results/monitor_v2_event_proximity_sensitivity_rows.csv
-?? data/results/monitor_v2_event_proximity_sensitivity_summary.csv
-?? operations/analysis/monitor_v2_event_proximity_sensitivity.py
-?? tests/test_monitor_v2_event_proximity_sensitivity.py
+ M operations/analysis/monitor_v2_event_proximity_sensitivity.py
+ M operations/analysis/monitor_v2_historical_replay.py
+ M tests/test_monitor_v2_historical_replay.py
+?? data/results/monitor_v2_historical_replay_context_rows.csv
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      | 52 +++++++++++++++------------
- ROADMAP.md                                   | 14 +++++---
- STATUS.md                                    | 29 ++++++++-------
- docs/project/WORK_LOG.md                     | 49 +++++++++++++++++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 54 ++++++++++++++++++++++++++++
- docs/research/WHALE_METHOD.md                | 24 +++++++++++++
- 6 files changed, 184 insertions(+), 38 deletions(-)
+ GOAL.md                                            | 48 +++++++++++---------
+ ROADMAP.md                                         | 12 ++---
+ STATUS.md                                          | 40 ++++++++++-------
+ ...or_v2_event_proximity_sensitivity_metadata.json |  2 +-
+ .../monitor_v2_historical_replay_metadata.json     | 27 ++++++++++-
+ docs/project/WORK_LOG.md                           | 52 ++++++++++++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md       | 39 ++++++++++++++++
+ docs/research/WHALE_METHOD.md                      | 10 +++++
+ .../monitor_v2_event_proximity_sensitivity.py      |  5 ++-
+ .../analysis/monitor_v2_historical_replay.py       | 29 ++++++++++++
+ tests/test_monitor_v2_historical_replay.py         | 10 +++++
+ 11 files changed, 226 insertions(+), 48 deletions(-)
 ```
 
 Blockers:
@@ -51,7 +57,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: integrate monitor v2 event-proximity labels
+- feat: validate monitor v2 recorded inputs
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

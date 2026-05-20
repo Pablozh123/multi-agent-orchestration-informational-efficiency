@@ -17,7 +17,6 @@ from typing import Any, Sequence
 
 import pandas as pd
 
-from operations.analysis.monitor_v2_historical_replay import ALERT_ROWS_OUTPUT
 from operations.analysis.monitor_v2_snapshot import (
     ALERT_ROW_COLUMNS,
     SEVERITY_RANK,
@@ -27,6 +26,7 @@ from operations.analysis.monitor_v2_snapshot import (
 from operations.analysis.run_h2_event_windows import RESULTS_DIR, SEED_PATH, load_curated_events
 
 
+ALERT_ROWS_OUTPUT = RESULTS_DIR / "monitor_v2_historical_replay_alert_rows.csv"
 ROWS_OUTPUT = RESULTS_DIR / "monitor_v2_event_proximity_sensitivity_rows.csv"
 SUMMARY_OUTPUT = RESULTS_DIR / "monitor_v2_event_proximity_sensitivity_summary.csv"
 METADATA_OUTPUT = RESULTS_DIR / "monitor_v2_event_proximity_sensitivity_metadata.json"
@@ -189,7 +189,8 @@ def build_event_proximity_sensitivity(
         how="left",
     )
     merged = merged.drop(columns=["alert_date"])
-    if merged.loc[:, list(ALERT_ROW_COLUMNS)].isna().all(axis=None):
+    merged = merged[merged["market_id"].notna()].copy()
+    if merged.empty:
         raise ValueError("No replay alert rows overlap the event-proximity windows")
 
     summary = summarize_event_proximity(merged)

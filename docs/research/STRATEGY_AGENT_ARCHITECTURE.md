@@ -780,6 +780,45 @@ Interpretation:
 - The result supports a proximity-aware monitor output for daily replay, but it
   does not support intraday reaction-speed claims.
 
+### Proximity Label Integration
+
+Integration date: 2026-05-20
+
+Integration status: complete for the historical daily replay contract.
+
+Updated replay module:
+
+- `operations/analysis/monitor_v2_historical_replay.py`
+
+New replay sidecar output:
+
+- `data/results/monitor_v2_historical_replay_context_rows.csv`
+
+Updated metadata output:
+
+- `data/results/monitor_v2_historical_replay_metadata.json`
+
+Context label counts:
+
+- `critical_proximity_candidate`: 6.
+- `event_watch_candidate`: 6.
+- `context_alert`: 1.
+- `no_event_alert`: 8.
+
+Decision:
+
+- Keep row-level replay alert severities unchanged.
+- Use the context sidecar to separate `critical_proximity_candidate` from
+  `event_watch_candidate`.
+- Treat `event_watch_candidate` as descriptive event context only. It is not a
+  trading signal, not an order instruction, not evidence of causality, and not
+  a private-information or misconduct claim.
+
+Next implementation step:
+
+- Build deterministic validation for recorded monitor v2 input files before
+  any live API or WebSocket collector is added.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

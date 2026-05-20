@@ -1507,3 +1507,55 @@ Decision:
 Next step:
 
 - Integrate proximity-aware labels into the historical replay output contract.
+
+## 2026-05-20 - goal-monitor-v2-proximity-alert-labels-001
+
+Task:
+
+- Integrate selected event-proximity labels into the monitor v2 historical
+  replay output contract.
+
+Files changed:
+
+- `operations/analysis/monitor_v2_historical_replay.py`
+- `operations/analysis/monitor_v2_event_proximity_sensitivity.py`
+- `tests/test_monitor_v2_historical_replay.py`
+- `data/results/monitor_v2_historical_replay_context_rows.csv`
+- `data/results/monitor_v2_historical_replay_metadata.json`
+- `data/results/monitor_v2_event_proximity_sensitivity_rows.csv`
+- `data/results/monitor_v2_event_proximity_sensitivity_summary.csv`
+- `data/results/monitor_v2_event_proximity_sensitivity_metadata.json`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_v2_historical_replay.py tests/test_monitor_v2_event_proximity_sensitivity.py -q`
+  -> 10 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_historical_replay`
+  -> 3040 snapshots, 3040 alert rows, 512 non-`none` alerts, 10 alert summary
+  rows, and 21 context rows.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_event_proximity_sensitivity`
+  -> 210 rows, 21 summary rows.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 197 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  197 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check` -> PASS,
+  197 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan` -> grouped
+  project-control docs, data files, research docs, deterministic analysis, and
+  tests; mixed changes accepted as one coherent replay-contract commit.
+
+Decision:
+
+- Keep the original replay alert severities unchanged.
+- Add `monitor_v2_historical_replay_context_rows.csv` as the sidecar for
+  proximity-aware context labels.
+- Keep `critical_proximity_candidate` and `event_watch_candidate` separate.
+
+Next step:
+
+- Validate recorded monitor v2 input files before adding any live collector.

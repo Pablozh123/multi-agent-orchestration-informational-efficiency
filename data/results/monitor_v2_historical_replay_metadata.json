@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-20T15:13:48+00:00",
+  "generated_at_utc": "2026-05-20T15:45:33+00:00",
   "inputs": {
     "activity_path": "data\\results\\h3_tiered_wallet_activity_daily.csv",
     "activity_row_count": 1236,
@@ -60,6 +60,31 @@
     "alert_row_count": 3040,
     "contains_order_instructions": false,
     "contains_wallet_addresses": false,
+    "context_label_counts": {
+      "context_alert": 1,
+      "critical_proximity_candidate": 6,
+      "event_watch_candidate": 6,
+      "no_event_alert": 8
+    },
+    "context_row_columns": [
+      "event_id",
+      "event_date",
+      "proximity_date",
+      "relative_day",
+      "market_id",
+      "max_existing_severity",
+      "watch_or_high_rows",
+      "high_rows",
+      "market_watch_at_timestamp",
+      "wallet_or_concentration_watch_at_timestamp",
+      "same_day_critical_candidate",
+      "proximity_critical_candidate",
+      "event_watch_candidate",
+      "suggested_context_label"
+    ],
+    "context_row_count": 21,
+    "event_context_window": "[-1d,+1d]",
+    "event_watch_label": "separate_descriptive_label_not_severity_upgrade",
     "severity_counts": {
       "high": 77,
       "info": 262,

@@ -21,6 +21,10 @@ import pandas as pd
 
 from operations.analysis.event_study import compute_daily_price_changes
 from operations.analysis.h3_lead_time_histograms import load_tiered_activity
+from operations.analysis.monitor_v2_event_proximity_sensitivity import (
+    SENSITIVITY_SUMMARY_COLUMNS,
+    build_event_proximity_sensitivity,
+)
 from operations.analysis.monitor_v2_snapshot import (
     ALERT_ROW_COLUMNS,
     ALERT_SUMMARY_COLUMNS,
@@ -45,6 +49,7 @@ REPLAY_MARKET_ID = "polymarket_2024_us_presidential_replay"
 SNAPSHOTS_OUTPUT = RESULTS_DIR / "monitor_v2_historical_replay_snapshots.csv"
 ALERT_ROWS_OUTPUT = RESULTS_DIR / "monitor_v2_historical_replay_alert_rows.csv"
 ALERT_SUMMARY_OUTPUT = RESULTS_DIR / "monitor_v2_historical_replay_alert_summary.csv"
+CONTEXT_ROWS_OUTPUT = RESULTS_DIR / "monitor_v2_historical_replay_context_rows.csv"
 METADATA_OUTPUT = RESULTS_DIR / "monitor_v2_historical_replay_metadata.json"
 
 EVENT_COLUMNS: tuple[str, ...] = (
@@ -63,11 +68,13 @@ class MonitorV2HistoricalReplayResult:
     snapshots_path: Path
     rows_path: Path
     summary_path: Path
+    context_rows_path: Path
     metadata_path: Path
     snapshot_count: int
     alert_row_count: int
     alert_count: int
     summary_row_count: int
+    context_row_count: int
 
     def to_dict(self) -> dict[str, int | str]:
         """Return a JSON-friendly result summary."""
@@ -76,11 +83,13 @@ class MonitorV2HistoricalReplayResult:
             "snapshots_path": str(self.snapshots_path),
             "rows_path": str(self.rows_path),
             "summary_path": str(self.summary_path),
+            "context_rows_path": str(self.context_rows_path),
             "metadata_path": str(self.metadata_path),
             "snapshot_count": self.snapshot_count,
             "alert_row_count": self.alert_row_count,
             "alert_count": self.alert_count,
             "summary_row_count": self.summary_row_count,
+            "context_row_count": self.context_row_count,
         }
 
 
@@ -180,6 +189,7 @@ def generate_monitor_v2_historical_replay(
     snapshots_path: Path = SNAPSHOTS_OUTPUT,
     rows_path: Path = ALERT_ROWS_OUTPUT,
     summary_path: Path = ALERT_SUMMARY_OUTPUT,
+    context_rows_path: Path = CONTEXT_ROWS_OUTPUT,
     metadata_path: Path = METADATA_OUTPUT,
     baseline_observations: int = DEFAULT_BASELINE_OBSERVATIONS,
     min_baseline_observations: int = DEFAULT_MIN_BASELINE_OBSERVATIONS,
@@ -207,14 +217,17 @@ def generate_monitor_v2_historical_replay(
         min_baseline_observations=min_baseline_observations,
     )
     alert_summary = summarize_monitor_v2_alerts(alert_rows)
+    _, context_rows = build_event_proximity_sensitivity(alert_rows, events)
 
     snapshots_path.parent.mkdir(parents=True, exist_ok=True)
     rows_path.parent.mkdir(parents=True, exist_ok=True)
     summary_path.parent.mkdir(parents=True, exist_ok=True)
+    context_rows_path.parent.mkdir(parents=True, exist_ok=True)
     metadata_path.parent.mkdir(parents=True, exist_ok=True)
     snapshots.to_csv(snapshots_path, index=False)
     alert_rows.to_csv(rows_path, index=False)
     alert_summary.to_csv(summary_path, index=False)
+    context_rows.to_csv(context_rows_path, index=False)
     metadata_path.write_text(
         json.dumps(
             _build_metadata(
@@ -224,6 +237,7 @@ def generate_monitor_v2_historical_replay(
                 snapshots=snapshots,
                 alert_rows=alert_rows,
                 alert_summary=alert_summary,
+                context_rows=context_rows,
                 db_path=db_path,
                 events_csv_path=events_csv_path,
                 activity_path=activity_path,
@@ -240,11 +254,13 @@ def generate_monitor_v2_historical_replay(
         snapshots_path=snapshots_path,
         rows_path=rows_path,
         summary_path=summary_path,
+        context_rows_path=context_rows_path,
         metadata_path=metadata_path,
         snapshot_count=len(snapshots),
         alert_row_count=len(alert_rows),
         alert_count=int((alert_rows["severity"] != "none").sum()),
         summary_row_count=len(alert_summary),
+        context_row_count=len(context_rows),
     )
 
 
@@ -258,6 +274,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--snapshots-output", type=Path, default=SNAPSHOTS_OUTPUT)
     parser.add_argument("--rows-output", type=Path, default=ALERT_ROWS_OUTPUT)
     parser.add_argument("--summary-output", type=Path, default=ALERT_SUMMARY_OUTPUT)
+    parser.add_argument("--context-rows-output", type=Path, default=CONTEXT_ROWS_OUTPUT)
     parser.add_argument("--metadata-output", type=Path, default=METADATA_OUTPUT)
     parser.add_argument("--baseline-observations", type=int, default=DEFAULT_BASELINE_OBSERVATIONS)
     parser.add_argument("--min-baseline-observations", type=int, default=DEFAULT_MIN_BASELINE_OBSERVATIONS)
@@ -271,6 +288,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             snapshots_path=args.snapshots_output,
             rows_path=args.rows_output,
             summary_path=args.summary_output,
+            context_rows_path=args.context_rows_output,
             metadata_path=args.metadata_output,
             baseline_observations=args.baseline_observations,
             min_baseline_observations=args.min_baseline_observations,
@@ -380,6 +398,7 @@ def _build_metadata(
     snapshots: pd.DataFrame,
     alert_rows: pd.DataFrame,
     alert_summary: pd.DataFrame,
+    context_rows: pd.DataFrame,
     db_path: Path,
     events_csv_path: Path,
     activity_path: Path,
@@ -412,12 +431,17 @@ def _build_metadata(
             "alert_row_count": int(len(alert_rows)),
             "alert_count": int((alert_rows["severity"] != "none").sum()),
             "summary_row_count": int(len(alert_summary)),
+            "context_row_count": int(len(context_rows)),
             "snapshot_columns": list(SNAPSHOT_COLUMNS),
             "alert_row_columns": list(ALERT_ROW_COLUMNS),
             "summary_columns": list(ALERT_SUMMARY_COLUMNS),
+            "context_row_columns": list(SENSITIVITY_SUMMARY_COLUMNS),
             "contains_wallet_addresses": False,
             "contains_order_instructions": False,
             "severity_counts": _severity_counts(alert_rows),
+            "context_label_counts": _context_label_counts(context_rows),
+            "event_context_window": "[-1d,+1d]",
+            "event_watch_label": "separate_descriptive_label_not_severity_upgrade",
         },
         "limitations": {
             "daily_replay_only": True,
@@ -438,6 +462,11 @@ def _build_metadata(
 
 def _severity_counts(alert_rows: pd.DataFrame) -> dict[str, int]:
     counts = alert_rows["severity"].value_counts().sort_index()
+    return {str(key): int(value) for key, value in counts.items()}
+
+
+def _context_label_counts(context_rows: pd.DataFrame) -> dict[str, int]:
+    counts = context_rows["suggested_context_label"].value_counts().sort_index()
     return {str(key): int(value) for key, value in counts.items()}
 
 

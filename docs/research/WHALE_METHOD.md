@@ -495,6 +495,16 @@ Decision:
 - Do not treat `event_watch` as evidence of causality, misconduct,
   profitability, or private information.
 
+Proximity label integration status:
+
+- Historical replay now writes
+  `data/results/monitor_v2_historical_replay_context_rows.csv`.
+- Metadata records context label counts:
+  6 `critical_proximity_candidate`, 6 `event_watch_candidate`, 1
+  `context_alert`, and 8 `no_event_alert` rows.
+- The original replay alert severity rows remain unchanged; the context file is
+  a sidecar for event-proximity interpretation.
+
 ## Event-Centred Wallet Anomaly Monitor
 
 Anomaly-monitor status: complete for the first historical daily output.

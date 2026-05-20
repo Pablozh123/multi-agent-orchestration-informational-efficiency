@@ -2145,3 +2145,42 @@ Next step:
 
 - Review the generated local live input batch output shape before connecting
   the files to deterministic scoring.
+
+## 2026-05-20 - goal-monitor-v2-live-input-batch-review-001
+
+Task:
+
+- Review the local replay-first monitor-v2 live input batch output shape and
+  decide whether it is safe to connect to deterministic scoring.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+
+Decision:
+
+- Accept the generated local live input batch shape for a diagnostic
+  deterministic scoring bridge.
+- The reviewed batch contains 1 mocked watchlist row, 4 closed 15-minute
+  market snapshots, 8 aggregate wallet-tier snapshots, 1 accepted mocked event
+  candidate, and validation status `pass`.
+- The files remain local source artifacts only and are not prompt-facing,
+  MCP-facing, or live-collection outputs.
+- Live API/WebSocket collection, runtime agents, MCP, strategy backtests,
+  order execution, trading credentials, and profitability claims remain
+  blocked.
+
+Next step:
+
+- Build a local monitor-v2 live-input scoring bridge from the validated mocked
+  files.

@@ -485,6 +485,22 @@ Live wallet input batch status:
 - The generated wallet-tier file contains no wallet-address columns and is a
   source artifact only, not a prompt-facing or MCP-facing default.
 
+Live wallet input batch review:
+
+- Review status: accepted for local deterministic scoring bridge.
+- The wallet-tier output shape is sufficient for diagnostic local scoring
+  because it contains aggregate tier rows, closed 15-minute bucket boundaries,
+  UTC collection/source timestamps, non-negative counts and amounts, and
+  concentration fields.
+- The fixture is not evidence about real wallet behaviour because it is mocked
+  and contains only 4 time buckets.
+- Any scoring bridge must label outputs as diagnostic fixture results, keep
+  BUY-only and source-filter limitations visible, and expose no wallet
+  addresses.
+- Live wallet ingestion, raw wallet prompt access, wallet profitability,
+  private-information wording, MCP access, agents, and order execution remain
+  blocked.
+
 Snapshot prototype status:
 
 - A first deterministic snapshot prototype exists in

@@ -1844,6 +1844,57 @@ Next phase selected:
 - Review the local batch output shape before connecting these live-style input
   files to scoring or before drafting any collector implementation.
 
+### Local Live Input Batch Review
+
+Review date: 2026-05-20
+
+Review status: accepted for local deterministic scoring bridge.
+
+Reviewed artifacts:
+
+- `data/results/monitor_v2_live_watchlist.csv`
+- `data/results/monitor_v2_live_market_snapshots.csv`
+- `data/results/monitor_v2_live_wallet_tier_snapshots.csv`
+- `data/results/monitor_v2_live_event_candidates.csv`
+- `data/results/monitor_v2_live_input_validation_report.json`
+- `data/results/monitor_v2_live_inputs_metadata.json`
+
+Accepted output shape:
+
+- 1 mocked politics/geo watchlist row.
+- 4 closed 15-minute market-state snapshot rows.
+- 8 closed 15-minute aggregate wallet-tier snapshot rows.
+- 1 mocked reviewed event-candidate row.
+- Validation report status: `pass`.
+- Metadata confirms mocked local fixture data, no external API calls, no
+  WebSocket connection, no database write, no LLMs, no agents, no MCP, no ML,
+  no order endpoint, and no profitability or private-information claim.
+
+Accepted limitations:
+
+- The generated files are source artifacts for local replay only.
+- The fixture is too small for production-like rolling-baseline alerts.
+- Any scoring bridge built from this fixture must be labelled diagnostic and
+  must not be interpreted as market evidence.
+- Real API field verification, WebSocket streaming, scheduling, credentials,
+  persistence, MCP access, runtime agents, strategy backtesting, and order
+  execution remain blocked.
+
+Decision:
+
+- The output shape is sufficient for a local deterministic scoring bridge.
+- The next implementation may convert closed live-style buckets into bounded
+  scoring snapshots and produce diagnostic alert artifacts.
+- The next implementation must still use local files only, validate inputs
+  before scoring, expose no wallet addresses, and keep raw `monitor_v2_live_*`
+  input files blocked from prompt-facing or MCP-facing access.
+
+Next phase selected:
+
+- Build a local monitor-v2 live-input scoring bridge that reads the validated
+  mocked input files and writes diagnostic scoring outputs without connecting
+  to live sources.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

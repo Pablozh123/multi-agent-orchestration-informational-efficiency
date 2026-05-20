@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import argparse
+import csv
 from dataclasses import dataclass
+import json
 from pathlib import Path
 import re
 import sys
@@ -332,6 +334,197 @@ def _check_strategy_architecture_contract(repo_root: Path) -> CheckResult:
     )
 
 
+def _extract_labelled_block(text: str, label: str, stop_labels: Sequence[str]) -> str:
+    """Return a Markdown block after a label until the next known label."""
+
+    lower_text = text.lower()
+    start = lower_text.find(label.lower())
+    if start == -1:
+        return ""
+    body_start = text.find("\n", start)
+    if body_start == -1:
+        return ""
+
+    stops = [
+        lower_text.find(stop.lower(), body_start + 1)
+        for stop in stop_labels
+        if lower_text.find(stop.lower(), body_start + 1) != -1
+    ]
+    body_end = min(stops) if stops else len(text)
+    return text[body_start:body_end]
+
+
+def _check_monitor_v2_read_only_access_contract(repo_root: Path) -> CheckResult:
+    doc_path = repo_root / "docs" / "research" / "STRATEGY_AGENT_ARCHITECTURE.md"
+    if not doc_path.exists():
+        return CheckResult(
+            "monitor v2 access guardrails",
+            False,
+            "docs/research/STRATEGY_AGENT_ARCHITECTURE.md missing",
+        )
+
+    text = read_text(doc_path)
+    lower_text = text.lower()
+    required_terms = (
+        "read-only monitor v2 summary access contract",
+        "read-only summary access contract review",
+        "default allowed artifacts",
+        "blocked by default",
+        "conditional access",
+        "future audit requirements",
+        "monitor_v2_bounded_summary.csv",
+        "monitor_v2_bounded_summary_metadata.json",
+        "raw row-level alert dumps",
+        "scoring snapshots",
+        "direct reads from `data/thesis.db`",
+        "wallet-address fields",
+        "unrestricted sql",
+        "at most 50 rows",
+        "llm_audit_log",
+        "implementation deferred",
+    )
+    missing_terms = [term for term in required_terms if term not in lower_text]
+    if missing_terms:
+        return CheckResult(
+            "monitor v2 access guardrails",
+            False,
+            "missing access-contract terms: " + ", ".join(missing_terms),
+        )
+
+    default_block = _extract_labelled_block(
+        text,
+        "Default allowed artifacts:",
+        ("Allowed by default:", "Blocked by default:", "Conditional access:"),
+    ).lower()
+    blocked_default_terms = (
+        "monitor_v2_alert_rows.csv",
+        "monitor_v2_historical_replay_alert_rows.csv",
+        "monitor_v2_historical_replay_snapshots.csv",
+        "monitor_v2_recorded_alert_rows.csv",
+        "monitor_v2_recorded_scoring_snapshots.csv",
+        "monitor_v2_recorded_watchlist.csv",
+        "monitor_v2_recorded_market_snapshots.csv",
+        "monitor_v2_recorded_wallet_tier_snapshots.csv",
+        "monitor_v2_recorded_event_candidates.csv",
+        "data/thesis.db",
+    )
+    exposed_raw_terms = [term for term in blocked_default_terms if term in default_block]
+    if exposed_raw_terms:
+        return CheckResult(
+            "monitor v2 access guardrails",
+            False,
+            "raw or database artifacts appear in default allowed block: "
+            + ", ".join(exposed_raw_terms),
+        )
+
+    allowed_artifacts = (
+        repo_root / "data" / "results" / "monitor_v2_bounded_summary.csv",
+        repo_root / "data" / "results" / "monitor_v2_bounded_summary_metadata.json",
+        repo_root / "data" / "results" / "thesis_monitor_v2_recorded_scoring.png",
+        repo_root / "data" / "results" / "thesis_figures_metadata.json",
+    )
+    missing_artifacts = [
+        str(path.relative_to(repo_root))
+        for path in allowed_artifacts
+        if not path.exists()
+    ]
+    if missing_artifacts:
+        return CheckResult(
+            "monitor v2 access guardrails",
+            False,
+            "missing bounded summary artifacts: " + ", ".join(missing_artifacts),
+        )
+
+    summary_path = allowed_artifacts[0]
+    try:
+        with summary_path.open(newline="", encoding="utf-8") as handle:
+            reader = csv.DictReader(handle)
+            rows = list(reader)
+    except csv.Error as exc:
+        return CheckResult(
+            "monitor v2 access guardrails",
+            False,
+            f"bounded summary CSV is invalid: {exc}",
+        )
+
+    fieldnames = set(reader.fieldnames or [])
+    required_columns = {
+        "summary_id",
+        "summary_type",
+        "source_artifact",
+        "allowed_interpretation",
+        "limitation",
+        "claim_scope",
+    }
+    missing_columns = sorted(required_columns - fieldnames)
+    if missing_columns:
+        return CheckResult(
+            "monitor v2 access guardrails",
+            False,
+            "bounded summary missing columns: " + ", ".join(missing_columns),
+        )
+    if len(rows) > 50:
+        return CheckResult(
+            "monitor v2 access guardrails",
+            False,
+            f"bounded summary has {len(rows)} rows; default prompt surface max is 50",
+        )
+    if any(column.lower() == "wallet_address" for column in fieldnames):
+        return CheckResult(
+            "monitor v2 access guardrails",
+            False,
+            "bounded summary exposes wallet_address column",
+        )
+    wallet_pattern = re.compile(r"\b0x[a-f0-9]{6,}", re.IGNORECASE)
+    if any(
+        wallet_pattern.search(str(value))
+        for row in rows
+        for value in row.values()
+        if value is not None
+    ):
+        return CheckResult(
+            "monitor v2 access guardrails",
+            False,
+            "bounded summary appears to expose wallet-address-like values",
+        )
+
+    metadata_path = allowed_artifacts[1]
+    try:
+        metadata = json.loads(read_text(metadata_path))
+    except json.JSONDecodeError as exc:
+        return CheckResult(
+            "monitor v2 access guardrails",
+            False,
+            f"bounded summary metadata is invalid JSON: {exc}",
+        )
+    outputs = metadata.get("outputs", {})
+    if outputs.get("contains_wallet_addresses") is not False:
+        return CheckResult(
+            "monitor v2 access guardrails",
+            False,
+            "metadata must declare contains_wallet_addresses=false",
+        )
+    if outputs.get("contains_order_instructions") is not False:
+        return CheckResult(
+            "monitor v2 access guardrails",
+            False,
+            "metadata must declare contains_order_instructions=false",
+        )
+    summary_rows = outputs.get("summary_rows")
+    if isinstance(summary_rows, int) and summary_rows != len(rows):
+        return CheckResult(
+            "monitor v2 access guardrails",
+            False,
+            f"metadata summary_rows={summary_rows} does not match CSV rows={len(rows)}",
+        )
+
+    return CheckResult(
+        "monitor v2 access guardrails",
+        True,
+        f"bounded summary access is enforced for {len(rows)} rows",
+    )
+
+
 def _check_no_live_trading_implementation(repo_root: Path) -> CheckResult:
     patterns = (
         "live_trading",
@@ -409,6 +602,7 @@ def run_checks(repo_root: Path, skip_pytest: str | None = None) -> list[CheckRes
         _check_ml_scope_guard,
         _check_runtime_agent_guards,
         _check_strategy_architecture_contract,
+        _check_monitor_v2_read_only_access_contract,
         _check_no_live_trading_implementation,
         _check_active_prompt_metric_scope,
     ]

@@ -44,6 +44,7 @@ def _write_minimal_project(root: Path) -> None:
     (root / "operations" / "agents").mkdir(parents=True)
     (root / "operations" / "mcp").mkdir(parents=True)
     (root / "docs" / "research").mkdir(parents=True)
+    (root / "data" / "results").mkdir(parents=True)
     (root / "operations" / "analysis" / "safe.py").write_text(
         "include_rcp: bool = False\nrcp_transformation_documented = False\n",
         encoding="utf-8",
@@ -83,7 +84,52 @@ def _write_minimal_project(root: Path) -> None:
         "# STRATEGY_AGENT_ARCHITECTURE.md\n\n"
         "Signal generator contracts use SignalSpec, BacktestConfig, and "
         "BacktestResult. Calls are logged in llm_audit_log. No raw table dumps, "
-        "autonomous trading, or live trading.\n",
+        "autonomous trading, or live trading.\n\n"
+        "### Read-Only Monitor V2 Summary Access Contract\n\n"
+        "Contract status: specified, implementation deferred.\n\n"
+        "Default allowed artifacts:\n\n"
+        "- `data/results/monitor_v2_bounded_summary.csv`\n"
+        "- `data/results/monitor_v2_bounded_summary_metadata.json`\n"
+        "- `data/results/thesis_monitor_v2_recorded_scoring.png`\n"
+        "- `data/results/thesis_figures_metadata.json`\n\n"
+        "Allowed by default:\n\n"
+        "- Read the bounded summary only.\n\n"
+        "Blocked by default:\n\n"
+        "- Raw row-level alert dumps.\n"
+        "- Scoring snapshots.\n"
+        "- Direct reads from `data/thesis.db`.\n"
+        "- Wallet-address fields.\n"
+        "- Unrestricted SQL.\n\n"
+        "Conditional access:\n\n"
+        "- Source rows require explicit reason and at most 50 rows.\n\n"
+        "Future audit requirements:\n\n"
+        "- Future LLM access is logged in llm_audit_log.\n\n"
+        "### Read-Only Summary Access Contract Review\n\n"
+        "Review status: accepted.\n",
+        encoding="utf-8",
+    )
+    (root / "data" / "results" / "monitor_v2_bounded_summary.csv").write_text(
+        "summary_id,summary_type,label,metric,value,source_artifact,"
+        "allowed_interpretation,limitation,claim_scope\n"
+        "row_1,coverage,test,row_count,1,data/results/source.csv,"
+        "Bounded summary row.,No live collection.,bounded_monitor_summary_only\n",
+        encoding="utf-8",
+    )
+    (root / "data" / "results" / "monitor_v2_bounded_summary_metadata.json").write_text(
+        "{\n"
+        '  "outputs": {\n'
+        '    "contains_wallet_addresses": false,\n'
+        '    "contains_order_instructions": false,\n'
+        '    "summary_rows": 1\n'
+        "  }\n"
+        "}\n",
+        encoding="utf-8",
+    )
+    (root / "data" / "results" / "thesis_monitor_v2_recorded_scoring.png").write_bytes(
+        b"png-placeholder"
+    )
+    (root / "data" / "results" / "thesis_figures_metadata.json").write_text(
+        "{}\n",
         encoding="utf-8",
     )
     (root / "GOAL.md").write_text(GOAL_TEXT, encoding="utf-8")
@@ -257,6 +303,51 @@ def test_review_check_fails_for_active_prompt_without_metric_scope(tmp_path: Pat
     results = run_checks(tmp_path, skip_pytest="unit test")
 
     assert any(result.name == "active prompt metric scope" and not result.passed for result in results)
+
+
+def test_review_check_fails_without_monitor_v2_bounded_summary(tmp_path: Path) -> None:
+    _write_minimal_project(tmp_path)
+    (tmp_path / "data" / "results" / "monitor_v2_bounded_summary.csv").unlink()
+
+    results = run_checks(tmp_path, skip_pytest="unit test")
+
+    assert any(result.name == "monitor v2 access guardrails" and not result.passed for result in results)
+
+
+def test_review_check_fails_when_monitor_v2_raw_file_is_default_allowed(tmp_path: Path) -> None:
+    _write_minimal_project(tmp_path)
+    architecture_path = tmp_path / "docs" / "research" / "STRATEGY_AGENT_ARCHITECTURE.md"
+    text = architecture_path.read_text(encoding="utf-8")
+    architecture_path.write_text(
+        text.replace(
+            "- `data/results/monitor_v2_bounded_summary.csv`\n",
+            "- `data/results/monitor_v2_bounded_summary.csv`\n"
+            "- `data/results/monitor_v2_recorded_alert_rows.csv`\n",
+        ),
+        encoding="utf-8",
+    )
+
+    results = run_checks(tmp_path, skip_pytest="unit test")
+
+    assert any(result.name == "monitor v2 access guardrails" and not result.passed for result in results)
+
+
+def test_review_check_fails_when_bounded_summary_exposes_wallet_address(
+    tmp_path: Path,
+) -> None:
+    _write_minimal_project(tmp_path)
+    (tmp_path / "data" / "results" / "monitor_v2_bounded_summary.csv").write_text(
+        "summary_id,summary_type,label,metric,value,source_artifact,"
+        "allowed_interpretation,limitation,claim_scope,wallet_address\n"
+        "row_1,coverage,test,row_count,1,data/results/source.csv,"
+        "Bounded summary row.,No live collection.,bounded_monitor_summary_only,"
+        "0xabcdef123456\n",
+        encoding="utf-8",
+    )
+
+    results = run_checks(tmp_path, skip_pytest="unit test")
+
+    assert any(result.name == "monitor v2 access guardrails" and not result.passed for result in results)
 
 
 def test_group_changed_paths_suggests_project_automation_group() -> None:

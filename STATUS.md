@@ -3,37 +3,43 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-20 18:49
+Generated: 2026-05-20 19:04
 
-Current goal: `goal-monitor-v2-access-guardrail-checks-001` - Enforce monitor v2 read-only access guardrails
+Current goal: `goal-monitor-v2-live-input-contract-001` - Specify monitor v2 live input collection contract
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `217 passed in 6.13s`
+Pytest summary: `220 passed in 8.04s`
 
 Git branch: `main`
 
-Latest commit: `0666cfd`
+Latest commit: `d5bd522`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
+ M STATUS.md
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
+ M operations/project/review_check.py
+ M tests/test_project_automation.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      | 55 ++++++++++++++++------------
- ROADMAP.md                                   | 10 +++--
- docs/project/WORK_LOG.md                     | 33 +++++++++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 53 +++++++++++++++++++++++++++
- 4 files changed, 124 insertions(+), 27 deletions(-)
+ GOAL.md                                      | 167 +++++++----------------
+ ROADMAP.md                                   |  12 +-
+ STATUS.md                                    |  24 ++--
+ docs/project/WORK_LOG.md                     |  36 +++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md |  42 ++++++
+ operations/project/review_check.py           | 194 +++++++++++++++++++++++++++
+ tests/test_project_automation.py             |  93 ++++++++++++-
+ 7 files changed, 431 insertions(+), 137 deletions(-)
 ```
 
 Blockers:
@@ -42,7 +48,7 @@ Blockers:
 
 Next recommended action:
 
-- test: enforce monitor v2 read-only access guardrails
+- docs: specify monitor v2 live input collection contract
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

@@ -1402,6 +1402,48 @@ Next phase selected:
   contract before moving to MCP/agent contract drafting, deterministic
   backtest implementation, or live-collector input specification.
 
+### Read-Only Access Guardrail Enforcement
+
+Review date: 2026-05-20
+
+Review status: enforced by project checks.
+
+Implemented check:
+
+- `operations/project/review_check.py` now verifies the monitor-v2 read-only
+  access boundary.
+
+Enforced boundary:
+
+- Required bounded artifacts must exist:
+  `data/results/monitor_v2_bounded_summary.csv`,
+  `data/results/monitor_v2_bounded_summary_metadata.json`,
+  `data/results/thesis_monitor_v2_recorded_scoring.png`, and
+  `data/results/thesis_figures_metadata.json`.
+- The bounded summary must stay at or below the default 50-row exposure limit.
+- The bounded summary must not expose wallet-address columns or
+  wallet-address-like values.
+- Metadata must declare that the bounded summary contains no wallet addresses
+  and no order instructions.
+- Raw monitor alert rows, scoring snapshots, recorded input files, direct
+  database reads, and source replay files must not appear in the default
+  allowed-artifact block.
+- Agents, MCP, model routing, live collection, strategy backtests, audit-log
+  integration, and execution paths remain deferred.
+
+Tests:
+
+- `tests/test_project_automation.py` covers the passing bounded-summary case,
+  missing bounded artifacts, accidental raw-artifact exposure, and accidental
+  wallet-address exposure.
+
+Decision:
+
+- The read-only access contract is now enforceable by automation.
+- The next safe step is a documentation-only live-input collection contract
+  that defines future source inputs, timestamp rules, replay storage,
+  validation, and mock/replay tests before any live collector is implemented.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

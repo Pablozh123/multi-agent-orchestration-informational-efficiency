@@ -1911,3 +1911,39 @@ Decision:
 Next step:
 
 - Enforce the monitor-v2 read-only access boundary in project review checks.
+
+## 2026-05-20 - goal-monitor-v2-access-guardrail-checks-001
+
+Task:
+
+- Enforce the monitor-v2 read-only summary access boundary through project
+  review checks.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `operations/project/review_check.py`
+- `tests/test_project_automation.py`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_project_automation.py -q`
+- `.\.venv\Scripts\python.exe -m pytest -q`
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+
+Decision:
+
+- Project checks now require the bounded monitor-v2 summary artifacts, enforce
+  the 50-row default exposure limit, reject wallet-address exposure, and reject
+  raw monitor files in the default allowed-artifact block.
+- The read-only access contract is now enforceable before MCP, agents, live
+  collection, strategy backtests, or interpretation tooling can be added.
+
+Next step:
+
+- Specify the monitor-v2 live input collection contract as a documentation-only
+  step before any collector implementation.

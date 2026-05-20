@@ -209,3 +209,25 @@ they are analysed.
 Reason: an anomaly monitor fits the thesis question about informational
 efficiency while keeping empirical claims deterministic, auditable, and
 separate from autonomous trading or profit promises.
+
+### 21. Near-Real-Time Monitor V2 Starts As A Contract
+
+The near-real-time politics/geopolitics monitor must be specified as a
+read-only contract before collector or alert code is implemented. The contract
+defines watchlist inputs, market snapshots, wallet-tier snapshots,
+event-candidate review states, rolling robust scores, alert levels, persistence
+rules, and bounded output files.
+
+The default scoring design uses a 30-observation rolling baseline, a minimum of
+20 baseline observations for production-like alerts, robust z-scores based on
+median absolute deviation, and rolling percentile ranks. Missing or unstable
+baselines return explicit diagnostic statuses rather than false alerts.
+
+The monitor may use Polymarket Gamma, Data, CLOB, and Market WebSocket sources
+as read-only inputs, but order placement, autonomous execution, live trading,
+profit claims, and insider/misconduct claims remain out of scope. Agents and
+MCP tools remain deferred until deterministic monitor outputs exist and bounded
+summary contracts plus audit logging are specified.
+
+Reason: the monitor should become a reproducible empirical instrument, not an
+uncontrolled live-trading or agent-orchestration layer.

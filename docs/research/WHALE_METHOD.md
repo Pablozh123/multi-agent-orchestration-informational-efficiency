@@ -358,6 +358,60 @@ Required sensitivity review before final thesis conclusions:
 - Whether missing sell-side rows materially limit H3 interpretation.
 - Whether intraday data are needed for stronger timing claims.
 
+## V2 Wallet Monitor Contract
+
+wallet_monitor_v2_status: specified
+
+The near-real-time monitor uses wallet information only as aggregate,
+dataset-relative tier activity. It must not monitor or expose individual wallet
+addresses in alert summaries, LLM-facing outputs, or future MCP tools.
+
+Inputs:
+
+- `WalletTierSnapshot` rows with timestamp bucket, market id, tier,
+  active-wallet count, trade count, total observed amount, top-tier share, and
+  concentration fields.
+- Source-filter metadata, including the current BUY-only limitation and any
+  market-maker exclusion list used in the run.
+- Market-maker exclusion data from `data/market_maker_exclusions.json` may be
+  used as a filter input after validation. It is not evidence that every
+  remaining wallet is organic, directional, or informed.
+
+Default transformations:
+
+- Amount activity uses `log1p(total_observed_amount_usd)`.
+- Active-wallet and trade-count measures remain count variables.
+- Top-tier share and HHI-style concentration are aggregate diagnostics.
+- All scoring uses rolling baselines computed from completed prior buckets, or
+  from the explicitly documented replay window in historical tests.
+
+Alert families:
+
+- `wallet_tier_activity`: unusual amount, count, or trade-row activity by tier.
+- `active_wallet_activity`: unusual active-wallet count by tier.
+- `concentration_activity`: unusual top-tier share or HHI-style concentration.
+- `wallet_market_cluster`: wallet-tier anomaly combined with a market-move
+  anomaly in the same timestamp bucket or review window.
+
+Required limitations in every v2 wallet metadata file:
+
+- Current H3 wallet source is BUY-only unless a later ingestion proves
+  otherwise.
+- Current source has an upstream minimum observed `amount_usd` of 10000; this
+  is not an analytical whale threshold.
+- Wallet tiers are dataset-relative and must be recomputed for the monitored
+  universe or replay dataset.
+- No wallet profitability, private-information, misconduct, or insider wording
+  is allowed.
+- No individual wallet address may appear in monitor-facing summaries.
+
+Implementation gate:
+
+- The first v2 implementation should use recorded or mocked snapshots before a
+  live collector.
+- Alert scoring must be deterministic Python and tested on toy data before it
+  reads live or replayed Polymarket snapshots.
+
 ## Event-Centred Wallet Anomaly Monitor
 
 Anomaly-monitor status: complete for the first historical daily output.

@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-contract-001
-title: Specify near-real-time politics/geo monitor v2 contract
+goal_id: goal-monitor-v2-snapshot-prototype-001
+title: Implement deterministic monitor v2 snapshot prototype
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -11,38 +11,46 @@ why:
 - The politics/geopolitics anomaly-monitor specification is now recorded.
 - The first historical anomaly-output artifacts are reviewed and accepted as a
   descriptive daily baseline.
-- The review selected near-real-time monitor contract design as the next step,
-  before backtest validation or agent/MCP activation.
+- The near-real-time monitor v2 contract is documented before implementation.
+- The next safe step is a deterministic Python prototype over recorded or
+  mocked snapshots, not a live collector.
 deliverables:
-- Specify v2 watchlist inputs for Polymarket politics/geopolitical markets.
-- Specify event-candidate intake fields and human review status values.
-- Specify deterministic alert scoring inputs, outputs, and thresholds at the
-  contract level.
-- Specify persistence and bounded summary outputs without implementing agents
-  or MCP.
-- Keep backtest validation as a later step after alert definitions are fixed.
+- Add tested monitor v2 data-contract helpers or a small runner using recorded
+  or mocked snapshots.
+- Implement robust rolling score and rolling percentile diagnostics on toy
+  snapshot data.
+- Emit deterministic alert rows, summary rows, and metadata without writing to
+  the database.
+- Ensure missing or unstable baselines return explicit diagnostic statuses.
+- Keep outputs aggregate-only and free of wallet addresses.
 scope:
-- Documentation and methodology review only.
-- Contract-level design for near-real-time monitoring only.
-- Existing historical anomaly artifacts can be used as motivation.
+- Deterministic Python prototype only.
+- Recorded or mocked snapshots only.
+- Polymarket politics/geopolitical monitor contract only.
+- Existing historical anomaly artifacts and v2 contract can be used as design
+  inputs.
 out_of_scope:
-- New analysis modules, database writes, and regenerated artifacts unless the
-  output review finds a concrete defect.
 - Agents, MCP, model routing, ML, cloud deployment, live trading, and order
   execution.
+- Live WebSocket or API collection.
+- Database writes.
 - New real events in the canonical seed unless they are separately curated.
 - Strategy backtest implementation, PnL, profitability claims, insider claims,
-  intraday claims, Kalshi integration, or RCP probability use.
+  causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- The v2 monitor contract is documented before implementation.
-- The contract separates deterministic collectors, anomaly scoring, human
-  review, persistence, and later interpretation layers.
-- No agent, MCP, ML, live-trading, or order-execution path is activated.
+- The prototype follows the documented v2 contract.
+- Robust rolling score tests cover normal, spike, zero-MAD, and insufficient
+  baseline cases.
+- Alert output includes severity, evidence references, limitations, and review
+  status.
+- Output files contain no wallet addresses and no order instructions.
+- No live collector, agent, MCP, ML, live-trading, or order-execution path is
+  activated.
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: specify near-real-time monitor v2 contract
+next_commit: feat: add deterministic monitor v2 snapshot prototype
 
 ## Decision Inputs For This Goal
 
@@ -63,6 +71,9 @@ next_commit: docs: specify near-real-time monitor v2 contract
 - Historical anomaly output review exists in
   `docs/research/STRATEGY_AGENT_ARCHITECTURE.md` and
   `docs/research/WHALE_METHOD.md`.
+- Near-real-time monitor v2 contract exists in
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md` and
+  `docs/research/WHALE_METHOD.md`.
 - Literature intake structure exists in `docs/research/LITERATURE_MAP.md` and
   `data/literature/literature_index.csv`.
 - ML scope and re-entry conditions are explicit in
@@ -71,8 +82,10 @@ next_commit: docs: specify near-real-time monitor v2 contract
 
 ## Done Means
 
-- The v2 contract can be handed to a deterministic implementation step without
-  leaving open decisions about inputs, outputs, review states, or guardrails.
+- A deterministic snapshot prototype can generate monitor alert rows, summary
+  rows, and metadata from recorded or mocked inputs.
+- The prototype demonstrates robust rolling score, percentile rank, alert
+  level, and review-status handling without live collection.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, or profit-guarantee work.
 
@@ -139,3 +152,6 @@ next_commit: docs: specify near-real-time monitor v2 contract
   `h3_event_wallet_anomaly_metadata.json`.
 - Historical anomaly outputs are reviewed and visualised in
   `data/results/thesis_h3_event_wallet_anomalies.png`.
+- Near-real-time monitor v2 contract is specified as Polymarket-first,
+  read-only, robust-score based, human-reviewed, and file-based before live
+  collection.

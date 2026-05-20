@@ -175,6 +175,243 @@ v2 decision:
   human review, persistence, and bounded summary outputs.
 - Backtest validation remains a later step after the alert contract is fixed.
 
+## Monitor V2 Contract
+
+monitor_v2_contract_status: specified
+
+The v2 monitor is a documentation and interface contract for a future
+deterministic Python prototype. It is Polymarket-first, read-only, and
+designed for politics/geopolitical markets. It does not implement agents, MCP,
+ML, live trading, or order execution.
+
+API and literature anchors:
+
+- Polymarket API docs: `https://docs.polymarket.com/api-reference/introduction`
+- Polymarket Market WebSocket:
+  `https://polymarket-292d1b1b.mintlify.app/market-data/websocket/market-channel`
+- PolyBench: `https://arxiv.org/abs/2604.14199`
+- Polymarket order-book microstructure:
+  `https://arxiv.org/abs/2604.24366`
+- Per-market information-leakage and order-flow skill:
+  `https://arxiv.org/abs/2605.02287`
+
+Design implication:
+
+- Use Gamma-style market/event discovery for watchlists and metadata.
+- Use public CLOB endpoints or the Market WebSocket for prices, midpoints,
+  spreads, orderbook updates, and trade events.
+- Use Data API outputs or validated local ingestion for wallet/activity
+  aggregates.
+- Keep news and geopolitical events as sourced candidates until human review
+  accepts the timestamp, source, and market mapping.
+- Treat order-flow and trade-direction data as source-specific. Microstructure
+  work must record whether a value came from orderbook feed, CLOB endpoint,
+  on-chain trade record, or local aggregate artifact.
+
+### V2 Input Contracts
+
+`MarketWatchItem`
+
+- `watch_id`
+- `market_id`
+- `condition_id`
+- `token_ids`
+- `question`
+- `category`
+- `subcategory`
+- `status`
+- `source`
+- `created_at`
+- `updated_at`
+
+Purpose:
+
+- Defines the markets monitored by v2.
+- Must be created before alerts are evaluated.
+- Must not be inferred from already-observed anomalies without being marked as
+  a post-hoc diagnostic watch item.
+
+`MarketSnapshot`
+
+- `timestamp_utc`
+- `market_id`
+- `token_id`
+- `price`
+- `midpoint`
+- `best_bid`
+- `best_ask`
+- `spread`
+- `volume`
+- `open_interest`
+- `source`
+
+Purpose:
+
+- Captures market state at a reproducible timestamp or bucket.
+- For the first implementation, replayed or polled snapshots are acceptable for
+  testability before a live WebSocket collector exists.
+
+`WalletTierSnapshot`
+
+- `timestamp_utc`
+- `market_id`
+- `bucket`
+- `tier`
+- `active_wallets`
+- `trade_count`
+- `total_observed_amount_usd`
+- `top_tier_share`
+- `hhi_concentration`
+- `source`
+- `filter_metadata`
+
+Purpose:
+
+- Provides aggregate wallet-tier activity only.
+- Must not expose wallet addresses in monitor-facing, MCP-facing, or
+  LLM-facing outputs.
+- `market_maker_exclusions.json` may be used as documented filter metadata,
+  not as proof that all remaining wallets are organic or directional.
+
+`EventCandidate`
+
+- `event_candidate_id`
+- `detected_at_utc`
+- `published_at_utc`
+- `title`
+- `source_url`
+- `event_type`
+- `related_market_ids`
+- `expected_effect`
+- `review_status`
+- `review_notes`
+
+Purpose:
+
+- Records political or geopolitical news/event candidates before canonical use.
+- `data/events_catalog.json` remains legacy/context unless a later migration
+  maps rows into this candidate contract.
+
+`AlertRecord`
+
+- `alert_id`
+- `timestamp_utc`
+- `market_id`
+- `anomaly_family`
+- `metric_name`
+- `observed_value`
+- `baseline_window`
+- `baseline_observations`
+- `robust_z`
+- `rolling_percentile_rank`
+- `severity`
+- `evidence_refs`
+- `limitations`
+- `review_status`
+
+Purpose:
+
+- Stores descriptive monitor alerts and links them to deterministic evidence.
+- Does not contain order instructions, profitability claims, or causal claims.
+
+### V2 Scoring Contract
+
+Default baseline:
+
+- Use the last 30 completed observations or buckets.
+- Require at least 20 baseline observations for production-like alerts.
+- Lower baseline counts may produce diagnostic rows only, labelled
+  `insufficient_baseline`.
+
+Primary robust score:
+
+- `robust_z = (value - rolling_median) / (1.4826 * MAD)`
+- If `MAD` is zero or unavailable, the row must return a clear non-alert
+  diagnostic status rather than silently falling back to an unstable score.
+
+Secondary empirical score:
+
+- rolling percentile rank within the baseline window.
+
+Metric families:
+
+- `market_move`: absolute midpoint or price change.
+- `spread_liquidity`: spread widening or depth drop where validated data
+  exist.
+- `wallet_tier_activity`: `log1p(total_observed_amount_usd)`,
+  active-wallet count, and trade-count changes by tier.
+- `concentration`: top-tier share and HHI-style concentration summaries.
+- `event_proximity`: proximity to a reviewed event candidate. Event proximity
+  can upgrade context but must not create an anomaly by itself.
+
+Alert levels:
+
+- `info`: percentile at least 0.90 or robust z-score at least 1.5.
+- `watch`: percentile at least 0.95 or robust z-score at least 2.0.
+- `high`: at least two anomaly families at `watch`, or one family robust
+  z-score at least 3.0.
+- `critical`: market-move anomaly plus wallet or concentration anomaly plus a
+  reviewed event candidate. This still remains a descriptive alert and not a
+  trading, insider, misconduct, or profitability claim.
+
+Default wording:
+
+- Allowed: `unusual market activity`, `unusual wallet-tier activity`,
+  `reviewed event context`, `descriptive alert`.
+- Blocked: `alpha`, `insider`, `proof`, `profitable trade`,
+  `causal manipulation`.
+
+### Human Review Contract
+
+Review statuses:
+
+- `candidate`: machine-collected or manually proposed, not checked.
+- `source_checked`: source URL and timestamp checked.
+- `market_mapped`: related Polymarket market or token ids checked.
+- `accepted`: eligible for canonical event or alert reporting.
+- `rejected`: duplicate, weak source, irrelevant, or post-hoc.
+- `needs_followup`: unclear timestamp, ambiguous market mapping, or source
+  quality issue.
+
+Human review questions:
+
+- Is the event source credible?
+- Is the timestamp defensible?
+- Is the market mapping known before inspecting the alert result?
+- Is the alert based only on data available at or before alert time?
+- Does the wording avoid causality, misconduct, insider, and profitability
+  claims?
+
+### V2 Persistence And Output Contract
+
+Future file-based prototype outputs:
+
+- `data/results/monitor_v2_watchlist.csv`
+- `data/results/monitor_v2_snapshots.csv`
+- `data/results/monitor_v2_event_candidates.csv`
+- `data/results/monitor_v2_alert_rows.csv`
+- `data/results/monitor_v2_alert_summary.csv`
+- `data/results/monitor_v2_metadata.json`
+
+Persistence rules:
+
+- Start file-based with recorded or mocked snapshots.
+- Do not write to `analysis_summaries` until alert summary shape is reviewed.
+- Do not add MCP tools until bounded summary outputs and `llm_audit_log`
+  usage are specified.
+- Do not send raw wallet addresses, unrestricted SQL, or row-level table dumps
+  into LLM prompts.
+
+Future implementation tests:
+
+- robust rolling score on a toy time series with a known spike,
+- no lookahead: alert at time `t` uses observations available at or before `t`,
+- missing baseline returns `insufficient_baseline`,
+- event candidate cannot become `accepted` without source URL and timestamp,
+- monitor outputs contain no wallet addresses,
+- market-maker exclusions are applied only as documented filter metadata,
+- no order execution, agents, MCP, ML, or RCP probability use.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

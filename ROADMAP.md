@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for near-real-time monitor v2 contract specification
+Status: ready for deterministic v2 snapshot prototype after contract review
 
 Done criteria:
 
@@ -221,13 +221,18 @@ Done criteria:
 - The v2 contract defines watchlist inputs, event-candidate intake,
   deterministic alert scoring, human review, persistence, and bounded summary
   outputs before any collector implementation begins.
+- The v2 contract is specified as Polymarket-first and read-only.
+- The v2 scoring contract uses robust rolling baselines, percentile ranks,
+  explicit insufficient-baseline statuses, and descriptive alert levels.
+- Human review states are specified before canonical event or alert reporting.
 
 Blockers:
 
-- The v2 near-real-time monitor contract is not specified yet.
 - The Polybench PDF is indexed only as a candidate and needs review before it
   supports thesis wording.
 - Real-time data collection is not implemented and is not required for v1.
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.
+- The first v2 implementation must start with recorded or mocked snapshots
+  before any live collector.

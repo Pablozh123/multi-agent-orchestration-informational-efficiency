@@ -65,6 +65,10 @@ Strategy prototype boundary:
   not an immediate trading system.
 - The monitor observes unusual combinations of market movement, wallet-tier
   activity, concentration, and sourced event context.
+- The near-real-time v2 monitor is first specified as a read-only contract:
+  watchlist inputs, market snapshots, wallet-tier snapshots, event-candidate
+  review, robust rolling scores, alert levels, persistence, and bounded
+  outputs.
 - A backtested strategy prototype may be included later as historical
   validation after anomaly definitions are fixed.
 - Agents may propose signal hypotheses later, but Python must validate,
@@ -212,6 +216,13 @@ Scope:
   decisions, debates, or election shocks as candidates only after source and
   market mapping review.
 - Existing US-election events remain the first historical validation bed.
+- The v2 monitor contract is Polymarket-first: Gamma-style discovery for
+  watchlists, public CLOB or Market WebSocket data for market snapshots, Data
+  API or validated local ingestion for wallet/activity aggregates, and
+  human-reviewed news/event candidates.
+- The default alert design uses robust rolling baselines and empirical
+  percentile ranks. It is descriptive and must not be written as alpha,
+  insider evidence, a profit claim, or a causal proof.
 - Agents may later draft `SignalSpec` hypotheses from bounded summaries.
 - Python must validate all signal specs and calculate all backtest, PnL, and
   risk metrics.

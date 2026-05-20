@@ -1227,3 +1227,39 @@ Decision:
 Next step:
 
 - Specify the near-real-time politics/geo monitor v2 contract.
+
+## 2026-05-20 - goal-monitor-v2-contract-001
+
+Task:
+
+- Specify the near-real-time Polymarket politics/geo anomaly monitor v2
+  contract before implementation.
+
+Files changed:
+
+- `ARCHITECTURE_DECISIONS.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/RESEARCH_SPEC.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  178 passed.
+
+Decision:
+
+- Define v2 as a Polymarket-first, read-only, robust-score-based anomaly
+  monitor contract.
+- Specify watchlist inputs, market snapshots, wallet-tier snapshots,
+  event-candidate review states, alert levels, persistence rules, and future
+  output files.
+- Keep live collection, agents, MCP, ML, order execution, RCP probability use,
+  and profit claims out of scope.
+
+Next step:
+
+- Implement a deterministic v2 snapshot prototype using recorded or mocked
+  inputs before any live collector.

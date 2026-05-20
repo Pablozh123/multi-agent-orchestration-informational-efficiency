@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-validated-input-scoring-runner-001
-title: Build validated-input monitor v2 scoring runner
+goal_id: goal-monitor-v2-recorded-scoring-review-001
+title: Review monitor v2 recorded scoring outputs
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -31,22 +31,24 @@ why:
 - Recorded monitor v2 input files now exist and pass validation.
 - Recorded monitor v2 input outputs are reviewed and accepted for the first
   validated-input scoring runner.
-- The next safe step is to score the reviewed recorded inputs deterministically
-  before any live API, WebSocket, agent, MCP, or trading path is added.
+- The validated-input scoring runner now exists and produces bounded recorded
+  scoring outputs.
+- The next safe step is to review the recorded scoring output shape and
+  interpretation before any live API, WebSocket, agent, MCP, strategy
+  backtest, or trading path is added.
 deliverables:
-- Build a deterministic runner that reads the reviewed recorded input files.
-- Validate watchlist, market snapshots, wallet-tier snapshots, and event
-  candidates before scoring.
-- Apply the selected monitor v2 scoring contract and Rule C threshold logic.
-- Preserve the selected `[-1d, +1d]` daily event-proximity context and
-  separate `event_watch` style labels where applicable.
-- Generate bounded file outputs for alert rows, summaries, context rows, and
-  metadata.
-- Add focused tests for validation-before-scoring, no wallet addresses, no
-  order instructions, and deterministic outputs.
+- Review `data/results/monitor_v2_recorded_scoring_snapshots.csv`.
+- Review `data/results/monitor_v2_recorded_alert_rows.csv`.
+- Review `data/results/monitor_v2_recorded_alert_summary.csv`.
+- Review `data/results/monitor_v2_recorded_context_rows.csv`.
+- Review `data/results/monitor_v2_recorded_scoring_validation_report.json`.
+- Review `data/results/monitor_v2_recorded_scoring_metadata.json`.
+- Decide whether the recorded scoring output shape is accepted as a bounded
+  monitor output.
+- Interpret the alert counts and context labels with daily-data limitations.
 scope:
-- Deterministic Python scoring over existing recorded monitor v2 input
-  artifacts only.
+- Documentation and output review only.
+- Existing recorded monitor v2 scoring artifacts only.
 - Existing curated US-election event seed only.
 - No new live data and no new event curation.
 out_of_scope:
@@ -60,14 +62,11 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Recorded input files are validated before any scoring output is produced.
-- The runner reads explicit recorded input files and does not query live APIs
-  or write to the database.
-- Alert outputs are file-based, aggregate-only, and contain no wallet
-  addresses or order instructions.
-- Event context remains descriptive and does not create causal, insider,
-  profitability, or order-execution wording.
-- Focused tests and the full project test suite pass.
+- Recorded scoring output shape and validation report are reviewed.
+- The review records whether the output shape is accepted or what must change.
+- The interpretation separates direct alert severities from proximity context
+  labels.
+- Daily-data and BUY-side observed activity limitations are documented.
 - No new live data, external API, WebSocket, database write, agent, MCP, ML, or
   order execution path is activated.
 - Outputs remain aggregate-only and contain no wallet addresses or order
@@ -77,7 +76,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: score monitor v2 recorded inputs
+next_commit: docs: review monitor v2 recorded scoring outputs
 
 ## Decision Inputs For This Goal
 
@@ -113,6 +112,8 @@ next_commit: feat: score monitor v2 recorded inputs
 - Monitor v2 recorded input output review exists in
   `docs/research/STRATEGY_AGENT_ARCHITECTURE.md` and accepts the file shape for
   a validated-input scoring runner.
+- Monitor v2 recorded scoring outputs exist under `data/results/` and are
+  documented in `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
 - Literature intake structure exists in `docs/research/LITERATURE_MAP.md` and
   `data/literature/literature_index.csv`.
 - ML scope and re-entry conditions are explicit in
@@ -121,9 +122,9 @@ next_commit: feat: score monitor v2 recorded inputs
 
 ## Done Means
 
-- Recorded monitor v2 input files are validated before scoring.
-- The runner emits deterministic recorded-input alert outputs and metadata.
-- The monitor has a tested replay-derived scoring boundary before live
+- Recorded monitor v2 scoring outputs are reviewed or a precise blocker is
+  recorded.
+- The monitor has an accepted validated-input scoring boundary before live
   collection is added.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, or profit-guarantee work.
@@ -216,3 +217,6 @@ next_commit: feat: score monitor v2 recorded inputs
   derived input files.
 - Monitor v2 recorded-input output shape is reviewed and accepted for a
   validated-input scoring runner.
+- Monitor v2 validated-input scoring runner exists and emits recorded scoring
+  snapshots, alert rows, summaries, context rows, validation report, and
+  metadata.

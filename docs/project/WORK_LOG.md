@@ -1687,3 +1687,48 @@ Next step:
 
 - Build the deterministic validated-input scoring runner before any live API,
   WebSocket, agent, MCP, ML, database-write, or order-execution path.
+
+## 2026-05-20 - goal-monitor-v2-validated-input-scoring-runner-001
+
+Task:
+
+- Build and run the deterministic monitor v2 scoring runner for validated
+  recorded input files.
+
+Files changed:
+
+- `operations/analysis/monitor_v2_recorded_input_scoring.py`
+- `tests/test_monitor_v2_recorded_input_scoring.py`
+- `data/results/monitor_v2_recorded_scoring_snapshots.csv`
+- `data/results/monitor_v2_recorded_alert_rows.csv`
+- `data/results/monitor_v2_recorded_alert_summary.csv`
+- `data/results/monitor_v2_recorded_context_rows.csv`
+- `data/results/monitor_v2_recorded_scoring_validation_report.json`
+- `data/results/monitor_v2_recorded_scoring_metadata.json`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_v2_recorded_input_scoring.py tests/test_monitor_v2_input_validation.py tests/test_monitor_v2_snapshot.py -q`
+  -> 21 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_recorded_input_scoring`
+  -> 3394 snapshots, 3394 alert rows, 581 non-`none` alerts, 11 summary rows,
+  and 21 context rows.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 213 passed.
+
+Decision:
+
+- Score only reviewed recorded input files and validate all inputs before
+  scoring.
+- Reuse the monitor v2 Rule C scoring implementation.
+- Keep event proximity in the context sidecar rather than converting it into
+  order or trading instructions.
+
+Next step:
+
+- Review the recorded scoring outputs and decide whether the shape is accepted
+  before live collection, MCP, agents, ML, or strategy backtest work.

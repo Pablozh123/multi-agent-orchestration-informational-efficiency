@@ -970,6 +970,66 @@ Next implementation step:
   input files, validates them before scoring, emits file-based alert rows,
   summaries, context rows, and metadata, and keeps all outputs aggregate-only.
 
+### Recorded Input Scoring Runner
+
+Runner date: 2026-05-20
+
+Runner status: complete for first validated recorded-input scoring outputs.
+
+Implemented module:
+
+- `operations/analysis/monitor_v2_recorded_input_scoring.py`
+
+Implemented test module:
+
+- `tests/test_monitor_v2_recorded_input_scoring.py`
+
+Generated artifacts:
+
+- `data/results/monitor_v2_recorded_scoring_snapshots.csv`
+- `data/results/monitor_v2_recorded_alert_rows.csv`
+- `data/results/monitor_v2_recorded_alert_summary.csv`
+- `data/results/monitor_v2_recorded_context_rows.csv`
+- `data/results/monitor_v2_recorded_scoring_validation_report.json`
+- `data/results/monitor_v2_recorded_scoring_metadata.json`
+
+Output counts:
+
+- Scoring snapshots: 3394.
+- Alert rows: 3394.
+- Non-`none` alert rows: 581.
+- Summary rows: 11.
+- Event-context rows: 21.
+- Severity counts: 2813 `none`, 334 `info`, 169 `watch`, 78 `high`.
+- Context labels: 3 `critical_proximity_candidate`, 8
+  `event_watch_candidate`, 1 `context_alert`, and 9 `no_event_alert`.
+
+Implemented metric families:
+
+- `market_move`: absolute daily midpoint or price change.
+- `wallet_tier_activity`: `log1p(total_observed_amount_usd)` by wallet tier.
+- `active_wallet_activity`: active wallet count by wallet tier.
+- `concentration`: top-tier share and HHI-style concentration.
+
+Interpretation:
+
+- The runner proves that reviewed recorded input files can be converted into
+  bounded monitor v2 alert outputs without live collection.
+- There are no direct `critical` severities in the scored alert rows, because
+  the strict alert rule still requires same-timestamp event context.
+- The context sidecar finds three `critical_proximity_candidate` dates under
+  the reviewed daily `[-1d, +1d]` event-context window.
+- The eight `event_watch_candidate` rows identify event-adjacent wallet or
+  concentration clusters without market-move confirmation.
+- These outputs are descriptive monitor diagnostics. They are not trading
+  signals, order instructions, private-information evidence, profitability
+  evidence, or causal claims.
+
+Next implementation step:
+
+- Review the recorded scoring outputs before any live collector, MCP surface,
+  agent layer, or strategy backtest uses them.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

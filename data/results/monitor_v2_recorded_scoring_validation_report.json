@@ -1,0 +1,83 @@
+{
+  "generated_at_utc": "2026-05-20T16:24:47+00:00",
+  "limitations": {
+    "does_not_call_external_apis": true,
+    "does_not_send_orders": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "no_profitability_or_private_information_claim": true,
+    "recorded_files_only": true
+  },
+  "status": "pass",
+  "validated_inputs": {
+    "event_candidates": {
+      "columns": [
+        "event_candidate_id",
+        "detected_at_utc",
+        "published_at_utc",
+        "title",
+        "source_url",
+        "event_type",
+        "related_market_ids",
+        "expected_effect",
+        "review_status",
+        "review_notes"
+      ],
+      "path": "data\\results\\monitor_v2_recorded_event_candidates.csv",
+      "row_count": 7
+    },
+    "market_snapshots": {
+      "columns": [
+        "timestamp_utc",
+        "market_id",
+        "token_id",
+        "price",
+        "midpoint",
+        "best_bid",
+        "best_ask",
+        "spread",
+        "volume",
+        "open_interest",
+        "source"
+      ],
+      "path": "data\\results\\monitor_v2_recorded_market_snapshots.csv",
+      "row_count": 305
+    },
+    "wallet_tier_snapshots": {
+      "columns": [
+        "timestamp_utc",
+        "market_id",
+        "bucket",
+        "tier",
+        "active_wallets",
+        "trade_count",
+        "total_observed_amount_usd",
+        "top_tier_share",
+        "hhi_concentration",
+        "source",
+        "filter_metadata"
+      ],
+      "path": "data\\results\\monitor_v2_recorded_wallet_tier_snapshots.csv",
+      "row_count": 1236
+    },
+    "watchlist": {
+      "columns": [
+        "watch_id",
+        "market_id",
+        "condition_id",
+        "token_ids",
+        "question",
+        "category",
+        "subcategory",
+        "status",
+        "source",
+        "created_at",
+        "updated_at"
+      ],
+      "path": "data\\results\\monitor_v2_recorded_watchlist.csv",
+      "row_count": 1
+    }
+  }
+}

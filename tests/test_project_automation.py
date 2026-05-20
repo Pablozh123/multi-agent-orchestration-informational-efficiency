@@ -53,10 +53,16 @@ def _write_minimal_project(root: Path) -> None:
         "def main():\n"
         "    raise RuntimeError(DEFERRED_MESSAGE)\n"
     )
-    (root / "operations" / "agents" / "orchestrator.py").write_text(
-        guard,
-        encoding="utf-8",
-    )
+    for agent_module in (
+        "market_agent.py",
+        "sentiment_agent.py",
+        "whale_agent.py",
+        "orchestrator.py",
+    ):
+        (root / "operations" / "agents" / agent_module).write_text(
+            guard,
+            encoding="utf-8",
+        )
     (root / "operations" / "mcp" / "thesis_mcp_server.py").write_text(
         guard,
         encoding="utf-8",

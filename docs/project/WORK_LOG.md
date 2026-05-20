@@ -1028,3 +1028,43 @@ Next step:
 
 - Decide whether to first archive `.planning/**` or hard-guard the remaining
   single-agent modules before implementing the H3 strategy backtest.
+
+## 2026-05-20 - legacy-cleanup-after-scan
+
+Task:
+
+- Move currently unused legacy files into `legacy/` and guard active
+  single-agent entry points.
+
+Files changed:
+
+- `.planning/**` -> `legacy/planning/.planning/**`
+- `logs/changelog/**` -> `legacy/changelog/**`
+- `data/summaries.json` -> `legacy/data/summaries.json`
+- `directives/roles/*.md` -> `legacy/deferred_prompts/roles/*.md`
+- `operations/agents/market_agent.py`
+- `operations/agents/sentiment_agent.py`
+- `operations/agents/whale_agent.py`
+- `operations/project/review_check.py`
+- `tests/test_market_agent.py`
+- `tests/test_sentiment_agent.py`
+- `tests/test_whale_agent.py`
+- `tests/test_project_automation.py`
+- `docs/legacy_inventory.md`
+- `legacy/audits/LEGACY_SCAN_2026-05-20.md`
+
+Tests:
+
+- Run after cleanup before stopping work.
+
+Decision:
+
+- Keep only runtime guards in active single-agent modules.
+- Preserve old Pydantic AI implementations and prompts in `legacy/`.
+- Leave `directives/methodology.md` and `directives/coding_standards.md`
+  active because they are support instructions, not runtime-agent prompts.
+
+Next step:
+
+- Continue with the deterministic H3 strategy backtest baseline after cleanup
+  checks pass.

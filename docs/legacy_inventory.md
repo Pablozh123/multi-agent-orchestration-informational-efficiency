@@ -33,11 +33,12 @@ tooling, and recommended cleanup order.
 | `.planning/ROADMAP.md` | Old roadmap | update | Marks agent/MCP phase as complete and places agents too early. | Replace with deterministic-first roadmap. |
 | `.planning/phases/**` | Detailed old phase plans | unclear | Contains useful ingestion and validation notes, but many plans are agent/MCP oriented or stale. | Review before reuse; mark stale sections explicitly. |
 | `.planning/**` | Old GSD planning tree | move to legacy later | Full 2026-05-20 scan found agent-first roadmap, RCP-as-probability assumptions, and fixed whale-threshold wording. | Move to `legacy/planning/` or add stale warnings in a focused cleanup commit. |
-| `directives/roles/market_agent.md` | Agent role prompt | move to legacy later | Agent prompt from deferred architecture. | Archive until agent interpretation layer is approved. |
-| `directives/roles/sentiment_agent.md` | Agent role prompt | move to legacy later | Agent prompt from deferred architecture. | Archive until agent interpretation layer is approved. |
-| `directives/roles/whale_agent.md` | Agent role prompt | move to legacy later | Agent prompt likely contains legacy whale threshold framing. | Archive and later rewrite around distribution-derived tiers. |
-| `directives/roles/orchestrator.md` | Agent role prompt | move to legacy later | Orchestrator is not part of current implementation priority. | Archive until deterministic outputs exist. |
-| `directives/roles/reviewer.md` | Agent role prompt | move to legacy later | Reviewer-agent workflow belongs to deferred agent layer. | Archive or rewrite later as human review checklist. |
+| `directives/roles/market_agent.md` | Former agent role prompt | moved to legacy | Moved to `legacy/deferred_prompts/roles/market_agent.md` on 2026-05-20. | Keep archived until interpretation layer is redesigned. |
+| `directives/roles/sentiment_agent.md` | Former agent role prompt | moved to legacy | Moved to `legacy/deferred_prompts/roles/sentiment_agent.md` on 2026-05-20. | Keep archived until interpretation layer is redesigned. |
+| `directives/roles/whale_agent.md` | Former agent role prompt | moved to legacy | Moved to `legacy/deferred_prompts/roles/whale_agent.md` on 2026-05-20. | Keep archived until interpretation layer is redesigned. |
+| `directives/roles/orchestrator.md` | Former agent role prompt | moved to legacy | Moved to `legacy/deferred_prompts/roles/orchestrator.md` on 2026-05-20. | Keep archived until interpretation layer is redesigned. |
+| `directives/roles/reviewer.md` | Former agent role prompt | moved to legacy | Moved to `legacy/deferred_prompts/roles/reviewer.md` on 2026-05-20. | Keep archived until interpretation layer is redesigned. |
+| `legacy/deferred_prompts/roles/*.md` | Deferred role prompts | keep | Active `directives/roles/*.md` files were moved here on 2026-05-20. | Keep as historical prompt references until interpretation layer is redesigned. |
 | `directives/methodology.md` | Methodology instruction | update | May contain useful scientific guardrails but must align with deterministic-first rules. | Review and reconcile with architecture decisions. |
 | `directives/coding_standards.md` | Coding standards stub | update | Minimal stub references old reviewer-agent architecture. | Replace with repo-wide deterministic coding standards later. |
 | `.claude/settings.json` | Claude Code permissions/settings | move to legacy later | Contains permissions for older MCP/server scaffolding. | Archive or replace after active workflow is decided. |
@@ -46,15 +47,16 @@ tooling, and recommended cleanup order.
 | `.claude/skills/dune-analytics/SKILL.md` | Claude skill | update | Useful source notes, but threshold framing must avoid arbitrary whale definitions. | Rewrite after wallet distribution method is defined. |
 | `.claude/skills/fastmcp-server/SKILL.md` | Claude skill | move to legacy later | MCP is deferred. | Archive until MCP demo layer is approved. |
 | `.claude/skills/polymarket-api/SKILL.md` | Claude skill | update | Potentially useful source notes. | Review for hidden live-call or stale API assumptions. |
+| `legacy/planning/.planning/**` | Old GSD planning tree | keep | Active `.planning/**` was moved here on 2026-05-20. | Historical reference only; root `ROADMAP.md` and `GOAL.md` are active. |
 
 ## Existing Agent And MCP Code
 
 | Path | Type | Status | Reason | Next action |
 | --- | --- | --- | --- | --- |
-| `operations/agents/` | Pydantic AI agent code | move to legacy later | Implemented before deterministic core was complete. | Do not extend or invoke. Archive after tests/docs are stable. |
-| `operations/agents/market_agent.py` | Single-agent code | move to legacy later | Still instantiates an active Pydantic AI agent and model id at import time. | Decide whether to hard-guard like orchestrator before strategy implementation expands. |
-| `operations/agents/sentiment_agent.py` | Single-agent code | move to legacy later | Still instantiates an active Pydantic AI agent and sentiment tooling while sentiment remains contextual. | Decide whether to hard-guard like orchestrator. |
-| `operations/agents/whale_agent.py` | Single-agent code | move to legacy later | Still exposes wallet tools and wallet-address output fields from the older agent layer. | Decide whether to hard-guard like orchestrator; avoid for H3 calculations. |
+| `operations/agents/` | Deferred guard stubs | keep | Active single-agent files now raise runtime guards; originals are archived. | Keep blocked until bounded interpretation layer is approved. |
+| `operations/agents/market_agent.py` | Active guard stub | keep | Original Pydantic AI agent moved to `legacy/deferred_agents/market_agent.py`. | Keep guard. |
+| `operations/agents/sentiment_agent.py` | Active guard stub | keep | Original Pydantic AI agent moved to `legacy/deferred_agents/sentiment_agent.py`. | Keep guard. |
+| `operations/agents/whale_agent.py` | Active guard stub | keep | Original Pydantic AI agent moved to `legacy/deferred_agents/whale_agent.py`. | Keep guard. |
 | `operations/mcp/` | FastMCP demo server | move to legacy later | MCP demo is explicitly deferred. | Do not extend or invoke. Archive later. |
 | `operations/agents/orchestrator.py` | Active guard stub | keep | Multi-agent entry point now raises a runtime guard. Original code preserved in `legacy/deferred_agents/orchestrator.py`. | Keep blocked until H1-H3 deterministic outputs exist and are validated. |
 | `operations/mcp/thesis_mcp_server.py` | Active guard stub | keep | MCP server startup and multi-agent MCP path now raise runtime guards. Original code preserved in `legacy/deferred_mcp/thesis_mcp_server.py`. | Keep blocked until deterministic core is complete and MCP is explicitly approved. |
@@ -63,11 +65,11 @@ tooling, and recommended cleanup order.
 | `operations/audit/` | LLM audit logger | unclear | Audit logging is required later, but current implementation belongs to old agent layer. | Review when LLM interpretation layer is designed. |
 | `operations/tools/db_tools.py` | Agent-facing bounded DB tools | unclear | Contains useful row limits, but exists for deferred agents/MCP. | Reuse only after deterministic query contracts are specified. |
 | `operations/tools/api_clients.py` | API clients | unclear | Source clients may be useful, but hidden API calls must be controlled. | Review before reuse in deterministic ingestion. |
-| `tests/test_market_agent.py` | Agent test | move to legacy later | Tests active agent instantiation rather than a deferred runtime guard. | Rewrite if single-agent modules are parked. |
-| `tests/test_sentiment_agent.py` | Agent test | move to legacy later | Tests active agent instantiation rather than a deferred runtime guard. | Rewrite if single-agent modules are parked. |
-| `tests/test_whale_agent.py` | Agent test | move to legacy later | Tests active agent instantiation and wallet output from older agent layer. | Rewrite if single-agent modules are parked. |
-| `logs/changelog/*.json` | Old agent output | move to legacy later | Contains old orchestrator/agent run claims and wallet-level details. | Move to `legacy/changelog/` or mark non-thesis evidence. |
-| `data/summaries.json` | Old prompt-context output | move to legacy later | Appears to be generated for old agent prompt context. | Move or regenerate under current bounded-summary rules. |
+| `tests/test_market_agent.py` | Guard test | keep | Rewritten to verify the market-agent runtime guard. | Keep. |
+| `tests/test_sentiment_agent.py` | Guard test | keep | Rewritten to verify the sentiment-agent runtime guard. | Keep. |
+| `tests/test_whale_agent.py` | Guard test | keep | Rewritten to verify the whale-agent runtime guard. | Keep. |
+| `legacy/changelog/*.json` | Old agent output | keep | Old `logs/changelog/*.json` moved here on 2026-05-20. | Historical reference only; not thesis evidence. |
+| `legacy/data/summaries.json` | Old prompt-context output | keep | Old `data/summaries.json` moved here on 2026-05-20. | Historical reference only. |
 
 ## Deterministic Code To Keep Active
 

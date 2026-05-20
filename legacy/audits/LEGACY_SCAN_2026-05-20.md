@@ -187,3 +187,23 @@ step is to keep this report as the separate legacy area, then perform one
 focused cleanup commit at a time. The first cleanup should target `.planning/`
 because it is clearly stale documentation and is not part of the current
 runtime path.
+
+## Cleanup Applied After Scan
+
+Cleanup date: 2026-05-20
+
+The follow-up cleanup moved the highest-risk legacy surfaces out of the active
+tree:
+
+| Old active path | New legacy path | Status |
+| --- | --- | --- |
+| `.planning/` | `legacy/planning/.planning/` | moved |
+| `logs/changelog/` | `legacy/changelog/` | moved |
+| `data/summaries.json` | `legacy/data/summaries.json` | moved |
+| `directives/roles/*.md` | `legacy/deferred_prompts/roles/` | moved |
+| `operations/agents/market_agent.py` | `legacy/deferred_agents/market_agent.py` | original moved; active guard stub remains |
+| `operations/agents/sentiment_agent.py` | `legacy/deferred_agents/sentiment_agent.py` | original moved; active guard stub remains |
+| `operations/agents/whale_agent.py` | `legacy/deferred_agents/whale_agent.py` | original moved; active guard stub remains |
+
+The active agent modules now keep only runtime guards that raise
+`RuntimeError("Deferred until deterministic analysis core is complete")`.

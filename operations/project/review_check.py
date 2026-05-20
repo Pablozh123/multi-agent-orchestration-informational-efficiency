@@ -277,6 +277,9 @@ def _check_ml_scope_guard(repo_root: Path) -> CheckResult:
 
 def _check_runtime_agent_guards(repo_root: Path) -> CheckResult:
     guarded_paths = [
+        repo_root / "operations" / "agents" / "market_agent.py",
+        repo_root / "operations" / "agents" / "sentiment_agent.py",
+        repo_root / "operations" / "agents" / "whale_agent.py",
         repo_root / "operations" / "agents" / "orchestrator.py",
         repo_root / "operations" / "mcp" / "thesis_mcp_server.py",
     ]
@@ -290,7 +293,11 @@ def _check_runtime_agent_guards(repo_root: Path) -> CheckResult:
             failures.append(f"{path.relative_to(repo_root)} missing deferred runtime guard")
     if failures:
         return CheckResult("runtime agent guards", False, "; ".join(failures))
-    return CheckResult("runtime agent guards", True, "orchestrator and MCP entry points remain guarded")
+    return CheckResult(
+        "runtime agent guards",
+        True,
+        "agent and MCP entry points remain guarded",
+    )
 
 
 def _check_strategy_architecture_contract(repo_root: Path) -> CheckResult:

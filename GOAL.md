@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-recorded-input-adapter-001
-title: Build recorded monitor v2 input adapters
+goal_id: goal-monitor-v2-recorded-input-review-001
+title: Review monitor v2 recorded input adapter outputs
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -28,18 +28,21 @@ why:
   output contract through a context sidecar file.
 - Recorded input validators now exist for monitor v2 watchlist, market
   snapshots, wallet-tier snapshots, and event candidates.
-- The next safe step toward a running monitor is to generate recorded input
-  files from existing historical artifacts and validate them before any live
-  collector.
+- Recorded monitor v2 input files now exist and pass validation.
+- The next safe step is to review the recorded input shape before building a
+  runner that scores validated recorded inputs.
 deliverables:
-- Generate recorded monitor v2 input files from existing historical artifacts.
-- Validate generated files with `monitor_v2_input_validation.py`.
-- Keep generated inputs file-based, aggregate-only, and deterministic.
-- Do not connect to Polymarket APIs or WebSockets yet.
+- Review `data/results/monitor_v2_recorded_watchlist.csv`.
+- Review `data/results/monitor_v2_recorded_market_snapshots.csv`.
+- Review `data/results/monitor_v2_recorded_wallet_tier_snapshots.csv`.
+- Review `data/results/monitor_v2_recorded_event_candidates.csv`.
+- Review `data/results/monitor_v2_recorded_input_validation_report.json`.
+- Decide whether the recorded input shape is accepted for a validated-input
+  scoring runner.
 scope:
-- Deterministic adapters for recorded monitor v2 input files.
+- Documentation and output review only.
+- Existing recorded monitor v2 input artifacts only.
 - Existing curated US-election event seed only.
-- File-based outputs or tests only.
 - No new live data and no new event curation.
 out_of_scope:
 - Agents, MCP, model routing, ML, cloud deployment, live trading, and order
@@ -52,12 +55,10 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Recorded watchlist, market snapshot, wallet-tier snapshot, and event-candidate
-  files are generated from existing artifacts.
-- Generated recorded inputs pass validation.
-- No wallet addresses appear in monitor-facing recorded inputs.
-- No external API, WebSocket, database write, agent, MCP, ML, or order
-  execution path is activated.
+- Recorded input output shape and validation report are reviewed.
+- The review records whether the shape is accepted or what must change.
+- No new live data, external API, WebSocket, database write, agent, MCP, ML, or
+  order execution path is activated.
 - Outputs remain aggregate-only and contain no wallet addresses or order
   instructions.
 - No live collector, agent, MCP, ML, live-trading, or order-execution path is
@@ -65,7 +66,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: build monitor v2 recorded input adapters
+next_commit: docs: review monitor v2 recorded input outputs
 
 ## Decision Inputs For This Goal
 
@@ -106,9 +107,10 @@ next_commit: feat: build monitor v2 recorded input adapters
 
 ## Done Means
 
-- Recorded monitor v2 input files are generated and validated or a precise
-  blocker is recorded.
-- The monitor has replay-derived file inputs before live collection is added.
+- Recorded monitor v2 input files are reviewed or a precise blocker is
+  recorded.
+- The monitor has an accepted replay-derived file input boundary before live
+  collection is added.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, or profit-guarantee work.
 
@@ -196,3 +198,5 @@ next_commit: feat: build monitor v2 recorded input adapters
   `event_watch_candidate`.
 - Monitor v2 recorded-input validators exist for watchlist, market snapshots,
   wallet-tier snapshots, and event candidates.
+- Monitor v2 recorded-input adapter exists and generates validated replay-
+  derived input files.

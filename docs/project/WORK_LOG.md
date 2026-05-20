@@ -1601,3 +1601,54 @@ Next step:
 
 - Build recorded monitor v2 input adapters from existing historical artifacts
   and validate the generated files.
+
+## 2026-05-20 - goal-monitor-v2-recorded-input-adapter-001
+
+Task:
+
+- Generate recorded monitor v2 input files from existing historical artifacts
+  and validate the generated files.
+
+Files changed:
+
+- `operations/analysis/monitor_v2_recorded_input_adapter.py`
+- `tests/test_monitor_v2_recorded_input_adapter.py`
+- `data/results/monitor_v2_recorded_watchlist.csv`
+- `data/results/monitor_v2_recorded_market_snapshots.csv`
+- `data/results/monitor_v2_recorded_wallet_tier_snapshots.csv`
+- `data/results/monitor_v2_recorded_event_candidates.csv`
+- `data/results/monitor_v2_recorded_input_validation_report.json`
+- `data/results/monitor_v2_recorded_inputs_metadata.json`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_v2_recorded_input_adapter.py tests/test_monitor_v2_input_validation.py -q`
+  -> 12 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_recorded_input_adapter`
+  -> 1 watchlist row, 305 market snapshot rows, 1236 wallet-tier snapshot rows,
+  7 event candidate rows, validation status `pass`.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 209 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  209 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check` -> PASS,
+  209 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan` -> grouped
+  project-control docs, research docs, deterministic analysis, data files, and
+  tests; mixed changes accepted as one coherent recorded-input adapter commit.
+
+Decision:
+
+- Generate replay-derived recorded inputs before any live collector exists.
+- Use local Polymarket prices, curated seed events, and aggregate H3 tiered
+  wallet activity only.
+- Keep generated inputs aggregate-only and free of wallet addresses or order
+  instructions.
+
+Next step:
+
+- Review recorded monitor v2 input outputs before building a validated-input
+  scoring runner.

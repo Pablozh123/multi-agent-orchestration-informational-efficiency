@@ -112,12 +112,13 @@ class MarketWatchItemRow(BaseModel):
         "source",
         "created_at",
         "updated_at",
+        mode="before",
     )
     @classmethod
     def _non_empty(cls, value: str) -> str:
         return _non_empty_str(value)
 
-    @field_validator("created_at", "updated_at")
+    @field_validator("created_at", "updated_at", mode="before")
     @classmethod
     def _datetime(cls, value: str) -> str:
         return _ensure_datetime(value)
@@ -146,12 +147,12 @@ class MarketSnapshotRow(BaseModel):
     open_interest: float | None = Field(default=None, ge=0.0)
     source: str
 
-    @field_validator("timestamp_utc")
+    @field_validator("timestamp_utc", mode="before")
     @classmethod
     def _timestamp(cls, value: str) -> str:
         return _ensure_datetime(value)
 
-    @field_validator("market_id", "token_id", "source")
+    @field_validator("market_id", "token_id", "source", mode="before")
     @classmethod
     def _non_empty(cls, value: str) -> str:
         return _non_empty_str(value)
@@ -181,12 +182,12 @@ class WalletTierSnapshotRow(BaseModel):
     source: str
     filter_metadata: str
 
-    @field_validator("timestamp_utc")
+    @field_validator("timestamp_utc", mode="before")
     @classmethod
     def _timestamp(cls, value: str) -> str:
         return _ensure_datetime(value)
 
-    @field_validator("market_id", "bucket", "tier", "source", "filter_metadata")
+    @field_validator("market_id", "bucket", "tier", "source", "filter_metadata", mode="before")
     @classmethod
     def _non_empty(cls, value: str) -> str:
         return _non_empty_str(value)
@@ -228,12 +229,13 @@ class EventCandidateRow(BaseModel):
         "event_type",
         "expected_effect",
         "review_status",
+        mode="before",
     )
     @classmethod
     def _non_empty(cls, value: str) -> str:
         return _non_empty_str(value)
 
-    @field_validator("detected_at_utc", "published_at_utc")
+    @field_validator("detected_at_utc", "published_at_utc", mode="before")
     @classmethod
     def _datetime(cls, value: str) -> str:
         return _ensure_datetime(value)
@@ -403,9 +405,9 @@ def _ensure_datetime(value: str) -> str:
 
 
 def _non_empty_str(value: str) -> str:
-    if not isinstance(value, str):
-        raise TypeError(f"value must be str, got {type(value).__name__}")
-    candidate = value.strip()
+    if value is None:
+        raise TypeError("value must be str, got NoneType")
+    candidate = str(value).strip()
     if not candidate:
         raise ValueError("value must be a non-empty string")
     return candidate

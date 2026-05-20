@@ -1,0 +1,2 @@
+watch_id,market_id,condition_id,token_ids,question,category,subcategory,status,source,created_at,updated_at
+watch_2024_us_presidential_replay,polymarket_2024_us_presidential_replay,recorded_replay_condition,21742633143463906290569050155826241533067272736897614950488156847949938836455,2024 US presidential election Polymarket replay,politics,us_election,active,data/thesis.db:polymarket_prices,2024-01-05T00:00:03Z,2024-11-04T00:00:03Z

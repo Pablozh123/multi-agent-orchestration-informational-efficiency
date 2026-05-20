@@ -865,6 +865,58 @@ Next implementation step:
   so the validator can run on replay-derived watchlist, market snapshot,
   wallet-tier snapshot, and event-candidate files before live collection.
 
+### Recorded Input Adapter
+
+Adapter date: 2026-05-20
+
+Adapter status: complete for first historical replay-derived input files.
+
+Implemented adapter module:
+
+- `operations/analysis/monitor_v2_recorded_input_adapter.py`
+
+Implemented test module:
+
+- `tests/test_monitor_v2_recorded_input_adapter.py`
+
+Generated recorded input files:
+
+- `data/results/monitor_v2_recorded_watchlist.csv`
+- `data/results/monitor_v2_recorded_market_snapshots.csv`
+- `data/results/monitor_v2_recorded_wallet_tier_snapshots.csv`
+- `data/results/monitor_v2_recorded_event_candidates.csv`
+
+Generated validation and metadata files:
+
+- `data/results/monitor_v2_recorded_input_validation_report.json`
+- `data/results/monitor_v2_recorded_inputs_metadata.json`
+
+Output shape:
+
+- Watchlist rows: 1.
+- Market snapshot rows: 305.
+- Wallet-tier snapshot rows: 1236.
+- Event candidate rows: 7.
+- Validation status: `pass`.
+- Wallet addresses: absent.
+- Order instructions: absent.
+
+Interpretation:
+
+- The monitor now has a tested recorded-file input boundary before live
+  collection exists.
+- Market snapshots are daily replay snapshots from local Polymarket price
+  data.
+- Wallet-tier snapshots are aggregate tier-level rows from the H3 daily
+  activity series.
+- Event candidates are the seven curated seed events mapped to the replay
+  market.
+
+Next implementation step:
+
+- Review the recorded input files and decide whether their shape is accepted
+  before building a runner that scores validated recorded inputs.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

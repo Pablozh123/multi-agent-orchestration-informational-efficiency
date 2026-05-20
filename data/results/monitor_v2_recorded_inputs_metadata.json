@@ -1,0 +1,38 @@
+{
+  "generated_at_utc": "2026-05-20T16:05:00+00:00",
+  "inputs": {
+    "activity_path": "data\\results\\h3_tiered_wallet_activity_daily.csv",
+    "db_path": "data\\thesis.db",
+    "events_csv_path": "data\\events_timeline_seed.csv"
+  },
+  "limitations": {
+    "does_not_send_orders": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_use_rcp": true,
+    "does_not_write_database": true,
+    "no_live_websocket_or_api_collection": true,
+    "no_profitability_or_private_information_claim": true,
+    "recorded_files_only": true,
+    "uses_aggregate_wallet_tier_activity": true,
+    "uses_daily_price_snapshots": true,
+    "uses_existing_curated_events": true,
+    "uses_observed_buy_side_activity_extract": true
+  },
+  "method": {
+    "market_id": "polymarket_2024_us_presidential_replay",
+    "name": "monitor_v2_recorded_input_adapter",
+    "source_mode": "existing_local_artifacts_only",
+    "validates_outputs": true
+  },
+  "outputs": {
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "event_candidate_row_count": 7,
+    "market_snapshot_row_count": 305,
+    "validation_status": "pass",
+    "wallet_tier_snapshot_row_count": 1236,
+    "watchlist_row_count": 1
+  }
+}

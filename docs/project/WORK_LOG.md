@@ -2184,3 +2184,48 @@ Next step:
 
 - Build a local monitor-v2 live-input scoring bridge from the validated mocked
   files.
+
+## 2026-05-20 - goal-monitor-v2-live-input-scoring-bridge-001
+
+Task:
+
+- Build a deterministic local monitor-v2 live-input scoring bridge from the
+  validated mocked live-style files.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+- `operations/analysis/monitor_v2_live_input_scoring.py`
+- `tests/test_monitor_v2_live_input_scoring.py`
+- `data/results/monitor_v2_live_scoring_snapshots.csv`
+- `data/results/monitor_v2_live_alert_rows.csv`
+- `data/results/monitor_v2_live_alert_summary.csv`
+- `data/results/monitor_v2_live_scoring_validation_report.json`
+- `data/results/monitor_v2_live_scoring_metadata.json`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_v2_live_input_scoring.py tests/test_monitor_v2_live_input_batch.py tests/test_monitor_v2_live_input_validation.py -q`
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_live_input_scoring`
+
+Decision:
+
+- Add a deterministic scoring bridge that validates local live-style input
+  files, scores closed 15-minute buckets, and writes diagnostic monitor-v2
+  snapshots, alert rows, alert summaries, validation report, and metadata.
+- The bridge uses only local files, does not call APIs or WebSockets, does not
+  write to the database, and does not use LLMs, agents, MCP, ML, or order
+  paths.
+- The generated fixture output has 35 scoring snapshot rows, 35 alert rows, 9
+  summary rows, and 6 non-`none` diagnostic alerts. These are pipeline-shape
+  diagnostics, not market evidence.
+
+Next step:
+
+- Review the local live-input scoring output shape before selecting the next
+  real-data replay boundary.

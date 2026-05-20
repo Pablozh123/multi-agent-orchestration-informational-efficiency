@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-live-input-scoring-bridge-001
-title: Score local replay-first monitor v2 live input batch
+goal_id: goal-monitor-v2-live-input-scoring-review-001
+title: Review local replay-first monitor v2 live input scoring bridge
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -25,22 +25,23 @@ why:
   live-style fixture input files and validation metadata.
 - The local replay-first live input batch output shape is reviewed and
   accepted for a diagnostic local scoring bridge.
-- The next safe step is to connect the validated local live-style input files
-  to deterministic monitor-v2 scoring without adding a collector, API client,
-  WebSocket loop, MCP tool, runtime agent, strategy backtest, or execution
-  path.
+- The local replay-first live input scoring bridge now emits diagnostic
+  snapshots, alert rows, alert summaries, validation report, and metadata.
+- The next safe step is to review the diagnostic scoring output shape before
+  any real-data replay boundary, collector, API client, WebSocket loop, MCP
+  tool, runtime agent, strategy backtest, or execution path is implemented.
 deliverables:
-- Deterministic local scoring bridge for the generated
-  `monitor_v2_live_*` files.
-- Validated scoring outputs under `data/results/` with rows, summary, and
-  metadata.
-- Tests proving local input validation, deterministic conversion, no wallet
-  addresses, and no live/API/WebSocket/DB/LLM/agent/MCP/order paths.
+- Review and accept, revise, or block the local live-input scoring output
+  shape.
+- Confirm whether diagnostic rows, summary rows, validation report, and
+  metadata are sufficient for the next real-data replay boundary.
+- Document that fixture alerts are pipeline-shape diagnostics, not market
+  evidence.
 scope:
-- Existing generated local `monitor_v2_live_*` files.
-- Existing deterministic monitor-v2 scoring helpers where reusable.
-- Local mocked fixture data only.
-- Diagnostic scoring output only.
+- Documentation review only unless the user explicitly asks for implementation
+  after the scoring review is accepted.
+- Existing monitor-v2 architecture and project-control docs.
+- Existing generated local live-input scoring outputs.
 - Existing curated US-election event seed only.
 - No new live data, no external API calls, and no new event curation.
 out_of_scope:
@@ -55,19 +56,18 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Local live-style input files are validated before scoring.
-- Closed bucket rows are converted into deterministic scoring snapshots without
-  lookahead.
-- Diagnostic scoring outputs are written with clear fixture limitations.
-- Output files contain no wallet addresses and no order instructions.
-- Missing or inconsistent local inputs fail clearly in tests.
+- Review notes accept, revise, or block the diagnostic local scoring output
+  shape.
+- Review notes state the observed row counts, alert counts, limitations, and
+  allowed interpretation.
+- Review notes state the next implementation boundary after the local fixture.
 - Live API/WebSocket collection remains blocked.
 - No live collector, external API call, WebSocket loop, agent, MCP, ML,
   live-trading, strategy backtest, or order-execution path is activated.
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: score local monitor v2 live input batch
+next_commit: docs: review local monitor v2 live input scoring bridge
 
 ## Decision Inputs For This Goal
 
@@ -92,14 +92,15 @@ next_commit: feat: score local monitor v2 live input batch
   artifacts exist.
 - The local replay-first input batch output shape is reviewed and accepted for
   a diagnostic deterministic scoring bridge.
+- Local replay-first live input scoring bridge module, tests, and diagnostic
+  output artifacts exist.
 
 ## Done Means
 
-- A local deterministic scoring bridge validates the generated files, converts
-  closed buckets into scoring snapshots, and writes diagnostic row, summary,
-  and metadata outputs.
-- The bridge uses only local files and leaves live collection, agents, MCP,
-  strategy backtests, and order paths blocked.
+- The scoring review produces a clear go/no-go for the next real-data replay
+  boundary.
+- The review makes clear that current fixture alerts are diagnostics only and
+  not empirical market evidence.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -224,3 +225,6 @@ next_commit: feat: score local monitor v2 live input batch
   validated mocked fixture files plus metadata under `data/results/`.
 - Local replay-first monitor-v2 live input batch output shape is reviewed and
   accepted for a diagnostic deterministic local scoring bridge.
+- Local replay-first monitor-v2 live input scoring bridge exists and writes
+  diagnostic snapshots, alert rows, alert summaries, validation report, and
+  metadata under `data/results/`.

@@ -1,0 +1,112 @@
+{
+  "generated_at_utc": "2026-05-20T20:00:20+00:00",
+  "inputs": {
+    "event_candidate_row_count": 1,
+    "event_candidates_path": "data\\results\\monitor_v2_live_event_candidates.csv",
+    "market_snapshot_row_count": 4,
+    "market_snapshots_path": "data\\results\\monitor_v2_live_market_snapshots.csv",
+    "validation_report_path": "data\\results\\monitor_v2_live_scoring_validation_report.json",
+    "validation_status": "pass",
+    "wallet_tier_snapshot_row_count": 8,
+    "wallet_tier_snapshots_path": "data\\results\\monitor_v2_live_wallet_tier_snapshots.csv",
+    "watchlist_path": "data\\results\\monitor_v2_live_watchlist.csv",
+    "watchlist_row_count": 1
+  },
+  "limitations": {
+    "diagnostic_scoring_only": true,
+    "does_not_send_orders": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_use_rcp": true,
+    "does_not_write_database": true,
+    "mocked_local_fixture_only": true,
+    "no_live_websocket_or_api_collection": true,
+    "no_profitability_or_private_information_claim": true,
+    "too_few_buckets_for_production_alerts": true,
+    "uses_aggregate_wallet_tier_activity": true,
+    "uses_observed_buy_side_activity_extract": true
+  },
+  "method": {
+    "alert_rule": "Rule C combined-family confirmation from monitor_v2_snapshot",
+    "baseline_observations": 3,
+    "diagnostic_fixture_baseline_only": true,
+    "event_context_rule": "event candidate may annotate only buckets at or after published_at_utc",
+    "input_mode": "validated_local_live_style_files",
+    "min_baseline_observations": 2,
+    "name": "monitor_v2_live_input_scoring",
+    "production_like_min_baseline_observations": 20,
+    "scores_closed_buckets_only": true,
+    "uses_completed_prior_observations": true,
+    "validates_inputs_before_scoring": true
+  },
+  "outputs": {
+    "alert_count": 6,
+    "alert_row_columns": [
+      "timestamp_utc",
+      "market_id",
+      "tier",
+      "anomaly_family",
+      "metric_name",
+      "observed_value",
+      "baseline_window",
+      "baseline_observations",
+      "rolling_median",
+      "rolling_mad",
+      "robust_z",
+      "rolling_percentile_rank",
+      "severity",
+      "status",
+      "event_candidate_id",
+      "event_review_status",
+      "evidence_refs",
+      "limitation",
+      "review_status",
+      "claim_scope"
+    ],
+    "alert_row_count": 35,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "severity_counts": {
+      "high": 4,
+      "info": 1,
+      "none": 29,
+      "watch": 1
+    },
+    "snapshot_columns": [
+      "timestamp_utc",
+      "market_id",
+      "tier",
+      "anomaly_family",
+      "metric_name",
+      "observed_value",
+      "event_candidate_id",
+      "event_review_status",
+      "evidence_ref",
+      "limitation",
+      "review_status"
+    ],
+    "snapshot_count": 35,
+    "status_counts": {
+      "insufficient_baseline": 18,
+      "ok": 11,
+      "zero_mad": 6
+    },
+    "summary_columns": [
+      "market_id",
+      "tier",
+      "anomaly_family",
+      "metric_name",
+      "row_count",
+      "alert_count",
+      "max_severity",
+      "max_robust_z",
+      "max_percentile_rank",
+      "first_alert_at",
+      "latest_alert_at",
+      "limitation",
+      "claim_scope"
+    ],
+    "summary_row_count": 9
+  }
+}

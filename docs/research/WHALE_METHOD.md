@@ -501,6 +501,21 @@ Live wallet input batch review:
   private-information wording, MCP access, agents, and order execution remain
   blocked.
 
+Live wallet input scoring status:
+
+- Scoring module:
+  `operations/analysis/monitor_v2_live_input_scoring.py`.
+- Scoring output:
+  `data/results/monitor_v2_live_alert_rows.csv`.
+- The diagnostic scoring bridge converts closed aggregate wallet-tier buckets
+  into monitor-v2 snapshot rows and scores them with deterministic Rule C
+  alert logic.
+- The mocked fixture produces wallet-related diagnostic alerts, but these are
+  pipeline-shape tests only because the input data are mocked and have only 4
+  buckets.
+- The output contains no wallet addresses and makes no wallet profitability,
+  private-information, misconduct, insider, or live-trading claim.
+
 Snapshot prototype status:
 
 - A first deterministic snapshot prototype exists in

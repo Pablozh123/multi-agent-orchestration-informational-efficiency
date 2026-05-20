@@ -1895,6 +1895,63 @@ Next phase selected:
   mocked input files and writes diagnostic scoring outputs without connecting
   to live sources.
 
+### Local Live Input Scoring Bridge
+
+live_input_scoring_status: complete for diagnostic local fixture
+
+Implemented module:
+
+- `operations/analysis/monitor_v2_live_input_scoring.py`
+
+Implemented tests:
+
+- `tests/test_monitor_v2_live_input_scoring.py`
+
+Generated artifacts:
+
+- `data/results/monitor_v2_live_scoring_snapshots.csv`
+- `data/results/monitor_v2_live_alert_rows.csv`
+- `data/results/monitor_v2_live_alert_summary.csv`
+- `data/results/monitor_v2_live_scoring_validation_report.json`
+- `data/results/monitor_v2_live_scoring_metadata.json`
+
+Output shape:
+
+- 35 diagnostic scoring snapshot rows.
+- 35 diagnostic alert rows.
+- 9 compact summary rows.
+- 6 non-`none` alert rows in the mocked fixture:
+  4 `high`, 1 `watch`, and 1 `info`.
+
+Implementation behaviour:
+
+- Validates all local live-style input files before scoring.
+- Uses closed buckets only.
+- Converts 15-minute live-style buckets into monitor-v2 scoring snapshots.
+- Uses Rule C combined-family confirmation from the existing monitor-v2
+  snapshot scorer.
+- Uses a deliberately small diagnostic baseline
+  (`baseline_observations=3`, `min_baseline_observations=2`) because the
+  mocked fixture has only 4 buckets.
+- Event candidates annotate only buckets at or after `published_at_utc`, so
+  event context is not applied to earlier buckets.
+
+Boundary:
+
+- The output is a diagnostic fixture result, not market evidence.
+- It does not call Polymarket APIs, WebSockets, databases, LLMs, agents, MCP
+  tools, ML systems, order endpoints, or trading credentials.
+- It does not write to the database.
+- It contains no wallet addresses and no order instructions.
+- Production-like alerts still require at least 20 baseline observations under
+  the v2 contract.
+
+Next phase selected:
+
+- Review the local scoring output shape before any replayed real data,
+  collector design, MCP access, runtime agent, strategy backtest, or
+  order-execution path is added.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

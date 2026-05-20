@@ -120,6 +120,20 @@ Before stopping work:
 If a check fails, report the failure and do not claim the repository is ready
 for the next empirical phase.
 
+## Result Reporting Rule
+
+For empirical or result-producing work, always report:
+
+1. What was generated or inspected.
+2. The key numerical result or output shape.
+3. A bounded interpretation tied to deterministic artifacts.
+4. The main limitation.
+5. A simple figure when it makes the result easier to understand.
+
+Figures must be generated from existing deterministic artifacts or tested
+Python code. Do not use figures to introduce unreviewed metrics or stronger
+claims than the source artifacts support.
+
 ## First Implementation Target
 
 Create a reproducible deterministic pipeline:

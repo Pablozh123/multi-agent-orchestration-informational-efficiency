@@ -133,6 +133,48 @@ wallet-tier-amount, active-wallet, and top-tier-concentration diagnostics.
 Historical anomaly outputs can later motivate a stricter backtest, but they are
 first a monitoring and research-control layer.
 
+### Historical Output Review
+
+Review date: 2026-05-20
+
+Review status: accepted for the first historical daily anomaly baseline.
+
+Result summary:
+
+- 350 row-level anomaly diagnostics and 70 compact summary rows were produced.
+- Anomaly-day counts by family: 43 active-wallet anomalies, 40 wallet-tier
+  amount anomalies, 5 market-move anomalies, and 4 top-tier concentration
+  anomalies.
+- The strongest event-level cluster is `evt_2024_07_21_biden_withdrawal` with
+  30 anomaly days across the monitored families.
+- Other visible clusters are `evt_2024_06_28_biden_trump_debate` with 16,
+  `evt_2024_07_15_vance_vp_pick` with 13, and
+  `evt_2024_09_11_harris_trump_debate` with 13.
+- The clearest single diagnostic is active-wallet activity in the observed
+  baseline tier around Biden withdrawal, with maximum z-score 13.68.
+
+Figure:
+
+- `data/results/thesis_h3_event_wallet_anomalies.png`
+
+Interpretation:
+
+- The output shows that the monitor can surface event-centred clusters where
+  market movement and aggregate wallet-tier activity are unusual relative to a
+  pre-event baseline.
+- The Biden withdrawal cluster is the most salient historical validation case
+  in the current US-election seed.
+- The output is descriptive. It does not prove causality, private information,
+  misconduct, or profitability.
+
+v2 decision:
+
+- The next contract should specify the near-real-time politics/geo monitor
+  before implementation.
+- v2 should define watchlist inputs, event-candidate intake, alert scoring,
+  human review, persistence, and bounded summary outputs.
+- Backtest validation remains a later step after the alert contract is fixed.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

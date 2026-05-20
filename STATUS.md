@@ -3,42 +3,52 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-20 15:35
+Generated: 2026-05-20 15:49
 
-Current goal: `goal-review-historical-anomaly-output-001` - Review historical anomaly outputs and decide monitor v2 contract
+Current goal: `goal-monitor-v2-contract-001` - Specify near-real-time politics/geo monitor v2 contract
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `178 passed in 6.40s`
+Pytest summary: `178 passed in 5.46s`
 
 Git branch: `main`
 
-Latest commit: `7a9fc96`
+Latest commit: `a12dff5`
 
 Git status:
 
 ```text
+ M AGENTS.md
  M GOAL.md
  M ROADMAP.md
+ M STATUS.md
+ M data/results/thesis_figures_metadata.json
+ M docs/project/WORK_LOG.md
+ M docs/research/RESEARCH_SPEC.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
  M docs/research/WHALE_METHOD.md
-?? data/results/h3_event_wallet_anomaly_metadata.json
-?? data/results/h3_event_wallet_anomaly_rows.csv
-?? data/results/h3_event_wallet_anomaly_summary.csv
-?? operations/analysis/h3_event_wallet_anomalies.py
-?? tests/test_h3_event_wallet_anomalies.py
+ M operations/analysis/thesis_figures.py
+ M tests/test_thesis_figures.py
+?? data/results/thesis_h3_event_wallet_anomalies.png
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      | 57 ++++++++++++++--------------
- ROADMAP.md                                   |  7 +++-
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 12 ++++--
- docs/research/WHALE_METHOD.md                | 35 ++++++++++++++---
- 4 files changed, 72 insertions(+), 39 deletions(-)
+ AGENTS.md                                    | 14 ++++++++
+ GOAL.md                                      | 46 ++++++++++++++----------
+ ROADMAP.md                                   |  8 +++--
+ STATUS.md                                    | 36 +++++++++++--------
+ data/results/thesis_figures_metadata.json    |  6 ++--
+ docs/project/WORK_LOG.md                     | 46 ++++++++++++++++++++++++
+ docs/research/RESEARCH_SPEC.md               | 10 ++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 42 ++++++++++++++++++++++
+ docs/research/WHALE_METHOD.md                | 54 ++++++++++++++++++++++++++++
+ operations/analysis/thesis_figures.py        | 42 ++++++++++++++++++++++
+ tests/test_thesis_figures.py                 | 23 ++++++++++++
+ 11 files changed, 288 insertions(+), 39 deletions(-)
 ```
 
 Blockers:
@@ -47,7 +57,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: review historical anomaly output shape
+- docs: specify near-real-time monitor v2 contract
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

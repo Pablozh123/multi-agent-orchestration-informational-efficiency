@@ -2,27 +2,29 @@
 
 ## Active Goal
 
-goal_id: goal-review-historical-anomaly-output-001
-title: Review historical anomaly outputs and decide monitor v2 contract
+goal_id: goal-monitor-v2-contract-001
+title: Specify near-real-time politics/geo monitor v2 contract
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
 - H1-H3 deterministic baseline outputs and thesis-facing summaries exist.
 - The politics/geopolitics anomaly-monitor specification is now recorded.
-- The first historical anomaly-output artifacts now exist and need a
-  methodology review before near-real-time design or backtest validation.
-- The next decision is whether v2 should specify near-real-time collectors,
-  alert thresholds, or a historical backtest validation contract.
+- The first historical anomaly-output artifacts are reviewed and accepted as a
+  descriptive daily baseline.
+- The review selected near-real-time monitor contract design as the next step,
+  before backtest validation or agent/MCP activation.
 deliverables:
-- Review the accepted shape of `h3_event_wallet_anomaly_*` outputs.
-- Record what the anomalies mean and what they do not mean.
-- Decide the next v2 contract: near-real-time monitor spec, alert-threshold
-  review, or deterministic backtest validation.
-- Keep thesis wording descriptive and bounded.
+- Specify v2 watchlist inputs for Polymarket politics/geopolitical markets.
+- Specify event-candidate intake fields and human review status values.
+- Specify deterministic alert scoring inputs, outputs, and thresholds at the
+  contract level.
+- Specify persistence and bounded summary outputs without implementing agents
+  or MCP.
+- Keep backtest validation as a later step after alert definitions are fixed.
 scope:
 - Documentation and methodology review only.
-- Existing historical anomaly artifacts only.
-- No new events unless separately curated.
+- Contract-level design for near-real-time monitoring only.
+- Existing historical anomaly artifacts can be used as motivation.
 out_of_scope:
 - New analysis modules, database writes, and regenerated artifacts unless the
   output review finds a concrete defect.
@@ -33,12 +35,14 @@ out_of_scope:
   intraday claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- The output shape, limitations, and allowed interpretation are documented.
-- The next v2 direction is selected before any further implementation.
+- The v2 monitor contract is documented before implementation.
+- The contract separates deterministic collectors, anomaly scoring, human
+  review, persistence, and later interpretation layers.
+- No agent, MCP, ML, live-trading, or order-execution path is activated.
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: review historical anomaly output shape
+next_commit: docs: specify near-real-time monitor v2 contract
 
 ## Decision Inputs For This Goal
 
@@ -56,6 +60,9 @@ next_commit: docs: review historical anomaly output shape
   `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
 - The anomaly-monitor specification is committed before this implementation.
 - Historical anomaly output artifacts exist under `data/results/`.
+- Historical anomaly output review exists in
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md` and
+  `docs/research/WHALE_METHOD.md`.
 - Literature intake structure exists in `docs/research/LITERATURE_MAP.md` and
   `data/literature/literature_index.csv`.
 - ML scope and re-entry conditions are explicit in
@@ -64,9 +71,8 @@ next_commit: docs: review historical anomaly output shape
 
 ## Done Means
 
-- The historical anomaly output shape is reviewed and accepted or revised.
-- The next v2 contract is chosen without activating agents, MCP, ML, or
-  near-real-time collectors prematurely.
+- The v2 contract can be handed to a deterministic implementation step without
+  leaving open decisions about inputs, outputs, review states, or guardrails.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, or profit-guarantee work.
 
@@ -131,3 +137,5 @@ next_commit: docs: review historical anomaly output shape
   `h3_event_wallet_anomaly_rows.csv`,
   `h3_event_wallet_anomaly_summary.csv`, and
   `h3_event_wallet_anomaly_metadata.json`.
+- Historical anomaly outputs are reviewed and visualised in
+  `data/results/thesis_h3_event_wallet_anomalies.png`.

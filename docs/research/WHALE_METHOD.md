@@ -425,6 +425,60 @@ Implemented v1 diagnostic families:
 The output is descriptive and historical. It is not a near-real-time collector,
 not a backtest, and not evidence of wallet profitability.
 
+## Historical Anomaly Output Review
+
+Review date: 2026-05-20
+
+Review status: accepted as the first historical daily anomaly diagnostic.
+
+Reviewed artifacts:
+
+- `data/results/h3_event_wallet_anomaly_rows.csv`
+- `data/results/h3_event_wallet_anomaly_summary.csv`
+- `data/results/h3_event_wallet_anomaly_metadata.json`
+- `data/results/thesis_h3_event_wallet_anomalies.png`
+
+What was investigated:
+
+- Whether the seven curated US-election events show unusual daily market moves,
+  wallet-tier amount activity, active-wallet counts, or top-tier concentration
+  relative to a separated pre-event baseline.
+
+How it was derived:
+
+- Baseline window: `[-30d, -8d]`.
+- Event window: `[-1d, +3d]`.
+- Anomaly flag: upper-tail z-score at least 2.0 or percentile rank at least
+  0.95 with observed value above baseline mean.
+- Inputs: daily Polymarket prices and aggregated tiered wallet activity.
+
+Key results:
+
+- Total anomaly-day counts: active-wallet 43, wallet-tier amount 40,
+  market-move 5, top-tier concentration 4.
+- Event-level anomaly totals: Biden withdrawal 30, Biden-Trump debate 16,
+  Vance VP pick 13, Harris-Trump debate 13, Walz VP pick 9, Trump shooting 6,
+  Trump conviction 5.
+- Strongest single row: Biden withdrawal day 0 in observed-baseline active
+  wallets, maximum z-score 13.68.
+- Strong market-move rows appear around Trump shooting and Vance VP pick, each
+  reflecting an absolute daily Polymarket price change of about 0.08.
+
+Allowed interpretation:
+
+- The historical monitor can identify days and events where aggregate wallet
+  activity or market movement is unusual relative to a pre-event baseline.
+- Biden withdrawal is the strongest multi-family anomaly cluster in the
+  current curated event set.
+
+Limitations:
+
+- Daily alignment only.
+- BUY-only wallet activity extract.
+- Small seven-event validation set.
+- No proof of causality, private information, misconduct, wallet
+  profitability, or future tradability.
+
 ## No Insider Wording
 
 The thesis may discuss whether wallet data provide early signals. It must not

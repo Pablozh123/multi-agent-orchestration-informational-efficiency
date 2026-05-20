@@ -76,6 +76,28 @@ def _write_inputs(path: Path) -> None:
             },
         ]
     ).to_csv(path / "h3_granger_results.csv", index=False)
+    pd.DataFrame(
+        [
+            {
+                "event_date": "2024-01-01",
+                "event_id": "evt_2024_a",
+                "anomaly_type": "market_move_anomaly",
+                "anomaly_day_count": 1,
+            },
+            {
+                "event_date": "2024-01-01",
+                "event_id": "evt_2024_a",
+                "anomaly_type": "wallet_tier_amount_anomaly",
+                "anomaly_day_count": 2,
+            },
+            {
+                "event_date": "2024-01-02",
+                "event_id": "evt_2024_b",
+                "anomaly_type": "active_wallet_anomaly",
+                "anomaly_day_count": 3,
+            },
+        ]
+    ).to_csv(path / "h3_event_wallet_anomaly_summary.csv", index=False)
 
 
 def test_generate_figures_writes_pngs_and_metadata(tmp_path: Path) -> None:
@@ -89,6 +111,7 @@ def test_generate_figures_writes_pngs_and_metadata(tmp_path: Path) -> None:
         "h3_wallet_tier_counts",
         "h3_lead_time_amount",
         "h3_granger_pvalues",
+        "h3_event_wallet_anomalies",
         "metadata",
     }
     for path_text in figures.values():

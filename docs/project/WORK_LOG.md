@@ -1181,3 +1181,49 @@ Next step:
 - Review the output shape and decide whether v2 should be a near-real-time
   collector contract, an alert-threshold review, or a backtest validation
   contract.
+
+## 2026-05-20 - historical-anomaly-output-review
+
+Task:
+
+- Review the historical anomaly outputs, interpret the result, generate a
+  simple thesis-facing figure, and select the next v2 monitor direction.
+
+Files changed:
+
+- `AGENTS.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+- `docs/research/RESEARCH_SPEC.md`
+- `operations/analysis/thesis_figures.py`
+- `tests/test_thesis_figures.py`
+- `data/results/thesis_h3_event_wallet_anomalies.png`
+- `data/results/thesis_figures_metadata.json`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_thesis_figures.py -q`
+- Result: `2 passed`
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_figures`
+- Result: generated `thesis_h3_event_wallet_anomalies.png`
+- `.\.venv\Scripts\python.exe -m pytest -q`
+- Result: `178 passed in 5.57s`
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+- Result: `178 passed in 8.40s`
+
+Decision:
+
+- Accept the historical anomaly output shape as a descriptive daily monitor
+  diagnostic.
+- Interpret the strongest current cluster as Biden withdrawal, with 30 anomaly
+  days across monitored families.
+- Set the next v2 direction to near-real-time monitor contract specification,
+  before backtest validation or agent/MCP activation.
+
+Next step:
+
+- Specify the near-real-time politics/geo monitor v2 contract.

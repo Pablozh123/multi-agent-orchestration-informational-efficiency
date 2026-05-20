@@ -154,6 +154,46 @@ def plot_h3_granger_pvalues(input_dir: Path, output_dir: Path) -> Path:
     return _save_figure(output_dir / "thesis_h3_granger_pvalues.png")
 
 
+def plot_h3_event_wallet_anomalies(input_dir: Path, output_dir: Path) -> Path:
+    """Plot v1 historical anomaly-day counts by event and anomaly family."""
+
+    source = input_dir / "h3_event_wallet_anomaly_summary.csv"
+    _require_file(source)
+
+    frame = pd.read_csv(source)
+    required = {"event_date", "event_id", "anomaly_type", "anomaly_day_count"}
+    missing = required.difference(frame.columns)
+    if missing:
+        raise ValueError(f"H3 event-wallet anomaly summary is missing columns: {sorted(missing)}")
+
+    frame = frame.copy()
+    frame["event_label"] = (
+        frame["event_date"].astype(str)
+        + " | "
+        + frame["event_id"].str.replace("evt_2024_", "", regex=False).str.slice(0, 26)
+    )
+    pivot = (
+        frame.pivot_table(
+            index="event_label",
+            columns="anomaly_type",
+            values="anomaly_day_count",
+            aggfunc="sum",
+            fill_value=0,
+        )
+        .sort_index()
+    )
+
+    plt.figure(figsize=(10, max(4.8, len(pivot) * 0.55)))
+    image = plt.imshow(pivot.to_numpy(), aspect="auto", cmap="YlOrRd")
+    plt.colorbar(image, label="Anomaly days")
+    plt.xticks(range(len(pivot.columns)), pivot.columns, rotation=25, ha="right")
+    plt.yticks(range(len(pivot.index)), pivot.index)
+    plt.xlabel("Anomaly family")
+    plt.ylabel("Curated event")
+    plt.title("Historical politics/geo anomaly diagnostics")
+    return _save_figure(output_dir / "thesis_h3_event_wallet_anomalies.png")
+
+
 def generate_figures(
     input_dir: Path = DEFAULT_RESULTS_DIR,
     output_dir: Path = DEFAULT_RESULTS_DIR,
@@ -167,6 +207,7 @@ def generate_figures(
         "h3_wallet_tier_counts": plot_h3_wallet_tier_counts,
         "h3_lead_time_amount": plot_h3_lead_time_amount,
         "h3_granger_pvalues": plot_h3_granger_pvalues,
+        "h3_event_wallet_anomalies": plot_h3_event_wallet_anomalies,
     }
 
     figures = {
@@ -179,6 +220,7 @@ def generate_figures(
             str(input_dir / "h3_wallet_distribution_inventory.json"),
             str(input_dir / "h3_lead_time_histograms.csv"),
             str(input_dir / "h3_granger_results.csv"),
+            str(input_dir / "h3_event_wallet_anomaly_summary.csv"),
         ],
         "figures": figures,
         "calculation_note": (

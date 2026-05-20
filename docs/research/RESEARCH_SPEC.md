@@ -336,6 +336,16 @@ Figure 5: H3 lead-lag or Granger diagnostic overview
 - Thesis role: summarise predictive timing diagnostics.
 - Status: ready; must include multiple-testing and non-causal caveats.
 
+Figure 6: Historical politics/geo anomaly diagnostics
+
+- Figure artifact: `data/results/thesis_h3_event_wallet_anomalies.png`
+- Source artifact: `data/results/h3_event_wallet_anomaly_summary.csv`
+- Supporting artifact: `data/results/h3_event_wallet_anomaly_metadata.json`
+- Thesis role: visualise which curated events show clusters of market,
+  wallet-tier, active-wallet, and concentration anomalies.
+- Status: ready as a descriptive monitor prototype figure; not evidence of
+  causality, private information, misconduct, or profitability.
+
 Figure metadata:
 
 - Source artifact: `data/results/thesis_figures_metadata.json`

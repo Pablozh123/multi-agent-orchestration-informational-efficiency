@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for historical anomaly output review
+Status: active for near-real-time monitor v2 contract specification
 
 Done criteria:
 
@@ -218,11 +218,13 @@ Done criteria:
   concentration diagnostics.
 - The historical output shape is reviewed before v2 monitor design or backtest
   validation begins.
+- The v2 contract defines watchlist inputs, event-candidate intake,
+  deterministic alert scoring, human review, persistence, and bounded summary
+  outputs before any collector implementation begins.
 
 Blockers:
 
-- The first deterministic historical anomaly output needs methodology review.
-- The next v2 direction is not selected yet.
+- The v2 near-real-time monitor contract is not specified yet.
 - The Polybench PDF is indexed only as a candidate and needs review before it
   supports thesis wording.
 - Real-time data collection is not implemented and is not required for v1.

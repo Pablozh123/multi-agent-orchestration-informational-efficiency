@@ -8,8 +8,8 @@
   documented and tested.
 - Events must be curated before H2 event-window analysis.
 - Whale thresholds must be distribution-derived, not arbitrary.
-- Strategy work is a backtested research prototype only; no live trading or
-  profit guarantee belongs in the thesis.
+- Strategy and anomaly-monitor work is a research prototype only; no live
+  trading, order execution, or profit guarantee belongs in the thesis.
 
 ## Phase 1: Project Synchronization And Foundation
 
@@ -189,28 +189,37 @@ Blockers:
 - Strong H3 conclusion wording remains limited by BUY-only source data, daily
   alignment, and multiple-testing sensitivity.
 
-## Phase 10: Strategy Research Prototype
+## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for first deterministic backtest baseline implementation
+Status: active for specification before implementation
 
 Done criteria:
 
-- Signal hypotheses are generated from bounded summaries, literature notes, or
-  curated event candidates.
-- Python owns signal validation, backtesting, PnL, drawdown, and risk metrics.
-- Backtests include transaction costs, slippage assumptions, position limits,
-  and out-of-sample or walk-forward evaluation.
-- Agents are signal generators and reviewers only, not autonomous traders.
-- MCP tools expose read-only summaries and tested backtest results, not raw
-  table dumps or live trading functions.
-- First prototype signal families, interface fields, risk assumptions, and
-  rejection criteria are specified before code exists.
-- First deterministic H3-derived backtest baseline plan defines source
-  artifacts, signal rule, evaluation split, output files, and focused tests.
+- The prototype is specified first as a politics/geopolitics anomaly monitor,
+  not as an immediate trading strategy.
+- v1 market universe is Polymarket politics/geopolitical markets.
+- Kalshi is documented as a later extension candidate, not part of v1.
+- Historical validation starts with the existing curated US-election events.
+- Future geopolitical cases require verifiable timestamps, source URLs, and
+  market mappings before they enter analysis.
+- The monitor separates market anomalies, wallet-tier anomalies, event
+  anomalies, and concentration diagnostics.
+- Wallet outputs used for interpretation are aggregate tier outputs, not raw
+  wallet-address dumps.
+- Agents are future signal generators and reviewers only, not autonomous
+  traders or metric calculators.
+- MCP tools expose read-only summaries and tested result objects, not raw table
+  dumps or order-execution functions.
+- Deterministic backtests remain a later validation path for monitor alerts and
+  signal hypotheses.
 
 Blockers:
 
-- The first deterministic H3-derived backtest baseline is not implemented yet.
+- The anomaly-monitor specification must be reviewed before implementation.
+- The first deterministic historical anomaly output is not implemented yet.
+- The Polybench PDF is indexed only as a candidate and needs review before it
+  supports thesis wording.
+- Real-time data collection is not implemented and is not required for v1.
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.

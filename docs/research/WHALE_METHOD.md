@@ -358,6 +358,48 @@ Required sensitivity review before final thesis conclusions:
 - Whether missing sell-side rows materially limit H3 interpretation.
 - Whether intraday data are needed for stronger timing claims.
 
+## Event-Centred Wallet Anomaly Monitor
+
+Anomaly-monitor status: specification for the next H3/strategy bridge.
+
+The next H3-adjacent research step should not start with wallet-level
+profitability. The current data are BUY-only and lack complete exit,
+sell-side, and position information. The next safe step is therefore an
+event-centred anomaly monitor over aggregate wallet-tier activity.
+
+Primary question:
+
+- Do dataset-relative wallet tiers show unusual aggregate activity around
+  sourced politics/geopolitical event candidates or unusual market moves?
+
+Allowed inputs:
+
+- `data/results/h3_tiered_wallet_activity_daily.csv`
+- `data/results/h3_lead_time_histograms.csv`
+- `data/results/h3_lead_lag_correlations.csv`
+- curated event files with source URLs and timestamps
+- daily Polymarket price/probability series
+
+Allowed diagnostics:
+
+- tier-level z-score or percentile-rank activity spikes,
+- active-wallet count anomalies by tier,
+- total observed amount anomalies by tier,
+- top-tier share and concentration summaries,
+- event-window alignment at the available daily frequency.
+
+Required limitations:
+
+- BUY-only source limitation remains visible in every metadata file.
+- No wallet addresses in monitor-facing or LLM-facing summaries.
+- No wallet profitability metric until complete position and exit data exist.
+- No private-information, misconduct, or insider wording.
+- No intraday timing claim unless intraday data are collected and validated.
+
+The monitor may later feed a deterministic backtest, but only after the
+anomaly definition, baseline windows, alert thresholds, and validation windows
+are specified before inspecting results.
+
 ## No Insider Wording
 
 The thesis may discuss whether wallet data provide early signals. It must not

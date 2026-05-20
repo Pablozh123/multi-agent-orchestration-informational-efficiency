@@ -61,10 +61,14 @@ Context sources:
 
 Strategy prototype boundary:
 
-- A backtested strategy prototype may be included as a research extension after
-  H1-H3 summaries are stable.
-- Agents may propose signal hypotheses, but Python must validate, backtest, and
-  calculate all results.
+- The next strategy-track extension is a politics/geopolitics anomaly monitor,
+  not an immediate trading system.
+- The monitor observes unusual combinations of market movement, wallet-tier
+  activity, concentration, and sourced event context.
+- A backtested strategy prototype may be included later as historical
+  validation after anomaly definitions are fixed.
+- Agents may propose signal hypotheses later, but Python must validate,
+  backtest, and calculate all results.
 - No live trading, no profit guarantee, and no autonomous trading claims are in
   scope for the thesis.
 
@@ -195,13 +199,19 @@ Blocked claim type:
 
 Question:
 
-- Can H1-H3 outputs motivate bounded signal hypotheses that are later tested in
-  historical Python backtests?
+- Can H1-H3 outputs motivate a politics/geopolitics anomaly monitor and later
+  bounded signal hypotheses that are tested in historical Python backtests?
 
 Scope:
 
 - Strategy work is a research extension after H1-H3, not the core proof of
   informational efficiency.
+- The immediate prototype direction is an anomaly monitor for Polymarket
+  politics/geopolitical markets.
+- The monitor treats events such as arrests, conflicts, sanctions, court
+  decisions, debates, or election shocks as candidates only after source and
+  market mapping review.
+- Existing US-election events remain the first historical validation bed.
 - Agents may later draft `SignalSpec` hypotheses from bounded summaries.
 - Python must validate all signal specs and calculate all backtest, PnL, and
   risk metrics.
@@ -540,8 +550,9 @@ Further investigations:
 
 - Define `SignalSpec`, `BacktestConfig`, and `BacktestResult` before writing
   strategy code.
-- Start with one deterministic historical backtest baseline and compare it
-  against simple benchmarks.
+- First define deterministic anomaly outputs and review their shape.
+- Then start with one deterministic historical backtest baseline and compare
+  it against simple benchmarks.
 
 ### Chapter Closing
 

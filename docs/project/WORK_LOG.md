@@ -1068,3 +1068,42 @@ Next step:
 
 - Continue with the deterministic H3 strategy backtest baseline after cleanup
   checks pass.
+
+## 2026-05-20 - politics-geo-anomaly-monitor-pivot
+
+Task:
+
+- Pivot the active strategy track from immediate backtest implementation to a
+  politics/geopolitics anomaly-monitor specification.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `ARCHITECTURE_DECISIONS.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+- `docs/research/RESEARCH_SPEC.md`
+- `docs/research/LITERATURE_MAP.md`
+- `data/literature/literature_index.csv`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+- Result: `172 passed in 12.48s`
+
+Decision:
+
+- Treat the next prototype as a Polymarket politics/geopolitics anomaly
+  monitor, not as a live-trading or immediate strategy-backtest implementation.
+- Use the existing seven US-election events as the first historical validation
+  bed.
+- Index the local Polybench PDF as a candidate source only; it needs review
+  before it can support thesis-facing claims.
+
+Next step:
+
+- Review the anomaly-monitor specification and then plan the first
+  deterministic historical anomaly output.

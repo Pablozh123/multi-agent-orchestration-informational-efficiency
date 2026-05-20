@@ -3,130 +3,47 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-20 14:49
+Generated: 2026-05-20 15:23
 
-Current goal: `goal-strategy-backtest-implementation-001` - Implement first deterministic strategy backtest baseline
+Current goal: `goal-politics-geo-anomaly-monitor-spec-001` - Specify politics/geo anomaly monitor before implementation
 
-Current roadmap phase: Phase 10: Strategy Research Prototype
+Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `172 passed in 5.83s`
+Pytest summary: `172 passed in 12.48s`
 
 Git branch: `main`
 
-Latest commit: `04d15dc`
+Latest commit: `2fa348b`
 
 Git status:
 
 ```text
- D .planning/PROJECT.md
- D .planning/REQUIREMENTS.md
- D .planning/ROADMAP.md
- D .planning/STATE.md
- D .planning/config.json
- D .planning/phases/01-data-foundation/01-00-PLAN.md
- D .planning/phases/01-data-foundation/01-00-SUMMARY.md
- D .planning/phases/01-data-foundation/01-01-PLAN.md
- D .planning/phases/01-data-foundation/01-01-SUMMARY.md
- D .planning/phases/01-data-foundation/01-02-PLAN.md
- D .planning/phases/01-data-foundation/01-02-SUMMARY.md
- D .planning/phases/01-data-foundation/01-03-PLAN.md
- D .planning/phases/01-data-foundation/01-03-SUMMARY.md
- D .planning/phases/01-data-foundation/01-04-PLAN.md
- D .planning/phases/01-data-foundation/01-04-SUMMARY.md
- D .planning/phases/01-data-foundation/01-05-PLAN.md
- D .planning/phases/01-data-foundation/01-05-SUMMARY.md
- D .planning/phases/01-data-foundation/01-06-PLAN.md
- D .planning/phases/01-data-foundation/01-06-SUMMARY.md
- D .planning/phases/01-data-foundation/01-07-PLAN.md
- D .planning/phases/01-data-foundation/01-08-PLAN.md
- D .planning/phases/01-data-foundation/01-RESEARCH.md
- D .planning/phases/01-data-foundation/01-VALIDATION.md
- D .planning/phases/01-data-foundation/01-VERIFICATION.md
- D .planning/research/ARCHITECTURE.md
- D .planning/research/FEATURES.md
- D .planning/research/PITFALLS.md
- D .planning/research/STACK.md
- D .planning/research/SUMMARY.md
- D data/summaries.json
- D directives/roles/market_agent.md
- D directives/roles/orchestrator.md
- D directives/roles/reviewer.md
- D directives/roles/sentiment_agent.md
- D directives/roles/whale_agent.md
- M docs/legacy_inventory.md
- M docs/project/WORK_LOG.md
- M legacy/audits/LEGACY_SCAN_2026-05-20.md
- D logs/changelog/1b7be1de-9637-4012-9597-c0f81e6701c0.json
- M operations/agents/market_agent.py
- M operations/agents/sentiment_agent.py
- M operations/agents/whale_agent.py
- M operations/project/review_check.py
- M tests/test_market_agent.py
- M tests/test_project_automation.py
- M tests/test_sentiment_agent.py
- M tests/test_whale_agent.py
-?? legacy/changelog/
-?? legacy/data/
-?? legacy/deferred_agents/market_agent.py
-?? legacy/deferred_agents/sentiment_agent.py
-?? legacy/deferred_agents/whale_agent.py
-?? legacy/deferred_prompts/
-?? legacy/planning/
+ M ARCHITECTURE_DECISIONS.md
+ M GOAL.md
+ M ROADMAP.md
+ M STATUS.md
+ M data/literature/literature_index.csv
+ M docs/research/LITERATURE_MAP.md
+ M docs/research/RESEARCH_SPEC.md
+ M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
+ M docs/research/WHALE_METHOD.md
 ```
 
 Git diff stat:
 
 ```text
- .planning/PROJECT.md                               |   79 -
- .planning/REQUIREMENTS.md                          |  109 -
- .planning/ROADMAP.md                               |  126 -
- .planning/STATE.md                                 |  107 -
- .planning/config.json                              |   13 -
- .planning/phases/01-data-foundation/01-00-PLAN.md  |  240 -
- .../phases/01-data-foundation/01-00-SUMMARY.md     |  142 -
- .planning/phases/01-data-foundation/01-01-PLAN.md  |  261 --
- .../phases/01-data-foundation/01-01-SUMMARY.md     |  116 -
- .planning/phases/01-data-foundation/01-02-PLAN.md  |  220 -
- .../phases/01-data-foundation/01-02-SUMMARY.md     |  141 -
- .planning/phases/01-data-foundation/01-03-PLAN.md  |  237 -
- .../phases/01-data-foundation/01-03-SUMMARY.md     |   76 -
- .planning/phases/01-data-foundation/01-04-PLAN.md  |  242 -
- .../phases/01-data-foundation/01-04-SUMMARY.md     |  120 -
- .planning/phases/01-data-foundation/01-05-PLAN.md  |  235 -
- .../phases/01-data-foundation/01-05-SUMMARY.md     |  122 -
- .planning/phases/01-data-foundation/01-06-PLAN.md  |  241 -
- .../phases/01-data-foundation/01-06-SUMMARY.md     |  119 -
- .planning/phases/01-data-foundation/01-07-PLAN.md  |  167 -
- .planning/phases/01-data-foundation/01-08-PLAN.md  |  379 --
- .planning/phases/01-data-foundation/01-RESEARCH.md |  514 ---
- .../phases/01-data-foundation/01-VALIDATION.md     |   85 -
- .../phases/01-data-foundation/01-VERIFICATION.md   |  125 -
- .planning/research/ARCHITECTURE.md                 |  380 --
- .planning/research/FEATURES.md                     |  156 -
- .planning/research/PITFALLS.md                     |  319 --
- .planning/research/STACK.md                        |  212 -
- .planning/research/SUMMARY.md                      |  236 -
- data/summaries.json                                | 4740 --------------------
- directives/roles/market_agent.md                   |   33 -
- directives/roles/orchestrator.md                   |   33 -
- directives/roles/reviewer.md                       |   27 -
- directives/roles/sentiment_agent.md                |   33 -
- directives/roles/whale_agent.md                    |   35 -
- docs/legacy_inventory.md                           |   30 +-
- docs/project/WORK_LOG.md                           |   40 +
- legacy/audits/LEGACY_SCAN_2026-05-20.md            |   20 +
- .../1b7be1de-9637-4012-9597-c0f81e6701c0.json      |   31 -
- operations/agents/market_agent.py                  |  133 +-
- operations/agents/sentiment_agent.py               |  104 +-
- operations/agents/whale_agent.py                   |  115 +-
- operations/project/review_check.py                 |    9 +-
- tests/test_market_agent.py                         |   73 +-
- tests/test_project_automation.py                   |   14 +-
- tests/test_sentiment_agent.py                      |   69 +-
- tests/test_whale_agent.py                          |   70 +-
- 47 files changed, 174 insertions(+), 10954 deletions(-)
+ ARCHITECTURE_DECISIONS.md                    |  23 +++++
+ GOAL.md                                      |  91 ++++++++++--------
+ ROADMAP.md                                   |  43 +++++----
+ STATUS.md                                    | 134 +++++----------------------
+ data/literature/literature_index.csv         |   1 +
+ docs/research/LITERATURE_MAP.md              |  12 +++
+ docs/research/RESEARCH_SPEC.md               |  27 ++++--
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 120 +++++++++++++++++++++---
+ docs/research/WHALE_METHOD.md                |  42 +++++++++
+ 9 files changed, 307 insertions(+), 186 deletions(-)
 ```
 
 Blockers:
@@ -135,7 +52,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: add deterministic h3 strategy backtest baseline
+- docs: pivot strategy track to politics geo anomaly monitor
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

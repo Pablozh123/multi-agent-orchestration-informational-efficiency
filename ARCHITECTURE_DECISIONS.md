@@ -186,3 +186,26 @@ stable.
 
 Reason: local literature can support research without becoming an uncontrolled
 or unverifiable memory layer.
+
+### 20. Politics/Geo Anomaly Monitor Is A Research Prototype
+
+The next strategy-track direction is a politics/geopolitics anomaly monitor for
+prediction markets, not a live trading system. Its first version should observe
+Polymarket politics/geopolitical markets and historical validation artifacts.
+Kalshi and near-real-time monitoring are later extensions.
+
+The monitor may combine four deterministic signal families:
+
+- market anomalies, such as unusual probability moves or volume changes,
+- wallet-tier anomalies, using aggregate tier activity only,
+- event anomalies, using sourced political or geopolitical event candidates,
+- concentration diagnostics, such as top-tier share or HHI-style summaries.
+
+It must not hardcode a single event, infer events from price movement alone, or
+produce order-execution instructions. Event candidates such as geopolitical
+shocks require a verifiable timestamp, source URL, and market mapping before
+they are analysed.
+
+Reason: an anomaly monitor fits the thesis question about informational
+efficiency while keeping empirical claims deterministic, auditable, and
+separate from autonomous trading or profit promises.

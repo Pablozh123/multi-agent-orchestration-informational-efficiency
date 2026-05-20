@@ -2,12 +2,13 @@
 
 ## Purpose
 
-This document specifies the future agent and MCP layer for the thesis strategy
-research prototype. It does not activate agents, MCP, live trading, model
-routing, or autonomous execution.
+This document specifies the future anomaly-monitor, strategy, agent, and MCP
+layer for the thesis research prototype. It does not activate agents, MCP, live
+trading, model routing, or autonomous execution.
 
-The prototype is part of the thesis only as a historical backtest and research
-design. It must not be presented as a guaranteed profitable system.
+The prototype is part of the thesis as a research design around information
+monitoring and historical validation. It must not be presented as a guaranteed
+profitable system.
 
 ## Boundary
 
@@ -30,14 +31,111 @@ Not allowed:
 - Treating exploratory backtest output as proof that a strategy will work
   out-of-sample.
 
+## Current Track: Politics/Geo Anomaly Monitor
+
+anomaly_monitor_status: specification
+
+The current prototype direction is a politics/geopolitics anomaly monitor for
+prediction markets. It should detect and explain unusual combinations of market
+movement, wallet-tier activity, volume, concentration, and sourced event
+context. It is not an order-execution or portfolio-management system.
+
+The monitor does not select one fixed event in advance. Cases such as a
+political arrest, military escalation, sanctions announcement, election shock,
+court decision, or leadership change are treated as event candidates only when
+they have:
+
+- a verifiable source URL,
+- an event timestamp or defensible publication timestamp,
+- an associated Polymarket market or market group,
+- a pre-analysis rationale for the expected direction or uncertainty change.
+
+v1 scope:
+
+- Polymarket politics/geopolitical markets.
+- Historical validation against existing deterministic outputs.
+- Existing seven US-election events as the first validation bed.
+- Aggregate wallet-tier and market-level outputs only.
+
+Later extensions:
+
+- Kalshi market comparison.
+- Near-real-time market and news collection.
+- Human-reviewed event-candidate queue.
+- MCP summary tools after bounded outputs and audit logging exist.
+
+Blocked:
+
+- live trading,
+- autonomous order execution,
+- wallet-address prompt dumps,
+- profit claims,
+- event selection after inspecting price reactions,
+- agent-computed metrics.
+
+### Anomaly Families
+
+`market_anomaly`
+
+- Probability move relative to a rolling historical baseline.
+- Volume or liquidity jump where validated data exist.
+- Bid/ask-spread anomaly only if spread data are collected and validated.
+- Interpretation: unusual market movement, not proof of inefficiency by itself.
+
+`wallet_tier_anomaly`
+
+- Dataset-relative wallet-tier activity spike.
+- Active-wallet count spike by tier.
+- Total observed `amount_usd` spike by tier.
+- Interpretation: unusual aggregate wallet activity under the BUY-only source
+  limitation.
+
+`event_anomaly`
+
+- Market and wallet activity around a verified event candidate.
+- Historical v1 uses the curated US-election event seed.
+- New politics/geo cases require source review before inclusion.
+- Interpretation: event-centred timing pattern at the available data frequency.
+
+`concentration_anomaly`
+
+- Top-tier share of observed activity.
+- HHI-style concentration summaries where meaningful.
+- Interpretation: concentration of observed activity, not wallet profitability
+  or misconduct.
+
+### Historical Validation Path
+
+The first implementation after this specification should not be a trading
+backtest. It should produce deterministic historical anomaly outputs such as:
+
+- `h3_event_wallet_anomaly_rows.csv`
+- `h3_event_wallet_anomaly_summary.csv`
+- `h3_event_wallet_anomaly_metadata.json`
+
+Expected output fields:
+
+- event or market identifier,
+- anomaly type,
+- tier or aggregate group,
+- z-score or percentile-rank style diagnostic,
+- baseline window and event window,
+- source artifact,
+- limitation,
+- no causal, insider, or profit claim.
+
+Historical anomaly outputs can later motivate a stricter backtest, but they are
+first a monitoring and research-control layer.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified
 
-The first prototype is a deterministic historical research backtest design. It
-does not implement a strategy yet. It defines what a later Python module must
-accept, reject, compute, and report before any agent or MCP layer can use the
-result.
+The strategy prototype remains a deterministic historical research backtest
+design. It is now a later validation path after the anomaly-monitor
+specification and first historical anomaly outputs. It defines what a later
+Python module must accept, reject, compute, and report before any agent or MCP
+layer can use the result.
 
 Primary objective:
 
@@ -99,8 +197,8 @@ implemented and are not thesis conclusions.
 
 ### First Baseline Recommendation
 
-The first future backtest should be the simplest H3-derived daily timing
-baseline:
+The first future backtest, after anomaly outputs exist, should be the simplest
+H3-derived daily timing baseline:
 
 - input: tier-level daily activity and daily Polymarket price changes,
 - trigger: one pre-specified tier-activity condition,

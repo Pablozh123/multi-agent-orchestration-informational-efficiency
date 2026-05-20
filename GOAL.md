@@ -2,48 +2,53 @@
 
 ## Active Goal
 
-goal_id: goal-strategy-backtest-implementation-001
-title: Implement first deterministic strategy backtest baseline
+goal_id: goal-politics-geo-anomaly-monitor-spec-001
+title: Specify politics/geo anomaly monitor before implementation
 status: active
-phase: Phase 10: Strategy Research Prototype
+phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
-- H1-H3 thesis-facing result summaries and figures now exist.
-- The results narrative skeleton now states what was investigated, how the
-  results were derived, what can be interpreted, and what remains open.
-- The deterministic strategy prototype is now specified as a future historical
-  backtest contract, not as an agent or live-trading system.
-- Overleaf-ready results prose now exists for H1, H2, H3, and the strategy
-  bridge.
-- The first deterministic backtest baseline plan now defines the source
-  artifacts, signal rule, evaluation split, cost assumptions, outputs, and
-  tests.
-- The next step is to implement that one baseline in Python without activating
-  agents, MCP, ML, or live trading.
+- H1-H3 deterministic baseline outputs and thesis-facing summaries exist.
+- The strategy track is more useful as a politics/geopolitics anomaly monitor
+  than as an immediate trading backtest.
+- The monitor can use historical US-election events for validation while
+  staying open to later sourced geopolitical event candidates.
+- Agent and MCP ideas remain thesis architecture extensions; the monitor
+  specification must stay deterministic and Python-first.
 deliverables:
-- Add a deterministic Python module for
-  `h3_top_1pct_lag1_daily_timing_baseline`.
-- Add focused toy-data tests for signal construction, lookahead prevention,
-  costs, slippage, drawdown, and output shape.
-- Generate reproducible CSV/JSON artifacts under `data/results/`.
-- Keep output interpretation bounded as an exploratory historical backtest.
+- Define the v1 anomaly monitor as a historical politics/geo monitoring
+  specification, not a live-trading system.
+- Record that v1 watches Polymarket politics/geopolitical markets; Kalshi is a
+  later extension candidate.
+- Index and classify the local Polybench PDF as a literature candidate.
+- Clarify how market, wallet, event, and concentration anomalies would be
+  analysed without raw wallet-address prompt dumps.
+- Keep the existing deterministic backtest plan as a later validation path,
+  not the immediate active goal.
 scope:
-- Deterministic Python implementation only.
-- H3 tier-level daily activity and Polymarket daily prices only.
-- File-based result artifacts only.
-- No database writes unless a separate persistence decision is documented.
+- Documentation and literature-index update only.
+- Politics/geopolitical prediction-market anomaly monitoring design.
+- Historical validation uses the existing curated US-election event set first.
+- Event candidates such as geopolitical shocks require sourced timestamps and
+  market mappings before analysis.
 out_of_scope:
-- Agents, MCP, model routing, ML, cloud deployment, and live trading.
-- New event selection, RCP usage, intraday claims, or wallet-address-level
-  prompts.
-- Treating the backtest as proof of future profitability.
+- Analysis-code changes, new statistical modules, database writes, and H3
+  backtest implementation.
+- Agents, MCP, model routing, ML, cloud deployment, live trading, and order
+  execution.
+- New real events in the canonical seed unless they are separately curated.
+- Profitability claims, insider claims, intraday claims, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Tests cover the planned signal rule, no-lookahead shift, costs, slippage,
-  drawdown, missing fields, and deterministic outputs.
-- Generated outputs contain no wallet addresses and no raw table dumps.
+- `STRATEGY_AGENT_ARCHITECTURE.md` describes the anomaly-monitor direction and
+  keeps agents/MCP deferred.
+- `WHALE_METHOD.md` records event-centred wallet anomaly analysis as the next
+  H3/strategy bridge.
+- `LITERATURE_MAP.md` and `literature_index.csv` include Polybench as a
+  candidate source, not a thesis claim.
+- No code, database, agent, MCP, ML, or live-trading implementation is added.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add deterministic h3 strategy backtest baseline
+next_commit: docs: pivot strategy track to politics geo anomaly monitor
 
 ## Decision Inputs For This Goal
 
@@ -53,10 +58,12 @@ next_commit: feat: add deterministic h3 strategy backtest baseline
 - Deterministic strategy prototype specification exists in
   `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
 - First deterministic backtest baseline plan exists in
-  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`, but is deferred behind the
+  anomaly-monitor specification.
 - H1-H3 empirical baseline review exists in `docs/research/RESEARCH_SPEC.md`.
-- Strategy prototype boundaries are recorded in `ARCHITECTURE_DECISIONS.md`,
-  `ROADMAP.md`, and `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+- Strategy and anomaly-monitor boundaries are recorded in
+  `ARCHITECTURE_DECISIONS.md`, `ROADMAP.md`, and
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
 - Literature intake structure exists in `docs/research/LITERATURE_MAP.md` and
   `data/literature/literature_index.csv`.
 - ML scope and re-entry conditions are explicit in
@@ -65,12 +72,14 @@ next_commit: feat: add deterministic h3 strategy backtest baseline
 
 ## Done Means
 
-- The first H3-derived strategy backtest module is implemented and tested.
-- Result CSV/JSON artifacts can be regenerated deterministically.
-- The output reports gross and net variants, drawdown, signal count, benchmark
-  comparison, and limitations.
+- The politics/geo anomaly-monitor specification separates market anomalies,
+  wallet-tier anomalies, event candidates, and later backtest validation.
+- The spec states that v1 is historical and Polymarket-first, while near-real
+  time monitoring and Kalshi are later extensions.
+- Polybench is indexed as a candidate source and cannot support thesis claims
+  until reviewed.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
-  or profit-guarantee work.
+  order-execution, or profit-guarantee work.
 
 ## Blocked Follow-Up Goals
 

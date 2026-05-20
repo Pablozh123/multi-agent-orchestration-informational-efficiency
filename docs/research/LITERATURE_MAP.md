@@ -100,6 +100,11 @@ Context and discovery sources:
 - `zotero_poly_009`: Useful for contextual framing of Polymarket as an
   information-discovery product and for product/market background. It is not a
   substitute for peer-reviewed or primary-source evidence.
+- `zotero_poly_010`: Local Polybench PDF candidate discovered in the Zotero
+  Polymarket folder. It appears relevant to LLM/news-context forecasting and
+  market baselines, but its metadata and claims have not yet been extracted.
+  Until reviewed, it can only shape questions about whether LLM/news systems
+  add value beyond market prices; it cannot support thesis claims.
 
 Rejected or blocked local PDFs:
 
@@ -139,6 +144,9 @@ Methodological implications:
   and transaction accounting supports caution, not stronger causal wording.
 - Strategy work remains a historical backtest prototype with explicit risk and
   microstructure assumptions.
+- The current strategy-track pivot should be framed as an anomaly-monitor
+  research prototype: literature may motivate monitoring and RAG questions, but
+  Python must still define, score, and validate every anomaly.
 
 ## Topic Categories
 
@@ -161,6 +169,8 @@ Map each source to at least one research role:
 - `H3`: wallet timing, on-chain signals, lead-lag structure, Granger methods.
 - `strategy_prototype`: backtesting, risk management, signal evaluation.
 - `architecture`: LLM/agent orchestration, MCP, auditability, reproducibility.
+- `anomaly_monitor`: market, wallet-tier, event, and concentration anomaly
+  detection for politics/geopolitical prediction markets.
 
 ## Review Status Values
 
@@ -184,6 +194,8 @@ Use these `status` values in the CSV:
 
 ## Initial Open Tasks
 
+- Extract metadata and first-pass notes from `zotero_poly_010` before using it
+  beyond question formation.
 - Convert the literature synthesis into the thesis methodology outline.
 - Extract full-paper notes for high-relevance academic sources before marking
   them `reviewed` or `cited`.

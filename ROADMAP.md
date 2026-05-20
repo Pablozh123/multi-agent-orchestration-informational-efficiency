@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for monitor v2 bounded summary output
+Status: active for monitor v2 bounded summary review
 
 Done criteria:
 
@@ -259,6 +259,8 @@ Done criteria:
   monitor outputs.
 - A simple thesis-facing figure exists for severity counts and event-context
   labels.
+- Compact bounded monitor-v2 summary artifacts exist and cite their source
+  files.
 
 Blockers:
 
@@ -268,6 +270,6 @@ Blockers:
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.
-- Compact monitor-v2 result summaries are not generated yet.
-- Live collection remains blocked until compact bounded summaries exist and
-  are reviewed.
+- Compact monitor-v2 result summaries are generated but not reviewed yet.
+- Live collection remains blocked until compact bounded summaries are reviewed
+  and accepted.

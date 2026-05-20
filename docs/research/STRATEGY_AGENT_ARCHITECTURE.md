@@ -1100,6 +1100,74 @@ Next implementation step:
   outputs before any future LLM, MCP, agent, or live collector reads monitor
   information.
 
+### Bounded Monitor V2 Summary Generator
+
+Generator date: 2026-05-20
+
+Generator status: complete for first bounded monitor-v2 summaries.
+
+Implemented module:
+
+- `operations/analysis/monitor_v2_result_summaries.py`
+
+Implemented test module:
+
+- `tests/test_monitor_v2_result_summaries.py`
+
+Generated artifacts:
+
+- `data/results/monitor_v2_bounded_summary.csv`
+- `data/results/monitor_v2_bounded_summary_metadata.json`
+
+Output shape:
+
+- Summary rows: 19.
+- Columns: `summary_id`, `summary_type`, `label`, `metric`, `value`,
+  `source_artifact`, `allowed_interpretation`, `limitation`, and
+  `claim_scope`.
+- Source artifacts are explicitly referenced in each row.
+- Metadata records that the summary does not use LLMs, agents, MCP, ML, live
+  collection, database writes, or execution paths.
+
+Included summary types:
+
+- `validation`: validation status for the recorded input scoring run.
+- `coverage`: snapshot and alert-row counts.
+- `direct_severity_count`: counts for `none`, `info`, `watch`, `high`, and
+  `critical`.
+- `event_context_label_count`: counts for daily event-context labels.
+- `metric_family`: alert counts by monitor family.
+- `strongest_metric`: the three largest robust-score diagnostics in the
+  compact metric summary.
+
+Result summary:
+
+- The bounded summary preserves the recorded scoring result: 3394 scoring
+  snapshots, 3394 alert rows, and validation status `pass`.
+- It records 581 non-`none` alert diagnostics indirectly through severity
+  counts.
+- It records 3 `critical_proximity_candidate` and 8
+  `event_watch_candidate` context rows.
+- Active-wallet activity is the largest alert-count family with 259 alert
+  rows.
+- The largest robust-score diagnostic is `market_move |
+  absolute_midpoint_change` with maximum robust z-score 20.91.
+
+Boundary:
+
+- Full row-level monitor outputs remain file-based.
+- Later LLM, MCP, or agent layers must use bounded summaries, not raw alert
+  rows.
+- The bounded summary is descriptive. It does not create trading signals,
+  private-information claims, source-attribution claims, or future-performance
+  claims.
+
+Next implementation step:
+
+- Review and accept or revise the bounded summary shape before any read-only
+  access contract, MCP contract, agent interpretation layer, or live collector
+  design uses monitor-v2 outputs.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

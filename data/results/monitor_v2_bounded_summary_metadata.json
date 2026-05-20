@@ -1,0 +1,41 @@
+{
+  "limitations": {
+    "daily_replay_only": true,
+    "does_not_send_orders": true,
+    "does_not_write_database": true,
+    "no_live_websocket_or_api_collection": true,
+    "uses_aggregate_wallet_tier_activity": true,
+    "uses_existing_recorded_scoring_outputs": true,
+    "uses_observed_buy_side_activity_extract": true
+  },
+  "method": {
+    "calculation_scope": "compact_aggregation_of_existing_monitor_v2_outputs",
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "name": "monitor_v2_bounded_summary_aggregation"
+  },
+  "outputs": {
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "summary_columns": [
+      "summary_id",
+      "summary_type",
+      "label",
+      "metric",
+      "value",
+      "source_artifact",
+      "allowed_interpretation",
+      "limitation",
+      "claim_scope"
+    ],
+    "summary_rows": 19
+  },
+  "source_artifacts": [
+    "data\\results\\monitor_v2_recorded_alert_rows.csv",
+    "data\\results\\monitor_v2_recorded_alert_summary.csv",
+    "data\\results\\monitor_v2_recorded_context_rows.csv",
+    "data\\results\\monitor_v2_recorded_scoring_validation_report.json",
+    "data\\results\\monitor_v2_recorded_scoring_metadata.json"
+  ]
+}

@@ -1771,3 +1771,40 @@ Next step:
 
 - Generate compact bounded monitor-v2 summary artifacts before live collection,
   MCP, agents, ML, or strategy backtest work.
+
+## 2026-05-20 - goal-monitor-v2-bounded-summary-output-001
+
+Task:
+
+- Generate compact bounded monitor-v2 summaries from accepted recorded scoring
+  outputs.
+
+Files changed:
+
+- `operations/analysis/monitor_v2_result_summaries.py`
+- `tests/test_monitor_v2_result_summaries.py`
+- `data/results/monitor_v2_bounded_summary.csv`
+- `data/results/monitor_v2_bounded_summary_metadata.json`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_v2_result_summaries.py -q`
+  -> 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_result_summaries`
+  -> 19 bounded summary rows.
+
+Decision:
+
+- Create a compact monitor-v2 summary boundary before any future LLM, MCP,
+  agent, live collector, or strategy backtest reads monitor outputs.
+- Keep row-level alert files separate and not prompt-facing by default.
+
+Next step:
+
+- Review the bounded monitor-v2 summary shape and decide whether it is
+  accepted for future read-only access contracts.

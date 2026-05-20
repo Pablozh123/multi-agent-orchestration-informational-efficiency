@@ -446,6 +446,20 @@ Live input contract review:
 - Live API or WebSocket collection remains blocked until mocked or replayed
   input validators exist and pass tests.
 
+Live wallet input validator status:
+
+- Validator module:
+  `operations/analysis/monitor_v2_live_input_validation.py`.
+- Test module:
+  `tests/test_monitor_v2_live_input_validation.py`.
+- Wallet-tier live inputs are validated as aggregate `WalletTierSnapshot`
+  rows.
+- The validator rejects wallet-address fields, invalid timestamp or bucket
+  fields, unknown tiers, negative active-wallet counts, negative trade counts,
+  negative observed amount, and out-of-range concentration fields.
+- The validator returns structured reports and does not connect to external
+  APIs, WebSockets, databases, agents, MCP tools, or order paths.
+
 Snapshot prototype status:
 
 - A first deterministic snapshot prototype exists in

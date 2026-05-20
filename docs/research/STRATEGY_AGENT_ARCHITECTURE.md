@@ -1682,6 +1682,65 @@ Next phase selected:
 - Implement replay-first monitor-v2 live input validators and tests using
   mocked or local fixture files only.
 
+### Live Input Validator Implementation
+
+live_input_validator_status: complete for mocked or local replay files
+
+Implemented module:
+
+- `operations/analysis/monitor_v2_live_input_validation.py`
+
+Implemented tests:
+
+- `tests/test_monitor_v2_live_input_validation.py`
+
+Implemented validation scope:
+
+- `MarketWatchItem` live rows.
+- `MarketSnapshot` live rows.
+- `WalletTierSnapshot` live rows.
+- `EventCandidate` live rows.
+
+Validated contract fields:
+
+- `collector_received_at_utc`
+- `source_timestamp_utc`
+- `bucket_start_utc`
+- `bucket_end_utc`
+- `timestamp_source`
+- `bucket_status`
+- `source_class`
+- `source_name`
+
+Validation behaviour:
+
+- Required fields must be present.
+- Timestamp fields must parse as timezone-aware UTC-compatible datetimes.
+- Bucket start must be before bucket end.
+- Closed buckets require collector receipt at or after bucket end.
+- `timestamp_source=source` requires a source timestamp.
+- Market prices, midpoints, bids, asks, and probabilities must be between 0
+  and 1 where present.
+- Bid must not exceed ask.
+- Counts, amounts, concentration, and liquidity fields must be non-negative.
+- Wallet-address fields are rejected in every live input surface.
+- Accepted or mapped event candidates require source URLs and related market
+  ids.
+- Validators return structured reports and can write
+  `data/results/monitor_v2_live_input_validation_report.json`.
+
+Boundary:
+
+- The implementation validates local CSV files only.
+- It does not call external APIs, WebSockets, databases, LLMs, agents, MCP
+  tools, ML systems, order endpoints, or trading credentials.
+- It does not generate live data and does not score alerts.
+
+Next phase selected:
+
+- Review the validator shape and decide whether to build a replay-first live
+  input batch prototype using local mocked files.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

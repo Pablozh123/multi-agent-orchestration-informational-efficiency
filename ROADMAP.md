@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for monitor v2 live input validators
+Status: active for monitor v2 live input validator review
 
 Done criteria:
 
@@ -275,6 +275,9 @@ Done criteria:
   alerts, validation-first, and no-lookahead.
 - The monitor-v2 live input collection contract is reviewed and accepted for a
   replay-first validator/prototype path.
+- Replay-first monitor-v2 live input validators exist for watchlist, market
+  snapshots, wallet-tier snapshots, event candidates, timestamp fields, bucket
+  boundaries, and wallet-address exclusion.
 
 Blockers:
 
@@ -285,4 +288,5 @@ Blockers:
 - Live trading, automated order execution, and profit guarantees are out of
   scope.
 - MCP, agents, live collection, and strategy backtests remain blocked until
-  replay-first live input validators exist and pass tests.
+  replay-first live input validators are reviewed and a local batch prototype
+  path is selected.

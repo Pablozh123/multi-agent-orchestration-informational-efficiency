@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-live-input-validators-001
-title: Implement replay-first monitor v2 live input validators
+goal_id: goal-monitor-v2-live-input-validator-review-001
+title: Review replay-first monitor v2 live input validators
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -17,19 +17,23 @@ why:
   replay-first, timestamped, bucketed, and validation-first.
 - The live input collection contract is reviewed and accepted for replay-first
   implementation planning.
-- The next safe step is to implement validators for mocked or local replay
-  input files before any collector, API client, WebSocket loop, MCP tool,
-  runtime agent, strategy backtest, or execution path is implemented.
+- Replay-first monitor-v2 live input validators now exist for mocked or local
+  replay files.
+- The next safe step is to review validator shape and decide whether a local
+  replay-first input batch prototype can be built before any collector, API
+  client, WebSocket loop, MCP tool, runtime agent, strategy backtest, or
+  execution path is implemented.
 deliverables:
-- Add deterministic validators for future replay-first monitor-v2 live input
-  files.
-- Validate watchlist rows, market snapshots, wallet-tier snapshots, event
-  candidates, timestamp fields, bucket boundaries, and no wallet-address
-  exposure.
-- Add tests with mocked or temporary local files.
+- Review and accept, revise, or block the replay-first live input validators.
+- Confirm validator coverage for watchlist rows, market snapshots, wallet-tier
+  snapshots, event candidates, timestamp fields, bucket boundaries, and
+  wallet-address exclusion.
+- Decide the next implementation step: local replay batch prototype,
+  additional validator work, or keep live collection blocked.
 scope:
-- Deterministic validation code and tests only.
-- Existing monitor-v2 architecture and project-control docs where needed.
+- Documentation review only unless the user explicitly asks for implementation
+  after the validator review is accepted.
+- Existing monitor-v2 architecture and project-control docs.
 - Existing curated US-election event seed only.
 - No new live data, no external API calls, and no new event curation.
 out_of_scope:
@@ -44,18 +48,16 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Validators reject invalid timestamps, missing required fields, invalid price
-  ranges, negative counts or amounts, wallet-address fields, and invalid event
-  review states.
-- Validators return structured validation reports rather than print-only
-  output.
-- Tests cover valid fixture rows and invalid examples.
+- Validator review notes accept, revise, or block the current shape.
+- Review notes state whether the validator coverage is enough for a local
+  replay-first batch prototype.
+- Review notes preserve the block on live API/WebSocket collection.
 - No live collector, external API call, WebSocket loop, agent, MCP, ML,
   live-trading, strategy backtest, or order-execution path is activated.
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add monitor v2 live input validators
+next_commit: docs: review monitor v2 live input validators
 
 ## Decision Inputs For This Goal
 
@@ -73,13 +75,14 @@ next_commit: feat: add monitor v2 live input validators
 - Architecture decision 22 records the replay-first live-input rule.
 - The live-input contract review accepts replay-first implementation planning
   and blocks live API/WebSocket collection until validators exist.
+- Replay-first live input validator module and tests exist.
 
 ## Done Means
 
-- Replay-first live input files can be validated deterministically from local
-  mocked or fixture data.
-- Invalid inputs fail clearly before any scoring or future collection path can
-  depend on them.
+- The validator review produces a clear go/no-go for a local replay-first input
+  batch prototype.
+- If accepted, the next implementation can use local mocked or fixture files
+  without deciding validation scope during coding.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -193,3 +196,7 @@ next_commit: feat: add monitor v2 live input validators
 - Monitor-v2 live input collection contract is reviewed and accepted for a
   replay-first validator/prototype path; live API/WebSocket collection remains
   blocked.
+- Replay-first monitor-v2 live input validators exist and reject invalid
+  timestamps, missing required fields, invalid price ranges, negative counts or
+  amounts, wallet-address fields, invalid event review states, and invalid
+  bucket boundaries.

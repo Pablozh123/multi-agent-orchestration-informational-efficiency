@@ -2024,3 +2024,41 @@ Next step:
 
 - Implement replay-first monitor-v2 live input validators with local mocked or
   fixture files only.
+
+## 2026-05-20 - goal-monitor-v2-live-input-validators-001
+
+Task:
+
+- Implement deterministic replay-first monitor-v2 live input validators.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+- `operations/analysis/monitor_v2_live_input_validation.py`
+- `tests/test_monitor_v2_live_input_validation.py`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_v2_live_input_validation.py tests/test_monitor_v2_input_validation.py -q`
+- `.\.venv\Scripts\python.exe -m pytest -q`
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+
+Decision:
+
+- Add local CSV validators for future live-capable watchlist, market snapshot,
+  wallet-tier snapshot, and event-candidate inputs.
+- Validators enforce UTC-compatible timestamps, bucket boundaries, source
+  metadata, price/probability ranges, non-negative counts and amounts,
+  accepted event review requirements, and wallet-address exclusion.
+- Validators return structured reports and do not call external APIs,
+  WebSockets, databases, LLMs, agents, MCP tools, ML systems, or order paths.
+
+Next step:
+
+- Review the validator shape before building a local replay-first input batch
+  prototype.

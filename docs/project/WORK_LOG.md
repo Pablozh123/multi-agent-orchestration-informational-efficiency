@@ -1376,3 +1376,45 @@ Next step:
 
 - Build deterministic historical replay snapshots from existing H2/H3
   artifacts before live collection.
+
+## 2026-05-20 - goal-monitor-v2-historical-replay-snapshots-001
+
+Task:
+
+- Build deterministic monitor v2 historical replay snapshots from existing
+  local artifacts.
+
+Files changed:
+
+- `operations/analysis/monitor_v2_historical_replay.py`
+- `tests/test_monitor_v2_historical_replay.py`
+- `data/results/monitor_v2_historical_replay_snapshots.csv`
+- `data/results/monitor_v2_historical_replay_alert_rows.csv`
+- `data/results/monitor_v2_historical_replay_alert_summary.csv`
+- `data/results/monitor_v2_historical_replay_metadata.json`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_v2_historical_replay.py tests/test_monitor_v2_snapshot.py -q`
+  -> 14 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_historical_replay`
+  -> 3040 snapshots, 3040 alert rows, 512 non-`none` alerts, 10 summary rows.
+
+Decision:
+
+- Use existing curated events, daily Polymarket prices, and aggregate
+  wallet-tier activity to build the first daily replay panel.
+- Keep the replay file-based and aggregate-only.
+- Keep Rule C as the alert rule.
+- The first replay produces `info`, `watch`, and `high` rows, but no
+  `critical` rows under the strict event-context rule.
+
+Next step:
+
+- Review historical replay outputs, especially zero `critical` rows and
+  whether event proximity should be same-day only or a small window.

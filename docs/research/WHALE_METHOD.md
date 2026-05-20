@@ -446,6 +446,21 @@ Threshold decision:
   family is itself a very strong `high` row.
 - This reduces isolated wallet-noise risk before real replay or live data.
 
+Historical replay status:
+
+- A first daily historical replay exists and uses aggregate wallet-tier
+  activity only.
+- Replay artifacts:
+  `data/results/monitor_v2_historical_replay_snapshots.csv`,
+  `data/results/monitor_v2_historical_replay_alert_rows.csv`,
+  `data/results/monitor_v2_historical_replay_alert_summary.csv`, and
+  `data/results/monitor_v2_historical_replay_metadata.json`.
+- The replay produces wallet-facing `info`, `watch`, and `high` rows, but no
+  `critical` rows under the strict Rule C event-context requirement.
+- This should be reviewed before any live wallet monitoring. In particular,
+  event proximity and wallet-cluster labels may need refinement before real
+  politics/geopolitical watchlists are added.
+
 ## Event-Centred Wallet Anomaly Monitor
 
 Anomaly-monitor status: complete for the first historical daily output.

@@ -598,6 +598,70 @@ Decision:
 - Next step: build historical replay snapshots from existing deterministic
   artifacts before any real-time collector.
 
+## Monitor V2 Historical Replay
+
+monitor_v2_historical_replay_status: complete for first daily replay
+
+Implemented replay module:
+
+- `operations/analysis/monitor_v2_historical_replay.py`
+
+Implemented test module:
+
+- `tests/test_monitor_v2_historical_replay.py`
+
+Generated artifacts:
+
+- `data/results/monitor_v2_historical_replay_snapshots.csv`
+- `data/results/monitor_v2_historical_replay_alert_rows.csv`
+- `data/results/monitor_v2_historical_replay_alert_summary.csv`
+- `data/results/monitor_v2_historical_replay_metadata.json`
+
+Replay input scope:
+
+- Curated event seed: `data/events_timeline_seed.csv`
+- Daily Polymarket prices: `data/thesis.db`, table `polymarket_prices`
+- Aggregate wallet-tier activity:
+  `data/results/h3_tiered_wallet_activity_daily.csv`
+
+Replay output shape:
+
+- 3040 daily snapshot rows.
+- 3040 scored alert rows.
+- 10 compact summary rows.
+- Date range: 2024-01-06 to 2024-11-04.
+- 7 accepted event dates are marked from the curated seed.
+- No wallet addresses and no order instructions are present.
+
+Severity result:
+
+- `none`: 2528 rows.
+- `info`: 262 rows.
+- `watch`: 173 rows.
+- `high`: 77 rows.
+- `critical`: 0 rows.
+
+Interpretation:
+
+- The replay shows that Rule C can score a historical daily monitor panel from
+  existing deterministic artifacts without live collection.
+- The absence of `critical` rows means that, under the current daily replay
+  rule, no curated event date simultaneously has market movement, wallet or
+  concentration anomaly, and accepted event context at the required severity.
+- Several curated event dates still contain wallet-tier or active-wallet
+  `watch` and `high` rows. These are descriptive monitoring signals, not
+  trading instructions or proof of causality.
+
+Review needed:
+
+- Check whether the replay should use daily event-date matching only or allow a
+  small event proximity window, such as `[-1d, +1d]`, before live collection.
+- Check whether `critical` should remain strict or whether a separate
+  `event_watch` label is needed for event dates with wallet clusters but no
+  market-move confirmation.
+- Do not add live WebSocket or API collection until this replay output is
+  reviewed.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

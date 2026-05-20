@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-historical-replay-snapshots-001
-title: Build deterministic monitor v2 historical replay snapshots
+goal_id: goal-monitor-v2-historical-replay-review-001
+title: Review monitor v2 historical replay outputs
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -16,41 +16,48 @@ why:
   row-level diagnostics, compact summaries, and metadata from mocked snapshots.
 - The monitor v2 snapshot output shape is reviewed and accepted.
 - Rule C, combined-family confirmation, is selected as the default alert rule.
-- The next safe step is to build deterministic historical replay snapshots
-  from existing artifacts before live collection.
-deliverables:
-- Create deterministic replay snapshot inputs from existing historical H2/H3
+- Deterministic historical replay snapshots now exist from existing local
   artifacts.
-- Use only existing event, price, and aggregate wallet-tier artifacts.
-- Run the monitor v2 snapshot prototype on replay snapshots.
-- Emit replay alert rows, summary rows, and metadata as file artifacts.
-- Keep outputs aggregate-only and free of wallet addresses.
+- The next safe step is to review the replay outputs and event-proximity rule
+  before live collection.
+deliverables:
+- Review `data/results/monitor_v2_historical_replay_snapshots.csv`.
+- Review `data/results/monitor_v2_historical_replay_alert_rows.csv`.
+- Review `data/results/monitor_v2_historical_replay_alert_summary.csv`.
+- Review `data/results/monitor_v2_historical_replay_metadata.json`.
+- Decide whether event context should be same-day only or use a small
+  event-proximity window.
+- Decide whether a separate `event_watch` label is needed for event-day wallet
+  clusters without market-move confirmation.
 scope:
-- Deterministic historical replay only.
-- Existing local artifacts only.
-- File-based outputs only.
+- Documentation and output review only.
+- Existing historical replay artifacts only.
+- No new live data and no new event curation.
 out_of_scope:
 - Agents, MCP, model routing, ML, cloud deployment, live trading, and order
   execution.
 - Live WebSocket or API collection.
 - Database writes.
 - New real events in the canonical seed unless they are separately curated.
-- Large monitor refactor or live collector code.
+- Large monitor refactor, scoring-code changes, or live collector code unless
+  the review finds a concrete defect.
 - Strategy backtest implementation, PnL, profitability claims, insider claims,
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Replay snapshot generation uses existing deterministic artifacts only.
-- Monitor v2 replay outputs use Rule C.
-- Replay outputs contain no wallet addresses or order instructions.
-- Output files remain aggregate-only and contain no wallet addresses or order
+- Replay output shape and limitations are reviewed.
+- The zero-`critical` result is interpreted or a concrete rule correction is
+  specified.
+- Event-proximity and `event_watch` decisions are recorded before live
+  collection.
+- Outputs remain aggregate-only and contain no wallet addresses or order
   instructions.
 - No live collector, agent, MCP, ML, live-trading, or order-execution path is
   activated.
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: build monitor v2 historical replay snapshots
+next_commit: docs: review monitor v2 historical replay outputs
 
 ## Decision Inputs For This Goal
 
@@ -84,8 +91,7 @@ next_commit: feat: build monitor v2 historical replay snapshots
 
 ## Done Means
 
-- Historical replay snapshots can be generated and scored by the monitor v2
-  prototype without live collection.
+- Historical replay outputs are accepted or concrete corrections are specified.
 - The next implementation decision is recorded before live collection is added.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, or profit-guarantee work.
@@ -162,3 +168,5 @@ next_commit: feat: build monitor v2 historical replay snapshots
   threshold-sensitivity caveat.
 - Rule C, combined-family confirmation, is selected and tested as the first
   monitor v2 default alert rule.
+- Deterministic monitor v2 historical replay snapshots and alerts exist from
+  existing local artifacts.

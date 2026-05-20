@@ -3,45 +3,45 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-20 17:01
+Generated: 2026-05-20 17:16
 
-Current goal: `goal-monitor-v2-historical-replay-snapshots-001` - Build deterministic monitor v2 historical replay snapshots
+Current goal: `goal-monitor-v2-historical-replay-review-001` - Review monitor v2 historical replay outputs
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `187 passed in 5.75s`
+Pytest summary: `192 passed in 5.78s`
 
 Git branch: `main`
 
-Latest commit: `00032dc`
+Latest commit: `0abff49`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
- M data/results/monitor_v2_metadata.json
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
  M docs/research/WHALE_METHOD.md
- M operations/analysis/monitor_v2_snapshot.py
- M tests/test_monitor_v2_snapshot.py
+?? data/results/monitor_v2_historical_replay_alert_rows.csv
+?? data/results/monitor_v2_historical_replay_alert_summary.csv
+?? data/results/monitor_v2_historical_replay_metadata.json
+?? data/results/monitor_v2_historical_replay_snapshots.csv
+?? operations/analysis/monitor_v2_historical_replay.py
+?? tests/test_monitor_v2_historical_replay.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      | 47 ++++++++++++++--------------
- ROADMAP.md                                   |  9 ++++--
- data/results/monitor_v2_metadata.json        |  4 ++-
- docs/project/WORK_LOG.md                     | 40 +++++++++++++++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 45 ++++++++++++++++++++++++++
- docs/research/WHALE_METHOD.md                | 11 +++++++
- operations/analysis/monitor_v2_snapshot.py   | 17 ++++++++++
- tests/test_monitor_v2_snapshot.py            | 19 +++++++++++
- 8 files changed, 164 insertions(+), 28 deletions(-)
+ GOAL.md                                      | 50 +++++++++++++---------
+ ROADMAP.md                                   | 11 +++--
+ docs/project/WORK_LOG.md                     | 42 ++++++++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 64 ++++++++++++++++++++++++++++
+ docs/research/WHALE_METHOD.md                | 15 +++++++
+ 5 files changed, 157 insertions(+), 25 deletions(-)
 ```
 
 Blockers:
@@ -50,7 +50,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: build monitor v2 historical replay snapshots
+- docs: review monitor v2 historical replay outputs
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

@@ -1,0 +1,100 @@
+{
+  "generated_at_utc": "2026-05-20T15:13:48+00:00",
+  "inputs": {
+    "activity_path": "data\\results\\h3_tiered_wallet_activity_daily.csv",
+    "activity_row_count": 1236,
+    "date_range_end": "2024-11-04",
+    "date_range_start": "2024-01-06",
+    "db_path": "data\\thesis.db",
+    "event_count": 7,
+    "events_csv_path": "data\\events_timeline_seed.csv",
+    "price_row_count": 305
+  },
+  "limitations": {
+    "daily_replay_only": true,
+    "does_not_send_orders": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_use_rcp": true,
+    "does_not_write_database": true,
+    "no_live_websocket_or_api_collection": true,
+    "no_profitability_or_private_information_claim": true,
+    "uses_aggregate_wallet_tier_activity": true,
+    "uses_existing_curated_events": true,
+    "uses_observed_buy_side_activity_extract": true
+  },
+  "method": {
+    "alert_rule": "Rule C combined-family confirmation from monitor_v2_snapshot",
+    "baseline_observations": 30,
+    "min_baseline_observations": 20,
+    "name": "monitor_v2_historical_replay_snapshots",
+    "replay_frequency": "daily",
+    "source_mode": "existing_local_artifacts_only",
+    "uses_completed_prior_observations": true
+  },
+  "outputs": {
+    "alert_count": 512,
+    "alert_row_columns": [
+      "timestamp_utc",
+      "market_id",
+      "tier",
+      "anomaly_family",
+      "metric_name",
+      "observed_value",
+      "baseline_window",
+      "baseline_observations",
+      "rolling_median",
+      "rolling_mad",
+      "robust_z",
+      "rolling_percentile_rank",
+      "severity",
+      "status",
+      "event_candidate_id",
+      "event_review_status",
+      "evidence_refs",
+      "limitation",
+      "review_status",
+      "claim_scope"
+    ],
+    "alert_row_count": 3040,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "severity_counts": {
+      "high": 77,
+      "info": 262,
+      "none": 2528,
+      "watch": 173
+    },
+    "snapshot_columns": [
+      "timestamp_utc",
+      "market_id",
+      "tier",
+      "anomaly_family",
+      "metric_name",
+      "observed_value",
+      "event_candidate_id",
+      "event_review_status",
+      "evidence_ref",
+      "limitation",
+      "review_status"
+    ],
+    "snapshot_count": 3040,
+    "summary_columns": [
+      "market_id",
+      "tier",
+      "anomaly_family",
+      "metric_name",
+      "row_count",
+      "alert_count",
+      "max_severity",
+      "max_robust_z",
+      "max_percentile_rank",
+      "first_alert_at",
+      "latest_alert_at",
+      "limitation",
+      "claim_scope"
+    ],
+    "summary_row_count": 10
+  }
+}

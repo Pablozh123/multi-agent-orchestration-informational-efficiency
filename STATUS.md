@@ -3,49 +3,37 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-20 18:07
+Generated: 2026-05-20 18:16
 
-Current goal: `goal-monitor-v2-recorded-input-review-001` - Review monitor v2 recorded input adapter outputs
+Current goal: `goal-monitor-v2-validated-input-scoring-runner-001` - Build validated-input monitor v2 scoring runner
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `209 passed in 6.51s`
+Pytest summary: `209 passed in 7.02s`
 
 Git branch: `main`
 
-Latest commit: `754901e`
+Latest commit: `db2957f`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
- M STATUS.md
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
- M operations/analysis/monitor_v2_input_validation.py
-?? data/results/monitor_v2_recorded_event_candidates.csv
-?? data/results/monitor_v2_recorded_input_validation_report.json
-?? data/results/monitor_v2_recorded_inputs_metadata.json
-?? data/results/monitor_v2_recorded_market_snapshots.csv
-?? data/results/monitor_v2_recorded_wallet_tier_snapshots.csv
-?? data/results/monitor_v2_recorded_watchlist.csv
-?? operations/analysis/monitor_v2_recorded_input_adapter.py
-?? tests/test_monitor_v2_recorded_input_adapter.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                            | 46 ++++++++++---------
- ROADMAP.md                                         | 12 ++---
- STATUS.md                                          | 34 ++++++++------
- docs/project/WORK_LOG.md                           | 51 +++++++++++++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md       | 52 ++++++++++++++++++++++
- operations/analysis/monitor_v2_input_validation.py | 20 +++++----
- 6 files changed, 167 insertions(+), 48 deletions(-)
+ GOAL.md                                      | 54 ++++++++++++++++++----------
+ ROADMAP.md                                   | 10 +++---
+ docs/project/WORK_LOG.md                     | 35 ++++++++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 53 +++++++++++++++++++++++++++
+ 4 files changed, 129 insertions(+), 23 deletions(-)
 ```
 
 Blockers:
@@ -54,7 +42,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: review monitor v2 recorded input outputs
+- feat: score monitor v2 recorded inputs
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

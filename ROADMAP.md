@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for monitor v2 recorded input output review
+Status: active for monitor v2 validated-input scoring runner
 
 Done criteria:
 
@@ -250,6 +250,8 @@ Done criteria:
 - Recorded input adapter outputs exist and pass validation:
   watchlist, market snapshots, wallet-tier snapshots, event candidates,
   validation report, and metadata.
+- Recorded input output shape is reviewed and accepted for a deterministic
+  validated-input scoring runner.
 
 Blockers:
 
@@ -259,6 +261,6 @@ Blockers:
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.
-- Recorded monitor v2 input files are generated but not reviewed yet.
-- Live collection remains blocked until recorded input shape is reviewed and a
-  validated-input scoring runner exists.
+- The validated-input scoring runner is not implemented yet.
+- Live collection remains blocked until the validated-input scoring runner
+  exists, is tested, and its outputs are reviewed.

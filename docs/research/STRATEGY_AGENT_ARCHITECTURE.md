@@ -917,6 +917,59 @@ Next implementation step:
 - Review the recorded input files and decide whether their shape is accepted
   before building a runner that scores validated recorded inputs.
 
+### Recorded Input Output Review
+
+Review date: 2026-05-20
+
+Review status: accepted for a validated-input scoring runner.
+
+Reviewed artifacts:
+
+- `data/results/monitor_v2_recorded_watchlist.csv`
+- `data/results/monitor_v2_recorded_market_snapshots.csv`
+- `data/results/monitor_v2_recorded_wallet_tier_snapshots.csv`
+- `data/results/monitor_v2_recorded_event_candidates.csv`
+- `data/results/monitor_v2_recorded_input_validation_report.json`
+- `data/results/monitor_v2_recorded_inputs_metadata.json`
+
+Accepted shape:
+
+- Watchlist rows: 1.
+- Market snapshot rows: 305.
+- Wallet-tier snapshot rows: 1236.
+- Event candidate rows: 7.
+- Validation status: `pass`.
+- Wallet addresses: absent.
+- Order instructions: absent.
+
+Decision:
+
+- Accept the recorded input columns and validation report for the first
+  validated-input scoring runner.
+- Keep the boundary file-based and replay-derived before live collection.
+- Treat market snapshots as daily replay snapshots, not intraday order-book
+  or WebSocket data.
+- Treat wallet-tier snapshots as aggregate BUY-side observed activity under
+  the existing H3 source limitation.
+- Treat event candidates as the seven curated seed events mapped to the replay
+  market.
+- Do not write these recorded input reviews to the database yet.
+
+Interpretation:
+
+- The monitor now has a reviewed, validated, replay-derived input boundary.
+- This is enough to build a deterministic runner that validates the recorded
+  files, applies the selected monitor v2 scoring contract, and writes bounded
+  alert outputs.
+- It is not evidence for live monitoring, intraday reaction speed, trading
+  profitability, private information, or causal claims.
+
+Next implementation step:
+
+- Build a deterministic validated-input scoring runner that reads the recorded
+  input files, validates them before scoring, emits file-based alert rows,
+  summaries, context rows, and metadata, and keeps all outputs aggregate-only.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

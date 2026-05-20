@@ -997,3 +997,34 @@ Decision:
 Next step:
 
 - Implement the deterministic H3 strategy backtest baseline in Python.
+
+## 2026-05-20 - legacy-scan-before-strategy-backtest
+
+Task:
+
+- Scan the repository for legacy and stale architecture content before
+  continuing with the strategy backtest implementation.
+
+Files changed:
+
+- `legacy/audits/LEGACY_SCAN_2026-05-20.md`
+- `docs/legacy_inventory.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- Documentation-only scan; project checks run after status refresh.
+
+Decision:
+
+- Create a separate legacy audit area instead of moving active files
+  immediately.
+- Classify `.planning/**`, old changelog output, old summary output, and active
+  single-agent modules as the highest-risk legacy surfaces.
+- Do not move active agent modules yet because current tests and imports still
+  depend on them.
+
+Next step:
+
+- Decide whether to first archive `.planning/**` or hard-guard the remaining
+  single-agent modules before implementing the H3 strategy backtest.

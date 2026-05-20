@@ -4,6 +4,14 @@ This file identifies older prompts, system instructions, agent files, and
 architecture notes that existed before the deterministic-first synchronization.
 Nothing listed here is deleted by this documentation pass.
 
+Latest full scan:
+
+- `legacy/audits/LEGACY_SCAN_2026-05-20.md`
+
+The latest scan separates active control files, archived legacy files, stale
+planning documents, active code with legacy risk, prompt files, Claude-specific
+tooling, and recommended cleanup order.
+
 ## Status Legend
 
 - `keep`: still aligned with the current architecture.
@@ -24,6 +32,7 @@ Nothing listed here is deleted by this documentation pass.
 | `.planning/PROJECT.md` | Old project description | update | Describes the project as a multi-agent system and includes arbitrary whale threshold language. | Rewrite as deterministic-first project summary. |
 | `.planning/ROADMAP.md` | Old roadmap | update | Marks agent/MCP phase as complete and places agents too early. | Replace with deterministic-first roadmap. |
 | `.planning/phases/**` | Detailed old phase plans | unclear | Contains useful ingestion and validation notes, but many plans are agent/MCP oriented or stale. | Review before reuse; mark stale sections explicitly. |
+| `.planning/**` | Old GSD planning tree | move to legacy later | Full 2026-05-20 scan found agent-first roadmap, RCP-as-probability assumptions, and fixed whale-threshold wording. | Move to `legacy/planning/` or add stale warnings in a focused cleanup commit. |
 | `directives/roles/market_agent.md` | Agent role prompt | move to legacy later | Agent prompt from deferred architecture. | Archive until agent interpretation layer is approved. |
 | `directives/roles/sentiment_agent.md` | Agent role prompt | move to legacy later | Agent prompt from deferred architecture. | Archive until agent interpretation layer is approved. |
 | `directives/roles/whale_agent.md` | Agent role prompt | move to legacy later | Agent prompt likely contains legacy whale threshold framing. | Archive and later rewrite around distribution-derived tiers. |
@@ -43,6 +52,9 @@ Nothing listed here is deleted by this documentation pass.
 | Path | Type | Status | Reason | Next action |
 | --- | --- | --- | --- | --- |
 | `operations/agents/` | Pydantic AI agent code | move to legacy later | Implemented before deterministic core was complete. | Do not extend or invoke. Archive after tests/docs are stable. |
+| `operations/agents/market_agent.py` | Single-agent code | move to legacy later | Still instantiates an active Pydantic AI agent and model id at import time. | Decide whether to hard-guard like orchestrator before strategy implementation expands. |
+| `operations/agents/sentiment_agent.py` | Single-agent code | move to legacy later | Still instantiates an active Pydantic AI agent and sentiment tooling while sentiment remains contextual. | Decide whether to hard-guard like orchestrator. |
+| `operations/agents/whale_agent.py` | Single-agent code | move to legacy later | Still exposes wallet tools and wallet-address output fields from the older agent layer. | Decide whether to hard-guard like orchestrator; avoid for H3 calculations. |
 | `operations/mcp/` | FastMCP demo server | move to legacy later | MCP demo is explicitly deferred. | Do not extend or invoke. Archive later. |
 | `operations/agents/orchestrator.py` | Active guard stub | keep | Multi-agent entry point now raises a runtime guard. Original code preserved in `legacy/deferred_agents/orchestrator.py`. | Keep blocked until H1-H3 deterministic outputs exist and are validated. |
 | `operations/mcp/thesis_mcp_server.py` | Active guard stub | keep | MCP server startup and multi-agent MCP path now raise runtime guards. Original code preserved in `legacy/deferred_mcp/thesis_mcp_server.py`. | Keep blocked until deterministic core is complete and MCP is explicitly approved. |
@@ -51,6 +63,11 @@ Nothing listed here is deleted by this documentation pass.
 | `operations/audit/` | LLM audit logger | unclear | Audit logging is required later, but current implementation belongs to old agent layer. | Review when LLM interpretation layer is designed. |
 | `operations/tools/db_tools.py` | Agent-facing bounded DB tools | unclear | Contains useful row limits, but exists for deferred agents/MCP. | Reuse only after deterministic query contracts are specified. |
 | `operations/tools/api_clients.py` | API clients | unclear | Source clients may be useful, but hidden API calls must be controlled. | Review before reuse in deterministic ingestion. |
+| `tests/test_market_agent.py` | Agent test | move to legacy later | Tests active agent instantiation rather than a deferred runtime guard. | Rewrite if single-agent modules are parked. |
+| `tests/test_sentiment_agent.py` | Agent test | move to legacy later | Tests active agent instantiation rather than a deferred runtime guard. | Rewrite if single-agent modules are parked. |
+| `tests/test_whale_agent.py` | Agent test | move to legacy later | Tests active agent instantiation and wallet output from older agent layer. | Rewrite if single-agent modules are parked. |
+| `logs/changelog/*.json` | Old agent output | move to legacy later | Contains old orchestrator/agent run claims and wallet-level details. | Move to `legacy/changelog/` or mark non-thesis evidence. |
+| `data/summaries.json` | Old prompt-context output | move to legacy later | Appears to be generated for old agent prompt context. | Move or regenerate under current bounded-summary rules. |
 
 ## Deterministic Code To Keep Active
 
@@ -60,6 +77,8 @@ Nothing listed here is deleted by this documentation pass.
 | `operations/analysis/brier_score.py` | Deterministic H1 baseline | keep | Supports first Brier Score baseline. | Continue with methodology and tests. |
 | `operations/analysis/calibrate.py` | Deterministic calibration | keep | Supports H1 calibration analysis. | Review sample-size and interpretation limits. |
 | `operations/analysis/generate_summaries.py` | Precomputed summaries | update | Useful concept, but summary definitions must be validated and avoid arbitrary thresholds. | Tighten tests and methodology before agent use. |
+| `ingest/dune.py` | Dune ingest | update | Contains a fixed `WHALE_THRESHOLD_USD = 10_000.0`; acceptable only as source-filter metadata, not H3 tier logic. | Rename/comment as source-filter metadata in a later ingest cleanup. |
+| `ingest/rcp.py` | RCP ingest | update | Contains poll-to-probability conversion code while current analysis excludes RCP until the transformation is documented. | Keep out of H1/H2 analysis until transformation is approved. |
 | `operations/validation/` | Validation pipeline | keep | Aligns with deterministic-first architecture. | Ensure every DB write uses validation where reasonable. |
 | `operations/db/` | Schema migration layer | keep | Supports required support tables and idempotent migrations. | Commit separately from documentation. |
 

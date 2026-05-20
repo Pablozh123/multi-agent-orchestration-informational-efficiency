@@ -1107,3 +1107,34 @@ Next step:
 
 - Review the anomaly-monitor specification and then plan the first
   deterministic historical anomaly output.
+
+## 2026-05-20 - historical-anomaly-output-goal
+
+Task:
+
+- Advance the active goal from anomaly-monitor specification to the first
+  deterministic historical anomaly output.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+- Result: `172 passed in 5.10s`
+
+Decision:
+
+- Use the existing seven curated US-election events as the first historical
+  validation bed.
+- Keep the first implementation file-based and deterministic.
+- Leave Kalshi, near-real-time collection, agents, MCP, and strategy backtests
+  deferred.
+
+Next step:
+
+- Implement the historical event-centred anomaly output module and tests.

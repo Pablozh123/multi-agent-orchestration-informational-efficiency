@@ -2,53 +2,46 @@
 
 ## Active Goal
 
-goal_id: goal-politics-geo-anomaly-monitor-spec-001
-title: Specify politics/geo anomaly monitor before implementation
+goal_id: goal-historical-politics-geo-anomaly-output-001
+title: Generate first historical politics/geo anomaly outputs
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
 - H1-H3 deterministic baseline outputs and thesis-facing summaries exist.
-- The strategy track is more useful as a politics/geopolitics anomaly monitor
-  than as an immediate trading backtest.
-- The monitor can use historical US-election events for validation while
-  staying open to later sourced geopolitical event candidates.
-- Agent and MCP ideas remain thesis architecture extensions; the monitor
-  specification must stay deterministic and Python-first.
+- The politics/geopolitics anomaly-monitor specification is now recorded.
+- The first implementation should show how the monitor scores historical
+  anomalies before any near-real-time collectors, agents, MCP, or backtests.
+- Existing curated US-election events provide the first reproducible validation
+  bed without inventing new political/geopolitical cases.
 deliverables:
-- Define the v1 anomaly monitor as a historical politics/geo monitoring
-  specification, not a live-trading system.
-- Record that v1 watches Polymarket politics/geopolitical markets; Kalshi is a
-  later extension candidate.
-- Index and classify the local Polybench PDF as a literature candidate.
-- Clarify how market, wallet, event, and concentration anomalies would be
-  analysed without raw wallet-address prompt dumps.
-- Keep the existing deterministic backtest plan as a later validation path,
-  not the immediate active goal.
+- Add a deterministic Python module for historical event-centred anomaly
+  outputs.
+- Generate row, summary, and metadata artifacts under `data/results/`.
+- Include market-move, wallet-tier amount, active-wallet, and top-tier
+  concentration diagnostics.
+- Add tests for toy spikes, baseline/event separation, missing inputs,
+  no-wallet-address outputs, and BUY-only metadata limitations.
 scope:
-- Documentation and literature-index update only.
-- Politics/geopolitical prediction-market anomaly monitoring design.
-- Historical validation uses the existing curated US-election event set first.
-- Event candidates such as geopolitical shocks require sourced timestamps and
-  market mappings before analysis.
+- Deterministic Python implementation only.
+- Historical daily Polymarket and wallet-tier data only.
+- Existing curated US-election event seed only.
+- File-based result artifacts only.
 out_of_scope:
-- Analysis-code changes, new statistical modules, database writes, and H3
-  backtest implementation.
 - Agents, MCP, model routing, ML, cloud deployment, live trading, and order
   execution.
 - New real events in the canonical seed unless they are separately curated.
-- Profitability claims, insider claims, intraday claims, or RCP probability use.
+- Strategy backtest implementation, PnL, profitability claims, insider claims,
+  intraday claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- `STRATEGY_AGENT_ARCHITECTURE.md` describes the anomaly-monitor direction and
-  keeps agents/MCP deferred.
-- `WHALE_METHOD.md` records event-centred wallet anomaly analysis as the next
-  H3/strategy bridge.
-- `LITERATURE_MAP.md` and `literature_index.csv` include Polybench as a
-  candidate source, not a thesis claim.
-- No code, database, agent, MCP, ML, or live-trading implementation is added.
+- The new CLI writes deterministic historical anomaly CSV/JSON artifacts.
+- Output summaries contain no wallet addresses and no raw table dumps.
+- Metadata states daily alignment, BUY-only wallet source limitation, no RCP,
+  no LLMs, no agents, and no MCP.
+- Tests cover the planned toy cases and full pytest passes.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: pivot strategy track to politics geo anomaly monitor
+next_commit: feat: add historical politics geo anomaly outputs
 
 ## Decision Inputs For This Goal
 
@@ -64,6 +57,7 @@ next_commit: docs: pivot strategy track to politics geo anomaly monitor
 - Strategy and anomaly-monitor boundaries are recorded in
   `ARCHITECTURE_DECISIONS.md`, `ROADMAP.md`, and
   `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+- The anomaly-monitor specification is committed before this implementation.
 - Literature intake structure exists in `docs/research/LITERATURE_MAP.md` and
   `data/literature/literature_index.csv`.
 - ML scope and re-entry conditions are explicit in
@@ -72,12 +66,12 @@ next_commit: docs: pivot strategy track to politics geo anomaly monitor
 
 ## Done Means
 
-- The politics/geo anomaly-monitor specification separates market anomalies,
-  wallet-tier anomalies, event candidates, and later backtest validation.
-- The spec states that v1 is historical and Polymarket-first, while near-real
-  time monitoring and Kalshi are later extensions.
-- Polybench is indexed as a candidate source and cannot support thesis claims
-  until reviewed.
+- Historical anomaly rows, summaries, and metadata exist and can be regenerated.
+- The output separates market anomalies, wallet-tier anomalies, active-wallet
+  anomalies, and top-tier concentration diagnostics.
+- No output used for interpretation contains wallet addresses.
+- Output language remains descriptive anomaly diagnostics, not causality,
+  private-information, or profitability evidence.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, or profit-guarantee work.
 
@@ -136,3 +130,5 @@ next_commit: docs: pivot strategy track to politics geo anomaly monitor
 - First deterministic strategy backtest baseline plan exists for
   `h3_top_1pct_lag1_daily_timing_baseline`.
 - Strategy/agent guardrails are enforced by project review checks.
+- Politics/geo anomaly-monitor specification is documented, Polymarket-first,
+  and keeps Kalshi, near-real-time monitoring, agents, and MCP deferred.

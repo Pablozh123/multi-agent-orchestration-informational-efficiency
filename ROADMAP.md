@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for specification before implementation
+Status: active for first historical anomaly output implementation
 
 Done criteria:
 
@@ -212,10 +212,13 @@ Done criteria:
   dumps or order-execution functions.
 - Deterministic backtests remain a later validation path for monitor alerts and
   signal hypotheses.
+- First deterministic historical anomaly outputs exist with row, summary, and
+  metadata artifacts.
+- Outputs include market-move, wallet-tier amount, active-wallet, and top-tier
+  concentration diagnostics.
 
 Blockers:
 
-- The anomaly-monitor specification must be reviewed before implementation.
 - The first deterministic historical anomaly output is not implemented yet.
 - The Polybench PDF is indexed only as a candidate and needs review before it
   supports thesis wording.

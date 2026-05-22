@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for first accepted Polymarket live watchlist review
+Status: active for curated Polymarket live watchlist integration
 
 Done criteria:
 
@@ -312,10 +312,12 @@ Done criteria:
   thesis-facing alert interpretation.
 - A curated Polymarket live watchlist contract exists as a local CSV plus
   validator.
-- The current curated watchlist seed contains 3 candidate rows, 0 accepted
+- The current curated watchlist seed contains 3 accepted rows, 0 candidate
   rows, and a validation report.
-- Auto-discovered Gamma rows are explicitly not monitor-ready until marked
-  `accepted`.
+- Auto-discovered Gamma rows are explicitly not monitor-ready until reviewed
+  and marked `accepted`.
+- The next implementation step should make the read-only collector prefer the
+  accepted curated watchlist over automatic Gamma discovery.
 
 Blockers:
 
@@ -330,6 +332,6 @@ Blockers:
   execution remain blocked while the read-only collector is built.
 - Interpretable minute-level alert states remain blocked until enough closed
   rolling-history buckets are collected and reviewed.
-- Thesis-facing live alerts remain blocked until at least one curated
-  politics/geopolitics watchlist row is manually reviewed and marked
-  `accepted`.
+- Thesis-facing live alerts remain blocked until the collector uses accepted
+  curated watchlist rows and enough closed rolling-history buckets exist for
+  the configured baseline.

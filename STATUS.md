@@ -3,41 +3,41 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-22 16:37
+Generated: 2026-05-22 16:41
 
-Current goal: `goal-polymarket-live-watchlist-review-001` - Review first Polymarket politics/geopolitics watchlist candidates
+Current goal: `goal-polymarket-live-curated-collector-001` - Integrate accepted curated Polymarket watchlist into read-only collector
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `267 passed in 12.51s`
+Pytest summary: `267 passed in 12.36s`
 
 Git branch: `main`
 
-Latest commit: `15769f1`
+Latest commit: `ed25afe`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
+ M data/monitor_v2_curated_watchlist.csv
+ M data/results/monitor_v2_curated_watchlist_validation_report.json
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
-?? data/monitor_v2_curated_watchlist.csv
-?? data/results/monitor_v2_curated_watchlist_validation_report.json
-?? operations/collectors/polymarket_watchlist.py
-?? tests/test_polymarket_watchlist.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      | 90 +++++++++++++-------------
- ROADMAP.md                                   | 13 +++-
- docs/project/WORK_LOG.md                     | 39 ++++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 95 ++++++++++++++++++++++++++++
- 4 files changed, 189 insertions(+), 48 deletions(-)
+ GOAL.md                                            | 68 ++++++++++++----------
+ ROADMAP.md                                         | 16 ++---
+ data/monitor_v2_curated_watchlist.csv              |  6 +-
+ ...tor_v2_curated_watchlist_validation_report.json | 14 +++--
+ docs/project/WORK_LOG.md                           | 36 ++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md       | 20 +++----
+ 6 files changed, 104 insertions(+), 56 deletions(-)
 ```
 
 Blockers:
@@ -46,7 +46,7 @@ Blockers:
 
 Next recommended action:
 
-- data: review first polymarket live watchlist candidates
+- feat: use curated polymarket watchlist in read-only collector
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

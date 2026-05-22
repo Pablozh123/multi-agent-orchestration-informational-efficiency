@@ -2458,12 +2458,12 @@ Exclusion criteria:
 Current seed result:
 
 - Row count: 3.
-- Accepted rows: 0.
-- Candidate rows: 3.
-- Candidate scopes: 2 election, 1 leadership.
-- Auto-discovered rows are not monitor-ready.
+- Accepted rows: 3.
+- Candidate rows: 0.
+- Accepted scopes: 2 election, 1 leadership.
+- Rows were accepted against official public Gamma market metadata only.
 
-Current candidate rows:
+Current accepted rows:
 
 - `Xi Jinping out before 2027?`
 - `Will Gavin Newsom win the 2028 Democratic presidential nomination?`
@@ -2472,16 +2472,16 @@ Current candidate rows:
 Interpretation:
 
 - The live monitor now has a validation-ready watchlist contract.
-- The current rows remain candidates and must not be used as thesis-facing
-  alert evidence until manually reviewed and marked `accepted`.
+- The current rows are monitor-ready watchlist rows, but they are not thesis
+  event evidence and do not imply any anomaly, signal, or strategy result.
 - Gamma discovery remains useful for finding candidates, not for automatically
   defining the monitored universe.
 
 Next phase selected:
 
-- Review candidate rows and mark the first accepted Polymarket
-  politics/geopolitics watchlist entries before integrating the curated
-  watchlist into the collector.
+- Integrate accepted curated watchlist rows into the read-only collector so
+  rolling live collection uses the reviewed universe instead of automatic Gamma
+  discovery by default.
 
 ## First Prototype Specification
 

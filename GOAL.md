@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-polymarket-live-watchlist-review-001
-title: Review first Polymarket politics/geopolitics watchlist candidates
+goal_id: goal-polymarket-live-curated-collector-001
+title: Integrate accepted curated Polymarket watchlist into read-only collector
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -11,23 +11,29 @@ why:
 - The read-only Polymarket collector and bounded rolling-history collector
   exist.
 - The curated watchlist contract and validator exist.
-- The current curated watchlist seed has 3 candidate rows and 0 accepted rows.
-- Auto-discovered Gamma rows are not monitor-ready until manually reviewed.
-- Thesis-facing live alerts remain blocked until at least one politics or
-  geopolitics watchlist row is reviewed and marked `accepted`.
+- The current curated watchlist seed has 3 accepted rows and 0 candidate rows.
+- The collector still needs a reviewed-universe path so live runs can avoid
+  depending on automatic Gamma discovery by default.
+- Thesis-facing live alerts remain blocked until collection uses accepted
+  curated rows and enough closed rolling-history buckets exist.
 deliverables:
-- Review each current candidate row in `data/monitor_v2_curated_watchlist.csv`.
-- Fill required source and review metadata for any accepted row.
-- Mark unsuitable rows as `rejected` with an exclusion reason, or
-  `needs_followup` if source or market mapping is unclear.
-- Regenerate the curated watchlist validation report.
-- Keep accepted watchlist rows separated from automatic Gamma discovery.
+- Add an optional curated-watchlist input path to the read-only collector.
+- Ensure only rows with `review_status=accepted` enter the live monitor
+  watchlist.
+- Keep automatic Gamma discovery available as candidate discovery, not the
+  default reviewed universe.
+- Update the bounded rolling-history path to pass the curated watchlist when
+  configured.
+- Add focused tests for accepted-row filtering and collector output shape.
 scope:
 - `data/monitor_v2_curated_watchlist.csv`.
 - `data/results/monitor_v2_curated_watchlist_validation_report.json`.
-- The current 3 Gamma-discovered candidate rows.
+- `operations/collectors/polymarket_readonly.py`.
+- `operations/collectors/polymarket_rolling_history.py`.
+- Focused collector tests and generated monitor-v2 live/rolling artifacts if
+  regenerated.
 - Polymarket politics/geopolitics markets only.
-- Human-readable review metadata.
+- Read-only public midpoint/trade fetching and local validated output files.
 out_of_scope:
 - Agents, MCP, model routing, ML, cloud deployment, trading, and order
   execution.
@@ -39,13 +45,12 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- At least one current candidate is manually reviewed.
-- Accepted rows include `source_url`, `inclusion_reason`, `reviewed_by`, and
-  timezone-aware `reviewed_at_utc`.
-- Rejected rows include `exclusion_reason`.
-- Rows that cannot be accepted or rejected are marked `needs_followup`.
-- Auto-discovered markets remain candidates until they pass the watchlist
-  contract.
+- The collector can read the curated watchlist contract and use only accepted
+  rows.
+- Candidate, rejected, or needs-followup rows cannot enter monitor-ready
+  collection.
+- The CLI exposes the curated-watchlist path without requiring credentials.
+- Rolling-history collection can pass the same curated path.
 - The curated watchlist validator passes and the report is regenerated.
 - Existing collector and scoring outputs remain read-only and file-based.
 - No authenticated user channel, order endpoint, agent, MCP, ML, strategy
@@ -54,7 +59,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: data: review first polymarket live watchlist candidates
+next_commit: feat: use curated polymarket watchlist in read-only collector
 
 ## Decision Inputs For This Goal
 
@@ -62,19 +67,18 @@ next_commit: data: review first polymarket live watchlist candidates
 - `operations/collectors/polymarket_watchlist.py` validates the local
   watchlist contract.
 - `data/results/monitor_v2_curated_watchlist_validation_report.json` reports
-  3 candidate rows, 0 accepted rows, and validation status `pass`.
-- The current candidates are:
+  3 accepted rows, 0 candidate rows, and validation status `pass`.
+- The current accepted rows are:
   - `Xi Jinping out before 2027?`
   - `Will Gavin Newsom win the 2028 Democratic presidential nomination?`
   - `Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?`
 
 ## Done Means
 
-- The first reviewed watchlist state exists.
-- At least one row is no longer an unchecked candidate.
-- The validator report documents whether any row is monitor-ready.
-- The next code step can integrate accepted watchlist rows into the collector
-  without changing the watchlist contract.
+- The read-only collector can run from the accepted curated watchlist.
+- Generated monitor-v2 input files retain the same validated shape.
+- Automatic Gamma discovery remains available for discovery but is no longer
+  required for the reviewed monitor universe.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -216,5 +220,7 @@ next_commit: data: review first polymarket live watchlist candidates
   and dedupe logic, rolling scoring outputs, baseline-readiness metadata, and
   a rolling-history figure.
 - Curated Polymarket live watchlist contract exists with a local CSV seed,
-  validator, tests, and validation report; current rows are candidates and not
-  monitor-ready.
+  validator, tests, and validation report.
+- First Polymarket live watchlist candidates are reviewed against public Gamma
+  market metadata; 3 rows are accepted for monitor watchlist use and 0 rows
+  remain candidates.

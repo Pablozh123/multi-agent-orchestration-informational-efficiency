@@ -1,11 +1,15 @@
 {
-  "accepted_count": 0,
-  "accepted_market_ids": [],
+  "accepted_count": 3,
+  "accepted_market_ids": [
+    "0x0f49db97f71c68b1e42a6d16e3de93d85dbf7d4148e3f018eb79e88554be9f75",
+    "0xa467b14d51f01b957109d9cbb1d6c124fab2a089d52ed8f471d23c2812e743b7",
+    "0xe6bcc2f1dd025ce5e1833190f7c60a71171c94f805df55b9ab0ded695ec93565"
+  ],
   "auto_discovered_rows_are_monitor_ready": false,
-  "candidate_count": 3,
+  "candidate_count": 0,
   "contains_order_instructions": false,
   "contains_wallet_addresses": false,
-  "generated_at_utc": "2026-05-22T14:33:25+00:00",
+  "generated_at_utc": "2026-05-22T14:40:05+00:00",
   "input_path": "data\\monitor_v2_curated_watchlist.csv",
   "limitations": {
     "candidate_rows_require_human_review": true,
@@ -27,6 +31,6 @@
   },
   "status": "pass",
   "status_counts": {
-    "candidate": 3
+    "accepted": 3
   }
 }

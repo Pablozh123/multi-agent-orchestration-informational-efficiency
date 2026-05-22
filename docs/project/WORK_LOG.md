@@ -2507,3 +2507,39 @@ Next step:
 
 - Review the current candidates and mark the first accepted, rejected, or
   needs-followup watchlist rows.
+
+## 2026-05-22 - goal-polymarket-live-watchlist-review-001
+
+Task:
+
+- Review the first curated Polymarket politics/geopolitics watchlist rows
+  against public Gamma market metadata.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `data/monitor_v2_curated_watchlist.csv`
+- `data/results/monitor_v2_curated_watchlist_validation_report.json`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.collectors.polymarket_watchlist` -> 3 accepted rows, 0 candidate rows.
+- Full test suite pending after status refresh.
+
+Decision:
+
+- Accept the three current rows for monitor-watchlist use only, based on
+  official public Gamma metadata and clear politics, leadership, or election
+  scope.
+- This acceptance does not create thesis event evidence, anomaly evidence,
+  signal evidence, or strategy evidence.
+- Keep automatic Gamma discovery as candidate discovery, not as the reviewed
+  monitor universe.
+
+Next step:
+
+- Integrate accepted curated watchlist rows into the read-only collector.

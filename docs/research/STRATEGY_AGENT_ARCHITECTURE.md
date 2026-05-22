@@ -2777,6 +2777,49 @@ Next phase selected:
   strict combined-family confirmation, zero-MAD rows, limited movement, or
   watchlist scope.
 
+### Production-Like Threshold Sensitivity
+
+threshold_sensitivity_status: reviewed
+
+Review date: 2026-05-22
+
+Reviewed artifacts:
+
+- `data/results/monitor_v2_polymarket_threshold_sensitivity.csv`
+- `data/results/monitor_v2_polymarket_threshold_sensitivity_by_family.csv`
+- `data/results/monitor_v2_polymarket_threshold_sensitivity.png`
+- `data/results/monitor_v2_polymarket_threshold_sensitivity_metadata.json`
+
+Result summary:
+
+- Default Rule C with 30/20 settings produced 0 alerts.
+- Default rows: 372 total, 300 `insufficient_baseline`, 72 `zero_mad`, and 0
+  `ok`.
+- The default likely driver is `zero_mad_after_baseline_available`.
+- Diagnostic 30/10 produced 0 alerts.
+- Diagnostic 10/5 produced 3 `watch` rows.
+- Diagnostic 5/3 produced 0 alerts.
+- The 10/5 diagnostic watch rows came from active-wallet and concentration
+  metrics, not from market-move confirmation.
+- Robust z-scores in the diagnostic alerts were below 1; the watch labels were
+  driven by percentile rank in a short baseline.
+
+Interpretation:
+
+- The default Rule C should remain unchanged for now.
+- The zero-alert result is better explained by flat or sparse short-window
+  metrics plus zero-MAD behaviour than by evidence of market quietness.
+- Percentile-only shadow rows are useful for diagnostics but should not become
+  production-like alerts without a separate reviewed rule change.
+- The current three-market watchlist is probably too narrow for the next
+  monitor iteration.
+
+Next phase selected:
+
+- Expand the reviewed Polymarket politics/geopolitics watchlist before running
+  another production-like live baseline.
+- Do not change Rule C thresholds in the watchlist-expansion step.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

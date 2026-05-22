@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-polymarket-live-threshold-sensitivity-001
-title: Evaluate monitor threshold sensitivity on production-like live baseline
+goal_id: goal-polymarket-live-watchlist-expansion-001
+title: Expand reviewed Polymarket politics/geo watchlist coverage
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -29,24 +29,24 @@ why:
   `baseline_available_zero_mad_or_non_alerting`.
 - The reviewed summary has 300 `insufficient_baseline` rows and 72 `zero_mad`
   rows, with 372 `none` severity rows.
-- The next empirical step is to test threshold sensitivity on the existing
-  bounded files before changing the default Rule C, expanding the watchlist, or
-  building a UI/server wrapper.
+- The threshold-sensitivity report shows that default Rule C produced 0 alerts,
+  while only the diagnostic 10/5 scenario produced 3 `watch` rows.
+- The diagnostic 10/5 rows are percentile-only watch rows with low robust-z
+  values, so they do not justify changing the default rule.
+- The next useful empirical step is to expand the reviewed politics/geo
+  watchlist before relying on live dashboard coverage.
 deliverables:
-- Build a deterministic threshold-sensitivity report over the existing
-  production-like Polymarket baseline artifacts.
-- Compare the current Rule C output with clearly labelled diagnostic
-  alternatives.
-- Record whether the zero-alert result is driven by strict combined-family
-  confirmation, zero-MAD rows, limited metric movement, or watchlist scope.
-- Keep Rule C as the default unless a later review explicitly changes it.
+- Discover additional candidate Polymarket politics/geopolitical markets from
+  read-only public sources.
+- Add only reviewed rows to `data/monitor_v2_curated_watchlist.csv`.
+- Keep rejected or needs-followup rows documented with reasons.
+- Regenerate the curated watchlist validation report.
+- Do not change Rule C thresholds in this goal.
 scope:
 - `data/monitor_v2_curated_watchlist.csv`.
-- `data/results/monitor_v2_polymarket_rolling_*`.
-- `data/results/monitor_v2_polymarket_live_*`.
-- `data/results/monitor_v2_polymarket_dashboard.html`.
+- `data/results/monitor_v2_curated_watchlist_validation_report.json`.
 - Existing project/research docs.
-- A small deterministic sensitivity module and tests if needed.
+- Existing read-only discovery/collector helpers if needed.
 - Polymarket politics/geopolitics markets only.
 - Existing local validated output files.
 out_of_scope:
@@ -60,21 +60,22 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- The threshold-sensitivity report reads existing bounded files only.
-- The report contains no wallet addresses and no order instructions.
-- The report separates default Rule C from diagnostic alternatives.
-- Any non-default rule is labelled as sensitivity analysis, not as the monitor
-  default.
-- The zero-alert result remains interpreted descriptively only.
-- Existing collector and watchlist files are not rewritten.
-- Existing collector and scoring outputs remain read-only and file-based.
+- Watchlist rows have source URLs, review status, reviewer, review timestamp,
+  inclusion or exclusion reasons, and market identifiers.
+- Accepted rows are politics/geopolitics relevant and monitor-ready.
+- Candidate, rejected, or needs-followup rows are not used as monitor-ready
+  markets.
+- The watchlist validator passes.
+- Rule C thresholds remain unchanged.
+- Existing scoring outputs are not reinterpreted as causal, profitable, or
+  private-information evidence.
 - No authenticated user channel, order endpoint, agent, MCP, ML, strategy
   backtest, cloud daemon, database write, or trading credential path is
   activated.
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add monitor threshold sensitivity report
+next_commit: data: expand curated polymarket politics geo watchlist
 
 ## Decision Inputs For This Goal
 
@@ -123,10 +124,10 @@ next_commit: feat: add monitor threshold sensitivity report
 
 ## Done Means
 
-- The first threshold-sensitivity report explains how strict Rule C behaves on
-  the 21-bucket production-like baseline.
-- The next decision is selected: keep Rule C unchanged, adjust diagnostic
-  labels, expand the watchlist, or build a read-only UI/server wrapper.
+- The monitor has a broader reviewed politics/geo watchlist before the next
+  live rolling collection.
+- The next decision is whether to run a new production-like baseline on the
+  expanded watchlist or refine the dashboard/reporting layer.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -295,3 +296,11 @@ next_commit: feat: add monitor threshold sensitivity report
 - Production-like live monitor baseline review is accepted: the observed
   zero-alert result is a descriptive Rule C outcome, not evidence that the
   broader market was quiet, efficient, inefficient, causal, or tradeable.
+- Threshold-sensitivity outputs exist:
+  `monitor_v2_polymarket_threshold_sensitivity.csv`,
+  `monitor_v2_polymarket_threshold_sensitivity_by_family.csv`,
+  `monitor_v2_polymarket_threshold_sensitivity.png`, and
+  `monitor_v2_polymarket_threshold_sensitivity_metadata.json`.
+- Threshold-sensitivity review is accepted: keep Rule C unchanged for now;
+  the 10/5 diagnostic scenario produced 3 watch rows, but they are not enough
+  to justify changing the default monitor rule.

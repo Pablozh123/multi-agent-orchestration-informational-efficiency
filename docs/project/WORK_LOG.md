@@ -2812,3 +2812,46 @@ Next step:
 
 - Build a deterministic monitor threshold-sensitivity report over the existing
   21-bucket production-like baseline files.
+
+## 2026-05-22 - goal-polymarket-live-threshold-sensitivity-001
+
+Task:
+
+- Generate and review deterministic threshold sensitivity on the 21-bucket
+  production-like Polymarket live baseline.
+
+Files changed:
+
+- `operations/analysis/monitor_v2_threshold_sensitivity.py`
+- `tests/test_monitor_v2_threshold_sensitivity.py`
+- `data/results/monitor_v2_polymarket_threshold_sensitivity.csv`
+- `data/results/monitor_v2_polymarket_threshold_sensitivity_by_family.csv`
+- `data/results/monitor_v2_polymarket_threshold_sensitivity.png`
+- `data/results/monitor_v2_polymarket_threshold_sensitivity_metadata.json`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_v2_threshold_sensitivity.py -q` -> 3 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_threshold_sensitivity` -> 4 scenarios, default alert count 0.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 279 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  279 passed through the status run.
+
+Decision:
+
+- Keep Rule C unchanged for now.
+- Default 30/20 Rule C produced 0 alerts; diagnostic 30/10 produced 0 alerts;
+  diagnostic 10/5 produced 3 `watch` rows; diagnostic 5/3 produced 0 alerts.
+- The 10/5 rows are diagnostic only and are not enough to justify changing the
+  default monitor rule.
+- The next useful step is broader reviewed watchlist coverage, not threshold
+  relaxation.
+
+Next step:
+
+- Expand the curated Polymarket politics/geopolitics watchlist before the next
+  production-like live baseline run.

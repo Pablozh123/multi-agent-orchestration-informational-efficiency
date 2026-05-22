@@ -1,0 +1,75 @@
+{
+  "generated_at_utc": "2026-05-22T17:09:28+00:00",
+  "inputs": {
+    "market_count": 3,
+    "snapshot_rows": 372,
+    "snapshots_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_snapshots.csv",
+    "timestamp_count": 21
+  },
+  "interpretation": {
+    "default_result": "Rule C did not trigger in the observed production-like live baseline",
+    "recommended_next_step": "review_diagnostic_alert_rows_before_any_rule_change",
+    "zero_alert_caveat": "Zero alerts do not prove that the broader market was quiet, efficient, inefficient, causal, or usable for execution."
+  },
+  "limitations": {
+    "does_not_collect_external_data": true,
+    "does_not_send_orders": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_use_rcp": true,
+    "does_not_write_database": true,
+    "no_profitability_or_private_information_claim": true,
+    "read_only_existing_files_only": true
+  },
+  "method": {
+    "default_rule": "Rule C combined-family confirmation",
+    "default_rule_unchanged": true,
+    "input_mode": "existing_bounded_scoring_snapshots",
+    "name": "monitor_v2_polymarket_threshold_sensitivity",
+    "non_default_scenarios_are_diagnostic_only": true,
+    "scenario_count": 4,
+    "uses_existing_files_only": true
+  },
+  "outputs": {
+    "by_family_path": "data\\results\\monitor_v2_polymarket_threshold_sensitivity_by_family.csv",
+    "by_family_rows": 20,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "default_alert_count": 0,
+    "default_likely_driver": "zero_mad_after_baseline_available",
+    "figure_path": "data\\results\\monitor_v2_polymarket_threshold_sensitivity.png",
+    "summary_path": "data\\results\\monitor_v2_polymarket_threshold_sensitivity.csv",
+    "summary_rows": 4
+  },
+  "scenarios": [
+    {
+      "baseline_observations": 30,
+      "min_baseline_observations": 20,
+      "rule_label": "Rule C default; production-like 30/20 baseline",
+      "scenario_id": "default_rule_c_30_20",
+      "scenario_type": "default"
+    },
+    {
+      "baseline_observations": 30,
+      "min_baseline_observations": 10,
+      "rule_label": "Rule C with lower minimum baseline; diagnostic only",
+      "scenario_id": "diagnostic_rule_c_30_10",
+      "scenario_type": "diagnostic_sensitivity"
+    },
+    {
+      "baseline_observations": 10,
+      "min_baseline_observations": 5,
+      "rule_label": "Rule C with shorter baseline; diagnostic only",
+      "scenario_id": "diagnostic_rule_c_10_5",
+      "scenario_type": "diagnostic_sensitivity"
+    },
+    {
+      "baseline_observations": 5,
+      "min_baseline_observations": 3,
+      "rule_label": "Rule C with very short baseline; diagnostic only",
+      "scenario_id": "diagnostic_rule_c_5_3",
+      "scenario_type": "diagnostic_sensitivity"
+    }
+  ]
+}

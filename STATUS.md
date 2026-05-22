@@ -3,19 +3,19 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-22 18:52
+Generated: 2026-05-22 19:12
 
-Current goal: `goal-polymarket-live-threshold-sensitivity-001` - Evaluate monitor threshold sensitivity on production-like live baseline
+Current goal: `goal-polymarket-live-watchlist-expansion-001` - Expand reviewed Polymarket politics/geo watchlist coverage
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `276 passed in 15.85s`
+Pytest summary: `279 passed in 15.07s`
 
 Git branch: `main`
 
-Latest commit: `73cafd1`
+Latest commit: `ee8f043`
 
 Git status:
 
@@ -24,16 +24,22 @@ Git status:
  M ROADMAP.md
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
+?? data/results/monitor_v2_polymarket_threshold_sensitivity.csv
+?? data/results/monitor_v2_polymarket_threshold_sensitivity.png
+?? data/results/monitor_v2_polymarket_threshold_sensitivity_by_family.csv
+?? data/results/monitor_v2_polymarket_threshold_sensitivity_metadata.json
+?? operations/analysis/monitor_v2_threshold_sensitivity.py
+?? tests/test_monitor_v2_threshold_sensitivity.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      | 57 +++++++++++++++-------------
- ROADMAP.md                                   | 20 ++++++----
- docs/project/WORK_LOG.md                     | 35 +++++++++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 16 ++++++--
- 4 files changed, 91 insertions(+), 37 deletions(-)
+ GOAL.md                                      | 67 ++++++++++++++++------------
+ ROADMAP.md                                   | 22 +++++----
+ docs/project/WORK_LOG.md                     | 41 +++++++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 43 ++++++++++++++++++
+ 4 files changed, 135 insertions(+), 38 deletions(-)
 ```
 
 Blockers:
@@ -42,7 +48,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: add monitor threshold sensitivity report
+- data: expand curated polymarket politics geo watchlist
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

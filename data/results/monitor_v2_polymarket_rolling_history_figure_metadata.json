@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-22T15:00:30+00:00",
+  "generated_at_utc": "2026-05-22T15:09:28+00:00",
   "inputs": {
     "baseline_readiness": "diagnostic_scores_available",
     "market_snapshots_path": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
@@ -21,12 +21,12 @@
     "name": "monitor_v2_polymarket_rolling_history_figure"
   },
   "outputs": {
-    "bucket_count": 3,
+    "bucket_count": 4,
     "contains_order_instructions": false,
     "contains_wallet_addresses": false,
     "figure_path": "data\\results\\monitor_v2_polymarket_rolling_history.png",
     "market_count": 3,
-    "token_snapshot_count": 18,
-    "wallet_snapshot_count": 9
+    "token_snapshot_count": 24,
+    "wallet_snapshot_count": 12
   }
 }

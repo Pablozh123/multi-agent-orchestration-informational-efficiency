@@ -3,13 +3,13 @@
     {
       "collected_at_utc": "",
       "event_candidate_row_count": 0,
-      "market_snapshot_row_count": 18,
+      "market_snapshot_row_count": 24,
       "sample_index": 0,
-      "wallet_tier_snapshot_row_count": 9,
+      "wallet_tier_snapshot_row_count": 12,
       "watchlist_row_count": 3
     }
   ],
-  "generated_at_utc": "2026-05-22T15:00:30+00:00",
+  "generated_at_utc": "2026-05-22T15:09:28+00:00",
   "limitations": {
     "does_not_send_orders": true,
     "does_not_use_agents_or_mcp": true,
@@ -50,21 +50,21 @@
     "figure_metadata_path": "data\\results\\monitor_v2_polymarket_rolling_history_figure_metadata.json",
     "figure_path": "data\\results\\monitor_v2_polymarket_rolling_history.png",
     "figure_result": {
-      "bucket_count": 3,
+      "bucket_count": 4,
       "figure_path": "data\\results\\monitor_v2_polymarket_rolling_history.png",
       "market_count": 3,
       "metadata_path": "data\\results\\monitor_v2_polymarket_rolling_history_figure_metadata.json",
-      "token_snapshot_count": 18,
-      "wallet_snapshot_count": 9
+      "token_snapshot_count": 24,
+      "wallet_snapshot_count": 12
     },
     "market_snapshots_path": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
     "scoring_metadata_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_metadata.json",
     "scoring_result": {
       "alert_count": 0,
-      "alert_row_count": 48,
+      "alert_row_count": 66,
       "metadata_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_metadata.json",
       "rows_path": "data\\results\\monitor_v2_polymarket_rolling_alert_rows.csv",
-      "snapshot_count": 48,
+      "snapshot_count": 66,
       "snapshots_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_snapshots.csv",
       "summary_path": "data\\results\\monitor_v2_polymarket_rolling_alert_summary.csv",
       "summary_row_count": 15,
@@ -75,12 +75,12 @@
     "scoring_summary_path": "data\\results\\monitor_v2_polymarket_rolling_alert_summary.csv",
     "scoring_validation_report_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_validation_report.json",
     "severity_counts": {
-      "none": 48
+      "none": 66
     },
     "status_counts": {
       "insufficient_baseline": 30,
       "ok": 4,
-      "zero_mad": 14
+      "zero_mad": 32
     },
     "validation_report_path": "data\\results\\monitor_v2_polymarket_live_input_validation_report.json",
     "wallet_tier_snapshots_path": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",

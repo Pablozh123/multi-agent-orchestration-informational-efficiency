@@ -2587,7 +2587,7 @@ Dashboard content:
 Latest dashboard state:
 
 - Markets: 3.
-- Closed buckets: 3.
+- Closed buckets: 4.
 - Alerts: 0.
 - Baseline readiness: `diagnostic_scores_available`.
 
@@ -2601,6 +2601,50 @@ Next phase selected:
 
 - Add a bounded refresh runner that collects a configured number of future
   buckets and regenerates the dashboard without becoming a background daemon.
+
+### Bounded Monitor Refresh Runner
+
+refresh_runner_status: implemented
+
+Implementation date: 2026-05-22
+
+Implemented file:
+
+- `operations/collectors/polymarket_monitor_refresh.py`
+
+Output:
+
+- `data/results/monitor_v2_polymarket_refresh_metadata.json`
+
+Behaviour:
+
+- Runs bounded rolling-history collection.
+- Regenerates scoring outputs, rolling figure, and static dashboard.
+- Requires explicit `samples` and `delay_seconds`.
+- Remains a local operator command, not a background daemon.
+- Uses accepted curated watchlist rows when configured.
+
+Latest refresh result:
+
+- Source: read-only public Polymarket endpoints.
+- Samples completed: 1.
+- Closed buckets after refresh: 4.
+- Alerts: 0.
+- Baseline readiness: `diagnostic_scores_available`.
+- Dashboard: `data/results/monitor_v2_polymarket_dashboard.html`.
+
+Interpretation:
+
+- The runner is the first practical local operation path for the monitor.
+- Four buckets are still a short diagnostic window; production-like alert
+  interpretation remains below the v2 contract minimum of 20 closed buckets.
+- Zero alerts means Rule C did not trigger in the observed window, not that the
+  broader market is quiet.
+
+Next phase selected:
+
+- Document a safe operator protocol with commands, minimum bucket counts, and
+  interpretation rules.
 
 ## First Prototype Specification
 

@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for bounded live monitor refresh runner
+Status: active for safe live monitor operator protocol
 
 Done criteria:
 
@@ -331,10 +331,13 @@ Done criteria:
   the bounded monitor output files.
 - First local read-only dashboard exists at
   `data/results/monitor_v2_polymarket_dashboard.html`.
-- The dashboard reports 3 markets, 3 closed buckets, 0 alerts, baseline
+- The dashboard reports 3 markets, 4 closed buckets, 0 alerts, baseline
   readiness `diagnostic_scores_available`, and links source artifacts.
-- The next implementation step is a bounded refresh runner that collects a
-  configured number of future buckets and regenerates the dashboard.
+- Bounded refresh runner exists and refreshed the dashboard from 4 real closed
+  5-minute buckets with 0 alerts and baseline readiness
+  `diagnostic_scores_available`.
+- The next implementation step is an operator protocol that documents safe
+  run commands, minimum bucket counts, and interpretation limits.
 
 Blockers:
 

@@ -1,0 +1,35 @@
+{
+  "generated_at_utc": "2026-05-22T15:09:28+00:00",
+  "limitations": {
+    "bounded_local_operator_command": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "no_causal_or_profitability_claim": true,
+    "not_a_background_daemon": true
+  },
+  "method": {
+    "bounded_runner_not_daemon": true,
+    "bucket_minutes": 5,
+    "curated_watchlist_path": "data\\monitor_v2_curated_watchlist.csv",
+    "delay_seconds": 0.0,
+    "name": "polymarket_monitor_bounded_refresh",
+    "read_only": true,
+    "reset_outputs": false,
+    "samples_completed": 1,
+    "samples_requested": 1,
+    "source": "live",
+    "uses_curated_watchlist": true
+  },
+  "outputs": {
+    "alert_count": 0,
+    "baseline_readiness": "diagnostic_scores_available",
+    "bucket_count": 4,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "dashboard_metadata_path": "data\\results\\monitor_v2_polymarket_dashboard_metadata.json",
+    "dashboard_path": "data\\results\\monitor_v2_polymarket_dashboard.html",
+    "rolling_metadata_path": "data\\results\\monitor_v2_polymarket_rolling_history_metadata.json"
+  }
+}

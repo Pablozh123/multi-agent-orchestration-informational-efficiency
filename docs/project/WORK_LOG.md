@@ -2662,3 +2662,43 @@ Next step:
 
 - Add a bounded refresh runner that collects future buckets and regenerates the
   dashboard.
+
+## 2026-05-22 - goal-polymarket-live-refresh-loop-001
+
+Task:
+
+- Add a bounded refresh runner that collects rolling monitor inputs and
+  regenerates the static dashboard.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `operations/collectors/polymarket_monitor_refresh.py`
+- `tests/test_polymarket_monitor_refresh.py`
+- `data/results/monitor_v2_polymarket_refresh_metadata.json`
+- `data/results/monitor_v2_polymarket_dashboard.html`
+- `data/results/monitor_v2_polymarket_dashboard_metadata.json`
+- `data/results/monitor_v2_polymarket_live_*`
+- `data/results/monitor_v2_polymarket_rolling_*`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_polymarket_monitor_refresh.py tests/test_monitor_v2_dashboard.py -q` -> 5 passed.
+- `.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 1 --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3` -> 4 buckets, 0 alerts, `diagnostic_scores_available`.
+- Full test suite pending after status refresh.
+
+Decision:
+
+- Accept the refresh runner as the first practical local operation path.
+- Keep it bounded by explicit sample count and delay; it is not a background
+  daemon.
+- Four real closed buckets remain diagnostic only, below the v2
+  production-like minimum of 20 closed buckets.
+
+Next step:
+
+- Document the safe live monitor operator protocol and interpretation rules.

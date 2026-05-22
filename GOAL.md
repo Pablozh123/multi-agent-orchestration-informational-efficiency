@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-polymarket-live-refresh-loop-001
-title: Add bounded live monitor refresh runner
+goal_id: goal-polymarket-live-operator-protocol-001
+title: Document safe live monitor operating protocol
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -17,22 +17,24 @@ why:
   and diagnostic scoring is available.
 - The first static read-only dashboard exists and makes the current monitor
   state understandable from bounded local artifacts.
-- The next useful step is a bounded refresh runner that collects a configured
-  number of future buckets and regenerates the dashboard after each run.
+- The bounded refresh runner exists and can collect future buckets, score them,
+  and regenerate the dashboard.
+- The latest refresh run has 4 real closed 5-minute buckets, 0 alerts, and
+  diagnostic baseline readiness.
+- The next useful step is an operator protocol that explains exactly how to run
+  the monitor safely and how to interpret outputs.
 deliverables:
-- Add a local CLI runner that calls the existing rolling-history collector and
-  dashboard generator in sequence.
-- Keep the runner bounded by explicit `samples` and `delay_seconds`.
-- Write metadata describing run count, dashboard output, baseline readiness,
-  and limitations.
-- Add tests with mocked/local inputs only.
+- Add or update existing documentation with exact safe run commands.
+- Define minimum bucket counts for diagnostic and production-like monitoring.
+- Explain how to read dashboard, alert summary, and metadata outputs.
+- Explain what 0 alerts means and does not mean.
+- Keep all guidance read-only and non-trading.
 scope:
 - `data/monitor_v2_curated_watchlist.csv`.
 - `data/results/monitor_v2_polymarket_rolling_*`.
 - `data/results/monitor_v2_polymarket_live_*`.
-- `operations/collectors/polymarket_rolling_history.py`.
-- `operations/analysis/monitor_v2_dashboard.py`.
-- A small bounded refresh CLI if needed.
+- `data/results/monitor_v2_polymarket_dashboard.html`.
+- Existing project/research docs.
 - Polymarket politics/geopolitics markets only.
 - Existing local validated output files.
 out_of_scope:
@@ -46,11 +48,11 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Runner is bounded and never a background daemon.
-- Runner uses the curated watchlist path when configured.
-- Runner refreshes the static dashboard from bounded local files.
-- Runner does not add authenticated channels, order endpoints, agents, MCP, ML,
-  database writes, or trading credentials.
+- Operator protocol gives copy-pasteable safe commands.
+- Protocol states that 20 closed 5-minute buckets are the production-like
+  minimum from the current v2 contract.
+- Protocol explains that fewer buckets are diagnostic only.
+- Protocol avoids causal, profit, or misconduct claims.
 - The curated watchlist validator passes and the report is regenerated.
 - Existing collector and scoring outputs remain read-only and file-based.
 - No authenticated user channel, order endpoint, agent, MCP, ML, strategy
@@ -59,7 +61,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add bounded live monitor refresh runner
+next_commit: docs: add live monitor operator protocol
 
 ## Decision Inputs For This Goal
 
@@ -84,15 +86,16 @@ next_commit: feat: add bounded live monitor refresh runner
   - baseline readiness `diagnostic_scores_available`.
 - `data/results/monitor_v2_polymarket_dashboard.html` exists and reports:
   - 3 markets,
-  - 3 closed buckets,
+  - 4 closed buckets,
   - 0 alerts,
   - baseline readiness `diagnostic_scores_available`.
+- `operations/collectors/polymarket_monitor_refresh.py` exists and regenerates
+  rolling outputs plus dashboard output in one bounded command.
 
 ## Done Means
 
-- A user can run one bounded command to collect future buckets and refresh the
-  dashboard.
-- The command remains local, read-only, and explicit about time waiting.
+- A user can run the monitor without guessing command order.
+- A user can distinguish diagnostic runs from production-like runs.
 - The next decision is whether to keep collecting, refine alert thresholds, or
   design a read-only UI/server wrapper.
 - Project review checks still detect premature ML, agent, MCP, trading,
@@ -252,3 +255,6 @@ next_commit: feat: add bounded live monitor refresh runner
 - First local read-only monitor dashboard exists under
   `data/results/monitor_v2_polymarket_dashboard.html` with metadata, source
   artifact references, rolling figure, baseline readiness, and alert summary.
+- Bounded live monitor refresh runner exists and has refreshed the dashboard
+  from 4 real closed 5-minute buckets with 0 alerts and baseline readiness
+  `diagnostic_scores_available`.

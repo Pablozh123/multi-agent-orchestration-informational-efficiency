@@ -2667,19 +2667,19 @@ Safe preflight:
 Single-bucket refresh:
 
 ```powershell
-.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 1 --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3
+.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 1 --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 12
 ```
 
 Short diagnostic run:
 
 ```powershell
-.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 3 --delay-seconds 305 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3
+.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 3 --delay-seconds 305 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 12
 ```
 
 Production-like baseline run from the current v2 contract:
 
 ```powershell
-.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 20 --delay-seconds 305 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3 --baseline-observations 30 --min-baseline-observations 20
+.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 20 --delay-seconds 305 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 12 --baseline-observations 30 --min-baseline-observations 20
 ```
 
 Dashboard output:
@@ -2819,6 +2819,64 @@ Next phase selected:
 - Expand the reviewed Polymarket politics/geopolitics watchlist before running
   another production-like live baseline.
 - Do not change Rule C thresholds in the watchlist-expansion step.
+
+### Expanded Polymarket Watchlist Review
+
+expanded_watchlist_status: accepted
+
+Review date: 2026-05-22
+
+Reviewed artifacts:
+
+- `data/monitor_v2_curated_watchlist.csv`
+- `data/results/monitor_v2_curated_watchlist_validation_report.json`
+
+Source:
+
+- Public Polymarket Gamma market metadata.
+- Review was done before any new expanded-watchlist live alert interpretation.
+
+Result summary:
+
+- Accepted watchlist rows increased from 3 to 12.
+- Candidate rows: 0.
+- Rejected rows: 0.
+- Needs-followup rows: 0.
+- Validation status: `pass`.
+- Temporary read-only collector verification produced 12 watchlist rows, 24
+  token midpoint rows, and 12 aggregate wallet/activity rows outside the
+  repository result artifacts.
+
+Added monitor coverage:
+
+- US election and midterm control:
+  - Republicans win the 2028 US Presidential Election.
+  - Democratic Party controls the House after the 2026 midterm elections.
+  - Republican Party controls the House after the 2026 midterm elections.
+- China/Taiwan:
+  - China invades Taiwan by end of 2026.
+- Iran:
+  - U.S. invades Iran before 2027.
+  - Iranian regime falls before 2027.
+- Russia/Ukraine:
+  - Putin out as President of Russia by December 31 2026.
+  - Zelenskyy out as Ukraine president by end of 2026.
+  - Ukraine signs peace deal with Russia before 2027.
+
+Interpretation:
+
+- The expanded watchlist improves monitor coverage across electoral politics
+  and geopolitical risk.
+- These rows are monitor-ready market-universe entries only. They are not
+  thesis event evidence, anomaly evidence, signal evidence, or strategy
+  evidence.
+- Rule C thresholds remain unchanged.
+
+Next phase selected:
+
+- Collect a production-like live baseline using the expanded 12-market
+  watchlist and v2 30/20 scoring settings.
+- Use `--max-markets 12` for the next expanded-watchlist run.
 
 ## First Prototype Specification
 

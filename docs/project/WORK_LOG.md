@@ -2855,3 +2855,44 @@ Next step:
 
 - Expand the curated Polymarket politics/geopolitics watchlist before the next
   production-like live baseline run.
+
+## 2026-05-22 - goal-polymarket-live-watchlist-expansion-001
+
+Task:
+
+- Expand the reviewed Polymarket politics/geopolitics watchlist before the next
+  production-like live baseline run.
+
+Files changed:
+
+- `data/monitor_v2_curated_watchlist.csv`
+- `data/results/monitor_v2_curated_watchlist_validation_report.json`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/project/TOOL_USAGE.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.collectors.polymarket_watchlist` -> 12 accepted rows, 0 candidates, 0 rejected rows, 0 needs-followup rows.
+- Temporary read-only collector verification outside the repo with `--max-markets 12` -> 12 watchlist rows, 24 token midpoint rows, 12 aggregate wallet/activity rows.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_polymarket_watchlist.py tests/test_polymarket_readonly_collector.py -q` -> 19 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 279 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  279 passed through the status run.
+
+Decision:
+
+- Expand the accepted monitor universe from 3 to 12 markets.
+- Added coverage: US presidential election, US midterm House control,
+  China/Taiwan conflict, Iran conflict/regime risk, Russia/Ukraine leadership,
+  and Ukraine/Russia peace-process risk.
+- These rows are monitor-ready universe entries only. They are not thesis event
+  evidence, anomaly evidence, signal evidence, or strategy evidence.
+- Rule C thresholds remain unchanged.
+
+Next step:
+
+- Collect a production-like live baseline using the expanded 12-market
+  watchlist and v2 30/20 scoring settings.

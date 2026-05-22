@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-polymarket-live-watchlist-expansion-001
-title: Expand reviewed Polymarket politics/geo watchlist coverage
+goal_id: goal-polymarket-expanded-live-baseline-001
+title: Collect production-like live baseline on expanded watchlist
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -33,20 +33,27 @@ why:
   while only the diagnostic 10/5 scenario produced 3 `watch` rows.
 - The diagnostic 10/5 rows are percentile-only watch rows with low robust-z
   values, so they do not justify changing the default rule.
-- The next useful empirical step is to expand the reviewed politics/geo
-  watchlist before relying on live dashboard coverage.
+- The reviewed watchlist has been expanded from 3 to 12 accepted
+  politics/geopolitics markets using public Gamma market metadata.
+- A temporary read-only collector verification produced 12 watchlist rows,
+  24 token midpoint rows, and 12 aggregate wallet/activity rows without
+  touching repository result artifacts.
+- The next empirical step is to collect a production-like live baseline on
+  the expanded 12-market watchlist.
 deliverables:
-- Discover additional candidate Polymarket politics/geopolitical markets from
-  read-only public sources.
-- Add only reviewed rows to `data/monitor_v2_curated_watchlist.csv`.
-- Keep rejected or needs-followup rows documented with reasons.
-- Regenerate the curated watchlist validation report.
-- Do not change Rule C thresholds in this goal.
+- Run the bounded refresh command on the expanded reviewed watchlist.
+- Use `--max-markets 12` with the v2 30/20 baseline settings.
+- Regenerate rolling-history, scoring, dashboard, and metadata artifacts.
+- Record alert count, status counts, severity counts, baseline readiness, and
+  any operational limitations.
+- Keep Rule C thresholds unchanged.
 scope:
 - `data/monitor_v2_curated_watchlist.csv`.
 - `data/results/monitor_v2_curated_watchlist_validation_report.json`.
+- `data/results/monitor_v2_polymarket_rolling_*`.
+- `data/results/monitor_v2_polymarket_live_*`.
+- `data/results/monitor_v2_polymarket_dashboard.html`.
 - Existing project/research docs.
-- Existing read-only discovery/collector helpers if needed.
 - Polymarket politics/geopolitics markets only.
 - Existing local validated output files.
 out_of_scope:
@@ -60,12 +67,11 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Watchlist rows have source URLs, review status, reviewer, review timestamp,
-  inclusion or exclusion reasons, and market identifiers.
-- Accepted rows are politics/geopolitics relevant and monitor-ready.
-- Candidate, rejected, or needs-followup rows are not used as monitor-ready
-  markets.
 - The watchlist validator passes.
+- At least 20 real closed 5-minute buckets are collected for the expanded
+  watchlist without synthetic timestamp shifting.
+- Dashboard reports 12 reviewed markets and 20 or more buckets.
+- Scoring metadata validates and reports v2 30/20 baseline settings.
 - Rule C thresholds remain unchanged.
 - Existing scoring outputs are not reinterpreted as causal, profitable, or
   private-information evidence.
@@ -75,7 +81,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: data: expand curated polymarket politics geo watchlist
+next_commit: data: collect expanded polymarket watchlist baseline
 
 ## Decision Inputs For This Goal
 
@@ -83,7 +89,16 @@ next_commit: data: expand curated polymarket politics geo watchlist
 - `operations/collectors/polymarket_watchlist.py` validates the local
   watchlist contract.
 - `data/results/monitor_v2_curated_watchlist_validation_report.json` reports
-  3 accepted rows, 0 candidate rows, and validation status `pass`.
+  12 accepted rows, 0 candidate rows, 0 rejected rows, 0 needs-followup rows,
+  and validation status `pass`.
+- The expanded accepted watchlist includes:
+  - 3 existing politics/leadership/election rows,
+  - 3 US election and midterm control rows,
+  - 6 geopolitics rows covering China/Taiwan, Iran, Russia/Ukraine leadership,
+    and Ukraine/Russia peace-process risk.
+- Temporary collector verification against public read-only Polymarket
+  endpoints produced 12 watchlist rows, 24 token midpoint rows, and 12
+  aggregate wallet/activity rows.
 - `operations/collectors/polymarket_readonly.py` accepts
   `curated_watchlist_path` and uses only accepted rows.
 - The latest curated live collector run produced:
@@ -124,10 +139,10 @@ next_commit: data: expand curated polymarket politics geo watchlist
 
 ## Done Means
 
-- The monitor has a broader reviewed politics/geo watchlist before the next
-  live rolling collection.
-- The next decision is whether to run a new production-like baseline on the
-  expanded watchlist or refine the dashboard/reporting layer.
+- The monitor has a production-like 12-market live baseline.
+- The next decision is whether to review expanded-baseline alert behaviour,
+  refine the dashboard/reporting layer, or add a read-only local server
+  wrapper.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -304,3 +319,6 @@ next_commit: data: expand curated polymarket politics geo watchlist
 - Threshold-sensitivity review is accepted: keep Rule C unchanged for now;
   the 10/5 diagnostic scenario produced 3 watch rows, but they are not enough
   to justify changing the default monitor rule.
+- Curated Polymarket watchlist is expanded from 3 to 12 accepted
+  politics/geopolitics markets and the validation report passes with 12
+  accepted rows, 0 candidates, 0 rejected rows, and 0 needs-followup rows.

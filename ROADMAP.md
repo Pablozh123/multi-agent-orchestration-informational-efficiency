@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for reviewed watchlist expansion
+Status: active for expanded 12-market live baseline
 
 Done criteria:
 
@@ -353,8 +353,16 @@ Done criteria:
 - Threshold-sensitivity outputs exist for the 21-bucket baseline. Default
   Rule C produced 0 alerts; the diagnostic 10/5 scenario produced 3 `watch`
   rows; the diagnostic rows do not justify changing the default rule.
-- The next empirical step is to expand the reviewed politics/geo watchlist
-  before running another production-like live baseline.
+- The reviewed Polymarket watchlist has been expanded from 3 to 12 accepted
+  politics/geopolitics markets with 0 candidates, 0 rejected rows, and 0
+  needs-followup rows.
+- The expanded watchlist includes US election, US midterm control, China/Taiwan,
+  Iran, Russia/Ukraine leadership, and Ukraine/Russia peace-process markets.
+- A temporary collector verification produced 12 watchlist rows, 24 token
+  midpoint rows, and 12 aggregate wallet/activity rows without modifying
+  repository result artifacts.
+- The next empirical step is a production-like live baseline run on the
+  expanded 12-market watchlist.
 
 Blockers:
 
@@ -367,10 +375,9 @@ Blockers:
   scope.
 - MCP, agents, strategy backtests, authenticated user channels, and order
   execution remain blocked while the read-only collector is built.
-- Thesis-facing live-alert wording remains blocked until the monitor has a
-  broader reviewed market universe and another production-like baseline is
-  collected on that universe.
+- Thesis-facing live-alert wording remains blocked until a production-like
+  baseline is collected and reviewed on the expanded 12-market universe.
 - Threshold changes are blocked; Rule C remains the default until a later
   reviewed sensitivity decision says otherwise.
-- Any read-only UI/server wrapper should wait until watchlist expansion and
-  the next baseline run are complete.
+- Any read-only UI/server wrapper should wait until the expanded-baseline run
+  is complete.

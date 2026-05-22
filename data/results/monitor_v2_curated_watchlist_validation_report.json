@@ -1,15 +1,24 @@
 {
-  "accepted_count": 3,
+  "accepted_count": 12,
   "accepted_market_ids": [
+    "0x0a99479228e93524b25676ae69b94bd3f4278a6bca8d8c265c84d24755399cf5",
     "0x0f49db97f71c68b1e42a6d16e3de93d85dbf7d4148e3f018eb79e88554be9f75",
+    "0x4167e22670f31e5f93d132f78108f3fae809bd15cadf78983eff096845ed1415",
+    "0x4e4f77e7dbf4cab666e9a1943674d7ae66348e862df03ea6f44b11eb95731928",
+    "0x51f624dbbf14f9edb575fef1be6f7a303751de70783fa144fce27b957452c803",
+    "0x5db999fad322cea2914535aae5517060c3f80ad6d8c0231cde2124a434d16846",
+    "0x6bd56627aa21311850825edb27e53434a0e17a4f782be0086bc07f71eee00d0d",
     "0xa467b14d51f01b957109d9cbb1d6c124fab2a089d52ed8f471d23c2812e743b7",
+    "0xbb4d51e6364066d92eb6f9b8413dd7193de70966736044463b205834805a1f3b",
+    "0xd5d9fc47718bd553592d126b1fa5e87183d27f3936975b0c04cc0f2dec1f1bb4",
+    "0xd9fb1184af0064e5e34b129f5b79afa5a17b7e32f2953ab05efed82315fee6d4",
     "0xe6bcc2f1dd025ce5e1833190f7c60a71171c94f805df55b9ab0ded695ec93565"
   ],
   "auto_discovered_rows_are_monitor_ready": false,
   "candidate_count": 0,
   "contains_order_instructions": false,
   "contains_wallet_addresses": false,
-  "generated_at_utc": "2026-05-22T14:40:05+00:00",
+  "generated_at_utc": "2026-05-22T17:17:53+00:00",
   "input_path": "data\\monitor_v2_curated_watchlist.csv",
   "limitations": {
     "candidate_rows_require_human_review": true,
@@ -24,13 +33,15 @@
   "monitor_ready_rule": "review_status must be accepted",
   "needs_followup_count": 0,
   "rejected_count": 0,
-  "row_count": 3,
+  "row_count": 12,
   "scope_counts": {
-    "election": 2,
-    "leadership": 1
+    "conflict": 2,
+    "election": 5,
+    "international_relations": 1,
+    "leadership": 4
   },
   "status": "pass",
   "status_counts": {
-    "accepted": 3
+    "accepted": 12
   }
 }

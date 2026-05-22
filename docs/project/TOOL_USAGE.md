@@ -96,19 +96,19 @@ Preflight:
 Single refresh:
 
 ```powershell
-.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 1 --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3
+.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 1 --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 12
 ```
 
 Diagnostic run:
 
 ```powershell
-.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 3 --delay-seconds 305 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3
+.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 3 --delay-seconds 305 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 12
 ```
 
 Production-like baseline run:
 
 ```powershell
-.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 20 --delay-seconds 305 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3 --baseline-observations 30 --min-baseline-observations 20
+.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 20 --delay-seconds 305 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 12 --baseline-observations 30 --min-baseline-observations 20
 ```
 
 The dashboard is written to:

@@ -3,43 +3,43 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-22 19:12
+Generated: 2026-05-22 19:21
 
-Current goal: `goal-polymarket-live-watchlist-expansion-001` - Expand reviewed Polymarket politics/geo watchlist coverage
+Current goal: `goal-polymarket-expanded-live-baseline-001` - Collect production-like live baseline on expanded watchlist
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `279 passed in 15.07s`
+Pytest summary: `279 passed in 14.46s`
 
 Git branch: `main`
 
-Latest commit: `ee8f043`
+Latest commit: `187c2ce`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
+ M data/monitor_v2_curated_watchlist.csv
+ M data/results/monitor_v2_curated_watchlist_validation_report.json
+ M docs/project/TOOL_USAGE.md
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
-?? data/results/monitor_v2_polymarket_threshold_sensitivity.csv
-?? data/results/monitor_v2_polymarket_threshold_sensitivity.png
-?? data/results/monitor_v2_polymarket_threshold_sensitivity_by_family.csv
-?? data/results/monitor_v2_polymarket_threshold_sensitivity_metadata.json
-?? operations/analysis/monitor_v2_threshold_sensitivity.py
-?? tests/test_monitor_v2_threshold_sensitivity.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      | 67 ++++++++++++++++------------
- ROADMAP.md                                   | 22 +++++----
- docs/project/WORK_LOG.md                     | 41 +++++++++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 43 ++++++++++++++++++
- 4 files changed, 135 insertions(+), 38 deletions(-)
+ GOAL.md                                            | 62 +++++++++++++--------
+ ROADMAP.md                                         | 23 +++++---
+ data/monitor_v2_curated_watchlist.csv              |  9 +++
+ ...tor_v2_curated_watchlist_validation_report.json | 23 ++++++--
+ docs/project/TOOL_USAGE.md                         |  6 +-
+ docs/project/WORK_LOG.md                           | 38 +++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md       | 64 +++++++++++++++++++++-
+ 7 files changed, 183 insertions(+), 42 deletions(-)
 ```
 
 Blockers:
@@ -48,7 +48,7 @@ Blockers:
 
 Next recommended action:
 
-- data: expand curated polymarket politics geo watchlist
+- data: collect expanded polymarket watchlist baseline
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

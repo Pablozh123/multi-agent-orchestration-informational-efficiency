@@ -2646,6 +2646,64 @@ Next phase selected:
 - Document a safe operator protocol with commands, minimum bucket counts, and
   interpretation rules.
 
+### Live Monitor Operator Protocol
+
+operator_protocol_status: documented
+
+Implementation date: 2026-05-22
+
+Safe preflight:
+
+```powershell
+.\.venv\Scripts\python.exe -m operations.collectors.polymarket_watchlist
+```
+
+Single-bucket refresh:
+
+```powershell
+.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 1 --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3
+```
+
+Short diagnostic run:
+
+```powershell
+.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 3 --delay-seconds 305 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3
+```
+
+Production-like baseline run from the current v2 contract:
+
+```powershell
+.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 20 --delay-seconds 305 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3
+```
+
+Dashboard output:
+
+- `data/results/monitor_v2_polymarket_dashboard.html`
+
+Minimum bucket interpretation:
+
+- 1-2 closed buckets: interface and validation check only.
+- 3-19 closed buckets: diagnostic rolling scores only.
+- 20 or more closed buckets: production-like alert interpretation becomes
+  methodologically closer to the v2 contract, but still requires review.
+
+Alert interpretation:
+
+- `alert_count=0` means Rule C did not trigger in the observed window.
+- It does not mean the broader market is quiet.
+- It does not imply forecast efficiency or inefficiency by itself.
+- It does not support causal, misconduct, or profitability claims.
+
+Required review after each run:
+
+- Check `baseline_readiness`.
+- Check `bucket_count`.
+- Check `severity_counts` and `status_counts`.
+- Open the dashboard HTML.
+- Inspect whether the watchlist still represents the intended politics/geo
+  universe.
+- Record notable decisions in `docs/project/WORK_LOG.md` before committing.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

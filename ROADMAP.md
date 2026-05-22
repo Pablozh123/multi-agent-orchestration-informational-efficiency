@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for safe live monitor operator protocol
+Status: active for production-like 20-bucket live baseline
 
 Done criteria:
 
@@ -338,6 +338,10 @@ Done criteria:
   `diagnostic_scores_available`.
 - The next implementation step is an operator protocol that documents safe
   run commands, minimum bucket counts, and interpretation limits.
+- Safe operator protocol is documented in the strategy architecture and tool
+  usage docs.
+- The next empirical step is a 20 real closed 5-minute bucket run using the
+  bounded refresh runner.
 
 Blockers:
 

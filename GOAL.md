@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-polymarket-live-operator-protocol-001
-title: Document safe live monitor operating protocol
+goal_id: goal-polymarket-live-production-baseline-001
+title: Collect production-like 20-bucket live monitor baseline
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -21,14 +21,16 @@ why:
   and regenerate the dashboard.
 - The latest refresh run has 4 real closed 5-minute buckets, 0 alerts, and
   diagnostic baseline readiness.
-- The next useful step is an operator protocol that explains exactly how to run
-  the monitor safely and how to interpret outputs.
+- The safe operator protocol is documented with copy-pasteable commands and
+  interpretation rules.
+- The next empirical step is to collect the v2 contract minimum of 20 real
+  closed 5-minute buckets.
 deliverables:
-- Add or update existing documentation with exact safe run commands.
-- Define minimum bucket counts for diagnostic and production-like monitoring.
-- Explain how to read dashboard, alert summary, and metadata outputs.
-- Explain what 0 alerts means and does not mean.
-- Keep all guidance read-only and non-trading.
+- Run the bounded refresh command for 20 real closed 5-minute buckets.
+- Regenerate rolling-history, scoring, dashboard, and metadata artifacts.
+- Record alert count, status counts, severity counts, and baseline readiness.
+- Review whether the output is stable enough for thesis-facing monitor
+  discussion.
 scope:
 - `data/monitor_v2_curated_watchlist.csv`.
 - `data/results/monitor_v2_polymarket_rolling_*`.
@@ -48,11 +50,11 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Operator protocol gives copy-pasteable safe commands.
-- Protocol states that 20 closed 5-minute buckets are the production-like
-  minimum from the current v2 contract.
-- Protocol explains that fewer buckets are diagnostic only.
-- Protocol avoids causal, profit, or misconduct claims.
+- At least 20 real closed 5-minute buckets are collected without synthetic
+  timestamp shifting.
+- Dashboard reports 20 or more buckets.
+- Scoring metadata still validates and reports baseline readiness.
+- Any alerts are interpreted descriptively only.
 - The curated watchlist validator passes and the report is regenerated.
 - Existing collector and scoring outputs remain read-only and file-based.
 - No authenticated user channel, order endpoint, agent, MCP, ML, strategy
@@ -61,7 +63,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add live monitor operator protocol
+next_commit: data: collect production-like polymarket monitor baseline
 
 ## Decision Inputs For This Goal
 
@@ -91,13 +93,16 @@ next_commit: docs: add live monitor operator protocol
   - baseline readiness `diagnostic_scores_available`.
 - `operations/collectors/polymarket_monitor_refresh.py` exists and regenerates
   rolling outputs plus dashboard output in one bounded command.
+- Safe operator protocol is documented in
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md` and
+  `docs/project/TOOL_USAGE.md`.
 
 ## Done Means
 
-- A user can run the monitor without guessing command order.
-- A user can distinguish diagnostic runs from production-like runs.
-- The next decision is whether to keep collecting, refine alert thresholds, or
-  design a read-only UI/server wrapper.
+- The monitor has a first production-like rolling baseline according to the
+  current 20-bucket v2 contract.
+- The next decision is whether to refine alert thresholds, expand the
+  watchlist, or design a read-only UI/server wrapper.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -258,3 +263,5 @@ next_commit: docs: add live monitor operator protocol
 - Bounded live monitor refresh runner exists and has refreshed the dashboard
   from 4 real closed 5-minute buckets with 0 alerts and baseline readiness
   `diagnostic_scores_available`.
+- Safe live monitor operator protocol exists with preflight, single-refresh,
+  diagnostic, and production-like run commands plus interpretation limits.

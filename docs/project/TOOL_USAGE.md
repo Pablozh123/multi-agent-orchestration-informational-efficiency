@@ -83,6 +83,50 @@ tests. Existing MCP code must remain guarded or parked in legacy paths.
 No MCP server should run multi-agent analysis before the deterministic core is
 complete.
 
+## Live Monitor Operator Usage
+
+Use the live monitor only through bounded, read-only commands.
+
+Preflight:
+
+```powershell
+.\.venv\Scripts\python.exe -m operations.collectors.polymarket_watchlist
+```
+
+Single refresh:
+
+```powershell
+.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 1 --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3
+```
+
+Diagnostic run:
+
+```powershell
+.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 3 --delay-seconds 305 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3
+```
+
+Production-like baseline run:
+
+```powershell
+.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 20 --delay-seconds 305 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3
+```
+
+The dashboard is written to:
+
+```text
+data/results/monitor_v2_polymarket_dashboard.html
+```
+
+Interpretation rule:
+
+- fewer than 3 buckets: interface check only,
+- 3 to 19 buckets: diagnostic only,
+- 20 or more buckets: closer to the v2 baseline contract, still review before
+  thesis-facing claims.
+
+The monitor is descriptive. It must not be used for trading claims,
+misconduct claims, or profitability claims.
+
 ## ChatGPT And Claude Role
 
 ChatGPT and Claude may help:

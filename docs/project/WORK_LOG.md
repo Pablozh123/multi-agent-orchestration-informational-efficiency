@@ -2702,3 +2702,35 @@ Decision:
 Next step:
 
 - Document the safe live monitor operator protocol and interpretation rules.
+
+## 2026-05-22 - goal-polymarket-live-operator-protocol-001
+
+Task:
+
+- Document safe live monitor run commands and interpretation rules.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+- `docs/project/TOOL_USAGE.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+
+Tests:
+
+- Full test suite pending after status refresh.
+
+Decision:
+
+- Use the bounded refresh runner as the safe operator command.
+- Treat fewer than 3 buckets as interface checks, 3 to 19 buckets as
+  diagnostic, and 20 or more closed 5-minute buckets as the current
+  production-like baseline threshold.
+- Keep all outputs descriptive and read-only.
+
+Next step:
+
+- Collect a 20-bucket live monitor baseline if enough real elapsed time is
+  available.

@@ -3,63 +3,41 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-22 17:02
+Generated: 2026-05-22 17:07
 
-Current goal: `goal-polymarket-live-dashboard-001` - Build first local read-only monitor dashboard view
+Current goal: `goal-polymarket-live-refresh-loop-001` - Add bounded live monitor refresh runner
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `270 passed in 12.88s`
+Pytest summary: `273 passed in 12.50s`
 
 Git branch: `main`
 
-Latest commit: `1229fed`
+Latest commit: `aa8e0e3`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
- M data/results/monitor_v2_polymarket_live_collection_metadata.json
- M data/results/monitor_v2_polymarket_live_input_validation_report.json
- M data/results/monitor_v2_polymarket_live_market_snapshots.csv
- M data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv
- M data/results/monitor_v2_polymarket_live_watchlist.csv
- M data/results/monitor_v2_polymarket_rolling_alert_rows.csv
- M data/results/monitor_v2_polymarket_rolling_alert_summary.csv
- M data/results/monitor_v2_polymarket_rolling_history.png
- M data/results/monitor_v2_polymarket_rolling_history_figure_metadata.json
- M data/results/monitor_v2_polymarket_rolling_history_metadata.json
- M data/results/monitor_v2_polymarket_rolling_scoring_metadata.json
- M data/results/monitor_v2_polymarket_rolling_scoring_snapshots.csv
- M data/results/monitor_v2_polymarket_rolling_scoring_validation_report.json
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
+?? data/results/monitor_v2_polymarket_dashboard.html
+?? data/results/monitor_v2_polymarket_dashboard_metadata.json
+?? operations/analysis/monitor_v2_dashboard.py
+?? tests/test_monitor_v2_dashboard.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                            |  60 +++++++++++----------
- ROADMAP.md                                         |  10 ++--
- ...tor_v2_polymarket_live_collection_metadata.json |   8 +--
- ...v2_polymarket_live_input_validation_report.json |  10 ++--
- ...monitor_v2_polymarket_live_market_snapshots.csv |  12 +++++
- ...or_v2_polymarket_live_wallet_tier_snapshots.csv |   6 +++
- .../monitor_v2_polymarket_live_watchlist.csv       |   6 +--
- .../monitor_v2_polymarket_rolling_alert_rows.csv   |  36 +++++++++++++
- ...monitor_v2_polymarket_rolling_alert_summary.csv |  27 +++++-----
- .../monitor_v2_polymarket_rolling_history.png      | Bin 100848 -> 93954 bytes
- ...polymarket_rolling_history_figure_metadata.json |  10 ++--
- ...tor_v2_polymarket_rolling_history_metadata.json |  30 ++++++-----
- ...tor_v2_polymarket_rolling_scoring_metadata.json |  22 ++++----
- ...tor_v2_polymarket_rolling_scoring_snapshots.csv |  36 +++++++++++++
- ...lymarket_rolling_scoring_validation_report.json |  10 ++--
- docs/project/WORK_LOG.md                           |  16 +++---
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md       |  29 ++++++----
- 17 files changed, 219 insertions(+), 109 deletions(-)
+ GOAL.md                                      | 54 +++++++++++++++++-----------
+ ROADMAP.md                                   |  8 ++++-
+ docs/project/WORK_LOG.md                     | 37 +++++++++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 41 +++++++++++++++++++++
+ 4 files changed, 118 insertions(+), 22 deletions(-)
 ```
 
 Blockers:
@@ -68,7 +46,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: add local polymarket monitor dashboard
+- feat: add bounded live monitor refresh runner
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

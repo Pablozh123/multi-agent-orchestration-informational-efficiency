@@ -1,0 +1,45 @@
+{
+  "generated_at_utc": "2026-05-22T15:05:43+00:00",
+  "limitations": {
+    "descriptive_dashboard_only": true,
+    "no_causal_or_profitability_claim": true,
+    "short_rolling_history": true
+  },
+  "method": {
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "name": "monitor_v2_static_dashboard",
+    "read_only": true,
+    "uses_bounded_local_files": true
+  },
+  "outputs": {
+    "alert_count": 0,
+    "baseline_readiness": "diagnostic_scores_available",
+    "bucket_count": 3,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "dashboard_path": "data\\results\\monitor_v2_polymarket_dashboard.html",
+    "latest_bucket_utc": "2026-05-22T15:00:00Z",
+    "market_count": 3,
+    "severity_counts": {
+      "none": 48
+    },
+    "status_counts": {
+      "insufficient_baseline": 30,
+      "ok": 4,
+      "zero_mad": 14
+    }
+  },
+  "source_paths": {
+    "alert_summary": "data\\results\\monitor_v2_polymarket_rolling_alert_summary.csv",
+    "figure": "data\\results\\monitor_v2_polymarket_rolling_history.png",
+    "market_snapshots": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
+    "rolling_metadata": "data\\results\\monitor_v2_polymarket_rolling_history_metadata.json",
+    "scoring_metadata": "data\\results\\monitor_v2_polymarket_rolling_scoring_metadata.json",
+    "wallet_tier_snapshots": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",
+    "watchlist": "data\\results\\monitor_v2_polymarket_live_watchlist.csv"
+  }
+}

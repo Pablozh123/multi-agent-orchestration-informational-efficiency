@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-polymarket-live-dashboard-001
-title: Build first local read-only monitor dashboard view
+goal_id: goal-polymarket-live-refresh-loop-001
+title: Add bounded live monitor refresh runner
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -15,21 +15,24 @@ why:
 - The read-only collector can now collect from accepted curated watchlist rows.
 - The first curated rolling-history run now has 3 real closed 5-minute buckets
   and diagnostic scoring is available.
-- The next useful step is an easy-to-read local dashboard view over the
-  bounded CSV/JSON outputs.
+- The first static read-only dashboard exists and makes the current monitor
+  state understandable from bounded local artifacts.
+- The next useful step is a bounded refresh runner that collects a configured
+  number of future buckets and regenerates the dashboard after each run.
 deliverables:
-- Generate a local static dashboard or report view from existing monitor-v2
-  live/rolling output files.
-- Show watched markets, latest midpoint/probability snapshots, aggregate
-  wallet/activity diagnostics, alert counts, baseline readiness, and
-  limitations.
-- Link or reference the rolling-history figure and source artifacts.
-- Keep the view read-only and descriptive.
+- Add a local CLI runner that calls the existing rolling-history collector and
+  dashboard generator in sequence.
+- Keep the runner bounded by explicit `samples` and `delay_seconds`.
+- Write metadata describing run count, dashboard output, baseline readiness,
+  and limitations.
+- Add tests with mocked/local inputs only.
 scope:
 - `data/monitor_v2_curated_watchlist.csv`.
 - `data/results/monitor_v2_polymarket_rolling_*`.
 - `data/results/monitor_v2_polymarket_live_*`.
-- A local generated dashboard artifact under `data/results/` or `docs/`.
+- `operations/collectors/polymarket_rolling_history.py`.
+- `operations/analysis/monitor_v2_dashboard.py`.
+- A small bounded refresh CLI if needed.
 - Polymarket politics/geopolitics markets only.
 - Existing local validated output files.
 out_of_scope:
@@ -43,11 +46,11 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Dashboard generation reads only bounded local output files.
-- Dashboard output contains no wallet addresses and no order or trading
-  controls.
-- Dashboard clearly displays baseline readiness and current alert count.
-- Dashboard wording avoids causal, profit, or misconduct claims.
+- Runner is bounded and never a background daemon.
+- Runner uses the curated watchlist path when configured.
+- Runner refreshes the static dashboard from bounded local files.
+- Runner does not add authenticated channels, order endpoints, agents, MCP, ML,
+  database writes, or trading credentials.
 - The curated watchlist validator passes and the report is regenerated.
 - Existing collector and scoring outputs remain read-only and file-based.
 - No authenticated user channel, order endpoint, agent, MCP, ML, strategy
@@ -56,7 +59,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add local polymarket monitor dashboard
+next_commit: feat: add bounded live monitor refresh runner
 
 ## Decision Inputs For This Goal
 
@@ -79,13 +82,19 @@ next_commit: feat: add local polymarket monitor dashboard
   - 48 scoring rows,
   - 0 alerts,
   - baseline readiness `diagnostic_scores_available`.
+- `data/results/monitor_v2_polymarket_dashboard.html` exists and reports:
+  - 3 markets,
+  - 3 closed buckets,
+  - 0 alerts,
+  - baseline readiness `diagnostic_scores_available`.
 
 ## Done Means
 
-- A human can open one local artifact and understand the current monitor state.
-- The dashboard points back to deterministic source artifacts.
+- A user can run one bounded command to collect future buckets and refresh the
+  dashboard.
+- The command remains local, read-only, and explicit about time waiting.
 - The next decision is whether to keep collecting, refine alert thresholds, or
-  add a bounded live operator loop.
+  design a read-only UI/server wrapper.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -240,3 +249,6 @@ next_commit: feat: add local polymarket monitor dashboard
 - Curated rolling-history collection produced 3 real closed 5-minute buckets,
   18 token midpoint rows, 9 aggregate wallet/activity rows, 48 scoring rows,
   0 alerts, and baseline readiness `diagnostic_scores_available`.
+- First local read-only monitor dashboard exists under
+  `data/results/monitor_v2_polymarket_dashboard.html` with metadata, source
+  artifact references, rolling figure, baseline readiness, and alert summary.

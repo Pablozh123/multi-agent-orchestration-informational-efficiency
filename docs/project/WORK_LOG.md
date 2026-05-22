@@ -2625,3 +2625,40 @@ Next step:
 
 - Build a local read-only dashboard/report view over the bounded monitor
   outputs.
+
+## 2026-05-22 - goal-polymarket-live-dashboard-001
+
+Task:
+
+- Build a static local read-only dashboard over the curated Polymarket monitor
+  outputs.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `operations/analysis/monitor_v2_dashboard.py`
+- `tests/test_monitor_v2_dashboard.py`
+- `data/results/monitor_v2_polymarket_dashboard.html`
+- `data/results/monitor_v2_polymarket_dashboard_metadata.json`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_v2_dashboard.py -q` -> 3 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_dashboard` -> 3 markets, 3 buckets, 0 alerts, `diagnostic_scores_available`.
+- Full test suite pending after status refresh.
+
+Decision:
+
+- Accept the static HTML dashboard as the first human-readable local monitor
+  view.
+- The dashboard reads bounded local artifacts only and contains no wallet
+  addresses, no trading controls, and no causal or profitability claim.
+
+Next step:
+
+- Add a bounded refresh runner that collects future buckets and regenerates the
+  dashboard.

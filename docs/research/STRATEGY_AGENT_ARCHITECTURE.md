@@ -2561,6 +2561,47 @@ Next phase selected:
   monitor state understandable without exposing raw wallet data or adding
   trading controls.
 
+### Local Read-Only Dashboard
+
+dashboard_status: implemented
+
+Implementation date: 2026-05-22
+
+Output:
+
+- `data/results/monitor_v2_polymarket_dashboard.html`
+- `data/results/monitor_v2_polymarket_dashboard_metadata.json`
+
+Dashboard content:
+
+- market count,
+- closed bucket count,
+- alert count,
+- baseline readiness,
+- latest market/token midpoint ranges,
+- aggregate wallet/activity diagnostics,
+- rolling-history figure,
+- alert summary table,
+- source artifact references.
+
+Latest dashboard state:
+
+- Markets: 3.
+- Closed buckets: 3.
+- Alerts: 0.
+- Baseline readiness: `diagnostic_scores_available`.
+
+Interpretation:
+
+- The dashboard is a local read-only diagnostic view over bounded artifacts.
+- It contains no wallet addresses and no trading controls.
+- It makes no causal, misconduct, or profitability claim.
+
+Next phase selected:
+
+- Add a bounded refresh runner that collects a configured number of future
+  buckets and regenerates the dashboard without becoming a background daemon.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for first local monitor dashboard view
+Status: active for bounded live monitor refresh runner
 
 Done criteria:
 
@@ -329,6 +329,12 @@ Done criteria:
   0 alerts, and baseline readiness `diagnostic_scores_available`.
 - The next implementation step is a local read-only dashboard/report view over
   the bounded monitor output files.
+- First local read-only dashboard exists at
+  `data/results/monitor_v2_polymarket_dashboard.html`.
+- The dashboard reports 3 markets, 3 closed buckets, 0 alerts, baseline
+  readiness `diagnostic_scores_available`, and links source artifacts.
+- The next implementation step is a bounded refresh runner that collects a
+  configured number of future buckets and regenerates the dashboard.
 
 Blockers:
 

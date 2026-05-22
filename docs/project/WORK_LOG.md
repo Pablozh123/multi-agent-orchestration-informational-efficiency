@@ -2951,3 +2951,43 @@ Next step:
 - Review the expanded-baseline output shape and interpretation before changing
   thresholds, adding a read-only wrapper, or using live-monitor wording in the
   thesis.
+
+## 2026-05-22 - goal-polymarket-expanded-baseline-review-001
+
+Task:
+
+- Review the expanded 12-market live baseline output shape and interpretation.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+
+Tests:
+
+- Inspected `data/results/monitor_v2_polymarket_refresh_metadata.json`.
+- Inspected `data/results/monitor_v2_polymarket_rolling_scoring_metadata.json`.
+- Inspected `data/results/monitor_v2_polymarket_dashboard_metadata.json`.
+- Inspected row counts and counts by status/severity from
+  `data/results/monitor_v2_polymarket_rolling_alert_rows.csv`,
+  `data/results/monitor_v2_polymarket_rolling_scoring_snapshots.csv`, and
+  `data/results/monitor_v2_polymarket_rolling_alert_summary.csv`.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  279 passed through the status run.
+
+Decision:
+
+- Accept the expanded-baseline output shape for the first 12-market live
+  monitor prototype.
+- Keep Rule C unchanged.
+- Interpret 0 alerts as no Rule C trigger in the observed short window only.
+- Do not use this result as proof of market efficiency, inefficiency,
+  causality, private information, tradeability, or profitability.
+- Select reporting/dashboard clarity as the next implementation step.
+
+Next step:
+
+- Improve the read-only live monitor dashboard/reporting layer so the latest
+  monitor state is understandable from one entry point.

@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-polymarket-expanded-baseline-review-001
-title: Review expanded Polymarket live baseline results
+goal_id: goal-polymarket-live-dashboard-reporting-001
+title: Improve read-only live monitor reporting and dashboard clarity
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -43,23 +43,27 @@ why:
 - The run produced 480 market snapshot rows, 240 aggregate wallet/activity
   rows, 1'416 scoring rows, 60 summary rows, 0 alerts, and baseline readiness
   `baseline_available_zero_mad_or_non_alerting`.
-- The next empirical step is to review whether the expanded-baseline result
-  supports the current Rule C interpretation and what monitor layer should be
-  improved next.
+- The expanded-baseline review accepts the output shape and keeps Rule C
+  unchanged.
+- The next empirical step is to make the read-only live monitor output easier
+  to inspect: current market universe, latest bucket, baseline readiness,
+  status counts, severity counts, and limitations should be visible without
+  opening multiple CSV/JSON files.
 deliverables:
-- Inspect expanded-baseline scoring, summary, dashboard, and metadata files.
-- Record what 0 alerts means under Rule C and what it does not mean.
-- Confirm whether the output shape is accepted for the 12-market live baseline.
-- Decide the next monitor step: reporting/dashboard refinement, another live
-  run, or a read-only local wrapper.
-- Keep Rule C thresholds unchanged unless a separate reviewed sensitivity
-  decision is made.
+- Improve or extend the deterministic dashboard/reporting layer over existing
+  bounded live monitor artifacts.
+- Surface latest bucket, market count, bucket count, alert count, severity
+  counts, status counts, baseline readiness, and source artifact links.
+- Make the 0-alert interpretation and short-window limitations clear.
+- Keep outputs read-only, file-based, and deterministic.
+- Keep Rule C thresholds unchanged.
 scope:
 - `data/monitor_v2_curated_watchlist.csv`.
 - `data/results/monitor_v2_curated_watchlist_validation_report.json`.
 - `data/results/monitor_v2_polymarket_rolling_*`.
 - `data/results/monitor_v2_polymarket_live_*`.
 - `data/results/monitor_v2_polymarket_dashboard.html`.
+- Existing dashboard/reporting code and tests if needed.
 - Existing project/research docs.
 - Polymarket politics/geopolitics markets only.
 - Existing local validated output files.
@@ -74,22 +78,23 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- The expanded 12-market baseline files are inspected and documented.
-- Dashboard reports 12 reviewed markets and 20 closed buckets.
-- Scoring metadata validates and reports v2 30/20 baseline settings,
-  `production_like_baseline_available=true`, and no wallet-address exposure.
-- Alert count, severity counts, status counts, and baseline readiness are
-  recorded.
+- The latest live-monitor dashboard/reporting output is understandable from a
+  single entry point.
+- The output reports 12 reviewed markets and 20 closed buckets from the latest
+  expanded baseline unless a later bounded run intentionally replaces it.
+- Alert count, severity counts, status counts, baseline readiness, and source
+  artifact references are visible.
+- The output contains no wallet addresses and no order instructions.
 - Rule C thresholds remain unchanged.
-- Existing scoring outputs are not reinterpreted as causal, profitable, or
-  private-information evidence.
+- Existing scoring outputs are not reinterpreted as causal, profitable,
+  private-information, or efficiency evidence.
 - No authenticated user channel, order endpoint, agent, MCP, ML, strategy
   backtest, cloud daemon, database write, or trading credential path is
   activated.
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: review expanded polymarket live baseline
+next_commit: feat: improve live monitor dashboard reporting
 
 ## Decision Inputs For This Goal
 
@@ -161,10 +166,10 @@ next_commit: docs: review expanded polymarket live baseline
 
 ## Done Means
 
-- The expanded 12-market live baseline has a written interpretation note.
-- The next implementation step is selected without changing Rule C or making
-  causal, private-information, profitability, or efficiency claims from the
-  short live window.
+- The latest monitor state can be understood from a single read-only report or
+  dashboard without inspecting raw CSV/JSON files.
+- The next decision is whether to run another bounded live window, add a local
+  read-only server wrapper, or start a tested alert-review workflow.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -349,3 +354,6 @@ next_commit: docs: review expanded polymarket live baseline
   aggregate wallet/activity rows, 1'416 scoring rows, 60 summary rows, 0
   alerts, and baseline readiness
   `baseline_available_zero_mad_or_non_alerting`.
+- Expanded Polymarket live baseline review is accepted: the output shape is
+  usable as a short-window prototype baseline, Rule C remains unchanged, and
+  0 alerts are interpreted only as no Rule C trigger in the observed window.

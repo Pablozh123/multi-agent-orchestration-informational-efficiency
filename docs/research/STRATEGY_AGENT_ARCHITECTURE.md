@@ -2880,7 +2880,7 @@ Next phase selected:
 
 ### Expanded 12-Market Live Baseline
 
-expanded_live_baseline_status: collected pending review
+expanded_live_baseline_status: reviewed accepted
 
 Run contract:
 
@@ -2932,11 +2932,24 @@ Interpretation:
   available window; it should be reviewed as a data/market-state diagnostic,
   not as evidence of absence of activity.
 
+Review decision:
+
+- Accept the expanded-baseline output shape for the first 12-market live
+  monitor prototype.
+- Keep Rule C unchanged.
+- Treat the result as a short-window operational baseline, not as thesis
+  evidence about broad Polymarket efficiency.
+- Do not relax thresholds only because the baseline produced 0 alerts.
+- Improve the read-only reporting/dashboard layer before adding a local server
+  wrapper or making thesis-facing live-monitor claims.
+
 Next phase selected:
 
-- Review the expanded-baseline output shape and interpretation before changing
-  thresholds, adding a read-only server wrapper, or using the result in
-  thesis-facing live-monitor prose.
+- Improve read-only dashboard/reporting clarity over the latest bounded live
+  monitor artifacts.
+- Surface current market count, bucket count, latest bucket, baseline
+  readiness, alert count, severity counts, status counts, source artifact
+  links, and interpretation limitations in one entry point.
 
 ## First Prototype Specification
 

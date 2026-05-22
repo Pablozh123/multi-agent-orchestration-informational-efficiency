@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for expanded 12-market live baseline review
+Status: active for live monitor dashboard/reporting refinement
 
 Done criteria:
 
@@ -367,9 +367,12 @@ Done criteria:
 - The expanded baseline reports 0 alerts, severity counts of 1'416 `none`,
   status counts of 1'200 `insufficient_baseline` and 216 `zero_mad`, and
   baseline readiness `baseline_available_zero_mad_or_non_alerting`.
-- The next empirical step is to review the expanded-baseline interpretation
-  and decide whether the monitor should next improve reporting, run another
-  live window, or add a read-only local wrapper.
+- The expanded-baseline review is accepted: the output shape is usable as a
+  short-window prototype baseline, Rule C remains unchanged, and 0 alerts only
+  means no Rule C trigger occurred in the observed window.
+- The next empirical step is to improve the read-only monitor reporting layer
+  so the latest live state can be understood without opening raw CSV/JSON
+  files.
 
 Blockers:
 
@@ -383,9 +386,9 @@ Blockers:
 - MCP, agents, strategy backtests, authenticated user channels, and order
   execution remain blocked while the read-only collector is built.
 - Thesis-facing live-alert wording remains blocked until the expanded
-  12-market baseline is reviewed and compared with at least one later window
-  or documented as a short-window prototype result.
+  12-market baseline is compared with at least one later window or documented
+  only as a short-window prototype result.
 - Threshold changes are blocked; Rule C remains the default until a later
   reviewed sensitivity decision says otherwise.
-- Any read-only UI/server wrapper should wait until the expanded-baseline
-  interpretation is documented.
+- Any read-only UI/server wrapper should wait until the file-based dashboard
+  and reporting layer is clearer.

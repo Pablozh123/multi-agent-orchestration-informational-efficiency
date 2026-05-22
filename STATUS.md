@@ -3,42 +3,25 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-22 21:08
+Generated: 2026-05-22 21:11
 
-Current goal: `goal-polymarket-expanded-baseline-review-001` - Review expanded Polymarket live baseline results
+Current goal: `goal-polymarket-live-dashboard-reporting-001` - Improve read-only live monitor reporting and dashboard clarity
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `279 passed in 17.31s`
+Pytest summary: `279 passed in 15.52s`
 
 Git branch: `main`
 
-Latest commit: `1b04842`
+Latest commit: `70b30e2`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
- M data/results/monitor_v2_curated_watchlist_validation_report.json
- M data/results/monitor_v2_polymarket_dashboard.html
- M data/results/monitor_v2_polymarket_dashboard_metadata.json
- M data/results/monitor_v2_polymarket_live_collection_metadata.json
- M data/results/monitor_v2_polymarket_live_input_validation_report.json
- M data/results/monitor_v2_polymarket_live_market_snapshots.csv
- M data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv
- M data/results/monitor_v2_polymarket_live_watchlist.csv
- M data/results/monitor_v2_polymarket_refresh_metadata.json
- M data/results/monitor_v2_polymarket_rolling_alert_rows.csv
- M data/results/monitor_v2_polymarket_rolling_alert_summary.csv
- M data/results/monitor_v2_polymarket_rolling_history.png
- M data/results/monitor_v2_polymarket_rolling_history_figure_metadata.json
- M data/results/monitor_v2_polymarket_rolling_history_metadata.json
- M data/results/monitor_v2_polymarket_rolling_scoring_metadata.json
- M data/results/monitor_v2_polymarket_rolling_scoring_snapshots.csv
- M data/results/monitor_v2_polymarket_rolling_scoring_validation_report.json
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
 ```
@@ -46,28 +29,11 @@ Git status:
 Git diff stat:
 
 ```text
- GOAL.md                                            |   67 +-
- ROADMAP.md                                         |   22 +-
- ...tor_v2_curated_watchlist_validation_report.json |    2 +-
- data/results/monitor_v2_polymarket_dashboard.html  |   50 +-
- .../monitor_v2_polymarket_dashboard_metadata.json  |   14 +-
- ...tor_v2_polymarket_live_collection_metadata.json |   12 +-
- ...v2_polymarket_live_input_validation_report.json |   14 +-
- ...monitor_v2_polymarket_live_market_snapshots.csv |  606 +++++--
- ...or_v2_polymarket_live_wallet_tier_snapshots.csv |  303 +++-
- .../monitor_v2_polymarket_live_watchlist.csv       |   15 +-
- .../monitor_v2_polymarket_refresh_metadata.json    |   12 +-
- .../monitor_v2_polymarket_rolling_alert_rows.csv   | 1788 ++++++++++++++++----
- ...monitor_v2_polymarket_rolling_alert_summary.csv |   75 +-
- .../monitor_v2_polymarket_rolling_history.png      |  Bin 116119 -> 135547 bytes
- ...polymarket_rolling_history_figure_metadata.json |   10 +-
- ...tor_v2_polymarket_rolling_history_metadata.json |  190 ++-
- ...tor_v2_polymarket_rolling_scoring_metadata.json |   20 +-
- ...tor_v2_polymarket_rolling_scoring_snapshots.csv | 1788 ++++++++++++++++----
- ...lymarket_rolling_scoring_validation_report.json |   14 +-
- docs/project/WORK_LOG.md                           |   53 +
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md       |   60 +
- 21 files changed, 4051 insertions(+), 1064 deletions(-)
+ GOAL.md                                      | 58 ++++++++++++++++------------
+ ROADMAP.md                                   | 19 +++++----
+ docs/project/WORK_LOG.md                     | 38 ++++++++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 21 ++++++++--
+ 4 files changed, 99 insertions(+), 37 deletions(-)
 ```
 
 Blockers:
@@ -76,7 +42,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: review expanded polymarket live baseline
+- feat: improve live monitor dashboard reporting
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

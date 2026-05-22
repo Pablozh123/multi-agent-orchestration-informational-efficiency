@@ -2607,19 +2607,21 @@ Files changed:
 
 Tests:
 
-- `.\.venv\Scripts\python.exe -m operations.collectors.polymarket_rolling_history --source live --samples 1 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3` -> 1 bucket, 12 scoring rows, 0 alerts, `insufficient_baseline`.
+- `.\.venv\Scripts\python.exe -m operations.collectors.polymarket_rolling_history --source live --samples 1 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3` -> first bucket collected.
+- Two additional real closed 5-minute buckets were appended with the same command without `--reset`.
+- Final rolling output -> 3 buckets, 48 scoring rows, 0 alerts, `diagnostic_scores_available`.
 - Full test suite pending after status refresh.
 
 Decision:
 
-- Accept the first curated rolling-history sample as an end-to-end real-data
-  pipeline check.
-- Do not interpret 0 alerts as market quietness because only 1 closed bucket
-  exists and the rolling baseline is insufficient.
+- Accept the first 3-bucket curated rolling-history sample as an end-to-end
+  real-data diagnostic baseline check.
+- Do not interpret 0 alerts as market quietness; it means Rule C did not
+  trigger on this short observed window.
 - Do not synthesize future timestamps for empirical live-baseline claims; more
   real elapsed time is needed.
 
 Next step:
 
-- Continue collecting additional real closed 5-minute buckets from the curated
-  watchlist until diagnostic baseline readiness changes.
+- Build a local read-only dashboard/report view over the bounded monitor
+  outputs.

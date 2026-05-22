@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for curated Polymarket rolling-baseline collection
+Status: active for first local monitor dashboard view
 
 Done criteria:
 
@@ -324,9 +324,11 @@ Done criteria:
 - The next implementation step is operational rather than methodological:
   collect enough distinct closed curated buckets for diagnostic rolling
   baselines.
-- The first curated rolling-history run produced 1 closed 5-minute bucket, 12
-  scoring rows, 0 alerts, and `insufficient_baseline`; more real elapsed time
-  is required for distinct buckets.
+- Curated rolling-history collection produced 3 real closed 5-minute buckets,
+  18 token midpoint rows, 9 aggregate wallet/activity rows, 48 scoring rows,
+  0 alerts, and baseline readiness `diagnostic_scores_available`.
+- The next implementation step is a local read-only dashboard/report view over
+  the bounded monitor output files.
 
 Blockers:
 

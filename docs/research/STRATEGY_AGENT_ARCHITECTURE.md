@@ -2527,7 +2527,7 @@ Next phase selected:
 
 ### Curated Rolling-History Baseline Sample
 
-curated_rolling_baseline_status: first real bucket collected; insufficient baseline
+curated_rolling_baseline_status: diagnostic scores available
 
 Implementation date: 2026-05-22
 
@@ -2535,24 +2535,31 @@ Latest curated rolling run:
 
 - Source: read-only public Polymarket endpoints.
 - Watchlist source: accepted curated watchlist CSV.
-- Samples completed: 1.
-- Closed 5-minute buckets: 1.
+- Closed 5-minute buckets: 3.
 - Market count: 3.
-- Token midpoint rows: 6.
-- Aggregate wallet/activity rows: 3.
-- Scoring rows: 12.
+- Token midpoint rows: 18.
+- Aggregate wallet/activity rows: 9.
+- Scoring rows: 48.
 - Alerts: 0.
-- Baseline readiness: `insufficient_baseline`.
+- Baseline readiness: `diagnostic_scores_available`.
 - Figure: `data/results/monitor_v2_polymarket_rolling_history.png`.
 
 Interpretation:
 
 - This proves the curated rolling-history path can run end to end on real
   public Polymarket data.
-- It does not prove that the market is quiet, because there is not enough
-  prior bucket history for rolling-baseline scoring.
-- Additional real elapsed time is required; synthetic timestamp shifting should
-  not be used for empirical live-baseline claims.
+- The first diagnostic rolling scores are available, but the baseline is still
+  very short and below production-like interpretation standards.
+- Zero alerts means Rule C did not trigger on this short observed window; it is
+  not evidence that the broader market is quiet.
+- Additional real elapsed time remains useful; synthetic timestamp shifting
+  should not be used for empirical live-baseline claims.
+
+Next phase selected:
+
+- Build a local read-only dashboard/report view that makes the current
+  monitor state understandable without exposing raw wallet data or adding
+  trading controls.
 
 ## First Prototype Specification
 

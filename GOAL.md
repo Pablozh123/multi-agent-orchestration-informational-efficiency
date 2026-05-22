@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-polymarket-curated-rolling-baseline-001
-title: Collect curated Polymarket rolling history for baseline readiness
+goal_id: goal-polymarket-live-dashboard-001
+title: Build first local read-only monitor dashboard view
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -13,23 +13,25 @@ why:
 - The curated watchlist contract and validator exist.
 - The current curated watchlist seed has 3 accepted rows and 0 candidate rows.
 - The read-only collector can now collect from accepted curated watchlist rows.
-- The first curated live run produced one closed 5-minute bucket and validates,
-  but alert scoring still reports `insufficient_baseline`.
-- The next empirical monitor step is to collect enough closed curated buckets
-  for diagnostic rolling-baseline readiness.
+- The first curated rolling-history run now has 3 real closed 5-minute buckets
+  and diagnostic scoring is available.
+- The next useful step is an easy-to-read local dashboard view over the
+  bounded CSV/JSON outputs.
 deliverables:
-- Run bounded rolling-history collection with the accepted curated watchlist.
-- Generate or refresh rolling watchlist, market snapshots, aggregate wallet
-  snapshots, scoring rows, alert summary, metadata, and figure artifacts.
-- Report distinct closed buckets, baseline readiness, alert count, and
+- Generate a local static dashboard or report view from existing monitor-v2
+  live/rolling output files.
+- Show watched markets, latest midpoint/probability snapshots, aggregate
+  wallet/activity diagnostics, alert counts, baseline readiness, and
   limitations.
-- Keep outputs descriptive until the baseline requirement is met.
+- Link or reference the rolling-history figure and source artifacts.
+- Keep the view read-only and descriptive.
 scope:
 - `data/monitor_v2_curated_watchlist.csv`.
-- `operations/collectors/polymarket_rolling_history.py`.
 - `data/results/monitor_v2_polymarket_rolling_*`.
+- `data/results/monitor_v2_polymarket_live_*`.
+- A local generated dashboard artifact under `data/results/` or `docs/`.
 - Polymarket politics/geopolitics markets only.
-- Bounded read-only public REST polling and local validated output files.
+- Existing local validated output files.
 out_of_scope:
 - Agents, MCP, model routing, ML, cloud deployment, trading, and order
   execution.
@@ -41,12 +43,11 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Rolling-history collection uses accepted curated watchlist rows.
-- Outputs show distinct closed buckets or clearly explain why more real time is
-  needed.
-- Scoring metadata reports baseline readiness.
-- No alert is interpreted as thesis evidence while baseline readiness remains
-  insufficient.
+- Dashboard generation reads only bounded local output files.
+- Dashboard output contains no wallet addresses and no order or trading
+  controls.
+- Dashboard clearly displays baseline readiness and current alert count.
+- Dashboard wording avoids causal, profit, or misconduct claims.
 - The curated watchlist validator passes and the report is regenerated.
 - Existing collector and scoring outputs remain read-only and file-based.
 - No authenticated user channel, order endpoint, agent, MCP, ML, strategy
@@ -55,7 +56,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: data: collect curated polymarket rolling baseline samples
+next_commit: feat: add local polymarket monitor dashboard
 
 ## Decision Inputs For This Goal
 
@@ -74,19 +75,17 @@ next_commit: data: collect curated polymarket rolling baseline samples
   - 0 alerts,
   - scoring status `insufficient_baseline`.
 - The latest curated rolling-history run produced:
-  - 1 closed 5-minute bucket,
-  - 12 scoring rows,
+  - 3 closed 5-minute buckets,
+  - 48 scoring rows,
   - 0 alerts,
-  - baseline readiness `insufficient_baseline`.
-- More real elapsed time is required to collect distinct closed buckets without
-  lookahead.
+  - baseline readiness `diagnostic_scores_available`.
 
 ## Done Means
 
-- There is a reviewed rolling-history output based on curated watchlist rows.
-- The metadata tells us whether diagnostic baseline scoring is ready.
-- The next decision is either to keep collecting real buckets or to build the
-  first dashboard/visual monitor view.
+- A human can open one local artifact and understand the current monitor state.
+- The dashboard points back to deterministic source artifacts.
+- The next decision is whether to keep collecting, refine alert thresholds, or
+  add a bounded live operator loop.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -238,3 +237,6 @@ next_commit: data: collect curated polymarket rolling baseline samples
 - First curated live collector run produced 3 watchlist rows, 6 token midpoint
   rows, 3 aggregate wallet/activity rows, 12 scoring rows, and 0 alerts with
   `insufficient_baseline`.
+- Curated rolling-history collection produced 3 real closed 5-minute buckets,
+  18 token midpoint rows, 9 aggregate wallet/activity rows, 48 scoring rows,
+  0 alerts, and baseline readiness `diagnostic_scores_available`.

@@ -74,6 +74,32 @@ H2, and H3 deterministic outputs exist.
 - Self-consistency runs
 - Cloud deployment
 
+## Read-Only Live Data Rule
+
+Read-only Polymarket live data collection is allowed for the monitor-v2 track
+when `GOAL.md` explicitly scopes it.
+
+Allowed live-data work:
+
+- public market discovery,
+- public price, midpoint, spread, orderbook, or market WebSocket data,
+- public trade/activity data aggregated into validated monitor inputs,
+- mocked API/WebSocket fixtures before new live connectors,
+- file-based outputs with validation reports and metadata.
+
+Blocked live-data work:
+
+- order placement,
+- order cancellation,
+- authenticated user trading channels,
+- trading credentials,
+- autonomous execution,
+- profitability guarantees,
+- runtime agents or MCP tools that can access raw live inputs by default.
+
+Live collectors must be read-only, tested with mocks, and must write bounded
+validated artifacts before any interpretation layer may use their outputs.
+
 ## Preferred Stack
 
 - Python

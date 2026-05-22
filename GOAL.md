@@ -2,113 +2,76 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-v2-live-collector-preflight-spec-001
-title: Specify monitor v2 live collector preflight requirements
+goal_id: goal-polymarket-live-rolling-history-001
+title: Build rolling history for read-only Polymarket monitor scoring
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
 - H1-H3 deterministic baseline outputs and thesis-facing summaries exist.
 - The politics/geopolitics anomaly-monitor specification is now recorded.
-- Monitor v2 historical replay, recorded input validation, recorded scoring,
-  figures, and bounded summaries exist.
-- The read-only monitor-v2 summary access contract is specified, reviewed, and
-  now enforceable through project review checks.
-- The monitor-v2 live input collection contract is now specified as read-only,
-  replay-first, timestamped, bucketed, and validation-first.
-- The live input collection contract is reviewed and accepted for replay-first
-  implementation planning.
-- Replay-first monitor-v2 live input validators now exist for mocked or local
-  replay files.
-- The replay-first live input validators are reviewed and accepted for a local
-  batch prototype.
-- A local replay-first live input batch prototype now generates mocked
-  live-style fixture input files and validation metadata.
-- The local replay-first live input batch output shape is reviewed and
-  accepted for a diagnostic local scoring bridge.
-- The local replay-first live input scoring bridge now emits diagnostic
-  snapshots, alert rows, alert summaries, validation report, and metadata.
-- The local replay-first live input scoring output shape is reviewed and
-  accepted as a pipeline diagnostic, not market evidence.
-- The first real-data replay boundary is selected as
-  `daily_recorded_replay_v1`.
-- Existing recorded daily replay outputs satisfy `daily_recorded_replay_v1`.
-- The next safe step is to specify live collector preflight requirements before
-  any collector, API client, WebSocket loop, MCP tool, runtime agent, strategy
-  backtest, or execution path is implemented.
+- Historical replay, recorded input validation, local live-style validation,
+  scoring, bounded summaries, and figures exist.
+- A read-only Polymarket collector foundation now fetches public Gamma market
+  discovery data, CLOB midpoint snapshots, and public Data API trade rows into
+  validated monitor-v2 input files.
+- The first real live snapshot validates and produces a figure, but the
+  scoring bridge correctly reports `insufficient_baseline` because only one
+  closed 5-minute bucket exists.
+- The next safe step is to collect or replay repeated closed buckets so the
+  robust rolling baseline can produce interpretable diagnostic alert states.
 deliverables:
-- Live collector preflight specification for monitor v2.
-- Mocked API/WebSocket contract requirements before any external connection.
-- Validation, persistence, audit, and stop/go rules for a later collector.
+- A local append/runbook path for repeated read-only 5-minute snapshots.
+- A minimum-history rule for diagnostic live scoring.
+- Updated scoring metadata that separates `insufficient_baseline` from
+  interpretable alert states.
+- A simple rolling-history review figure when enough buckets exist locally.
 scope:
-- Documentation review only unless the user explicitly asks for implementation
-  after the preflight specification is accepted.
-- Existing monitor-v2 architecture and project-control docs.
-- Existing historical replay, recorded-input, live-input, and scoring outputs.
-- Existing curated US-election event seed only.
-- No new live data, no external API calls, and no new event curation.
+- Existing read-only collector outputs and scoring bridge.
+- Public read-only Polymarket endpoints already used by the collector.
+- File-based append outputs and validation reports.
+- 5-minute buckets first.
+- Diagnostic scoring only after enough closed buckets exist.
 out_of_scope:
 - Agents, MCP, model routing, ML, cloud deployment, live trading, and order
   execution.
-- Live WebSocket or API collection.
 - Database writes.
 - New real events in the canonical seed unless they are separately curated.
-- Large monitor refactor, live collector code, API credentials, or scheduler
-  setup.
+- Authenticated user channel, order endpoints, API trading credentials, cloud
+  scheduler setup, or background daemon.
 - Strategy backtest implementation, PnL, profitability claims, insider claims,
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Preflight spec states which Polymarket endpoints or feeds are candidates.
-- Preflight spec states required mock fixtures before live collection.
-- Preflight spec states validation, timestamp, bucket, and no-lookahead rules.
-- Preflight spec states hard blocks for orders, agents, MCP, ML, and raw
-  wallet-address exposure.
-- Live API/WebSocket collection remains blocked.
-- No live collector, external API call, WebSocket loop, agent, MCP, ML,
-  live-trading, strategy backtest, or order-execution path is activated.
+- Repeated closed-bucket collection can be run locally without a daemon.
+- Appended outputs validate and deduplicate deterministic keys.
+- Scoring outputs explain when baseline observations are insufficient.
+- Outputs still contain no wallet-address columns and no order instructions.
+- A simple figure visualises rolling-history state when enough rows exist.
+- No authenticated user channel, order endpoint, agent, MCP, ML, strategy
+  backtest, cloud daemon, database write, or trading credential path is
+  activated.
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: specify monitor v2 live collector preflight
+next_commit: feat: add read-only polymarket rolling history collector
 
 ## Decision Inputs For This Goal
 
-- Bounded monitor-v2 summary artifacts exist under `data/results/`.
-- The read-only monitor-v2 access contract is accepted in
-  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
-- Project review checks enforce bounded summary artifacts, row limits, no
-  wallet-address exposure, and blocked raw monitor files.
-- The v2 scoring contract already defines robust rolling scores, percentile
-  ranks, alert levels, and human review states.
-- The live-input collection contract exists in
-  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
-- The wallet-specific live input boundary exists in
-  `docs/research/WHALE_METHOD.md`.
-- Architecture decision 22 records the replay-first live-input rule.
-- The live-input contract review accepts replay-first implementation planning
-  and blocks live API/WebSocket collection until validators exist.
-- Replay-first live input validator module and tests exist.
-- The validator review accepts a local replay-first batch prototype and keeps
-  live API/WebSocket collection blocked.
-- Local replay-first live input batch prototype module, tests, and generated
-  artifacts exist.
-- The local replay-first input batch output shape is reviewed and accepted for
-  a diagnostic deterministic scoring bridge.
-- Local replay-first live input scoring bridge module, tests, and diagnostic
-  output artifacts exist.
-- The local replay-first live input scoring output shape is reviewed and
-  accepted as a pipeline diagnostic.
-- The first real-data replay boundary is selected as
-  `daily_recorded_replay_v1`.
-- Existing recorded daily replay outputs satisfy the selected real-data replay
-  boundary.
+- `operations/collectors/polymarket_readonly.py` exists and supports validated
+  read-only public Polymarket snapshots.
+- `data/results/monitor_v2_polymarket_live_*` artifacts exist for the first
+  real live snapshot.
+- The scoring bridge emits `insufficient_baseline` when only one bucket is
+  available.
+- The monitor-v2 contract requires robust rolling scores and completed prior
+  observations before user-facing alert interpretation.
 
 ## Done Means
 
-- The preflight specification defines what must be true before any live
-  collector code can be attempted.
-- The current recorded daily replay remains the real-data evidence bridge until
-  live collection is separately specified, mocked, and validated.
+- A local operator can collect repeated read-only snapshots into one validated
+  rolling-history artifact set.
+- The scoring bridge can show the transition from insufficient baseline to
+  diagnostic alert states when enough buckets exist.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -242,3 +205,7 @@ next_commit: docs: specify monitor v2 live collector preflight
   using existing recorded daily input artifacts and the v2 30/20 baseline rule.
 - Existing recorded daily replay outputs satisfy `daily_recorded_replay_v1`;
   no additional daily adapter is needed for this boundary.
+- Read-only Polymarket live collector foundation exists for public Gamma
+  discovery, CLOB midpoint polling, Data API aggregate trade activity,
+  validated monitor-v2 input files, scoring bridge diagnostics, and a simple
+  snapshot figure.

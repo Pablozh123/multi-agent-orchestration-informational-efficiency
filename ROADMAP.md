@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for live collector preflight specification
+Status: active for read-only Polymarket rolling-history implementation
 
 Done criteria:
 
@@ -294,15 +294,25 @@ Done criteria:
   30/20 baseline rule.
 - Existing recorded daily replay outputs satisfy `daily_recorded_replay_v1`;
   no additional daily adapter is needed for this boundary.
+- Read-only Polymarket live collector preflight is selected: Gamma discovery,
+  CLOB midpoint/orderbook or market WebSocket, Data API trade aggregation,
+  5-minute buckets first, and no order or authenticated trading path.
+- A read-only Polymarket collector foundation exists for public Gamma market
+  discovery, CLOB midpoint polling, Data API trade aggregation, validated
+  monitor-v2 input files, a scoring bridge, and a simple snapshot figure.
+- The first real live snapshot validates successfully, but scoring remains
+  `insufficient_baseline` until repeated closed buckets exist.
 
 Blockers:
 
 - The Polybench PDF is indexed only as a candidate and needs review before it
   supports thesis wording.
-- Real-time data collection is not implemented and is not required for v1.
+- Read-only live data collection is now implemented only as bounded public
+  REST polling and file outputs; it is not a background daemon.
 - Bounded MCP contracts and `llm_audit_log` usage are not implemented yet.
 - Live trading, automated order execution, and profit guarantees are out of
   scope.
-- MCP, agents, live collection, and strategy backtests remain blocked until
-  live collector preflight requirements, mocked API/WebSocket contracts, and
-  audit-safe output boundaries are specified.
+- MCP, agents, strategy backtests, authenticated user channels, and order
+  execution remain blocked while the read-only collector is built.
+- Interpretable minute-level alert states remain blocked until enough closed
+  rolling-history buckets are collected and reviewed.

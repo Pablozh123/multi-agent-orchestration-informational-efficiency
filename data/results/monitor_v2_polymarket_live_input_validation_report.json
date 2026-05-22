@@ -1,0 +1,129 @@
+{
+  "generated_at_utc": "2026-05-22T13:11:30+00:00",
+  "input_mode": "replay_first_live_input_files",
+  "limitations": {
+    "does_not_call_external_apis": true,
+    "does_not_connect_to_websocket": true,
+    "does_not_send_orders": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "local_csv_files_only": true,
+    "no_profitability_or_private_information_claim": true
+  },
+  "status": "pass",
+  "validated_inputs": {
+    "event_candidates": {
+      "bucket_status_counts": {},
+      "columns": [
+        "collector_received_at_utc",
+        "source_timestamp_utc",
+        "bucket_start_utc",
+        "bucket_end_utc",
+        "timestamp_source",
+        "bucket_status",
+        "source_class",
+        "source_name",
+        "event_candidate_id",
+        "detected_at_utc",
+        "published_at_utc",
+        "title",
+        "source_url",
+        "event_type",
+        "related_market_ids",
+        "expected_effect",
+        "review_status",
+        "review_notes"
+      ],
+      "path": "data\\results\\monitor_v2_polymarket_live_event_candidates.csv",
+      "row_count": 0,
+      "source_classes": []
+    },
+    "market_snapshots": {
+      "bucket_status_counts": {
+        "closed": 4
+      },
+      "columns": [
+        "collector_received_at_utc",
+        "source_timestamp_utc",
+        "bucket_start_utc",
+        "bucket_end_utc",
+        "timestamp_source",
+        "bucket_status",
+        "source_class",
+        "source_name",
+        "market_id",
+        "token_id",
+        "price",
+        "midpoint",
+        "best_bid",
+        "best_ask",
+        "spread",
+        "volume",
+        "open_interest"
+      ],
+      "path": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
+      "row_count": 4,
+      "source_classes": [
+        "market_state"
+      ]
+    },
+    "wallet_tier_snapshots": {
+      "bucket_status_counts": {
+        "closed": 2
+      },
+      "columns": [
+        "collector_received_at_utc",
+        "source_timestamp_utc",
+        "bucket_start_utc",
+        "bucket_end_utc",
+        "timestamp_source",
+        "bucket_status",
+        "source_class",
+        "source_name",
+        "market_id",
+        "tier",
+        "active_wallets",
+        "trade_count",
+        "total_observed_amount_usd",
+        "top_tier_share",
+        "hhi_concentration",
+        "filter_metadata"
+      ],
+      "path": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",
+      "row_count": 2,
+      "source_classes": [
+        "wallet_activity"
+      ]
+    },
+    "watchlist": {
+      "bucket_status_counts": {
+        "closed": 2
+      },
+      "columns": [
+        "collector_received_at_utc",
+        "source_timestamp_utc",
+        "bucket_start_utc",
+        "bucket_end_utc",
+        "timestamp_source",
+        "bucket_status",
+        "source_class",
+        "source_name",
+        "watch_id",
+        "market_id",
+        "condition_id",
+        "token_ids",
+        "question",
+        "category",
+        "subcategory",
+        "status"
+      ],
+      "path": "data\\results\\monitor_v2_polymarket_live_watchlist.csv",
+      "row_count": 2,
+      "source_classes": [
+        "market_discovery"
+      ]
+    }
+  }
+}

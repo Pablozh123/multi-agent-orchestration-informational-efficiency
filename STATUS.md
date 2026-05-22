@@ -3,39 +3,62 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-20 22:07
+Generated: 2026-05-22 15:17
 
-Current goal: `goal-monitor-v2-live-collector-preflight-spec-001` - Specify monitor v2 live collector preflight requirements
+Current goal: `goal-polymarket-live-rolling-history-001` - Build rolling history for read-only Polymarket monitor scoring
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `245 passed in 7.83s`
+Pytest summary: `254 passed in 9.38s`
 
 Git branch: `main`
 
-Latest commit: `1ef1de9`
+Latest commit: `d04a43c`
 
 Git status:
 
 ```text
+ M AGENTS.md
  M GOAL.md
  M ROADMAP.md
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
  M docs/research/WHALE_METHOD.md
+ M operations/analysis/monitor_v2_live_input_scoring.py
+ M tests/test_monitor_v2_live_input_scoring.py
+?? data/results/monitor_v2_polymarket_live_alert_rows.csv
+?? data/results/monitor_v2_polymarket_live_alert_summary.csv
+?? data/results/monitor_v2_polymarket_live_collection_metadata.json
+?? data/results/monitor_v2_polymarket_live_event_candidates.csv
+?? data/results/monitor_v2_polymarket_live_figure_metadata.json
+?? data/results/monitor_v2_polymarket_live_input_validation_report.json
+?? data/results/monitor_v2_polymarket_live_market_snapshots.csv
+?? data/results/monitor_v2_polymarket_live_scoring_metadata.json
+?? data/results/monitor_v2_polymarket_live_scoring_snapshots.csv
+?? data/results/monitor_v2_polymarket_live_scoring_validation_report.json
+?? data/results/monitor_v2_polymarket_live_snapshot.png
+?? data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv
+?? data/results/monitor_v2_polymarket_live_watchlist.csv
+?? operations/analysis/monitor_v2_polymarket_live_figures.py
+?? operations/collectors/
+?? tests/test_monitor_v2_polymarket_live_figures.py
+?? tests/test_polymarket_readonly_collector.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      | 44 ++++++++++---------
- ROADMAP.md                                   | 10 +++--
- docs/project/WORK_LOG.md                     | 37 ++++++++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 66 ++++++++++++++++++++++++++++
- docs/research/WHALE_METHOD.md                | 13 ++++++
- 5 files changed, 145 insertions(+), 25 deletions(-)
+ AGENTS.md                                          |  26 ++++
+ GOAL.md                                            | 131 +++++++-----------
+ ROADMAP.md                                         |  20 ++-
+ docs/project/WORK_LOG.md                           |  80 +++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md       | 154 +++++++++++++++++++++
+ docs/research/WHALE_METHOD.md                      |  67 +++++++++
+ .../analysis/monitor_v2_live_input_scoring.py      |   9 +-
+ tests/test_monitor_v2_live_input_scoring.py        |   5 +-
+ 8 files changed, 399 insertions(+), 93 deletions(-)
 ```
 
 Blockers:
@@ -44,7 +67,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: specify monitor v2 live collector preflight
+- feat: add read-only polymarket rolling history collector
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

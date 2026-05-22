@@ -2341,3 +2341,83 @@ Next step:
 
 - Specify live collector preflight requirements with mocked API/WebSocket
   contracts before any external collection code is attempted.
+
+## 2026-05-22 - goal-polymarket-live-readonly-collector-001
+
+Task:
+
+- Expand the active goal from preflight-only to a read-only Polymarket live
+  collector foundation.
+
+Files changed:
+
+- `AGENTS.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+
+Tests:
+
+- Pending in the implementation steps that follow this documentation update.
+
+Decision:
+
+- Allow real public Polymarket live data collection for monitor v2, but only
+  read-only and only through mocked/tested connector boundaries.
+- First live-capable bucket is 5 minutes; 1-minute buckets can come later.
+- Gamma discovery, CLOB midpoint or market-state endpoints, and Data API trade
+  rows are in scope.
+- Authenticated user channels, order endpoints, trading credentials, agents,
+  MCP, strategy backtests, database writes, and profitability claims remain
+  blocked.
+
+Next step:
+
+- Implement mocked collector tests and the read-only collector foundation.
+
+## 2026-05-22 - goal-polymarket-live-readonly-collector-001 implementation
+
+Task:
+
+- Implement the read-only Polymarket live collector foundation, first real
+  snapshot, validation, scoring bridge check, and visualisation.
+
+Files changed:
+
+- `AGENTS.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+- `operations/collectors/polymarket_readonly.py`
+- `operations/analysis/monitor_v2_polymarket_live_figures.py`
+- `operations/analysis/monitor_v2_live_input_scoring.py`
+- `tests/test_polymarket_readonly_collector.py`
+- `tests/test_monitor_v2_polymarket_live_figures.py`
+- `tests/test_monitor_v2_live_input_scoring.py`
+- `data/results/monitor_v2_polymarket_live_*`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_polymarket_readonly_collector.py tests/test_monitor_v2_polymarket_live_figures.py tests/test_monitor_v2_live_input_validation.py tests/test_monitor_v2_live_input_scoring.py -q` -> 27 passed.
+- Full test suite pending after status refresh.
+
+Decision:
+
+- Accept the first read-only public REST collector foundation.
+- First live run produced 2 watchlist rows, 4 token midpoint rows, 2 aggregate
+  wallet/activity rows, 0 event candidates, validation `pass`, and a simple
+  snapshot figure.
+- First live scoring bridge produced 8 scoring rows and 0 alerts; all rows are
+  `insufficient_baseline`, which is expected with only one closed bucket.
+- No wallet-address columns, order instructions, database writes, runtime
+  agents, MCP, ML, strategy backtest, or trading credentials were introduced.
+
+Next step:
+
+- Build rolling history collection so repeated closed 5-minute buckets can
+  support diagnostic baseline scoring.

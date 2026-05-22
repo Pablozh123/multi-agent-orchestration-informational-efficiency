@@ -561,6 +561,25 @@ Wallet real-data replay boundary review:
   aggregate source can provide timestamped tier snapshots without exposing raw
   wallet addresses.
 
+Read-only live wallet source decision:
+
+- First live-capable source candidate: Polymarket Data API trade rows queried
+  by condition id.
+- First monitor-facing aggregation: `all_tiers` aggregate wallet/activity
+  rows, because dataset-relative wallet tiers for new live markets are not yet
+  established.
+- Allowed aggregate fields: active-wallet count, trade count, observed amount,
+  top-wallet share, and HHI-style concentration computed inside Python and
+  emitted without wallet addresses.
+- Dune can later validate or enrich historical/on-chain activity, but it is
+  not the first minute-level source.
+- Raw wallet addresses may be used transiently inside Python for aggregation
+  but must not be written to monitor-facing CSVs, bounded summaries, prompts,
+  MCP tools, or figures.
+- Future tiered live wallet monitoring requires a documented market-universe
+  tiering rule or a reviewed wallet-tier map. It must not reuse the current
+  H3 election-wallet tier thresholds as universal Polymarket thresholds.
+
 Snapshot prototype status:
 
 - A first deterministic snapshot prototype exists in
@@ -720,6 +739,54 @@ Implemented v1 diagnostic families:
 
 The output is descriptive and historical. It is not a near-real-time collector,
 not a backtest, and not evidence of wallet profitability.
+
+## Read-Only Live Wallet Activity Foundation
+
+Implementation date: 2026-05-22
+
+Status: implemented for first aggregate Polymarket Data API snapshot.
+
+Implemented artifact:
+
+- `data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv`
+
+Current live monitor-facing wallet fields:
+
+- `market_id`
+- `tier`
+- `active_wallets`
+- `trade_count`
+- `total_observed_amount_usd`
+- `top_tier_share`
+- `hhi_concentration`
+- `filter_metadata`
+
+First live run:
+
+- Source: public Polymarket Data API trades endpoint.
+- Bucket cadence: 5 minutes.
+- Market rows: 2.
+- Tier value: `all_tiers`.
+- Active wallets in the collected bucket: 0 for both selected markets.
+- Trade count in the collected bucket: 0 for both selected markets.
+- Wallet-address columns: none.
+
+Interpretation:
+
+- The live collector can now create monitor-facing aggregate wallet/activity
+  rows without exposing wallet addresses.
+- The first bucket contains no observed trades for the selected watchlist, so
+  it is a pipeline validation result, not evidence about wallet behaviour.
+- Live wallet tiers are not yet globally defined. The historical H3 election
+  percentile tiers must not be reused for arbitrary new markets without a
+  documented live-tier universe or reviewed tier map.
+
+Next methodological requirement:
+
+- Repeated closed buckets are needed before wallet activity can be scored
+  against a rolling baseline.
+- A stricter watchlist or human-reviewed market universe is needed before
+  wallet anomalies are interpreted in thesis-facing language.
 
 ## Historical Anomaly Output Review
 

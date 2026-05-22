@@ -1,0 +1,1 @@
+collector_received_at_utc,source_timestamp_utc,bucket_start_utc,bucket_end_utc,timestamp_source,bucket_status,source_class,source_name,event_candidate_id,detected_at_utc,published_at_utc,title,source_url,event_type,related_market_ids,expected_effect,review_status,review_notes

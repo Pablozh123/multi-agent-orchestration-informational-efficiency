@@ -1,0 +1,48 @@
+{
+  "endpoints": {
+    "clob_midpoint": "https://clob.polymarket.com/midpoint",
+    "data_api_trades": "https://data-api.polymarket.com/trades",
+    "gamma_markets": "https://gamma-api.polymarket.com/markets"
+  },
+  "generated_at_utc": "2026-05-22T13:11:30Z",
+  "limitations": {
+    "does_not_send_orders": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_use_rcp": true,
+    "does_not_write_database": true,
+    "no_authenticated_user_channel": true,
+    "no_profitability_or_private_information_claim": true,
+    "read_only_public_endpoints_only": true,
+    "wallet_rows_are_aggregate_all_tiers": true
+  },
+  "method": {
+    "append_to_existing_outputs": false,
+    "bucket_minutes": 5,
+    "collector_received_at_utc": "2026-05-22T13:11:29Z",
+    "max_markets": 3,
+    "name": "polymarket_readonly_collector",
+    "read_only": true,
+    "source": "live",
+    "trade_limit": 200,
+    "uses_public_clob_midpoint": true,
+    "uses_public_data_api_trades": true,
+    "uses_public_gamma_markets": true,
+    "validates_outputs": true
+  },
+  "outputs": {
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "event_candidate_row_count": 0,
+    "event_candidates_path": "data\\results\\monitor_v2_polymarket_live_event_candidates.csv",
+    "market_snapshot_row_count": 4,
+    "market_snapshots_path": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
+    "validation_report_path": "data\\results\\monitor_v2_polymarket_live_input_validation_report.json",
+    "validation_status": "pass",
+    "wallet_tier_snapshot_row_count": 2,
+    "wallet_tier_snapshots_path": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",
+    "watchlist_path": "data\\results\\monitor_v2_polymarket_live_watchlist.csv",
+    "watchlist_row_count": 2
+  }
+}

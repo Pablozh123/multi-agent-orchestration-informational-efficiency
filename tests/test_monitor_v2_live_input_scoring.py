@@ -61,10 +61,11 @@ def test_generate_live_scoring_outputs_writes_diagnostic_artifacts(tmp_path: Pat
     assert validation_report["status"] == "pass"
     assert metadata["method"]["validates_inputs_before_scoring"] is True
     assert metadata["method"]["scores_closed_buckets_only"] is True
-    assert metadata["method"]["diagnostic_fixture_baseline_only"] is True
+    assert metadata["method"]["diagnostic_file_baseline_only"] is True
     assert metadata["outputs"]["contains_wallet_addresses"] is False
     assert metadata["outputs"]["contains_order_instructions"] is False
-    assert metadata["limitations"]["no_live_websocket_or_api_collection"] is True
+    assert metadata["limitations"]["does_not_collect_external_data"] is True
+    assert metadata["limitations"]["input_files_may_be_mock_or_read_only_collector"] is True
     assert metadata["limitations"]["does_not_use_agents_or_mcp"] is True
     for frame in (snapshots, rows, summary):
         assert "wallet_address" not in frame.columns

@@ -2156,6 +2156,160 @@ Next phase selected:
 - Specify live collector preflight requirements with mocked API/WebSocket
   contracts before any real external Polymarket collection is implemented.
 
+### Read-Only Polymarket Live Collector Preflight
+
+live_collector_preflight_status: selected
+
+Objective:
+
+- Move monitor v2 from historical daily replay and mocked live-style fixtures
+  toward real read-only Polymarket data.
+- Keep the collector observational: no orders, no authenticated trading
+  channel, no execution, no strategy backtest, and no profitability claim.
+
+Candidate Polymarket sources:
+
+- Gamma API, `https://gamma-api.polymarket.com/markets`, for market discovery,
+  politics/geopolitics watchlist construction, market questions, condition ids,
+  token ids, categories, activity flags, and metadata.
+- CLOB public REST, `https://clob.polymarket.com/midpoint`, for token midpoint
+  polling where a simple first minute-bucket collector is sufficient.
+- CLOB public orderbook or market WebSocket,
+  `wss://ws-subscriptions-clob.polymarket.com/ws/market`, for later best bid,
+  ask, spread, orderbook, price-change, and trade-event updates.
+- Data API, `https://data-api.polymarket.com/trades`, for public trade rows
+  by condition id. Trade rows may be aggregated into wallet/activity
+  snapshots, but raw wallet-address values must not become monitor-facing or
+  prompt-facing outputs.
+- Dune may support scheduled historical or on-chain validation, but it is not
+  the first minute-level live source.
+
+Minute-bucket decision:
+
+- First implementation bucket: 5 minutes.
+- Optional later bucket: 1 minute, only after the 5-minute collector is stable.
+- Daily replay remains the thesis evidence bridge; minute buckets are for the
+  running monitor prototype.
+
+Required mocked fixtures before each live connector:
+
+- Gamma market-discovery mock response with active politics/geopolitics
+  markets and `clobTokenIds`.
+- CLOB midpoint/orderbook mock response with token id, price or midpoint, bid,
+  ask, spread, volume where available.
+- Data API trade mock response with condition id, side, size, price,
+  timestamp, and proxy wallet values that are aggregated away before monitor
+  outputs.
+- WebSocket message mock fixture before any WebSocket loop is implemented.
+
+Validation and persistence rules:
+
+- Every collector output must pass the existing monitor-v2 live input
+  validators or a stricter successor.
+- Timestamps must be UTC and include collector receipt time, source time when
+  available, bucket start, bucket end, source name, source class, and bucket
+  status.
+- Open buckets may be recorded as diagnostics only; alert scoring uses closed
+  buckets.
+- Raw source responses may be written only as optional local audit artifacts
+  outside prompt/MCP defaults.
+- Default monitor-facing outputs remain:
+  watchlist rows, market snapshots, aggregate wallet-tier or all-tier
+  snapshots, validation reports, metadata, alert rows, summaries, and figures.
+
+Stop/go rules:
+
+- Stop if Polymarket returns geoblock, malformed responses, missing token ids,
+  unknown timestamp semantics, or inconsistent market ids.
+- Stop if any output contains order instructions or authenticated trading
+  fields.
+- Stop if wallet-address fields would enter monitor-facing or prompt-facing
+  outputs.
+- Proceed only when mock tests pass, live calls are read-only, validation
+  passes, and metadata states the exact source endpoints and limitations.
+
+Next phase selected:
+
+- Implement a mocked read-only Polymarket collector contract, then a small
+  read-only REST collector for Gamma discovery, CLOB midpoint snapshots, and
+  Data API trade aggregation.
+
+### Read-Only Polymarket Live Collector Foundation
+
+collector_foundation_status: implemented for first public REST snapshot
+
+Implementation date: 2026-05-22
+
+Implemented modules:
+
+- `operations/collectors/polymarket_readonly.py`
+- `operations/analysis/monitor_v2_polymarket_live_figures.py`
+
+Implemented outputs:
+
+- `data/results/monitor_v2_polymarket_live_watchlist.csv`
+- `data/results/monitor_v2_polymarket_live_market_snapshots.csv`
+- `data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv`
+- `data/results/monitor_v2_polymarket_live_event_candidates.csv`
+- `data/results/monitor_v2_polymarket_live_input_validation_report.json`
+- `data/results/monitor_v2_polymarket_live_collection_metadata.json`
+- `data/results/monitor_v2_polymarket_live_snapshot.png`
+- `data/results/monitor_v2_polymarket_live_figure_metadata.json`
+
+First live run:
+
+- Source mode: `live`.
+- Bucket cadence: 5 minutes.
+- Public endpoints used: Gamma market discovery, CLOB midpoint, and Data API
+  trades.
+- Watchlist rows: 2.
+- Token midpoint snapshot rows: 4.
+- Aggregate wallet/activity rows: 2.
+- Event-candidate rows: 0.
+- Validation status: pass.
+
+First live scoring bridge output:
+
+- `data/results/monitor_v2_polymarket_live_scoring_snapshots.csv`
+- `data/results/monitor_v2_polymarket_live_alert_rows.csv`
+- `data/results/monitor_v2_polymarket_live_alert_summary.csv`
+- `data/results/monitor_v2_polymarket_live_scoring_validation_report.json`
+- `data/results/monitor_v2_polymarket_live_scoring_metadata.json`
+
+Scoring result:
+
+- Snapshot rows: 8.
+- Alert rows: 8.
+- Alert count: 0.
+- Status: all rows are `insufficient_baseline`.
+
+Interpretation:
+
+- The collector can now fetch real public Polymarket market metadata,
+  midpoint probabilities, and aggregate trade activity into the monitor-v2
+  file boundary.
+- The first scoring bridge is a technical pipeline check only. It does not yet
+  detect an anomaly because a rolling baseline requires repeated closed
+  buckets.
+- The current Gamma filter can still surface novelty politics/geopolitics
+  markets, so the watchlist needs human review or a stricter curated market
+  universe before thesis-facing monitoring.
+
+Limitations:
+
+- REST polling only; no market WebSocket loop yet.
+- No best-bid, best-ask, spread, depth, or orderbook fields yet.
+- No accepted event candidates in the first live output.
+- Wallet activity is aggregate `all_tiers`; no live dataset-relative wallet
+  tier universe is selected yet.
+- No database writes, runtime agents, MCP tools, ML, strategy backtest, order
+  path, profitability claim, or private-information claim.
+
+Next phase selected:
+
+- Build a short rolling read-only history so robust baseline scores can move
+  from `insufficient_baseline` to interpretable diagnostic alert states.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

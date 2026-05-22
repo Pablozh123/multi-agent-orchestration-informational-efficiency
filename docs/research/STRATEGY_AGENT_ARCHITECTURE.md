@@ -3034,6 +3034,59 @@ Next phase selected:
 - Collect a second bounded expanded-watchlist live window later and compare
   whether baseline readiness, status counts, and alert behaviour remain stable.
 
+### Second Expanded Live Window
+
+second_expanded_live_window_status: collected
+
+Run contract:
+
+- Source: public read-only Polymarket endpoints through the bounded refresh
+  runner.
+- Watchlist: `data/monitor_v2_curated_watchlist.csv`.
+- Market count: 12 reviewed politics/geopolitics markets.
+- Samples: 20 real closed 5-minute buckets.
+- Baseline settings: `baseline_observations=30`,
+  `min_baseline_observations=20`.
+- Rule: Rule C combined-family confirmation.
+- Database writes, agents, MCP, ML, RCP, order execution, and trading
+  credentials: not used.
+
+Second window result:
+
+- Buckets: 20.
+- Token midpoint rows: 480.
+- Aggregate wallet/activity rows: 240.
+- Scoring rows: 1'416.
+- Summary rows: 60.
+- Alerts: 0.
+- Severity counts: 1'416 `none`.
+- Status counts: 1'200 `insufficient_baseline`, 216 `zero_mad`.
+- Baseline readiness: `baseline_available_zero_mad_or_non_alerting`.
+- Dashboard market count: 12.
+
+Comparison with first expanded window:
+
+- High-level counts are stable across both windows.
+- Rule C produced 0 alerts in both windows.
+- Status-count structure remained unchanged.
+- This supports the operational stability of the bounded collector and
+  dashboard path, but it does not prove market quietness, efficiency,
+  inefficiency, causality, private information, tradeability, or
+  profitability.
+
+Storage limitation:
+
+- Current live-window files are latest-run artifacts.
+- Repeated windows need a compact storage/comparison structure before the
+  monitor builds a longer evidence base.
+- Future storage should preserve summaries and metadata, not unbounded raw API
+  dumps or wallet addresses.
+
+Next phase selected:
+
+- Decide repeated-window storage and comparison structure before collecting
+  additional long live windows.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

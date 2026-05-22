@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-polymarket-repeat-live-window-001
-title: Collect a second expanded live monitor window for stability comparison
+goal_id: goal-polymarket-live-window-storage-001
+title: Decide repeated live-window storage and comparison structure
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -54,14 +54,22 @@ why:
 - The local dashboard launcher now returns a read-only `file://` dashboard URI
   plus market count, bucket count, alert count, and baseline readiness without
   collecting data or running continuously.
-- The next empirical step is a second bounded expanded-watchlist live window
-  so the first 12-market result is not treated as a one-off monitor state.
+- The second bounded expanded-watchlist live window has now been collected
+  using the same v2 30/20 settings.
+- The second window matches the first high-level baseline shape: 12 markets,
+  20 buckets, 480 market snapshot rows, 240 aggregate wallet/activity rows,
+  1'416 scoring rows, 60 summary rows, 0 alerts, severity counts of 1'416
+  `none`, status counts of 1'200 `insufficient_baseline` and 216 `zero_mad`,
+  and baseline readiness `baseline_available_zero_mad_or_non_alerting`.
+- The next implementation decision is how repeated live windows should be
+  stored and compared without losing prior run artifacts.
 deliverables:
-- Run or prepare the second bounded expanded-watchlist refresh with the same
-  v2 30/20 settings.
-- Compare the new window with the first expanded 12-market baseline.
-- Record bucket count, market count, alert count, severity counts, status
-  counts, baseline readiness, and any API/collection limitations.
+- Specify or implement a deterministic storage structure for repeated bounded
+  live-window outputs.
+- Preserve or summarize previous live windows before future refreshes overwrite
+  the latest dashboard artifacts.
+- Keep comparisons compact and bounded; do not store raw wallet addresses or
+  unbounded raw API dumps.
 - Keep refresh/collection as explicit operator commands, not automatic
   background behaviour.
 - Keep Rule C thresholds and scoring outputs unchanged.
@@ -87,11 +95,13 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- A second bounded expanded-watchlist window is collected or intentionally
-  scheduled with the same v2 30/20 settings.
-- The comparison does not change Rule C thresholds without a separate reviewed
+- A repeated-window storage/comparison rule is selected before more live
+  windows are collected.
+- The latest second-window result is documented against the first expanded
+  baseline.
+- The rule does not change Rule C thresholds without a separate reviewed
   sensitivity decision.
-- The run does not collect data automatically, run continuously, execute
+- The workflow does not collect data automatically, run continuously, execute
   orders, call agents, call MCP, use ML, write the database, or require trading
   credentials.
 - The dashboard still reports 12 reviewed markets and 20 closed buckets from
@@ -107,7 +117,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: data: collect second expanded live monitor window
+next_commit: docs: decide repeated live-window storage structure
 
 ## Decision Inputs For This Goal
 
@@ -179,10 +189,10 @@ next_commit: data: collect second expanded live monitor window
 
 ## Done Means
 
-- The second bounded live window exists and is compared against the first
-  expanded 12-market baseline.
-- The next decision is whether to start a tested alert-review workflow or
-  improve repeated-run storage.
+- The project has a clear rule for preserving repeated live windows and
+  comparing them over time.
+- The next decision is whether to implement that storage rule or start a
+  tested alert-review workflow on compact repeated-window summaries.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -379,3 +389,8 @@ next_commit: data: collect second expanded live monitor window
   dashboard URI and safety flags, and `--open` can open the dashboard without
   collecting data or activating agents, MCP, ML, database writes, or order
   paths.
+- Second expanded Polymarket live monitor window is collected with 20 real
+  closed 5-minute buckets, 12 reviewed markets, 480 token midpoint rows, 240
+  aggregate wallet/activity rows, 1'416 scoring rows, 60 summary rows, 0
+  alerts, and baseline readiness
+  `baseline_available_zero_mad_or_non_alerting`.

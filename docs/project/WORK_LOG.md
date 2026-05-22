@@ -3066,3 +3066,60 @@ Next step:
 
 - Collect a second bounded expanded-watchlist live window later and compare it
   with the first 12-market baseline.
+
+## 2026-05-23 - goal-polymarket-repeat-live-window-001
+
+Task:
+
+- Collect a second bounded expanded-watchlist live monitor window for stability
+  comparison.
+
+Files changed:
+
+- `data/results/monitor_v2_curated_watchlist_validation_report.json`
+- `data/results/monitor_v2_polymarket_dashboard.html`
+- `data/results/monitor_v2_polymarket_dashboard_metadata.json`
+- `data/results/monitor_v2_polymarket_live_collection_metadata.json`
+- `data/results/monitor_v2_polymarket_live_input_validation_report.json`
+- `data/results/monitor_v2_polymarket_live_market_snapshots.csv`
+- `data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv`
+- `data/results/monitor_v2_polymarket_live_watchlist.csv`
+- `data/results/monitor_v2_polymarket_refresh_metadata.json`
+- `data/results/monitor_v2_polymarket_rolling_alert_rows.csv`
+- `data/results/monitor_v2_polymarket_rolling_alert_summary.csv`
+- `data/results/monitor_v2_polymarket_rolling_history.png`
+- `data/results/monitor_v2_polymarket_rolling_history_figure_metadata.json`
+- `data/results/monitor_v2_polymarket_rolling_history_metadata.json`
+- `data/results/monitor_v2_polymarket_rolling_scoring_metadata.json`
+- `data/results/monitor_v2_polymarket_rolling_scoring_snapshots.csv`
+- `data/results/monitor_v2_polymarket_rolling_scoring_validation_report.json`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.collectors.polymarket_watchlist` -> 12 accepted rows, 0 candidates, 0 rejected rows, 0 needs-followup rows.
+- `.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 20 --delay-seconds 305 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 12 --baseline-observations 30 --min-baseline-observations 20` -> 20 buckets, 0 alerts.
+- `.\.venv\Scripts\python.exe -m operations.tools.monitor_dashboard_launcher` -> reports local dashboard URI, 12 markets, 20 buckets, 0 alerts, read-only flags.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  283 passed through the status run.
+
+Decision:
+
+- Accept the second bounded live window as a stability comparison input.
+- The second window matches the first expanded baseline shape at the summary
+  level: 12 markets, 20 buckets, 480 token midpoint rows, 240 aggregate
+  wallet/activity rows, 1'416 scoring rows, 60 summary rows, 0 alerts,
+  severity counts of 1'416 `none`, status counts of 1'200
+  `insufficient_baseline` and 216 `zero_mad`, and baseline readiness
+  `baseline_available_zero_mad_or_non_alerting`.
+- This supports operational stability of the collector/dashboard path, not a
+  market-efficiency, causality, private-information, tradeability, or
+  profitability claim.
+
+Next step:
+
+- Decide how repeated live-window summaries should be stored and compared
+  before more long live windows overwrite latest-run artifacts.

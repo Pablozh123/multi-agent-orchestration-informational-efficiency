@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for second expanded live-window comparison
+Status: active for repeated live-window storage decision
 
 Done criteria:
 
@@ -384,6 +384,13 @@ Done criteria:
   continuously.
 - The next empirical step is a second bounded expanded-watchlist live window
   so the first 12-market result is not treated as a one-off monitor state.
+- The second bounded expanded-watchlist live window is collected with the same
+  v2 30/20 settings and the same high-level result shape as the first expanded
+  window: 12 markets, 20 buckets, 480 token midpoint rows, 240 aggregate
+  wallet/activity rows, 1'416 scoring rows, 60 summary rows, 0 alerts, and
+  baseline readiness `baseline_available_zero_mad_or_non_alerting`.
+- The next implementation decision is how to preserve repeated live-window
+  summaries before future refreshes overwrite the latest dashboard artifacts.
 
 Blockers:
 
@@ -405,3 +412,5 @@ Blockers:
   must not collect data automatically or expose order/authentication paths.
 - Repeated live windows are time-consuming because they require real closed
   5-minute buckets; do not synthesize timestamps for production-like claims.
+- Current live-window files are latest-run artifacts. A storage/comparison
+  structure is needed before building a longer repeated-run evidence base.

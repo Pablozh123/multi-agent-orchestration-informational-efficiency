@@ -3,41 +3,71 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-22 21:18
+Generated: 2026-05-23 00:21
 
-Current goal: `goal-polymarket-repeat-live-window-001` - Collect a second expanded live monitor window for stability comparison
+Current goal: `goal-polymarket-live-window-storage-001` - Decide repeated live-window storage and comparison structure
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `283 passed in 19.35s`
+Pytest summary: `283 passed in 15.38s`
 
 Git branch: `main`
 
-Latest commit: `20fb5f1`
+Latest commit: `7b50b51`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
- M docs/project/TOOL_USAGE.md
+ M data/results/monitor_v2_curated_watchlist_validation_report.json
+ M data/results/monitor_v2_polymarket_dashboard.html
+ M data/results/monitor_v2_polymarket_dashboard_metadata.json
+ M data/results/monitor_v2_polymarket_live_collection_metadata.json
+ M data/results/monitor_v2_polymarket_live_input_validation_report.json
+ M data/results/monitor_v2_polymarket_live_market_snapshots.csv
+ M data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv
+ M data/results/monitor_v2_polymarket_live_watchlist.csv
+ M data/results/monitor_v2_polymarket_refresh_metadata.json
+ M data/results/monitor_v2_polymarket_rolling_alert_rows.csv
+ M data/results/monitor_v2_polymarket_rolling_alert_summary.csv
+ M data/results/monitor_v2_polymarket_rolling_history.png
+ M data/results/monitor_v2_polymarket_rolling_history_figure_metadata.json
+ M data/results/monitor_v2_polymarket_rolling_history_metadata.json
+ M data/results/monitor_v2_polymarket_rolling_scoring_metadata.json
+ M data/results/monitor_v2_polymarket_rolling_scoring_snapshots.csv
+ M data/results/monitor_v2_polymarket_rolling_scoring_validation_report.json
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
-?? operations/tools/monitor_dashboard_launcher.py
-?? tests/test_monitor_dashboard_launcher.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      | 46 +++++++++++++++----------
- ROADMAP.md                                   |  9 ++++-
- docs/project/TOOL_USAGE.md                   | 12 +++++++
- docs/project/WORK_LOG.md                     | 35 +++++++++++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 51 ++++++++++++++++++++++++++++
- 5 files changed, 135 insertions(+), 18 deletions(-)
+ GOAL.md                                            |   51 +-
+ ROADMAP.md                                         |   11 +-
+ ...tor_v2_curated_watchlist_validation_report.json |    2 +-
+ data/results/monitor_v2_polymarket_dashboard.html  |   14 +-
+ .../monitor_v2_polymarket_dashboard_metadata.json  |    4 +-
+ ...tor_v2_polymarket_live_collection_metadata.json |    4 +-
+ ...v2_polymarket_live_input_validation_report.json |    2 +-
+ ...monitor_v2_polymarket_live_market_snapshots.csv |  960 +++----
+ ...or_v2_polymarket_live_wallet_tier_snapshots.csv |  480 ++--
+ .../monitor_v2_polymarket_live_watchlist.csv       |   24 +-
+ .../monitor_v2_polymarket_refresh_metadata.json    |    2 +-
+ .../monitor_v2_polymarket_rolling_alert_rows.csv   | 2832 ++++++++++----------
+ ...monitor_v2_polymarket_rolling_alert_summary.csv |    2 +-
+ .../monitor_v2_polymarket_rolling_history.png      |  Bin 135547 -> 133660 bytes
+ ...polymarket_rolling_history_figure_metadata.json |    2 +-
+ ...tor_v2_polymarket_rolling_history_metadata.json |    2 +-
+ ...tor_v2_polymarket_rolling_scoring_metadata.json |    2 +-
+ ...tor_v2_polymarket_rolling_scoring_snapshots.csv | 2832 ++++++++++----------
+ ...lymarket_rolling_scoring_validation_report.json |    2 +-
+ docs/project/WORK_LOG.md                           |   55 +
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md       |   53 +
+ 21 files changed, 3734 insertions(+), 3602 deletions(-)
 ```
 
 Blockers:
@@ -46,7 +76,7 @@ Blockers:
 
 Next recommended action:
 
-- data: collect second expanded live monitor window
+- docs: decide repeated live-window storage structure
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

@@ -2468,3 +2468,42 @@ Next step:
 
 - Define a curated Polymarket politics/geopolitics watchlist contract before
   interpreting live alerts.
+
+## 2026-05-22 - goal-polymarket-live-watchlist-curation-001
+
+Task:
+
+- Define and implement a local curated Polymarket politics/geopolitics
+  watchlist contract before interpreting live alert output.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `data/monitor_v2_curated_watchlist.csv`
+- `data/results/monitor_v2_curated_watchlist_validation_report.json`
+- `operations/collectors/polymarket_watchlist.py`
+- `tests/test_polymarket_watchlist.py`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_polymarket_watchlist.py tests/test_polymarket_readonly_collector.py -q` -> 17 passed.
+- Full test suite pending after status refresh.
+
+Decision:
+
+- Accept the curated watchlist contract and validator as the boundary between
+  automatic Gamma discovery and thesis-facing monitor interpretation.
+- Keep the current 3 auto-discovered rows as `candidate`; the validation
+  report has 0 accepted rows and marks them not monitor-ready.
+- Accepted rows must include source URL, inclusion reason, reviewer, and
+  timezone-aware review timestamp.
+- Rejected rows must include an exclusion reason.
+
+Next step:
+
+- Review the current candidates and mark the first accepted, rejected, or
+  needs-followup watchlist rows.

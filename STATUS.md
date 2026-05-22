@@ -3,72 +3,41 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-22 15:45
+Generated: 2026-05-22 16:37
 
-Current goal: `goal-polymarket-live-watchlist-curation-001` - Define curated Polymarket politics/geopolitics watchlist contract
+Current goal: `goal-polymarket-live-watchlist-review-001` - Review first Polymarket politics/geopolitics watchlist candidates
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `260 passed in 11.93s`
+Pytest summary: `267 passed in 12.51s`
 
 Git branch: `main`
 
-Latest commit: `028ef57`
+Latest commit: `15769f1`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
- M data/results/monitor_v2_live_scoring_metadata.json
- M data/results/monitor_v2_live_scoring_validation_report.json
- M data/results/monitor_v2_polymarket_live_collection_metadata.json
- M data/results/monitor_v2_polymarket_live_input_validation_report.json
- M data/results/monitor_v2_polymarket_live_market_snapshots.csv
- M data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv
- M data/results/monitor_v2_polymarket_live_watchlist.csv
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
- M docs/research/WHALE_METHOD.md
- M operations/analysis/monitor_v2_live_input_scoring.py
- M operations/collectors/polymarket_readonly.py
- M tests/test_monitor_v2_live_input_scoring.py
- M tests/test_polymarket_readonly_collector.py
-?? data/results/monitor_v2_polymarket_rolling_alert_rows.csv
-?? data/results/monitor_v2_polymarket_rolling_alert_summary.csv
-?? data/results/monitor_v2_polymarket_rolling_history.png
-?? data/results/monitor_v2_polymarket_rolling_history_figure_metadata.json
-?? data/results/monitor_v2_polymarket_rolling_history_metadata.json
-?? data/results/monitor_v2_polymarket_rolling_scoring_metadata.json
-?? data/results/monitor_v2_polymarket_rolling_scoring_snapshots.csv
-?? data/results/monitor_v2_polymarket_rolling_scoring_validation_report.json
-?? operations/analysis/monitor_v2_polymarket_rolling_figures.py
-?? operations/collectors/polymarket_rolling_history.py
-?? tests/test_polymarket_rolling_history.py
+?? data/monitor_v2_curated_watchlist.csv
+?? data/results/monitor_v2_curated_watchlist_validation_report.json
+?? operations/collectors/polymarket_watchlist.py
+?? tests/test_polymarket_watchlist.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                            | 75 ++++++++++++---------
- ROADMAP.md                                         | 12 +++-
- data/results/monitor_v2_live_scoring_metadata.json | 13 ++--
- .../monitor_v2_live_scoring_validation_report.json |  2 +-
- ...tor_v2_polymarket_live_collection_metadata.json | 12 ++--
- ...v2_polymarket_live_input_validation_report.json | 14 ++--
- ...monitor_v2_polymarket_live_market_snapshots.csv | 10 +--
- ...or_v2_polymarket_live_wallet_tier_snapshots.csv |  5 +-
- .../monitor_v2_polymarket_live_watchlist.csv       |  5 +-
- docs/project/WORK_LOG.md                           | 47 +++++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md       | 78 ++++++++++++++++++++++
- docs/research/WHALE_METHOD.md                      | 36 ++++++++++
- .../analysis/monitor_v2_live_input_scoring.py      | 37 +++++++++-
- operations/collectors/polymarket_readonly.py       | 72 ++++++++++++++++++--
- tests/test_monitor_v2_live_input_scoring.py        |  2 +
- tests/test_polymarket_readonly_collector.py        | 74 ++++++++++++++++++++
- 16 files changed, 424 insertions(+), 70 deletions(-)
+ GOAL.md                                      | 90 +++++++++++++-------------
+ ROADMAP.md                                   | 13 +++-
+ docs/project/WORK_LOG.md                     | 39 ++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 95 ++++++++++++++++++++++++++++
+ 4 files changed, 189 insertions(+), 48 deletions(-)
 ```
 
 Blockers:
@@ -77,7 +46,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: define curated polymarket live watchlist contract
+- data: review first polymarket live watchlist candidates
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

@@ -2388,6 +2388,101 @@ Next phase selected:
 - Define a curated Polymarket politics/geopolitics watchlist contract before
   interpreting live alert output or expanding to WebSocket/orderbook fields.
 
+### Curated Polymarket Live Watchlist Contract
+
+watchlist_curation_status: implemented as local CSV contract and validator
+
+Implementation date: 2026-05-22
+
+Implemented files:
+
+- `data/monitor_v2_curated_watchlist.csv`
+- `data/results/monitor_v2_curated_watchlist_validation_report.json`
+- `operations/collectors/polymarket_watchlist.py`
+- `tests/test_polymarket_watchlist.py`
+
+Contract columns:
+
+- `watch_id`
+- `market_id`
+- `condition_id`
+- `token_ids`
+- `question`
+- `category`
+- `subcategory`
+- `monitoring_scope`
+- `review_status`
+- `source_url`
+- `inclusion_reason`
+- `exclusion_reason`
+- `reviewed_by`
+- `reviewed_at_utc`
+- `notes`
+
+Allowed review states:
+
+- `candidate`: auto-discovered or proposed, not monitor-ready.
+- `source_checked`: market/source URL checked, but not fully accepted.
+- `market_mapped`: market ids and token ids checked.
+- `accepted`: eligible for live monitor interpretation.
+- `rejected`: explicitly out of scope.
+- `needs_followup`: unclear scope, source, or mapping.
+
+Accepted-market requirements:
+
+- source URL is present,
+- `reviewed_by` is present,
+- `reviewed_at_utc` is present and timezone-aware,
+- inclusion reason is present,
+- market id, condition id, token ids, question, category, and monitoring
+  scope are present,
+- question text does not contain excluded sport, entertainment, celebrity,
+  religion, or court-noise terms.
+
+Inclusion criteria:
+
+- politics, geopolitics, election, leadership, policy, conflict, or
+  international-relations scope,
+- clearly mapped Polymarket condition id and token ids,
+- monitor relevance is known before inspecting alert output,
+- watchlist membership is recorded before alert interpretation.
+
+Exclusion criteria:
+
+- sport competitions or team outcomes,
+- entertainment, album, celebrity, religion, or meme markets,
+- isolated court/legal markets without a politics/geopolitics link,
+- ambiguous or category-only `politics` labels,
+- post-hoc additions motivated by an observed alert.
+
+Current seed result:
+
+- Row count: 3.
+- Accepted rows: 0.
+- Candidate rows: 3.
+- Candidate scopes: 2 election, 1 leadership.
+- Auto-discovered rows are not monitor-ready.
+
+Current candidate rows:
+
+- `Xi Jinping out before 2027?`
+- `Will Gavin Newsom win the 2028 Democratic presidential nomination?`
+- `Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?`
+
+Interpretation:
+
+- The live monitor now has a validation-ready watchlist contract.
+- The current rows remain candidates and must not be used as thesis-facing
+  alert evidence until manually reviewed and marked `accepted`.
+- Gamma discovery remains useful for finding candidates, not for automatically
+  defining the monitored universe.
+
+Next phase selected:
+
+- Review candidate rows and mark the first accepted Polymarket
+  politics/geopolitics watchlist entries before integrating the curated
+  watchlist into the collector.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

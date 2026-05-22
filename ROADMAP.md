@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for curated Polymarket live watchlist definition
+Status: active for first accepted Polymarket live watchlist review
 
 Done criteria:
 
@@ -310,6 +310,12 @@ Done criteria:
 - The automatic Gamma filter now excludes category-only sport, entertainment,
   and court-noise cases, but the watchlist still needs curation before
   thesis-facing alert interpretation.
+- A curated Polymarket live watchlist contract exists as a local CSV plus
+  validator.
+- The current curated watchlist seed contains 3 candidate rows, 0 accepted
+  rows, and a validation report.
+- Auto-discovered Gamma rows are explicitly not monitor-ready until marked
+  `accepted`.
 
 Blockers:
 
@@ -324,5 +330,6 @@ Blockers:
   execution remain blocked while the read-only collector is built.
 - Interpretable minute-level alert states remain blocked until enough closed
   rolling-history buckets are collected and reviewed.
-- Thesis-facing live alerts remain blocked until a curated politics/geopolitics
-  watchlist contract exists.
+- Thesis-facing live alerts remain blocked until at least one curated
+  politics/geopolitics watchlist row is manually reviewed and marked
+  `accepted`.

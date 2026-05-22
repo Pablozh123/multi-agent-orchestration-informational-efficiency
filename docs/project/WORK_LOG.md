@@ -2734,3 +2734,46 @@ Next step:
 
 - Collect a 20-bucket live monitor baseline if enough real elapsed time is
   available.
+
+## 2026-05-22 - goal-polymarket-live-production-baseline-001
+
+Task:
+
+- Collect and document the first production-like Polymarket live monitor
+  baseline under the v2 30/20 rolling-baseline contract.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/project/TOOL_USAGE.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `operations/collectors/polymarket_monitor_refresh.py`
+- `operations/analysis/monitor_v2_live_input_scoring.py`
+- `tests/test_polymarket_monitor_refresh.py`
+- `tests/test_monitor_v2_live_input_scoring.py`
+- `data/results/monitor_v2_polymarket_*`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_v2_live_input_scoring.py tests/test_polymarket_monitor_refresh.py -q` -> 9 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 276 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  276 passed through the status run.
+
+Decision:
+
+- Accept the 21 real closed 5-minute buckets as the first production-like
+  live monitor baseline according to the current v2 contract.
+- The run produced 3 reviewed markets, 126 token midpoint rows, 63 aggregate
+  wallet/activity rows, 372 scoring rows, 0 alerts, and baseline readiness
+  `baseline_available_zero_mad_or_non_alerting`.
+- Interpret `alert_count=0` only as "Rule C did not trigger in this observed
+  window"; it is not evidence that the broader market was quiet, efficient, or
+  inefficient.
+
+Next step:
+
+- Review the production-like baseline output shape and interpretation before
+  threshold sensitivity, watchlist expansion, or a read-only UI/server wrapper.

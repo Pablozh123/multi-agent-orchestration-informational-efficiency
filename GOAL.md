@@ -3,7 +3,7 @@
 ## Active Goal
 
 goal_id: goal-polymarket-live-production-baseline-001
-title: Collect production-like 20-bucket live monitor baseline
+title: Review production-like Polymarket live monitor baseline
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -23,14 +23,20 @@ why:
   diagnostic baseline readiness.
 - The safe operator protocol is documented with copy-pasteable commands and
   interpretation rules.
-- The next empirical step is to collect the v2 contract minimum of 20 real
-  closed 5-minute buckets.
+- A production-like live monitor baseline has now been collected with 21 real
+  closed 5-minute buckets and the v2 30/20 rolling-baseline settings.
+- The latest production-like refresh reports 0 alerts and baseline readiness
+  `baseline_available_zero_mad_or_non_alerting`.
+- The next empirical step is to review this output before changing thresholds,
+  expanding the watchlist, or building a UI/server wrapper.
 deliverables:
-- Run the bounded refresh command for 20 real closed 5-minute buckets.
-- Regenerate rolling-history, scoring, dashboard, and metadata artifacts.
-- Record alert count, status counts, severity counts, and baseline readiness.
-- Review whether the output is stable enough for thesis-facing monitor
-  discussion.
+- Review the production-like rolling-history, scoring, dashboard, and metadata
+  artifacts.
+- Record alert count, status counts, severity counts, baseline settings, and
+  baseline readiness.
+- Interpret the zero-alert result descriptively and with limitations.
+- Decide whether the next step should be threshold sensitivity, watchlist
+  expansion, or a read-only UI/server wrapper.
 scope:
 - `data/monitor_v2_curated_watchlist.csv`.
 - `data/results/monitor_v2_polymarket_rolling_*`.
@@ -50,11 +56,12 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- At least 20 real closed 5-minute buckets are collected without synthetic
+- At least 20 real closed 5-minute buckets are documented without synthetic
   timestamp shifting.
-- Dashboard reports 20 or more buckets.
-- Scoring metadata still validates and reports baseline readiness.
-- Any alerts are interpreted descriptively only.
+- Dashboard reports 20 or more buckets and the source artifact paths remain
+  traceable.
+- Scoring metadata validates and reports v2 30/20 baseline settings.
+- The zero-alert result is interpreted descriptively only.
 - The curated watchlist validator passes and the report is regenerated.
 - Existing collector and scoring outputs remain read-only and file-based.
 - No authenticated user channel, order endpoint, agent, MCP, ML, strategy
@@ -91,6 +98,19 @@ next_commit: data: collect production-like polymarket monitor baseline
   - 4 closed buckets,
   - 0 alerts,
   - baseline readiness `diagnostic_scores_available`.
+- The latest production-like refresh reports:
+  - 21 real closed 5-minute buckets,
+  - 3 reviewed watchlist markets,
+  - 126 token midpoint rows,
+  - 63 aggregate wallet/activity rows,
+  - 372 scoring rows,
+  - 0 alerts,
+  - baseline readiness `baseline_available_zero_mad_or_non_alerting`,
+  - v2 scoring settings `baseline_observations=30` and
+    `min_baseline_observations=20`,
+  - `production_like_baseline_available=true`,
+  - severity counts: 372 `none`,
+  - status counts: 300 `insufficient_baseline` and 72 `zero_mad`.
 - `operations/collectors/polymarket_monitor_refresh.py` exists and regenerates
   rolling outputs plus dashboard output in one bounded command.
 - Safe operator protocol is documented in
@@ -99,10 +119,12 @@ next_commit: data: collect production-like polymarket monitor baseline
 
 ## Done Means
 
-- The monitor has a first production-like rolling baseline according to the
-  current 20-bucket v2 contract.
-- The next decision is whether to refine alert thresholds, expand the
-  watchlist, or design a read-only UI/server wrapper.
+- The monitor's first production-like rolling baseline is reviewed according
+  to the current 20-bucket v2 contract and 30/20 scoring settings.
+- The zero-alert result is recorded as "Rule C did not trigger in this observed
+  window", not as proof that the broader market is quiet.
+- The next decision is selected: threshold sensitivity, watchlist expansion, or
+  read-only UI/server wrapper.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -265,3 +287,6 @@ next_commit: data: collect production-like polymarket monitor baseline
   `diagnostic_scores_available`.
 - Safe live monitor operator protocol exists with preflight, single-refresh,
   diagnostic, and production-like run commands plus interpretation limits.
+- First production-like Polymarket live monitor baseline exists with 21 real
+  closed 5-minute buckets, 0 alerts, v2 30/20 scoring settings, and baseline
+  readiness `baseline_available_zero_mad_or_non_alerting`.

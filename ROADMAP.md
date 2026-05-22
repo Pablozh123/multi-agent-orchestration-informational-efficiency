@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for production-like 20-bucket live baseline
+Status: active for production-like live baseline review
 
 Done criteria:
 
@@ -340,8 +340,15 @@ Done criteria:
   run commands, minimum bucket counts, and interpretation limits.
 - Safe operator protocol is documented in the strategy architecture and tool
   usage docs.
-- The next empirical step is a 20 real closed 5-minute bucket run using the
-  bounded refresh runner.
+- The first production-like live baseline has been collected with 21 real
+  closed 5-minute buckets, 3 reviewed watchlist markets, 126 token midpoint
+  rows, 63 aggregate wallet/activity rows, 372 scoring rows, 0 alerts, and v2
+  `baseline_observations=30` / `min_baseline_observations=20` settings.
+- The latest baseline readiness is
+  `baseline_available_zero_mad_or_non_alerting`; scoring metadata marks
+  `production_like_baseline_available=true`.
+- The next empirical step is to review this production-like baseline before
+  threshold sensitivity, watchlist expansion, or a read-only UI/server wrapper.
 
 Blockers:
 
@@ -354,8 +361,8 @@ Blockers:
   scope.
 - MCP, agents, strategy backtests, authenticated user channels, and order
   execution remain blocked while the read-only collector is built.
-- Interpretable minute-level alert states remain blocked until enough closed
-  rolling-history buckets are collected and reviewed.
-- Thesis-facing live alerts remain blocked until enough closed rolling-history
-  buckets exist for the configured baseline and the resulting output shape is
-  reviewed.
+- Thesis-facing live-alert wording remains blocked until the 21-bucket
+  production-like baseline is reviewed and its zero-alert result is documented
+  as descriptive only.
+- Threshold changes, watchlist expansion, and any read-only UI/server wrapper
+  should wait until the production-like baseline review is complete.

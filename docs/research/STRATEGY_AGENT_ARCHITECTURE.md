@@ -2587,9 +2587,10 @@ Dashboard content:
 Latest dashboard state:
 
 - Markets: 3.
-- Closed buckets: 4.
+- Closed buckets: 21.
 - Alerts: 0.
-- Baseline readiness: `diagnostic_scores_available`.
+- Baseline readiness: `baseline_available_zero_mad_or_non_alerting`.
+- Latest bucket: `2026-05-22T16:40:00Z`.
 
 Interpretation:
 
@@ -2628,23 +2629,28 @@ Latest refresh result:
 
 - Source: read-only public Polymarket endpoints.
 - Samples completed: 1.
-- Closed buckets after refresh: 4.
+- Closed buckets after refresh: 21.
 - Alerts: 0.
-- Baseline readiness: `diagnostic_scores_available`.
+- Baseline readiness: `baseline_available_zero_mad_or_non_alerting`.
+- Baseline settings: `baseline_observations=30`,
+  `min_baseline_observations=20`.
+- Production-like baseline available:
+  `production_like_baseline_available=true`.
 - Dashboard: `data/results/monitor_v2_polymarket_dashboard.html`.
 
 Interpretation:
 
 - The runner is the first practical local operation path for the monitor.
-- Four buckets are still a short diagnostic window; production-like alert
-  interpretation remains below the v2 contract minimum of 20 closed buckets.
+- Twenty-one real closed buckets satisfy the current minimum production-like
+  baseline count for review, but the result still needs methodical
+  interpretation before thesis-facing live-alert wording.
 - Zero alerts means Rule C did not trigger in the observed window, not that the
   broader market is quiet.
 
 Next phase selected:
 
-- Document a safe operator protocol with commands, minimum bucket counts, and
-  interpretation rules.
+- Review the 21-bucket production-like baseline before threshold sensitivity,
+  watchlist expansion, or a read-only UI/server wrapper.
 
 ### Live Monitor Operator Protocol
 
@@ -2673,7 +2679,7 @@ Short diagnostic run:
 Production-like baseline run from the current v2 contract:
 
 ```powershell
-.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 20 --delay-seconds 305 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3
+.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 20 --delay-seconds 305 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3 --baseline-observations 30 --min-baseline-observations 20
 ```
 
 Dashboard output:
@@ -2703,6 +2709,63 @@ Required review after each run:
 - Inspect whether the watchlist still represents the intended politics/geo
   universe.
 - Record notable decisions in `docs/project/WORK_LOG.md` before committing.
+
+### Production-Like Live Monitor Baseline
+
+production_like_live_baseline_status: collected_review_pending
+
+Collection date: 2026-05-22
+
+Source:
+
+- Read-only public Polymarket endpoints.
+- Reviewed local watchlist:
+  `data/monitor_v2_curated_watchlist.csv`.
+
+Reviewed artifacts:
+
+- `data/results/monitor_v2_polymarket_live_market_snapshots.csv`
+- `data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv`
+- `data/results/monitor_v2_polymarket_rolling_scoring_snapshots.csv`
+- `data/results/monitor_v2_polymarket_rolling_alert_rows.csv`
+- `data/results/monitor_v2_polymarket_rolling_alert_summary.csv`
+- `data/results/monitor_v2_polymarket_rolling_scoring_metadata.json`
+- `data/results/monitor_v2_polymarket_dashboard.html`
+- `data/results/monitor_v2_polymarket_dashboard_metadata.json`
+- `data/results/monitor_v2_polymarket_refresh_metadata.json`
+
+Result summary:
+
+- Closed buckets: 21 real 5-minute buckets.
+- Reviewed markets: 3.
+- Market snapshot rows: 126 token midpoint rows.
+- Wallet/activity rows: 63 aggregate tier rows.
+- Scoring rows: 372.
+- Alerts: 0.
+- Severity counts: 372 `none`.
+- Status counts: 300 `insufficient_baseline`, 72 `zero_mad`.
+- Baseline settings: `baseline_observations=30`,
+  `min_baseline_observations=20`.
+- Baseline readiness: `baseline_available_zero_mad_or_non_alerting`.
+- Production-like baseline available:
+  `production_like_baseline_available=true`.
+
+Interpretation:
+
+- The output is the first production-like read-only live baseline under the
+  current monitor-v2 30/20 contract.
+- `alert_count=0` means Rule C did not trigger in this observed window.
+- The result does not prove that the broader market was quiet, efficient, or
+  inefficient.
+- The result does not support causal, misconduct, private-information, trading,
+  or profitability claims.
+- The `zero_mad` rows show that some monitored metrics were flat within the
+  available baseline; this should be reviewed before threshold changes.
+
+Next phase selected:
+
+- Review the production-like baseline output shape and interpretation before
+  threshold sensitivity, watchlist expansion, or a read-only UI/server wrapper.
 
 ## First Prototype Specification
 

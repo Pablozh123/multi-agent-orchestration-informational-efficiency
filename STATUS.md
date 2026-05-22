@@ -3,25 +3,42 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-22 17:13
+Generated: 2026-05-22 18:49
 
-Current goal: `goal-polymarket-live-production-baseline-001` - Collect production-like 20-bucket live monitor baseline
+Current goal: `goal-polymarket-live-production-baseline-001` - Review production-like Polymarket live monitor baseline
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `275 passed in 14.58s`
+Pytest summary: `276 passed in 16.62s`
 
 Git branch: `main`
 
-Latest commit: `d41a93a`
+Latest commit: `ab3c52a`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
+ M STATUS.md
+ M data/results/monitor_v2_polymarket_dashboard.html
+ M data/results/monitor_v2_polymarket_dashboard_metadata.json
+ M data/results/monitor_v2_polymarket_live_collection_metadata.json
+ M data/results/monitor_v2_polymarket_live_input_validation_report.json
+ M data/results/monitor_v2_polymarket_live_market_snapshots.csv
+ M data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv
+ M data/results/monitor_v2_polymarket_live_watchlist.csv
+ M data/results/monitor_v2_polymarket_refresh_metadata.json
+ M data/results/monitor_v2_polymarket_rolling_alert_rows.csv
+ M data/results/monitor_v2_polymarket_rolling_alert_summary.csv
+ M data/results/monitor_v2_polymarket_rolling_history.png
+ M data/results/monitor_v2_polymarket_rolling_history_figure_metadata.json
+ M data/results/monitor_v2_polymarket_rolling_history_metadata.json
+ M data/results/monitor_v2_polymarket_rolling_scoring_metadata.json
+ M data/results/monitor_v2_polymarket_rolling_scoring_snapshots.csv
+ M data/results/monitor_v2_polymarket_rolling_scoring_validation_report.json
  M docs/project/TOOL_USAGE.md
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
@@ -30,12 +47,29 @@ Git status:
 Git diff stat:
 
 ```text
- GOAL.md                                      | 45 ++++++++++++---------
- ROADMAP.md                                   |  6 ++-
- docs/project/TOOL_USAGE.md                   | 44 +++++++++++++++++++++
- docs/project/WORK_LOG.md                     | 32 +++++++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 58 ++++++++++++++++++++++++++++
- 5 files changed, 165 insertions(+), 20 deletions(-)
+ GOAL.md                                            |  57 ++-
+ ROADMAP.md                                         |  23 +-
+ STATUS.md                                          |  60 ++-
+ data/results/monitor_v2_polymarket_dashboard.html  |  36 +-
+ .../monitor_v2_polymarket_dashboard_metadata.json  |  17 +-
+ ...tor_v2_polymarket_live_collection_metadata.json |   8 +-
+ ...v2_polymarket_live_input_validation_report.json |  10 +-
+ ...monitor_v2_polymarket_live_market_snapshots.csv | 102 +++++
+ ...or_v2_polymarket_live_wallet_tier_snapshots.csv |  53 ++-
+ .../monitor_v2_polymarket_live_watchlist.csv       |   6 +-
+ .../monitor_v2_polymarket_refresh_metadata.json    |   8 +-
+ .../monitor_v2_polymarket_rolling_alert_rows.csv   | 438 +++++++++++++++++----
+ ...monitor_v2_polymarket_rolling_alert_summary.csv |  30 +-
+ .../monitor_v2_polymarket_rolling_history.png      | Bin 95130 -> 116119 bytes
+ ...polymarket_rolling_history_figure_metadata.json |  10 +-
+ ...tor_v2_polymarket_rolling_history_metadata.json |  27 +-
+ ...tor_v2_polymarket_rolling_scoring_metadata.json |  32 +-
+ ...tor_v2_polymarket_rolling_scoring_snapshots.csv | 306 ++++++++++++++
+ ...lymarket_rolling_scoring_validation_report.json |  10 +-
+ docs/project/TOOL_USAGE.md                         |   2 +-
+ docs/project/WORK_LOG.md                           |  43 ++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md       |  81 +++-
+ 22 files changed, 1151 insertions(+), 208 deletions(-)
 ```
 
 Blockers:

@@ -108,7 +108,7 @@ Diagnostic run:
 Production-like baseline run:
 
 ```powershell
-.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 20 --delay-seconds 305 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3
+.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 20 --delay-seconds 305 --reset --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3 --baseline-observations 30 --min-baseline-observations 20
 ```
 
 The dashboard is written to:

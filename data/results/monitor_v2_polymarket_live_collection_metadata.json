@@ -4,7 +4,7 @@
     "data_api_trades": "https://data-api.polymarket.com/trades",
     "gamma_markets": "https://gamma-api.polymarket.com/markets"
   },
-  "generated_at_utc": "2026-05-22T13:42:54Z",
+  "generated_at_utc": "2026-05-22T14:45:53Z",
   "limitations": {
     "does_not_send_orders": true,
     "does_not_use_agents_or_mcp": true,
@@ -18,17 +18,20 @@
     "wallet_rows_are_aggregate_all_tiers": true
   },
   "method": {
-    "append_to_existing_outputs": true,
+    "accepted_curated_rows_only": true,
+    "append_to_existing_outputs": false,
     "bucket_minutes": 5,
-    "collector_received_at_utc": "2026-05-22T13:42:53Z",
+    "collector_received_at_utc": "2026-05-22T14:45:52Z",
+    "curated_watchlist_path": "data\\monitor_v2_curated_watchlist.csv",
     "max_markets": 3,
     "name": "polymarket_readonly_collector",
     "read_only": true,
     "source": "live",
-    "trade_limit": 200,
+    "trade_limit": 500,
+    "uses_curated_watchlist": true,
     "uses_public_clob_midpoint": true,
     "uses_public_data_api_trades": true,
-    "uses_public_gamma_markets": true,
+    "uses_public_gamma_markets": false,
     "validates_outputs": true
   },
   "outputs": {

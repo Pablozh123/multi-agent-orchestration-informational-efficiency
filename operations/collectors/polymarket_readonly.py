@@ -31,6 +31,10 @@ from operations.analysis.monitor_v2_live_input_validation import (
     validate_live_wallet_tier_snapshots,
 )
 from operations.analysis.run_h2_event_windows import RESULTS_DIR
+from operations.collectors.polymarket_watchlist import (
+    read_curated_watchlist,
+    validate_curated_watchlist,
+)
 
 
 GAMMA_BASE_URL = "https://gamma-api.polymarket.com"
@@ -162,6 +166,7 @@ def collect_readonly_polymarket_inputs(
     max_markets: int = DEFAULT_MAX_MARKETS,
     trade_limit: int = DEFAULT_TRADE_LIMIT,
     collected_at_utc: str | None = None,
+    curated_watchlist_path: Path | None = None,
     append: bool = False,
     client: httpx.Client | None = None,
 ) -> ReadOnlyCollectionResult:
@@ -177,17 +182,25 @@ def collect_readonly_polymarket_inputs(
     own_client = client is None
     http_client = client or httpx.Client(timeout=20.0)
     try:
-        gamma_markets = (
-            mock_gamma_markets()
-            if source == "mock"
-            else fetch_gamma_markets(http_client, limit=max(250, max_markets * 50))
-        )
-        watchlist = build_watchlist_from_gamma_markets(
-            gamma_markets,
-            collected_at=collected_at,
-            bucket_minutes=bucket_minutes,
-            max_markets=max_markets,
-        )
+        if curated_watchlist_path is None:
+            gamma_markets = (
+                mock_gamma_markets()
+                if source == "mock"
+                else fetch_gamma_markets(http_client, limit=max(250, max_markets * 50))
+            )
+            watchlist = build_watchlist_from_gamma_markets(
+                gamma_markets,
+                collected_at=collected_at,
+                bucket_minutes=bucket_minutes,
+                max_markets=max_markets,
+            )
+        else:
+            watchlist = build_watchlist_from_curated_watchlist(
+                curated_watchlist_path,
+                collected_at=collected_at,
+                bucket_minutes=bucket_minutes,
+                max_markets=max_markets,
+            )
         if watchlist.empty:
             raise ValueError("No active politics/geopolitics Polymarket markets found")
 
@@ -272,6 +285,7 @@ def collect_readonly_polymarket_inputs(
         bucket_minutes=bucket_minutes,
         max_markets=max_markets,
         trade_limit=trade_limit,
+        curated_watchlist_path=curated_watchlist_path,
         append=append,
         watchlist=written_watchlist,
         market_snapshots=written_market,
@@ -415,6 +429,42 @@ def build_watchlist_from_gamma_markets(
                 "status": "active",
             }
         )
+    return pd.DataFrame(rows, columns=MARKET_WATCH_LIVE_COLUMNS)
+
+
+def build_watchlist_from_curated_watchlist(
+    path: Path,
+    *,
+    collected_at: datetime,
+    bucket_minutes: int,
+    max_markets: int,
+) -> pd.DataFrame:
+    """Return monitor-ready watchlist rows from accepted curated entries."""
+
+    curated = validate_curated_watchlist(read_curated_watchlist(path))
+    accepted = curated[curated["review_status"] == "accepted"].head(max_markets)
+    if accepted.empty:
+        raise ValueError("curated watchlist has no accepted rows")
+    base = _base_live_fields(
+        source_class="market_discovery",
+        source_name="polymarket_curated_watchlist",
+        collected_at=collected_at,
+        bucket_minutes=bucket_minutes,
+    )
+    rows = [
+        {
+            **base,
+            "watch_id": row["watch_id"],
+            "market_id": row["market_id"],
+            "condition_id": row["condition_id"],
+            "token_ids": row["token_ids"],
+            "question": row["question"],
+            "category": row["category"],
+            "subcategory": row["subcategory"],
+            "status": "active",
+        }
+        for row in accepted.to_dict(orient="records")
+    ]
     return pd.DataFrame(rows, columns=MARKET_WATCH_LIVE_COLUMNS)
 
 
@@ -659,6 +709,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--max-markets", type=int, default=DEFAULT_MAX_MARKETS)
     parser.add_argument("--trade-limit", type=int, default=DEFAULT_TRADE_LIMIT)
     parser.add_argument("--collected-at-utc", default=None)
+    parser.add_argument("--curated-watchlist-input", type=Path, default=None)
     parser.add_argument("--append", action="store_true")
     args = parser.parse_args(argv)
 
@@ -675,6 +726,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             max_markets=args.max_markets,
             trade_limit=args.trade_limit,
             collected_at_utc=args.collected_at_utc,
+            curated_watchlist_path=args.curated_watchlist_input,
             append=args.append,
         )
     except (httpx.HTTPError, ValidationError, ValueError) as exc:
@@ -839,6 +891,7 @@ def _build_metadata(
     bucket_minutes: int,
     max_markets: int,
     trade_limit: int,
+    curated_watchlist_path: Path | None,
     append: bool,
     watchlist: pd.DataFrame,
     market_snapshots: pd.DataFrame,
@@ -860,7 +913,12 @@ def _build_metadata(
             "max_markets": max_markets,
             "trade_limit": trade_limit,
             "collector_received_at_utc": _format_timestamp(collected_at),
-            "uses_public_gamma_markets": source == "live",
+            "uses_public_gamma_markets": source == "live" and curated_watchlist_path is None,
+            "uses_curated_watchlist": curated_watchlist_path is not None,
+            "curated_watchlist_path": (
+                "" if curated_watchlist_path is None else str(curated_watchlist_path)
+            ),
+            "accepted_curated_rows_only": curated_watchlist_path is not None,
             "uses_public_clob_midpoint": source == "live",
             "uses_public_data_api_trades": source == "live",
             "validates_outputs": True,

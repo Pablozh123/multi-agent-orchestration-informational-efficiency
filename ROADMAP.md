@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for curated Polymarket live watchlist integration
+Status: active for curated Polymarket rolling-baseline collection
 
 Done criteria:
 
@@ -316,8 +316,14 @@ Done criteria:
   rows, and a validation report.
 - Auto-discovered Gamma rows are explicitly not monitor-ready until reviewed
   and marked `accepted`.
-- The next implementation step should make the read-only collector prefer the
-  accepted curated watchlist over automatic Gamma discovery.
+- The read-only collector and rolling-history collector can use the accepted
+  curated watchlist path.
+- The first curated live collector run produced 3 watchlist rows, 6 token
+  midpoint rows, 3 aggregate wallet/activity rows, 12 scoring rows, and 0
+  alerts with `insufficient_baseline`.
+- The next implementation step is operational rather than methodological:
+  collect enough distinct closed curated buckets for diagnostic rolling
+  baselines.
 
 Blockers:
 
@@ -332,6 +338,6 @@ Blockers:
   execution remain blocked while the read-only collector is built.
 - Interpretable minute-level alert states remain blocked until enough closed
   rolling-history buckets are collected and reviewed.
-- Thesis-facing live alerts remain blocked until the collector uses accepted
-  curated watchlist rows and enough closed rolling-history buckets exist for
-  the configured baseline.
+- Thesis-facing live alerts remain blocked until enough closed rolling-history
+  buckets exist for the configured baseline and the resulting output shape is
+  reviewed.

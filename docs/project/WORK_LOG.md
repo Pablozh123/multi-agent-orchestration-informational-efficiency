@@ -2543,3 +2543,47 @@ Decision:
 Next step:
 
 - Integrate accepted curated watchlist rows into the read-only collector.
+
+## 2026-05-22 - goal-polymarket-live-curated-collector-001
+
+Task:
+
+- Integrate the accepted curated Polymarket watchlist into the read-only
+  collector and bounded rolling-history path.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `operations/collectors/polymarket_readonly.py`
+- `operations/collectors/polymarket_rolling_history.py`
+- `operations/analysis/monitor_v2_live_input_scoring.py`
+- `tests/test_polymarket_readonly_collector.py`
+- `tests/test_polymarket_rolling_history.py`
+- `data/results/monitor_v2_polymarket_live_*`
+- `data/results/monitor_v2_live_*`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_polymarket_readonly_collector.py tests/test_polymarket_rolling_history.py tests/test_polymarket_watchlist.py -q` -> 23 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_polymarket_readonly_collector.py tests/test_polymarket_rolling_history.py tests/test_monitor_v2_live_input_scoring.py -q` -> 22 passed.
+- `.\.venv\Scripts\python.exe -m operations.collectors.polymarket_readonly --source live --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 3` -> 3 watchlist rows, 6 market snapshot rows, 3 aggregate wallet/activity rows.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_live_input_scoring ...` -> 12 scoring rows, 0 alerts.
+- Full test suite pending after status refresh.
+
+Decision:
+
+- The collector now supports a curated watchlist path and only accepted rows
+  enter the monitor-ready output.
+- Automatic Gamma discovery remains available for candidate discovery and
+  tests, but the reviewed monitor universe should come from the curated CSV.
+- The first curated live scoring run still has `insufficient_baseline`, so 0
+  alerts should be interpreted as baseline-not-ready, not market quietness.
+
+Next step:
+
+- Collect bounded curated rolling-history samples until baseline readiness can
+  be assessed.

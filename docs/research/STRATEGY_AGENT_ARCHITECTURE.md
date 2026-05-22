@@ -2483,6 +2483,48 @@ Next phase selected:
   rolling live collection uses the reviewed universe instead of automatic Gamma
   discovery by default.
 
+### Curated Watchlist Collector Integration
+
+curated_collector_status: implemented
+
+Implementation date: 2026-05-22
+
+Implemented behaviour:
+
+- `operations/collectors/polymarket_readonly.py` accepts an optional
+  `curated_watchlist_path`.
+- `operations/collectors/polymarket_rolling_history.py` can pass the same
+  curated watchlist path into bounded rolling-history collection.
+- Only `review_status=accepted` rows from the curated watchlist enter the
+  monitor-ready collection output.
+- Candidate, rejected, and needs-followup rows remain excluded from
+  monitor-ready files.
+- Automatic Gamma discovery remains available for candidate discovery and
+  tests, but curated rows are the reviewed monitor universe.
+
+Latest curated live run:
+
+- Watchlist rows: 3.
+- Token midpoint rows: 6.
+- Aggregate wallet/activity rows: 3.
+- Event candidate rows: 0.
+- Scoring rows: 12.
+- Alerts: 0.
+- Scoring status: `insufficient_baseline`.
+
+Interpretation:
+
+- The monitor now collects from a reviewed Polymarket politics/geopolitics
+  universe.
+- The output is a live-data input and scoring shape check, not empirical alert
+  evidence yet.
+- More closed buckets are needed before rolling-baseline alert interpretation.
+
+Next phase selected:
+
+- Collect bounded rolling-history samples from the accepted curated watchlist
+  until metadata shows whether diagnostic baseline scoring is ready.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

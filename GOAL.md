@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-polymarket-live-curated-collector-001
-title: Integrate accepted curated Polymarket watchlist into read-only collector
+goal_id: goal-polymarket-curated-rolling-baseline-001
+title: Collect curated Polymarket rolling history for baseline readiness
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -12,28 +12,24 @@ why:
   exist.
 - The curated watchlist contract and validator exist.
 - The current curated watchlist seed has 3 accepted rows and 0 candidate rows.
-- The collector still needs a reviewed-universe path so live runs can avoid
-  depending on automatic Gamma discovery by default.
-- Thesis-facing live alerts remain blocked until collection uses accepted
-  curated rows and enough closed rolling-history buckets exist.
+- The read-only collector can now collect from accepted curated watchlist rows.
+- The first curated live run produced one closed 5-minute bucket and validates,
+  but alert scoring still reports `insufficient_baseline`.
+- The next empirical monitor step is to collect enough closed curated buckets
+  for diagnostic rolling-baseline readiness.
 deliverables:
-- Add an optional curated-watchlist input path to the read-only collector.
-- Ensure only rows with `review_status=accepted` enter the live monitor
-  watchlist.
-- Keep automatic Gamma discovery available as candidate discovery, not the
-  default reviewed universe.
-- Update the bounded rolling-history path to pass the curated watchlist when
-  configured.
-- Add focused tests for accepted-row filtering and collector output shape.
+- Run bounded rolling-history collection with the accepted curated watchlist.
+- Generate or refresh rolling watchlist, market snapshots, aggregate wallet
+  snapshots, scoring rows, alert summary, metadata, and figure artifacts.
+- Report distinct closed buckets, baseline readiness, alert count, and
+  limitations.
+- Keep outputs descriptive until the baseline requirement is met.
 scope:
 - `data/monitor_v2_curated_watchlist.csv`.
-- `data/results/monitor_v2_curated_watchlist_validation_report.json`.
-- `operations/collectors/polymarket_readonly.py`.
 - `operations/collectors/polymarket_rolling_history.py`.
-- Focused collector tests and generated monitor-v2 live/rolling artifacts if
-  regenerated.
+- `data/results/monitor_v2_polymarket_rolling_*`.
 - Polymarket politics/geopolitics markets only.
-- Read-only public midpoint/trade fetching and local validated output files.
+- Bounded read-only public REST polling and local validated output files.
 out_of_scope:
 - Agents, MCP, model routing, ML, cloud deployment, trading, and order
   execution.
@@ -45,12 +41,12 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- The collector can read the curated watchlist contract and use only accepted
-  rows.
-- Candidate, rejected, or needs-followup rows cannot enter monitor-ready
-  collection.
-- The CLI exposes the curated-watchlist path without requiring credentials.
-- Rolling-history collection can pass the same curated path.
+- Rolling-history collection uses accepted curated watchlist rows.
+- Outputs show distinct closed buckets or clearly explain why more real time is
+  needed.
+- Scoring metadata reports baseline readiness.
+- No alert is interpreted as thesis evidence while baseline readiness remains
+  insufficient.
 - The curated watchlist validator passes and the report is regenerated.
 - Existing collector and scoring outputs remain read-only and file-based.
 - No authenticated user channel, order endpoint, agent, MCP, ML, strategy
@@ -59,7 +55,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: use curated polymarket watchlist in read-only collector
+next_commit: data: collect curated polymarket rolling baseline samples
 
 ## Decision Inputs For This Goal
 
@@ -68,17 +64,22 @@ next_commit: feat: use curated polymarket watchlist in read-only collector
   watchlist contract.
 - `data/results/monitor_v2_curated_watchlist_validation_report.json` reports
   3 accepted rows, 0 candidate rows, and validation status `pass`.
-- The current accepted rows are:
-  - `Xi Jinping out before 2027?`
-  - `Will Gavin Newsom win the 2028 Democratic presidential nomination?`
-  - `Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?`
+- `operations/collectors/polymarket_readonly.py` accepts
+  `curated_watchlist_path` and uses only accepted rows.
+- The latest curated live collector run produced:
+  - 3 watchlist rows,
+  - 6 token midpoint rows,
+  - 3 aggregate wallet/activity rows,
+  - 12 scoring rows,
+  - 0 alerts,
+  - scoring status `insufficient_baseline`.
 
 ## Done Means
 
-- The read-only collector can run from the accepted curated watchlist.
-- Generated monitor-v2 input files retain the same validated shape.
-- Automatic Gamma discovery remains available for discovery but is no longer
-  required for the reviewed monitor universe.
+- There is a reviewed rolling-history output based on curated watchlist rows.
+- The metadata tells us whether diagnostic baseline scoring is ready.
+- The next decision is either to keep collecting real buckets or to build the
+  first dashboard/visual monitor view.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -224,3 +225,9 @@ next_commit: feat: use curated polymarket watchlist in read-only collector
 - First Polymarket live watchlist candidates are reviewed against public Gamma
   market metadata; 3 rows are accepted for monitor watchlist use and 0 rows
   remain candidates.
+- Read-only Polymarket collector and rolling-history code accept a curated
+  watchlist path; candidate, rejected, or needs-followup rows are excluded from
+  monitor-ready collection.
+- First curated live collector run produced 3 watchlist rows, 6 token midpoint
+  rows, 3 aggregate wallet/activity rows, 12 scoring rows, and 0 alerts with
+  `insufficient_baseline`.

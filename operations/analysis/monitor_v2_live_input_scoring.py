@@ -327,8 +327,7 @@ def _market_metric_rows(
                     **_event_context(item["timestamp_utc"], item["market_id"], event_lookup),
                     "evidence_ref": "live_market_snapshots:price_midpoint",
                     "limitation": (
-                        "diagnostic local live-style fixture; no live source or "
-                        "orderbook claim"
+                        "diagnostic live-style input; no orderbook claim"
                     ),
                     "review_status": "candidate",
                 }
@@ -378,7 +377,7 @@ def _optional_market_rows(
                 "observed_value": float(observed),
                 **_event_context(item["timestamp_utc"], item["market_id"], event_lookup),
                 "evidence_ref": f"live_market_snapshots:{value_column}",
-                "limitation": "diagnostic local live-style fixture; source availability varies",
+                "limitation": "diagnostic live-style input; source availability varies",
                 "review_status": "candidate",
             }
         )
@@ -411,7 +410,7 @@ def _wallet_metric_rows(
                     **context,
                     "evidence_ref": "live_wallet_tier_snapshots:total_observed_amount_usd",
                     "limitation": (
-                        "aggregate diagnostic fixture wallet-tier replay; no "
+                        "aggregate diagnostic live-style wallet-tier input; no "
                         "wallet addresses or wallet-performance claim"
                     ),
                     "review_status": "candidate",
@@ -426,7 +425,7 @@ def _wallet_metric_rows(
                     **context,
                     "evidence_ref": "live_wallet_tier_snapshots:active_wallets",
                     "limitation": (
-                        "aggregate diagnostic fixture active-wallet tier count; "
+                        "aggregate diagnostic live-style active-wallet tier count; "
                         "no wallet addresses"
                     ),
                     "review_status": "candidate",
@@ -468,7 +467,7 @@ def _concentration_metric_rows(
                     **context,
                     "evidence_ref": f"live_wallet_tier_snapshots:{column}",
                     "limitation": (
-                        "aggregate diagnostic fixture concentration replay; no "
+                        "aggregate diagnostic live-style concentration input; no "
                         "wallet-performance claim"
                     ),
                     "review_status": "candidate",

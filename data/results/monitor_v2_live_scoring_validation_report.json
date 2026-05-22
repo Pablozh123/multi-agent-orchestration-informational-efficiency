@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-22T13:37:18+00:00",
+  "generated_at_utc": "2026-05-22T14:46:48+00:00",
   "input_mode": "replay_first_live_input_files",
   "limitations": {
     "does_not_call_external_apis": true,
@@ -15,9 +15,7 @@
   "status": "pass",
   "validated_inputs": {
     "event_candidates": {
-      "bucket_status_counts": {
-        "closed": 1
-      },
+      "bucket_status_counts": {},
       "columns": [
         "collector_received_at_utc",
         "source_timestamp_utc",
@@ -38,15 +36,13 @@
         "review_status",
         "review_notes"
       ],
-      "path": "data\\results\\monitor_v2_live_event_candidates.csv",
-      "row_count": 1,
-      "source_classes": [
-        "event_candidates"
-      ]
+      "path": "data\\results\\monitor_v2_polymarket_live_event_candidates.csv",
+      "row_count": 0,
+      "source_classes": []
     },
     "market_snapshots": {
       "bucket_status_counts": {
-        "closed": 4
+        "closed": 6
       },
       "columns": [
         "collector_received_at_utc",
@@ -67,15 +63,15 @@
         "volume",
         "open_interest"
       ],
-      "path": "data\\results\\monitor_v2_live_market_snapshots.csv",
-      "row_count": 4,
+      "path": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
+      "row_count": 6,
       "source_classes": [
         "market_state"
       ]
     },
     "wallet_tier_snapshots": {
       "bucket_status_counts": {
-        "closed": 8
+        "closed": 3
       },
       "columns": [
         "collector_received_at_utc",
@@ -95,15 +91,15 @@
         "hhi_concentration",
         "filter_metadata"
       ],
-      "path": "data\\results\\monitor_v2_live_wallet_tier_snapshots.csv",
-      "row_count": 8,
+      "path": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",
+      "row_count": 3,
       "source_classes": [
         "wallet_activity"
       ]
     },
     "watchlist": {
       "bucket_status_counts": {
-        "closed": 1
+        "closed": 3
       },
       "columns": [
         "collector_received_at_utc",
@@ -123,8 +119,8 @@
         "subcategory",
         "status"
       ],
-      "path": "data\\results\\monitor_v2_live_watchlist.csv",
-      "row_count": 1,
+      "path": "data\\results\\monitor_v2_polymarket_live_watchlist.csv",
+      "row_count": 3,
       "source_classes": [
         "market_discovery"
       ]

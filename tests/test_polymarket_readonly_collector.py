@@ -12,6 +12,7 @@ from operations.collectors.polymarket_readonly import (
     GAMMA_BASE_URL,
     build_market_snapshot_rows,
     build_wallet_activity_rows,
+    build_watchlist_from_curated_watchlist,
     build_watchlist_from_gamma_markets,
     collect_readonly_polymarket_inputs,
     main,
@@ -19,6 +20,7 @@ from operations.collectors.polymarket_readonly import (
     mock_midpoints_for_watchlist,
     mock_trade_rows,
 )
+from operations.collectors.polymarket_watchlist import CURATED_WATCHLIST_COLUMNS
 
 
 COLLECTED_AT = "2026-05-22T12:07:30Z"
@@ -53,6 +55,24 @@ def test_build_watchlist_filters_politics_geo_markets() -> None:
     )
     assert watchlist.iloc[0]["source_class"] == "market_discovery"
     assert watchlist.iloc[0]["bucket_end_utc"] == "2026-05-22T12:05:00Z"
+
+
+def test_build_watchlist_from_curated_watchlist_uses_accepted_rows_only(
+    tmp_path: Path,
+) -> None:
+    curated_path = _curated_watchlist_path(tmp_path)
+
+    watchlist = build_watchlist_from_curated_watchlist(
+        curated_path,
+        collected_at=pd.Timestamp(COLLECTED_AT).to_pydatetime(),
+        bucket_minutes=5,
+        max_markets=5,
+    )
+
+    assert len(watchlist) == 1
+    assert watchlist.iloc[0]["watch_id"] == "accepted_001"
+    assert watchlist.iloc[0]["source_name"] == "polymarket_curated_watchlist"
+    assert watchlist.iloc[0]["status"] == "active"
 
 
 def test_watchlist_filter_excludes_sports_only_markets() -> None:
@@ -283,6 +303,47 @@ def test_collect_live_with_mock_transport_uses_public_read_endpoints(tmp_path: P
     assert any(url.startswith(f"{DATA_API_BASE_URL}/trades") for url in requested_urls)
 
 
+def test_collect_live_with_curated_watchlist_skips_gamma_discovery(tmp_path: Path) -> None:
+    paths = _paths(tmp_path)
+    curated_path = _curated_watchlist_path(tmp_path)
+    requested_urls: list[str] = []
+    collected_at = pd.Timestamp(COLLECTED_AT).to_pydatetime()
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requested_urls.append(str(request.url))
+        if str(request.url).startswith(f"{CLOB_BASE_URL}/midpoint"):
+            return httpx.Response(200, json={"mid_price": "0.55"})
+        if str(request.url).startswith(f"{DATA_API_BASE_URL}/trades"):
+            return httpx.Response(
+                200,
+                json=mock_trade_rows(
+                    _curated_live_watchlist(curated_path, collected_at),
+                    collected_at=collected_at,
+                ),
+            )
+        return httpx.Response(404, json={"error": "unexpected"})
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        result = collect_readonly_polymarket_inputs(
+            source="live",
+            client=client,
+            collected_at_utc=COLLECTED_AT,
+            curated_watchlist_path=curated_path,
+            **paths,
+        )
+
+    metadata = json.loads(paths["metadata_path"].read_text(encoding="utf-8"))
+    watchlist = pd.read_csv(paths["watchlist_path"])
+    assert result.watchlist_row_count == 1
+    assert len(watchlist) == 1
+    assert watchlist.iloc[0]["watch_id"] == "accepted_001"
+    assert metadata["method"]["uses_curated_watchlist"] is True
+    assert metadata["method"]["uses_public_gamma_markets"] is False
+    assert not any(url.startswith(f"{GAMMA_BASE_URL}/markets") for url in requested_urls)
+    assert any(url.startswith(f"{CLOB_BASE_URL}/midpoint") for url in requested_urls)
+    assert any(url.startswith(f"{DATA_API_BASE_URL}/trades") for url in requested_urls)
+
+
 def test_cli_mock_source_writes_outputs(tmp_path: Path, capsys) -> None:
     paths = _paths(tmp_path)
 
@@ -320,6 +381,58 @@ def _watchlist(collected_at) -> pd.DataFrame:
         bucket_minutes=5,
         max_markets=5,
     )
+
+
+def _curated_live_watchlist(path: Path, collected_at) -> pd.DataFrame:
+    return build_watchlist_from_curated_watchlist(
+        path,
+        collected_at=collected_at,
+        bucket_minutes=5,
+        max_markets=5,
+    )
+
+
+def _curated_watchlist_path(root: Path) -> Path:
+    root.mkdir(parents=True, exist_ok=True)
+    path = root / "curated_watchlist.csv"
+    rows = [
+        {
+            "watch_id": "accepted_001",
+            "market_id": "0x" + "a" * 64,
+            "condition_id": "0x" + "a" * 64,
+            "token_ids": "111,222",
+            "question": "Will a major election market resolve yes?",
+            "category": "politics",
+            "subcategory": "major-election-market",
+            "monitoring_scope": "election",
+            "review_status": "accepted",
+            "source_url": "https://gamma-api.polymarket.com/markets?id=accepted_001",
+            "inclusion_reason": "official_gamma_active_us_election_market",
+            "exclusion_reason": "",
+            "reviewed_by": "codex_test",
+            "reviewed_at_utc": "2026-05-22T12:00:00Z",
+            "notes": "fixture",
+        },
+        {
+            "watch_id": "candidate_001",
+            "market_id": "0x" + "b" * 64,
+            "condition_id": "0x" + "b" * 64,
+            "token_ids": "333,444",
+            "question": "Will an unchecked candidate market resolve yes?",
+            "category": "politics",
+            "subcategory": "unchecked-market",
+            "monitoring_scope": "election",
+            "review_status": "candidate",
+            "source_url": "",
+            "inclusion_reason": "",
+            "exclusion_reason": "",
+            "reviewed_by": "",
+            "reviewed_at_utc": "",
+            "notes": "not monitor ready",
+        },
+    ]
+    pd.DataFrame(rows, columns=CURATED_WATCHLIST_COLUMNS).to_csv(path, index=False)
+    return path
 
 
 def _paths(root: Path) -> dict[str, Path]:

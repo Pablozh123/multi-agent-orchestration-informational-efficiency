@@ -53,6 +53,29 @@ def test_collect_mock_rolling_history_scores_and_figures(tmp_path: Path) -> None
     assert "wallet_address" not in wallets.columns
 
 
+def test_collect_mock_rolling_history_accepts_curated_watchlist(tmp_path: Path) -> None:
+    paths = _paths(tmp_path)
+    curated_path = _curated_watchlist_path(tmp_path)
+
+    result = collect_polymarket_rolling_history(
+        source="mock",
+        samples=2,
+        delay_seconds=0,
+        reset_outputs=True,
+        collected_at_utc=COLLECTED_AT,
+        curated_watchlist_path=curated_path,
+        **paths,
+    )
+
+    watchlist = pd.read_csv(paths["watchlist_path"])
+    metadata = json.loads(paths["metadata_path"].read_text(encoding="utf-8"))
+    assert result.samples_completed == 2
+    assert len(watchlist) == 1
+    assert watchlist.iloc[0]["watch_id"] == "accepted_001"
+    assert metadata["method"]["uses_curated_watchlist"] is True
+    assert metadata["method"]["curated_watchlist_path"] == str(curated_path)
+
+
 def test_rolling_history_rejects_zero_samples(tmp_path: Path) -> None:
     paths = _paths(tmp_path)
 
@@ -110,6 +133,32 @@ def _paths(root: Path) -> dict[str, Path]:
         "figure_metadata_path": root / "figure_metadata.json",
         "metadata_path": root / "rolling_metadata.json",
     }
+
+
+def _curated_watchlist_path(root: Path) -> Path:
+    path = root / "curated_watchlist.csv"
+    pd.DataFrame(
+        [
+            {
+                "watch_id": "accepted_001",
+                "market_id": "0x" + "a" * 64,
+                "condition_id": "0x" + "a" * 64,
+                "token_ids": "111,222",
+                "question": "Will a major election market resolve yes?",
+                "category": "politics",
+                "subcategory": "major-election-market",
+                "monitoring_scope": "election",
+                "review_status": "accepted",
+                "source_url": "https://gamma-api.polymarket.com/markets?id=accepted_001",
+                "inclusion_reason": "official_gamma_active_us_election_market",
+                "exclusion_reason": "",
+                "reviewed_by": "codex_test",
+                "reviewed_at_utc": "2026-05-22T12:00:00Z",
+                "notes": "fixture",
+            }
+        ]
+    ).to_csv(path, index=False)
+    return path
 
 
 def _cli_paths(paths: dict[str, Path]) -> list[str]:

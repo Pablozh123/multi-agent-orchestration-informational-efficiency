@@ -103,6 +103,7 @@ def collect_polymarket_rolling_history(
     max_markets: int = DEFAULT_MAX_MARKETS,
     trade_limit: int = DEFAULT_TRADE_LIMIT,
     collected_at_utc: str | None = None,
+    curated_watchlist_path: Path | None = None,
     watchlist_path: Path = LIVE_WATCHLIST_OUTPUT,
     market_snapshots_path: Path = LIVE_MARKET_SNAPSHOTS_OUTPUT,
     wallet_tier_snapshots_path: Path = LIVE_WALLET_TIER_SNAPSHOTS_OUTPUT,
@@ -166,6 +167,7 @@ def collect_polymarket_rolling_history(
             max_markets=max_markets,
             trade_limit=trade_limit,
             collected_at_utc=sample_time,
+            curated_watchlist_path=curated_watchlist_path,
             append=True,
             client=client,
         )
@@ -212,6 +214,7 @@ def collect_polymarket_rolling_history(
         bucket_minutes=bucket_minutes,
         max_markets=max_markets,
         trade_limit=trade_limit,
+        curated_watchlist_path=curated_watchlist_path,
         collection_runs=collection_runs,
         scoring_metadata=scoring_metadata,
         scoring_result=scoring_result.to_dict(),
@@ -268,6 +271,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--max-markets", type=int, default=DEFAULT_MAX_MARKETS)
     parser.add_argument("--trade-limit", type=int, default=DEFAULT_TRADE_LIMIT)
     parser.add_argument("--collected-at-utc", default=None)
+    parser.add_argument("--curated-watchlist-input", type=Path, default=None)
     parser.add_argument("--watchlist-output", type=Path, default=LIVE_WATCHLIST_OUTPUT)
     parser.add_argument("--market-snapshots-output", type=Path, default=LIVE_MARKET_SNAPSHOTS_OUTPUT)
     parser.add_argument(
@@ -308,6 +312,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             max_markets=args.max_markets,
             trade_limit=args.trade_limit,
             collected_at_utc=args.collected_at_utc,
+            curated_watchlist_path=args.curated_watchlist_input,
             watchlist_path=args.watchlist_output,
             market_snapshots_path=args.market_snapshots_output,
             wallet_tier_snapshots_path=args.wallet_tier_snapshots_output,
@@ -369,6 +374,7 @@ def _build_metadata(
     bucket_minutes: int,
     max_markets: int,
     trade_limit: int,
+    curated_watchlist_path: Path | None,
     collection_runs: list[dict[str, Any]],
     scoring_metadata: dict[str, Any],
     scoring_result: dict[str, int | str],
@@ -387,6 +393,10 @@ def _build_metadata(
             "bucket_minutes": bucket_minutes,
             "max_markets": max_markets,
             "trade_limit": trade_limit,
+            "uses_curated_watchlist": curated_watchlist_path is not None,
+            "curated_watchlist_path": (
+                "" if curated_watchlist_path is None else str(curated_watchlist_path)
+            ),
             "bounded_loop_not_daemon": True,
             "appends_and_deduplicates_outputs": True,
             "runs_scoring_after_collection": True,

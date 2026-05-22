@@ -3,37 +3,45 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-22 21:11
+Generated: 2026-05-22 21:15
 
-Current goal: `goal-polymarket-live-dashboard-reporting-001` - Improve read-only live monitor reporting and dashboard clarity
+Current goal: `goal-polymarket-readonly-local-wrapper-001` - Add read-only local monitor wrapper over dashboard artifacts
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `279 passed in 15.52s`
+Pytest summary: `279 passed in 21.79s`
 
 Git branch: `main`
 
-Latest commit: `70b30e2`
+Latest commit: `c893cd2`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
+ M data/results/monitor_v2_polymarket_dashboard.html
+ M data/results/monitor_v2_polymarket_dashboard_metadata.json
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
+ M operations/analysis/monitor_v2_dashboard.py
+ M tests/test_monitor_v2_dashboard.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      | 58 ++++++++++++++++------------
- ROADMAP.md                                   | 19 +++++----
- docs/project/WORK_LOG.md                     | 38 ++++++++++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 21 ++++++++--
- 4 files changed, 99 insertions(+), 37 deletions(-)
+ GOAL.md                                            | 58 +++++++++++++---------
+ ROADMAP.md                                         | 12 +++--
+ data/results/monitor_v2_polymarket_dashboard.html  | 24 +++++++++
+ .../monitor_v2_polymarket_dashboard_metadata.json  |  9 +++-
+ docs/project/WORK_LOG.md                           | 36 ++++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md       | 42 ++++++++++++++--
+ operations/analysis/monitor_v2_dashboard.py        | 45 +++++++++++++++++
+ tests/test_monitor_v2_dashboard.py                 | 16 +++++-
+ 8 files changed, 207 insertions(+), 35 deletions(-)
 ```
 
 Blockers:
@@ -42,7 +50,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: improve live monitor dashboard reporting
+- feat: add read-only local monitor wrapper
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

@@ -2991,3 +2991,41 @@ Next step:
 
 - Improve the read-only live monitor dashboard/reporting layer so the latest
   monitor state is understandable from one entry point.
+
+## 2026-05-22 - goal-polymarket-live-dashboard-reporting-001
+
+Task:
+
+- Improve the read-only live monitor dashboard/reporting layer.
+
+Files changed:
+
+- `operations/analysis/monitor_v2_dashboard.py`
+- `tests/test_monitor_v2_dashboard.py`
+- `data/results/monitor_v2_polymarket_dashboard.html`
+- `data/results/monitor_v2_polymarket_dashboard_metadata.json`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_monitor_v2_dashboard.py tests\test_polymarket_monitor_refresh.py -q` -> 5 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_dashboard` -> dashboard regenerated with 12 markets, 20 buckets, 0 alerts.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  279 passed through the status run.
+
+Decision:
+
+- Add run context, baseline settings, scoring row count, summary row count,
+  severity counts, status counts, and zero-alert interpretation limits to the
+  static dashboard.
+- Keep the dashboard descriptive, local, file-based, and read-only.
+- Keep Rule C thresholds unchanged.
+
+Next step:
+
+- Add a small local read-only wrapper or launcher for the latest dashboard
+  artifacts without creating a daemon, trading surface, agent interface, or MCP
+  server.

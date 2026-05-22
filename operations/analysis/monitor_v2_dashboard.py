@@ -205,8 +205,15 @@ def _dashboard_metrics(
         "latest_bucket_utc": latest_bucket,
         "alert_count": int(outputs.get("alert_count", int(alerts["alert_count"].sum()))),
         "baseline_readiness": str(method.get("baseline_readiness", "")),
+        "baseline_observations": int(method.get("baseline_observations", 0)),
+        "min_baseline_observations": int(method.get("min_baseline_observations", 0)),
+        "production_like_baseline_available": bool(
+            method.get("production_like_baseline_available", False)
+        ),
         "severity_counts": outputs.get("severity_counts", {}),
         "status_counts": outputs.get("status_counts", {}),
+        "summary_row_count": int(outputs.get("summary_row_count", len(alerts))),
+        "scoring_row_count": int(outputs.get("alert_row_count", 0)),
     }
 
 
@@ -221,6 +228,8 @@ def _render_dashboard(
     source_paths: dict[str, Path],
 ) -> str:
     latest_market = _latest_market_table(watchlist, market, wallets)
+    severity_table = _counts_table(metrics.get("severity_counts", {}))
+    status_table = _counts_table(metrics.get("status_counts", {}))
     summary_rows = _table_rows(
         alerts.head(20),
         (
@@ -254,6 +263,7 @@ def _render_dashboard(
     .metrics {{ display: grid; grid-template-columns: repeat(4, minmax(120px, 1fr)); gap: 12px; }}
     .metric {{ border: 1px solid #d7dde5; border-radius: 6px; padding: 12px; background: #f8fafc; }}
     .metric strong {{ display: block; font-size: 22px; margin-top: 4px; }}
+    .two-col {{ display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 16px; }}
     table {{ border-collapse: collapse; width: 100%; margin-top: 12px; font-size: 13px; }}
     th, td {{ border: 1px solid #d7dde5; padding: 7px; text-align: left; vertical-align: top; }}
     th {{ background: #eef2f7; }}
@@ -271,6 +281,28 @@ def _render_dashboard(
     <div class="metric">Alerts<strong>{metrics["alert_count"]}</strong></div>
     <div class="metric">Baseline<strong>{escape(str(metrics["baseline_readiness"]))}</strong></div>
   </section>
+  <h2>Run Context</h2>
+  <table>
+    <tbody>
+      <tr><th>Latest bucket</th><td>{escape(str(metrics["latest_bucket_utc"]))}</td></tr>
+      <tr><th>Baseline settings</th><td>{metrics["baseline_observations"]} observations, minimum {metrics["min_baseline_observations"]}</td></tr>
+      <tr><th>Production-like baseline available</th><td>{escape(str(metrics["production_like_baseline_available"]))}</td></tr>
+      <tr><th>Scoring rows</th><td>{metrics["scoring_row_count"]}</td></tr>
+      <tr><th>Summary rows</th><td>{metrics["summary_row_count"]}</td></tr>
+    </tbody>
+  </table>
+  <section class="two-col">
+    <div>
+      <h2>Severity Counts</h2>
+      {severity_table}
+    </div>
+    <div>
+      <h2>Status Counts</h2>
+      {status_table}
+    </div>
+  </section>
+  <h2>Interpretation Limits</h2>
+  <p class="note">A zero-alert run means the selected Rule C alert condition did not trigger in this bounded window. It does not prove market efficiency, inefficiency, causality, private information, tradeability, or profitability.</p>
   <h2>Latest Market State</h2>
   {latest_market}
   <h2>Rolling Figure</h2>
@@ -319,6 +351,19 @@ def _table_rows(frame: pd.DataFrame, columns: Sequence[str]) -> str:
         cells = "".join(f"<td>{escape(_format_cell(item[column]))}</td>" for column in columns)
         rows.append(f"<tr>{cells}</tr>")
     return "\n".join(rows)
+
+
+def _counts_table(counts: object) -> str:
+    if not isinstance(counts, dict) or not counts:
+        return "<p>No counts reported.</p>"
+    rows = "\n".join(
+        f"<tr><td>{escape(str(label))}</td><td>{escape(str(value))}</td></tr>"
+        for label, value in sorted(counts.items())
+    )
+    return (
+        "<table><thead><tr><th>Label</th><th>Count</th></tr></thead>"
+        f"<tbody>{rows}</tbody></table>"
+    )
 
 
 def _format_cell(value: object) -> str:

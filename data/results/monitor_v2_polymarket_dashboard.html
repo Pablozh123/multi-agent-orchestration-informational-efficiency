@@ -8,6 +8,7 @@
     .metrics { display: grid; grid-template-columns: repeat(4, minmax(120px, 1fr)); gap: 12px; }
     .metric { border: 1px solid #d7dde5; border-radius: 6px; padding: 12px; background: #f8fafc; }
     .metric strong { display: block; font-size: 22px; margin-top: 4px; }
+    .two-col { display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 16px; }
     table { border-collapse: collapse; width: 100%; margin-top: 12px; font-size: 13px; }
     th, td { border: 1px solid #d7dde5; padding: 7px; text-align: left; vertical-align: top; }
     th { background: #eef2f7; }
@@ -25,6 +26,29 @@
     <div class="metric">Alerts<strong>0</strong></div>
     <div class="metric">Baseline<strong>baseline_available_zero_mad_or_non_alerting</strong></div>
   </section>
+  <h2>Run Context</h2>
+  <table>
+    <tbody>
+      <tr><th>Latest bucket</th><td>2026-05-22T19:00:00Z</td></tr>
+      <tr><th>Baseline settings</th><td>30 observations, minimum 20</td></tr>
+      <tr><th>Production-like baseline available</th><td>True</td></tr>
+      <tr><th>Scoring rows</th><td>1416</td></tr>
+      <tr><th>Summary rows</th><td>60</td></tr>
+    </tbody>
+  </table>
+  <section class="two-col">
+    <div>
+      <h2>Severity Counts</h2>
+      <table><thead><tr><th>Label</th><th>Count</th></tr></thead><tbody><tr><td>none</td><td>1416</td></tr></tbody></table>
+    </div>
+    <div>
+      <h2>Status Counts</h2>
+      <table><thead><tr><th>Label</th><th>Count</th></tr></thead><tbody><tr><td>insufficient_baseline</td><td>1200</td></tr>
+<tr><td>zero_mad</td><td>216</td></tr></tbody></table>
+    </div>
+  </section>
+  <h2>Interpretation Limits</h2>
+  <p class="note">A zero-alert run means the selected Rule C alert condition did not trigger in this bounded window. It does not prove market efficiency, inefficiency, causality, private information, tradeability, or profitability.</p>
   <h2>Latest Market State</h2>
   <table><thead><tr><th>Question</th><th>Category</th><th>Status</th><th>Token midpoint min</th><th>Token midpoint max</th><th>Active wallets</th><th>Trades</th><th>Observed amount</th></tr></thead><tbody><tr><td>Xi Jinping out before 2027?</td><td>politics</td><td>active</td><td>0.0645</td><td>0.9355</td><td>0</td><td>0</td><td>0.0000</td></tr>
 <tr><td>Will Gavin Newsom win the 2028 Democratic presidential nomination?</td><td>politics</td><td>active</td><td>0.2405</td><td>0.7595</td><td>0</td><td>0</td><td>0.0000</td></tr>

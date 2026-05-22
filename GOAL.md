@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-polymarket-live-dashboard-reporting-001
-title: Improve read-only live monitor reporting and dashboard clarity
+goal_id: goal-polymarket-readonly-local-wrapper-001
+title: Add read-only local monitor wrapper over dashboard artifacts
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -45,18 +45,21 @@ why:
   `baseline_available_zero_mad_or_non_alerting`.
 - The expanded-baseline review accepts the output shape and keeps Rule C
   unchanged.
-- The next empirical step is to make the read-only live monitor output easier
-  to inspect: current market universe, latest bucket, baseline readiness,
-  status counts, severity counts, and limitations should be visible without
-  opening multiple CSV/JSON files.
+- The read-only dashboard/reporting layer now surfaces current market universe,
+  latest bucket, baseline readiness, status counts, severity counts, scoring
+  rows, summary rows, and limitations without opening multiple CSV/JSON files.
+- The next implementation step is a small local read-only wrapper over the
+  existing dashboard artifacts, not a background daemon, agent layer, or
+  trading surface.
 deliverables:
-- Improve or extend the deterministic dashboard/reporting layer over existing
-  bounded live monitor artifacts.
-- Surface latest bucket, market count, bucket count, alert count, severity
-  counts, status counts, baseline readiness, and source artifact links.
-- Make the 0-alert interpretation and short-window limitations clear.
-- Keep outputs read-only, file-based, and deterministic.
-- Keep Rule C thresholds unchanged.
+- Add a minimal local read-only wrapper or launcher for existing monitor
+  dashboard artifacts.
+- Serve or open only bounded local files from `data/results/`.
+- Keep refresh/collection as explicit operator commands, not automatic
+  background behaviour.
+- Expose no raw wallet addresses, no order instructions, no authenticated API
+  paths, and no trading credentials.
+- Keep Rule C thresholds and scoring outputs unchanged.
 scope:
 - `data/monitor_v2_curated_watchlist.csv`.
 - `data/results/monitor_v2_curated_watchlist_validation_report.json`.
@@ -64,6 +67,7 @@ scope:
 - `data/results/monitor_v2_polymarket_live_*`.
 - `data/results/monitor_v2_polymarket_dashboard.html`.
 - Existing dashboard/reporting code and tests if needed.
+- Local wrapper or launcher code and tests if needed.
 - Existing project/research docs.
 - Polymarket politics/geopolitics markets only.
 - Existing local validated output files.
@@ -78,12 +82,14 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- The latest live-monitor dashboard/reporting output is understandable from a
-  single entry point.
-- The output reports 12 reviewed markets and 20 closed buckets from the latest
-  expanded baseline unless a later bounded run intentionally replaces it.
-- Alert count, severity counts, status counts, baseline readiness, and source
-  artifact references are visible.
+- A user can access the latest monitor dashboard from a local read-only entry
+  point without manually browsing raw CSV/JSON files.
+- The wrapper does not collect data automatically, run continuously, execute
+  orders, call agents, call MCP, use ML, write the database, or require
+  trading credentials.
+- The dashboard still reports 12 reviewed markets and 20 closed buckets from
+  the latest expanded baseline unless a later bounded run intentionally
+  replaces it.
 - The output contains no wallet addresses and no order instructions.
 - Rule C thresholds remain unchanged.
 - Existing scoring outputs are not reinterpreted as causal, profitable,
@@ -94,7 +100,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: improve live monitor dashboard reporting
+next_commit: feat: add read-only local monitor wrapper
 
 ## Decision Inputs For This Goal
 
@@ -166,10 +172,10 @@ next_commit: feat: improve live monitor dashboard reporting
 
 ## Done Means
 
-- The latest monitor state can be understood from a single read-only report or
-  dashboard without inspecting raw CSV/JSON files.
-- The next decision is whether to run another bounded live window, add a local
-  read-only server wrapper, or start a tested alert-review workflow.
+- The latest monitor dashboard can be opened through a small local read-only
+  entry point.
+- The next decision is whether to run another bounded live window or start a
+  tested alert-review workflow.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -357,3 +363,7 @@ next_commit: feat: improve live monitor dashboard reporting
 - Expanded Polymarket live baseline review is accepted: the output shape is
   usable as a short-window prototype baseline, Rule C remains unchanged, and
   0 alerts are interpreted only as no Rule C trigger in the observed window.
+- Read-only live monitor dashboard/reporting is improved: the HTML dashboard
+  now surfaces run context, baseline settings, scoring row count, summary row
+  count, severity counts, status counts, source links, and zero-alert
+  interpretation limits.

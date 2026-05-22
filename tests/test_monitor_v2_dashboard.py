@@ -24,8 +24,15 @@ def test_generate_monitor_v2_dashboard_writes_html_and_metadata(tmp_path: Path) 
     assert result.alert_count == 0
     assert "Polymarket Politics/Geo Monitor" in html
     assert "diagnostic_scores_available" in html
+    assert "Run Context" in html
+    assert "Severity Counts" in html
+    assert "Status Counts" in html
+    assert "Interpretation Limits" in html
+    assert "A zero-alert run means" in html
+    assert "ok" in html
     assert metadata["outputs"]["contains_wallet_addresses"] is False
     assert metadata["outputs"]["contains_order_instructions"] is False
+    assert metadata["outputs"]["summary_row_count"] == 1
 
 
 def test_generate_monitor_v2_dashboard_rejects_wallet_address_columns(
@@ -138,9 +145,16 @@ def _write_inputs(root: Path) -> dict[str, Path]:
     paths["scoring_metadata_path"].write_text(
         json.dumps(
             {
-                "method": {"baseline_readiness": "diagnostic_scores_available"},
+                "method": {
+                    "baseline_readiness": "diagnostic_scores_available",
+                    "baseline_observations": 30,
+                    "min_baseline_observations": 20,
+                    "production_like_baseline_available": True,
+                },
                 "outputs": {
                     "alert_count": 0,
+                    "alert_row_count": 3,
+                    "summary_row_count": 1,
                     "severity_counts": {"none": 1},
                     "status_counts": {"ok": 1},
                 },

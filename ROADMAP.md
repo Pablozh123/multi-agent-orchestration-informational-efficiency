@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for live monitor dashboard/reporting refinement
+Status: active for read-only local monitor wrapper
 
 Done criteria:
 
@@ -373,6 +373,12 @@ Done criteria:
 - The next empirical step is to improve the read-only monitor reporting layer
   so the latest live state can be understood without opening raw CSV/JSON
   files.
+- The dashboard/reporting layer now surfaces run context, baseline settings,
+  scoring row count, summary row count, severity counts, status counts, source
+  artifact links, and zero-alert interpretation limits.
+- The next implementation step is a small local read-only wrapper over the
+  dashboard artifacts. It must not become a background daemon or trading
+  surface.
 
 Blockers:
 
@@ -390,5 +396,5 @@ Blockers:
   only as a short-window prototype result.
 - Threshold changes are blocked; Rule C remains the default until a later
   reviewed sensitivity decision says otherwise.
-- Any read-only UI/server wrapper should wait until the file-based dashboard
-  and reporting layer is clearer.
+- Any read-only UI/server wrapper must remain local, bounded, and manual; it
+  must not collect data automatically or expose order/authentication paths.

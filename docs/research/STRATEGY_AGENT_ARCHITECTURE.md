@@ -2945,11 +2945,43 @@ Review decision:
 
 Next phase selected:
 
-- Improve read-only dashboard/reporting clarity over the latest bounded live
-  monitor artifacts.
-- Surface current market count, bucket count, latest bucket, baseline
-  readiness, alert count, severity counts, status counts, source artifact
-  links, and interpretation limitations in one entry point.
+- Add a small read-only local wrapper over the latest dashboard artifacts.
+- Keep refresh collection explicit and manual; the wrapper must not become a
+  background daemon, trading surface, agent interface, or MCP implementation.
+
+### Live Dashboard Reporting Refinement
+
+dashboard_reporting_status: improved
+
+The static dashboard now exposes the main monitor state from one read-only
+entry point:
+
+- current market count,
+- bucket count,
+- latest bucket,
+- baseline readiness,
+- baseline observation settings,
+- production-like baseline flag,
+- scoring row count,
+- summary row count,
+- alert count,
+- severity counts,
+- status counts,
+- source artifact links,
+- zero-alert interpretation limits.
+
+Interpretation:
+
+- The dashboard is now easier to inspect without opening raw CSV/JSON files.
+- It remains descriptive and local.
+- It still does not collect data, write the database, use agents or MCP, use
+  ML, expose wallet addresses, or provide order instructions.
+
+Next phase selected:
+
+- Add a local read-only wrapper or launcher so the latest dashboard can be
+  opened consistently without turning the monitor into a live trading or
+  background automation system.
 
 ## First Prototype Specification
 

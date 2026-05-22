@@ -3,45 +3,41 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-22 21:15
+Generated: 2026-05-22 21:18
 
-Current goal: `goal-polymarket-readonly-local-wrapper-001` - Add read-only local monitor wrapper over dashboard artifacts
+Current goal: `goal-polymarket-repeat-live-window-001` - Collect a second expanded live monitor window for stability comparison
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `279 passed in 21.79s`
+Pytest summary: `283 passed in 19.35s`
 
 Git branch: `main`
 
-Latest commit: `c893cd2`
+Latest commit: `20fb5f1`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
- M data/results/monitor_v2_polymarket_dashboard.html
- M data/results/monitor_v2_polymarket_dashboard_metadata.json
+ M docs/project/TOOL_USAGE.md
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
- M operations/analysis/monitor_v2_dashboard.py
- M tests/test_monitor_v2_dashboard.py
+?? operations/tools/monitor_dashboard_launcher.py
+?? tests/test_monitor_dashboard_launcher.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                            | 58 +++++++++++++---------
- ROADMAP.md                                         | 12 +++--
- data/results/monitor_v2_polymarket_dashboard.html  | 24 +++++++++
- .../monitor_v2_polymarket_dashboard_metadata.json  |  9 +++-
- docs/project/WORK_LOG.md                           | 36 ++++++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md       | 42 ++++++++++++++--
- operations/analysis/monitor_v2_dashboard.py        | 45 +++++++++++++++++
- tests/test_monitor_v2_dashboard.py                 | 16 +++++-
- 8 files changed, 207 insertions(+), 35 deletions(-)
+ GOAL.md                                      | 46 +++++++++++++++----------
+ ROADMAP.md                                   |  9 ++++-
+ docs/project/TOOL_USAGE.md                   | 12 +++++++
+ docs/project/WORK_LOG.md                     | 35 +++++++++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 51 ++++++++++++++++++++++++++++
+ 5 files changed, 135 insertions(+), 18 deletions(-)
 ```
 
 Blockers:
@@ -50,7 +46,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: add read-only local monitor wrapper
+- data: collect second expanded live monitor window
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

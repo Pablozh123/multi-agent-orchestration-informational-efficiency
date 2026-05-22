@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-polymarket-readonly-local-wrapper-001
-title: Add read-only local monitor wrapper over dashboard artifacts
+goal_id: goal-polymarket-repeat-live-window-001
+title: Collect a second expanded live monitor window for stability comparison
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -51,14 +51,19 @@ why:
 - The next implementation step is a small local read-only wrapper over the
   existing dashboard artifacts, not a background daemon, agent layer, or
   trading surface.
+- The local dashboard launcher now returns a read-only `file://` dashboard URI
+  plus market count, bucket count, alert count, and baseline readiness without
+  collecting data or running continuously.
+- The next empirical step is a second bounded expanded-watchlist live window
+  so the first 12-market result is not treated as a one-off monitor state.
 deliverables:
-- Add a minimal local read-only wrapper or launcher for existing monitor
-  dashboard artifacts.
-- Serve or open only bounded local files from `data/results/`.
+- Run or prepare the second bounded expanded-watchlist refresh with the same
+  v2 30/20 settings.
+- Compare the new window with the first expanded 12-market baseline.
+- Record bucket count, market count, alert count, severity counts, status
+  counts, baseline readiness, and any API/collection limitations.
 - Keep refresh/collection as explicit operator commands, not automatic
   background behaviour.
-- Expose no raw wallet addresses, no order instructions, no authenticated API
-  paths, and no trading credentials.
 - Keep Rule C thresholds and scoring outputs unchanged.
 scope:
 - `data/monitor_v2_curated_watchlist.csv`.
@@ -82,11 +87,13 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- A user can access the latest monitor dashboard from a local read-only entry
-  point without manually browsing raw CSV/JSON files.
-- The wrapper does not collect data automatically, run continuously, execute
-  orders, call agents, call MCP, use ML, write the database, or require
-  trading credentials.
+- A second bounded expanded-watchlist window is collected or intentionally
+  scheduled with the same v2 30/20 settings.
+- The comparison does not change Rule C thresholds without a separate reviewed
+  sensitivity decision.
+- The run does not collect data automatically, run continuously, execute
+  orders, call agents, call MCP, use ML, write the database, or require trading
+  credentials.
 - The dashboard still reports 12 reviewed markets and 20 closed buckets from
   the latest expanded baseline unless a later bounded run intentionally
   replaces it.
@@ -100,7 +107,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add read-only local monitor wrapper
+next_commit: data: collect second expanded live monitor window
 
 ## Decision Inputs For This Goal
 
@@ -172,10 +179,10 @@ next_commit: feat: add read-only local monitor wrapper
 
 ## Done Means
 
-- The latest monitor dashboard can be opened through a small local read-only
-  entry point.
-- The next decision is whether to run another bounded live window or start a
-  tested alert-review workflow.
+- The second bounded live window exists and is compared against the first
+  expanded 12-market baseline.
+- The next decision is whether to start a tested alert-review workflow or
+  improve repeated-run storage.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -367,3 +374,8 @@ next_commit: feat: add read-only local monitor wrapper
   now surfaces run context, baseline settings, scoring row count, summary row
   count, severity counts, status counts, source links, and zero-alert
   interpretation limits.
+- Local read-only monitor launcher exists:
+  `python -m operations.tools.monitor_dashboard_launcher` returns a structured
+  dashboard URI and safety flags, and `--open` can open the dashboard without
+  collecting data or activating agents, MCP, ML, database writes, or order
+  paths.

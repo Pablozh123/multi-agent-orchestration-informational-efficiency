@@ -117,6 +117,18 @@ The dashboard is written to:
 data/results/monitor_v2_polymarket_dashboard.html
 ```
 
+Open or describe the latest dashboard entry point:
+
+```powershell
+.\.venv\Scripts\python.exe -m operations.tools.monitor_dashboard_launcher
+```
+
+Open it in the default browser:
+
+```powershell
+.\.venv\Scripts\python.exe -m operations.tools.monitor_dashboard_launcher --open
+```
+
 Interpretation rule:
 
 - fewer than 3 buckets: interface check only,

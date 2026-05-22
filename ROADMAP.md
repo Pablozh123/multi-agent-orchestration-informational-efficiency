@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for read-only local monitor wrapper
+Status: active for second expanded live-window comparison
 
 Done criteria:
 
@@ -379,6 +379,11 @@ Done criteria:
 - The next implementation step is a small local read-only wrapper over the
   dashboard artifacts. It must not become a background daemon or trading
   surface.
+- A local dashboard launcher exists and returns a structured `file://`
+  dashboard URI plus read-only safety flags without collecting data or running
+  continuously.
+- The next empirical step is a second bounded expanded-watchlist live window
+  so the first 12-market result is not treated as a one-off monitor state.
 
 Blockers:
 
@@ -398,3 +403,5 @@ Blockers:
   reviewed sensitivity decision says otherwise.
 - Any read-only UI/server wrapper must remain local, bounded, and manual; it
   must not collect data automatically or expose order/authentication paths.
+- Repeated live windows are time-consuming because they require real closed
+  5-minute buckets; do not synthesize timestamps for production-like claims.

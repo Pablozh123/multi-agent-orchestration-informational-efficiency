@@ -2983,6 +2983,57 @@ Next phase selected:
   opened consistently without turning the monitor into a live trading or
   background automation system.
 
+### Local Dashboard Launcher
+
+local_dashboard_launcher_status: implemented
+
+The local launcher provides a bounded entry point to the latest static
+dashboard:
+
+```powershell
+.\.venv\Scripts\python.exe -m operations.tools.monitor_dashboard_launcher
+```
+
+It returns a structured JSON object with:
+
+- `dashboard_path`,
+- `dashboard_uri`,
+- `market_count`,
+- `bucket_count`,
+- `alert_count`,
+- `baseline_readiness`,
+- read-only flags.
+
+Optional browser opening:
+
+```powershell
+.\.venv\Scripts\python.exe -m operations.tools.monitor_dashboard_launcher --open
+```
+
+Guardrails:
+
+- It does not collect data.
+- It does not refresh the monitor automatically.
+- It does not run as a background process.
+- It does not write the database.
+- It does not use agents, MCP, ML, RCP, or LLM calls.
+- It rejects metadata that reports wallet-address exposure or order
+  instructions.
+
+Latest launcher result:
+
+- Dashboard URI:
+  `file:///C:/Users/chole/ba-thesis/data/results/monitor_v2_polymarket_dashboard.html`.
+- Markets: 12.
+- Buckets: 20.
+- Alerts: 0.
+- Baseline readiness: `baseline_available_zero_mad_or_non_alerting`.
+
+Next phase selected:
+
+- Collect a second bounded expanded-watchlist live window later and compare
+  whether baseline readiness, status counts, and alert behaviour remain stable.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

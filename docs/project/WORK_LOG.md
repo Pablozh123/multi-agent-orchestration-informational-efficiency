@@ -3029,3 +3029,40 @@ Next step:
 - Add a small local read-only wrapper or launcher for the latest dashboard
   artifacts without creating a daemon, trading surface, agent interface, or MCP
   server.
+
+## 2026-05-22 - goal-polymarket-readonly-local-wrapper-001
+
+Task:
+
+- Add a local read-only launcher for the latest monitor dashboard artifacts.
+
+Files changed:
+
+- `operations/tools/monitor_dashboard_launcher.py`
+- `tests/test_monitor_dashboard_launcher.py`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/project/TOOL_USAGE.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_monitor_dashboard_launcher.py -q` -> 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.tools.monitor_dashboard_launcher` -> reports the local dashboard URI, 12 markets, 20 buckets, 0 alerts, and read-only flags.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  283 passed through the status run.
+
+Decision:
+
+- Use a launcher instead of a continuously running local server for this step.
+- The launcher describes and can open the local dashboard without collecting
+  data, writing the database, using agents or MCP, or exposing order
+  instructions.
+- It rejects metadata that reports wallet-address exposure or order
+  instructions.
+
+Next step:
+
+- Collect a second bounded expanded-watchlist live window later and compare it
+  with the first 12-market baseline.

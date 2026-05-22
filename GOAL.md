@@ -73,6 +73,13 @@ next_commit: data: collect curated polymarket rolling baseline samples
   - 12 scoring rows,
   - 0 alerts,
   - scoring status `insufficient_baseline`.
+- The latest curated rolling-history run produced:
+  - 1 closed 5-minute bucket,
+  - 12 scoring rows,
+  - 0 alerts,
+  - baseline readiness `insufficient_baseline`.
+- More real elapsed time is required to collect distinct closed buckets without
+  lookahead.
 
 ## Done Means
 

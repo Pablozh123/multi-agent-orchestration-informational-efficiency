@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-22 16:49
+Generated: 2026-05-22 16:52
 
 Current goal: `goal-polymarket-curated-rolling-baseline-001` - Collect curated Polymarket rolling history for baseline readiness
 
@@ -11,63 +11,55 @@ Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `270 passed in 16.85s`
+Pytest summary: `270 passed in 13.23s`
 
 Git branch: `main`
 
-Latest commit: `232bbf5`
+Latest commit: `540ef12`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
- M data/results/monitor_v2_live_alert_rows.csv
- M data/results/monitor_v2_live_alert_summary.csv
- M data/results/monitor_v2_live_scoring_metadata.json
- M data/results/monitor_v2_live_scoring_snapshots.csv
- M data/results/monitor_v2_live_scoring_validation_report.json
  M data/results/monitor_v2_polymarket_live_collection_metadata.json
- M data/results/monitor_v2_polymarket_live_figure_metadata.json
  M data/results/monitor_v2_polymarket_live_input_validation_report.json
  M data/results/monitor_v2_polymarket_live_market_snapshots.csv
- M data/results/monitor_v2_polymarket_live_snapshot.png
  M data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv
  M data/results/monitor_v2_polymarket_live_watchlist.csv
+ M data/results/monitor_v2_polymarket_rolling_alert_rows.csv
+ M data/results/monitor_v2_polymarket_rolling_alert_summary.csv
+ M data/results/monitor_v2_polymarket_rolling_history.png
+ M data/results/monitor_v2_polymarket_rolling_history_figure_metadata.json
+ M data/results/monitor_v2_polymarket_rolling_history_metadata.json
+ M data/results/monitor_v2_polymarket_rolling_scoring_metadata.json
+ M data/results/monitor_v2_polymarket_rolling_scoring_snapshots.csv
+ M data/results/monitor_v2_polymarket_rolling_scoring_validation_report.json
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
- M operations/analysis/monitor_v2_live_input_scoring.py
- M operations/collectors/polymarket_readonly.py
- M operations/collectors/polymarket_rolling_history.py
- M tests/test_polymarket_readonly_collector.py
- M tests/test_polymarket_rolling_history.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                            |  75 +++++++-------
- ROADMAP.md                                         |  18 ++--
- data/results/monitor_v2_live_alert_rows.csv        |  47 +++------
- data/results/monitor_v2_live_alert_summary.csv     |  21 ++--
- data/results/monitor_v2_live_scoring_metadata.json |  39 ++++---
- data/results/monitor_v2_live_scoring_snapshots.csv |  47 +++------
- .../monitor_v2_live_scoring_validation_report.json |  32 +++---
- ...tor_v2_polymarket_live_collection_metadata.json |  13 ++-
- ...monitor_v2_polymarket_live_figure_metadata.json |   8 +-
+ GOAL.md                                            |   7 ++++
+ ROADMAP.md                                         |   3 ++
+ ...tor_v2_polymarket_live_collection_metadata.json |   6 ++--
  ...v2_polymarket_live_input_validation_report.json |   2 +-
- ...monitor_v2_polymarket_live_market_snapshots.csv |  12 +--
- .../monitor_v2_polymarket_live_snapshot.png        | Bin 101641 -> 126856 bytes
- ...or_v2_polymarket_live_wallet_tier_snapshots.csv |   6 +-
- .../monitor_v2_polymarket_live_watchlist.csv       |   6 +-
- docs/project/WORK_LOG.md                           |  44 ++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md       |  42 ++++++++
- .../analysis/monitor_v2_live_input_scoring.py      |  11 +-
- operations/collectors/polymarket_readonly.py       |  82 ++++++++++++---
- .../collectors/polymarket_rolling_history.py       |  10 ++
- tests/test_polymarket_readonly_collector.py        | 113 +++++++++++++++++++++
- tests/test_polymarket_rolling_history.py           |  49 +++++++++
- 21 files changed, 478 insertions(+), 199 deletions(-)
+ ...monitor_v2_polymarket_live_market_snapshots.csv |  12 +++----
+ ...or_v2_polymarket_live_wallet_tier_snapshots.csv |   6 ++--
+ .../monitor_v2_polymarket_live_watchlist.csv       |   6 ++--
+ .../monitor_v2_polymarket_rolling_alert_rows.csv   |  24 +++++++-------
+ ...monitor_v2_polymarket_rolling_alert_summary.csv |  24 +++++++-------
+ .../monitor_v2_polymarket_rolling_history.png      | Bin 99189 -> 100848 bytes
+ ...polymarket_rolling_history_figure_metadata.json |   2 +-
+ ...tor_v2_polymarket_rolling_history_metadata.json |   6 ++--
+ ...tor_v2_polymarket_rolling_scoring_metadata.json |   2 +-
+ ...tor_v2_polymarket_rolling_scoring_snapshots.csv |  24 +++++++-------
+ ...lymarket_rolling_scoring_validation_report.json |   2 +-
+ docs/project/WORK_LOG.md                           |  36 +++++++++++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md       |  29 +++++++++++++++++
+ 17 files changed, 134 insertions(+), 57 deletions(-)
 ```
 
 Blockers:

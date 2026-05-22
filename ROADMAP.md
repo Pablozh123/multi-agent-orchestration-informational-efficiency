@@ -324,6 +324,9 @@ Done criteria:
 - The next implementation step is operational rather than methodological:
   collect enough distinct closed curated buckets for diagnostic rolling
   baselines.
+- The first curated rolling-history run produced 1 closed 5-minute bucket, 12
+  scoring rows, 0 alerts, and `insufficient_baseline`; more real elapsed time
+  is required for distinct buckets.
 
 Blockers:
 

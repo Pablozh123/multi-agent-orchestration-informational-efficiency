@@ -4,7 +4,7 @@
     "data_api_trades": "https://data-api.polymarket.com/trades",
     "gamma_markets": "https://gamma-api.polymarket.com/markets"
   },
-  "generated_at_utc": "2026-05-22T14:45:53Z",
+  "generated_at_utc": "2026-05-22T14:50:43Z",
   "limitations": {
     "does_not_send_orders": true,
     "does_not_use_agents_or_mcp": true,
@@ -19,9 +19,9 @@
   },
   "method": {
     "accepted_curated_rows_only": true,
-    "append_to_existing_outputs": false,
+    "append_to_existing_outputs": true,
     "bucket_minutes": 5,
-    "collector_received_at_utc": "2026-05-22T14:45:52Z",
+    "collector_received_at_utc": "2026-05-22T14:50:42Z",
     "curated_watchlist_path": "data\\monitor_v2_curated_watchlist.csv",
     "max_markets": 3,
     "name": "polymarket_readonly_collector",

@@ -2525,6 +2525,35 @@ Next phase selected:
 - Collect bounded rolling-history samples from the accepted curated watchlist
   until metadata shows whether diagnostic baseline scoring is ready.
 
+### Curated Rolling-History Baseline Sample
+
+curated_rolling_baseline_status: first real bucket collected; insufficient baseline
+
+Implementation date: 2026-05-22
+
+Latest curated rolling run:
+
+- Source: read-only public Polymarket endpoints.
+- Watchlist source: accepted curated watchlist CSV.
+- Samples completed: 1.
+- Closed 5-minute buckets: 1.
+- Market count: 3.
+- Token midpoint rows: 6.
+- Aggregate wallet/activity rows: 3.
+- Scoring rows: 12.
+- Alerts: 0.
+- Baseline readiness: `insufficient_baseline`.
+- Figure: `data/results/monitor_v2_polymarket_rolling_history.png`.
+
+Interpretation:
+
+- This proves the curated rolling-history path can run end to end on real
+  public Polymarket data.
+- It does not prove that the market is quiet, because there is not enough
+  prior bucket history for rolling-baseline scoring.
+- Additional real elapsed time is required; synthetic timestamp shifting should
+  not be used for empirical live-baseline claims.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

@@ -20,35 +20,49 @@
   <h1>Polymarket Politics/Geo Monitor</h1>
   <p class="note">Read-only diagnostic view. It describes current bounded monitor outputs and makes no causal, misconduct, or profitability claim.</p>
   <section class="metrics">
-    <div class="metric">Markets<strong>3</strong></div>
-    <div class="metric">Closed buckets<strong>21</strong></div>
+    <div class="metric">Markets<strong>12</strong></div>
+    <div class="metric">Closed buckets<strong>20</strong></div>
     <div class="metric">Alerts<strong>0</strong></div>
     <div class="metric">Baseline<strong>baseline_available_zero_mad_or_non_alerting</strong></div>
   </section>
   <h2>Latest Market State</h2>
   <table><thead><tr><th>Question</th><th>Category</th><th>Status</th><th>Token midpoint min</th><th>Token midpoint max</th><th>Active wallets</th><th>Trades</th><th>Observed amount</th></tr></thead><tbody><tr><td>Xi Jinping out before 2027?</td><td>politics</td><td>active</td><td>0.0645</td><td>0.9355</td><td>0</td><td>0</td><td>0.0000</td></tr>
 <tr><td>Will Gavin Newsom win the 2028 Democratic presidential nomination?</td><td>politics</td><td>active</td><td>0.2405</td><td>0.7595</td><td>0</td><td>0</td><td>0.0000</td></tr>
-<tr><td>Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?</td><td>politics</td><td>active</td><td>0.0895</td><td>0.9105</td><td>0</td><td>0</td><td>0.0000</td></tr></tbody></table>
+<tr><td>Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?</td><td>politics</td><td>active</td><td>0.0885</td><td>0.9115</td><td>1</td><td>1</td><td>18.2200</td></tr>
+<tr><td>Will China invade Taiwan by end of 2026?</td><td>geopolitics</td><td>active</td><td>0.0665</td><td>0.9335</td><td>1</td><td>1</td><td>1.0000</td></tr>
+<tr><td>Will the U.S. invade Iran before 2027?</td><td>geopolitics</td><td>active</td><td>0.2400</td><td>0.7600</td><td>3</td><td>4</td><td>369.4925</td></tr>
+<tr><td>Will the Iranian regime fall before 2027?</td><td>geopolitics</td><td>active</td><td>0.1550</td><td>0.8450</td><td>0</td><td>0</td><td>0.0000</td></tr>
+<tr><td>Putin out as President of Russia by December 31 2026?</td><td>geopolitics</td><td>active</td><td>0.0850</td><td>0.9150</td><td>0</td><td>0</td><td>0.0000</td></tr>
+<tr><td>Zelenskyy out as Ukraine president by end of 2026?</td><td>geopolitics</td><td>active</td><td>0.1550</td><td>0.8450</td><td>0</td><td>0</td><td>0.0000</td></tr>
+<tr><td>Ukraine signs peace deal with Russia before 2027?</td><td>geopolitics</td><td>active</td><td>0.3050</td><td>0.6950</td><td>0</td><td>0</td><td>0.0000</td></tr>
+<tr><td>Will the Republicans win the 2028 US Presidential Election?</td><td>politics</td><td>active</td><td>0.3850</td><td>0.6150</td><td>0</td><td>0</td><td>0.0000</td></tr>
+<tr><td>Will the Democratic Party control the House after the 2026 Midterm elections?</td><td>politics</td><td>active</td><td>0.1950</td><td>0.8050</td><td>0</td><td>0</td><td>0.0000</td></tr>
+<tr><td>Will the Republican Party control the House after the 2026 Midterm elections?</td><td>politics</td><td>active</td><td>0.1950</td><td>0.8050</td><td>0</td><td>0</td><td>0.0000</td></tr></tbody></table>
   <h2>Rolling Figure</h2>
   <img src="monitor_v2_polymarket_rolling_history.png" alt="Rolling history figure">
   <h2>Alert Summary</h2>
   <table>
     <thead><tr><th>Market</th><th>Tier</th><th>Family</th><th>Metric</th><th>Rows</th><th>Alerts</th><th>Max severity</th><th>Max robust z</th><th>Max percentile</th></tr></thead>
-    <tbody><tr><td>0x0f49db97f71c68b1e42a6d16e3de93d85dbf7d4148e3f018eb79e88554be9f75</td><td>all_tiers</td><td>active_wallet_activity</td><td>active_wallets</td><td>21</td><td>0</td><td>none</td><td>nan</td><td>0.8000</td></tr>
-<tr><td>0x0f49db97f71c68b1e42a6d16e3de93d85dbf7d4148e3f018eb79e88554be9f75</td><td>all_tiers</td><td>concentration</td><td>hhi_concentration</td><td>21</td><td>0</td><td>none</td><td>nan</td><td>0.8000</td></tr>
-<tr><td>0x0f49db97f71c68b1e42a6d16e3de93d85dbf7d4148e3f018eb79e88554be9f75</td><td>all_tiers</td><td>concentration</td><td>top_tier_share</td><td>21</td><td>0</td><td>none</td><td>nan</td><td>0.8000</td></tr>
-<tr><td>0x0f49db97f71c68b1e42a6d16e3de93d85dbf7d4148e3f018eb79e88554be9f75</td><td>market</td><td>market_move</td><td>absolute_midpoint_change</td><td>40</td><td>0</td><td>none</td><td>nan</td><td>1.0000</td></tr>
-<tr><td>0x0f49db97f71c68b1e42a6d16e3de93d85dbf7d4148e3f018eb79e88554be9f75</td><td>all_tiers</td><td>wallet_tier_activity</td><td>log1p_total_observed_amount_usd</td><td>21</td><td>0</td><td>none</td><td>nan</td><td>0.8000</td></tr>
-<tr><td>0xa467b14d51f01b957109d9cbb1d6c124fab2a089d52ed8f471d23c2812e743b7</td><td>all_tiers</td><td>active_wallet_activity</td><td>active_wallets</td><td>21</td><td>0</td><td>none</td><td>nan</td><td>0.5500</td></tr>
-<tr><td>0xa467b14d51f01b957109d9cbb1d6c124fab2a089d52ed8f471d23c2812e743b7</td><td>all_tiers</td><td>concentration</td><td>hhi_concentration</td><td>21</td><td>0</td><td>none</td><td>nan</td><td>0.5500</td></tr>
-<tr><td>0xa467b14d51f01b957109d9cbb1d6c124fab2a089d52ed8f471d23c2812e743b7</td><td>all_tiers</td><td>concentration</td><td>top_tier_share</td><td>21</td><td>0</td><td>none</td><td>nan</td><td>0.5500</td></tr>
-<tr><td>0xa467b14d51f01b957109d9cbb1d6c124fab2a089d52ed8f471d23c2812e743b7</td><td>market</td><td>market_move</td><td>absolute_midpoint_change</td><td>40</td><td>0</td><td>none</td><td>nan</td><td>1.0000</td></tr>
-<tr><td>0xa467b14d51f01b957109d9cbb1d6c124fab2a089d52ed8f471d23c2812e743b7</td><td>all_tiers</td><td>wallet_tier_activity</td><td>log1p_total_observed_amount_usd</td><td>21</td><td>0</td><td>none</td><td>nan</td><td>0.5500</td></tr>
-<tr><td>0xe6bcc2f1dd025ce5e1833190f7c60a71171c94f805df55b9ab0ded695ec93565</td><td>all_tiers</td><td>active_wallet_activity</td><td>active_wallets</td><td>21</td><td>0</td><td>none</td><td>nan</td><td>0.7000</td></tr>
-<tr><td>0xe6bcc2f1dd025ce5e1833190f7c60a71171c94f805df55b9ab0ded695ec93565</td><td>all_tiers</td><td>concentration</td><td>hhi_concentration</td><td>21</td><td>0</td><td>none</td><td>nan</td><td>0.7000</td></tr>
-<tr><td>0xe6bcc2f1dd025ce5e1833190f7c60a71171c94f805df55b9ab0ded695ec93565</td><td>all_tiers</td><td>concentration</td><td>top_tier_share</td><td>21</td><td>0</td><td>none</td><td>nan</td><td>0.7000</td></tr>
-<tr><td>0xe6bcc2f1dd025ce5e1833190f7c60a71171c94f805df55b9ab0ded695ec93565</td><td>market</td><td>market_move</td><td>absolute_midpoint_change</td><td>40</td><td>0</td><td>none</td><td>nan</td><td>1.0000</td></tr>
-<tr><td>0xe6bcc2f1dd025ce5e1833190f7c60a71171c94f805df55b9ab0ded695ec93565</td><td>all_tiers</td><td>wallet_tier_activity</td><td>log1p_total_observed_amount_usd</td><td>21</td><td>0</td><td>none</td><td>nan</td><td>0.7000</td></tr></tbody>
+    <tbody><tr><td>0x0a99479228e93524b25676ae69b94bd3f4278a6bca8d8c265c84d24755399cf5</td><td>all_tiers</td><td>active_wallet_activity</td><td>active_wallets</td><td>20</td><td>0</td><td>none</td><td>nan</td><td>nan</td></tr>
+<tr><td>0x0a99479228e93524b25676ae69b94bd3f4278a6bca8d8c265c84d24755399cf5</td><td>all_tiers</td><td>concentration</td><td>hhi_concentration</td><td>20</td><td>0</td><td>none</td><td>nan</td><td>nan</td></tr>
+<tr><td>0x0a99479228e93524b25676ae69b94bd3f4278a6bca8d8c265c84d24755399cf5</td><td>all_tiers</td><td>concentration</td><td>top_tier_share</td><td>20</td><td>0</td><td>none</td><td>nan</td><td>nan</td></tr>
+<tr><td>0x0a99479228e93524b25676ae69b94bd3f4278a6bca8d8c265c84d24755399cf5</td><td>market</td><td>market_move</td><td>absolute_midpoint_change</td><td>38</td><td>0</td><td>none</td><td>nan</td><td>1.0000</td></tr>
+<tr><td>0x0a99479228e93524b25676ae69b94bd3f4278a6bca8d8c265c84d24755399cf5</td><td>all_tiers</td><td>wallet_tier_activity</td><td>log1p_total_observed_amount_usd</td><td>20</td><td>0</td><td>none</td><td>nan</td><td>nan</td></tr>
+<tr><td>0x0f49db97f71c68b1e42a6d16e3de93d85dbf7d4148e3f018eb79e88554be9f75</td><td>all_tiers</td><td>active_wallet_activity</td><td>active_wallets</td><td>20</td><td>0</td><td>none</td><td>nan</td><td>nan</td></tr>
+<tr><td>0x0f49db97f71c68b1e42a6d16e3de93d85dbf7d4148e3f018eb79e88554be9f75</td><td>all_tiers</td><td>concentration</td><td>hhi_concentration</td><td>20</td><td>0</td><td>none</td><td>nan</td><td>nan</td></tr>
+<tr><td>0x0f49db97f71c68b1e42a6d16e3de93d85dbf7d4148e3f018eb79e88554be9f75</td><td>all_tiers</td><td>concentration</td><td>top_tier_share</td><td>20</td><td>0</td><td>none</td><td>nan</td><td>nan</td></tr>
+<tr><td>0x0f49db97f71c68b1e42a6d16e3de93d85dbf7d4148e3f018eb79e88554be9f75</td><td>market</td><td>market_move</td><td>absolute_midpoint_change</td><td>38</td><td>0</td><td>none</td><td>nan</td><td>1.0000</td></tr>
+<tr><td>0x0f49db97f71c68b1e42a6d16e3de93d85dbf7d4148e3f018eb79e88554be9f75</td><td>all_tiers</td><td>wallet_tier_activity</td><td>log1p_total_observed_amount_usd</td><td>20</td><td>0</td><td>none</td><td>nan</td><td>nan</td></tr>
+<tr><td>0x4167e22670f31e5f93d132f78108f3fae809bd15cadf78983eff096845ed1415</td><td>all_tiers</td><td>active_wallet_activity</td><td>active_wallets</td><td>20</td><td>0</td><td>none</td><td>nan</td><td>nan</td></tr>
+<tr><td>0x4167e22670f31e5f93d132f78108f3fae809bd15cadf78983eff096845ed1415</td><td>all_tiers</td><td>concentration</td><td>hhi_concentration</td><td>20</td><td>0</td><td>none</td><td>nan</td><td>nan</td></tr>
+<tr><td>0x4167e22670f31e5f93d132f78108f3fae809bd15cadf78983eff096845ed1415</td><td>all_tiers</td><td>concentration</td><td>top_tier_share</td><td>20</td><td>0</td><td>none</td><td>nan</td><td>nan</td></tr>
+<tr><td>0x4167e22670f31e5f93d132f78108f3fae809bd15cadf78983eff096845ed1415</td><td>market</td><td>market_move</td><td>absolute_midpoint_change</td><td>38</td><td>0</td><td>none</td><td>nan</td><td>1.0000</td></tr>
+<tr><td>0x4167e22670f31e5f93d132f78108f3fae809bd15cadf78983eff096845ed1415</td><td>all_tiers</td><td>wallet_tier_activity</td><td>log1p_total_observed_amount_usd</td><td>20</td><td>0</td><td>none</td><td>nan</td><td>nan</td></tr>
+<tr><td>0x4e4f77e7dbf4cab666e9a1943674d7ae66348e862df03ea6f44b11eb95731928</td><td>all_tiers</td><td>active_wallet_activity</td><td>active_wallets</td><td>20</td><td>0</td><td>none</td><td>nan</td><td>nan</td></tr>
+<tr><td>0x4e4f77e7dbf4cab666e9a1943674d7ae66348e862df03ea6f44b11eb95731928</td><td>all_tiers</td><td>concentration</td><td>hhi_concentration</td><td>20</td><td>0</td><td>none</td><td>nan</td><td>nan</td></tr>
+<tr><td>0x4e4f77e7dbf4cab666e9a1943674d7ae66348e862df03ea6f44b11eb95731928</td><td>all_tiers</td><td>concentration</td><td>top_tier_share</td><td>20</td><td>0</td><td>none</td><td>nan</td><td>nan</td></tr>
+<tr><td>0x4e4f77e7dbf4cab666e9a1943674d7ae66348e862df03ea6f44b11eb95731928</td><td>market</td><td>market_move</td><td>absolute_midpoint_change</td><td>38</td><td>0</td><td>none</td><td>nan</td><td>1.0000</td></tr>
+<tr><td>0x4e4f77e7dbf4cab666e9a1943674d7ae66348e862df03ea6f44b11eb95731928</td><td>all_tiers</td><td>wallet_tier_activity</td><td>log1p_total_observed_amount_usd</td><td>20</td><td>0</td><td>none</td><td>nan</td><td>nan</td></tr></tbody>
   </table>
   <h2>Source Artifacts</h2>
   <ul><li><code>watchlist</code>: data\results\monitor_v2_polymarket_live_watchlist.csv</li>

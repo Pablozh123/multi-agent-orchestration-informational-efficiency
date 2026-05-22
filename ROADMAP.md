@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for expanded 12-market live baseline
+Status: active for expanded 12-market live baseline review
 
 Done criteria:
 
@@ -361,8 +361,15 @@ Done criteria:
 - A temporary collector verification produced 12 watchlist rows, 24 token
   midpoint rows, and 12 aggregate wallet/activity rows without modifying
   repository result artifacts.
-- The next empirical step is a production-like live baseline run on the
-  expanded 12-market watchlist.
+- The expanded production-like live baseline has been collected with 20 real
+  closed 5-minute buckets, 12 reviewed markets, 480 token midpoint rows, 240
+  aggregate wallet/activity rows, 1'416 scoring rows, and 60 summary rows.
+- The expanded baseline reports 0 alerts, severity counts of 1'416 `none`,
+  status counts of 1'200 `insufficient_baseline` and 216 `zero_mad`, and
+  baseline readiness `baseline_available_zero_mad_or_non_alerting`.
+- The next empirical step is to review the expanded-baseline interpretation
+  and decide whether the monitor should next improve reporting, run another
+  live window, or add a read-only local wrapper.
 
 Blockers:
 
@@ -375,9 +382,10 @@ Blockers:
   scope.
 - MCP, agents, strategy backtests, authenticated user channels, and order
   execution remain blocked while the read-only collector is built.
-- Thesis-facing live-alert wording remains blocked until a production-like
-  baseline is collected and reviewed on the expanded 12-market universe.
+- Thesis-facing live-alert wording remains blocked until the expanded
+  12-market baseline is reviewed and compared with at least one later window
+  or documented as a short-window prototype result.
 - Threshold changes are blocked; Rule C remains the default until a later
   reviewed sensitivity decision says otherwise.
-- Any read-only UI/server wrapper should wait until the expanded-baseline run
-  is complete.
+- Any read-only UI/server wrapper should wait until the expanded-baseline
+  interpretation is documented.

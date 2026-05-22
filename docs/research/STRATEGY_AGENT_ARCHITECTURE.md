@@ -2878,6 +2878,66 @@ Next phase selected:
   watchlist and v2 30/20 scoring settings.
 - Use `--max-markets 12` for the next expanded-watchlist run.
 
+### Expanded 12-Market Live Baseline
+
+expanded_live_baseline_status: collected pending review
+
+Run contract:
+
+- Source: public read-only Polymarket endpoints through the bounded refresh
+  runner.
+- Watchlist: `data/monitor_v2_curated_watchlist.csv`.
+- Market count: 12 reviewed politics/geopolitics markets.
+- Samples: 20 real closed 5-minute buckets.
+- Baseline settings: `baseline_observations=30`,
+  `min_baseline_observations=20`.
+- Rule: Rule C combined-family confirmation.
+- Database writes: none.
+- Agents, MCP, ML, RCP, order execution, and trading credentials: not used.
+
+Latest expanded run:
+
+- Output dashboard:
+  `data/results/monitor_v2_polymarket_dashboard.html`.
+- Market snapshots:
+  `data/results/monitor_v2_polymarket_live_market_snapshots.csv`.
+- Wallet/activity snapshots:
+  `data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv`.
+- Scoring rows:
+  `data/results/monitor_v2_polymarket_rolling_alert_rows.csv`.
+- Summary rows:
+  `data/results/monitor_v2_polymarket_rolling_alert_summary.csv`.
+- Buckets: 20.
+- Token midpoint rows: 480.
+- Aggregate wallet/activity rows: 240.
+- Scoring rows: 1'416.
+- Summary rows: 60.
+- Alerts: 0.
+- Severity counts: 1'416 `none`.
+- Status counts: 1'200 `insufficient_baseline`, 216 `zero_mad`.
+- Baseline readiness: `baseline_available_zero_mad_or_non_alerting`.
+- Dashboard market count: 12.
+
+Interpretation:
+
+- The expanded live path works end to end on a broader reviewed
+  politics/geopolitics universe.
+- The zero-alert result means Rule C did not find a combined-family alert in
+  this short observed window.
+- The result does not prove that Polymarket was efficient, inefficient,
+  quiet, tradeable, causal, or driven by private information.
+- `insufficient_baseline` remains expected for early rows because each metric
+  needs completed prior observations.
+- `zero_mad` means the robust baseline was flat for that metric in the
+  available window; it should be reviewed as a data/market-state diagnostic,
+  not as evidence of absence of activity.
+
+Next phase selected:
+
+- Review the expanded-baseline output shape and interpretation before changing
+  thresholds, adding a read-only server wrapper, or using the result in
+  thesis-facing live-monitor prose.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-22T16:42:45+00:00",
+  "generated_at_utc": "2026-05-22T19:01:52+00:00",
   "limitations": {
     "descriptive_dashboard_only": true,
     "no_causal_or_profitability_claim": true,
@@ -18,18 +18,18 @@
   "outputs": {
     "alert_count": 0,
     "baseline_readiness": "baseline_available_zero_mad_or_non_alerting",
-    "bucket_count": 21,
+    "bucket_count": 20,
     "contains_order_instructions": false,
     "contains_wallet_addresses": false,
     "dashboard_path": "data\\results\\monitor_v2_polymarket_dashboard.html",
-    "latest_bucket_utc": "2026-05-22T16:40:00Z",
-    "market_count": 3,
+    "latest_bucket_utc": "2026-05-22T19:00:00Z",
+    "market_count": 12,
     "severity_counts": {
-      "none": 372
+      "none": 1416
     },
     "status_counts": {
-      "insufficient_baseline": 300,
-      "zero_mad": 72
+      "insufficient_baseline": 1200,
+      "zero_mad": 216
     }
   },
   "source_paths": {

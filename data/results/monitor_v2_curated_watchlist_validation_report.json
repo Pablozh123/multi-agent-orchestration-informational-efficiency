@@ -18,7 +18,7 @@
   "candidate_count": 0,
   "contains_order_instructions": false,
   "contains_wallet_addresses": false,
-  "generated_at_utc": "2026-05-22T17:17:53+00:00",
+  "generated_at_utc": "2026-05-22T17:24:13+00:00",
   "input_path": "data\\monitor_v2_curated_watchlist.csv",
   "limitations": {
     "candidate_rows_require_human_review": true,

@@ -3,13 +3,165 @@
     {
       "collected_at_utc": "",
       "event_candidate_row_count": 0,
-      "market_snapshot_row_count": 126,
+      "market_snapshot_row_count": 24,
       "sample_index": 0,
-      "wallet_tier_snapshot_row_count": 63,
-      "watchlist_row_count": 3
+      "wallet_tier_snapshot_row_count": 12,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 48,
+      "sample_index": 1,
+      "wallet_tier_snapshot_row_count": 24,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 72,
+      "sample_index": 2,
+      "wallet_tier_snapshot_row_count": 36,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 96,
+      "sample_index": 3,
+      "wallet_tier_snapshot_row_count": 48,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 120,
+      "sample_index": 4,
+      "wallet_tier_snapshot_row_count": 60,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 144,
+      "sample_index": 5,
+      "wallet_tier_snapshot_row_count": 72,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 168,
+      "sample_index": 6,
+      "wallet_tier_snapshot_row_count": 84,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 192,
+      "sample_index": 7,
+      "wallet_tier_snapshot_row_count": 96,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 216,
+      "sample_index": 8,
+      "wallet_tier_snapshot_row_count": 108,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 240,
+      "sample_index": 9,
+      "wallet_tier_snapshot_row_count": 120,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 264,
+      "sample_index": 10,
+      "wallet_tier_snapshot_row_count": 132,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 288,
+      "sample_index": 11,
+      "wallet_tier_snapshot_row_count": 144,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 312,
+      "sample_index": 12,
+      "wallet_tier_snapshot_row_count": 156,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 336,
+      "sample_index": 13,
+      "wallet_tier_snapshot_row_count": 168,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 360,
+      "sample_index": 14,
+      "wallet_tier_snapshot_row_count": 180,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 384,
+      "sample_index": 15,
+      "wallet_tier_snapshot_row_count": 192,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 408,
+      "sample_index": 16,
+      "wallet_tier_snapshot_row_count": 204,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 432,
+      "sample_index": 17,
+      "wallet_tier_snapshot_row_count": 216,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 456,
+      "sample_index": 18,
+      "wallet_tier_snapshot_row_count": 228,
+      "watchlist_row_count": 12
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 480,
+      "sample_index": 19,
+      "wallet_tier_snapshot_row_count": 240,
+      "watchlist_row_count": 12
     }
   ],
-  "generated_at_utc": "2026-05-22T16:42:45+00:00",
+  "generated_at_utc": "2026-05-22T19:01:52+00:00",
   "limitations": {
     "does_not_send_orders": true,
     "does_not_use_agents_or_mcp": true,
@@ -29,15 +181,15 @@
     "bounded_loop_not_daemon": true,
     "bucket_minutes": 5,
     "curated_watchlist_path": "data\\monitor_v2_curated_watchlist.csv",
-    "delay_seconds": 0.0,
+    "delay_seconds": 305.0,
     "max_baseline_observations_available": 30,
-    "max_markets": 3,
+    "max_markets": 12,
     "name": "polymarket_readonly_rolling_history_collector",
-    "reset_outputs": false,
+    "reset_outputs": true,
     "runs_rolling_figure_after_collection": true,
     "runs_scoring_after_collection": true,
-    "samples_completed": 1,
-    "samples_requested": 1,
+    "samples_completed": 20,
+    "samples_requested": 20,
     "source": "live",
     "trade_limit": 500,
     "uses_curated_watchlist": true
@@ -50,24 +202,24 @@
     "figure_metadata_path": "data\\results\\monitor_v2_polymarket_rolling_history_figure_metadata.json",
     "figure_path": "data\\results\\monitor_v2_polymarket_rolling_history.png",
     "figure_result": {
-      "bucket_count": 21,
+      "bucket_count": 20,
       "figure_path": "data\\results\\monitor_v2_polymarket_rolling_history.png",
-      "market_count": 3,
+      "market_count": 12,
       "metadata_path": "data\\results\\monitor_v2_polymarket_rolling_history_figure_metadata.json",
-      "token_snapshot_count": 126,
-      "wallet_snapshot_count": 63
+      "token_snapshot_count": 480,
+      "wallet_snapshot_count": 240
     },
     "market_snapshots_path": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
     "scoring_metadata_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_metadata.json",
     "scoring_result": {
       "alert_count": 0,
-      "alert_row_count": 372,
+      "alert_row_count": 1416,
       "metadata_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_metadata.json",
       "rows_path": "data\\results\\monitor_v2_polymarket_rolling_alert_rows.csv",
-      "snapshot_count": 372,
+      "snapshot_count": 1416,
       "snapshots_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_snapshots.csv",
       "summary_path": "data\\results\\monitor_v2_polymarket_rolling_alert_summary.csv",
-      "summary_row_count": 15,
+      "summary_row_count": 60,
       "validation_report_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_validation_report.json"
     },
     "scoring_rows_path": "data\\results\\monitor_v2_polymarket_rolling_alert_rows.csv",
@@ -75,11 +227,11 @@
     "scoring_summary_path": "data\\results\\monitor_v2_polymarket_rolling_alert_summary.csv",
     "scoring_validation_report_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_validation_report.json",
     "severity_counts": {
-      "none": 372
+      "none": 1416
     },
     "status_counts": {
-      "insufficient_baseline": 300,
-      "zero_mad": 72
+      "insufficient_baseline": 1200,
+      "zero_mad": 216
     },
     "validation_report_path": "data\\results\\monitor_v2_polymarket_live_input_validation_report.json",
     "wallet_tier_snapshots_path": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",

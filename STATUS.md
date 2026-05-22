@@ -3,62 +3,72 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-22 15:17
+Generated: 2026-05-22 15:45
 
-Current goal: `goal-polymarket-live-rolling-history-001` - Build rolling history for read-only Polymarket monitor scoring
+Current goal: `goal-polymarket-live-watchlist-curation-001` - Define curated Polymarket politics/geopolitics watchlist contract
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `254 passed in 9.38s`
+Pytest summary: `260 passed in 11.93s`
 
 Git branch: `main`
 
-Latest commit: `d04a43c`
+Latest commit: `028ef57`
 
 Git status:
 
 ```text
- M AGENTS.md
  M GOAL.md
  M ROADMAP.md
+ M data/results/monitor_v2_live_scoring_metadata.json
+ M data/results/monitor_v2_live_scoring_validation_report.json
+ M data/results/monitor_v2_polymarket_live_collection_metadata.json
+ M data/results/monitor_v2_polymarket_live_input_validation_report.json
+ M data/results/monitor_v2_polymarket_live_market_snapshots.csv
+ M data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv
+ M data/results/monitor_v2_polymarket_live_watchlist.csv
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
  M docs/research/WHALE_METHOD.md
  M operations/analysis/monitor_v2_live_input_scoring.py
+ M operations/collectors/polymarket_readonly.py
  M tests/test_monitor_v2_live_input_scoring.py
-?? data/results/monitor_v2_polymarket_live_alert_rows.csv
-?? data/results/monitor_v2_polymarket_live_alert_summary.csv
-?? data/results/monitor_v2_polymarket_live_collection_metadata.json
-?? data/results/monitor_v2_polymarket_live_event_candidates.csv
-?? data/results/monitor_v2_polymarket_live_figure_metadata.json
-?? data/results/monitor_v2_polymarket_live_input_validation_report.json
-?? data/results/monitor_v2_polymarket_live_market_snapshots.csv
-?? data/results/monitor_v2_polymarket_live_scoring_metadata.json
-?? data/results/monitor_v2_polymarket_live_scoring_snapshots.csv
-?? data/results/monitor_v2_polymarket_live_scoring_validation_report.json
-?? data/results/monitor_v2_polymarket_live_snapshot.png
-?? data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv
-?? data/results/monitor_v2_polymarket_live_watchlist.csv
-?? operations/analysis/monitor_v2_polymarket_live_figures.py
-?? operations/collectors/
-?? tests/test_monitor_v2_polymarket_live_figures.py
-?? tests/test_polymarket_readonly_collector.py
+ M tests/test_polymarket_readonly_collector.py
+?? data/results/monitor_v2_polymarket_rolling_alert_rows.csv
+?? data/results/monitor_v2_polymarket_rolling_alert_summary.csv
+?? data/results/monitor_v2_polymarket_rolling_history.png
+?? data/results/monitor_v2_polymarket_rolling_history_figure_metadata.json
+?? data/results/monitor_v2_polymarket_rolling_history_metadata.json
+?? data/results/monitor_v2_polymarket_rolling_scoring_metadata.json
+?? data/results/monitor_v2_polymarket_rolling_scoring_snapshots.csv
+?? data/results/monitor_v2_polymarket_rolling_scoring_validation_report.json
+?? operations/analysis/monitor_v2_polymarket_rolling_figures.py
+?? operations/collectors/polymarket_rolling_history.py
+?? tests/test_polymarket_rolling_history.py
 ```
 
 Git diff stat:
 
 ```text
- AGENTS.md                                          |  26 ++++
- GOAL.md                                            | 131 +++++++-----------
- ROADMAP.md                                         |  20 ++-
- docs/project/WORK_LOG.md                           |  80 +++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md       | 154 +++++++++++++++++++++
- docs/research/WHALE_METHOD.md                      |  67 +++++++++
- .../analysis/monitor_v2_live_input_scoring.py      |   9 +-
- tests/test_monitor_v2_live_input_scoring.py        |   5 +-
- 8 files changed, 399 insertions(+), 93 deletions(-)
+ GOAL.md                                            | 75 ++++++++++++---------
+ ROADMAP.md                                         | 12 +++-
+ data/results/monitor_v2_live_scoring_metadata.json | 13 ++--
+ .../monitor_v2_live_scoring_validation_report.json |  2 +-
+ ...tor_v2_polymarket_live_collection_metadata.json | 12 ++--
+ ...v2_polymarket_live_input_validation_report.json | 14 ++--
+ ...monitor_v2_polymarket_live_market_snapshots.csv | 10 +--
+ ...or_v2_polymarket_live_wallet_tier_snapshots.csv |  5 +-
+ .../monitor_v2_polymarket_live_watchlist.csv       |  5 +-
+ docs/project/WORK_LOG.md                           | 47 +++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md       | 78 ++++++++++++++++++++++
+ docs/research/WHALE_METHOD.md                      | 36 ++++++++++
+ .../analysis/monitor_v2_live_input_scoring.py      | 37 +++++++++-
+ operations/collectors/polymarket_readonly.py       | 72 ++++++++++++++++++--
+ tests/test_monitor_v2_live_input_scoring.py        |  2 +
+ tests/test_polymarket_readonly_collector.py        | 74 ++++++++++++++++++++
+ 16 files changed, 424 insertions(+), 70 deletions(-)
 ```
 
 Blockers:
@@ -67,7 +77,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: add read-only polymarket rolling history collector
+- docs: define curated polymarket live watchlist contract
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

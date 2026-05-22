@@ -547,6 +547,9 @@ def _build_metadata(
     baseline_observations: int,
     min_baseline_observations: int,
 ) -> dict[str, Any]:
+    status_counts = _value_counts(alert_rows, "status")
+    severity_counts = _value_counts(alert_rows, "severity")
+    max_baseline_observations = _max_numeric(alert_rows, "baseline_observations")
     return {
         "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
         "method": {
@@ -561,6 +564,12 @@ def _build_metadata(
             "scores_closed_buckets_only": True,
             "event_context_rule": "event candidate may annotate only buckets at or after published_at_utc",
             "uses_completed_prior_observations": True,
+            "baseline_readiness": _baseline_readiness(
+                status_counts=status_counts,
+                max_baseline_observations=max_baseline_observations,
+                min_baseline_observations=min_baseline_observations,
+            ),
+            "max_baseline_observations_available": max_baseline_observations,
         },
         "inputs": {
             "watchlist_path": str(watchlist_path),
@@ -582,8 +591,8 @@ def _build_metadata(
             "snapshot_columns": list(SNAPSHOT_COLUMNS),
             "alert_row_columns": list(ALERT_ROW_COLUMNS),
             "summary_columns": list(ALERT_SUMMARY_COLUMNS),
-            "severity_counts": _value_counts(alert_rows, "severity"),
-            "status_counts": _value_counts(alert_rows, "status"),
+            "severity_counts": severity_counts,
+            "status_counts": status_counts,
             "contains_wallet_addresses": False,
             "contains_order_instructions": False,
         },
@@ -609,6 +618,30 @@ def _build_metadata(
 def _value_counts(frame: pd.DataFrame, column: str) -> dict[str, int]:
     counts = frame[column].value_counts().sort_index()
     return {str(key): int(value) for key, value in counts.items()}
+
+
+def _max_numeric(frame: pd.DataFrame, column: str) -> int:
+    values = pd.to_numeric(frame[column], errors="coerce").dropna()
+    if values.empty:
+        return 0
+    return int(values.max())
+
+
+def _baseline_readiness(
+    *,
+    status_counts: dict[str, int],
+    max_baseline_observations: int,
+    min_baseline_observations: int,
+) -> str:
+    if not status_counts:
+        return "no_scoring_rows"
+    if set(status_counts) == {"insufficient_baseline"}:
+        return "insufficient_baseline"
+    if max_baseline_observations < min_baseline_observations:
+        return "insufficient_baseline"
+    if status_counts.get("ok", 0) > 0:
+        return "diagnostic_scores_available"
+    return "baseline_available_zero_mad_or_non_alerting"
 
 
 if __name__ == "__main__":

@@ -2310,6 +2310,84 @@ Next phase selected:
 - Build a short rolling read-only history so robust baseline scores can move
   from `insufficient_baseline` to interpretable diagnostic alert states.
 
+### Read-Only Polymarket Rolling History Collector
+
+rolling_history_status: implemented for bounded local runs
+
+Implementation date: 2026-05-22
+
+Implemented modules:
+
+- `operations/collectors/polymarket_rolling_history.py`
+- `operations/analysis/monitor_v2_polymarket_rolling_figures.py`
+
+Implemented or updated outputs:
+
+- `data/results/monitor_v2_polymarket_live_watchlist.csv`
+- `data/results/monitor_v2_polymarket_live_market_snapshots.csv`
+- `data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv`
+- `data/results/monitor_v2_polymarket_live_event_candidates.csv`
+- `data/results/monitor_v2_polymarket_rolling_scoring_snapshots.csv`
+- `data/results/monitor_v2_polymarket_rolling_alert_rows.csv`
+- `data/results/monitor_v2_polymarket_rolling_alert_summary.csv`
+- `data/results/monitor_v2_polymarket_rolling_scoring_validation_report.json`
+- `data/results/monitor_v2_polymarket_rolling_scoring_metadata.json`
+- `data/results/monitor_v2_polymarket_rolling_history.png`
+- `data/results/monitor_v2_polymarket_rolling_history_figure_metadata.json`
+- `data/results/monitor_v2_polymarket_rolling_history_metadata.json`
+
+What changed:
+
+- The collector can now run a bounded number of samples and append each closed
+  bucket into validated monitor-v2 input files.
+- Appended rows are deduplicated by deterministic keys, including long token
+  ids that may be read back from CSV with inconsistent dtypes.
+- The rolling run automatically validates inputs, scores the current history,
+  writes scoring metadata, and generates a rolling-history figure.
+- Scoring metadata now records `baseline_readiness` and
+  `max_baseline_observations_available`.
+
+First real rolling run:
+
+- Source mode: `live`.
+- Bounded samples: 1.
+- Bucket cadence: 5 minutes.
+- Watchlist rows: 3.
+- Token midpoint rows: 6.
+- Aggregate wallet/activity rows: 3.
+- Event-candidate rows: 0.
+- Scoring rows: 12.
+- Alert count: 0.
+- Baseline readiness: `insufficient_baseline`.
+
+First live watchlist candidates:
+
+- `Xi Jinping out before 2027?`
+- `Will Gavin Newsom win the 2028 Democratic presidential nomination?`
+- `Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?`
+
+Interpretation:
+
+- The project now has a real read-only path from Polymarket public data to
+  rolling monitor files, scoring diagnostics, and a figure.
+- The first tracked run still has only one real closed bucket, so no anomaly
+  interpretation is allowed yet.
+- Mock tests prove repeated bucket appending and scoring work without network
+  access.
+
+Watchlist lesson:
+
+- Gamma market discovery is noisy. Category labels alone can surface sport,
+  entertainment, or court-related markets as politics.
+- The first collector therefore uses stricter keyword and exclusion filters,
+  but a curated live watchlist is still needed before alerts are
+  thesis-facing.
+
+Next phase selected:
+
+- Define a curated Polymarket politics/geopolitics watchlist contract before
+  interpreting live alert output or expanding to WebSocket/orderbook fields.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

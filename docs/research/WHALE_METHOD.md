@@ -788,6 +788,42 @@ Next methodological requirement:
 - A stricter watchlist or human-reviewed market universe is needed before
   wallet anomalies are interpreted in thesis-facing language.
 
+## Read-Only Rolling Wallet Activity Review
+
+Review date: 2026-05-22
+
+Review status: accepted as a collector-path diagnostic, not as wallet
+evidence.
+
+Reviewed artifact:
+
+- `data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv`
+
+Current live run:
+
+- Bucket cadence: 5 minutes.
+- Watchlist markets: 3.
+- Aggregate wallet/activity rows: 3.
+- Tier value: `all_tiers`.
+- Active-wallet rows with observed activity: 1 of 3.
+- Largest observed amount in the bucket: 52.92104 USD.
+- Wallet-address columns: none.
+
+Interpretation:
+
+- The rolling collector can carry public trade activity into aggregate
+  wallet/activity rows.
+- The first clean watchlist run is still too short for a rolling wallet
+  baseline.
+
+Limitation:
+
+- `all_tiers` remains a temporary live-monitor aggregate.
+- Dataset-relative wallet tiers for arbitrary live markets are not selected
+  yet.
+- No wallet-level performance, private-information, or misconduct claim is
+  allowed.
+
 ## Historical Anomaly Output Review
 
 Review date: 2026-05-20

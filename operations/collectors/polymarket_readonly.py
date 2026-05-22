@@ -41,13 +41,16 @@ DEFAULT_BUCKET_MINUTES = 5
 DEFAULT_MAX_MARKETS = 5
 DEFAULT_TRADE_LIMIT = 500
 DEFAULT_TERMS: tuple[str, ...] = (
-    "politic",
     "election",
     "president",
     "congress",
     "senate",
-    "geopolitic",
     "war",
+    "china",
+    "taiwan",
+    "invade",
+    "invasion",
+    "sanction",
     "iran",
     "israel",
     "ukraine",
@@ -60,11 +63,44 @@ DEFAULT_EXCLUDED_TERMS: tuple[str, ...] = (
     "fifa",
     "world cup",
     "nba",
+    "nhl",
     "nfl",
+    "stanley cup",
+    "hockey",
     "soccer",
     "football",
     "super bowl",
     "champions league",
+    "gta vi",
+    "album",
+    "rihanna",
+    "playboi",
+    "carti",
+    "jesus christ",
+    "harvey",
+    "weinstein",
+    "sentenced",
+    "prison",
+)
+DEFAULT_HARD_EXCLUDED_TERMS: tuple[str, ...] = (
+    "fifa",
+    "world cup",
+    "nba",
+    "nhl",
+    "nfl",
+    "stanley cup",
+    "hockey",
+    "soccer",
+    "football",
+    "super bowl",
+    "champions league",
+    "album",
+    "rihanna",
+    "playboi",
+    "carti",
+    "jesus christ",
+    "harvey",
+    "weinstein",
 )
 
 LIVE_WATCHLIST_OUTPUT = RESULTS_DIR / "monitor_v2_polymarket_live_watchlist.csv"
@@ -144,7 +180,7 @@ def collect_readonly_polymarket_inputs(
         gamma_markets = (
             mock_gamma_markets()
             if source == "mock"
-            else fetch_gamma_markets(http_client, limit=max(50, max_markets * 10))
+            else fetch_gamma_markets(http_client, limit=max(250, max_markets * 50))
         )
         watchlist = build_watchlist_from_gamma_markets(
             gamma_markets,
@@ -338,6 +374,7 @@ def build_watchlist_from_gamma_markets(
     max_markets: int,
     terms: Sequence[str] = DEFAULT_TERMS,
     excluded_terms: Sequence[str] = DEFAULT_EXCLUDED_TERMS,
+    hard_excluded_terms: Sequence[str] = DEFAULT_HARD_EXCLUDED_TERMS,
 ) -> pd.DataFrame:
     """Return validated-shape watchlist rows from Gamma market payloads."""
 
@@ -361,6 +398,7 @@ def build_watchlist_from_gamma_markets(
             market,
             terms=terms,
             excluded_terms=excluded_terms,
+            hard_excluded_terms=hard_excluded_terms,
         ):
             continue
         market_id = condition_id
@@ -385,6 +423,7 @@ def is_politics_geo_market(
     *,
     terms: Sequence[str] = DEFAULT_TERMS,
     excluded_terms: Sequence[str] = DEFAULT_EXCLUDED_TERMS,
+    hard_excluded_terms: Sequence[str] = DEFAULT_HARD_EXCLUDED_TERMS,
 ) -> bool:
     """Return True when a Gamma market appears politics/geopolitics-related."""
 
@@ -392,7 +431,6 @@ def is_politics_geo_market(
         str(market.get("question", "")),
         str(market.get("title", "")),
         str(market.get("slug", "")),
-        str(market.get("category", "")),
         str(market.get("description", "")),
     ]
     for key in ("tags", "events"):
@@ -402,8 +440,26 @@ def is_politics_geo_market(
         elif value is not None:
             haystack_parts.append(str(value))
     haystack = " ".join(haystack_parts).lower()
+    if any(term.lower() in haystack for term in hard_excluded_terms):
+        return False
     if any(term.lower() in haystack for term in excluded_terms):
-        strong_terms = ("war", "invade", "invasion", "sanction", "election", "president")
+        strong_terms = (
+            "war",
+            "invade",
+            "invasion",
+            "sanction",
+            "election",
+            "president",
+            "trump",
+            "maduro",
+            "iran",
+            "israel",
+            "ukraine",
+            "russia",
+            "venezuela",
+            "china",
+            "taiwan",
+        )
         return any(term in haystack for term in strong_terms)
     return any(term.lower() in haystack for term in terms)
 
@@ -519,7 +575,7 @@ def mock_gamma_markets() -> list[dict[str, Any]]:
     return [
         {
             "id": "mock_gamma_market_001",
-            "question": "Will a major politics/geopolitics event move this market?",
+            "question": "Will a major election or war event move this market?",
             "conditionId": "0x" + "a" * 64,
             "slug": "mock-politics-geo-market",
             "category": "Politics",
@@ -769,7 +825,9 @@ def _write_output_frame(
         output = pd.concat([existing, output], ignore_index=True)
         keys = [key for key in dedupe_keys if key in output.columns]
         if keys and not output.empty:
-            output = output.drop_duplicates(subset=keys, keep="last")
+            normalized_keys = output.loc[:, keys].astype(str)
+            duplicate_mask = normalized_keys.duplicated(keep="last")
+            output = output.loc[~duplicate_mask].reset_index(drop=True)
     output.to_csv(path, index=False)
     return output
 

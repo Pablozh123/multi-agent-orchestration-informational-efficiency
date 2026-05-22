@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-polymarket-live-rolling-history-001
-title: Build rolling history for read-only Polymarket monitor scoring
+goal_id: goal-polymarket-live-watchlist-curation-001
+title: Define curated Polymarket politics/geopolitics watchlist contract
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -14,23 +14,26 @@ why:
 - A read-only Polymarket collector foundation now fetches public Gamma market
   discovery data, CLOB midpoint snapshots, and public Data API trade rows into
   validated monitor-v2 input files.
-- The first real live snapshot validates and produces a figure, but the
-  scoring bridge correctly reports `insufficient_baseline` because only one
-  closed 5-minute bucket exists.
-- The next safe step is to collect or replay repeated closed buckets so the
-  robust rolling baseline can produce interpretable diagnostic alert states.
+- A bounded rolling-history collector now appends repeated closed buckets,
+  validates files, runs scoring, and generates a rolling-history figure.
+- The first clean live rolling run validates, but the automatic Gamma filter
+  needed repeated tightening because category labels can surface sport,
+  entertainment, or court-noise markets as politics.
+- The next safe step is to define a curated watchlist contract before
+  interpreting any live alert output.
 deliverables:
-- A local append/runbook path for repeated read-only 5-minute snapshots.
-- A minimum-history rule for diagnostic live scoring.
-- Updated scoring metadata that separates `insufficient_baseline` from
-  interpretable alert states.
-- A simple rolling-history review figure when enough buckets exist locally.
+- Curated watchlist schema and acceptance rules.
+- Market inclusion and exclusion criteria for live politics/geopolitics
+  monitoring.
+- Human-review states for watchlist candidates.
+- Rules for when auto-discovered Gamma markets may enter the monitored set.
+- Updated documentation and, if needed, small validator tests.
 scope:
 - Existing read-only collector outputs and scoring bridge.
-- Public read-only Polymarket endpoints already used by the collector.
-- File-based append outputs and validation reports.
-- 5-minute buckets first.
-- Diagnostic scoring only after enough closed buckets exist.
+- Existing Gamma-discovered watchlist rows.
+- Polymarket politics/geopolitics markets only.
+- File-based watchlist contracts and validation-ready rules.
+- No new real events unless separately curated.
 out_of_scope:
 - Agents, MCP, model routing, ML, cloud deployment, live trading, and order
   execution.
@@ -42,36 +45,39 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- Repeated closed-bucket collection can be run locally without a daemon.
-- Appended outputs validate and deduplicate deterministic keys.
-- Scoring outputs explain when baseline observations are insufficient.
-- Outputs still contain no wallet-address columns and no order instructions.
-- A simple figure visualises rolling-history state when enough rows exist.
+- Watchlist criteria separate true politics/geopolitics markets from sport,
+  entertainment, celebrity, religion, and court-noise markets.
+- Human review states are documented before live alerts are interpreted.
+- Auto-discovered markets remain candidates until they pass the watchlist
+  contract.
+- Existing collector and scoring outputs remain read-only and file-based.
 - No authenticated user channel, order endpoint, agent, MCP, ML, strategy
   backtest, cloud daemon, database write, or trading credential path is
   activated.
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add read-only polymarket rolling history collector
+next_commit: docs: define curated polymarket live watchlist contract
 
 ## Decision Inputs For This Goal
 
-- `operations/collectors/polymarket_readonly.py` exists and supports validated
-  read-only public Polymarket snapshots.
+- `operations/collectors/polymarket_rolling_history.py` exists.
 - `data/results/monitor_v2_polymarket_live_*` artifacts exist for the first
-  real live snapshot.
-- The scoring bridge emits `insufficient_baseline` when only one bucket is
-  available.
-- The monitor-v2 contract requires robust rolling scores and completed prior
-  observations before user-facing alert interpretation.
+  clean real live rolling run.
+- `data/results/monitor_v2_polymarket_rolling_*` scoring and figure artifacts
+  exist.
+- The scoring bridge emits `insufficient_baseline` until enough repeated
+  closed buckets exist.
+- The first implementation showed that a curated watchlist is necessary before
+  alert interpretation.
 
 ## Done Means
 
-- A local operator can collect repeated read-only snapshots into one validated
-  rolling-history artifact set.
-- The scoring bridge can show the transition from insufficient baseline to
-  diagnostic alert states when enough buckets exist.
+- A human-readable watchlist contract exists.
+- Auto-discovered markets are clearly treated as candidates, not accepted
+  monitored markets.
+- The next code step can validate a curated watchlist without re-deciding the
+  method.
 - Project review checks still detect premature ML, agent, MCP, live-trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -209,3 +215,6 @@ next_commit: feat: add read-only polymarket rolling history collector
   discovery, CLOB midpoint polling, Data API aggregate trade activity,
   validated monitor-v2 input files, scoring bridge diagnostics, and a simple
   snapshot figure.
+- Bounded read-only Polymarket rolling-history collector exists with append
+  and dedupe logic, rolling scoring outputs, baseline-readiness metadata, and
+  a rolling-history figure.

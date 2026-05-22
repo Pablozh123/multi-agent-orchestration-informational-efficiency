@@ -2421,3 +2421,50 @@ Next step:
 
 - Build rolling history collection so repeated closed 5-minute buckets can
   support diagnostic baseline scoring.
+
+## 2026-05-22 - goal-polymarket-live-rolling-history-001
+
+Task:
+
+- Implement bounded read-only Polymarket rolling-history collection, scoring,
+  figure generation, and live watchlist filter hardening.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+- `operations/collectors/polymarket_readonly.py`
+- `operations/collectors/polymarket_rolling_history.py`
+- `operations/analysis/monitor_v2_live_input_scoring.py`
+- `operations/analysis/monitor_v2_polymarket_rolling_figures.py`
+- `tests/test_polymarket_readonly_collector.py`
+- `tests/test_monitor_v2_live_input_scoring.py`
+- `tests/test_polymarket_rolling_history.py`
+- `data/results/monitor_v2_polymarket_live_*`
+- `data/results/monitor_v2_polymarket_rolling_*`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_polymarket_readonly_collector.py tests/test_polymarket_rolling_history.py tests/test_monitor_v2_live_input_scoring.py tests/test_monitor_v2_polymarket_live_figures.py -q` -> 21 passed.
+- Full test suite pending after status refresh.
+
+Decision:
+
+- Accept the bounded rolling-history collector as a local operator path, not a
+  background daemon.
+- The collector appends closed buckets and deduplicates deterministic keys,
+  including long token ids read back from CSV.
+- The first clean live run produced 3 watchlist rows, 6 token midpoint rows, 3
+  aggregate wallet/activity rows, 12 scoring rows, 0 alerts, and
+  `insufficient_baseline`.
+- The automatic Gamma watchlist filter was hardened after live discovery
+  surfaced noisy category-labelled markets.
+
+Next step:
+
+- Define a curated Polymarket politics/geopolitics watchlist contract before
+  interpreting live alerts.

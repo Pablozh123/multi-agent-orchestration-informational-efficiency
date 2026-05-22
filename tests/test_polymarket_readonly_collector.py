@@ -92,6 +92,57 @@ def test_watchlist_filter_excludes_sports_only_markets() -> None:
     assert "China invade Taiwan" in watchlist.iloc[0]["question"]
 
 
+def test_watchlist_filter_does_not_accept_category_only_politics() -> None:
+    markets = [
+        {
+            "id": "category_only",
+            "question": "New Rihanna Album before GTA VI?",
+            "conditionId": "0x" + "e" * 64,
+            "slug": "new-rihanna-album-before-gta-vi",
+            "category": "politics",
+            "active": True,
+            "closed": False,
+            "archived": False,
+            "clobTokenIds": json.dumps(["999", "1000"]),
+        }
+    ]
+
+    watchlist = build_watchlist_from_gamma_markets(
+        markets,
+        collected_at=pd.Timestamp(COLLECTED_AT).to_pydatetime(),
+        bucket_minutes=5,
+        max_markets=5,
+    )
+
+    assert watchlist.empty
+
+
+def test_watchlist_filter_does_not_accept_tag_only_politics() -> None:
+    markets = [
+        {
+            "id": "tag_only",
+            "question": "Will Harvey Weinstein be sentenced to no prison time?",
+            "conditionId": "0x" + "f" * 64,
+            "slug": "harvey-weinstein-sentence",
+            "category": "politics",
+            "tags": [{"label": "Politics"}],
+            "active": True,
+            "closed": False,
+            "archived": False,
+            "clobTokenIds": json.dumps(["1001", "1002"]),
+        }
+    ]
+
+    watchlist = build_watchlist_from_gamma_markets(
+        markets,
+        collected_at=pd.Timestamp(COLLECTED_AT).to_pydatetime(),
+        bucket_minutes=5,
+        max_markets=5,
+    )
+
+    assert watchlist.empty
+
+
 def test_build_market_and_wallet_rows_are_validator_ready() -> None:
     collected_at = pd.Timestamp(COLLECTED_AT).to_pydatetime()
     watchlist = build_watchlist_from_gamma_markets(
@@ -173,6 +224,29 @@ def test_collect_mock_append_keeps_history_without_duplicate_watchlist(tmp_path:
     assert len(watchlist) == 1
     assert len(market) == 4
     assert len(wallets) == 2
+
+
+def test_collect_mock_append_deduplicates_same_bucket_token_ids(tmp_path: Path) -> None:
+    paths = _paths(tmp_path)
+
+    collect_readonly_polymarket_inputs(
+        source="mock",
+        collected_at_utc=COLLECTED_AT,
+        **paths,
+    )
+    result = collect_readonly_polymarket_inputs(
+        source="mock",
+        collected_at_utc=COLLECTED_AT,
+        append=True,
+        **paths,
+    )
+
+    market = pd.read_csv(paths["market_snapshots_path"])
+    wallets = pd.read_csv(paths["wallet_tier_snapshots_path"])
+    assert result.market_snapshot_row_count == 2
+    assert result.wallet_tier_snapshot_row_count == 1
+    assert len(market) == 2
+    assert len(wallets) == 1
 
 
 def test_collect_live_with_mock_transport_uses_public_read_endpoints(tmp_path: Path) -> None:

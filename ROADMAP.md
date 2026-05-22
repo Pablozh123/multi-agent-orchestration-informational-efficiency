@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for read-only Polymarket rolling-history implementation
+Status: active for curated Polymarket live watchlist definition
 
 Done criteria:
 
@@ -302,6 +302,14 @@ Done criteria:
   monitor-v2 input files, a scoring bridge, and a simple snapshot figure.
 - The first real live snapshot validates successfully, but scoring remains
   `insufficient_baseline` until repeated closed buckets exist.
+- A bounded rolling-history collector exists and can append repeated closed
+  buckets, validate inputs, run scoring, and generate a rolling-history figure.
+- The first clean live rolling run produces 3 watchlist markets, 6 token
+  midpoint rows, 3 aggregate wallet/activity rows, 12 scoring rows, and 0
+  alerts with `insufficient_baseline`.
+- The automatic Gamma filter now excludes category-only sport, entertainment,
+  and court-noise cases, but the watchlist still needs curation before
+  thesis-facing alert interpretation.
 
 Blockers:
 
@@ -316,3 +324,5 @@ Blockers:
   execution remain blocked while the read-only collector is built.
 - Interpretable minute-level alert states remain blocked until enough closed
   rolling-history buckets are collected and reviewed.
+- Thesis-facing live alerts remain blocked until a curated politics/geopolitics
+  watchlist contract exists.

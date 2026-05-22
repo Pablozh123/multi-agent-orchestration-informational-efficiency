@@ -62,6 +62,8 @@ def test_generate_live_scoring_outputs_writes_diagnostic_artifacts(tmp_path: Pat
     assert metadata["method"]["validates_inputs_before_scoring"] is True
     assert metadata["method"]["scores_closed_buckets_only"] is True
     assert metadata["method"]["diagnostic_file_baseline_only"] is True
+    assert metadata["method"]["baseline_readiness"] == "diagnostic_scores_available"
+    assert metadata["method"]["max_baseline_observations_available"] >= 2
     assert metadata["outputs"]["contains_wallet_addresses"] is False
     assert metadata["outputs"]["contains_order_instructions"] is False
     assert metadata["limitations"]["does_not_collect_external_data"] is True

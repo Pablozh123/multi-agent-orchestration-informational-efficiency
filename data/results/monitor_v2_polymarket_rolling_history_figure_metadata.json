@@ -1,0 +1,32 @@
+{
+  "generated_at_utc": "2026-05-22T13:42:54+00:00",
+  "inputs": {
+    "baseline_readiness": "insufficient_baseline",
+    "market_snapshots_path": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
+    "scoring_metadata_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_metadata.json",
+    "wallet_tier_snapshots_path": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",
+    "watchlist_path": "data\\results\\monitor_v2_polymarket_live_watchlist.csv"
+  },
+  "limitations": {
+    "does_not_send_orders": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "not_a_strategy_or_performance_figure": true,
+    "read_only_history_only": true,
+    "requires_repeated_closed_buckets_for_alert_interpretation": true
+  },
+  "method": {
+    "input_mode": "read_only_polymarket_collector_history",
+    "name": "monitor_v2_polymarket_rolling_history_figure"
+  },
+  "outputs": {
+    "bucket_count": 1,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "figure_path": "data\\results\\monitor_v2_polymarket_rolling_history.png",
+    "market_count": 3,
+    "token_snapshot_count": 6,
+    "wallet_snapshot_count": 3
+  }
+}

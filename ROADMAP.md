@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for repeated live-window storage decision
+Status: active for alert-review workflow specification
 
 Done criteria:
 
@@ -391,6 +391,13 @@ Done criteria:
   baseline readiness `baseline_available_zero_mad_or_non_alerting`.
 - The next implementation decision is how to preserve repeated live-window
   summaries before future refreshes overwrite the latest dashboard artifacts.
+- A compact repeated-window registry exists:
+  `data/results/monitor_v2_live_window_registry.csv` plus metadata.
+- The registry stores compact summaries for `expanded_window_001` and
+  `expanded_window_002`; both runs have 12 markets, 20 buckets, 0 alerts, and
+  baseline readiness `baseline_available_zero_mad_or_non_alerting`.
+- The next methodological step is an alert-review workflow for future non-zero
+  monitor alerts.
 
 Blockers:
 
@@ -414,3 +421,5 @@ Blockers:
   5-minute buckets; do not synthesize timestamps for production-like claims.
 - Current live-window files are latest-run artifacts. A storage/comparison
   structure is needed before building a longer repeated-run evidence base.
+- Non-zero live alerts remain thesis-facing blocked until review states,
+  evidence fields, and rejection criteria are documented.

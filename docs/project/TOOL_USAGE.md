@@ -129,6 +129,12 @@ Open it in the default browser:
 .\.venv\Scripts\python.exe -m operations.tools.monitor_dashboard_launcher --open
 ```
 
+Update the compact repeated-window registry from the latest bounded run:
+
+```powershell
+.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_live_window_registry --run-id expanded_window_002 --run-label "second expanded 12-market baseline"
+```
+
 Interpretation rule:
 
 - fewer than 3 buckets: interface check only,

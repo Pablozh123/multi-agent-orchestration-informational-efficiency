@@ -3123,3 +3123,45 @@ Next step:
 
 - Decide how repeated live-window summaries should be stored and compared
   before more long live windows overwrite latest-run artifacts.
+
+## 2026-05-23 - goal-polymarket-live-window-storage-001
+
+Task:
+
+- Implement compact repeated live-window registry and storage decision.
+
+Files changed:
+
+- `operations/analysis/monitor_v2_live_window_registry.py`
+- `tests/test_monitor_v2_live_window_registry.py`
+- `data/results/monitor_v2_live_window_registry.csv`
+- `data/results/monitor_v2_live_window_registry_metadata.json`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/project/TOOL_USAGE.md`
+- `docs/project/WORK_LOG.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_monitor_v2_live_window_registry.py -q` -> 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_live_window_registry --run-id expanded_window_001 --run-label "first expanded 12-market baseline"` -> registry row written from archived first-window metadata.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_live_window_registry --run-id expanded_window_002 --run-label "second expanded 12-market baseline"` -> registry row written from latest-window metadata.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  287 passed through the status run.
+
+Decision:
+
+- Store repeated live windows as compact registry rows rather than copying
+  large latest-run CSV files for every window.
+- Registry rows preserve counts, baseline settings, severity/status summaries,
+  and metadata paths.
+- The registry contains `expanded_window_001` and `expanded_window_002`; both
+  report 12 markets, 20 buckets, 0 alerts, and baseline readiness
+  `baseline_available_zero_mad_or_non_alerting`.
+- No wallet addresses, order instructions, agents, MCP, ML, database writes, or
+  trading credentials are involved.
+
+Next step:
+
+- Specify a human alert-review workflow for future non-zero monitor alerts.

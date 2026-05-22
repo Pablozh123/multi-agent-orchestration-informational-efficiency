@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-polymarket-live-window-storage-001
-title: Decide repeated live-window storage and comparison structure
+goal_id: goal-polymarket-alert-review-workflow-001
+title: Specify alert-review workflow from compact live-window summaries
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -61,18 +61,21 @@ why:
   1'416 scoring rows, 60 summary rows, 0 alerts, severity counts of 1'416
   `none`, status counts of 1'200 `insufficient_baseline` and 216 `zero_mad`,
   and baseline readiness `baseline_available_zero_mad_or_non_alerting`.
-- The next implementation decision is how repeated live windows should be
-  stored and compared without losing prior run artifacts.
+- A compact live-window registry now stores repeated run summaries without
+  preserving unbounded raw API dumps.
+- The registry contains `expanded_window_001` and `expanded_window_002`, both
+  with 12 markets, 20 buckets, 0 alerts, and baseline readiness
+  `baseline_available_zero_mad_or_non_alerting`.
+- The next methodological step is to define how future non-zero alerts should
+  be reviewed before they become thesis-facing monitor evidence.
 deliverables:
-- Specify or implement a deterministic storage structure for repeated bounded
-  live-window outputs.
-- Preserve or summarize previous live windows before future refreshes overwrite
-  the latest dashboard artifacts.
-- Keep comparisons compact and bounded; do not store raw wallet addresses or
-  unbounded raw API dumps.
-- Keep refresh/collection as explicit operator commands, not automatic
-  background behaviour.
-- Keep Rule C thresholds and scoring outputs unchanged.
+- Define a deterministic alert-review workflow over compact monitor outputs.
+- Specify review states, required evidence fields, rejection criteria, and
+  thesis-facing wording limits.
+- Keep alerts descriptive until human review confirms source artifacts,
+  timestamp validity, market mapping, and no-lookahead status.
+- Keep refresh/collection explicit and bounded.
+- Keep Rule C thresholds unchanged.
 scope:
 - `data/monitor_v2_curated_watchlist.csv`.
 - `data/results/monitor_v2_curated_watchlist_validation_report.json`.
@@ -95,11 +98,11 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- A repeated-window storage/comparison rule is selected before more live
-  windows are collected.
-- The latest second-window result is documented against the first expanded
-  baseline.
-- The rule does not change Rule C thresholds without a separate reviewed
+- Alert-review states and rejection criteria are documented before any
+  thesis-facing alert claim is made.
+- The workflow uses compact summaries and source artifact references, not raw
+  wallet-address data or unbounded raw API dumps.
+- The workflow does not change Rule C thresholds without a separate reviewed
   sensitivity decision.
 - The workflow does not collect data automatically, run continuously, execute
   orders, call agents, call MCP, use ML, write the database, or require trading
@@ -117,7 +120,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: decide repeated live-window storage structure
+next_commit: docs: specify monitor alert-review workflow
 
 ## Decision Inputs For This Goal
 
@@ -189,10 +192,10 @@ next_commit: docs: decide repeated live-window storage structure
 
 ## Done Means
 
-- The project has a clear rule for preserving repeated live windows and
-  comparing them over time.
-- The next decision is whether to implement that storage rule or start a
-  tested alert-review workflow on compact repeated-window summaries.
+- Future non-zero monitor alerts have a documented human-review path before
+  they can be used in thesis-facing prose or strategy hypotheses.
+- The next decision is whether to implement a compact alert-review artifact or
+  run another bounded window after the review workflow exists.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -394,3 +397,7 @@ next_commit: docs: decide repeated live-window storage structure
   aggregate wallet/activity rows, 1'416 scoring rows, 60 summary rows, 0
   alerts, and baseline readiness
   `baseline_available_zero_mad_or_non_alerting`.
+- Repeated live-window registry exists:
+  `data/results/monitor_v2_live_window_registry.csv` and
+  `data/results/monitor_v2_live_window_registry_metadata.json` preserve compact
+  summaries for the first two expanded live windows.

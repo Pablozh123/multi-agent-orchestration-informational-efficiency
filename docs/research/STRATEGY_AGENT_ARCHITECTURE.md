@@ -3087,6 +3087,59 @@ Next phase selected:
 - Decide repeated-window storage and comparison structure before collecting
   additional long live windows.
 
+### Repeated Live-Window Registry
+
+live_window_registry_status: implemented
+
+The monitor now has a compact repeated-window registry:
+
+- `data/results/monitor_v2_live_window_registry.csv`
+- `data/results/monitor_v2_live_window_registry_metadata.json`
+
+Registry command:
+
+```powershell
+.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_live_window_registry --run-id expanded_window_002 --run-label "second expanded 12-market baseline"
+```
+
+Stored fields include:
+
+- run id and label,
+- generated timestamp,
+- market count,
+- bucket count,
+- market snapshot row count,
+- aggregate wallet/activity row count,
+- scoring row count,
+- summary row count,
+- alert count,
+- baseline readiness,
+- baseline settings,
+- compact severity/status count JSON,
+- metadata source paths,
+- descriptive claim scope.
+
+Current registry:
+
+- `expanded_window_001`: first expanded 12-market baseline.
+- `expanded_window_002`: second expanded 12-market baseline.
+- Both rows report 12 markets, 20 buckets, 0 alerts, and baseline readiness
+  `baseline_available_zero_mad_or_non_alerting`.
+
+Storage decision:
+
+- Keep latest full live files as latest-run artifacts.
+- Preserve repeated-run history through compact registry rows.
+- Do not preserve unbounded raw API dumps by default.
+- Do not include wallet addresses.
+- Do not treat registry rows as causal, efficiency, private-information,
+  tradeability, or profitability evidence.
+
+Next phase selected:
+
+- Specify an alert-review workflow for future non-zero monitor alerts before
+  thesis-facing live-alert prose or strategy hypotheses use them.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

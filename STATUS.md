@@ -3,71 +3,43 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-23 00:21
+Generated: 2026-05-23 00:26
 
-Current goal: `goal-polymarket-live-window-storage-001` - Decide repeated live-window storage and comparison structure
+Current goal: `goal-polymarket-alert-review-workflow-001` - Specify alert-review workflow from compact live-window summaries
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `283 passed in 15.38s`
+Pytest summary: `287 passed in 14.71s`
 
 Git branch: `main`
 
-Latest commit: `7b50b51`
+Latest commit: `074a3bc`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
- M data/results/monitor_v2_curated_watchlist_validation_report.json
- M data/results/monitor_v2_polymarket_dashboard.html
- M data/results/monitor_v2_polymarket_dashboard_metadata.json
- M data/results/monitor_v2_polymarket_live_collection_metadata.json
- M data/results/monitor_v2_polymarket_live_input_validation_report.json
- M data/results/monitor_v2_polymarket_live_market_snapshots.csv
- M data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv
- M data/results/monitor_v2_polymarket_live_watchlist.csv
- M data/results/monitor_v2_polymarket_refresh_metadata.json
- M data/results/monitor_v2_polymarket_rolling_alert_rows.csv
- M data/results/monitor_v2_polymarket_rolling_alert_summary.csv
- M data/results/monitor_v2_polymarket_rolling_history.png
- M data/results/monitor_v2_polymarket_rolling_history_figure_metadata.json
- M data/results/monitor_v2_polymarket_rolling_history_metadata.json
- M data/results/monitor_v2_polymarket_rolling_scoring_metadata.json
- M data/results/monitor_v2_polymarket_rolling_scoring_snapshots.csv
- M data/results/monitor_v2_polymarket_rolling_scoring_validation_report.json
+ M docs/project/TOOL_USAGE.md
  M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
+?? data/results/monitor_v2_live_window_registry.csv
+?? data/results/monitor_v2_live_window_registry_metadata.json
+?? operations/analysis/monitor_v2_live_window_registry.py
+?? tests/test_monitor_v2_live_window_registry.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                            |   51 +-
- ROADMAP.md                                         |   11 +-
- ...tor_v2_curated_watchlist_validation_report.json |    2 +-
- data/results/monitor_v2_polymarket_dashboard.html  |   14 +-
- .../monitor_v2_polymarket_dashboard_metadata.json  |    4 +-
- ...tor_v2_polymarket_live_collection_metadata.json |    4 +-
- ...v2_polymarket_live_input_validation_report.json |    2 +-
- ...monitor_v2_polymarket_live_market_snapshots.csv |  960 +++----
- ...or_v2_polymarket_live_wallet_tier_snapshots.csv |  480 ++--
- .../monitor_v2_polymarket_live_watchlist.csv       |   24 +-
- .../monitor_v2_polymarket_refresh_metadata.json    |    2 +-
- .../monitor_v2_polymarket_rolling_alert_rows.csv   | 2832 ++++++++++----------
- ...monitor_v2_polymarket_rolling_alert_summary.csv |    2 +-
- .../monitor_v2_polymarket_rolling_history.png      |  Bin 135547 -> 133660 bytes
- ...polymarket_rolling_history_figure_metadata.json |    2 +-
- ...tor_v2_polymarket_rolling_history_metadata.json |    2 +-
- ...tor_v2_polymarket_rolling_scoring_metadata.json |    2 +-
- ...tor_v2_polymarket_rolling_scoring_snapshots.csv | 2832 ++++++++++----------
- ...lymarket_rolling_scoring_validation_report.json |    2 +-
- docs/project/WORK_LOG.md                           |   55 +
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md       |   53 +
- 21 files changed, 3734 insertions(+), 3602 deletions(-)
+ GOAL.md                                      | 53 ++++++++++++++++------------
+ ROADMAP.md                                   | 11 +++++-
+ docs/project/TOOL_USAGE.md                   |  6 ++++
+ docs/project/WORK_LOG.md                     | 40 +++++++++++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 53 ++++++++++++++++++++++++++++
+ 5 files changed, 139 insertions(+), 24 deletions(-)
 ```
 
 Blockers:
@@ -76,7 +48,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: decide repeated live-window storage structure
+- docs: specify monitor alert-review workflow
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

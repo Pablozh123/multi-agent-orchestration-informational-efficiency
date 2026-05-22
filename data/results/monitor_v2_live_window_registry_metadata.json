@@ -1,0 +1,25 @@
+{
+  "generated_at_utc": "2026-05-22T22:24:57+00:00",
+  "limitations": {
+    "latest_raw_artifacts_may_be_overwritten": true,
+    "no_causal_or_profitability_claim": true,
+    "registry_preserves_compact_run_summaries_only": true
+  },
+  "method": {
+    "compact_summary_only": true,
+    "does_not_collect_external_data": true,
+    "does_not_send_orders": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "name": "monitor_v2_live_window_registry"
+  },
+  "outputs": {
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "latest_run_id": "expanded_window_002",
+    "registry_path": "data\\results\\monitor_v2_live_window_registry.csv",
+    "row_count": 2
+  }
+}

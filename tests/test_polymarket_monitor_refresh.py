@@ -29,14 +29,25 @@ def test_run_polymarket_monitor_refresh_writes_dashboard_and_metadata(
         reset_outputs=True,
         collected_at_utc=COLLECTED_AT,
         curated_watchlist_path=curated_path,
+        baseline_observations=30,
+        min_baseline_observations=20,
     )
 
     metadata = json.loads(result.metadata_path.read_text(encoding="utf-8"))
+    scoring_metadata = json.loads(
+        Path("data/results/monitor_v2_polymarket_rolling_scoring_metadata.json").read_text(
+            encoding="utf-8",
+        )
+    )
     assert result.samples_completed == 3
     assert result.bucket_count == 3
     assert result.dashboard_path.exists()
     assert metadata["method"]["bounded_runner_not_daemon"] is True
     assert metadata["method"]["uses_curated_watchlist"] is True
+    assert metadata["method"]["baseline_observations"] == 30
+    assert metadata["method"]["min_baseline_observations"] == 20
+    assert scoring_metadata["method"]["baseline_observations"] == 30
+    assert scoring_metadata["method"]["min_baseline_observations"] == 20
     assert metadata["outputs"]["contains_wallet_addresses"] is False
 
 

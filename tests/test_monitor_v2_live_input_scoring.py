@@ -14,6 +14,8 @@ from operations.analysis.monitor_v2_live_input_batch import (
     generate_local_live_input_batch,
 )
 from operations.analysis.monitor_v2_live_input_scoring import (
+    LiveMonitorInputs,
+    _build_metadata,
     build_live_scoring_snapshots,
     generate_live_monitor_v2_scoring_outputs,
     main,
@@ -62,6 +64,7 @@ def test_generate_live_scoring_outputs_writes_diagnostic_artifacts(tmp_path: Pat
     assert metadata["method"]["validates_inputs_before_scoring"] is True
     assert metadata["method"]["scores_closed_buckets_only"] is True
     assert metadata["method"]["diagnostic_file_baseline_only"] is True
+    assert metadata["method"]["production_like_baseline_available"] is False
     assert metadata["method"]["baseline_readiness"] == "diagnostic_scores_available"
     assert metadata["method"]["max_baseline_observations_available"] >= 2
     assert metadata["outputs"]["contains_wallet_addresses"] is False
@@ -72,6 +75,42 @@ def test_generate_live_scoring_outputs_writes_diagnostic_artifacts(tmp_path: Pat
     for frame in (snapshots, rows, summary):
         assert "wallet_address" not in frame.columns
     assert set(rows["status"]).issuperset({"insufficient_baseline", "ok"})
+
+
+def test_metadata_marks_production_like_baseline_when_available() -> None:
+    alert_rows = pd.DataFrame(
+        [
+            {
+                "status": "zero_mad",
+                "severity": "none",
+                "baseline_observations": 20,
+            }
+        ]
+    )
+    metadata = _build_metadata(
+        inputs=LiveMonitorInputs(
+            watchlist=pd.DataFrame([{}]),
+            market_snapshots=pd.DataFrame([{}]),
+            wallet_tier_snapshots=pd.DataFrame([{}]),
+            event_candidates=pd.DataFrame(),
+            validation_report={"status": "pass"},
+        ),
+        snapshots=pd.DataFrame([{}]),
+        alert_rows=alert_rows,
+        alert_summary=pd.DataFrame([{}]),
+        watchlist_path=Path("watchlist.csv"),
+        market_snapshots_path=Path("market.csv"),
+        wallet_tier_snapshots_path=Path("wallet.csv"),
+        event_candidates_path=Path("events.csv"),
+        validation_report_path=Path("report.json"),
+        baseline_observations=30,
+        min_baseline_observations=20,
+    )
+
+    assert metadata["method"]["diagnostic_file_baseline_only"] is False
+    assert metadata["method"]["production_like_baseline_available"] is True
+    assert metadata["limitations"]["diagnostic_scoring_only"] is False
+    assert metadata["limitations"]["too_few_buckets_for_production_alerts"] is False
 
 
 def test_live_scoring_outputs_are_deterministic_except_metadata(tmp_path: Path) -> None:

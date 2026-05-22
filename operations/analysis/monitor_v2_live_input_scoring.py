@@ -549,6 +549,11 @@ def _build_metadata(
     status_counts = _value_counts(alert_rows, "status")
     severity_counts = _value_counts(alert_rows, "severity")
     max_baseline_observations = _max_numeric(alert_rows, "baseline_observations")
+    production_like_min = 20
+    production_like_baseline = (
+        min_baseline_observations >= production_like_min
+        and max_baseline_observations >= production_like_min
+    )
     return {
         "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
         "method": {
@@ -556,8 +561,9 @@ def _build_metadata(
             "input_mode": "validated_live_style_files",
             "baseline_observations": baseline_observations,
             "min_baseline_observations": min_baseline_observations,
-            "diagnostic_file_baseline_only": True,
-            "production_like_min_baseline_observations": 20,
+            "diagnostic_file_baseline_only": not production_like_baseline,
+            "production_like_min_baseline_observations": production_like_min,
+            "production_like_baseline_available": production_like_baseline,
             "alert_rule": "Rule C combined-family confirmation from monitor_v2_snapshot",
             "validates_inputs_before_scoring": True,
             "scores_closed_buckets_only": True,
@@ -597,8 +603,8 @@ def _build_metadata(
         },
         "limitations": {
             "file_based_scoring_only": True,
-            "diagnostic_scoring_only": True,
-            "too_few_buckets_for_production_alerts": True,
+            "diagnostic_scoring_only": not production_like_baseline,
+            "too_few_buckets_for_production_alerts": not production_like_baseline,
             "input_files_may_be_mock_or_read_only_collector": True,
             "uses_aggregate_wallet_tier_activity": True,
             "uses_observed_buy_side_activity_extract": True,

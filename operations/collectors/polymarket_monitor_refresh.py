@@ -24,6 +24,8 @@ from operations.collectors.polymarket_readonly import (
     DEFAULT_TRADE_LIMIT,
 )
 from operations.collectors.polymarket_rolling_history import (
+    DIAGNOSTIC_BASELINE_OBSERVATIONS,
+    DIAGNOSTIC_MIN_BASELINE_OBSERVATIONS,
     ROLLING_ALERT_SUMMARY_OUTPUT,
     ROLLING_HISTORY_METADATA_OUTPUT,
     ROLLING_SCORING_METADATA_OUTPUT,
@@ -69,6 +71,8 @@ def run_polymarket_monitor_refresh(
     trade_limit: int = DEFAULT_TRADE_LIMIT,
     collected_at_utc: str | None = None,
     curated_watchlist_path: Path | None = None,
+    baseline_observations: int = DIAGNOSTIC_BASELINE_OBSERVATIONS,
+    min_baseline_observations: int = DIAGNOSTIC_MIN_BASELINE_OBSERVATIONS,
     dashboard_path: Path = DASHBOARD_OUTPUT,
     dashboard_metadata_path: Path = DASHBOARD_METADATA_OUTPUT,
     metadata_path: Path = REFRESH_METADATA_OUTPUT,
@@ -86,6 +90,8 @@ def run_polymarket_monitor_refresh(
         trade_limit=trade_limit,
         collected_at_utc=collected_at_utc,
         curated_watchlist_path=curated_watchlist_path,
+        baseline_observations=baseline_observations,
+        min_baseline_observations=min_baseline_observations,
         client=client,
     )
     dashboard = generate_monitor_v2_dashboard(
@@ -104,6 +110,8 @@ def run_polymarket_monitor_refresh(
             "samples_completed": rolling.samples_completed,
             "delay_seconds": delay_seconds,
             "bucket_minutes": bucket_minutes,
+            "baseline_observations": baseline_observations,
+            "min_baseline_observations": min_baseline_observations,
             "reset_outputs": reset_outputs,
             "bounded_runner_not_daemon": True,
             "uses_curated_watchlist": curated_watchlist_path is not None,
@@ -160,6 +168,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--trade-limit", type=int, default=DEFAULT_TRADE_LIMIT)
     parser.add_argument("--collected-at-utc", default=None)
     parser.add_argument("--curated-watchlist-input", type=Path, default=None)
+    parser.add_argument("--baseline-observations", type=int, default=DIAGNOSTIC_BASELINE_OBSERVATIONS)
+    parser.add_argument(
+        "--min-baseline-observations",
+        type=int,
+        default=DIAGNOSTIC_MIN_BASELINE_OBSERVATIONS,
+    )
     parser.add_argument("--dashboard-output", type=Path, default=DASHBOARD_OUTPUT)
     parser.add_argument("--dashboard-metadata-output", type=Path, default=DASHBOARD_METADATA_OUTPUT)
     parser.add_argument("--metadata-output", type=Path, default=REFRESH_METADATA_OUTPUT)
@@ -176,6 +190,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             trade_limit=args.trade_limit,
             collected_at_utc=args.collected_at_utc,
             curated_watchlist_path=args.curated_watchlist_input,
+            baseline_observations=args.baseline_observations,
+            min_baseline_observations=args.min_baseline_observations,
             dashboard_path=args.dashboard_output,
             dashboard_metadata_path=args.dashboard_metadata_output,
             metadata_path=args.metadata_output,

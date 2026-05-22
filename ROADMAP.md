@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for production-like live baseline review
+Status: active for production-like threshold sensitivity
 
 Done criteria:
 
@@ -347,8 +347,12 @@ Done criteria:
 - The latest baseline readiness is
   `baseline_available_zero_mad_or_non_alerting`; scoring metadata marks
   `production_like_baseline_available=true`.
-- The next empirical step is to review this production-like baseline before
-  threshold sensitivity, watchlist expansion, or a read-only UI/server wrapper.
+- The production-like baseline review is accepted: 0 alerts means Rule C did
+  not trigger in the observed window, not that the broader market was quiet,
+  efficient, inefficient, causal, or tradeable.
+- The next empirical step is threshold sensitivity on the existing bounded
+  artifacts before changing Rule C, expanding the watchlist, or building a
+  read-only UI/server wrapper.
 
 Blockers:
 
@@ -361,8 +365,8 @@ Blockers:
   scope.
 - MCP, agents, strategy backtests, authenticated user channels, and order
   execution remain blocked while the read-only collector is built.
-- Thesis-facing live-alert wording remains blocked until the 21-bucket
-  production-like baseline is reviewed and its zero-alert result is documented
-  as descriptive only.
-- Threshold changes, watchlist expansion, and any read-only UI/server wrapper
-  should wait until the production-like baseline review is complete.
+- Thesis-facing live-alert wording remains blocked until threshold
+  sensitivity explains whether zero alerts mainly reflect strict Rule C,
+  zero-MAD rows, limited metric movement, or watchlist scope.
+- Watchlist expansion and any read-only UI/server wrapper should wait until
+  the threshold-sensitivity report is complete.

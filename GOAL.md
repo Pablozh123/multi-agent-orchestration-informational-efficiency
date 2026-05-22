@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-polymarket-live-production-baseline-001
-title: Review production-like Polymarket live monitor baseline
+goal_id: goal-polymarket-live-threshold-sensitivity-001
+title: Evaluate monitor threshold sensitivity on production-like live baseline
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -25,24 +25,28 @@ why:
   interpretation rules.
 - A production-like live monitor baseline has now been collected with 21 real
   closed 5-minute buckets and the v2 30/20 rolling-baseline settings.
-- The latest production-like refresh reports 0 alerts and baseline readiness
+- The production-like baseline review reports 0 alerts and baseline readiness
   `baseline_available_zero_mad_or_non_alerting`.
-- The next empirical step is to review this output before changing thresholds,
-  expanding the watchlist, or building a UI/server wrapper.
+- The reviewed summary has 300 `insufficient_baseline` rows and 72 `zero_mad`
+  rows, with 372 `none` severity rows.
+- The next empirical step is to test threshold sensitivity on the existing
+  bounded files before changing the default Rule C, expanding the watchlist, or
+  building a UI/server wrapper.
 deliverables:
-- Review the production-like rolling-history, scoring, dashboard, and metadata
-  artifacts.
-- Record alert count, status counts, severity counts, baseline settings, and
-  baseline readiness.
-- Interpret the zero-alert result descriptively and with limitations.
-- Decide whether the next step should be threshold sensitivity, watchlist
-  expansion, or a read-only UI/server wrapper.
+- Build a deterministic threshold-sensitivity report over the existing
+  production-like Polymarket baseline artifacts.
+- Compare the current Rule C output with clearly labelled diagnostic
+  alternatives.
+- Record whether the zero-alert result is driven by strict combined-family
+  confirmation, zero-MAD rows, limited metric movement, or watchlist scope.
+- Keep Rule C as the default unless a later review explicitly changes it.
 scope:
 - `data/monitor_v2_curated_watchlist.csv`.
 - `data/results/monitor_v2_polymarket_rolling_*`.
 - `data/results/monitor_v2_polymarket_live_*`.
 - `data/results/monitor_v2_polymarket_dashboard.html`.
 - Existing project/research docs.
+- A small deterministic sensitivity module and tests if needed.
 - Polymarket politics/geopolitics markets only.
 - Existing local validated output files.
 out_of_scope:
@@ -56,13 +60,13 @@ out_of_scope:
   causal claims, Kalshi integration, or RCP probability use.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- At least 20 real closed 5-minute buckets are documented without synthetic
-  timestamp shifting.
-- Dashboard reports 20 or more buckets and the source artifact paths remain
-  traceable.
-- Scoring metadata validates and reports v2 30/20 baseline settings.
-- The zero-alert result is interpreted descriptively only.
-- The curated watchlist validator passes and the report is regenerated.
+- The threshold-sensitivity report reads existing bounded files only.
+- The report contains no wallet addresses and no order instructions.
+- The report separates default Rule C from diagnostic alternatives.
+- Any non-default rule is labelled as sensitivity analysis, not as the monitor
+  default.
+- The zero-alert result remains interpreted descriptively only.
+- Existing collector and watchlist files are not rewritten.
 - Existing collector and scoring outputs remain read-only and file-based.
 - No authenticated user channel, order endpoint, agent, MCP, ML, strategy
   backtest, cloud daemon, database write, or trading credential path is
@@ -70,7 +74,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: data: collect production-like polymarket monitor baseline
+next_commit: feat: add monitor threshold sensitivity report
 
 ## Decision Inputs For This Goal
 
@@ -119,12 +123,10 @@ next_commit: data: collect production-like polymarket monitor baseline
 
 ## Done Means
 
-- The monitor's first production-like rolling baseline is reviewed according
-  to the current 20-bucket v2 contract and 30/20 scoring settings.
-- The zero-alert result is recorded as "Rule C did not trigger in this observed
-  window", not as proof that the broader market is quiet.
-- The next decision is selected: threshold sensitivity, watchlist expansion, or
-  read-only UI/server wrapper.
+- The first threshold-sensitivity report explains how strict Rule C behaves on
+  the 21-bucket production-like baseline.
+- The next decision is selected: keep Rule C unchanged, adjust diagnostic
+  labels, expand the watchlist, or build a read-only UI/server wrapper.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -290,3 +292,6 @@ next_commit: data: collect production-like polymarket monitor baseline
 - First production-like Polymarket live monitor baseline exists with 21 real
   closed 5-minute buckets, 0 alerts, v2 30/20 scoring settings, and baseline
   readiness `baseline_available_zero_mad_or_non_alerting`.
+- Production-like live monitor baseline review is accepted: the observed
+  zero-alert result is a descriptive Rule C outcome, not evidence that the
+  broader market was quiet, efficient, inefficient, causal, or tradeable.

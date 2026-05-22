@@ -2712,9 +2712,15 @@ Required review after each run:
 
 ### Production-Like Live Monitor Baseline
 
-production_like_live_baseline_status: collected_review_pending
+production_like_live_baseline_status: reviewed
 
 Collection date: 2026-05-22
+
+Review date: 2026-05-22
+
+Review status: accepted as the first production-like read-only live monitor
+baseline, with threshold sensitivity required before changing Rule C or making
+thesis-facing live-alert claims.
 
 Source:
 
@@ -2764,8 +2770,12 @@ Interpretation:
 
 Next phase selected:
 
-- Review the production-like baseline output shape and interpretation before
-  threshold sensitivity, watchlist expansion, or a read-only UI/server wrapper.
+- Run threshold sensitivity on the existing bounded production-like artifacts.
+- Keep the default Rule C unchanged until the sensitivity output is reviewed.
+- Defer watchlist expansion and read-only UI/server wrapper work until the
+  threshold-sensitivity report explains whether zero alerts mainly reflect
+  strict combined-family confirmation, zero-MAD rows, limited movement, or
+  watchlist scope.
 
 ## First Prototype Specification
 

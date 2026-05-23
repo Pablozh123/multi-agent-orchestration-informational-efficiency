@@ -119,17 +119,76 @@ causal proof, private-information proof, tradeability, or profitability.
 - `data/results/wallet_reference_case_audit_metadata.json`
 - `data/results/wallet_reference_pattern_features.csv`
 - `data/results/wallet_reference_pattern_features_metadata.json`
+- `data/results/wallet_reference_similarity_scores.csv`
+- `data/results/wallet_reference_similarity_summary.csv`
+- `data/results/wallet_reference_similarity_matrix.png`
+- `data/results/wallet_reference_similarity_dashboard.html`
+- `data/results/wallet_reference_similarity_metadata.json`
 
 Output policy:
 
 - Audit and feature outputs do not expose wallet addresses.
+- Similarity outputs do not expose wallet addresses.
 - Outputs do not contain order instructions.
 - Outputs do not use agents, MCP, ML, LLM calls, or database writes.
 
+## Similarity Score
+
+`reference_case_similarity_score` is implemented as a deterministic
+equal-weight pattern-overlap score:
+
+```text
+matched triggered reference patterns / all triggered reference patterns
+```
+
+This means:
+
+- `1.0` means the candidate contains every triggered pattern label from the
+  reference profile.
+- `0.0` means no triggered reference label overlaps.
+- The score is directional. A small two-label large-flow case can overlap 50
+  percent with another two-label large-flow profile, while the same case may
+  cover only a small share of a broader six-label cluster profile.
+- Self-matches in the current dashboard are calibration rows, not new evidence.
+
+The first generated reference matrix shows:
+
+- AdrianCronauer vs AdrianCronauer: `1.0`, self-profile calibration.
+- Iran/U.S. cluster vs Iran/U.S. cluster: `1.0`, self-profile calibration.
+- Iran/U.S. cluster vs AdrianCronauer reference: `0.5`, because it shares the
+  `market_concentration` label but not `large_trade_flow`.
+- AdrianCronauer vs Iran/U.S. cluster reference: `0.166667`, because it shares
+  only `market_concentration` out of six triggered cluster labels.
+
+Allowed interpretation: similarity is a review cue. It is not a probability,
+causal test, trading signal, profitability estimate, or misconduct finding.
+
+## Visual Review
+
+Open the local dashboard:
+
+```powershell
+.\.venv\Scripts\python.exe -m operations.analysis.wallet_reference_similarity
+```
+
+Then open:
+
+```text
+data/results/wallet_reference_similarity_dashboard.html
+```
+
+The dashboard contains:
+
+- best reference match per candidate,
+- similarity matrix,
+- triggered pattern profiles,
+- all candidate/reference comparisons,
+- interpretation limits.
+
 ## Next Step
 
-Future live monitor alerts can be compared with this reference taxonomy through
-a bounded `reference_case_similarity_score`. That score should expose only:
+Future live monitor alerts can reuse this reference taxonomy through bounded
+candidate feature files. The score should expose only:
 
 - pattern labels,
 - source artifact references,

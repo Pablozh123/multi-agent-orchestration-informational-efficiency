@@ -73,6 +73,8 @@ why:
 - The Iran/U.S. reported cluster and the AdrianCronauer large-flow example are
   treated as separate reference-case types: reported cluster pattern versus
   reported concentrated flow.
+- A bounded reference-case similarity score and dashboard now compare neutral
+  pattern overlap without exposing wallet addresses or making hard claims.
 deliverables:
 - Define a deterministic alert-review workflow over compact monitor outputs.
 - Specify review states, required evidence fields, rejection criteria, and
@@ -80,6 +82,8 @@ deliverables:
 - Add a curated wallet reference-case registry and deterministic audit.
 - Add neutral reference-pattern features that separate reported facts,
   computed facts, and unknown fields.
+- Add a bounded reference-case similarity score and visual dashboard for human
+  review.
 - Keep alerts descriptive until human review confirms source artifacts,
   timestamp validity, market mapping, and no-lookahead status.
 - Keep refresh/collection explicit and bounded.
@@ -122,6 +126,9 @@ acceptance_criteria:
 - The output contains no wallet addresses and no order instructions.
 - Reference-case feature outputs contain no wallet addresses and expose only
   neutral pattern labels, fact source, claim scope, and review status.
+- Reference-case similarity outputs contain no wallet addresses and expose
+  only candidate id, reference id, pattern-overlap score, matched labels,
+  claim scope, limitations, and review status.
 - Rule C thresholds remain unchanged.
 - Existing scoring outputs are not reinterpreted as causal, profitable,
   private-information, or efficiency evidence.
@@ -131,7 +138,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add wallet reference case pattern layer
+next_commit: feat: add wallet reference similarity dashboard
 
 ## Decision Inputs For This Goal
 
@@ -207,8 +214,10 @@ next_commit: feat: add wallet reference case pattern layer
   they can be used in thesis-facing prose or strategy hypotheses.
 - Publicly reported wallet examples are stored as curated reference cases, not
   as accusations or computed proof.
-- The next decision is whether to implement a bounded reference-case
-  similarity score for future monitor watch candidates.
+- Reference cases can be compared through a bounded equal-weight pattern
+  overlap score and local dashboard.
+- The next decision is how future monitor alerts should be converted into
+  candidate feature rows for the similarity dashboard.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -218,8 +227,8 @@ next_commit: feat: add wallet reference case pattern layer
   `llm_audit_log` usage, and deterministic backtest outputs exist.
 - ML remains blocked until deterministic H1-H3 outputs and any strategy
   prototype baseline have written methodology and review notes.
-- Reference-case similarity scoring remains blocked until the current registry,
-  audit, feature output, and review wording pass tests and project guardrails.
+- Live candidate-feature generation remains blocked until its input contract
+  avoids raw wallet dumps, arbitrary thresholds, and unreviewed public claims.
 
 ## Completed Goals
 
@@ -418,3 +427,5 @@ next_commit: feat: add wallet reference case pattern layer
   summaries for the first two expanded live windows.
 - Wallet reference-case registry, audit, and neutral pattern features exist for
   the Iran/U.S. reported cluster and the AdrianCronauer large-flow example.
+- Wallet reference-case similarity scores, summary, matrix figure, and local
+  dashboard exist for the current reference registry.

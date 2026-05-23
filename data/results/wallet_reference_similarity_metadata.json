@@ -1,0 +1,39 @@
+{
+  "generated_at_utc": "2026-05-23T14:40:36+00:00",
+  "inputs": {
+    "candidate_features_path": "data\\results\\wallet_reference_pattern_features.csv",
+    "reference_features_path": "data\\results\\wallet_reference_pattern_features.csv"
+  },
+  "limitations": {
+    "descriptive_pattern_overlap_only": true,
+    "not_a_causal_test": true,
+    "not_a_probability_model": true,
+    "not_a_trade_or_profitability_signal": true,
+    "requires_human_review": true
+  },
+  "method": {
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_use_rcp": true,
+    "does_not_write_database": true,
+    "name": "wallet_reference_case_similarity",
+    "pattern_weights": "equal_weight_v1",
+    "score_definition": "matched_triggered_reference_patterns / triggered_reference_patterns",
+    "uses_existing_files_only": true
+  },
+  "outputs": {
+    "candidate_count": 2,
+    "comparison_count": 4,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "dashboard_path": "data\\results\\wallet_reference_similarity_dashboard.html",
+    "figure_path": "data\\results\\wallet_reference_similarity_matrix.png",
+    "max_non_self_similarity": 0.5,
+    "reference_count": 2,
+    "scores_path": "data\\results\\wallet_reference_similarity_scores.csv",
+    "summary_count": 2,
+    "summary_path": "data\\results\\wallet_reference_similarity_summary.csv"
+  }
+}

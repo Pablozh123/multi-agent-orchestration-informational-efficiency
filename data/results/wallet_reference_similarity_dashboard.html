@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Wallet Reference Similarity</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 28px; color: #17202a; }
+    .metrics { display: grid; grid-template-columns: repeat(4, minmax(130px, 1fr)); gap: 12px; }
+    .metric { border: 1px solid #d7dde5; border-radius: 6px; padding: 12px; background: #f8fafc; }
+    .metric strong { display: block; font-size: 22px; margin-top: 4px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; font-size: 13px; }
+    th, td { border: 1px solid #d7dde5; padding: 7px; text-align: left; vertical-align: top; }
+    th { background: #eef2f7; }
+    img { max-width: 100%; border: 1px solid #d7dde5; border-radius: 6px; }
+    code { background: #f1f5f9; padding: 2px 4px; border-radius: 4px; }
+    .note { background: #fff7e6; border: 1px solid #f0d08a; padding: 12px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>Wallet Reference Similarity</h1>
+  <p class="note">Read-only diagnostic view. Scores are equal-weight pattern overlap, not probability, proof, causality, tradeability, or profitability evidence.</p>
+  <section class="metrics">
+    <div class="metric">Candidates<strong>2</strong></div>
+    <div class="metric">References<strong>2</strong></div>
+    <div class="metric">Comparisons<strong>4</strong></div>
+    <div class="metric">Max non-self score<strong>0.50</strong></div>
+  </section>
+  <h2>Best Match Summary</h2>
+  <table>
+    <thead><tr><th>Candidate</th><th>Best reference</th><th>Score</th><th>Label</th><th>Matched patterns</th></tr></thead>
+    <tbody><tr><td>adriancronauer_large_iran_flow_2026_05_14</td><td>adriancronauer_large_iran_flow_2026_05_14</td><td>1.000</td><td>reference_self_profile</td><td>large_trade_flow,market_concentration</td></tr>
+<tr><td>iran_cluster_2026_bubblemaps_reported</td><td>iran_cluster_2026_bubblemaps_reported</td><td>1.000</td><td>reference_self_profile</td><td>cluster_link_reported,event_proximity,high_reported_win_rate,market_concentration,same_theme_repeated_positions,shared_funding_reported</td></tr></tbody>
+  </table>
+  <h2>Similarity Matrix</h2>
+  <img src="wallet_reference_similarity_matrix.png" alt="Wallet reference-case similarity matrix">
+  <h2>Reference Pattern Profiles</h2>
+  <table>
+    <thead><tr><th>Case</th><th>Triggered patterns</th></tr></thead>
+    <tbody><tr><td>adriancronauer_large_iran_flow_2026_05_14</td><td>large_trade_flow, market_concentration</td></tr>
+<tr><td>iran_cluster_2026_bubblemaps_reported</td><td>cluster_link_reported, event_proximity, high_reported_win_rate, market_concentration, same_theme_repeated_positions, shared_funding_reported</td></tr></tbody>
+  </table>
+  <h2>All Comparisons</h2>
+  <table>
+    <thead><tr><th>Candidate</th><th>Reference</th><th>Score</th><th>Matched</th><th>Reference total</th><th>Label</th><th>Matched patterns</th></tr></thead>
+    <tbody><tr><td>adriancronauer_large_iran_flow_2026_05_14</td><td>adriancronauer_large_iran_flow_2026_05_14</td><td>1.000</td><td>2</td><td>2</td><td>reference_self_profile</td><td>large_trade_flow,market_concentration</td></tr>
+<tr><td>adriancronauer_large_iran_flow_2026_05_14</td><td>iran_cluster_2026_bubblemaps_reported</td><td>0.167</td><td>1</td><td>6</td><td>partial_reference_overlap</td><td>market_concentration</td></tr>
+<tr><td>iran_cluster_2026_bubblemaps_reported</td><td>iran_cluster_2026_bubblemaps_reported</td><td>1.000</td><td>6</td><td>6</td><td>reference_self_profile</td><td>cluster_link_reported,event_proximity,high_reported_win_rate,market_concentration,same_theme_repeated_positions,shared_funding_reported</td></tr>
+<tr><td>iran_cluster_2026_bubblemaps_reported</td><td>adriancronauer_large_iran_flow_2026_05_14</td><td>0.500</td><td>1</td><td>2</td><td>partial_reference_overlap</td><td>market_concentration</td></tr></tbody>
+  </table>
+  <h2>How To Read This</h2>
+  <p>High overlap means a candidate shares neutral pattern labels with a reference case. It only tells a human reviewer where to look first. Unknown fields remain unknown until direct source data are available.</p>
+</body>
+</html>

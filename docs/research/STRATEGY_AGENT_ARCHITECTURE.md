@@ -3143,6 +3143,7 @@ Next phase selected:
 ### Wallet Reference-Case Pattern Layer
 
 wallet_reference_case_status: implemented
+reference_case_similarity_status: implemented
 
 The monitor now has a small deterministic reference-case layer for learning
 neutral wallet-pattern labels from public cases.
@@ -3165,6 +3166,11 @@ Generated outputs:
 - `data/results/wallet_reference_case_audit_metadata.json`
 - `data/results/wallet_reference_pattern_features.csv`
 - `data/results/wallet_reference_pattern_features_metadata.json`
+- `data/results/wallet_reference_similarity_scores.csv`
+- `data/results/wallet_reference_similarity_summary.csv`
+- `data/results/wallet_reference_similarity_matrix.png`
+- `data/results/wallet_reference_similarity_dashboard.html`
+- `data/results/wallet_reference_similarity_metadata.json`
 
 Triggered pattern labels:
 
@@ -3172,6 +3178,16 @@ Triggered pattern labels:
   `cluster_link_reported`, `shared_funding_reported`,
   `high_reported_win_rate`, `same_theme_repeated_positions`.
 - AdrianCronauer: `large_trade_flow`, `market_concentration`.
+
+Similarity result:
+
+- Self-profile rows score `1.0` and are calibration rows.
+- Iran cluster compared with the AdrianCronauer large-flow profile scores
+  `0.5`.
+- AdrianCronauer compared with the broader Iran cluster profile scores
+  `0.166667`.
+- The score is directional and equal-weighted:
+  `matched triggered reference patterns / triggered reference patterns`.
 
 Interpretation:
 
@@ -3181,11 +3197,14 @@ Interpretation:
 - Reported public facts remain `fact_source=reported`.
 - Missing unavailable data remains `fact_source=unknown`.
 - Audit and pattern outputs do not expose wallet addresses.
+- Similarity outputs do not expose wallet addresses.
+- Similarity is a review cue, not a probability model or hard label.
 
 Next phase selected:
 
-- Define how future monitor alerts should be compared against reference-case
-  pattern labels through a bounded similarity score.
+- Add bounded candidate-feature generation for future monitor watch candidates
+  so new alerts can be compared with this reference taxonomy without exposing
+  raw wallet data.
 
 ## First Prototype Specification
 

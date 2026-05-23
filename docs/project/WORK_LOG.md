@@ -3212,3 +3212,46 @@ Next step:
 
 - Design a bounded `reference_case_similarity_score` for future monitor watch
   candidates, still without agents, MCP, ML, trading, or misconduct claims.
+
+## 2026-05-23 - goal-polymarket-alert-review-workflow-001
+
+Task:
+
+- Add bounded wallet reference-case similarity scoring and a local dashboard.
+
+Files changed:
+
+- `operations/analysis/wallet_reference_similarity.py`
+- `tests/test_wallet_reference_similarity.py`
+- `data/results/wallet_reference_similarity_scores.csv`
+- `data/results/wallet_reference_similarity_summary.csv`
+- `data/results/wallet_reference_similarity_matrix.png`
+- `data/results/wallet_reference_similarity_dashboard.html`
+- `data/results/wallet_reference_similarity_metadata.json`
+- `docs/research/WALLET_REFERENCE_CASES.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+- `docs/project/TOOL_USAGE.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_wallet_reference_cases.py tests\test_wallet_reference_similarity.py -q` -> 11 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.wallet_reference_similarity` -> 2 candidates, 4 comparisons, max non-self score 0.5.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 298 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  298 passed through the status run.
+
+Decision:
+
+- Use equal-weight triggered-pattern overlap as the first
+  `reference_case_similarity_score`.
+- Treat self-profile rows as calibration rows.
+- Use the HTML dashboard and PNG matrix as the primary human review view.
+
+Next step:
+
+- Decide how future live monitor alert rows become candidate feature rows for
+  the reference similarity dashboard.

@@ -140,6 +140,13 @@ Validate and score wallet reference cases:
 ```powershell
 .\.venv\Scripts\python.exe -m operations.analysis.wallet_reference_case_audit
 .\.venv\Scripts\python.exe -m operations.analysis.wallet_reference_pattern_features
+.\.venv\Scripts\python.exe -m operations.analysis.wallet_reference_similarity
+```
+
+Open the reference similarity dashboard:
+
+```text
+data/results/wallet_reference_similarity_dashboard.html
 ```
 
 Interpretation rule:

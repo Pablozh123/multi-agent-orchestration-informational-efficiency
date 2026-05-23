@@ -405,6 +405,10 @@ Done criteria:
   pattern labels, fact-source status, claim scope, and review state.
 - Reference-case outputs do not expose wallet addresses and do not convert
   reported public claims into computed facts.
+- Reference-case similarity scores, summary, matrix figure, and local HTML
+  dashboard exist as bounded human-review aids.
+- Similarity is equal-weight pattern overlap and is documented as a review cue,
+  not a probability model or hard label.
 
 Blockers:
 
@@ -430,7 +434,7 @@ Blockers:
   structure is needed before building a longer repeated-run evidence base.
 - Non-zero live alerts remain thesis-facing blocked until review states,
   evidence fields, and rejection criteria are documented.
-- Reference-case similarity scoring is not implemented yet; current outputs are
-  taxonomy and audit artifacts only.
+- Live monitor alert rows are not yet converted into reference-similarity
+  candidate features.
 - Public reference cases remain evidence for pattern design, not proof of
   misconduct, private information, tradeability, or profitability.

@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-23 16:01
+Generated: 2026-05-23 16:41
 
 Current goal: `goal-polymarket-alert-review-workflow-001` - Specify alert-review workflow from compact summaries and wallet reference cases
 
@@ -11,11 +11,11 @@ Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `293 passed in 15.87s`
+Pytest summary: `298 passed in 16.40s`
 
 Git branch: `main`
 
-Latest commit: `6d8e387`
+Latest commit: `d186f08`
 
 Git status:
 
@@ -24,27 +24,27 @@ Git status:
  M ROADMAP.md
  M docs/project/TOOL_USAGE.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
+ M docs/research/WALLET_REFERENCE_CASES.md
  M docs/research/WHALE_METHOD.md
-?? data/reference_cases/
-?? data/results/wallet_reference_case_audit.csv
-?? data/results/wallet_reference_case_audit_metadata.json
-?? data/results/wallet_reference_pattern_features.csv
-?? data/results/wallet_reference_pattern_features_metadata.json
-?? docs/research/WALLET_REFERENCE_CASES.md
-?? operations/analysis/wallet_reference_case_audit.py
-?? operations/analysis/wallet_reference_pattern_features.py
-?? tests/test_wallet_reference_cases.py
+?? data/results/wallet_reference_similarity_dashboard.html
+?? data/results/wallet_reference_similarity_matrix.png
+?? data/results/wallet_reference_similarity_metadata.json
+?? data/results/wallet_reference_similarity_scores.csv
+?? data/results/wallet_reference_similarity_summary.csv
+?? operations/analysis/wallet_reference_similarity.py
+?? tests/test_wallet_reference_similarity.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      | 25 ++++++++++++---
- ROADMAP.md                                   | 11 +++++++
- docs/project/TOOL_USAGE.md                   |  7 +++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 47 ++++++++++++++++++++++++++++
- docs/research/WHALE_METHOD.md                | 33 +++++++++++++++++++
- 5 files changed, 119 insertions(+), 4 deletions(-)
+ GOAL.md                                      | 21 +++++++---
+ ROADMAP.md                                   |  8 +++-
+ docs/project/TOOL_USAGE.md                   |  7 ++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 23 +++++++++-
+ docs/research/WALLET_REFERENCE_CASES.md      | 63 +++++++++++++++++++++++++++-
+ docs/research/WHALE_METHOD.md                |  8 ++++
+ 6 files changed, 119 insertions(+), 11 deletions(-)
 ```
 
 Blockers:
@@ -53,7 +53,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: add wallet reference case pattern layer
+- feat: add wallet reference similarity dashboard
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

@@ -54,6 +54,9 @@ Output files:
 - `data/reference_cases/wallet_reference_cases.csv`
 - `data/results/wallet_reference_case_audit.csv`
 - `data/results/wallet_reference_pattern_features.csv`
+- `data/results/wallet_reference_similarity_scores.csv`
+- `data/results/wallet_reference_similarity_summary.csv`
+- `data/results/wallet_reference_similarity_dashboard.html`
 
 Current reference cases:
 
@@ -77,6 +80,11 @@ Reported public facts remain marked as `reported`. Missing data remains
 `unknown`. Computed monitor outputs must not turn reported win rate, reported
 funding links, or reported cluster membership into computed evidence without
 direct source data.
+
+Reference-case similarity is also a review aid only. The implemented score is
+equal-weight label overlap against a reference profile. It is separate from
+wallet-tier classification and must not be used as a direct whale definition,
+probability estimate, or trading signal.
 
 ## Dataset-Relative Wallet Tiers
 

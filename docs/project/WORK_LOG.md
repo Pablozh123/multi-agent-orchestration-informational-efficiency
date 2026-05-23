@@ -3255,3 +3255,48 @@ Next step:
 
 - Decide how future live monitor alert rows become candidate feature rows for
   the reference similarity dashboard.
+
+## 2026-05-23 - goal-polymarket-alert-review-workflow-001
+
+Task:
+
+- Add a monitor reference-candidate adapter that converts non-none monitor
+  rows into neutral reference-pattern features.
+
+Files changed:
+
+- `operations/analysis/monitor_reference_candidates.py`
+- `tests/test_monitor_reference_candidates.py`
+- `data/results/monitor_reference_candidate_features.csv`
+- `data/results/monitor_reference_candidate_summary.csv`
+- `data/results/monitor_reference_candidate_similarity_scores.csv`
+- `data/results/monitor_reference_candidate_similarity_summary.csv`
+- `data/results/monitor_reference_candidate_dashboard.html`
+- `data/results/monitor_reference_candidate_metadata.json`
+- `docs/research/WALLET_REFERENCE_CASES.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+- `docs/project/TOOL_USAGE.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_monitor_reference_candidates.py tests\test_wallet_reference_similarity.py tests\test_wallet_reference_cases.py -q` -> 17 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_reference_candidates` -> 1'416 source rows, 0 candidates, 0 similarity comparisons.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 304 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  304 passed through the status run.
+
+Decision:
+
+- Convert only `severity != none` monitor rows into reference candidates.
+- Keep current 0-candidate output as a valid conservative result.
+- Do not synthesize candidates from `none`, `insufficient_baseline`, or
+  `zero_mad` rows.
+
+Next step:
+
+- Decide whether to collect another bounded live window or link the main
+  monitor dashboard to the reference-candidate dashboard.

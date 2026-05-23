@@ -1,0 +1,40 @@
+{
+  "generated_at_utc": "2026-05-23T14:53:06+00:00",
+  "inputs": {
+    "alert_rows_path": "data\\results\\monitor_v2_polymarket_rolling_alert_rows.csv",
+    "reference_features_path": "data\\results\\wallet_reference_pattern_features.csv",
+    "source_alert_rows": 1416
+  },
+  "limitations": {
+    "aggregate_monitor_fields_only": true,
+    "empty_output_when_no_non_none_monitor_rows": true,
+    "not_a_causal_test": true,
+    "not_a_probability_model": true,
+    "not_a_trade_or_profitability_signal": true,
+    "requires_human_review": true
+  },
+  "method": {
+    "candidate_filter": "severity != none",
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_use_rcp": true,
+    "does_not_write_database": true,
+    "name": "monitor_reference_candidate_features",
+    "uses_existing_files_only": true
+  },
+  "outputs": {
+    "candidate_count": 0,
+    "candidate_features_path": "data\\results\\monitor_reference_candidate_features.csv",
+    "candidate_summary_path": "data\\results\\monitor_reference_candidate_summary.csv",
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "dashboard_path": "data\\results\\monitor_reference_candidate_dashboard.html",
+    "max_similarity_score": 0.0,
+    "similarity_comparison_rows": 0,
+    "similarity_scores_path": "data\\results\\monitor_reference_candidate_similarity_scores.csv",
+    "similarity_summary_path": "data\\results\\monitor_reference_candidate_similarity_summary.csv",
+    "triggered_feature_rows": 0
+  }
+}

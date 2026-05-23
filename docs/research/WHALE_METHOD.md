@@ -57,6 +57,9 @@ Output files:
 - `data/results/wallet_reference_similarity_scores.csv`
 - `data/results/wallet_reference_similarity_summary.csv`
 - `data/results/wallet_reference_similarity_dashboard.html`
+- `data/results/monitor_reference_candidate_features.csv`
+- `data/results/monitor_reference_candidate_summary.csv`
+- `data/results/monitor_reference_candidate_dashboard.html`
 
 Current reference cases:
 
@@ -85,6 +88,10 @@ Reference-case similarity is also a review aid only. The implemented score is
 equal-weight label overlap against a reference profile. It is separate from
 wallet-tier classification and must not be used as a direct whale definition,
 probability estimate, or trading signal.
+
+The monitor candidate adapter converts only `severity != none` monitor rows into
+candidate features. The current latest monitor output produces 0 candidates, so
+there is no live reference-similarity candidate to interpret yet.
 
 ## Dataset-Relative Wallet Tiers
 

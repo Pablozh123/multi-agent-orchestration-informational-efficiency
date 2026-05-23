@@ -409,6 +409,10 @@ Done criteria:
   dashboard exist as bounded human-review aids.
 - Similarity is equal-weight pattern overlap and is documented as a review cue,
   not a probability model or hard label.
+- A monitor reference-candidate adapter exists. It converts only monitor rows
+  with `severity != none` into neutral candidate feature rows.
+- The current latest monitor output has 1'416 rows, 0 non-none severity rows,
+  0 reference candidates, and 0 candidate/reference similarity comparisons.
 
 Blockers:
 
@@ -434,7 +438,7 @@ Blockers:
   structure is needed before building a longer repeated-run evidence base.
 - Non-zero live alerts remain thesis-facing blocked until review states,
   evidence fields, and rejection criteria are documented.
-- Live monitor alert rows are not yet converted into reference-similarity
-  candidate features.
+- No current live-window reference candidates exist because Rule C produced no
+  non-none severity rows in the latest 12-market window.
 - Public reference cases remain evidence for pattern design, not proof of
   misconduct, private information, tradeability, or profitability.

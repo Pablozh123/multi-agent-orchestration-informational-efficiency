@@ -3144,6 +3144,7 @@ Next phase selected:
 
 wallet_reference_case_status: implemented
 reference_case_similarity_status: implemented
+monitor_reference_candidate_status: implemented
 
 The monitor now has a small deterministic reference-case layer for learning
 neutral wallet-pattern labels from public cases.
@@ -3171,6 +3172,12 @@ Generated outputs:
 - `data/results/wallet_reference_similarity_matrix.png`
 - `data/results/wallet_reference_similarity_dashboard.html`
 - `data/results/wallet_reference_similarity_metadata.json`
+- `data/results/monitor_reference_candidate_features.csv`
+- `data/results/monitor_reference_candidate_summary.csv`
+- `data/results/monitor_reference_candidate_similarity_scores.csv`
+- `data/results/monitor_reference_candidate_similarity_summary.csv`
+- `data/results/monitor_reference_candidate_dashboard.html`
+- `data/results/monitor_reference_candidate_metadata.json`
 
 Triggered pattern labels:
 
@@ -3188,6 +3195,9 @@ Similarity result:
   `0.166667`.
 - The score is directional and equal-weighted:
   `matched triggered reference patterns / triggered reference patterns`.
+- Monitor candidate adapter result on the latest expanded monitor output:
+  1'416 monitor rows, 0 non-none severity rows, 0 reference candidates, and
+  0 candidate/reference comparisons.
 
 Interpretation:
 
@@ -3199,12 +3209,15 @@ Interpretation:
 - Audit and pattern outputs do not expose wallet addresses.
 - Similarity outputs do not expose wallet addresses.
 - Similarity is a review cue, not a probability model or hard label.
+- Monitor rows become reference candidates only when `severity != none`.
+- A 0-candidate result means no current monitor row passed that filter, not
+  that the wider market was quiet, efficient, inefficient, causal, or
+  tradeable.
 
 Next phase selected:
 
-- Add bounded candidate-feature generation for future monitor watch candidates
-  so new alerts can be compared with this reference taxonomy without exposing
-  raw wallet data.
+- Either run another bounded live monitor window or link the main monitor
+  dashboard to the reference-candidate dashboard.
 
 ## First Prototype Specification
 

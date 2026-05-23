@@ -75,6 +75,10 @@ why:
   reported concentrated flow.
 - A bounded reference-case similarity score and dashboard now compare neutral
   pattern overlap without exposing wallet addresses or making hard claims.
+- Monitor alert rows can now be converted into reference-similarity candidate
+  features when `severity != none`.
+- The current expanded live-window output has 1'416 monitor rows, 0 non-none
+  severity rows, 0 candidate features, and 0 candidate/reference comparisons.
 deliverables:
 - Define a deterministic alert-review workflow over compact monitor outputs.
 - Specify review states, required evidence fields, rejection criteria, and
@@ -84,6 +88,8 @@ deliverables:
   computed facts, and unknown fields.
 - Add a bounded reference-case similarity score and visual dashboard for human
   review.
+- Add a monitor-to-reference candidate adapter that turns future non-zero
+  monitor alerts into neutral pattern features.
 - Keep alerts descriptive until human review confirms source artifacts,
   timestamp validity, market mapping, and no-lookahead status.
 - Keep refresh/collection explicit and bounded.
@@ -129,6 +135,9 @@ acceptance_criteria:
 - Reference-case similarity outputs contain no wallet addresses and expose
   only candidate id, reference id, pattern-overlap score, matched labels,
   claim scope, limitations, and review status.
+- Monitor reference-candidate outputs contain no wallet addresses and return
+  an empty candidate set when the current monitor output has no non-none
+  severity rows.
 - Rule C thresholds remain unchanged.
 - Existing scoring outputs are not reinterpreted as causal, profitable,
   private-information, or efficiency evidence.
@@ -138,7 +147,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add wallet reference similarity dashboard
+next_commit: feat: add monitor reference candidate adapter
 
 ## Decision Inputs For This Goal
 
@@ -216,8 +225,11 @@ next_commit: feat: add wallet reference similarity dashboard
   as accusations or computed proof.
 - Reference cases can be compared through a bounded equal-weight pattern
   overlap score and local dashboard.
-- The next decision is how future monitor alerts should be converted into
-  candidate feature rows for the similarity dashboard.
+- Future monitor alerts can be converted into candidate feature rows for the
+  similarity dashboard.
+- The next decision is whether to run another bounded live window or add a
+  dashboard link from the main monitor dashboard to the reference-candidate
+  dashboard.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -227,8 +239,8 @@ next_commit: feat: add wallet reference similarity dashboard
   `llm_audit_log` usage, and deterministic backtest outputs exist.
 - ML remains blocked until deterministic H1-H3 outputs and any strategy
   prototype baseline have written methodology and review notes.
-- Live candidate-feature generation remains blocked until its input contract
-  avoids raw wallet dumps, arbitrary thresholds, and unreviewed public claims.
+- Strong thesis-facing wording remains blocked until a non-zero monitor
+  candidate passes human review and source-artifact checks.
 
 ## Completed Goals
 
@@ -429,3 +441,5 @@ next_commit: feat: add wallet reference similarity dashboard
   the Iran/U.S. reported cluster and the AdrianCronauer large-flow example.
 - Wallet reference-case similarity scores, summary, matrix figure, and local
   dashboard exist for the current reference registry.
+- Monitor reference-candidate adapter exists and currently reports 0
+  candidates from 1'416 latest monitor rows because all severities are `none`.

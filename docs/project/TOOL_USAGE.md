@@ -141,12 +141,19 @@ Validate and score wallet reference cases:
 .\.venv\Scripts\python.exe -m operations.analysis.wallet_reference_case_audit
 .\.venv\Scripts\python.exe -m operations.analysis.wallet_reference_pattern_features
 .\.venv\Scripts\python.exe -m operations.analysis.wallet_reference_similarity
+.\.venv\Scripts\python.exe -m operations.analysis.monitor_reference_candidates
 ```
 
 Open the reference similarity dashboard:
 
 ```text
 data/results/wallet_reference_similarity_dashboard.html
+```
+
+Open the current monitor reference-candidate dashboard:
+
+```text
+data/results/monitor_reference_candidate_dashboard.html
 ```
 
 Interpretation rule:

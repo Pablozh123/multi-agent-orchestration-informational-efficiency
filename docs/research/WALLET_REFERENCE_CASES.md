@@ -124,6 +124,12 @@ causal proof, private-information proof, tradeability, or profitability.
 - `data/results/wallet_reference_similarity_matrix.png`
 - `data/results/wallet_reference_similarity_dashboard.html`
 - `data/results/wallet_reference_similarity_metadata.json`
+- `data/results/monitor_reference_candidate_features.csv`
+- `data/results/monitor_reference_candidate_summary.csv`
+- `data/results/monitor_reference_candidate_similarity_scores.csv`
+- `data/results/monitor_reference_candidate_similarity_summary.csv`
+- `data/results/monitor_reference_candidate_dashboard.html`
+- `data/results/monitor_reference_candidate_metadata.json`
 
 Output policy:
 
@@ -184,6 +190,30 @@ The dashboard contains:
 - triggered pattern profiles,
 - all candidate/reference comparisons,
 - interpretation limits.
+
+## Monitor Candidate Adapter
+
+The monitor candidate adapter converts future monitor rows into the same
+reference-feature schema. It is intentionally conservative:
+
+- Only rows with `severity != none` become candidates.
+- Candidate features are grouped by `timestamp_utc` and `market_id`.
+- Aggregate wallet-tier amount alerts can trigger `large_trade_flow`.
+- Concentration-family alerts can trigger `market_concentration`.
+- Reviewed event context can trigger `event_proximity`.
+- Missing funding, account-link, win-rate, and short-history evidence remains
+  `unknown`.
+
+Current result from the latest expanded monitor output:
+
+- source monitor rows: `1416`,
+- non-none severity rows: `0`,
+- reference candidates: `0`,
+- candidate/reference comparisons: `0`.
+
+This means the current window generated no reference-similarity candidates. It
+does not prove the market was quiet or efficient; it only says the selected
+monitor rule produced no candidate rows in the observed bounded file.
 
 ## Next Step
 

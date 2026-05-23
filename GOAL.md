@@ -82,6 +82,9 @@ why:
 - The main monitor dashboard now links the live monitor, wallet reference
   similarity dashboard, and monitor reference-candidate dashboard in one
   read-only entry point.
+- A separate diagnostic sensitivity layer now surfaces high-percentile
+  zero-MAD shadow candidates without changing Rule C or reclassifying them as
+  alerts.
 deliverables:
 - Define a deterministic alert-review workflow over compact monitor outputs.
 - Specify review states, required evidence fields, rejection criteria, and
@@ -94,6 +97,8 @@ deliverables:
 - Add a monitor-to-reference candidate adapter that turns future non-zero
   monitor alerts into neutral pattern features.
 - Add reference-review links and summary counts to the main monitor dashboard.
+- Add a diagnostic sensitivity candidate layer that keeps shadow candidates
+  separate from strict Rule C candidates.
 - Keep alerts descriptive until human review confirms source artifacts,
   timestamp validity, market mapping, and no-lookahead status.
 - Keep refresh/collection explicit and bounded.
@@ -143,6 +148,10 @@ acceptance_criteria:
   an empty candidate set when the current monitor output has no non-none
   severity rows.
 - Main dashboard metadata includes reference-review counts and safety flags.
+- Diagnostic sensitivity outputs are clearly separated from strict monitor
+  reference-candidate outputs.
+- Market-only shadow candidates do not trigger wallet-pattern labels or
+  reference similarity.
 - Rule C thresholds remain unchanged.
 - Existing scoring outputs are not reinterpreted as causal, profitable,
   private-information, or efficiency evidence.
@@ -152,7 +161,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: link reference review dashboards from monitor dashboard
+next_commit: feat: add diagnostic monitor candidate sensitivity layer
 
 ## Decision Inputs For This Goal
 
@@ -234,6 +243,8 @@ next_commit: feat: link reference review dashboards from monitor dashboard
   similarity dashboard.
 - The main monitor dashboard is now the central local entry point for live
   monitor status, reference cases, and current reference candidates.
+- Diagnostic sensitivity candidates can be reviewed separately from strict
+  Rule C monitor candidates.
 - The next decision is whether to run another bounded live window or add a
   launcher command that opens the central dashboard.
 - Project review checks still detect premature ML, agent, MCP, trading,

@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-23 17:04
+Generated: 2026-05-23 18:54
 
 Current goal: `goal-polymarket-alert-review-workflow-001` - Specify alert-review workflow from compact summaries and wallet reference cases
 
@@ -11,37 +11,44 @@ Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `304 passed in 17.91s`
+Pytest summary: `310 passed in 16.27s`
 
 Git branch: `main`
 
-Latest commit: `7997ad1`
+Latest commit: `bcd7f77`
 
 Git status:
 
 ```text
  M GOAL.md
- M ROADMAP.md
+ M STATUS.md
  M data/results/monitor_v2_polymarket_dashboard.html
  M data/results/monitor_v2_polymarket_dashboard_metadata.json
- M docs/project/TOOL_USAGE.md
- M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
+ M docs/project/WORK_LOG.md
  M operations/analysis/monitor_v2_dashboard.py
  M tests/test_monitor_v2_dashboard.py
+?? data/results/monitor_reference_candidate_sensitivity_dashboard.html
+?? data/results/monitor_reference_candidate_sensitivity_features.csv
+?? data/results/monitor_reference_candidate_sensitivity_metadata.json
+?? data/results/monitor_reference_candidate_sensitivity_rows.csv
+?? data/results/monitor_reference_candidate_sensitivity_similarity_scores.csv
+?? data/results/monitor_reference_candidate_sensitivity_similarity_summary.csv
+?? data/results/monitor_reference_candidate_sensitivity_summary.csv
+?? operations/analysis/monitor_reference_candidate_sensitivity.py
+?? tests/test_monitor_reference_candidate_sensitivity.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                            |  15 ++-
- ROADMAP.md                                         |   6 +
- data/results/monitor_v2_polymarket_dashboard.html  |  27 +++-
- .../monitor_v2_polymarket_dashboard_metadata.json  |  14 +-
- docs/project/TOOL_USAGE.md                         |   7 +
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md       |   7 +-
- operations/analysis/monitor_v2_dashboard.py        | 145 +++++++++++++++++++++
- tests/test_monitor_v2_dashboard.py                 |  47 +++++++
- 8 files changed, 261 insertions(+), 7 deletions(-)
+ GOAL.md                                            | 13 ++++-
+ STATUS.md                                          | 33 ++++++-------
+ data/results/monitor_v2_polymarket_dashboard.html  |  9 +++-
+ .../monitor_v2_polymarket_dashboard_metadata.json  |  8 +++-
+ docs/project/WORK_LOG.md                           | 42 ++++++++++++++++
+ operations/analysis/monitor_v2_dashboard.py        | 56 ++++++++++++++++++++++
+ tests/test_monitor_v2_dashboard.py                 | 30 ++++++++++++
+ 7 files changed, 172 insertions(+), 19 deletions(-)
 ```
 
 Blockers:
@@ -50,7 +57,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: link reference review dashboards from monitor dashboard
+- feat: add diagnostic monitor candidate sensitivity layer
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

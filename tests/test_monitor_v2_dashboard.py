@@ -31,6 +31,7 @@ def test_generate_monitor_v2_dashboard_writes_html_and_metadata(tmp_path: Path) 
     assert "Reference Review" in html
     assert "wallet_reference_similarity_dashboard.html" in html
     assert "monitor_reference_candidate_dashboard.html" in html
+    assert "monitor_reference_candidate_sensitivity_dashboard.html" in html
     assert "A zero-alert run means" in html
     assert "ok" in html
     assert metadata["outputs"]["contains_wallet_addresses"] is False
@@ -38,6 +39,12 @@ def test_generate_monitor_v2_dashboard_writes_html_and_metadata(tmp_path: Path) 
     assert metadata["outputs"]["summary_row_count"] == 1
     assert metadata["outputs"]["reference_review"]["reference_case_count"] == 2
     assert metadata["outputs"]["reference_review"]["monitor_candidate_count"] == 0
+    assert (
+        metadata["outputs"]["reference_review"][
+            "diagnostic_sensitivity_candidate_count"
+        ]
+        == 3
+    )
 
 
 def test_generate_monitor_v2_dashboard_rejects_wallet_address_columns(
@@ -79,6 +86,10 @@ def test_dashboard_cli_writes_outputs(tmp_path: Path, capsys) -> None:
             str(paths["reference_candidate_metadata_path"]),
             "--reference-candidate-dashboard",
             str(paths["reference_candidate_dashboard_path"]),
+            "--reference-sensitivity-metadata",
+            str(paths["reference_sensitivity_metadata_path"]),
+            "--reference-sensitivity-dashboard",
+            str(paths["reference_sensitivity_dashboard_path"]),
             "--dashboard-output",
             str(paths["dashboard_path"]),
             "--metadata-output",
@@ -105,6 +116,8 @@ def _write_inputs(root: Path) -> dict[str, Path]:
         "reference_similarity_dashboard_path": root / "wallet_reference_similarity_dashboard.html",
         "reference_candidate_metadata_path": root / "reference_candidate_metadata.json",
         "reference_candidate_dashboard_path": root / "monitor_reference_candidate_dashboard.html",
+        "reference_sensitivity_metadata_path": root / "reference_sensitivity_metadata.json",
+        "reference_sensitivity_dashboard_path": root / "monitor_reference_candidate_sensitivity_dashboard.html",
         "dashboard_path": root / "dashboard.html",
         "metadata_path": root / "dashboard_metadata.json",
     }
@@ -211,7 +224,24 @@ def _write_inputs(root: Path) -> dict[str, Path]:
         ),
         encoding="utf-8",
     )
+    paths["reference_sensitivity_metadata_path"].write_text(
+        json.dumps(
+            {
+                "outputs": {
+                    "candidate_count": 3,
+                    "shadow_candidate_count": 3,
+                    "market_only_shadow_candidate_count": 3,
+                    "similarity_comparison_rows": 6,
+                    "max_similarity_score": 0.0,
+                    "contains_wallet_addresses": False,
+                    "contains_order_instructions": False,
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
     paths["reference_similarity_dashboard_path"].write_text("similarity", encoding="utf-8")
     paths["reference_candidate_dashboard_path"].write_text("candidates", encoding="utf-8")
+    paths["reference_sensitivity_dashboard_path"].write_text("sensitivity", encoding="utf-8")
     paths["figure_path"].write_bytes(b"not-a-real-png-but-present")
     return paths

@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-23T15:03:09+00:00",
+  "generated_at_utc": "2026-05-23T16:52:56+00:00",
   "limitations": {
     "descriptive_dashboard_only": true,
     "no_causal_or_profitability_claim": true,
@@ -30,6 +30,11 @@
     "reference_review": {
       "contains_order_instructions": false,
       "contains_wallet_addresses": false,
+      "diagnostic_sensitivity_candidate_count": 90,
+      "diagnostic_sensitivity_market_only_shadow_count": 90,
+      "diagnostic_sensitivity_max_similarity": 0.0,
+      "diagnostic_sensitivity_shadow_candidate_count": 90,
+      "diagnostic_sensitivity_similarity_rows": 180,
       "max_reference_non_self_similarity": 0.5,
       "monitor_candidate_count": 0,
       "monitor_candidate_max_similarity": 0.0,
@@ -52,6 +57,7 @@
     "figure": "data\\results\\monitor_v2_polymarket_rolling_history.png",
     "market_snapshots": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
     "monitor_reference_candidate_metadata": "data\\results\\monitor_reference_candidate_metadata.json",
+    "monitor_reference_candidate_sensitivity_metadata": "data\\results\\monitor_reference_candidate_sensitivity_metadata.json",
     "rolling_metadata": "data\\results\\monitor_v2_polymarket_rolling_history_metadata.json",
     "scoring_metadata": "data\\results\\monitor_v2_polymarket_rolling_scoring_metadata.json",
     "wallet_reference_similarity_metadata": "data\\results\\wallet_reference_similarity_metadata.json",

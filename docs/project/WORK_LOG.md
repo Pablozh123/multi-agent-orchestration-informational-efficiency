@@ -3337,3 +3337,45 @@ Next step:
 
 - Run another bounded live monitor window or add a launcher convenience path
   for opening the central dashboard.
+
+## 2026-05-23 - goal-polymarket-alert-review-workflow-001
+
+Task:
+
+- Add a diagnostic sensitivity layer for monitor candidates below Rule C.
+
+Files changed:
+
+- `operations/analysis/monitor_reference_candidate_sensitivity.py`
+- `operations/analysis/monitor_v2_dashboard.py`
+- `tests/test_monitor_reference_candidate_sensitivity.py`
+- `tests/test_monitor_v2_dashboard.py`
+- `data/results/monitor_reference_candidate_sensitivity_*.csv`
+- `data/results/monitor_reference_candidate_sensitivity_*.json`
+- `data/results/monitor_reference_candidate_sensitivity_dashboard.html`
+- `data/results/monitor_v2_polymarket_dashboard.html`
+- `data/results/monitor_v2_polymarket_dashboard_metadata.json`
+- `GOAL.md`
+- `STATUS.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_reference_candidate_sensitivity.py tests/test_monitor_reference_candidates.py tests/test_monitor_v2_dashboard.py -q` -> 15 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_reference_candidate_sensitivity` -> 90 diagnostic shadow candidates, all market-only, max similarity 0.0.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_dashboard` -> 12 markets, 20 buckets, 0 alerts.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 310 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  310 passed through the status run.
+
+Decision:
+
+- Keep Rule C unchanged.
+- Treat the 90 high-percentile zero-MAD rows as market-only diagnostic review
+  cues, not alerts, wallet anomalies, efficiency evidence, or trading signals.
+- Keep strict candidates and diagnostic sensitivity candidates in separate
+  output files and dashboards.
+
+Next step:
+
+- Review whether a longer bounded live window creates wallet/concentration
+  sensitivity candidates before considering any rule change.

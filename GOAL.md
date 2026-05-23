@@ -79,6 +79,9 @@ why:
   features when `severity != none`.
 - The current expanded live-window output has 1'416 monitor rows, 0 non-none
   severity rows, 0 candidate features, and 0 candidate/reference comparisons.
+- The main monitor dashboard now links the live monitor, wallet reference
+  similarity dashboard, and monitor reference-candidate dashboard in one
+  read-only entry point.
 deliverables:
 - Define a deterministic alert-review workflow over compact monitor outputs.
 - Specify review states, required evidence fields, rejection criteria, and
@@ -90,6 +93,7 @@ deliverables:
   review.
 - Add a monitor-to-reference candidate adapter that turns future non-zero
   monitor alerts into neutral pattern features.
+- Add reference-review links and summary counts to the main monitor dashboard.
 - Keep alerts descriptive until human review confirms source artifacts,
   timestamp validity, market mapping, and no-lookahead status.
 - Keep refresh/collection explicit and bounded.
@@ -138,6 +142,7 @@ acceptance_criteria:
 - Monitor reference-candidate outputs contain no wallet addresses and return
   an empty candidate set when the current monitor output has no non-none
   severity rows.
+- Main dashboard metadata includes reference-review counts and safety flags.
 - Rule C thresholds remain unchanged.
 - Existing scoring outputs are not reinterpreted as causal, profitable,
   private-information, or efficiency evidence.
@@ -147,7 +152,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add monitor reference candidate adapter
+next_commit: feat: link reference review dashboards from monitor dashboard
 
 ## Decision Inputs For This Goal
 
@@ -227,9 +232,10 @@ next_commit: feat: add monitor reference candidate adapter
   overlap score and local dashboard.
 - Future monitor alerts can be converted into candidate feature rows for the
   similarity dashboard.
+- The main monitor dashboard is now the central local entry point for live
+  monitor status, reference cases, and current reference candidates.
 - The next decision is whether to run another bounded live window or add a
-  dashboard link from the main monitor dashboard to the reference-candidate
-  dashboard.
+  launcher command that opens the central dashboard.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -443,3 +449,6 @@ next_commit: feat: add monitor reference candidate adapter
   dashboard exist for the current reference registry.
 - Monitor reference-candidate adapter exists and currently reports 0
   candidates from 1'416 latest monitor rows because all severities are `none`.
+- Main monitor dashboard includes a Reference Review section with reference
+  case count, comparison count, current candidate count, and links to the
+  reference dashboards.

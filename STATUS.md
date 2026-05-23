@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-23 16:54
+Generated: 2026-05-23 17:04
 
 Current goal: `goal-polymarket-alert-review-workflow-001` - Specify alert-review workflow from compact summaries and wallet reference cases
 
@@ -11,41 +11,37 @@ Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `304 passed in 19.09s`
+Pytest summary: `304 passed in 17.91s`
 
 Git branch: `main`
 
-Latest commit: `8d0890f`
+Latest commit: `7997ad1`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
+ M data/results/monitor_v2_polymarket_dashboard.html
+ M data/results/monitor_v2_polymarket_dashboard_metadata.json
  M docs/project/TOOL_USAGE.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
- M docs/research/WALLET_REFERENCE_CASES.md
- M docs/research/WHALE_METHOD.md
-?? data/results/monitor_reference_candidate_dashboard.html
-?? data/results/monitor_reference_candidate_features.csv
-?? data/results/monitor_reference_candidate_metadata.json
-?? data/results/monitor_reference_candidate_similarity_scores.csv
-?? data/results/monitor_reference_candidate_similarity_summary.csv
-?? data/results/monitor_reference_candidate_summary.csv
-?? operations/analysis/monitor_reference_candidates.py
-?? tests/test_monitor_reference_candidates.py
+ M operations/analysis/monitor_v2_dashboard.py
+ M tests/test_monitor_v2_dashboard.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      | 24 +++++++++++++++++-----
- ROADMAP.md                                   |  8 ++++++--
- docs/project/TOOL_USAGE.md                   |  7 +++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 19 +++++++++++++++---
- docs/research/WALLET_REFERENCE_CASES.md      | 30 ++++++++++++++++++++++++++++
- docs/research/WHALE_METHOD.md                |  7 +++++++
- 6 files changed, 85 insertions(+), 10 deletions(-)
+ GOAL.md                                            |  15 ++-
+ ROADMAP.md                                         |   6 +
+ data/results/monitor_v2_polymarket_dashboard.html  |  27 +++-
+ .../monitor_v2_polymarket_dashboard_metadata.json  |  14 +-
+ docs/project/TOOL_USAGE.md                         |   7 +
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md       |   7 +-
+ operations/analysis/monitor_v2_dashboard.py        | 145 +++++++++++++++++++++
+ tests/test_monitor_v2_dashboard.py                 |  47 +++++++
+ 8 files changed, 261 insertions(+), 7 deletions(-)
 ```
 
 Blockers:
@@ -54,7 +50,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: add monitor reference candidate adapter
+- feat: link reference review dashboards from monitor dashboard
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

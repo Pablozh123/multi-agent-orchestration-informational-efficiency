@@ -413,6 +413,10 @@ Done criteria:
   with `severity != none` into neutral candidate feature rows.
 - The current latest monitor output has 1'416 rows, 0 non-none severity rows,
   0 reference candidates, and 0 candidate/reference similarity comparisons.
+- The main monitor dashboard now includes a Reference Review section linking
+  wallet reference similarity and current monitor reference-candidate views.
+- Dashboard metadata records reference-review counts and confirms no wallet
+  address or order-instruction exposure.
 
 Blockers:
 
@@ -442,3 +446,5 @@ Blockers:
   non-none severity rows in the latest 12-market window.
 - Public reference cases remain evidence for pattern design, not proof of
   misconduct, private information, tradeability, or profitability.
+- The next user-facing step is another bounded live window or a small launcher
+  update that opens the central dashboard.

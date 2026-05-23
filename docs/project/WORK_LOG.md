@@ -3300,3 +3300,40 @@ Next step:
 
 - Decide whether to collect another bounded live window or link the main
   monitor dashboard to the reference-candidate dashboard.
+
+## 2026-05-23 - goal-polymarket-alert-review-workflow-001
+
+Task:
+
+- Link reference-review dashboards from the main monitor dashboard.
+
+Files changed:
+
+- `operations/analysis/monitor_v2_dashboard.py`
+- `tests/test_monitor_v2_dashboard.py`
+- `data/results/monitor_v2_polymarket_dashboard.html`
+- `data/results/monitor_v2_polymarket_dashboard_metadata.json`
+- `docs/project/TOOL_USAGE.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_monitor_v2_dashboard.py tests\test_monitor_dashboard_launcher.py -q` -> 7 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_dashboard` -> 12 markets, 20 buckets, 0 alerts.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 304 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  304 passed through the status run.
+
+Decision:
+
+- Keep the main monitor dashboard as the central local entry point.
+- Add Reference Review counts and links without collecting data, writing the
+  database, exposing wallet addresses, or activating agents/MCP.
+
+Next step:
+
+- Run another bounded live monitor window or add a launcher convenience path
+  for opening the central dashboard.

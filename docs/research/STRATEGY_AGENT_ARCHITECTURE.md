@@ -3198,6 +3198,9 @@ Similarity result:
 - Monitor candidate adapter result on the latest expanded monitor output:
   1'416 monitor rows, 0 non-none severity rows, 0 reference candidates, and
   0 candidate/reference comparisons.
+- The main monitor dashboard includes a Reference Review block with links to
+  the wallet reference similarity dashboard and the monitor reference-candidate
+  dashboard.
 
 Interpretation:
 
@@ -3216,8 +3219,8 @@ Interpretation:
 
 Next phase selected:
 
-- Either run another bounded live monitor window or link the main monitor
-  dashboard to the reference-candidate dashboard.
+- Either run another bounded live monitor window or add a launcher convenience
+  path for opening the central dashboard.
 
 ## First Prototype Specification
 

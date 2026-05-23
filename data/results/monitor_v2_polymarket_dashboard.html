@@ -9,6 +9,9 @@
     .metric { border: 1px solid #d7dde5; border-radius: 6px; padding: 12px; background: #f8fafc; }
     .metric strong { display: block; font-size: 22px; margin-top: 4px; }
     .two-col { display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 16px; }
+    .link-grid { display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 12px; }
+    .link-card { border: 1px solid #d7dde5; border-radius: 6px; padding: 12px; background: #f8fafc; }
+    .link-card a { color: #174f78; font-weight: bold; }
     table { border-collapse: collapse; width: 100%; margin-top: 12px; font-size: 13px; }
     th, td { border: 1px solid #d7dde5; padding: 7px; text-align: left; vertical-align: top; }
     th { background: #eef2f7; }
@@ -49,6 +52,26 @@
   </section>
   <h2>Interpretation Limits</h2>
   <p class="note">A zero-alert run means the selected Rule C alert condition did not trigger in this bounded window. It does not prove market efficiency, inefficiency, causality, private information, tradeability, or profitability.</p>
+  
+  <h2>Reference Review</h2>
+  <p class="note">Reference review links the live monitor to curated wallet-pattern examples. It is a human-review aid, not a probability model or trading signal.</p>
+  <section class="metrics">
+    <div class="metric">Reference cases<strong>2</strong></div>
+    <div class="metric">Reference comparisons<strong>4</strong></div>
+    <div class="metric">Monitor candidates<strong>0</strong></div>
+    <div class="metric">Candidate max score<strong>0.00</strong></div>
+  </section>
+  <section class="link-grid">
+    <div class="link-card">
+      <a href="wallet_reference_similarity_dashboard.html">Open wallet reference similarity</a>
+      <p>Compares curated reference profiles such as the Iran/U.S. reported cluster and AdrianCronauer large-flow example.</p>
+    </div>
+    <div class="link-card">
+      <a href="monitor_reference_candidate_dashboard.html">Open monitor reference candidates</a>
+      <p>Shows whether current non-none monitor rows became reference-similarity candidates.</p>
+    </div>
+  </section>
+
   <h2>Latest Market State</h2>
   <table><thead><tr><th>Question</th><th>Category</th><th>Status</th><th>Token midpoint min</th><th>Token midpoint max</th><th>Active wallets</th><th>Trades</th><th>Observed amount</th></tr></thead><tbody><tr><td>Xi Jinping out before 2027?</td><td>politics</td><td>active</td><td>0.0645</td><td>0.9355</td><td>0</td><td>0</td><td>0.0000</td></tr>
 <tr><td>Will Gavin Newsom win the 2028 Democratic presidential nomination?</td><td>politics</td><td>active</td><td>0.2415</td><td>0.7585</td><td>0</td><td>0</td><td>0.0000</td></tr>
@@ -95,6 +118,8 @@
 <li><code>alert summary</code>: data\results\monitor_v2_polymarket_rolling_alert_summary.csv</li>
 <li><code>scoring metadata</code>: data\results\monitor_v2_polymarket_rolling_scoring_metadata.json</li>
 <li><code>rolling metadata</code>: data\results\monitor_v2_polymarket_rolling_history_metadata.json</li>
-<li><code>figure</code>: data\results\monitor_v2_polymarket_rolling_history.png</li></ul>
+<li><code>figure</code>: data\results\monitor_v2_polymarket_rolling_history.png</li>
+<li><code>wallet reference similarity dashboard</code>: data\results\wallet_reference_similarity_dashboard.html</li>
+<li><code>monitor reference candidate dashboard</code>: data\results\monitor_reference_candidate_dashboard.html</li></ul>
 </body>
 </html>

@@ -15,7 +15,15 @@ import pandas as pd
 from operations.analysis.monitor_v2_polymarket_rolling_figures import (
     ROLLING_FIGURE_OUTPUT,
 )
+from operations.analysis.monitor_reference_candidates import (
+    CANDIDATE_DASHBOARD_OUTPUT,
+    CANDIDATE_METADATA_OUTPUT,
+)
 from operations.analysis.run_h2_event_windows import RESULTS_DIR
+from operations.analysis.wallet_reference_similarity import (
+    SIMILARITY_DASHBOARD_OUTPUT,
+    SIMILARITY_METADATA_OUTPUT,
+)
 from operations.collectors.polymarket_readonly import (
     LIVE_MARKET_SNAPSHOTS_OUTPUT,
     LIVE_WALLET_TIER_SNAPSHOTS_OUTPUT,
@@ -65,6 +73,10 @@ def generate_monitor_v2_dashboard(
     scoring_metadata_path: Path = ROLLING_SCORING_METADATA_OUTPUT,
     rolling_metadata_path: Path = ROLLING_HISTORY_METADATA_OUTPUT,
     figure_path: Path = ROLLING_FIGURE_OUTPUT,
+    reference_similarity_metadata_path: Path = SIMILARITY_METADATA_OUTPUT,
+    reference_similarity_dashboard_path: Path = SIMILARITY_DASHBOARD_OUTPUT,
+    reference_candidate_metadata_path: Path = CANDIDATE_METADATA_OUTPUT,
+    reference_candidate_dashboard_path: Path = CANDIDATE_DASHBOARD_OUTPUT,
     dashboard_path: Path = DASHBOARD_OUTPUT,
     metadata_path: Path = DASHBOARD_METADATA_OUTPUT,
 ) -> DashboardResult:
@@ -76,6 +88,14 @@ def generate_monitor_v2_dashboard(
     alerts = _read_csv(alert_summary_path, "alert summary")
     scoring_metadata = _read_json(scoring_metadata_path, "scoring metadata")
     rolling_metadata = _read_json(rolling_metadata_path, "rolling metadata")
+    reference_similarity_metadata = _read_optional_json(
+        reference_similarity_metadata_path,
+        "reference similarity metadata",
+    )
+    reference_candidate_metadata = _read_optional_json(
+        reference_candidate_metadata_path,
+        "reference candidate metadata",
+    )
     _assert_no_wallet_columns((watchlist, market, wallets, alerts))
 
     metrics = _dashboard_metrics(
@@ -84,7 +104,10 @@ def generate_monitor_v2_dashboard(
         alerts=alerts,
         scoring_metadata=scoring_metadata,
         rolling_metadata=rolling_metadata,
+        reference_similarity_metadata=reference_similarity_metadata,
+        reference_candidate_metadata=reference_candidate_metadata,
     )
+    _assert_reference_review_safe(metrics["reference_review"])
     html = _render_dashboard(
         watchlist=watchlist,
         market=market,
@@ -92,6 +115,8 @@ def generate_monitor_v2_dashboard(
         alerts=alerts,
         metrics=metrics,
         figure_path=figure_path,
+        reference_similarity_dashboard_path=reference_similarity_dashboard_path,
+        reference_candidate_dashboard_path=reference_candidate_dashboard_path,
         source_paths={
             "watchlist": watchlist_path,
             "market snapshots": market_snapshots_path,
@@ -100,6 +125,8 @@ def generate_monitor_v2_dashboard(
             "scoring metadata": scoring_metadata_path,
             "rolling metadata": rolling_metadata_path,
             "figure": figure_path,
+            "wallet reference similarity dashboard": reference_similarity_dashboard_path,
+            "monitor reference candidate dashboard": reference_candidate_dashboard_path,
         },
     )
     dashboard_path.parent.mkdir(parents=True, exist_ok=True)
@@ -131,6 +158,8 @@ def generate_monitor_v2_dashboard(
             "scoring_metadata": scoring_metadata_path,
             "rolling_metadata": rolling_metadata_path,
             "figure": figure_path,
+            "wallet_reference_similarity_metadata": reference_similarity_metadata_path,
+            "monitor_reference_candidate_metadata": reference_candidate_metadata_path,
         })
         else {},
         "limitations": {
@@ -162,6 +191,26 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--scoring-metadata", type=Path, default=ROLLING_SCORING_METADATA_OUTPUT)
     parser.add_argument("--rolling-metadata", type=Path, default=ROLLING_HISTORY_METADATA_OUTPUT)
     parser.add_argument("--figure", type=Path, default=ROLLING_FIGURE_OUTPUT)
+    parser.add_argument(
+        "--reference-similarity-metadata",
+        type=Path,
+        default=SIMILARITY_METADATA_OUTPUT,
+    )
+    parser.add_argument(
+        "--reference-similarity-dashboard",
+        type=Path,
+        default=SIMILARITY_DASHBOARD_OUTPUT,
+    )
+    parser.add_argument(
+        "--reference-candidate-metadata",
+        type=Path,
+        default=CANDIDATE_METADATA_OUTPUT,
+    )
+    parser.add_argument(
+        "--reference-candidate-dashboard",
+        type=Path,
+        default=CANDIDATE_DASHBOARD_OUTPUT,
+    )
     parser.add_argument("--dashboard-output", type=Path, default=DASHBOARD_OUTPUT)
     parser.add_argument("--metadata-output", type=Path, default=DASHBOARD_METADATA_OUTPUT)
     args = parser.parse_args(argv)
@@ -175,6 +224,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             scoring_metadata_path=args.scoring_metadata,
             rolling_metadata_path=args.rolling_metadata,
             figure_path=args.figure,
+            reference_similarity_metadata_path=args.reference_similarity_metadata,
+            reference_similarity_dashboard_path=args.reference_similarity_dashboard,
+            reference_candidate_metadata_path=args.reference_candidate_metadata,
+            reference_candidate_dashboard_path=args.reference_candidate_dashboard,
             dashboard_path=args.dashboard_output,
             metadata_path=args.metadata_output,
         )
@@ -193,6 +246,8 @@ def _dashboard_metrics(
     alerts: pd.DataFrame,
     scoring_metadata: dict[str, Any],
     rolling_metadata: dict[str, Any],
+    reference_similarity_metadata: dict[str, Any],
+    reference_candidate_metadata: dict[str, Any],
 ) -> dict[str, Any]:
     outputs = scoring_metadata.get("outputs", {})
     method = scoring_metadata.get("method", {})
@@ -214,6 +269,10 @@ def _dashboard_metrics(
         "status_counts": outputs.get("status_counts", {}),
         "summary_row_count": int(outputs.get("summary_row_count", len(alerts))),
         "scoring_row_count": int(outputs.get("alert_row_count", 0)),
+        "reference_review": _reference_review_metrics(
+            reference_similarity_metadata,
+            reference_candidate_metadata,
+        ),
     }
 
 
@@ -225,11 +284,19 @@ def _render_dashboard(
     alerts: pd.DataFrame,
     metrics: dict[str, Any],
     figure_path: Path,
+    reference_similarity_dashboard_path: Path,
+    reference_candidate_dashboard_path: Path,
     source_paths: dict[str, Path],
 ) -> str:
     latest_market = _latest_market_table(watchlist, market, wallets)
     severity_table = _counts_table(metrics.get("severity_counts", {}))
     status_table = _counts_table(metrics.get("status_counts", {}))
+    reference_review = metrics.get("reference_review", {})
+    reference_review_html = _reference_review_section(
+        reference_review=reference_review,
+        reference_similarity_dashboard_path=reference_similarity_dashboard_path,
+        reference_candidate_dashboard_path=reference_candidate_dashboard_path,
+    )
     summary_rows = _table_rows(
         alerts.head(20),
         (
@@ -264,6 +331,9 @@ def _render_dashboard(
     .metric {{ border: 1px solid #d7dde5; border-radius: 6px; padding: 12px; background: #f8fafc; }}
     .metric strong {{ display: block; font-size: 22px; margin-top: 4px; }}
     .two-col {{ display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 16px; }}
+    .link-grid {{ display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 12px; }}
+    .link-card {{ border: 1px solid #d7dde5; border-radius: 6px; padding: 12px; background: #f8fafc; }}
+    .link-card a {{ color: #174f78; font-weight: bold; }}
     table {{ border-collapse: collapse; width: 100%; margin-top: 12px; font-size: 13px; }}
     th, td {{ border: 1px solid #d7dde5; padding: 7px; text-align: left; vertical-align: top; }}
     th {{ background: #eef2f7; }}
@@ -303,6 +373,7 @@ def _render_dashboard(
   </section>
   <h2>Interpretation Limits</h2>
   <p class="note">A zero-alert run means the selected Rule C alert condition did not trigger in this bounded window. It does not prove market efficiency, inefficiency, causality, private information, tradeability, or profitability.</p>
+  {reference_review_html}
   <h2>Latest Market State</h2>
   {latest_market}
   <h2>Rolling Figure</h2>
@@ -343,6 +414,64 @@ def _latest_market_table(
         "<th>Active wallets</th><th>Trades</th><th>Observed amount</th></tr></thead>"
         f"<tbody>{_table_rows(merged, ('question', 'category', 'status', 'min', 'max', 'active_wallets', 'trade_count', 'total_observed_amount_usd'))}</tbody></table>"
     )
+
+
+def _reference_review_metrics(
+    reference_similarity_metadata: dict[str, Any],
+    reference_candidate_metadata: dict[str, Any],
+) -> dict[str, Any]:
+    similarity_outputs = reference_similarity_metadata.get("outputs", {})
+    candidate_outputs = reference_candidate_metadata.get("outputs", {})
+    return {
+        "reference_case_count": int(similarity_outputs.get("reference_count", 0)),
+        "reference_comparison_count": int(similarity_outputs.get("comparison_count", 0)),
+        "max_reference_non_self_similarity": float(
+            similarity_outputs.get("max_non_self_similarity", 0.0)
+        ),
+        "monitor_candidate_count": int(candidate_outputs.get("candidate_count", 0)),
+        "monitor_candidate_similarity_rows": int(
+            candidate_outputs.get("similarity_comparison_rows", 0)
+        ),
+        "monitor_candidate_max_similarity": float(
+            candidate_outputs.get("max_similarity_score", 0.0)
+        ),
+        "contains_wallet_addresses": bool(
+            similarity_outputs.get("contains_wallet_addresses", False)
+            or candidate_outputs.get("contains_wallet_addresses", False)
+        ),
+        "contains_order_instructions": bool(
+            similarity_outputs.get("contains_order_instructions", False)
+            or candidate_outputs.get("contains_order_instructions", False)
+        ),
+    }
+
+
+def _reference_review_section(
+    *,
+    reference_review: dict[str, Any],
+    reference_similarity_dashboard_path: Path,
+    reference_candidate_dashboard_path: Path,
+) -> str:
+    return f"""
+  <h2>Reference Review</h2>
+  <p class="note">Reference review links the live monitor to curated wallet-pattern examples. It is a human-review aid, not a probability model or trading signal.</p>
+  <section class="metrics">
+    <div class="metric">Reference cases<strong>{reference_review.get("reference_case_count", 0)}</strong></div>
+    <div class="metric">Reference comparisons<strong>{reference_review.get("reference_comparison_count", 0)}</strong></div>
+    <div class="metric">Monitor candidates<strong>{reference_review.get("monitor_candidate_count", 0)}</strong></div>
+    <div class="metric">Candidate max score<strong>{float(reference_review.get("monitor_candidate_max_similarity", 0.0)):.2f}</strong></div>
+  </section>
+  <section class="link-grid">
+    <div class="link-card">
+      <a href="{escape(reference_similarity_dashboard_path.name)}">Open wallet reference similarity</a>
+      <p>Compares curated reference profiles such as the Iran/U.S. reported cluster and AdrianCronauer large-flow example.</p>
+    </div>
+    <div class="link-card">
+      <a href="{escape(reference_candidate_dashboard_path.name)}">Open monitor reference candidates</a>
+      <p>Shows whether current non-none monitor rows became reference-similarity candidates.</p>
+    </div>
+  </section>
+"""
 
 
 def _table_rows(frame: pd.DataFrame, columns: Sequence[str]) -> str:
@@ -387,11 +516,27 @@ def _read_json(path: Path, label: str) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _read_optional_json(path: Path, label: str) -> dict[str, Any]:
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"{label} file is not valid JSON: {path}") from exc
+
+
 def _assert_no_wallet_columns(frames: Sequence[pd.DataFrame]) -> None:
     for frame in frames:
         forbidden = [column for column in frame.columns if "wallet_address" in column.lower()]
         if forbidden:
             raise ValueError(f"dashboard inputs must not contain wallet-address columns: {forbidden}")
+
+
+def _assert_reference_review_safe(reference_review: dict[str, Any]) -> None:
+    if reference_review.get("contains_wallet_addresses", False):
+        raise ValueError("reference review metadata reports wallet-address exposure")
+    if reference_review.get("contains_order_instructions", False):
+        raise ValueError("reference review metadata reports order instructions")
 
 
 if __name__ == "__main__":

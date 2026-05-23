@@ -117,6 +117,13 @@ The dashboard is written to:
 data/results/monitor_v2_polymarket_dashboard.html
 ```
 
+The main dashboard now includes:
+
+- live monitor status,
+- rolling-history summary,
+- reference-case similarity link,
+- monitor reference-candidate link.
+
 Open or describe the latest dashboard entry point:
 
 ```powershell

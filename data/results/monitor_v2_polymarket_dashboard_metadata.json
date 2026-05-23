@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-22T22:15:31+00:00",
+  "generated_at_utc": "2026-05-23T15:03:09+00:00",
   "limitations": {
     "descriptive_dashboard_only": true,
     "no_causal_or_profitability_claim": true,
@@ -27,6 +27,16 @@
     "market_count": 12,
     "min_baseline_observations": 20,
     "production_like_baseline_available": true,
+    "reference_review": {
+      "contains_order_instructions": false,
+      "contains_wallet_addresses": false,
+      "max_reference_non_self_similarity": 0.5,
+      "monitor_candidate_count": 0,
+      "monitor_candidate_max_similarity": 0.0,
+      "monitor_candidate_similarity_rows": 0,
+      "reference_case_count": 2,
+      "reference_comparison_count": 4
+    },
     "scoring_row_count": 1416,
     "severity_counts": {
       "none": 1416
@@ -41,8 +51,10 @@
     "alert_summary": "data\\results\\monitor_v2_polymarket_rolling_alert_summary.csv",
     "figure": "data\\results\\monitor_v2_polymarket_rolling_history.png",
     "market_snapshots": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
+    "monitor_reference_candidate_metadata": "data\\results\\monitor_reference_candidate_metadata.json",
     "rolling_metadata": "data\\results\\monitor_v2_polymarket_rolling_history_metadata.json",
     "scoring_metadata": "data\\results\\monitor_v2_polymarket_rolling_scoring_metadata.json",
+    "wallet_reference_similarity_metadata": "data\\results\\wallet_reference_similarity_metadata.json",
     "wallet_tier_snapshots": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",
     "watchlist": "data\\results\\monitor_v2_polymarket_live_watchlist.csv"
   }

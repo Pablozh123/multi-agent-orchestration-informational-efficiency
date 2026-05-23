@@ -3,19 +3,19 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-23 00:26
+Generated: 2026-05-23 16:01
 
-Current goal: `goal-polymarket-alert-review-workflow-001` - Specify alert-review workflow from compact live-window summaries
+Current goal: `goal-polymarket-alert-review-workflow-001` - Specify alert-review workflow from compact summaries and wallet reference cases
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `287 passed in 14.71s`
+Pytest summary: `293 passed in 15.87s`
 
 Git branch: `main`
 
-Latest commit: `074a3bc`
+Latest commit: `6d8e387`
 
 Git status:
 
@@ -23,23 +23,28 @@ Git status:
  M GOAL.md
  M ROADMAP.md
  M docs/project/TOOL_USAGE.md
- M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
-?? data/results/monitor_v2_live_window_registry.csv
-?? data/results/monitor_v2_live_window_registry_metadata.json
-?? operations/analysis/monitor_v2_live_window_registry.py
-?? tests/test_monitor_v2_live_window_registry.py
+ M docs/research/WHALE_METHOD.md
+?? data/reference_cases/
+?? data/results/wallet_reference_case_audit.csv
+?? data/results/wallet_reference_case_audit_metadata.json
+?? data/results/wallet_reference_pattern_features.csv
+?? data/results/wallet_reference_pattern_features_metadata.json
+?? docs/research/WALLET_REFERENCE_CASES.md
+?? operations/analysis/wallet_reference_case_audit.py
+?? operations/analysis/wallet_reference_pattern_features.py
+?? tests/test_wallet_reference_cases.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      | 53 ++++++++++++++++------------
- ROADMAP.md                                   | 11 +++++-
- docs/project/TOOL_USAGE.md                   |  6 ++++
- docs/project/WORK_LOG.md                     | 40 +++++++++++++++++++++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 53 ++++++++++++++++++++++++++++
- 5 files changed, 139 insertions(+), 24 deletions(-)
+ GOAL.md                                      | 25 ++++++++++++---
+ ROADMAP.md                                   | 11 +++++++
+ docs/project/TOOL_USAGE.md                   |  7 +++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md | 47 ++++++++++++++++++++++++++++
+ docs/research/WHALE_METHOD.md                | 33 +++++++++++++++++++
+ 5 files changed, 119 insertions(+), 4 deletions(-)
 ```
 
 Blockers:
@@ -48,7 +53,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: specify monitor alert-review workflow
+- feat: add wallet reference case pattern layer
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

@@ -398,6 +398,13 @@ Done criteria:
   baseline readiness `baseline_available_zero_mad_or_non_alerting`.
 - The next methodological step is an alert-review workflow for future non-zero
   monitor alerts.
+- A wallet reference-case registry exists for public pattern-learning examples,
+  including one reported Iran/U.S. cluster case and one AdrianCronauer
+  large-flow case.
+- Reference-case audit and feature outputs exist and expose only neutral
+  pattern labels, fact-source status, claim scope, and review state.
+- Reference-case outputs do not expose wallet addresses and do not convert
+  reported public claims into computed facts.
 
 Blockers:
 
@@ -423,3 +430,7 @@ Blockers:
   structure is needed before building a longer repeated-run evidence base.
 - Non-zero live alerts remain thesis-facing blocked until review states,
   evidence fields, and rejection criteria are documented.
+- Reference-case similarity scoring is not implemented yet; current outputs are
+  taxonomy and audit artifacts only.
+- Public reference cases remain evidence for pattern design, not proof of
+  misconduct, private information, tradeability, or profitability.

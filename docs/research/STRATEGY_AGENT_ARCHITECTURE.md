@@ -3140,6 +3140,53 @@ Next phase selected:
 - Specify an alert-review workflow for future non-zero monitor alerts before
   thesis-facing live-alert prose or strategy hypotheses use them.
 
+### Wallet Reference-Case Pattern Layer
+
+wallet_reference_case_status: implemented
+
+The monitor now has a small deterministic reference-case layer for learning
+neutral wallet-pattern labels from public cases.
+
+Reference inputs:
+
+- `data/reference_cases/wallet_reference_cases.csv`
+- `data/reference_cases/wallet_reference_cases_metadata.json`
+
+Current reference cases:
+
+- `iran_cluster_2026_bubblemaps_reported`: public reporting reference for a
+  nine-account Iran/U.S. military-action cluster.
+- `adriancronauer_large_iran_flow_2026_05_14`: large reported Iran-related
+  flow example.
+
+Generated outputs:
+
+- `data/results/wallet_reference_case_audit.csv`
+- `data/results/wallet_reference_case_audit_metadata.json`
+- `data/results/wallet_reference_pattern_features.csv`
+- `data/results/wallet_reference_pattern_features_metadata.json`
+
+Triggered pattern labels:
+
+- Iran cluster: `market_concentration`, `event_proximity`,
+  `cluster_link_reported`, `shared_funding_reported`,
+  `high_reported_win_rate`, `same_theme_repeated_positions`.
+- AdrianCronauer: `large_trade_flow`, `market_concentration`.
+
+Interpretation:
+
+- These labels mean `requires_human_review`.
+- They are reference-pattern labels, not misconduct, causal,
+  private-information, tradeability, or profitability claims.
+- Reported public facts remain `fact_source=reported`.
+- Missing unavailable data remains `fact_source=unknown`.
+- Audit and pattern outputs do not expose wallet addresses.
+
+Next phase selected:
+
+- Define how future monitor alerts should be compared against reference-case
+  pattern labels through a bounded similarity score.
+
 ## First Prototype Specification
 
 strategy_prototype_status: specified

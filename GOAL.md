@@ -3,7 +3,7 @@
 ## Active Goal
 
 goal_id: goal-polymarket-alert-review-workflow-001
-title: Specify alert-review workflow from compact live-window summaries
+title: Specify alert-review workflow from compact summaries and wallet reference cases
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -68,10 +68,18 @@ why:
   `baseline_available_zero_mad_or_non_alerting`.
 - The next methodological step is to define how future non-zero alerts should
   be reviewed before they become thesis-facing monitor evidence.
+- Public reference cases can now be used to learn neutral wallet-pattern
+  labels without turning public reporting into computed misconduct claims.
+- The Iran/U.S. reported cluster and the AdrianCronauer large-flow example are
+  treated as separate reference-case types: reported cluster pattern versus
+  reported concentrated flow.
 deliverables:
 - Define a deterministic alert-review workflow over compact monitor outputs.
 - Specify review states, required evidence fields, rejection criteria, and
   thesis-facing wording limits.
+- Add a curated wallet reference-case registry and deterministic audit.
+- Add neutral reference-pattern features that separate reported facts,
+  computed facts, and unknown fields.
 - Keep alerts descriptive until human review confirms source artifacts,
   timestamp validity, market mapping, and no-lookahead status.
 - Keep refresh/collection explicit and bounded.
@@ -85,6 +93,7 @@ scope:
 - Existing dashboard/reporting code and tests if needed.
 - Local wrapper or launcher code and tests if needed.
 - Existing project/research docs.
+- Publicly reported wallet-pattern reference cases.
 - Polymarket politics/geopolitics markets only.
 - Existing local validated output files.
 out_of_scope:
@@ -111,6 +120,8 @@ acceptance_criteria:
   the latest expanded baseline unless a later bounded run intentionally
   replaces it.
 - The output contains no wallet addresses and no order instructions.
+- Reference-case feature outputs contain no wallet addresses and expose only
+  neutral pattern labels, fact source, claim scope, and review status.
 - Rule C thresholds remain unchanged.
 - Existing scoring outputs are not reinterpreted as causal, profitable,
   private-information, or efficiency evidence.
@@ -120,7 +131,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: specify monitor alert-review workflow
+next_commit: feat: add wallet reference case pattern layer
 
 ## Decision Inputs For This Goal
 
@@ -194,8 +205,10 @@ next_commit: docs: specify monitor alert-review workflow
 
 - Future non-zero monitor alerts have a documented human-review path before
   they can be used in thesis-facing prose or strategy hypotheses.
-- The next decision is whether to implement a compact alert-review artifact or
-  run another bounded window after the review workflow exists.
+- Publicly reported wallet examples are stored as curated reference cases, not
+  as accusations or computed proof.
+- The next decision is whether to implement a bounded reference-case
+  similarity score for future monitor watch candidates.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 
@@ -205,6 +218,8 @@ next_commit: docs: specify monitor alert-review workflow
   `llm_audit_log` usage, and deterministic backtest outputs exist.
 - ML remains blocked until deterministic H1-H3 outputs and any strategy
   prototype baseline have written methodology and review notes.
+- Reference-case similarity scoring remains blocked until the current registry,
+  audit, feature output, and review wording pass tests and project guardrails.
 
 ## Completed Goals
 
@@ -401,3 +416,5 @@ next_commit: docs: specify monitor alert-review workflow
   `data/results/monitor_v2_live_window_registry.csv` and
   `data/results/monitor_v2_live_window_registry_metadata.json` preserve compact
   summaries for the first two expanded live windows.
+- Wallet reference-case registry, audit, and neutral pattern features exist for
+  the Iran/U.S. reported cluster and the AdrianCronauer large-flow example.

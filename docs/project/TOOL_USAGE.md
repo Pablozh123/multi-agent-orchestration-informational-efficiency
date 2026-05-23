@@ -135,6 +135,13 @@ Update the compact repeated-window registry from the latest bounded run:
 .\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_live_window_registry --run-id expanded_window_002 --run-label "second expanded 12-market baseline"
 ```
 
+Validate and score wallet reference cases:
+
+```powershell
+.\.venv\Scripts\python.exe -m operations.analysis.wallet_reference_case_audit
+.\.venv\Scripts\python.exe -m operations.analysis.wallet_reference_pattern_features
+```
+
 Interpretation rule:
 
 - fewer than 3 buckets: interface check only,

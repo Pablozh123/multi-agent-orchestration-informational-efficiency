@@ -1,0 +1,29 @@
+{
+  "generated_at_utc": "2026-05-23T00:00:00Z",
+  "method": {
+    "name": "manual_wallet_reference_case_intake",
+    "purpose": "reference cases for neutral wallet-pattern learning",
+    "manual_curation": true,
+    "does_not_collect_external_data": true,
+    "does_not_write_database": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_ml": true,
+    "does_not_use_llms": true
+  },
+  "source_policy": {
+    "reported_facts_are_not_computed_facts": true,
+    "computed_outputs_must_label_unknown_fields": true,
+    "reference_cases_are_not_misconduct_claims": true,
+    "wallet_addresses_must_not_be_pasted_into_llm_prompts": true
+  },
+  "outputs": {
+    "case_count": 2,
+    "contains_wallet_addresses": true,
+    "contains_order_instructions": false
+  },
+  "limitations": {
+    "public_reporting_is_reference_evidence_not_final_truth": true,
+    "cluster_links_are_reported_until_direct_onchain_data_is_imported": true,
+    "large_flow_reference_is_not_a_misconduct_label": true
+  }
+}

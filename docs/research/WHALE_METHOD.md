@@ -45,6 +45,39 @@ Do not claim:
 Avoid insider wording in empirical claims. Use neutral terms such as
 `wallet timing`, `early signal`, `lead-lag pattern`, or `predictive structure`.
 
+## Reference-Case Pattern Review
+
+Reference-case status: implemented for the first two public examples.
+
+Output files:
+
+- `data/reference_cases/wallet_reference_cases.csv`
+- `data/results/wallet_reference_case_audit.csv`
+- `data/results/wallet_reference_pattern_features.csv`
+
+Current reference cases:
+
+- `iran_cluster_2026_bubblemaps_reported`
+- `adriancronauer_large_iran_flow_2026_05_14`
+
+Reference-case labels are review aids only. They do not override the
+dataset-relative tier method and do not create a new whale threshold. The
+current labels are:
+
+- `large_trade_flow`
+- `market_concentration`
+- `event_proximity`
+- `fresh_wallet_or_short_history`
+- `cluster_link_reported`
+- `shared_funding_reported`
+- `high_reported_win_rate`
+- `same_theme_repeated_positions`
+
+Reported public facts remain marked as `reported`. Missing data remains
+`unknown`. Computed monitor outputs must not turn reported win rate, reported
+funding links, or reported cluster membership into computed evidence without
+direct source data.
+
 ## Dataset-Relative Wallet Tiers
 
 Wallet tiers must be derived from the actual observed distribution. The

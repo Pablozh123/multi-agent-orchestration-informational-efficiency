@@ -1,0 +1,3 @@
+case_id,case_type,evidence_status,claim_scope,audit_status,error_count,errors,contains_wallet_address
+iran_cluster_2026_bubblemaps_reported,reported_cluster,source_checked,reported_reference_case_only,pass,0,,False
+adriancronauer_large_iran_flow_2026_05_14,large_flow_reference,source_checked,large_flow_reference_only,pass,0,,True

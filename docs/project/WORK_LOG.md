@@ -3165,3 +3165,50 @@ Decision:
 Next step:
 
 - Specify a human alert-review workflow for future non-zero monitor alerts.
+
+## 2026-05-23 - goal-polymarket-alert-review-workflow-001
+
+Task:
+
+- Add wallet reference-case registry, audit, and neutral pattern features for
+  public Polymarket pattern-learning examples.
+
+Files changed:
+
+- `data/reference_cases/wallet_reference_cases.csv`
+- `data/reference_cases/wallet_reference_cases_metadata.json`
+- `operations/analysis/wallet_reference_case_audit.py`
+- `operations/analysis/wallet_reference_pattern_features.py`
+- `tests/test_wallet_reference_cases.py`
+- `data/results/wallet_reference_case_audit.csv`
+- `data/results/wallet_reference_case_audit_metadata.json`
+- `data/results/wallet_reference_pattern_features.csv`
+- `data/results/wallet_reference_pattern_features_metadata.json`
+- `docs/research/WALLET_REFERENCE_CASES.md`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `docs/research/WHALE_METHOD.md`
+- `docs/project/TOOL_USAGE.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_wallet_reference_cases.py -q` -> 6 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.wallet_reference_case_audit` -> 2 cases, 0 failed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.wallet_reference_pattern_features` -> 2 cases, 16 features.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 293 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  293 passed through the status run.
+
+Decision:
+
+- Treat the Iran/U.S. reported cluster and AdrianCronauer as reference cases
+  for neutral pattern-learning, not as accusations or computed proof.
+- Separate `reported`, `computed`, and `unknown` feature sources.
+- Keep wallet addresses out of audit and feature outputs.
+
+Next step:
+
+- Design a bounded `reference_case_similarity_score` for future monitor watch
+  candidates, still without agents, MCP, ML, trading, or misconduct claims.

@@ -18,19 +18,19 @@
   <h1>Monitor Reference Candidates</h1>
   <p class="note">Read-only diagnostic dashboard. Candidate rows are review cues only, not probability, causality, tradeability, or profitability evidence.</p>
   <section class="metrics">
-    <div class="metric">Source rows<strong>1416</strong></div>
-    <div class="metric">Non-none rows<strong>0</strong></div>
-    <div class="metric">Candidates<strong>0</strong></div>
-    <div class="metric">Max score<strong>0.00</strong></div>
+    <div class="metric">Source rows<strong>1488</strong></div>
+    <div class="metric">Non-none rows<strong>7</strong></div>
+    <div class="metric">Candidates<strong>3</strong></div>
+    <div class="metric">Max score<strong>1.00</strong></div>
   </section>
   <h2>Interpretation</h2>
-  <p>No monitor rows became reference-similarity candidates in this run.</p>
+  <p>Monitor candidates were converted into neutral pattern labels for human review.</p>
   <p>Candidate features are derived only from non-none monitor severity rows and aggregate monitor fields; no wallet addresses are used.</p>
   <h2>Triggered Candidate Features</h2>
-  <p>No candidate features generated.</p>
+  <table><thead><tr><th>case_id</th><th>pattern_label</th><th>fact_source</th><th>reason</th><th>evidence_status</th></tr></thead><tbody><tr><td>monitor_candidate_20260523_192500_2bb6f8fa6250</td><td>market_concentration</td><td>computed</td><td>monitor concentration metric produced a non-none severity row</td><td>pattern_computed</td></tr><tr><td>monitor_candidate_20260523_192500_c6370fa4e8c9</td><td>large_trade_flow</td><td>computed</td><td>monitor wallet-tier amount metric produced a non-none severity row</td><td>pattern_computed</td></tr><tr><td>monitor_candidate_20260523_192500_c6370fa4e8c9</td><td>market_concentration</td><td>computed</td><td>monitor concentration metric produced a non-none severity row</td><td>pattern_computed</td></tr></tbody></table>
   <h2>Best Reference Matches</h2>
-  <p>No similarity comparisons generated.</p>
+  <table><thead><tr><th>candidate_id</th><th>best_reference_case_id</th><th>best_similarity_score</th><th>matched_patterns</th><th>match_label</th></tr></thead><tbody><tr><td>monitor_candidate_20260523_192500_2bb6f8fa6250</td><td>adriancronauer_large_iran_flow_2026_05_14</td><td>0.500</td><td>market_concentration</td><td>partial_reference_overlap</td></tr><tr><td>monitor_candidate_20260523_192500_71cd3b4e784b</td><td>adriancronauer_large_iran_flow_2026_05_14</td><td>0.000</td><td></td><td>no_reference_overlap</td></tr><tr><td>monitor_candidate_20260523_192500_c6370fa4e8c9</td><td>adriancronauer_large_iran_flow_2026_05_14</td><td>1.000</td><td>large_trade_flow,market_concentration</td><td>complete_reference_overlap</td></tr></tbody></table>
   <h2>All Reference Comparisons</h2>
-  <p>No comparison rows.</p>
+  <table><thead><tr><th>candidate_id</th><th>reference_case_id</th><th>similarity_score</th><th>matched_pattern_count</th><th>reference_pattern_count</th><th>match_label</th></tr></thead><tbody><tr><td>monitor_candidate_20260523_192500_2bb6f8fa6250</td><td>adriancronauer_large_iran_flow_2026_05_14</td><td>0.500</td><td>1</td><td>2</td><td>partial_reference_overlap</td></tr><tr><td>monitor_candidate_20260523_192500_2bb6f8fa6250</td><td>iran_cluster_2026_bubblemaps_reported</td><td>0.167</td><td>1</td><td>6</td><td>partial_reference_overlap</td></tr><tr><td>monitor_candidate_20260523_192500_71cd3b4e784b</td><td>adriancronauer_large_iran_flow_2026_05_14</td><td>0.000</td><td>0</td><td>2</td><td>no_reference_overlap</td></tr><tr><td>monitor_candidate_20260523_192500_71cd3b4e784b</td><td>iran_cluster_2026_bubblemaps_reported</td><td>0.000</td><td>0</td><td>6</td><td>no_reference_overlap</td></tr><tr><td>monitor_candidate_20260523_192500_c6370fa4e8c9</td><td>adriancronauer_large_iran_flow_2026_05_14</td><td>1.000</td><td>2</td><td>2</td><td>complete_reference_overlap</td></tr><tr><td>monitor_candidate_20260523_192500_c6370fa4e8c9</td><td>iran_cluster_2026_bubblemaps_reported</td><td>0.167</td><td>1</td><td>6</td><td>partial_reference_overlap</td></tr></tbody></table>
 </body>
 </html>

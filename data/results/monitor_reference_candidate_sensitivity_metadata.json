@@ -1,9 +1,9 @@
 {
-  "generated_at_utc": "2026-05-23T16:52:44+00:00",
+  "generated_at_utc": "2026-05-23T19:30:03+00:00",
   "inputs": {
     "alert_rows_path": "data\\results\\monitor_v2_polymarket_rolling_alert_rows.csv",
     "reference_features_path": "data\\results\\wallet_reference_pattern_features.csv",
-    "source_alert_rows": 1416
+    "source_alert_rows": 1488
   },
   "limitations": {
     "diagnostic_shadow_candidates_only": true,
@@ -28,26 +28,26 @@
     "uses_existing_files_only": true
   },
   "outputs": {
-    "candidate_count": 90,
-    "candidate_feature_rows": 720,
+    "candidate_count": 105,
+    "candidate_feature_rows": 840,
     "candidate_features_path": "data\\results\\monitor_reference_candidate_sensitivity_features.csv",
     "candidate_rows_path": "data\\results\\monitor_reference_candidate_sensitivity_rows.csv",
     "candidate_summary_path": "data\\results\\monitor_reference_candidate_sensitivity_summary.csv",
     "contains_order_instructions": false,
     "contains_wallet_addresses": false,
     "dashboard_path": "data\\results\\monitor_reference_candidate_sensitivity_dashboard.html",
-    "market_only_shadow_candidate_count": 90,
-    "max_similarity_score": 0.0,
-    "shadow_candidate_count": 90,
-    "similarity_comparison_rows": 180,
+    "market_only_shadow_candidate_count": 96,
+    "max_similarity_score": 1.0,
+    "shadow_candidate_count": 102,
+    "similarity_comparison_rows": 210,
     "similarity_scores_path": "data\\results\\monitor_reference_candidate_sensitivity_similarity_scores.csv",
     "similarity_summary_path": "data\\results\\monitor_reference_candidate_sensitivity_similarity_summary.csv",
-    "strict_candidate_count": 0,
-    "triggered_feature_rows": 0
+    "strict_candidate_count": 3,
+    "triggered_feature_rows": 14
   },
   "quality_checks": {
-    "candidate_features": 720,
-    "candidate_rows": 90,
+    "candidate_features": 840,
+    "candidate_rows": 105,
     "wallet_address_columns_present": false
   }
 }

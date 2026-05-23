@@ -1,13 +1,13 @@
 {
-  "generated_at_utc": "2026-05-22T22:15:31+00:00",
+  "generated_at_utc": "2026-05-23T19:29:54+00:00",
   "inputs": {
     "event_candidate_row_count": 0,
     "event_candidates_path": "data\\results\\monitor_v2_polymarket_live_event_candidates.csv",
-    "market_snapshot_row_count": 480,
+    "market_snapshot_row_count": 504,
     "market_snapshots_path": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
     "validation_report_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_validation_report.json",
     "validation_status": "pass",
-    "wallet_tier_snapshot_row_count": 240,
+    "wallet_tier_snapshot_row_count": 252,
     "wallet_tier_snapshots_path": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",
     "watchlist_path": "data\\results\\monitor_v2_polymarket_live_watchlist.csv",
     "watchlist_row_count": 12
@@ -31,7 +31,7 @@
   "method": {
     "alert_rule": "Rule C combined-family confirmation from monitor_v2_snapshot",
     "baseline_observations": 30,
-    "baseline_readiness": "baseline_available_zero_mad_or_non_alerting",
+    "baseline_readiness": "diagnostic_scores_available",
     "diagnostic_file_baseline_only": false,
     "event_context_rule": "event candidate may annotate only buckets at or after published_at_utc",
     "input_mode": "validated_live_style_files",
@@ -45,7 +45,7 @@
     "validates_inputs_before_scoring": true
   },
   "outputs": {
-    "alert_count": 0,
+    "alert_count": 7,
     "alert_row_columns": [
       "timestamp_utc",
       "market_id",
@@ -68,11 +68,14 @@
       "review_status",
       "claim_scope"
     ],
-    "alert_row_count": 1416,
+    "alert_row_count": 1488,
     "contains_order_instructions": false,
     "contains_wallet_addresses": false,
     "severity_counts": {
-      "none": 1416
+      "high": 1,
+      "info": 4,
+      "none": 1481,
+      "watch": 2
     },
     "snapshot_columns": [
       "timestamp_utc",
@@ -87,10 +90,11 @@
       "limitation",
       "review_status"
     ],
-    "snapshot_count": 1416,
+    "snapshot_count": 1488,
     "status_counts": {
       "insufficient_baseline": 1200,
-      "zero_mad": 216
+      "ok": 12,
+      "zero_mad": 276
     },
     "summary_columns": [
       "market_id",

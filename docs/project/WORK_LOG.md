@@ -3379,3 +3379,44 @@ Next step:
 
 - Review whether a longer bounded live window creates wallet/concentration
   sensitivity candidates before considering any rule change.
+
+## 2026-05-23 - goal-polymarket-alert-review-workflow-001
+
+Task:
+
+- Append one bounded live Polymarket bucket and refresh monitor candidate
+  review outputs.
+
+Files changed:
+
+- `data/results/monitor_v2_polymarket_live_*.csv`
+- `data/results/monitor_v2_polymarket_rolling_*.csv`
+- `data/results/monitor_v2_polymarket_*metadata.json`
+- `data/results/monitor_reference_candidate_*.csv`
+- `data/results/monitor_reference_candidate_*.json`
+- `data/results/monitor_reference_candidate_*.html`
+- `data/results/monitor_v2_live_window_registry.csv`
+- `data/results/monitor_v2_live_window_registry_metadata.json`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.collectors.polymarket_monitor_refresh --source live --samples 1 --curated-watchlist-input data\monitor_v2_curated_watchlist.csv --max-markets 12 --baseline-observations 30 --min-baseline-observations 20` -> 21 buckets, 7 alerts.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_reference_candidates` -> 3 strict candidates, max similarity 1.0.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_reference_candidate_sensitivity` -> 105 diagnostic candidates, 102 shadow candidates, 96 market-only shadow candidates.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_dashboard` -> 12 markets, 21 buckets, 7 alerts.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_live_window_registry --run-id expanded_window_003 --run-label "third appended 12-market live bucket with candidate review"` -> 3 registry rows.
+
+Decision:
+
+- Treat the first 7 non-none live monitor rows as human-review cues only.
+- Do not change Rule C.
+- Do not interpret the 1.0 AdrianCronauer reference overlap as evidence of
+  misconduct, private information, causality, profitability, or tradeability.
+
+Next step:
+
+- Build or document a compact human-review report for the first non-none live
+  candidates, then decide whether to collect another bounded bucket.

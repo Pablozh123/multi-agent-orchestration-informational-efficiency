@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-22T22:24:57+00:00",
+  "generated_at_utc": "2026-05-23T19:30:09+00:00",
   "limitations": {
     "latest_raw_artifacts_may_be_overwritten": true,
     "no_causal_or_profitability_claim": true,
@@ -18,8 +18,8 @@
   "outputs": {
     "contains_order_instructions": false,
     "contains_wallet_addresses": false,
-    "latest_run_id": "expanded_window_002",
+    "latest_run_id": "expanded_window_003",
     "registry_path": "data\\results\\monitor_v2_live_window_registry.csv",
-    "row_count": 2
+    "row_count": 3
   }
 }

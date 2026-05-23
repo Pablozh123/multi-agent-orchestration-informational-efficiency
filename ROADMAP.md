@@ -417,6 +417,12 @@ Done criteria:
   wallet reference similarity and current monitor reference-candidate views.
 - Dashboard metadata records reference-review counts and confirms no wallet
   address or order-instruction exposure.
+- A third bounded live update appended one new real bucket to the 12-market
+  rolling history and produced 7 non-none Rule C rows, 3 strict monitor
+  reference candidates, and updated diagnostic sensitivity outputs.
+- The first non-none live rows are accepted only as human-review cues; they are
+  not thesis-facing evidence of causality, private information, tradeability,
+  profitability, or market efficiency.
 
 Blockers:
 
@@ -446,5 +452,7 @@ Blockers:
   non-none severity rows in the latest 12-market window.
 - Public reference cases remain evidence for pattern design, not proof of
   misconduct, private information, tradeability, or profitability.
-- The next user-facing step is another bounded live window or a small launcher
-  update that opens the central dashboard.
+- The first non-none live candidates require human review before any
+  thesis-facing alert wording or strategy hypothesis.
+- The next user-facing step is a compact human-review report for the first
+  non-none monitor candidates or another bounded live bucket.

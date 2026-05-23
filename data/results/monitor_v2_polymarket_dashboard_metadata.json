@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-23T16:52:56+00:00",
+  "generated_at_utc": "2026-05-23T19:30:09+00:00",
   "limitations": {
     "descriptive_dashboard_only": true,
     "no_causal_or_profitability_claim": true,
@@ -16,39 +16,43 @@
     "uses_bounded_local_files": true
   },
   "outputs": {
-    "alert_count": 0,
+    "alert_count": 7,
     "baseline_observations": 30,
-    "baseline_readiness": "baseline_available_zero_mad_or_non_alerting",
-    "bucket_count": 20,
+    "baseline_readiness": "diagnostic_scores_available",
+    "bucket_count": 21,
     "contains_order_instructions": false,
     "contains_wallet_addresses": false,
     "dashboard_path": "data\\results\\monitor_v2_polymarket_dashboard.html",
-    "latest_bucket_utc": "2026-05-22T22:15:00Z",
+    "latest_bucket_utc": "2026-05-23T19:25:00Z",
     "market_count": 12,
     "min_baseline_observations": 20,
     "production_like_baseline_available": true,
     "reference_review": {
       "contains_order_instructions": false,
       "contains_wallet_addresses": false,
-      "diagnostic_sensitivity_candidate_count": 90,
-      "diagnostic_sensitivity_market_only_shadow_count": 90,
-      "diagnostic_sensitivity_max_similarity": 0.0,
-      "diagnostic_sensitivity_shadow_candidate_count": 90,
-      "diagnostic_sensitivity_similarity_rows": 180,
+      "diagnostic_sensitivity_candidate_count": 105,
+      "diagnostic_sensitivity_market_only_shadow_count": 96,
+      "diagnostic_sensitivity_max_similarity": 1.0,
+      "diagnostic_sensitivity_shadow_candidate_count": 102,
+      "diagnostic_sensitivity_similarity_rows": 210,
       "max_reference_non_self_similarity": 0.5,
-      "monitor_candidate_count": 0,
-      "monitor_candidate_max_similarity": 0.0,
-      "monitor_candidate_similarity_rows": 0,
+      "monitor_candidate_count": 3,
+      "monitor_candidate_max_similarity": 1.0,
+      "monitor_candidate_similarity_rows": 6,
       "reference_case_count": 2,
       "reference_comparison_count": 4
     },
-    "scoring_row_count": 1416,
+    "scoring_row_count": 1488,
     "severity_counts": {
-      "none": 1416
+      "high": 1,
+      "info": 4,
+      "none": 1481,
+      "watch": 2
     },
     "status_counts": {
       "insufficient_baseline": 1200,
-      "zero_mad": 216
+      "ok": 12,
+      "zero_mad": 276
     },
     "summary_row_count": 60
   },

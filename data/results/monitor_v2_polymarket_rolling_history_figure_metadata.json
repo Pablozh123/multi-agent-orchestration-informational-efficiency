@@ -1,7 +1,7 @@
 {
-  "generated_at_utc": "2026-05-22T22:15:31+00:00",
+  "generated_at_utc": "2026-05-23T19:29:54+00:00",
   "inputs": {
-    "baseline_readiness": "baseline_available_zero_mad_or_non_alerting",
+    "baseline_readiness": "diagnostic_scores_available",
     "market_snapshots_path": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
     "scoring_metadata_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_metadata.json",
     "wallet_tier_snapshots_path": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",
@@ -21,12 +21,12 @@
     "name": "monitor_v2_polymarket_rolling_history_figure"
   },
   "outputs": {
-    "bucket_count": 20,
+    "bucket_count": 21,
     "contains_order_instructions": false,
     "contains_wallet_addresses": false,
     "figure_path": "data\\results\\monitor_v2_polymarket_rolling_history.png",
     "market_count": 12,
-    "token_snapshot_count": 480,
-    "wallet_snapshot_count": 240
+    "token_snapshot_count": 504,
+    "wallet_snapshot_count": 252
   }
 }

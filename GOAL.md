@@ -85,6 +85,16 @@ why:
 - A separate diagnostic sensitivity layer now surfaces high-percentile
   zero-MAD shadow candidates without changing Rule C or reclassifying them as
   alerts.
+- A third bounded live update appended one real bucket to the 12-market
+  rolling history and produced 21 closed buckets, 1'488 scoring rows, 7
+  non-none Rule C rows, and 3 strict monitor reference candidates.
+- The 7 non-none rows are review cues only: 4 `info`, 2 `watch`, and 1 `high`
+  row across U.S./Iran active-wallet activity, China/Taiwan concentration, and
+  AOC-2028 wallet/concentration activity.
+- The best strict candidate/reference pattern overlap is 1.0 against the
+  AdrianCronauer large-flow reference profile, but this is only neutral label
+  overlap for human review and not a misconduct, causality, profitability, or
+  tradeability claim.
 deliverables:
 - Define a deterministic alert-review workflow over compact monitor outputs.
 - Specify review states, required evidence fields, rejection criteria, and
@@ -152,6 +162,9 @@ acceptance_criteria:
   reference-candidate outputs.
 - Market-only shadow candidates do not trigger wallet-pattern labels or
   reference similarity.
+- Non-none live monitor candidates are interpreted as human-review cues until
+  source artifacts, market mapping, timestamp validity, and no-lookahead status
+  are reviewed.
 - Rule C thresholds remain unchanged.
 - Existing scoring outputs are not reinterpreted as causal, profitable,
   private-information, or efficiency evidence.
@@ -161,7 +174,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add diagnostic monitor candidate sensitivity layer
+next_commit: data: add third live monitor window and candidate review outputs
 
 ## Decision Inputs For This Goal
 
@@ -245,8 +258,8 @@ next_commit: feat: add diagnostic monitor candidate sensitivity layer
   monitor status, reference cases, and current reference candidates.
 - Diagnostic sensitivity candidates can be reviewed separately from strict
   Rule C monitor candidates.
-- The next decision is whether to run another bounded live window or add a
-  launcher command that opens the central dashboard.
+- The next decision is whether to add a small human-review report for the first
+  non-none live monitor candidates or to collect another bounded live bucket.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 

@@ -95,6 +95,9 @@ why:
   AdrianCronauer large-flow reference profile, but this is only neutral label
   overlap for human review and not a misconduct, causality, profitability, or
   tradeability claim.
+- A compact human-review report now explains the first 3 strict monitor
+  candidates, including why each was marked, available evidence, missing
+  evidence, review priority, and next review step.
 deliverables:
 - Define a deterministic alert-review workflow over compact monitor outputs.
 - Specify review states, required evidence fields, rejection criteria, and
@@ -109,6 +112,7 @@ deliverables:
 - Add reference-review links and summary counts to the main monitor dashboard.
 - Add a diagnostic sensitivity candidate layer that keeps shadow candidates
   separate from strict Rule C candidates.
+- Add a compact human-review report for strict candidates.
 - Keep alerts descriptive until human review confirms source artifacts,
   timestamp validity, market mapping, and no-lookahead status.
 - Keep refresh/collection explicit and bounded.
@@ -165,6 +169,9 @@ acceptance_criteria:
 - Non-none live monitor candidates are interpreted as human-review cues until
   source artifacts, market mapping, timestamp validity, and no-lookahead status
   are reviewed.
+- Human-review report outputs contain no wallet addresses, no order
+  instructions, and no claims about misconduct, causality, profitability, or
+  tradeability.
 - Rule C thresholds remain unchanged.
 - Existing scoring outputs are not reinterpreted as causal, profitable,
   private-information, or efficiency evidence.
@@ -174,7 +181,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: data: add third live monitor window and candidate review outputs
+next_commit: feat: add monitor candidate human review report
 
 ## Decision Inputs For This Goal
 
@@ -258,8 +265,10 @@ next_commit: data: add third live monitor window and candidate review outputs
   monitor status, reference cases, and current reference candidates.
 - Diagnostic sensitivity candidates can be reviewed separately from strict
   Rule C monitor candidates.
-- The next decision is whether to add a small human-review report for the first
-  non-none live monitor candidates or to collect another bounded live bucket.
+- The first non-none strict monitor candidates now have a compact human-review
+  report.
+- The next decision is whether to collect another bounded live bucket or add
+  manual source-check fields for the current high-priority review candidate.
 - Project review checks still detect premature ML, agent, MCP, trading,
   order-execution, raw prompt data, or profit-guarantee work.
 

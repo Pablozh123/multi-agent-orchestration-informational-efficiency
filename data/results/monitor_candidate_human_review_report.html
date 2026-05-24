@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Monitor Candidate Human Review</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 28px; color: #17202a; }
+    .metrics { display: grid; grid-template-columns: repeat(3, minmax(130px, 1fr)); gap: 12px; }
+    .metric { border: 1px solid #d7dde5; border-radius: 6px; padding: 12px; background: #f8fafc; }
+    .metric strong { display: block; font-size: 22px; margin-top: 4px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; font-size: 13px; }
+    th, td { border: 1px solid #d7dde5; padding: 7px; text-align: left; vertical-align: top; }
+    th { background: #eef2f7; }
+    .note { background: #fff7e6; border: 1px solid #f0d08a; padding: 12px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>Monitor Candidate Human Review</h1>
+  <p class="note">Strict monitor candidates are review cues only. This report contains no wallet addresses, order instructions, PnL, or misconduct claim.</p>
+  <section class="metrics">
+    <div class="metric">Candidates<strong>3</strong></div>
+    <div class="metric">High priority<strong>1</strong></div>
+    <div class="metric">Status<strong>needs review</strong></div>
+  </section>
+  <h2>Review Rows</h2>
+  <table><thead><tr><th>question</th><th>max_severity</th><th>review_priority</th><th>why_flagged</th><th>available_evidence</th><th>missing_evidence</th><th>recommended_next_step</th></tr></thead><tbody><tr><td>Will the U.S. invade Iran before 2027?</td><td>info</td><td>low</td><td>active_wallet_activity triggered info on active_wallets</td><td>1 non-none monitor rows; active_wallets=3; trade_count=3; observed_amount_usd=69.44; midpoint_range=0.205-0.795; reference_similarity=0.00</td><td>manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</td><td>Low-context cue: keep in registry and review only if repeated.</td></tr><tr><td>Will China invade Taiwan by end of 2026?</td><td>info</td><td>medium</td><td>concentration triggered info on hhi_concentration,top_tier_share; reference-pattern labels: market_concentration</td><td>2 non-none monitor rows; active_wallets=1; trade_count=1; observed_amount_usd=9.58; midpoint_range=0.0675-0.9325; reference_similarity=0.50</td><td>manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</td><td>Check whether the same pattern repeats in the next bounded bucket.</td></tr><tr><td>Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?</td><td>high</td><td>high</td><td>active_wallet_activity triggered info on active_wallets; concentration triggered watch on hhi_concentration,top_tier_share; wallet_tier_activity triggered high on log1p_total_observed_amount_usd; reference-pattern labels: large_trade_flow,market_concentration</td><td>4 non-none monitor rows; active_wallets=1; trade_count=1; observed_amount_usd=64.28; midpoint_range=0.0885-0.9115; reference_similarity=1.00</td><td>manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; trade-size context against longer rolling volume; reviewed event candidate mapping</td><td>Open the market page, verify current context, and collect another bounded bucket before any thesis-facing use.</td></tr></tbody></table>
+</body>
+</html>

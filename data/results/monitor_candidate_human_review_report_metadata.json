@@ -1,0 +1,40 @@
+{
+  "generated_at_utc": "2026-05-24T19:27:35+00:00",
+  "inputs": {
+    "alert_rows_path": "data\\results\\monitor_v2_polymarket_rolling_alert_rows.csv",
+    "candidate_features_path": "data\\results\\monitor_reference_candidate_features.csv",
+    "market_snapshots_path": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
+    "similarity_summary_path": "data\\results\\monitor_reference_candidate_similarity_summary.csv",
+    "source_alert_rows": 1488,
+    "wallet_tier_snapshots_path": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",
+    "watchlist_path": "data\\results\\monitor_v2_polymarket_live_watchlist.csv"
+  },
+  "limitations": {
+    "aggregate_monitor_fields_only": true,
+    "human_review_required": true,
+    "not_a_causal_test": true,
+    "not_a_misconduct_finding": true,
+    "not_a_probability_model": true,
+    "not_a_trade_or_profitability_signal": true
+  },
+  "method": {
+    "candidate_filter": "severity != none grouped by timestamp_utc and market_id",
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_use_rcp": true,
+    "does_not_write_database": true,
+    "name": "monitor_candidate_human_review_report",
+    "uses_existing_files_only": true
+  },
+  "outputs": {
+    "candidate_count": 3,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "dashboard_path": "data\\results\\monitor_candidate_human_review_report.html",
+    "high_priority_count": 1,
+    "max_similarity_score": 1.0,
+    "report_path": "data\\results\\monitor_candidate_human_review_report.csv"
+  }
+}

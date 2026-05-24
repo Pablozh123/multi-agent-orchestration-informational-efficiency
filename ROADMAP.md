@@ -423,6 +423,9 @@ Done criteria:
 - The first non-none live rows are accepted only as human-review cues; they are
   not thesis-facing evidence of causality, private information, tradeability,
   profitability, or market efficiency.
+- A compact human-review report now summarises the first 3 strict candidates,
+  their trigger reasons, available evidence, missing evidence, review priority,
+  and next review action.
 
 Blockers:
 
@@ -454,5 +457,7 @@ Blockers:
   misconduct, private information, tradeability, or profitability.
 - The first non-none live candidates require human review before any
   thesis-facing alert wording or strategy hypothesis.
-- The next user-facing step is a compact human-review report for the first
-  non-none monitor candidates or another bounded live bucket.
+- The current high-priority human-review candidate still needs manual source
+  checks and repeat-bucket confirmation before any thesis-facing use.
+- The next user-facing step is either another bounded live bucket or manual
+  source-check fields for reviewed candidates.

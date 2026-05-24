@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-23 21:32
+Generated: 2026-05-24 21:29
 
 Current goal: `goal-polymarket-alert-review-workflow-001` - Specify alert-review workflow from compact summaries and wallet reference cases
 
@@ -11,89 +11,42 @@ Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `310 passed in 15.75s`
+Pytest summary: `314 passed in 18.75s`
 
 Git branch: `main`
 
-Latest commit: `b267236`
+Latest commit: `3da5746`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
- M data/results/monitor_reference_candidate_dashboard.html
- M data/results/monitor_reference_candidate_features.csv
- M data/results/monitor_reference_candidate_metadata.json
- M data/results/monitor_reference_candidate_sensitivity_dashboard.html
- M data/results/monitor_reference_candidate_sensitivity_features.csv
- M data/results/monitor_reference_candidate_sensitivity_metadata.json
- M data/results/monitor_reference_candidate_sensitivity_rows.csv
- M data/results/monitor_reference_candidate_sensitivity_similarity_scores.csv
- M data/results/monitor_reference_candidate_sensitivity_similarity_summary.csv
- M data/results/monitor_reference_candidate_sensitivity_summary.csv
- M data/results/monitor_reference_candidate_similarity_scores.csv
- M data/results/monitor_reference_candidate_similarity_summary.csv
- M data/results/monitor_reference_candidate_summary.csv
- M data/results/monitor_v2_live_window_registry.csv
- M data/results/monitor_v2_live_window_registry_metadata.json
  M data/results/monitor_v2_polymarket_dashboard.html
  M data/results/monitor_v2_polymarket_dashboard_metadata.json
- M data/results/monitor_v2_polymarket_live_collection_metadata.json
- M data/results/monitor_v2_polymarket_live_input_validation_report.json
- M data/results/monitor_v2_polymarket_live_market_snapshots.csv
- M data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv
- M data/results/monitor_v2_polymarket_live_watchlist.csv
- M data/results/monitor_v2_polymarket_refresh_metadata.json
- M data/results/monitor_v2_polymarket_rolling_alert_rows.csv
- M data/results/monitor_v2_polymarket_rolling_alert_summary.csv
- M data/results/monitor_v2_polymarket_rolling_history.png
- M data/results/monitor_v2_polymarket_rolling_history_figure_metadata.json
- M data/results/monitor_v2_polymarket_rolling_history_metadata.json
- M data/results/monitor_v2_polymarket_rolling_scoring_metadata.json
- M data/results/monitor_v2_polymarket_rolling_scoring_snapshots.csv
- M data/results/monitor_v2_polymarket_rolling_scoring_validation_report.json
  M docs/project/WORK_LOG.md
+ M operations/analysis/monitor_reference_candidates.py
+ M operations/analysis/monitor_v2_dashboard.py
+ M tests/test_monitor_v2_dashboard.py
+?? data/results/monitor_candidate_human_review_report.csv
+?? data/results/monitor_candidate_human_review_report.html
+?? data/results/monitor_candidate_human_review_report_metadata.json
+?? operations/analysis/monitor_candidate_review_report.py
+?? tests/test_monitor_candidate_review_report.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                            |  19 ++-
- ROADMAP.md                                         |  12 +-
- .../monitor_reference_candidate_dashboard.html     |  16 +-
- .../monitor_reference_candidate_features.csv       |  24 +++
- .../monitor_reference_candidate_metadata.json      |  12 +-
- ..._reference_candidate_sensitivity_dashboard.html |  18 +-
- ...or_reference_candidate_sensitivity_features.csv | 120 +++++++++++++
- ...r_reference_candidate_sensitivity_metadata.json |  24 +--
- ...onitor_reference_candidate_sensitivity_rows.csv |  15 ++
- ...nce_candidate_sensitivity_similarity_scores.csv |  30 ++++
- ...ce_candidate_sensitivity_similarity_summary.csv |  15 ++
- ...tor_reference_candidate_sensitivity_summary.csv |   2 +-
- ...nitor_reference_candidate_similarity_scores.csv |   6 +
- ...itor_reference_candidate_similarity_summary.csv |   3 +
- .../monitor_reference_candidate_summary.csv        |   2 +-
- data/results/monitor_v2_live_window_registry.csv   |   1 +
- .../monitor_v2_live_window_registry_metadata.json  |   6 +-
- data/results/monitor_v2_polymarket_dashboard.html  |  82 ++++-----
- .../monitor_v2_polymarket_dashboard_metadata.json  |  36 ++--
- ...tor_v2_polymarket_live_collection_metadata.json |   8 +-
- ...v2_polymarket_live_input_validation_report.json |  10 +-
- ...monitor_v2_polymarket_live_market_snapshots.csv |  24 +++
- ...or_v2_polymarket_live_wallet_tier_snapshots.csv |  14 +-
- .../monitor_v2_polymarket_live_watchlist.csv       |  24 +--
- .../monitor_v2_polymarket_refresh_metadata.json    |  16 +-
- .../monitor_v2_polymarket_rolling_alert_rows.csv   |  72 ++++++++
- ...monitor_v2_polymarket_rolling_alert_summary.csv | 120 ++++++-------
- .../monitor_v2_polymarket_rolling_history.png      | Bin 133660 -> 139371 bytes
- ...polymarket_rolling_history_figure_metadata.json |  10 +-
- ...tor_v2_polymarket_rolling_history_metadata.json | 188 +++------------------
- ...tor_v2_polymarket_rolling_scoring_metadata.json |  22 ++-
- ...tor_v2_polymarket_rolling_scoring_snapshots.csv |  72 ++++++++
- ...lymarket_rolling_scoring_validation_report.json |  10 +-
- docs/project/WORK_LOG.md                           |  41 +++++
- 34 files changed, 697 insertions(+), 377 deletions(-)
+ GOAL.md                                            | 15 ++++++--
+ ROADMAP.md                                         |  9 +++--
+ data/results/monitor_v2_polymarket_dashboard.html  |  9 ++++-
+ .../monitor_v2_polymarket_dashboard_metadata.json  |  5 ++-
+ docs/project/WORK_LOG.md                           | 41 ++++++++++++++++++++++
+ .../analysis/monitor_reference_candidates.py       |  6 ++++
+ operations/analysis/monitor_v2_dashboard.py        | 37 +++++++++++++++++++
+ tests/test_monitor_v2_dashboard.py                 | 25 +++++++++++++
+ 8 files changed, 140 insertions(+), 7 deletions(-)
 ```
 
 Blockers:
@@ -102,7 +55,7 @@ Blockers:
 
 Next recommended action:
 
-- data: add third live monitor window and candidate review outputs
+- feat: add monitor candidate human review report
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

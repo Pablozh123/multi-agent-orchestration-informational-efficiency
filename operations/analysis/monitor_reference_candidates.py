@@ -508,6 +508,12 @@ def _metadata(
 
 
 def _candidate_id(timestamp_utc: object, market_id: object) -> str:
+    return monitor_candidate_id(timestamp_utc, market_id)
+
+
+def monitor_candidate_id(timestamp_utc: object, market_id: object) -> str:
+    """Return the stable monitor candidate id for a timestamp and market."""
+
     raw = f"{timestamp_utc}|{market_id}"
     digest = hashlib.sha1(raw.encode("utf-8")).hexdigest()[:12]
     timestamp = str(timestamp_utc).replace(":", "").replace("-", "").replace("Z", "")

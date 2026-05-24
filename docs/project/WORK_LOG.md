@@ -3420,3 +3420,44 @@ Next step:
 
 - Build or document a compact human-review report for the first non-none live
   candidates, then decide whether to collect another bounded bucket.
+
+## 2026-05-24 - goal-polymarket-alert-review-workflow-001
+
+Task:
+
+- Build a compact human-review report for the first strict monitor candidates.
+
+Files changed:
+
+- `operations/analysis/monitor_candidate_review_report.py`
+- `operations/analysis/monitor_reference_candidates.py`
+- `operations/analysis/monitor_v2_dashboard.py`
+- `tests/test_monitor_candidate_review_report.py`
+- `tests/test_monitor_v2_dashboard.py`
+- `data/results/monitor_candidate_human_review_report.csv`
+- `data/results/monitor_candidate_human_review_report.html`
+- `data/results/monitor_candidate_human_review_report_metadata.json`
+- `data/results/monitor_v2_polymarket_dashboard.html`
+- `data/results/monitor_v2_polymarket_dashboard_metadata.json`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_candidate_review_report.py tests/test_monitor_v2_dashboard.py tests/test_monitor_reference_candidates.py -q` -> 13 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_candidate_review_report` -> 3 candidates, 1 high priority, max similarity 1.0.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_dashboard` -> 12 markets, 21 buckets, 7 alerts.
+
+Decision:
+
+- Treat the human-review report as an explanation and triage layer over strict
+  monitor candidates.
+- Keep the report descriptive: no wallet addresses, no order instructions, no
+  misconduct claim, no causality claim, no profitability claim, and no trading
+  signal.
+
+Next step:
+
+- Manually source-check the high-priority AOC-2028 candidate or collect one
+  more bounded live bucket to see whether the pattern repeats.

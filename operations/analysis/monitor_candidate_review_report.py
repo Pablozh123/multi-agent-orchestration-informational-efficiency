@@ -19,6 +19,9 @@ from operations.analysis.monitor_reference_candidates import (
     MONITOR_ALERT_COLUMNS,
     monitor_candidate_id,
 )
+from operations.analysis.monitor_literature_risk_scores import (
+    RISK_SCORE_SUMMARY_OUTPUT,
+)
 from operations.analysis.run_h2_event_windows import RESULTS_DIR
 from operations.collectors.polymarket_readonly import (
     LIVE_MARKET_SNAPSHOTS_OUTPUT,
@@ -63,6 +66,11 @@ REPORT_COLUMNS: tuple[str, ...] = (
     "coordination_label",
     "coordination_context",
     "insider_risk_review_label",
+    "literature_wallet_risk_score",
+    "literature_wallet_risk_flag",
+    "literature_market_risk_score",
+    "literature_market_risk_flag",
+    "literature_risk_feature_status",
     "triggered_patterns",
     "best_reference_case_id",
     "best_similarity_score",
@@ -143,6 +151,7 @@ def build_human_review_report(
     similarity_summary: pd.DataFrame,
     candidate_features: pd.DataFrame,
     reference_cases: pd.DataFrame | None = None,
+    risk_score_summary: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
     """Return one human-review row per strict monitor candidate."""
 
@@ -162,6 +171,9 @@ def build_human_review_report(
     reference_lookup = _reference_case_lookup(
         reference_cases if reference_cases is not None else pd.DataFrame()
     )
+    risk_lookup = _risk_score_lookup(
+        risk_score_summary if risk_score_summary is not None else pd.DataFrame()
+    )
 
     report_rows: list[dict[str, object]] = []
     for (timestamp_utc, market_id), group in active.groupby(
@@ -174,6 +186,7 @@ def build_human_review_report(
         wallet = wallet_latest.get(str(market_id), {})
         similarity = similarity_lookup.get(candidate_id, {})
         triggered_patterns = feature_lookup.get(candidate_id, [])
+        risk_score = risk_lookup.get(candidate_id, {})
         row = _report_row(
             candidate_id=candidate_id,
             timestamp_utc=str(timestamp_utc),
@@ -185,6 +198,7 @@ def build_human_review_report(
             similarity=similarity,
             triggered_patterns=triggered_patterns,
             reference_cases=reference_lookup,
+            risk_score=risk_score,
         )
         report_rows.append(row)
     return pd.DataFrame(report_rows, columns=REPORT_COLUMNS)
@@ -199,6 +213,7 @@ def generate_monitor_candidate_human_review_report(
     similarity_summary_path: Path = CANDIDATE_SIMILARITY_SUMMARY_OUTPUT,
     candidate_features_path: Path = CANDIDATE_FEATURES_OUTPUT,
     reference_cases_path: Path = REFERENCE_CASES_INPUT,
+    risk_score_summary_path: Path = RISK_SCORE_SUMMARY_OUTPUT,
     report_path: Path = REVIEW_REPORT_OUTPUT,
     dashboard_path: Path = REVIEW_DASHBOARD_OUTPUT,
     metadata_path: Path = REVIEW_METADATA_OUTPUT,
@@ -216,6 +231,7 @@ def generate_monitor_candidate_human_review_report(
     similarity_summary = _read_optional_csv(similarity_summary_path)
     candidate_features = _read_optional_csv(candidate_features_path)
     reference_cases = _read_optional_csv(reference_cases_path)
+    risk_score_summary = _read_optional_csv(risk_score_summary_path)
 
     report = build_human_review_report(
         alert_rows=alert_rows,
@@ -225,6 +241,7 @@ def generate_monitor_candidate_human_review_report(
         similarity_summary=similarity_summary,
         candidate_features=candidate_features,
         reference_cases=reference_cases,
+        risk_score_summary=risk_score_summary,
     )
     _write_csv(report_path, report)
     _write_csv(materiality_context_path, _materiality_context(report))
@@ -239,6 +256,7 @@ def generate_monitor_candidate_human_review_report(
         similarity_summary_path=similarity_summary_path,
         candidate_features_path=candidate_features_path,
         reference_cases_path=reference_cases_path,
+        risk_score_summary_path=risk_score_summary_path,
         report_path=report_path,
         dashboard_path=dashboard_path,
         materiality_context_path=materiality_context_path,
@@ -280,6 +298,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     parser.add_argument("--candidate-features", type=Path, default=CANDIDATE_FEATURES_OUTPUT)
     parser.add_argument("--reference-cases", type=Path, default=REFERENCE_CASES_INPUT)
+    parser.add_argument(
+        "--risk-score-summary",
+        type=Path,
+        default=RISK_SCORE_SUMMARY_OUTPUT,
+    )
     parser.add_argument("--report-output", type=Path, default=REVIEW_REPORT_OUTPUT)
     parser.add_argument("--dashboard-output", type=Path, default=REVIEW_DASHBOARD_OUTPUT)
     parser.add_argument("--metadata-output", type=Path, default=REVIEW_METADATA_OUTPUT)
@@ -299,6 +322,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             similarity_summary_path=args.similarity_summary,
             candidate_features_path=args.candidate_features,
             reference_cases_path=args.reference_cases,
+            risk_score_summary_path=args.risk_score_summary,
             report_path=args.report_output,
             dashboard_path=args.dashboard_output,
             metadata_path=args.metadata_output,
@@ -324,6 +348,7 @@ def _report_row(
     similarity: dict[str, object],
     triggered_patterns: Sequence[str],
     reference_cases: dict[str, dict[str, object]],
+    risk_score: dict[str, object],
 ) -> dict[str, object]:
     families = sorted(set(group["anomaly_family"].astype(str)))
     metrics = sorted(set(group["metric_name"].astype(str)))
@@ -408,6 +433,23 @@ def _report_row(
             coordination_label=coordination_label,
         ),
         "insider_risk_review_label": insider_risk_label,
+        "literature_wallet_risk_score": round(
+            _float_or_zero(risk_score.get("literature_wallet_risk_score", 0.0)),
+            6,
+        ),
+        "literature_wallet_risk_flag": str(
+            risk_score.get("literature_wallet_risk_flag", "not_available")
+        ),
+        "literature_market_risk_score": round(
+            _float_or_zero(risk_score.get("literature_market_risk_score", 0.0)),
+            6,
+        ),
+        "literature_market_risk_flag": str(
+            risk_score.get("literature_market_risk_flag", "not_available")
+        ),
+        "literature_risk_feature_status": str(
+            risk_score.get("feature_status_summary", "not_available")
+        ),
         "triggered_patterns": ",".join(sorted(triggered_patterns)),
         "best_reference_case_id": best_reference_id,
         "best_similarity_score": round(best_similarity, 6),
@@ -917,6 +959,7 @@ def _metadata(
     similarity_summary_path: Path,
     candidate_features_path: Path,
     reference_cases_path: Path,
+    risk_score_summary_path: Path,
     report_path: Path,
     dashboard_path: Path,
     materiality_context_path: Path,
@@ -942,6 +985,7 @@ def _metadata(
             "similarity_summary_path": str(similarity_summary_path),
             "candidate_features_path": str(candidate_features_path),
             "reference_cases_path": str(reference_cases_path),
+            "risk_score_summary_path": str(risk_score_summary_path),
             "source_alert_rows": int(len(alert_rows)),
         },
         "outputs": {
@@ -953,6 +997,14 @@ def _metadata(
             if not report.empty
             else 0,
             "max_similarity_score": _max_report_similarity(report),
+            "max_literature_wallet_risk_score": _max_report_numeric(
+                report,
+                "literature_wallet_risk_score",
+            ),
+            "max_literature_market_risk_score": _max_report_numeric(
+                report,
+                "literature_market_risk_score",
+            ),
             "contains_wallet_addresses": False,
             "contains_order_instructions": False,
             "contains_computed_insider_label": False,
@@ -984,6 +1036,8 @@ def _candidate_cards(report: pd.DataFrame) -> str:
         percentile = _float_or_zero(item.get("max_percentile_rank", 0.0))
         similarity = _float_or_zero(item.get("best_similarity_score", 0.0))
         amount = _float_or_zero(item.get("total_observed_amount_usd", 0.0))
+        wallet_risk = _float_or_zero(item.get("literature_wallet_risk_score", 0.0))
+        market_risk = _float_or_zero(item.get("literature_market_risk_score", 0.0))
         cards.append(
             f"""
   <article class="candidate">
@@ -1014,6 +1068,14 @@ def _candidate_cards(report: pd.DataFrame) -> str:
       <div class="box">
         <strong>Coordination</strong>
         <p>{escape(str(item["coordination_context"]))}</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: {wallet_risk:.2f}
+        ({escape(str(item.get("literature_wallet_risk_flag", "not_available")))})<br>
+        Market score: {market_risk:.2f}
+        ({escape(str(item.get("literature_market_risk_flag", "not_available")))})<br>
+        Feature status: {escape(str(item.get("literature_risk_feature_status", "not_available")))}</p>
       </div>
       <div class="box">
         <strong>Quick numbers</strong>
@@ -1048,6 +1110,33 @@ def _max_report_similarity(report: pd.DataFrame) -> float:
     return float(
         pd.to_numeric(report["best_similarity_score"], errors="coerce").fillna(0).max()
     )
+
+
+def _max_report_numeric(report: pd.DataFrame, column: str) -> float:
+    if report.empty or column not in report.columns:
+        return 0.0
+    return float(pd.to_numeric(report[column], errors="coerce").fillna(0).max())
+
+
+def _risk_score_lookup(frame: pd.DataFrame) -> dict[str, dict[str, object]]:
+    if frame.empty:
+        return {}
+    _require_columns(
+        frame,
+        (
+            "candidate_id",
+            "literature_wallet_risk_score",
+            "literature_wallet_risk_flag",
+            "literature_market_risk_score",
+            "literature_market_risk_flag",
+            "feature_status_summary",
+        ),
+        "literature risk score summary",
+    )
+    return {
+        str(row["candidate_id"]): row
+        for row in frame.to_dict(orient="records")
+    }
 
 
 def _table(frame: pd.DataFrame, columns: Sequence[str]) -> str:

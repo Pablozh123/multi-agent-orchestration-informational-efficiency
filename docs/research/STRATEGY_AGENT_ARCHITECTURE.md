@@ -3675,3 +3675,48 @@ Disallowed wording:
 The thesis may discuss whether the deterministic signals have historical
 predictive value. It must not claim that the agent system itself proves market
 inefficiency or future profitability.
+
+## Literature-Prior Monitor Risk Score
+
+Status: selected as a deterministic diagnostic layer.
+
+The paper- and surveillance-inspired wallet/market formulas are integrated as
+Python review scores, not as an active Whale Agent. Rule C remains the default
+alert rule. The literature-prior score is shown next to Rule C severity,
+insider-risk review label, materiality context, and reference-case overlap.
+
+The first implementation uses only existing local monitor artifacts:
+
+- strict monitor candidate human-review rows,
+- rolling alert rows,
+- CLOB midpoint snapshots,
+- aggregate wallet-tier activity snapshots.
+
+Wallet score features:
+
+- `new_wallet_penalty`: unavailable in v1; requires wallet first-seen,
+  Dune, Polygonscan, or longer local wallet history.
+- `volume_spike_ratio`: aggregate rolling-percentile proxy from wallet amount
+  anomaly rows.
+- `timing_proximity_to_reviewed_event_or_resolution`: available only when a
+  candidate has reviewed event or resolution context.
+- `cluster_correlation_proxy`: aggregate coordination proxy from active-wallet
+  and trade-count context; not a funding graph or identity cluster.
+
+Market score features:
+
+- `new_wallet_ratio`: unavailable in v1; requires per-wallet volume and
+  first-seen metadata.
+- `price_velocity`: bucket-to-bucket CLOB midpoint movement.
+- `volume_concentration`: proxy from top-tier share or HHI-style concentration.
+
+Interpretation rules:
+
+- A `literature_prior_flag` means "review this candidate against the proposed
+  literature-prior heuristic".
+- It does not mean confirmed private information, misconduct, causality,
+  tradeability, or future return.
+- Missing features must be labelled `unavailable`; they must not be set to
+  zero as if observed.
+- Dune and Polygonscan enrichment remain v3 work after API-key handling,
+  validation, and method review.

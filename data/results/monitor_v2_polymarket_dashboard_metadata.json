@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-26T13:11:41+00:00",
+  "generated_at_utc": "2026-05-26T13:36:22+00:00",
   "limitations": {
     "descriptive_dashboard_only": true,
     "no_causal_or_profitability_claim": true,
@@ -37,6 +37,9 @@
       "diagnostic_sensitivity_similarity_rows": 210,
       "human_review_candidate_count": 3,
       "human_review_high_priority_count": 1,
+      "literature_risk_candidate_count": 3,
+      "literature_risk_flagged_candidate_count": 3,
+      "literature_risk_unavailable_feature_count": 9,
       "max_reference_non_self_similarity": 0.5,
       "monitor_candidate_count": 3,
       "monitor_candidate_max_similarity": 1.0,
@@ -63,6 +66,7 @@
     "figure": "data\\results\\monitor_v2_polymarket_rolling_history.png",
     "market_snapshots": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
     "monitor_candidate_human_review_metadata": "data\\results\\monitor_candidate_human_review_report_metadata.json",
+    "monitor_literature_risk_score_metadata": "data\\results\\monitor_literature_risk_score_metadata.json",
     "monitor_reference_candidate_metadata": "data\\results\\monitor_reference_candidate_metadata.json",
     "monitor_reference_candidate_sensitivity_metadata": "data\\results\\monitor_reference_candidate_sensitivity_metadata.json",
     "rolling_metadata": "data\\results\\monitor_v2_polymarket_rolling_history_metadata.json",

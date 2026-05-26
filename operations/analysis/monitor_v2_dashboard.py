@@ -27,6 +27,10 @@ from operations.analysis.monitor_candidate_review_report import (
     REVIEW_DASHBOARD_OUTPUT,
     REVIEW_METADATA_OUTPUT,
 )
+from operations.analysis.monitor_literature_risk_scores import (
+    RISK_SCORE_METADATA_OUTPUT,
+    RISK_SCORE_SUMMARY_OUTPUT,
+)
 from operations.analysis.run_h2_event_windows import RESULTS_DIR
 from operations.analysis.wallet_reference_similarity import (
     SIMILARITY_DASHBOARD_OUTPUT,
@@ -89,6 +93,8 @@ def generate_monitor_v2_dashboard(
     reference_sensitivity_dashboard_path: Path = SENSITIVITY_DASHBOARD_OUTPUT,
     human_review_metadata_path: Path = REVIEW_METADATA_OUTPUT,
     human_review_dashboard_path: Path = REVIEW_DASHBOARD_OUTPUT,
+    literature_risk_metadata_path: Path = RISK_SCORE_METADATA_OUTPUT,
+    literature_risk_summary_path: Path = RISK_SCORE_SUMMARY_OUTPUT,
     dashboard_path: Path = DASHBOARD_OUTPUT,
     metadata_path: Path = DASHBOARD_METADATA_OUTPUT,
 ) -> DashboardResult:
@@ -116,6 +122,10 @@ def generate_monitor_v2_dashboard(
         human_review_metadata_path,
         "human review metadata",
     )
+    literature_risk_metadata = _read_optional_json(
+        literature_risk_metadata_path,
+        "literature-prior risk score metadata",
+    )
     _assert_no_wallet_columns((watchlist, market, wallets, alerts))
 
     metrics = _dashboard_metrics(
@@ -128,6 +138,7 @@ def generate_monitor_v2_dashboard(
         reference_candidate_metadata=reference_candidate_metadata,
         reference_sensitivity_metadata=reference_sensitivity_metadata,
         human_review_metadata=human_review_metadata,
+        literature_risk_metadata=literature_risk_metadata,
     )
     _assert_reference_review_safe(metrics["reference_review"])
     html = _render_dashboard(
@@ -141,6 +152,7 @@ def generate_monitor_v2_dashboard(
         reference_candidate_dashboard_path=reference_candidate_dashboard_path,
         reference_sensitivity_dashboard_path=reference_sensitivity_dashboard_path,
         human_review_dashboard_path=human_review_dashboard_path,
+        literature_risk_summary_path=literature_risk_summary_path,
         source_paths={
             "watchlist": watchlist_path,
             "market snapshots": market_snapshots_path,
@@ -153,6 +165,7 @@ def generate_monitor_v2_dashboard(
             "monitor reference candidate dashboard": reference_candidate_dashboard_path,
             "diagnostic sensitivity candidate dashboard": reference_sensitivity_dashboard_path,
             "human review report": human_review_dashboard_path,
+            "literature-prior risk score summary": literature_risk_summary_path,
         },
     )
     dashboard_path.parent.mkdir(parents=True, exist_ok=True)
@@ -188,6 +201,7 @@ def generate_monitor_v2_dashboard(
             "monitor_reference_candidate_metadata": reference_candidate_metadata_path,
             "monitor_reference_candidate_sensitivity_metadata": reference_sensitivity_metadata_path,
             "monitor_candidate_human_review_metadata": human_review_metadata_path,
+            "monitor_literature_risk_score_metadata": literature_risk_metadata_path,
         })
         else {},
         "limitations": {
@@ -251,6 +265,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     parser.add_argument("--human-review-metadata", type=Path, default=REVIEW_METADATA_OUTPUT)
     parser.add_argument("--human-review-dashboard", type=Path, default=REVIEW_DASHBOARD_OUTPUT)
+    parser.add_argument(
+        "--literature-risk-metadata",
+        type=Path,
+        default=RISK_SCORE_METADATA_OUTPUT,
+    )
+    parser.add_argument(
+        "--literature-risk-summary",
+        type=Path,
+        default=RISK_SCORE_SUMMARY_OUTPUT,
+    )
     parser.add_argument("--dashboard-output", type=Path, default=DASHBOARD_OUTPUT)
     parser.add_argument("--metadata-output", type=Path, default=DASHBOARD_METADATA_OUTPUT)
     args = parser.parse_args(argv)
@@ -272,6 +296,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             reference_sensitivity_dashboard_path=args.reference_sensitivity_dashboard,
             human_review_metadata_path=args.human_review_metadata,
             human_review_dashboard_path=args.human_review_dashboard,
+            literature_risk_metadata_path=args.literature_risk_metadata,
+            literature_risk_summary_path=args.literature_risk_summary,
             dashboard_path=args.dashboard_output,
             metadata_path=args.metadata_output,
         )
@@ -294,6 +320,7 @@ def _dashboard_metrics(
     reference_candidate_metadata: dict[str, Any],
     reference_sensitivity_metadata: dict[str, Any],
     human_review_metadata: dict[str, Any],
+    literature_risk_metadata: dict[str, Any],
 ) -> dict[str, Any]:
     outputs = scoring_metadata.get("outputs", {})
     method = scoring_metadata.get("method", {})
@@ -320,6 +347,7 @@ def _dashboard_metrics(
             reference_candidate_metadata,
             reference_sensitivity_metadata,
             human_review_metadata,
+            literature_risk_metadata,
         ),
     }
 
@@ -336,6 +364,7 @@ def _render_dashboard(
     reference_candidate_dashboard_path: Path,
     reference_sensitivity_dashboard_path: Path,
     human_review_dashboard_path: Path,
+    literature_risk_summary_path: Path,
     source_paths: dict[str, Path],
 ) -> str:
     latest_market = _latest_market_table(watchlist, market, wallets)
@@ -348,6 +377,7 @@ def _render_dashboard(
         reference_candidate_dashboard_path=reference_candidate_dashboard_path,
         reference_sensitivity_dashboard_path=reference_sensitivity_dashboard_path,
         human_review_dashboard_path=human_review_dashboard_path,
+        literature_risk_summary_path=literature_risk_summary_path,
     )
     summary_rows = _table_rows(
         alerts.head(20),
@@ -473,11 +503,13 @@ def _reference_review_metrics(
     reference_candidate_metadata: dict[str, Any],
     reference_sensitivity_metadata: dict[str, Any],
     human_review_metadata: dict[str, Any],
+    literature_risk_metadata: dict[str, Any],
 ) -> dict[str, Any]:
     similarity_outputs = reference_similarity_metadata.get("outputs", {})
     candidate_outputs = reference_candidate_metadata.get("outputs", {})
     sensitivity_outputs = reference_sensitivity_metadata.get("outputs", {})
     review_outputs = human_review_metadata.get("outputs", {})
+    risk_outputs = literature_risk_metadata.get("outputs", {})
     return {
         "reference_case_count": int(similarity_outputs.get("reference_count", 0)),
         "reference_comparison_count": int(similarity_outputs.get("comparison_count", 0)),
@@ -510,17 +542,26 @@ def _reference_review_metrics(
         "human_review_high_priority_count": int(
             review_outputs.get("high_priority_count", 0)
         ),
+        "literature_risk_candidate_count": int(risk_outputs.get("candidate_count", 0)),
+        "literature_risk_flagged_candidate_count": int(
+            risk_outputs.get("flagged_candidate_count", 0)
+        ),
+        "literature_risk_unavailable_feature_count": int(
+            risk_outputs.get("unavailable_feature_count", 0)
+        ),
         "contains_wallet_addresses": bool(
             similarity_outputs.get("contains_wallet_addresses", False)
             or candidate_outputs.get("contains_wallet_addresses", False)
             or sensitivity_outputs.get("contains_wallet_addresses", False)
             or review_outputs.get("contains_wallet_addresses", False)
+            or risk_outputs.get("contains_wallet_addresses", False)
         ),
         "contains_order_instructions": bool(
             similarity_outputs.get("contains_order_instructions", False)
             or candidate_outputs.get("contains_order_instructions", False)
             or sensitivity_outputs.get("contains_order_instructions", False)
             or review_outputs.get("contains_order_instructions", False)
+            or risk_outputs.get("contains_order_instructions", False)
         ),
     }
 
@@ -532,6 +573,7 @@ def _reference_review_section(
     reference_candidate_dashboard_path: Path,
     reference_sensitivity_dashboard_path: Path,
     human_review_dashboard_path: Path,
+    literature_risk_summary_path: Path,
 ) -> str:
     return f"""
   <h2>Reference Review</h2>
@@ -545,6 +587,8 @@ def _reference_review_section(
     <div class="metric">Market-only shadow<strong>{reference_review.get("diagnostic_sensitivity_market_only_shadow_count", 0)}</strong></div>
     <div class="metric">Human review rows<strong>{reference_review.get("human_review_candidate_count", 0)}</strong></div>
     <div class="metric">High priority<strong>{reference_review.get("human_review_high_priority_count", 0)}</strong></div>
+    <div class="metric">Literature risk rows<strong>{reference_review.get("literature_risk_candidate_count", 0)}</strong></div>
+    <div class="metric">Literature flags<strong>{reference_review.get("literature_risk_flagged_candidate_count", 0)}</strong></div>
   </section>
   <section class="link-grid">
     <div class="link-card">
@@ -562,6 +606,10 @@ def _reference_review_section(
     <div class="link-card">
       <a href="{escape(human_review_dashboard_path.name)}">Open human-review report</a>
       <p>Explains why strict monitor candidates were marked, what evidence exists, and what still needs checking.</p>
+    </div>
+    <div class="link-card">
+      <a href="{escape(literature_risk_summary_path.name)}">Open literature-prior risk score summary</a>
+      <p>Shows diagnostic literature-prior wallet and market risk scores plus missing feature counts.</p>
     </div>
   </section>
 """

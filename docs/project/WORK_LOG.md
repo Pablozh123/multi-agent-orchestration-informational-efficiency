@@ -3543,3 +3543,57 @@ Next step:
 
 - Review whether the same candidate repeats in later bounded buckets or add
   manual source-check fields for reviewed insider-risk candidates.
+
+## 2026-05-26 - goal-monitor-literature-risk-score-integration-001
+
+Task:
+
+- Integrate literature-prior wallet and market risk scores into the monitor
+  review layer without activating a Whale Agent.
+
+Files changed:
+
+- `operations/analysis/monitor_literature_risk_scores.py`
+- `operations/analysis/monitor_candidate_review_report.py`
+- `operations/analysis/monitor_v2_dashboard.py`
+- `tests/test_monitor_literature_risk_scores.py`
+- `tests/test_monitor_candidate_review_report.py`
+- `tests/test_monitor_v2_dashboard.py`
+- `data/results/monitor_literature_risk_score_rows.csv`
+- `data/results/monitor_literature_risk_score_summary.csv`
+- `data/results/monitor_literature_risk_score_metadata.json`
+- `data/results/monitor_candidate_human_review_report.csv`
+- `data/results/monitor_candidate_human_review_report.html`
+- `data/results/monitor_candidate_human_review_report_metadata.json`
+- `data/results/monitor_v2_polymarket_dashboard.html`
+- `data/results/monitor_v2_polymarket_dashboard_metadata.json`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_literature_risk_scores.py tests/test_monitor_candidate_review_report.py tests/test_monitor_v2_dashboard.py -q` -> 15 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_literature_risk_scores` -> 3 candidates, 3 literature-prior flags, 9 unavailable features.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_candidate_review_report` -> 3 candidates, 1 high priority, max similarity 1.0.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_dashboard` -> 12 markets, 21 buckets, 7 alerts.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 324 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> 324 passed.
+
+Decision:
+
+- Treat the proposed literature formula as a diagnostic prior, not as a
+  replacement for Rule C.
+- Show available versus unavailable features explicitly: price velocity,
+  aggregate volume spike, concentration, and coordination proxy are available;
+  wallet age, true new-wallet ratio, top-5 wallet concentration, and funding
+  graph evidence remain unavailable in v1.
+- Current strict candidates receive market-risk literature flags, but no
+  wallet-risk literature flag. That supports human review, not a stronger
+  informed-wallet claim.
+
+Next step:
+
+- Decide whether to enrich the monitor with per-wallet aggregate inputs or
+  first add manual source-check fields for the current reviewed candidates.

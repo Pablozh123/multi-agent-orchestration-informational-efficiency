@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for insider-risk materiality review context
+Status: active for literature-prior monitor risk score integration
 
 Done criteria:
 
@@ -435,6 +435,14 @@ Done criteria:
   computed wallet fact, misconduct claim, causal claim, or trading signal.
 - Coordination context is needed so single-wallet/single-trade candidates are
   not confused with multi-wallet small-flow candidates.
+- Literature-prior wallet and market risk scores are implemented as
+  deterministic Python diagnostics over strict monitor candidates, not as an
+  active Whale Agent.
+- The literature-prior score layer keeps Rule C unchanged and marks missing
+  wallet-age, true new-wallet-ratio, top-wallet concentration, and funding
+  graph features as unavailable rather than guessed.
+- Human-review cards and the main dashboard surface the literature-prior
+  scores next to materiality and reference-review context.
 
 Blockers:
 
@@ -471,5 +479,7 @@ Blockers:
 - Current strict candidates have small observed amounts versus the
   AdrianCronauer USD 103'248 reference trade, so materiality context must be
   shown before they are used as informed-flow examples.
+- Literature-prior score weights and thresholds are heuristic priors until
+  calibrated against broader Polymarket distributions and reference cases.
 - The next user-facing step is either another bounded live bucket or manual
   source-check fields for reviewed candidates.

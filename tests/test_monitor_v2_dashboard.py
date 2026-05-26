@@ -50,6 +50,13 @@ def test_generate_monitor_v2_dashboard_writes_html_and_metadata(tmp_path: Path) 
         metadata["outputs"]["reference_review"]["human_review_candidate_count"]
         == 2
     )
+    assert metadata["outputs"]["reference_review"]["literature_risk_candidate_count"] == 2
+    assert (
+        metadata["outputs"]["reference_review"][
+            "literature_risk_flagged_candidate_count"
+        ]
+        == 1
+    )
 
 
 def test_generate_monitor_v2_dashboard_rejects_wallet_address_columns(
@@ -99,6 +106,10 @@ def test_dashboard_cli_writes_outputs(tmp_path: Path, capsys) -> None:
             str(paths["human_review_metadata_path"]),
             "--human-review-dashboard",
             str(paths["human_review_dashboard_path"]),
+            "--literature-risk-metadata",
+            str(paths["literature_risk_metadata_path"]),
+            "--literature-risk-summary",
+            str(paths["literature_risk_summary_path"]),
             "--dashboard-output",
             str(paths["dashboard_path"]),
             "--metadata-output",
@@ -129,6 +140,8 @@ def _write_inputs(root: Path) -> dict[str, Path]:
         "reference_sensitivity_dashboard_path": root / "monitor_reference_candidate_sensitivity_dashboard.html",
         "human_review_metadata_path": root / "human_review_metadata.json",
         "human_review_dashboard_path": root / "monitor_candidate_human_review_report.html",
+        "literature_risk_metadata_path": root / "literature_risk_metadata.json",
+        "literature_risk_summary_path": root / "monitor_literature_risk_score_summary.csv",
         "dashboard_path": root / "dashboard.html",
         "metadata_path": root / "dashboard_metadata.json",
     }
@@ -264,6 +277,29 @@ def _write_inputs(root: Path) -> dict[str, Path]:
         ),
         encoding="utf-8",
     )
+    paths["literature_risk_metadata_path"].write_text(
+        json.dumps(
+            {
+                "outputs": {
+                    "candidate_count": 2,
+                    "flagged_candidate_count": 1,
+                    "unavailable_feature_count": 4,
+                    "contains_wallet_addresses": False,
+                    "contains_order_instructions": False,
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    pd.DataFrame(
+        [
+            {
+                "candidate_id": "candidate_a",
+                "literature_wallet_risk_score": 1.5,
+                "literature_market_risk_score": 0.4,
+            }
+        ]
+    ).to_csv(paths["literature_risk_summary_path"], index=False)
     paths["reference_similarity_dashboard_path"].write_text("similarity", encoding="utf-8")
     paths["reference_candidate_dashboard_path"].write_text("candidates", encoding="utf-8")
     paths["reference_sensitivity_dashboard_path"].write_text("sensitivity", encoding="utf-8")

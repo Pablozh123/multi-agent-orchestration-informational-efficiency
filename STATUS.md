@@ -3,19 +3,19 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-26 15:12
+Generated: 2026-05-26 15:38
 
-Current goal: `goal-monitor-insider-risk-review-materiality-001` - Add insider-risk materiality context to monitor candidate review
+Current goal: `goal-monitor-literature-risk-score-integration-001` - Integrate literature-prior wallet and market risk scores into monitor review
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `318 passed in 14.56s`
+Pytest summary: `324 passed in 17.83s`
 
 Git branch: `main`
 
-Latest commit: `0a1ab92`
+Latest commit: `730090e`
 
 Git status:
 
@@ -25,28 +25,36 @@ Git status:
  M data/results/monitor_candidate_human_review_report.csv
  M data/results/monitor_candidate_human_review_report.html
  M data/results/monitor_candidate_human_review_report_metadata.json
+ M data/results/monitor_v2_polymarket_dashboard.html
  M data/results/monitor_v2_polymarket_dashboard_metadata.json
+ M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
  M operations/analysis/monitor_candidate_review_report.py
- M operations/project/review_check.py
+ M operations/analysis/monitor_v2_dashboard.py
  M tests/test_monitor_candidate_review_report.py
- M tests/test_project_automation.py
-?? data/results/monitor_candidate_materiality_context.csv
+ M tests/test_monitor_v2_dashboard.py
+?? data/results/monitor_literature_risk_score_metadata.json
+?? data/results/monitor_literature_risk_score_rows.csv
+?? data/results/monitor_literature_risk_score_summary.csv
+?? operations/analysis/monitor_literature_risk_scores.py
+?? tests/test_monitor_literature_risk_scores.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                            |  27 +-
- ROADMAP.md                                         |  11 +-
- .../monitor_candidate_human_review_report.csv      |   8 +-
- .../monitor_candidate_human_review_report.html     |  46 ++-
- ...tor_candidate_human_review_report_metadata.json |   6 +-
- .../monitor_v2_polymarket_dashboard_metadata.json  |   2 +-
- .../analysis/monitor_candidate_review_report.py    | 321 ++++++++++++++++++++-
- operations/project/review_check.py                 |  30 +-
- tests/test_monitor_candidate_review_report.py      |  91 +++++-
- tests/test_project_automation.py                   |  27 ++
- 10 files changed, 532 insertions(+), 37 deletions(-)
+ GOAL.md                                            | 35 ++++++++-
+ ROADMAP.md                                         | 12 ++-
+ .../monitor_candidate_human_review_report.csv      |  8 +-
+ .../monitor_candidate_human_review_report.html     | 24 ++++++
+ ...tor_candidate_human_review_report_metadata.json |  5 +-
+ data/results/monitor_v2_polymarket_dashboard.html  |  9 ++-
+ .../monitor_v2_polymarket_dashboard_metadata.json  |  6 +-
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md       | 45 +++++++++++
+ .../analysis/monitor_candidate_review_report.py    | 89 ++++++++++++++++++++++
+ operations/analysis/monitor_v2_dashboard.py        | 48 ++++++++++++
+ tests/test_monitor_candidate_review_report.py      | 21 +++++
+ tests/test_monitor_v2_dashboard.py                 | 36 +++++++++
+ 12 files changed, 327 insertions(+), 11 deletions(-)
 ```
 
 Blockers:
@@ -55,7 +63,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: add insider-risk materiality context to monitor review
+- feat: add literature-prior monitor risk scores
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

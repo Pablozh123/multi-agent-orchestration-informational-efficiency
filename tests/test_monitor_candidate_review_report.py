@@ -22,6 +22,7 @@ def test_build_human_review_report_groups_strict_candidates() -> None:
         similarity_summary=_similarity_summary(),
         candidate_features=_candidate_features(),
         reference_cases=_reference_cases(),
+        risk_score_summary=_risk_score_summary(),
     )
 
     assert tuple(report.columns) == REPORT_COLUMNS
@@ -35,6 +36,8 @@ def test_build_human_review_report_groups_strict_candidates() -> None:
     )
     assert high["materiality_label"] == "below_one_percent_of_reference"
     assert high["reference_amount_ratio"] == pytest.approx(250.0 / 103248.0)
+    assert high["literature_wallet_risk_score"] == pytest.approx(2.7)
+    assert high["literature_market_risk_flag"] == "literature_prior_flag"
     assert "human review only" in high["allowed_interpretation"]
     assert "wallet_address" not in report.columns
 
@@ -107,6 +110,7 @@ def test_generate_human_review_report_writes_outputs(tmp_path: Path) -> None:
         similarity_summary_path=paths["similarity_summary_path"],
         candidate_features_path=paths["candidate_features_path"],
         reference_cases_path=paths["reference_cases_path"],
+        risk_score_summary_path=paths["risk_score_summary_path"],
         report_path=tmp_path / "report.csv",
         dashboard_path=tmp_path / "report.html",
         metadata_path=tmp_path / "metadata.json",
@@ -153,6 +157,7 @@ def _write_inputs(root: Path) -> dict[str, Path]:
         "similarity_summary_path": root / "similarity.csv",
         "candidate_features_path": root / "features.csv",
         "reference_cases_path": root / "reference_cases.csv",
+        "risk_score_summary_path": root / "risk_scores.csv",
     }
     _alert_rows().to_csv(paths["alert_rows_path"], index=False)
     _watchlist().to_csv(paths["watchlist_path"], index=False)
@@ -161,6 +166,7 @@ def _write_inputs(root: Path) -> dict[str, Path]:
     _similarity_summary().to_csv(paths["similarity_summary_path"], index=False)
     _candidate_features().to_csv(paths["candidate_features_path"], index=False)
     _reference_cases().to_csv(paths["reference_cases_path"], index=False)
+    _risk_score_summary().to_csv(paths["risk_score_summary_path"], index=False)
     return paths
 
 
@@ -340,5 +346,20 @@ def _reference_cases() -> pd.DataFrame:
                 "handle": "AdrianCronauer",
                 "amount_usd": 103248.0,
             },
+        ]
+    )
+
+
+def _risk_score_summary() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "candidate_id": "monitor_candidate_20260523_192500_8100edf5ad39",
+                "literature_wallet_risk_score": 2.7,
+                "literature_wallet_risk_flag": "no_literature_prior_flag",
+                "literature_market_risk_score": 1.1,
+                "literature_market_risk_flag": "literature_prior_flag",
+                "feature_status_summary": "computed_proxy=4; unavailable=3",
+            }
         ]
     )

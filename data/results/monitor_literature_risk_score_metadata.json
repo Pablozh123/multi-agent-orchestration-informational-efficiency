@@ -1,0 +1,50 @@
+{
+  "generated_at_utc": "2026-05-26T13:36:06+00:00",
+  "inputs": {
+    "alert_rows_path": "data\\results\\monitor_v2_polymarket_rolling_alert_rows.csv",
+    "market_snapshots_path": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
+    "review_report_path": "data\\results\\monitor_candidate_human_review_report.csv",
+    "wallet_tier_snapshots_path": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv"
+  },
+  "limitations": {
+    "funding_graph_unavailable_in_v1": true,
+    "human_review_required": true,
+    "not_a_causal_test": true,
+    "not_a_rule_c_replacement": true,
+    "not_a_trading_signal": true,
+    "per_wallet_age_unavailable_in_v1": true
+  },
+  "method": {
+    "does_not_collect_external_data": true,
+    "does_not_replace_rule_c": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "market_feature_weights": {
+      "new_wallet_ratio": 1.0,
+      "price_velocity": 1.0,
+      "volume_concentration": 1.0
+    },
+    "market_risk_threshold": 0.65,
+    "name": "monitor_literature_risk_scores",
+    "score_status": "literature_prior_diagnostic",
+    "wallet_feature_weights": {
+      "cluster_correlation_proxy": 1.8,
+      "new_wallet_penalty": 2.0,
+      "timing_proximity_to_reviewed_event_or_resolution": 2.5,
+      "volume_spike_ratio": 1.5
+    },
+    "wallet_score_threshold": 6.0
+  },
+  "outputs": {
+    "candidate_count": 3,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "flagged_candidate_count": 3,
+    "row_count": 21,
+    "rows_path": "data\\results\\monitor_literature_risk_score_rows.csv",
+    "summary_path": "data\\results\\monitor_literature_risk_score_summary.csv",
+    "unavailable_feature_count": 9
+  }
+}

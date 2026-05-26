@@ -69,14 +69,40 @@ def _check_no_select_star(repo_root: Path) -> CheckResult:
 def _check_no_restricted_claim_wording(repo_root: Path) -> CheckResult:
     word = "inside" + "r"
     pattern = re.compile(rf"\b{word}\b", re.IGNORECASE)
+    blocked_fragments = (
+        f"confirmed {word}",
+        f"{word} wallet",
+        f"{word} trader",
+        f"{word} trading",
+        f"proof of {word}",
+        f"proof, {word}",
+    )
+    allowed_fragments = (
+        f"{word}-risk",
+        f"{word}_risk",
+        f"{word} risk",
+        f"computed {word} label",
+        f"not a computed {word} label",
+        f"not_a_computed_{word}_label",
+        f"contains_computed_{word}_label",
+    )
     matches: list[str] = []
     for path in _python_files(repo_root / "operations"):
         for line_no, line in enumerate(read_text(path).splitlines(), start=1):
-            if pattern.search(line):
+            lowered = line.lower()
+            if not pattern.search(line):
+                continue
+            blocked = any(fragment in lowered for fragment in blocked_fragments)
+            allowed = any(fragment in lowered for fragment in allowed_fragments)
+            if blocked or not allowed:
                 matches.append(f"{path.relative_to(repo_root)}:{line_no}")
     if matches:
         return CheckResult("restricted claim wording", False, "; ".join(matches))
-    return CheckResult("restricted claim wording", True, "no restricted claim wording in operations")
+    return CheckResult(
+        "restricted claim wording",
+        True,
+        "restricted wording absent or limited to insider-risk review labels",
+    )
 
 
 def _check_rcp_guard(repo_root: Path) -> CheckResult:

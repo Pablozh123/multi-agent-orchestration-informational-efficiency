@@ -31,6 +31,8 @@ from operations.collectors.polymarket_rolling_history import ROLLING_ALERT_ROWS_
 REVIEW_REPORT_OUTPUT = RESULTS_DIR / "monitor_candidate_human_review_report.csv"
 REVIEW_DASHBOARD_OUTPUT = RESULTS_DIR / "monitor_candidate_human_review_report.html"
 REVIEW_METADATA_OUTPUT = RESULTS_DIR / "monitor_candidate_human_review_report_metadata.json"
+MATERIALITY_CONTEXT_OUTPUT = RESULTS_DIR / "monitor_candidate_materiality_context.csv"
+REFERENCE_CASES_INPUT = Path("data/reference_cases/wallet_reference_cases.csv")
 
 REPORT_COLUMNS: tuple[str, ...] = (
     "candidate_id",
@@ -50,6 +52,17 @@ REPORT_COLUMNS: tuple[str, ...] = (
     "active_wallets",
     "trade_count",
     "total_observed_amount_usd",
+    "amount_per_wallet",
+    "amount_per_trade",
+    "materiality_label",
+    "reference_amount_usd",
+    "reference_amount_ratio",
+    "relative_signal_strength",
+    "absolute_amount_context",
+    "reference_scale_context",
+    "coordination_label",
+    "coordination_context",
+    "insider_risk_review_label",
     "triggered_patterns",
     "best_reference_case_id",
     "best_similarity_score",
@@ -69,7 +82,30 @@ REPORT_COLUMNS: tuple[str, ...] = (
     "source_artifacts",
 )
 
+MATERIALITY_CONTEXT_COLUMNS: tuple[str, ...] = (
+    "candidate_id",
+    "timestamp_utc",
+    "market_id",
+    "question",
+    "review_priority",
+    "insider_risk_review_label",
+    "total_observed_amount_usd",
+    "amount_per_wallet",
+    "amount_per_trade",
+    "materiality_label",
+    "reference_amount_usd",
+    "reference_amount_ratio",
+    "coordination_label",
+    "relative_signal_strength",
+    "absolute_amount_context",
+    "reference_scale_context",
+    "coordination_context",
+)
+
 SEVERITY_RANK = {"none": 0, "info": 1, "watch": 2, "high": 3, "critical": 4}
+REFERENCE_RATIO_UNKNOWN = -1.0
+MIN_COORDINATION_WALLETS = 5
+MIN_COORDINATION_TRADES = 5
 
 
 @dataclass(frozen=True)
@@ -79,6 +115,7 @@ class HumanReviewReportResult:
     report_path: Path
     dashboard_path: Path
     metadata_path: Path
+    materiality_context_path: Path
     candidate_count: int
     high_priority_count: int
     max_similarity_score: float
@@ -90,6 +127,7 @@ class HumanReviewReportResult:
             "report_path": str(self.report_path),
             "dashboard_path": str(self.dashboard_path),
             "metadata_path": str(self.metadata_path),
+            "materiality_context_path": str(self.materiality_context_path),
             "candidate_count": self.candidate_count,
             "high_priority_count": self.high_priority_count,
             "max_similarity_score": self.max_similarity_score,
@@ -104,6 +142,7 @@ def build_human_review_report(
     wallet_tier_snapshots: pd.DataFrame,
     similarity_summary: pd.DataFrame,
     candidate_features: pd.DataFrame,
+    reference_cases: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
     """Return one human-review row per strict monitor candidate."""
 
@@ -120,6 +159,9 @@ def build_human_review_report(
     wallet_latest = _latest_wallet_summary(wallet_tier_snapshots)
     similarity_lookup = _similarity_lookup(similarity_summary)
     feature_lookup = _triggered_feature_lookup(candidate_features)
+    reference_lookup = _reference_case_lookup(
+        reference_cases if reference_cases is not None else pd.DataFrame()
+    )
 
     report_rows: list[dict[str, object]] = []
     for (timestamp_utc, market_id), group in active.groupby(
@@ -142,6 +184,7 @@ def build_human_review_report(
             wallet=wallet,
             similarity=similarity,
             triggered_patterns=triggered_patterns,
+            reference_cases=reference_lookup,
         )
         report_rows.append(row)
     return pd.DataFrame(report_rows, columns=REPORT_COLUMNS)
@@ -155,9 +198,11 @@ def generate_monitor_candidate_human_review_report(
     wallet_tier_snapshots_path: Path = LIVE_WALLET_TIER_SNAPSHOTS_OUTPUT,
     similarity_summary_path: Path = CANDIDATE_SIMILARITY_SUMMARY_OUTPUT,
     candidate_features_path: Path = CANDIDATE_FEATURES_OUTPUT,
+    reference_cases_path: Path = REFERENCE_CASES_INPUT,
     report_path: Path = REVIEW_REPORT_OUTPUT,
     dashboard_path: Path = REVIEW_DASHBOARD_OUTPUT,
     metadata_path: Path = REVIEW_METADATA_OUTPUT,
+    materiality_context_path: Path = MATERIALITY_CONTEXT_OUTPUT,
 ) -> HumanReviewReportResult:
     """Write CSV, HTML, and metadata for strict monitor candidate review."""
 
@@ -170,6 +215,7 @@ def generate_monitor_candidate_human_review_report(
     )
     similarity_summary = _read_optional_csv(similarity_summary_path)
     candidate_features = _read_optional_csv(candidate_features_path)
+    reference_cases = _read_optional_csv(reference_cases_path)
 
     report = build_human_review_report(
         alert_rows=alert_rows,
@@ -178,8 +224,10 @@ def generate_monitor_candidate_human_review_report(
         wallet_tier_snapshots=wallet_tier_snapshots,
         similarity_summary=similarity_summary,
         candidate_features=candidate_features,
+        reference_cases=reference_cases,
     )
     _write_csv(report_path, report)
+    _write_csv(materiality_context_path, _materiality_context(report))
     _write_dashboard(report, dashboard_path)
     metadata = _metadata(
         report=report,
@@ -190,8 +238,10 @@ def generate_monitor_candidate_human_review_report(
         wallet_tier_snapshots_path=wallet_tier_snapshots_path,
         similarity_summary_path=similarity_summary_path,
         candidate_features_path=candidate_features_path,
+        reference_cases_path=reference_cases_path,
         report_path=report_path,
         dashboard_path=dashboard_path,
+        materiality_context_path=materiality_context_path,
     )
     metadata_path.parent.mkdir(parents=True, exist_ok=True)
     metadata_path.write_text(
@@ -202,6 +252,7 @@ def generate_monitor_candidate_human_review_report(
         report_path=report_path,
         dashboard_path=dashboard_path,
         metadata_path=metadata_path,
+        materiality_context_path=materiality_context_path,
         candidate_count=int(len(report)),
         high_priority_count=int((report["review_priority"] == "high").sum())
         if not report.empty
@@ -228,9 +279,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         default=CANDIDATE_SIMILARITY_SUMMARY_OUTPUT,
     )
     parser.add_argument("--candidate-features", type=Path, default=CANDIDATE_FEATURES_OUTPUT)
+    parser.add_argument("--reference-cases", type=Path, default=REFERENCE_CASES_INPUT)
     parser.add_argument("--report-output", type=Path, default=REVIEW_REPORT_OUTPUT)
     parser.add_argument("--dashboard-output", type=Path, default=REVIEW_DASHBOARD_OUTPUT)
     parser.add_argument("--metadata-output", type=Path, default=REVIEW_METADATA_OUTPUT)
+    parser.add_argument(
+        "--materiality-context-output",
+        type=Path,
+        default=MATERIALITY_CONTEXT_OUTPUT,
+    )
     args = parser.parse_args(argv)
 
     try:
@@ -241,9 +298,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             wallet_tier_snapshots_path=args.wallet_tier_snapshots,
             similarity_summary_path=args.similarity_summary,
             candidate_features_path=args.candidate_features,
+            reference_cases_path=args.reference_cases,
             report_path=args.report_output,
             dashboard_path=args.dashboard_output,
             metadata_path=args.metadata_output,
+            materiality_context_path=args.materiality_context_output,
         )
     except (FileNotFoundError, ValueError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
@@ -264,6 +323,7 @@ def _report_row(
     wallet: dict[str, object],
     similarity: dict[str, object],
     triggered_patterns: Sequence[str],
+    reference_cases: dict[str, dict[str, object]],
 ) -> dict[str, object]:
     families = sorted(set(group["anomaly_family"].astype(str)))
     metrics = sorted(set(group["metric_name"].astype(str)))
@@ -271,10 +331,31 @@ def _report_row(
     max_robust_z = _max_numeric(group["robust_z"])
     max_percentile = _max_numeric(group["rolling_percentile_rank"])
     best_similarity = _float_or_zero(similarity.get("best_similarity_score", 0.0))
+    active_wallets = int(_float_or_zero(wallet.get("active_wallets", 0)))
+    trade_count = int(_float_or_zero(wallet.get("trade_count", 0)))
+    total_amount = _float_or_zero(wallet.get("total_observed_amount_usd", 0.0))
+    amount_per_wallet = _safe_divide(total_amount, active_wallets)
+    amount_per_trade = _safe_divide(total_amount, trade_count)
+    best_reference_id = str(similarity.get("best_reference_case_id", ""))
+    reference_amount = _float_or_zero(
+        reference_cases.get(best_reference_id, {}).get("amount_usd", 0.0)
+    )
+    reference_amount_ratio = _reference_amount_ratio(total_amount, reference_amount)
+    materiality_label = _materiality_label(reference_amount_ratio, reference_amount)
+    coordination_label = _coordination_label(
+        active_wallets=active_wallets,
+        trade_count=trade_count,
+        materiality_label=materiality_label,
+    )
     priority = _review_priority(
         max_severity=max_severity,
         best_similarity=best_similarity,
         patterns=triggered_patterns,
+    )
+    insider_risk_label = _insider_risk_review_label(
+        priority=priority,
+        materiality_label=materiality_label,
+        coordination_label=coordination_label,
     )
     return {
         "candidate_id": candidate_id,
@@ -291,27 +372,61 @@ def _report_row(
         "max_percentile_rank": round(max_percentile, 6),
         "latest_midpoint_min": _format_number(market.get("latest_midpoint_min", "")),
         "latest_midpoint_max": _format_number(market.get("latest_midpoint_max", "")),
-        "active_wallets": int(_float_or_zero(wallet.get("active_wallets", 0))),
-        "trade_count": int(_float_or_zero(wallet.get("trade_count", 0))),
-        "total_observed_amount_usd": round(
-            _float_or_zero(wallet.get("total_observed_amount_usd", 0.0)),
-            6,
+        "active_wallets": active_wallets,
+        "trade_count": trade_count,
+        "total_observed_amount_usd": round(total_amount, 6),
+        "amount_per_wallet": round(amount_per_wallet, 6),
+        "amount_per_trade": round(amount_per_trade, 6),
+        "materiality_label": materiality_label,
+        "reference_amount_usd": round(reference_amount, 6),
+        "reference_amount_ratio": round(
+            reference_amount_ratio if reference_amount_ratio >= 0 else 0.0,
+            9,
         ),
+        "relative_signal_strength": _relative_signal_strength(group),
+        "absolute_amount_context": _absolute_amount_context(
+            total_amount=total_amount,
+            active_wallets=active_wallets,
+            trade_count=trade_count,
+            amount_per_wallet=amount_per_wallet,
+            amount_per_trade=amount_per_trade,
+        ),
+        "reference_scale_context": _reference_scale_context(
+            total_amount=total_amount,
+            reference_id=best_reference_id,
+            reference_amount=reference_amount,
+            reference_amount_ratio=reference_amount_ratio,
+            materiality_label=materiality_label,
+        ),
+        "coordination_label": coordination_label,
+        "coordination_context": _coordination_context(
+            active_wallets=active_wallets,
+            trade_count=trade_count,
+            total_amount=total_amount,
+            amount_per_wallet=amount_per_wallet,
+            amount_per_trade=amount_per_trade,
+            coordination_label=coordination_label,
+        ),
+        "insider_risk_review_label": insider_risk_label,
         "triggered_patterns": ",".join(sorted(triggered_patterns)),
-        "best_reference_case_id": similarity.get("best_reference_case_id", ""),
+        "best_reference_case_id": best_reference_id,
         "best_similarity_score": round(best_similarity, 6),
         "matched_patterns": similarity.get("matched_patterns", ""),
         "plain_language_summary": _plain_language_summary(
             group=group,
             max_severity=max_severity,
             triggered_patterns=triggered_patterns,
-            total_amount=_float_or_zero(wallet.get("total_observed_amount_usd", 0.0)),
+            total_amount=total_amount,
+            materiality_label=materiality_label,
+            insider_risk_label=insider_risk_label,
         ),
         "wallet_amount_explanation": _wallet_amount_explanation(group),
         "concentration_explanation": _concentration_explanation(group),
         "reference_overlap_explanation": _reference_overlap_explanation(
             similarity=similarity,
             triggered_patterns=triggered_patterns,
+            reference_amount=reference_amount,
+            reference_amount_ratio=reference_amount_ratio,
         ),
         "why_flagged": _why_flagged(group, triggered_patterns),
         "available_evidence": _available_evidence(group, wallet, market, similarity),
@@ -320,8 +435,9 @@ def _report_row(
         "recommended_next_step": _recommended_next_step(priority, triggered_patterns),
         "human_review_status": "needs_human_review",
         "allowed_interpretation": (
-            "Strict monitor candidate for human review only; not proof, "
-            "not a causal claim, and not a trading signal."
+            "Insider-risk review candidate for human review only; not proof, "
+            "not a computed insider label, not a causal claim, and not a "
+            "trading signal."
         ),
         "limitation": (
             "Uses aggregate local monitor artifacts only and contains no "
@@ -354,6 +470,8 @@ def _plain_language_summary(
     max_severity: str,
     triggered_patterns: Sequence[str],
     total_amount: float,
+    materiality_label: str,
+    insider_risk_label: str,
 ) -> str:
     families = set(group["anomaly_family"].astype(str))
     if max_severity == "high" and {
@@ -361,11 +479,11 @@ def _plain_language_summary(
         "concentration",
     }.issubset(families):
         return (
-            "High priority because wallet amount and concentration were both "
+            f"{insider_risk_label}: wallet amount and concentration were both "
             f"unusual in the same 5-minute bucket. The observed aggregate "
             f"amount was about USD {total_amount:.2f}. This is large relative "
-            "to the short rolling baseline, but still small in absolute market "
-            "terms and must be reviewed manually."
+            "to the short rolling baseline, but its reference-scale context is "
+            f"`{materiality_label}` and must be reviewed manually."
         )
     if "concentration" in families:
         return (
@@ -431,6 +549,8 @@ def _reference_overlap_explanation(
     *,
     similarity: dict[str, object],
     triggered_patterns: Sequence[str],
+    reference_amount: float,
+    reference_amount_ratio: float,
 ) -> str:
     score = _float_or_zero(similarity.get("best_similarity_score", 0.0))
     reference = str(similarity.get("best_reference_case_id", ""))
@@ -441,11 +561,17 @@ def _reference_overlap_explanation(
             "triggered neutral labels of the current reference profiles."
         )
     matched_count = len([value for value in matched.split(",") if value])
+    amount_context = ""
+    if reference_amount > 0 and reference_amount_ratio >= 0:
+        amount_context = (
+            f" The observed amount is {reference_amount_ratio:.3%} of the "
+            f"reference amount USD {reference_amount:.2f}."
+        )
     return (
         f"Reference overlap {score:.1f} against {reference} means the candidate "
         f"shares {matched_count} neutral pattern label(s): {matched}. It does "
         "not mean same wallet, same amount, same event, same outcome, or "
-        "misconduct; it is only a review shortcut."
+        f"misconduct; it is only a review shortcut.{amount_context}"
     )
 
 
@@ -464,6 +590,128 @@ def _available_evidence(
         f"{_format_number(market.get('latest_midpoint_max', ''))}; "
         f"reference_similarity={_float_or_zero(similarity.get('best_similarity_score', 0.0)):.2f}"
     )
+
+
+def _relative_signal_strength(group: pd.DataFrame) -> str:
+    families = ",".join(sorted(set(group["anomaly_family"].astype(str))))
+    metrics = ",".join(sorted(set(group["metric_name"].astype(str))))
+    return (
+        f"max_severity={_max_severity(group['severity'])}; "
+        f"max_robust_z={_max_numeric(group['robust_z']):.2f}; "
+        f"max_percentile={_max_numeric(group['rolling_percentile_rank']):.2f}; "
+        f"families={families}; metrics={metrics}"
+    )
+
+
+def _absolute_amount_context(
+    *,
+    total_amount: float,
+    active_wallets: int,
+    trade_count: int,
+    amount_per_wallet: float,
+    amount_per_trade: float,
+) -> str:
+    return (
+        f"observed_amount_usd={total_amount:.2f}; "
+        f"active_wallets={active_wallets}; trade_count={trade_count}; "
+        f"amount_per_wallet_usd={amount_per_wallet:.2f}; "
+        f"amount_per_trade_usd={amount_per_trade:.2f}"
+    )
+
+
+def _reference_scale_context(
+    *,
+    total_amount: float,
+    reference_id: str,
+    reference_amount: float,
+    reference_amount_ratio: float,
+    materiality_label: str,
+) -> str:
+    if reference_amount <= 0 or reference_amount_ratio < 0:
+        return (
+            f"observed_amount_usd={total_amount:.2f}; no comparable reference "
+            "amount is available for the best reference case."
+        )
+    return (
+        f"observed_amount_usd={total_amount:.2f}; reference_case={reference_id}; "
+        f"reference_amount_usd={reference_amount:.2f}; "
+        f"reference_amount_ratio={reference_amount_ratio:.6f}; "
+        f"materiality_label={materiality_label}"
+    )
+
+
+def _coordination_context(
+    *,
+    active_wallets: int,
+    trade_count: int,
+    total_amount: float,
+    amount_per_wallet: float,
+    amount_per_trade: float,
+    coordination_label: str,
+) -> str:
+    return (
+        f"coordination_label={coordination_label}; active_wallets={active_wallets}; "
+        f"trade_count={trade_count}; total_amount_usd={total_amount:.2f}; "
+        f"amount_per_wallet_usd={amount_per_wallet:.2f}; "
+        f"amount_per_trade_usd={amount_per_trade:.2f}"
+    )
+
+
+def _reference_amount_ratio(amount: float, reference_amount: float) -> float:
+    if reference_amount <= 0:
+        return REFERENCE_RATIO_UNKNOWN
+    return max(0.0, amount / reference_amount)
+
+
+def _materiality_label(reference_amount_ratio: float, reference_amount: float) -> str:
+    if reference_amount <= 0 or reference_amount_ratio < 0:
+        return "reference_scale_unknown"
+    if reference_amount_ratio >= 1:
+        return "at_or_above_reference_amount"
+    if reference_amount_ratio >= 0.10:
+        return "same_order_below_reference"
+    if reference_amount_ratio >= 0.01:
+        return "one_to_ten_percent_of_reference"
+    return "below_one_percent_of_reference"
+
+
+def _coordination_label(
+    *,
+    active_wallets: int,
+    trade_count: int,
+    materiality_label: str,
+) -> str:
+    if active_wallets <= 1 and trade_count <= 1:
+        return "single_wallet_single_trade"
+    if (
+        active_wallets >= MIN_COORDINATION_WALLETS
+        and trade_count >= MIN_COORDINATION_TRADES
+        and materiality_label
+        in {"below_one_percent_of_reference", "reference_scale_unknown"}
+    ):
+        return "coordinated_small_flow_candidate"
+    if active_wallets >= MIN_COORDINATION_WALLETS or trade_count >= MIN_COORDINATION_TRADES:
+        return "multi_wallet_or_trade_review_candidate"
+    return "few_wallet_or_trade_context"
+
+
+def _insider_risk_review_label(
+    *,
+    priority: str,
+    materiality_label: str,
+    coordination_label: str,
+) -> str:
+    if coordination_label == "coordinated_small_flow_candidate":
+        return "insider-risk review candidate: coordinated small-flow hypothesis"
+    if priority == "high" and materiality_label in {
+        "at_or_above_reference_amount",
+        "same_order_below_reference",
+        "one_to_ten_percent_of_reference",
+    }:
+        return "insider-risk review candidate: material flow hypothesis"
+    if priority == "high":
+        return "insider-risk review candidate: relative anomaly, low materiality"
+    return "insider-risk watch cue: weak or incomplete evidence"
 
 
 def _missing_evidence(group: pd.DataFrame, triggered_patterns: Sequence[str]) -> str:
@@ -587,6 +835,25 @@ def _triggered_feature_lookup(frame: pd.DataFrame) -> dict[str, list[str]]:
     }
 
 
+def _reference_case_lookup(frame: pd.DataFrame) -> dict[str, dict[str, object]]:
+    if frame.empty:
+        return {}
+    _require_columns(frame, ("case_id", "amount_usd"), "reference cases")
+    optional_columns = [column for column in ("handle", "case_type") if column in frame.columns]
+    slim = frame[["case_id", "amount_usd", *optional_columns]].copy()
+    slim["amount_usd"] = pd.to_numeric(slim["amount_usd"], errors="coerce").fillna(0.0)
+    return {
+        str(row["case_id"]): row
+        for row in slim.to_dict(orient="records")
+    }
+
+
+def _materiality_context(report: pd.DataFrame) -> pd.DataFrame:
+    if report.empty:
+        return pd.DataFrame(columns=MATERIALITY_CONTEXT_COLUMNS)
+    return report.loc[:, list(MATERIALITY_CONTEXT_COLUMNS)].copy()
+
+
 def _write_dashboard(report: pd.DataFrame, dashboard_path: Path) -> None:
     dashboard_path.parent.mkdir(parents=True, exist_ok=True)
     if report.empty:
@@ -624,8 +891,8 @@ def _write_dashboard(report: pd.DataFrame, dashboard_path: Path) -> None:
   </style>
 </head>
 <body>
-  <h1>Monitor Candidate Human Review</h1>
-  <p class="note">Strict monitor candidates are review cues only. This report contains no wallet addresses, order instructions, PnL, or misconduct claim.</p>
+  <h1>Insider-Risk Candidate Human Review</h1>
+  <p class="note">Strict monitor candidates are insider-risk review cues only. This report contains no wallet addresses, order instructions, PnL, computed insider label, or misconduct claim.</p>
   <section class="metrics">
     <div class="metric">Candidates<strong>{candidate_count}</strong></div>
     <div class="metric">High priority<strong>{high_priority}</strong></div>
@@ -649,8 +916,10 @@ def _metadata(
     wallet_tier_snapshots_path: Path,
     similarity_summary_path: Path,
     candidate_features_path: Path,
+    reference_cases_path: Path,
     report_path: Path,
     dashboard_path: Path,
+    materiality_context_path: Path,
 ) -> dict[str, Any]:
     return {
         "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
@@ -672,11 +941,13 @@ def _metadata(
             "wallet_tier_snapshots_path": str(wallet_tier_snapshots_path),
             "similarity_summary_path": str(similarity_summary_path),
             "candidate_features_path": str(candidate_features_path),
+            "reference_cases_path": str(reference_cases_path),
             "source_alert_rows": int(len(alert_rows)),
         },
         "outputs": {
             "report_path": str(report_path),
             "dashboard_path": str(dashboard_path),
+            "materiality_context_path": str(materiality_context_path),
             "candidate_count": int(len(report)),
             "high_priority_count": int((report["review_priority"] == "high").sum())
             if not report.empty
@@ -684,6 +955,7 @@ def _metadata(
             "max_similarity_score": _max_report_similarity(report),
             "contains_wallet_addresses": False,
             "contains_order_instructions": False,
+            "contains_computed_insider_label": False,
         },
         "limitations": {
             "human_review_required": True,
@@ -691,6 +963,7 @@ def _metadata(
             "not_a_causal_test": True,
             "not_a_trade_or_profitability_signal": True,
             "not_a_misconduct_finding": True,
+            "not_a_computed_insider_label": True,
             "aggregate_monitor_fields_only": True,
         },
     }
@@ -735,10 +1008,22 @@ def _candidate_cards(report: pd.DataFrame) -> str:
         <p>{escape(str(item["reference_overlap_explanation"]))}</p>
       </div>
       <div class="box">
+        <strong>Reference scale</strong>
+        <p>{escape(str(item["reference_scale_context"]))}</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>{escape(str(item["coordination_context"]))}</p>
+      </div>
+      <div class="box">
         <strong>Quick numbers</strong>
         <p>Observed amount: USD {amount:.2f}<br>
         Active wallets: {escape(str(item["active_wallets"]))}<br>
         Trades: {escape(str(item["trade_count"]))}<br>
+        Amount per wallet: USD {_float_or_zero(item.get("amount_per_wallet", 0.0)):.2f}<br>
+        Amount per trade: USD {_float_or_zero(item.get("amount_per_trade", 0.0)):.2f}<br>
+        Materiality: {escape(str(item["materiality_label"]))}<br>
+        Review label: {escape(str(item["insider_risk_review_label"]))}<br>
         Max percentile: {percentile:.2f}<br>
         Reference score: {similarity:.2f}</p>
         <div class="bar"><span style="width:{_percent_width(percentile)}%"></span></div>
@@ -802,6 +1087,12 @@ def _float_or_zero(value: object) -> float:
         return float(value)
     except (TypeError, ValueError):
         return 0.0
+
+
+def _safe_divide(numerator: float, denominator: int | float) -> float:
+    if denominator <= 0:
+        return 0.0
+    return numerator / float(denominator)
 
 
 def _amount_from_log_metric(value: object) -> float:

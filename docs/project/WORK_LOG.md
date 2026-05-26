@@ -3498,3 +3498,48 @@ Next step:
 
 - Manually source-check the AOC-2028 high-priority candidate or collect
   another bounded live bucket to see whether the pattern repeats.
+
+## 2026-05-26 - goal-monitor-insider-risk-review-materiality-001
+
+Task:
+
+- Add insider-risk materiality and coordination context to strict monitor
+  candidate review.
+
+Files changed:
+
+- `operations/analysis/monitor_candidate_review_report.py`
+- `operations/project/review_check.py`
+- `tests/test_monitor_candidate_review_report.py`
+- `tests/test_project_automation.py`
+- `data/results/monitor_candidate_human_review_report.csv`
+- `data/results/monitor_candidate_human_review_report.html`
+- `data/results/monitor_candidate_human_review_report_metadata.json`
+- `data/results/monitor_candidate_materiality_context.csv`
+- `data/results/monitor_v2_polymarket_dashboard_metadata.json`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_monitor_candidate_review_report.py tests/test_project_automation.py -q` -> 28 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_candidate_review_report` -> 3 candidates, 1 high priority, materiality context written.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_dashboard` -> 12 markets, 21 buckets, 7 alerts.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 318 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> 318 passed.
+
+Decision:
+
+- Allow `insider-risk review candidate` as a human-review queue label, while
+  still blocking confirmed-insider, misconduct, causality, profitability, and
+  trading claims.
+- Separate relative Rule-C anomaly strength from absolute amount, reference
+  scale, and coordination context.
+- Treat AOC-2028 as a high relative anomaly with low reference-scale
+  materiality and a single-wallet/single-trade context.
+
+Next step:
+
+- Review whether the same candidate repeats in later bounded buckets or add
+  manual source-check fields for reviewed insider-risk candidates.

@@ -3,19 +3,19 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-26 14:29
+Generated: 2026-05-26 15:12
 
-Current goal: `goal-polymarket-alert-review-workflow-001` - Specify alert-review workflow from compact summaries and wallet reference cases
+Current goal: `goal-monitor-insider-risk-review-materiality-001` - Add insider-risk materiality context to monitor candidate review
 
 Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `314 passed in 18.20s`
+Pytest summary: `318 passed in 14.56s`
 
 Git branch: `main`
 
-Latest commit: `5b1480b`
+Latest commit: `0a1ab92`
 
 Git status:
 
@@ -26,22 +26,27 @@ Git status:
  M data/results/monitor_candidate_human_review_report.html
  M data/results/monitor_candidate_human_review_report_metadata.json
  M data/results/monitor_v2_polymarket_dashboard_metadata.json
- M docs/project/WORK_LOG.md
  M operations/analysis/monitor_candidate_review_report.py
+ M operations/project/review_check.py
+ M tests/test_monitor_candidate_review_report.py
+ M tests/test_project_automation.py
+?? data/results/monitor_candidate_materiality_context.csv
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                            |  11 +-
- ROADMAP.md                                         |   3 +
+ GOAL.md                                            |  27 +-
+ ROADMAP.md                                         |  11 +-
  .../monitor_candidate_human_review_report.csv      |   8 +-
- .../monitor_candidate_human_review_report.html     | 124 +++++++++++-
- ...tor_candidate_human_review_report_metadata.json |   2 +-
+ .../monitor_candidate_human_review_report.html     |  46 ++-
+ ...tor_candidate_human_review_report_metadata.json |   6 +-
  .../monitor_v2_polymarket_dashboard_metadata.json  |   2 +-
- docs/project/WORK_LOG.md                           |  37 ++++
- .../analysis/monitor_candidate_review_report.py    | 212 +++++++++++++++++++--
- 8 files changed, 377 insertions(+), 22 deletions(-)
+ .../analysis/monitor_candidate_review_report.py    | 321 ++++++++++++++++++++-
+ operations/project/review_check.py                 |  30 +-
+ tests/test_monitor_candidate_review_report.py      |  91 +++++-
+ tests/test_project_automation.py                   |  27 ++
+ 10 files changed, 532 insertions(+), 37 deletions(-)
 ```
 
 Blockers:
@@ -50,7 +55,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: explain monitor candidate review signals
+- feat: add insider-risk materiality context to monitor review
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

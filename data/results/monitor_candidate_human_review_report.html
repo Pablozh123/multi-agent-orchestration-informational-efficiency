@@ -25,8 +25,8 @@
   </style>
 </head>
 <body>
-  <h1>Monitor Candidate Human Review</h1>
-  <p class="note">Strict monitor candidates are review cues only. This report contains no wallet addresses, order instructions, PnL, or misconduct claim.</p>
+  <h1>Insider-Risk Candidate Human Review</h1>
+  <p class="note">Strict monitor candidates are insider-risk review cues only. This report contains no wallet addresses, order instructions, PnL, computed insider label, or misconduct claim.</p>
   <section class="metrics">
     <div class="metric">Candidates<strong>3</strong></div>
     <div class="metric">High priority<strong>1</strong></div>
@@ -41,7 +41,7 @@
       <span class="pill">severity: high</span>
       <span class="pill">rows: 4</span>
     </p>
-    <p><strong>In plain words:</strong> High priority because wallet amount and concentration were both unusual in the same 5-minute bucket. The observed aggregate amount was about USD 64.28. This is large relative to the short rolling baseline, but still small in absolute market terms and must be reviewed manually.</p>
+    <p><strong>In plain words:</strong> insider-risk review candidate: relative anomaly, low materiality: wallet amount and concentration were both unusual in the same 5-minute bucket. The observed aggregate amount was about USD 64.28. This is large relative to the short rolling baseline, but its reference-scale context is `below_one_percent_of_reference` and must be reviewed manually.</p>
     <section class="explain-grid">
       <div class="box">
         <strong>Wallet amount</strong>
@@ -53,13 +53,25 @@
       </div>
       <div class="box">
         <strong>Reference overlap</strong>
-        <p>Reference overlap 1.0 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 2 neutral pattern label(s): large_trade_flow,market_concentration. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut.</p>
+        <p>Reference overlap 1.0 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 2 neutral pattern label(s): large_trade_flow,market_concentration. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.062% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=64.28; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000623; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=1; trade_count=1; total_amount_usd=64.28; amount_per_wallet_usd=64.28; amount_per_trade_usd=64.28</p>
       </div>
       <div class="box">
         <strong>Quick numbers</strong>
         <p>Observed amount: USD 64.28<br>
         Active wallets: 1<br>
         Trades: 1<br>
+        Amount per wallet: USD 64.28<br>
+        Amount per trade: USD 64.28<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk review candidate: relative anomaly, low materiality<br>
         Max percentile: 1.00<br>
         Reference score: 1.00</p>
         <div class="bar"><span style="width:100%"></span></div>
@@ -90,13 +102,25 @@
       </div>
       <div class="box">
         <strong>Reference overlap</strong>
-        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): market_concentration. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut.</p>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): market_concentration. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.009% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=9.58; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000093; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=1; trade_count=1; total_amount_usd=9.58; amount_per_wallet_usd=9.58; amount_per_trade_usd=9.58</p>
       </div>
       <div class="box">
         <strong>Quick numbers</strong>
         <p>Observed amount: USD 9.58<br>
         Active wallets: 1<br>
         Trades: 1<br>
+        Amount per wallet: USD 9.58<br>
+        Amount per trade: USD 9.58<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk watch cue: weak or incomplete evidence<br>
         Max percentile: 1.00<br>
         Reference score: 0.50</p>
         <div class="bar"><span style="width:100%"></span></div>
@@ -130,10 +154,22 @@
         <p>Reference overlap 0.0 means this candidate does not share the triggered neutral labels of the current reference profiles.</p>
       </div>
       <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=69.44; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000673; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=few_wallet_or_trade_context; active_wallets=3; trade_count=3; total_amount_usd=69.44; amount_per_wallet_usd=23.15; amount_per_trade_usd=23.15</p>
+      </div>
+      <div class="box">
         <strong>Quick numbers</strong>
         <p>Observed amount: USD 69.44<br>
         Active wallets: 3<br>
         Trades: 3<br>
+        Amount per wallet: USD 23.15<br>
+        Amount per trade: USD 23.15<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk watch cue: weak or incomplete evidence<br>
         Max percentile: 0.90<br>
         Reference score: 0.00</p>
         <div class="bar"><span style="width:90%"></span></div>

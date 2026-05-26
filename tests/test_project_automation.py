@@ -240,6 +240,33 @@ def test_review_check_fails_for_select_star(tmp_path: Path) -> None:
     assert any(result.name == "sql select star" and not result.passed for result in results)
 
 
+def test_review_check_allows_insider_risk_review_label(tmp_path: Path) -> None:
+    _write_minimal_project(tmp_path)
+    (tmp_path / "operations" / "analysis" / "review_label.py").write_text(
+        'LABEL = "insider-risk review candidate: requires human review"\n',
+        encoding="utf-8",
+    )
+
+    results = run_checks(tmp_path, skip_pytest="unit test")
+
+    assert all(result.passed for result in results)
+
+
+def test_review_check_blocks_computed_insider_wallet_claim(tmp_path: Path) -> None:
+    _write_minimal_project(tmp_path)
+    (tmp_path / "operations" / "analysis" / "bad_label.py").write_text(
+        'LABEL = "confirmed insider wallet"\n',
+        encoding="utf-8",
+    )
+
+    results = run_checks(tmp_path, skip_pytest="unit test")
+
+    assert any(
+        result.name == "restricted claim wording" and not result.passed
+        for result in results
+    )
+
+
 def test_review_check_fails_for_h2_code_before_selected_window(tmp_path: Path) -> None:
     _write_minimal_project(tmp_path)
     (tmp_path / "operations" / "analysis" / "event_study.py").write_text(

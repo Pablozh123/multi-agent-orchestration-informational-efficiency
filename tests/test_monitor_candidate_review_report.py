@@ -21,6 +21,7 @@ def test_build_human_review_report_groups_strict_candidates() -> None:
         wallet_tier_snapshots=_wallet_snapshots(),
         similarity_summary=_similarity_summary(),
         candidate_features=_candidate_features(),
+        reference_cases=_reference_cases(),
     )
 
     assert tuple(report.columns) == REPORT_COLUMNS
@@ -29,6 +30,11 @@ def test_build_human_review_report_groups_strict_candidates() -> None:
     assert high["question"] == "Will a politics market resolve yes?"
     assert high["triggered_patterns"] == "large_trade_flow,market_concentration"
     assert high["best_similarity_score"] == pytest.approx(1.0)
+    assert high["insider_risk_review_label"] == (
+        "insider-risk review candidate: relative anomaly, low materiality"
+    )
+    assert high["materiality_label"] == "below_one_percent_of_reference"
+    assert high["reference_amount_ratio"] == pytest.approx(250.0 / 103248.0)
     assert "human review only" in high["allowed_interpretation"]
     assert "wallet_address" not in report.columns
 
@@ -41,10 +47,53 @@ def test_market_only_candidate_stays_low_priority() -> None:
         wallet_tier_snapshots=_wallet_snapshots(),
         similarity_summary=_similarity_summary(),
         candidate_features=_candidate_features(),
+        reference_cases=_reference_cases(),
     )
 
     assert set(report["review_priority"]) == {"low"}
     assert set(report["triggered_patterns"]) == {""}
+
+
+def test_single_wallet_small_flow_is_not_coordination_candidate() -> None:
+    report = build_human_review_report(
+        alert_rows=_alert_rows(),
+        watchlist=_watchlist(),
+        market_snapshots=_market_snapshots(),
+        wallet_tier_snapshots=_wallet_snapshots(
+            politics_active_wallets=1,
+            politics_trade_count=1,
+            politics_amount=64.28,
+        ),
+        similarity_summary=_similarity_summary(),
+        candidate_features=_candidate_features(),
+        reference_cases=_reference_cases(),
+    )
+
+    high = report[report["review_priority"] == "high"].iloc[0]
+    assert high["coordination_label"] == "single_wallet_single_trade"
+    assert "not a computed insider label" in high["allowed_interpretation"]
+
+
+def test_multi_wallet_small_flow_is_coordination_candidate() -> None:
+    report = build_human_review_report(
+        alert_rows=_alert_rows(),
+        watchlist=_watchlist(),
+        market_snapshots=_market_snapshots(),
+        wallet_tier_snapshots=_wallet_snapshots(
+            politics_active_wallets=6,
+            politics_trade_count=8,
+            politics_amount=480.0,
+        ),
+        similarity_summary=_similarity_summary(),
+        candidate_features=_candidate_features(),
+        reference_cases=_reference_cases(),
+    )
+
+    high = report[report["review_priority"] == "high"].iloc[0]
+    assert high["coordination_label"] == "coordinated_small_flow_candidate"
+    assert high["insider_risk_review_label"] == (
+        "insider-risk review candidate: coordinated small-flow hypothesis"
+    )
 
 
 def test_generate_human_review_report_writes_outputs(tmp_path: Path) -> None:
@@ -57,20 +106,25 @@ def test_generate_human_review_report_writes_outputs(tmp_path: Path) -> None:
         wallet_tier_snapshots_path=paths["wallet_tier_snapshots_path"],
         similarity_summary_path=paths["similarity_summary_path"],
         candidate_features_path=paths["candidate_features_path"],
+        reference_cases_path=paths["reference_cases_path"],
         report_path=tmp_path / "report.csv",
         dashboard_path=tmp_path / "report.html",
         metadata_path=tmp_path / "metadata.json",
+        materiality_context_path=tmp_path / "materiality.csv",
     )
 
     report = pd.read_csv(result.report_path)
+    materiality = pd.read_csv(result.materiality_context_path)
     metadata = json.loads(result.metadata_path.read_text(encoding="utf-8"))
     dashboard = result.dashboard_path.read_text(encoding="utf-8")
     assert result.candidate_count == 2
     assert result.high_priority_count == 1
     assert result.max_similarity_score == pytest.approx(1.0)
     assert len(report) == 2
-    assert "Monitor Candidate Human Review" in dashboard
+    assert len(materiality) == 2
+    assert "Insider-Risk Candidate Human Review" in dashboard
     assert metadata["outputs"]["contains_wallet_addresses"] is False
+    assert metadata["outputs"]["contains_computed_insider_label"] is False
     assert metadata["method"]["does_not_collect_external_data"] is True
 
 
@@ -86,6 +140,7 @@ def test_review_report_rejects_wallet_address_columns() -> None:
             wallet_tier_snapshots=_wallet_snapshots(),
             similarity_summary=_similarity_summary(),
             candidate_features=_candidate_features(),
+            reference_cases=_reference_cases(),
         )
 
 
@@ -97,6 +152,7 @@ def _write_inputs(root: Path) -> dict[str, Path]:
         "wallet_tier_snapshots_path": root / "wallet.csv",
         "similarity_summary_path": root / "similarity.csv",
         "candidate_features_path": root / "features.csv",
+        "reference_cases_path": root / "reference_cases.csv",
     }
     _alert_rows().to_csv(paths["alert_rows_path"], index=False)
     _watchlist().to_csv(paths["watchlist_path"], index=False)
@@ -104,6 +160,7 @@ def _write_inputs(root: Path) -> dict[str, Path]:
     _wallet_snapshots().to_csv(paths["wallet_tier_snapshots_path"], index=False)
     _similarity_summary().to_csv(paths["similarity_summary_path"], index=False)
     _candidate_features().to_csv(paths["candidate_features_path"], index=False)
+    _reference_cases().to_csv(paths["reference_cases_path"], index=False)
     return paths
 
 
@@ -184,7 +241,12 @@ def _market_snapshots() -> pd.DataFrame:
     )
 
 
-def _wallet_snapshots() -> pd.DataFrame:
+def _wallet_snapshots(
+    *,
+    politics_active_wallets: int = 2,
+    politics_trade_count: int = 3,
+    politics_amount: float = 250.0,
+) -> pd.DataFrame:
     return pd.DataFrame(
         [
             {
@@ -197,9 +259,9 @@ def _wallet_snapshots() -> pd.DataFrame:
             {
                 "bucket_end_utc": "2026-05-23T19:25:00Z",
                 "market_id": "market_b",
-                "active_wallets": 2,
-                "trade_count": 3,
-                "total_observed_amount_usd": 250.0,
+                "active_wallets": politics_active_wallets,
+                "trade_count": politics_trade_count,
+                "total_observed_amount_usd": politics_amount,
             },
         ]
     )
@@ -258,6 +320,25 @@ def _candidate_features() -> pd.DataFrame:
                 "evidence_status": "pattern_computed",
                 "claim_scope": "monitor_reference_candidate_only",
                 "requires_human_review": True,
+            },
+        ]
+    )
+
+
+def _reference_cases() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "case_id": "reference_a",
+                "case_type": "reported_cluster",
+                "handle": "reported_cluster",
+                "amount_usd": "",
+            },
+            {
+                "case_id": "reference_b",
+                "case_type": "large_flow_reference",
+                "handle": "AdrianCronauer",
+                "amount_usd": 103248.0,
             },
         ]
     )

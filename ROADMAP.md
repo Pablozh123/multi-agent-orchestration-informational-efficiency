@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for alert-review workflow specification
+Status: active for insider-risk materiality review context
 
 Done criteria:
 
@@ -429,6 +429,12 @@ Done criteria:
 - The human-review report now uses plain-language cards so the AOC-2028
   high-priority case can be understood from wallet amount, local baseline,
   concentration, and reference-overlap explanations without reading raw CSVs.
+- The next review layer separates relative baseline strength from absolute
+  economic materiality and reference-case scale.
+- Insider-risk wording is allowed only as a human-review queue label, not as a
+  computed wallet fact, misconduct claim, causal claim, or trading signal.
+- Coordination context is needed so single-wallet/single-trade candidates are
+  not confused with multi-wallet small-flow candidates.
 
 Blockers:
 
@@ -462,5 +468,8 @@ Blockers:
   thesis-facing alert wording or strategy hypothesis.
 - The current high-priority human-review candidate still needs manual source
   checks and repeat-bucket confirmation before any thesis-facing use.
+- Current strict candidates have small observed amounts versus the
+  AdrianCronauer USD 103'248 reference trade, so materiality context must be
+  shown before they are used as informed-flow examples.
 - The next user-facing step is either another bounded live bucket or manual
   source-check fields for reviewed candidates.

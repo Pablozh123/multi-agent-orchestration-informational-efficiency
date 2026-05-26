@@ -2,8 +2,8 @@
 
 ## Active Goal
 
-goal_id: goal-polymarket-alert-review-workflow-001
-title: Specify alert-review workflow from compact summaries and wallet reference cases
+goal_id: goal-monitor-insider-risk-review-materiality-001
+title: Add insider-risk materiality context to monitor candidate review
 status: active
 phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 why:
@@ -101,6 +101,15 @@ why:
 - The human-review report now includes plain-language candidate cards that
   explain wallet amount, baseline comparison, concentration, reference
   overlap, missing evidence, and next review steps.
+- The current AOC-2028 strict candidate is high relative to its short rolling
+  baseline, but the observed aggregate amount is only about USD 64.28 and must
+  not be interpreted as a strong economically material informed-flow signal.
+- The AdrianCronauer public reference case has a reported USD 103'248 trade,
+  so strict monitor candidates need explicit reference-scale context in
+  addition to pattern-label overlap.
+- Small single-wallet/single-trade cues must be separated from possible
+  coordinated small-flow candidates before they are used in thesis-facing
+  monitor interpretation.
 deliverables:
 - Define a deterministic alert-review workflow over compact monitor outputs.
 - Specify review states, required evidence fields, rejection criteria, and
@@ -117,6 +126,12 @@ deliverables:
   separate from strict Rule C candidates.
 - Add a compact human-review report for strict candidates.
 - Make strict-candidate explanations understandable without opening raw CSVs.
+- Add insider-risk review labels as human-review queue labels, not as computed
+  wallet facts.
+- Add materiality context so relative baseline anomalies are separated from
+  reference-scale economic size.
+- Add coordination context so single-wallet trades are separated from
+  multi-wallet or multi-trade small-flow candidates.
 - Keep alerts descriptive until human review confirms source artifacts,
   timestamp validity, market mapping, and no-lookahead status.
 - Keep refresh/collection explicit and bounded.
@@ -179,6 +194,12 @@ acceptance_criteria:
 - Human-review cards explain why a candidate is high priority in plain
   language and distinguish relative baseline anomalies from absolute economic
   size.
+- Human-review cards show materiality label, reference amount ratio, amount per
+  wallet, amount per trade, coordination label, and insider-risk review label.
+- Insider-risk review labels are explicitly review cues only and do not claim
+  a confirmed insider, misconduct, causality, profitability, or tradeability.
+- Single-wallet/single-trade candidates are not labelled as coordinated
+  small-flow candidates.
 - Rule C thresholds remain unchanged.
 - Existing scoring outputs are not reinterpreted as causal, profitable,
   private-information, or efficiency evidence.
@@ -188,7 +209,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: explain monitor candidate review signals
+next_commit: feat: add insider-risk materiality context to monitor review
 
 ## Decision Inputs For This Goal
 

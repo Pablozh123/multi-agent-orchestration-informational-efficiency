@@ -7,6 +7,7 @@ import sys
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from html import escape
+from math import expm1
 from pathlib import Path
 from typing import Any, Sequence
 
@@ -53,6 +54,10 @@ REPORT_COLUMNS: tuple[str, ...] = (
     "best_reference_case_id",
     "best_similarity_score",
     "matched_patterns",
+    "plain_language_summary",
+    "wallet_amount_explanation",
+    "concentration_explanation",
+    "reference_overlap_explanation",
     "why_flagged",
     "available_evidence",
     "missing_evidence",
@@ -296,6 +301,18 @@ def _report_row(
         "best_reference_case_id": similarity.get("best_reference_case_id", ""),
         "best_similarity_score": round(best_similarity, 6),
         "matched_patterns": similarity.get("matched_patterns", ""),
+        "plain_language_summary": _plain_language_summary(
+            group=group,
+            max_severity=max_severity,
+            triggered_patterns=triggered_patterns,
+            total_amount=_float_or_zero(wallet.get("total_observed_amount_usd", 0.0)),
+        ),
+        "wallet_amount_explanation": _wallet_amount_explanation(group),
+        "concentration_explanation": _concentration_explanation(group),
+        "reference_overlap_explanation": _reference_overlap_explanation(
+            similarity=similarity,
+            triggered_patterns=triggered_patterns,
+        ),
         "why_flagged": _why_flagged(group, triggered_patterns),
         "available_evidence": _available_evidence(group, wallet, market, similarity),
         "missing_evidence": _missing_evidence(group, triggered_patterns),
@@ -329,6 +346,107 @@ def _why_flagged(group: pd.DataFrame, triggered_patterns: Sequence[str]) -> str:
     if triggered_patterns:
         pieces.append(f"reference-pattern labels: {','.join(sorted(triggered_patterns))}")
     return "; ".join(pieces)
+
+
+def _plain_language_summary(
+    *,
+    group: pd.DataFrame,
+    max_severity: str,
+    triggered_patterns: Sequence[str],
+    total_amount: float,
+) -> str:
+    families = set(group["anomaly_family"].astype(str))
+    if max_severity == "high" and {
+        "wallet_tier_activity",
+        "concentration",
+    }.issubset(families):
+        return (
+            "High priority because wallet amount and concentration were both "
+            f"unusual in the same 5-minute bucket. The observed aggregate "
+            f"amount was about USD {total_amount:.2f}. This is large relative "
+            "to the short rolling baseline, but still small in absolute market "
+            "terms and must be reviewed manually."
+        )
+    if "concentration" in families:
+        return (
+            "Marked because activity was concentrated in the current bucket. "
+            "This can happen in thin markets, so repetition and market-page "
+            "context matter."
+        )
+    if "active_wallet_activity" in families:
+        return (
+            "Marked because the active-wallet count was above its local "
+            "baseline. This is a weak cue unless it repeats or combines with "
+            "amount or concentration evidence."
+        )
+    if triggered_patterns:
+        return "Marked because neutral reference-pattern labels were triggered."
+    return "Marked by the strict monitor rule and requires human review."
+
+
+def _wallet_amount_explanation(group: pd.DataFrame) -> str:
+    amount_rows = group[
+        (group["anomaly_family"].astype(str) == "wallet_tier_activity")
+        & (group["metric_name"].astype(str) == "log1p_total_observed_amount_usd")
+    ]
+    if amount_rows.empty:
+        return "No wallet-amount metric triggered for this candidate."
+    row = amount_rows.sort_values(
+        ["severity", "rolling_percentile_rank"],
+        ascending=[False, False],
+    ).iloc[0]
+    observed = _amount_from_log_metric(row.get("observed_value", 0.0))
+    baseline = _amount_from_log_metric(row.get("rolling_median", 0.0))
+    percentile = _float_or_zero(row.get("rolling_percentile_rank", 0.0))
+    robust_z = _float_or_zero(row.get("robust_z", 0.0))
+    severity = str(row.get("severity", ""))
+    return (
+        f"Wallet amount: observed about USD {observed:.2f}; rolling baseline "
+        f"median about USD {baseline:.2f}; percentile {percentile:.2f}; "
+        f"robust z {robust_z:.2f}; severity {severity}. The very high robust "
+        "z can be inflated when the recent baseline is tiny, so absolute size "
+        "must be checked manually."
+    )
+
+
+def _concentration_explanation(group: pd.DataFrame) -> str:
+    concentration = group[group["anomaly_family"].astype(str) == "concentration"]
+    if concentration.empty:
+        return "No concentration metric triggered for this candidate."
+    parts: list[str] = []
+    for _, row in concentration.sort_values("metric_name").iterrows():
+        metric = str(row.get("metric_name", ""))
+        observed = _float_or_zero(row.get("observed_value", 0.0))
+        baseline = _float_or_zero(row.get("rolling_median", 0.0))
+        percentile = _float_or_zero(row.get("rolling_percentile_rank", 0.0))
+        severity = str(row.get("severity", ""))
+        parts.append(
+            f"{metric}: observed {observed:.2f}, baseline median {baseline:.2f}, "
+            f"percentile {percentile:.2f}, severity {severity}"
+        )
+    return "; ".join(parts)
+
+
+def _reference_overlap_explanation(
+    *,
+    similarity: dict[str, object],
+    triggered_patterns: Sequence[str],
+) -> str:
+    score = _float_or_zero(similarity.get("best_similarity_score", 0.0))
+    reference = str(similarity.get("best_reference_case_id", ""))
+    matched = str(similarity.get("matched_patterns", "")).strip()
+    if score == 0:
+        return (
+            "Reference overlap 0.0 means this candidate does not share the "
+            "triggered neutral labels of the current reference profiles."
+        )
+    matched_count = len([value for value in matched.split(",") if value])
+    return (
+        f"Reference overlap {score:.1f} against {reference} means the candidate "
+        f"shares {matched_count} neutral pattern label(s): {matched}. It does "
+        "not mean same wallet, same amount, same event, same outcome, or "
+        "misconduct; it is only a review shortcut."
+    )
 
 
 def _available_evidence(
@@ -476,18 +594,7 @@ def _write_dashboard(report: pd.DataFrame, dashboard_path: Path) -> None:
         candidate_count = 0
         high_priority = 0
     else:
-        body = _table(
-            report,
-            (
-                "question",
-                "max_severity",
-                "review_priority",
-                "why_flagged",
-                "available_evidence",
-                "missing_evidence",
-                "recommended_next_step",
-            ),
-        )
+        body = _candidate_cards(report)
         candidate_count = len(report)
         high_priority = int((report["review_priority"] == "high").sum())
     html = f"""<!doctype html>
@@ -500,6 +607,16 @@ def _write_dashboard(report: pd.DataFrame, dashboard_path: Path) -> None:
     .metrics {{ display: grid; grid-template-columns: repeat(3, minmax(130px, 1fr)); gap: 12px; }}
     .metric {{ border: 1px solid #d7dde5; border-radius: 6px; padding: 12px; background: #f8fafc; }}
     .metric strong {{ display: block; font-size: 22px; margin-top: 4px; }}
+    .candidate {{ border: 1px solid #cfd8e3; border-radius: 8px; padding: 16px; margin: 18px 0; background: #ffffff; }}
+    .candidate h3 {{ margin: 0 0 8px; }}
+    .pill {{ display: inline-block; padding: 3px 8px; border-radius: 999px; background: #eef2f7; margin-right: 6px; font-size: 12px; }}
+    .pill.high {{ background: #ffe7d6; }}
+    .pill.medium {{ background: #fff7cc; }}
+    .pill.low {{ background: #e9f7ef; }}
+    .explain-grid {{ display: grid; grid-template-columns: repeat(2, minmax(240px, 1fr)); gap: 12px; }}
+    .box {{ border: 1px solid #e1e7ef; border-radius: 6px; padding: 12px; background: #fbfcfe; }}
+    .bar {{ height: 10px; border-radius: 999px; background: #e6ebf2; overflow: hidden; margin-top: 6px; }}
+    .bar span {{ display: block; height: 100%; background: #366f9f; }}
     table {{ border-collapse: collapse; width: 100%; margin-top: 12px; font-size: 13px; }}
     th, td {{ border: 1px solid #d7dde5; padding: 7px; text-align: left; vertical-align: top; }}
     th {{ background: #eef2f7; }}
@@ -514,7 +631,7 @@ def _write_dashboard(report: pd.DataFrame, dashboard_path: Path) -> None:
     <div class="metric">High priority<strong>{high_priority}</strong></div>
     <div class="metric">Status<strong>needs review</strong></div>
   </section>
-  <h2>Review Rows</h2>
+  <h2>Review Cards</h2>
   {body}
 </body>
 </html>
@@ -579,6 +696,67 @@ def _metadata(
     }
 
 
+def _candidate_cards(report: pd.DataFrame) -> str:
+    cards: list[str] = []
+    sorted_report = report.sort_values(
+        ["review_priority", "max_severity", "best_similarity_score"],
+        ascending=[True, False, False],
+    )
+    priority_order = {"high": 0, "medium": 1, "low": 2}
+    sorted_report = sorted_report.assign(
+        _priority_order=sorted_report["review_priority"].map(priority_order).fillna(9)
+    ).sort_values(["_priority_order", "best_similarity_score"], ascending=[True, False])
+    for item in sorted_report.drop(columns=["_priority_order"]).to_dict(orient="records"):
+        priority = str(item["review_priority"])
+        percentile = _float_or_zero(item.get("max_percentile_rank", 0.0))
+        similarity = _float_or_zero(item.get("best_similarity_score", 0.0))
+        amount = _float_or_zero(item.get("total_observed_amount_usd", 0.0))
+        cards.append(
+            f"""
+  <article class="candidate">
+    <h3>{escape(str(item["question"]))}</h3>
+    <p>
+      <span class="pill {escape(priority)}">priority: {escape(priority)}</span>
+      <span class="pill">severity: {escape(str(item["max_severity"]))}</span>
+      <span class="pill">rows: {escape(str(item["anomaly_row_count"]))}</span>
+    </p>
+    <p><strong>In plain words:</strong> {escape(str(item["plain_language_summary"]))}</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>{escape(str(item["wallet_amount_explanation"]))}</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>{escape(str(item["concentration_explanation"]))}</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>{escape(str(item["reference_overlap_explanation"]))}</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD {amount:.2f}<br>
+        Active wallets: {escape(str(item["active_wallets"]))}<br>
+        Trades: {escape(str(item["trade_count"]))}<br>
+        Max percentile: {percentile:.2f}<br>
+        Reference score: {similarity:.2f}</p>
+        <div class="bar"><span style="width:{_percent_width(percentile)}%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> {escape(str(item["why_flagged"]))}</p>
+    <p><strong>Still missing:</strong> {escape(str(item["missing_evidence"]))}</p>
+    <p><strong>Next step:</strong> {escape(str(item["recommended_next_step"]))}</p>
+  </article>
+"""
+        )
+    return "\n".join(cards)
+
+
+def _percent_width(value: float) -> int:
+    return max(0, min(100, int(round(value * 100))))
+
+
 def _max_report_similarity(report: pd.DataFrame) -> float:
     if report.empty:
         return 0.0
@@ -623,6 +801,14 @@ def _float_or_zero(value: object) -> float:
             return 0.0
         return float(value)
     except (TypeError, ValueError):
+        return 0.0
+
+
+def _amount_from_log_metric(value: object) -> float:
+    try:
+        numeric = _float_or_zero(value)
+        return max(0.0, float(expm1(numeric)))
+    except OverflowError:
         return 0.0
 
 

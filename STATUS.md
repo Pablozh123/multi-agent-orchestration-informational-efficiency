@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-24 21:29
+Generated: 2026-05-26 14:29
 
 Current goal: `goal-polymarket-alert-review-workflow-001` - Specify alert-review workflow from compact summaries and wallet reference cases
 
@@ -11,42 +11,37 @@ Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `314 passed in 18.75s`
+Pytest summary: `314 passed in 18.20s`
 
 Git branch: `main`
 
-Latest commit: `3da5746`
+Latest commit: `5b1480b`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
- M data/results/monitor_v2_polymarket_dashboard.html
+ M data/results/monitor_candidate_human_review_report.csv
+ M data/results/monitor_candidate_human_review_report.html
+ M data/results/monitor_candidate_human_review_report_metadata.json
  M data/results/monitor_v2_polymarket_dashboard_metadata.json
  M docs/project/WORK_LOG.md
- M operations/analysis/monitor_reference_candidates.py
- M operations/analysis/monitor_v2_dashboard.py
- M tests/test_monitor_v2_dashboard.py
-?? data/results/monitor_candidate_human_review_report.csv
-?? data/results/monitor_candidate_human_review_report.html
-?? data/results/monitor_candidate_human_review_report_metadata.json
-?? operations/analysis/monitor_candidate_review_report.py
-?? tests/test_monitor_candidate_review_report.py
+ M operations/analysis/monitor_candidate_review_report.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                            | 15 ++++++--
- ROADMAP.md                                         |  9 +++--
- data/results/monitor_v2_polymarket_dashboard.html  |  9 ++++-
- .../monitor_v2_polymarket_dashboard_metadata.json  |  5 ++-
- docs/project/WORK_LOG.md                           | 41 ++++++++++++++++++++++
- .../analysis/monitor_reference_candidates.py       |  6 ++++
- operations/analysis/monitor_v2_dashboard.py        | 37 +++++++++++++++++++
- tests/test_monitor_v2_dashboard.py                 | 25 +++++++++++++
- 8 files changed, 140 insertions(+), 7 deletions(-)
+ GOAL.md                                            |  11 +-
+ ROADMAP.md                                         |   3 +
+ .../monitor_candidate_human_review_report.csv      |   8 +-
+ .../monitor_candidate_human_review_report.html     | 124 +++++++++++-
+ ...tor_candidate_human_review_report_metadata.json |   2 +-
+ .../monitor_v2_polymarket_dashboard_metadata.json  |   2 +-
+ docs/project/WORK_LOG.md                           |  37 ++++
+ .../analysis/monitor_candidate_review_report.py    | 212 +++++++++++++++++++--
+ 8 files changed, 377 insertions(+), 22 deletions(-)
 ```
 
 Blockers:
@@ -55,7 +50,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: add monitor candidate human review report
+- feat: explain monitor candidate review signals
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

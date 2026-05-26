@@ -8,6 +8,16 @@
     .metrics { display: grid; grid-template-columns: repeat(3, minmax(130px, 1fr)); gap: 12px; }
     .metric { border: 1px solid #d7dde5; border-radius: 6px; padding: 12px; background: #f8fafc; }
     .metric strong { display: block; font-size: 22px; margin-top: 4px; }
+    .candidate { border: 1px solid #cfd8e3; border-radius: 8px; padding: 16px; margin: 18px 0; background: #ffffff; }
+    .candidate h3 { margin: 0 0 8px; }
+    .pill { display: inline-block; padding: 3px 8px; border-radius: 999px; background: #eef2f7; margin-right: 6px; font-size: 12px; }
+    .pill.high { background: #ffe7d6; }
+    .pill.medium { background: #fff7cc; }
+    .pill.low { background: #e9f7ef; }
+    .explain-grid { display: grid; grid-template-columns: repeat(2, minmax(240px, 1fr)); gap: 12px; }
+    .box { border: 1px solid #e1e7ef; border-radius: 6px; padding: 12px; background: #fbfcfe; }
+    .bar { height: 10px; border-radius: 999px; background: #e6ebf2; overflow: hidden; margin-top: 6px; }
+    .bar span { display: block; height: 100%; background: #366f9f; }
     table { border-collapse: collapse; width: 100%; margin-top: 12px; font-size: 13px; }
     th, td { border: 1px solid #d7dde5; padding: 7px; text-align: left; vertical-align: top; }
     th { background: #eef2f7; }
@@ -22,7 +32,117 @@
     <div class="metric">High priority<strong>1</strong></div>
     <div class="metric">Status<strong>needs review</strong></div>
   </section>
-  <h2>Review Rows</h2>
-  <table><thead><tr><th>question</th><th>max_severity</th><th>review_priority</th><th>why_flagged</th><th>available_evidence</th><th>missing_evidence</th><th>recommended_next_step</th></tr></thead><tbody><tr><td>Will the U.S. invade Iran before 2027?</td><td>info</td><td>low</td><td>active_wallet_activity triggered info on active_wallets</td><td>1 non-none monitor rows; active_wallets=3; trade_count=3; observed_amount_usd=69.44; midpoint_range=0.205-0.795; reference_similarity=0.00</td><td>manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</td><td>Low-context cue: keep in registry and review only if repeated.</td></tr><tr><td>Will China invade Taiwan by end of 2026?</td><td>info</td><td>medium</td><td>concentration triggered info on hhi_concentration,top_tier_share; reference-pattern labels: market_concentration</td><td>2 non-none monitor rows; active_wallets=1; trade_count=1; observed_amount_usd=9.58; midpoint_range=0.0675-0.9325; reference_similarity=0.50</td><td>manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</td><td>Check whether the same pattern repeats in the next bounded bucket.</td></tr><tr><td>Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?</td><td>high</td><td>high</td><td>active_wallet_activity triggered info on active_wallets; concentration triggered watch on hhi_concentration,top_tier_share; wallet_tier_activity triggered high on log1p_total_observed_amount_usd; reference-pattern labels: large_trade_flow,market_concentration</td><td>4 non-none monitor rows; active_wallets=1; trade_count=1; observed_amount_usd=64.28; midpoint_range=0.0885-0.9115; reference_similarity=1.00</td><td>manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; trade-size context against longer rolling volume; reviewed event candidate mapping</td><td>Open the market page, verify current context, and collect another bounded bucket before any thesis-facing use.</td></tr></tbody></table>
+  <h2>Review Cards</h2>
+  
+  <article class="candidate">
+    <h3>Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?</h3>
+    <p>
+      <span class="pill high">priority: high</span>
+      <span class="pill">severity: high</span>
+      <span class="pill">rows: 4</span>
+    </p>
+    <p><strong>In plain words:</strong> High priority because wallet amount and concentration were both unusual in the same 5-minute bucket. The observed aggregate amount was about USD 64.28. This is large relative to the short rolling baseline, but still small in absolute market terms and must be reviewed manually.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>Wallet amount: observed about USD 64.28; rolling baseline median about USD 0.02; percentile 0.95; robust z 125.88; severity high. The very high robust z can be inflated when the recent baseline is tiny, so absolute size must be checked manually.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>hhi_concentration: observed 1.00, baseline median 0.27, percentile 1.00, severity watch; top_tier_share: observed 1.00, baseline median 0.31, percentile 1.00, severity watch</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 1.0 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 2 neutral pattern label(s): large_trade_flow,market_concentration. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut.</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 64.28<br>
+        Active wallets: 1<br>
+        Trades: 1<br>
+        Max percentile: 1.00<br>
+        Reference score: 1.00</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> active_wallet_activity triggered info on active_wallets; concentration triggered watch on hhi_concentration,top_tier_share; wallet_tier_activity triggered high on log1p_total_observed_amount_usd; reference-pattern labels: large_trade_flow,market_concentration</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; trade-size context against longer rolling volume; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Open the market page, verify current context, and collect another bounded bucket before any thesis-facing use.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will China invade Taiwan by end of 2026?</h3>
+    <p>
+      <span class="pill medium">priority: medium</span>
+      <span class="pill">severity: info</span>
+      <span class="pill">rows: 2</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because activity was concentrated in the current bucket. This can happen in thin markets, so repetition and market-page context matter.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>No wallet-amount metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>hhi_concentration: observed 1.00, baseline median 0.63, percentile 1.00, severity info; top_tier_share: observed 1.00, baseline median 0.74, percentile 1.00, severity info</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): market_concentration. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut.</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 9.58<br>
+        Active wallets: 1<br>
+        Trades: 1<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.50</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> concentration triggered info on hhi_concentration,top_tier_share; reference-pattern labels: market_concentration</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Check whether the same pattern repeats in the next bounded bucket.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will the U.S. invade Iran before 2027?</h3>
+    <p>
+      <span class="pill low">priority: low</span>
+      <span class="pill">severity: info</span>
+      <span class="pill">rows: 1</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because the active-wallet count was above its local baseline. This is a weak cue unless it repeats or combines with amount or concentration evidence.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>No wallet-amount metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>No concentration metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.0 means this candidate does not share the triggered neutral labels of the current reference profiles.</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 69.44<br>
+        Active wallets: 3<br>
+        Trades: 3<br>
+        Max percentile: 0.90<br>
+        Reference score: 0.00</p>
+        <div class="bar"><span style="width:90%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> active_wallet_activity triggered info on active_wallets</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Low-context cue: keep in registry and review only if repeated.</p>
+  </article>
+
 </body>
 </html>

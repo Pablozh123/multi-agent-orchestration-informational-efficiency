@@ -426,6 +426,9 @@ Done criteria:
 - A compact human-review report now summarises the first 3 strict candidates,
   their trigger reasons, available evidence, missing evidence, review priority,
   and next review action.
+- The human-review report now uses plain-language cards so the AOC-2028
+  high-priority case can be understood from wallet amount, local baseline,
+  concentration, and reference-overlap explanations without reading raw CSVs.
 
 Blockers:
 

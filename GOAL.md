@@ -98,6 +98,9 @@ why:
 - A compact human-review report now explains the first 3 strict monitor
   candidates, including why each was marked, available evidence, missing
   evidence, review priority, and next review step.
+- The human-review report now includes plain-language candidate cards that
+  explain wallet amount, baseline comparison, concentration, reference
+  overlap, missing evidence, and next review steps.
 deliverables:
 - Define a deterministic alert-review workflow over compact monitor outputs.
 - Specify review states, required evidence fields, rejection criteria, and
@@ -113,6 +116,7 @@ deliverables:
 - Add a diagnostic sensitivity candidate layer that keeps shadow candidates
   separate from strict Rule C candidates.
 - Add a compact human-review report for strict candidates.
+- Make strict-candidate explanations understandable without opening raw CSVs.
 - Keep alerts descriptive until human review confirms source artifacts,
   timestamp validity, market mapping, and no-lookahead status.
 - Keep refresh/collection explicit and bounded.
@@ -172,6 +176,9 @@ acceptance_criteria:
 - Human-review report outputs contain no wallet addresses, no order
   instructions, and no claims about misconduct, causality, profitability, or
   tradeability.
+- Human-review cards explain why a candidate is high priority in plain
+  language and distinguish relative baseline anomalies from absolute economic
+  size.
 - Rule C thresholds remain unchanged.
 - Existing scoring outputs are not reinterpreted as causal, profitable,
   private-information, or efficiency evidence.
@@ -181,7 +188,7 @@ acceptance_criteria:
 - Review checks pass and no deferred agent/MCP surface is activated.
 - STATUS.md and WORK_LOG.md are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add monitor candidate human review report
+next_commit: feat: explain monitor candidate review signals
 
 ## Decision Inputs For This Goal
 
@@ -267,6 +274,8 @@ next_commit: feat: add monitor candidate human review report
   Rule C monitor candidates.
 - The first non-none strict monitor candidates now have a compact human-review
   report.
+- Candidate review cards now explain the current high-priority AOC-2028
+  candidate in terms of amount, concentration, and reference-label overlap.
 - The next decision is whether to collect another bounded live bucket or add
   manual source-check fields for the current high-priority review candidate.
 - Project review checks still detect premature ML, agent, MCP, trading,

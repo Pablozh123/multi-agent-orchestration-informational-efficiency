@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Swiss 10-Million Referendum Efficiency View</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 28px; color: #17202a; }
+    .metrics { display: grid; grid-template-columns: repeat(4, minmax(140px, 1fr)); gap: 12px; }
+    .metric { border: 1px solid #d7dde5; border-radius: 6px; padding: 12px; background: #f8fafc; }
+    .metric strong { display: block; font-size: 22px; margin-top: 4px; }
+    .metric.compact strong { font-size: 13px; line-height: 1.35; overflow-wrap: anywhere; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; font-size: 13px; }
+    th, td { border: 1px solid #d7dde5; padding: 7px; text-align: left; vertical-align: top; }
+    th { background: #eef2f7; }
+    img { max-width: 100%; border: 1px solid #d7dde5; border-radius: 6px; }
+    code { background: #f1f5f9; padding: 2px 4px; border-radius: 4px; }
+    .note { background: #fff7e6; border: 1px solid #f0d08a; padding: 12px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>Swiss 10-Million Referendum Efficiency View</h1>
+  <p class="note">Read-only deterministic comparison. Poll shares are survey shares, not model-implied win probabilities. Divergence labels are descriptive and make no causal, trading, or profitability claim.</p>
+  <section class="metrics">
+    <div class="metric">Snapshots<strong>16</strong></div>
+    <div class="metric">Polls<strong>7</strong></div>
+    <div class="metric">Latest Polymarket Yes<strong>23.0%</strong></div>
+    <div class="metric">Latest poll comparison<strong>45.0% raw Yes, 46.4% decided Yes</strong></div>
+    <div class="metric">Raw Yes gap<strong>-22.0 pp</strong></div>
+    <div class="metric">Decided Yes gap<strong>-23.4 pp</strong></div>
+    <div class="metric">Label<strong>polymarket_below_poll_yes_share</strong></div>
+    <div class="metric">Poll proxy relation<strong>below_poll_proxy</strong></div>
+    <div class="metric compact">Latest local snapshot<strong>2026-06-08T16:22:16Z</strong></div>
+    <div class="metric compact">Latest matched poll<strong>srg_gfs_bern_2026_w2</strong></div>
+    <div class="metric compact">Matched poll published<strong>2026-06-03T03:55:00Z</strong></div>
+    <div class="metric compact">Refresh mode<strong>manual bounded refresh</strong></div>
+  </section>
+  <h2>Figure</h2>
+  <img src="swiss_referendum_10mio_efficiency.png" alt="Swiss referendum comparison figure">
+  <h2>Poll Reaction Window Figure</h2>
+  <img src="swiss_referendum_10mio_reaction_windows.png" alt="Swiss referendum reaction-window figure">
+  <h2>Comparison Rows</h2>
+  <table>
+    <thead><tr><th>Snapshot</th><th>Polymarket Yes</th><th>Poll</th><th>Poll Yes</th><th>Poll decided Yes</th><th>Raw gap</th><th>Decided gap</th><th>Label</th><th>Poll proxy relation</th></tr></thead>
+    <tbody><tr><td>2026-06-08T14:06:53Z</td><td>0.225</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.225</td><td>-0.239</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
+<tr><td>2026-06-08T14:13:11Z</td><td>0.225</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.225</td><td>-0.239</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
+<tr><td>2026-06-08T14:22:29Z</td><td>0.225</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.225</td><td>-0.239</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
+<tr><td>2026-06-08T14:36:06Z</td><td>0.225</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.225</td><td>-0.239</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
+<tr><td>2026-06-08T14:44:51Z</td><td>0.225</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.225</td><td>-0.239</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
+<tr><td>2026-06-08T14:56:42Z</td><td>0.225</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.225</td><td>-0.239</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
+<tr><td>2026-06-08T15:04:09Z</td><td>0.225</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.225</td><td>-0.239</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
+<tr><td>2026-06-08T15:09:28Z</td><td>0.225</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.225</td><td>-0.239</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
+<tr><td>2026-06-08T15:15:18Z</td><td>0.225</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.225</td><td>-0.239</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
+<tr><td>2026-06-08T15:23:40Z</td><td>0.225</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.225</td><td>-0.239</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
+<tr><td>2026-06-08T15:32:15Z</td><td>0.225</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.225</td><td>-0.239</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
+<tr><td>2026-06-08T15:45:15Z</td><td>0.225</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.225</td><td>-0.239</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
+<tr><td>2026-06-08T15:51:55Z</td><td>0.225</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.225</td><td>-0.239</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
+<tr><td>2026-06-08T15:59:10Z</td><td>0.230</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.220</td><td>-0.234</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
+<tr><td>2026-06-08T16:08:56Z</td><td>0.230</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.220</td><td>-0.234</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
+<tr><td>2026-06-08T16:22:16Z</td><td>0.230</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.220</td><td>-0.234</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr></tbody>
+  </table>
+  <h2>Latest Poll-Source Comparison</h2>
+  <p class="note">This table compares the latest local Polymarket snapshot with the newest prior poll from each curated poll source. It is a cross-source poll-proxy view, not a model average or mispricing test.</p>
+  <table>
+    <thead><tr><th>Source</th><th>Poll</th><th>Published</th><th>Polymarket Yes</th><th>Poll Yes</th><th>Poll decided Yes</th><th>Raw gap</th><th>Decided gap</th><th>Poll proxy relation</th></tr></thead>
+    <tbody><tr><td>SRG/gfs.bern</td><td>srg_gfs_bern_2026_w2</td><td>2026-06-03T03:55:00Z</td><td>0.230</td><td>0.450</td><td>0.464</td><td>-0.220</td><td>-0.234</td><td>below_poll_proxy</td></tr>
+<tr><td>Tamedia/20 Minuten/LeeWas</td><td>tamedia_leewas_2026_w2</td><td>2026-06-03T00:00:00Z</td><td>0.230</td><td>0.470</td><td>0.475</td><td>-0.240</td><td>-0.245</td><td>below_poll_proxy</td></tr>
+<tr><td>YouGov Schweiz</td><td>yougov_2026_w2_final</td><td>2026-06-02T00:00:00Z</td><td>0.230</td><td>0.380</td><td>0.409</td><td>-0.150</td><td>-0.179</td><td>below_poll_proxy</td></tr></tbody>
+  </table>
+  <h2>Poll Release Impact Checks</h2>
+  <p class="note">Impact rows require at least one local Polymarket observation before and after the poll publication time. Observations can come from bounded snapshots or bounded public CLOB price-history windows.</p>
+  <h3>Poll Release Timing Summary</h3>
+  <ul><li>tamedia_leewas_2026_w1 (Tamedia/20 Minuten/LeeWas, 2026-04-29T00:00:00Z): first post observation after 0.0 h, first change +1.0 pp; windows 1h +1.0 pp, 6h +2.0 pp, 24h +4.0 pp, 48h +5.0 pp; status observed_pre_post; descriptive no-causality scope.</li>
+<li>yougov_2026_w1 (YouGov Schweiz, 2026-05-05T00:00:00Z): first post observation after 0.0 h, first change +0.5 pp; windows 1h +0.5 pp, 6h +0.5 pp, 24h +0.0 pp, 48h -0.5 pp; status observed_pre_post; descriptive no-causality scope.</li>
+<li>srg_gfs_bern_2026_w1 (SRG/gfs.bern, 2026-05-08T03:56:00Z): first post observation after 0.1 h, first change +0.0 pp; windows 1h +0.0 pp, 6h +1.0 pp, 24h +1.0 pp, 48h -5.0 pp; status observed_pre_post; descriptive no-causality scope.</li>
+<li>yougov_2026_w2_interim (YouGov Schweiz, 2026-05-27T00:00:00Z): first post observation after 0.0 h, first change +1.0 pp; windows 1h +1.0 pp, 6h +1.5 pp, 24h -1.0 pp, 48h +1.0 pp; status observed_pre_post; descriptive no-causality scope.</li>
+<li>yougov_2026_w2_final (YouGov Schweiz, 2026-06-02T00:00:00Z): first post observation after 0.0 h, first change +3.0 pp; windows 1h +3.0 pp, 6h +1.5 pp, 24h +0.0 pp, 48h -5.0 pp; status observed_pre_post; descriptive no-causality scope.</li>
+<li>tamedia_leewas_2026_w2 (Tamedia/20 Minuten/LeeWas, 2026-06-03T00:00:00Z): first post observation after 0.0 h, first change +0.0 pp; windows 1h +0.0 pp, 6h -3.0 pp, 24h -5.0 pp, 48h -5.0 pp; status observed_pre_post; descriptive no-causality scope.</li>
+<li>srg_gfs_bern_2026_w2 (SRG/gfs.bern, 2026-06-03T03:55:00Z): first post observation after 0.1 h, first change +0.0 pp; windows 1h +0.0 pp, 6h -1.0 pp, 24h -4.0 pp, 48h -5.0 pp; status observed_pre_post; descriptive no-causality scope.</li></ul>
+  <table>
+    <thead><tr><th>Poll</th><th>Source</th><th>Published</th><th>Status</th><th>Hours to first post observation</th><th>First change</th><th>1h change</th><th>6h change</th><th>24h change</th><th>48h change</th></tr></thead>
+    <tbody><tr><td>tamedia_leewas_2026_w1</td><td>Tamedia/20 Minuten/LeeWas</td><td>2026-04-29T00:00:00Z</td><td>observed_pre_post</td><td>0.003</td><td>0.010</td><td>0.010</td><td>0.020</td><td>0.040</td><td>0.050</td></tr>
+<tr><td>yougov_2026_w1</td><td>YouGov Schweiz</td><td>2026-05-05T00:00:00Z</td><td>observed_pre_post</td><td>0.005</td><td>0.005</td><td>0.005</td><td>0.005</td><td>0.000</td><td>-0.005</td></tr>
+<tr><td>srg_gfs_bern_2026_w1</td><td>SRG/gfs.bern</td><td>2026-05-08T03:56:00Z</td><td>observed_pre_post</td><td>0.068</td><td>0.000</td><td>0.000</td><td>0.010</td><td>0.010</td><td>-0.050</td></tr>
+<tr><td>yougov_2026_w2_interim</td><td>YouGov Schweiz</td><td>2026-05-27T00:00:00Z</td><td>observed_pre_post</td><td>0.002</td><td>0.010</td><td>0.010</td><td>0.015</td><td>-0.010</td><td>0.010</td></tr>
+<tr><td>yougov_2026_w2_final</td><td>YouGov Schweiz</td><td>2026-06-02T00:00:00Z</td><td>observed_pre_post</td><td>0.002</td><td>0.030</td><td>0.030</td><td>0.015</td><td>0.000</td><td>-0.050</td></tr>
+<tr><td>tamedia_leewas_2026_w2</td><td>Tamedia/20 Minuten/LeeWas</td><td>2026-06-03T00:00:00Z</td><td>observed_pre_post</td><td>0.002</td><td>0.000</td><td>0.000</td><td>-0.030</td><td>-0.050</td><td>-0.050</td></tr>
+<tr><td>srg_gfs_bern_2026_w2</td><td>SRG/gfs.bern</td><td>2026-06-03T03:55:00Z</td><td>observed_pre_post</td><td>0.084</td><td>0.000</td><td>0.000</td><td>-0.010</td><td>-0.040</td><td>-0.050</td></tr></tbody>
+  </table>
+  <h2>Curated Poll Inputs</h2>
+  <table>
+    <thead><tr><th>Poll</th><th>Source</th><th>Fieldwork start</th><th>Fieldwork end</th><th>Published</th><th>Yes</th><th>No</th><th>Undecided</th></tr></thead>
+    <tbody><tr><td>tamedia_leewas_2026_w1</td><td>Tamedia/20 Minuten/LeeWas</td><td>2026-04-22</td><td>2026-04-23</td><td>2026-04-29T00:00:00Z</td><td>0.520</td><td>0.460</td><td>0.020</td></tr>
+<tr><td>yougov_2026_w1</td><td>YouGov Schweiz</td><td>2026-04-21</td><td>2026-05-04</td><td>2026-05-05T00:00:00Z</td><td>0.450</td><td>0.460</td><td>0.080</td></tr>
+<tr><td>srg_gfs_bern_2026_w1</td><td>SRG/gfs.bern</td><td>2026-04-20</td><td>2026-05-03</td><td>2026-05-08T03:56:00Z</td><td>0.470</td><td>0.470</td><td>0.060</td></tr>
+<tr><td>yougov_2026_w2_interim</td><td>YouGov Schweiz</td><td>2026-05-18</td><td>2026-05-26</td><td>2026-05-27T00:00:00Z</td><td>0.430</td><td>0.510</td><td>0.060</td></tr>
+<tr><td>yougov_2026_w2_final</td><td>YouGov Schweiz</td><td>2026-05-18</td><td>2026-06-01</td><td>2026-06-02T00:00:00Z</td><td>0.380</td><td>0.550</td><td>0.070</td></tr>
+<tr><td>tamedia_leewas_2026_w2</td><td>Tamedia/20 Minuten/LeeWas</td><td>2026-05-27</td><td>2026-05-28</td><td>2026-06-03T00:00:00Z</td><td>0.470</td><td>0.520</td><td>0.010</td></tr>
+<tr><td>srg_gfs_bern_2026_w2</td><td>SRG/gfs.bern</td><td>2026-05-19</td><td>2026-05-27</td><td>2026-06-03T03:55:00Z</td><td>0.450</td><td>0.520</td><td>0.030</td></tr></tbody>
+  </table>
+  <h2>Poll Reaction Window Rows</h2>
+  <p class="note">Reaction-window rows are descriptive changes from the closest pre-publication observation to the last local observation inside each post-publication window. They are not causal claims.</p>
+  <table>
+    <thead><tr><th>Poll</th><th>Window hours</th><th>Window end</th><th>Status</th><th>Yes probability change</th><th>Scope</th></tr></thead>
+    <tbody><tr><td>tamedia_leewas_2026_w1</td><td>1</td><td>2026-04-29T01:00:00Z</td><td>observed_window_change</td><td>0.010</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>tamedia_leewas_2026_w1</td><td>6</td><td>2026-04-29T06:00:00Z</td><td>observed_window_change</td><td>0.020</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>tamedia_leewas_2026_w1</td><td>24</td><td>2026-04-30T00:00:00Z</td><td>observed_window_change</td><td>0.040</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>tamedia_leewas_2026_w1</td><td>48</td><td>2026-05-01T00:00:00Z</td><td>observed_window_change</td><td>0.050</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>yougov_2026_w1</td><td>1</td><td>2026-05-05T01:00:00Z</td><td>observed_window_change</td><td>0.005</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>yougov_2026_w1</td><td>6</td><td>2026-05-05T06:00:00Z</td><td>observed_window_change</td><td>0.005</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>yougov_2026_w1</td><td>24</td><td>2026-05-06T00:00:00Z</td><td>observed_window_change</td><td>0.000</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>yougov_2026_w1</td><td>48</td><td>2026-05-07T00:00:00Z</td><td>observed_window_change</td><td>-0.005</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>srg_gfs_bern_2026_w1</td><td>1</td><td>2026-05-08T04:56:00Z</td><td>observed_window_change</td><td>0.000</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>srg_gfs_bern_2026_w1</td><td>6</td><td>2026-05-08T09:56:00Z</td><td>observed_window_change</td><td>0.010</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>srg_gfs_bern_2026_w1</td><td>24</td><td>2026-05-09T03:56:00Z</td><td>observed_window_change</td><td>0.010</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>srg_gfs_bern_2026_w1</td><td>48</td><td>2026-05-10T03:56:00Z</td><td>observed_window_change</td><td>-0.050</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>yougov_2026_w2_interim</td><td>1</td><td>2026-05-27T01:00:00Z</td><td>observed_window_change</td><td>0.010</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>yougov_2026_w2_interim</td><td>6</td><td>2026-05-27T06:00:00Z</td><td>observed_window_change</td><td>0.015</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>yougov_2026_w2_interim</td><td>24</td><td>2026-05-28T00:00:00Z</td><td>observed_window_change</td><td>-0.010</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>yougov_2026_w2_interim</td><td>48</td><td>2026-05-29T00:00:00Z</td><td>observed_window_change</td><td>0.010</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>yougov_2026_w2_final</td><td>1</td><td>2026-06-02T01:00:00Z</td><td>observed_window_change</td><td>0.030</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>yougov_2026_w2_final</td><td>6</td><td>2026-06-02T06:00:00Z</td><td>observed_window_change</td><td>0.015</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>yougov_2026_w2_final</td><td>24</td><td>2026-06-03T00:00:00Z</td><td>observed_window_change</td><td>0.000</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>yougov_2026_w2_final</td><td>48</td><td>2026-06-04T00:00:00Z</td><td>observed_window_change</td><td>-0.050</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>tamedia_leewas_2026_w2</td><td>1</td><td>2026-06-03T01:00:00Z</td><td>observed_window_change</td><td>0.000</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>tamedia_leewas_2026_w2</td><td>6</td><td>2026-06-03T06:00:00Z</td><td>observed_window_change</td><td>-0.030</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>tamedia_leewas_2026_w2</td><td>24</td><td>2026-06-04T00:00:00Z</td><td>observed_window_change</td><td>-0.050</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>tamedia_leewas_2026_w2</td><td>48</td><td>2026-06-05T00:00:00Z</td><td>observed_window_change</td><td>-0.050</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>srg_gfs_bern_2026_w2</td><td>1</td><td>2026-06-03T04:55:00Z</td><td>observed_window_change</td><td>0.000</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>srg_gfs_bern_2026_w2</td><td>6</td><td>2026-06-03T09:55:00Z</td><td>observed_window_change</td><td>-0.010</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>srg_gfs_bern_2026_w2</td><td>24</td><td>2026-06-04T03:55:00Z</td><td>observed_window_change</td><td>-0.040</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr>
+<tr><td>srg_gfs_bern_2026_w2</td><td>48</td><td>2026-06-05T03:55:00Z</td><td>observed_window_change</td><td>-0.050</td><td>descriptive_pre_post_window_no_causality_or_trade_signal</td></tr></tbody>
+  </table>
+  <h2>Limitations</h2>
+  <p class="note">BFS/admin.ch is used as official referendum and population-context evidence. The curated poll values currently come from SRG/gfs.bern, Tamedia/LeeWas, and YouGov Schweiz, because BFS does not appear to publish voting-intention poll shares for this referendum.</p>
+  <ul>
+    <li>No statistical event-window or causal test is run here.</li>
+    <li>Poll publication impact uses bounded local Polymarket observations before and after each release.</li>
+    <li>Poll proxy relation labels describe over/under the latest poll share only; they are not true valuation, mispricing, or trading labels.</li>
+    <li>The decided-voter value is only yes_share / (yes_share + no_share).</li>
+  </ul>
+  <h2>Source Boundary Audit</h2>
+  <table>
+    <thead><tr><th>Source ID</th><th>Source</th><th>Role</th><th>Voting-intention values</th><th>In poll catalog</th><th>Notes</th></tr></thead>
+    <tbody><tr><td>admin_ch_referendum_context</td><td>admin.ch/Bundeskanzlei</td><td>official_referendum_context</td><td>False</td><td>False</td><td>Official vote date and initiative context only.</td></tr>
+<tr><td>bfs_population_scenarios_2025_2055</td><td>Bundesamt fuer Statistik</td><td>official_population_context</td><td>False</td><td>False</td><td>Population scenario context only; not a voting-intention poll.</td></tr>
+<tr><td>tamedia_leewas_2026_w1</td><td>Tamedia/20 Minuten/LeeWas</td><td>voting_intention_poll</td><td>True</td><td>True</td><td>Curated poll row used for deterministic comparison.</td></tr>
+<tr><td>yougov_2026_w1</td><td>YouGov Schweiz</td><td>voting_intention_poll</td><td>True</td><td>True</td><td>Curated poll row used for deterministic comparison.</td></tr>
+<tr><td>srg_gfs_bern_2026_w1</td><td>SRG/gfs.bern</td><td>voting_intention_poll</td><td>True</td><td>True</td><td>Curated poll row used for deterministic comparison.</td></tr>
+<tr><td>yougov_2026_w2_interim</td><td>YouGov Schweiz</td><td>voting_intention_poll</td><td>True</td><td>True</td><td>Curated poll row used for deterministic comparison.</td></tr>
+<tr><td>yougov_2026_w2_final</td><td>YouGov Schweiz</td><td>voting_intention_poll</td><td>True</td><td>True</td><td>Curated poll row used for deterministic comparison.</td></tr>
+<tr><td>tamedia_leewas_2026_w2</td><td>Tamedia/20 Minuten/LeeWas</td><td>voting_intention_poll</td><td>True</td><td>True</td><td>Curated poll row used for deterministic comparison.</td></tr>
+<tr><td>srg_gfs_bern_2026_w2</td><td>SRG/gfs.bern</td><td>voting_intention_poll</td><td>True</td><td>True</td><td>Curated poll row used for deterministic comparison.</td></tr></tbody>
+  </table>
+  <h2>Source Artifacts</h2>
+  <ul><li><code>poll_input</code>: data\swiss_referendum_10mio_polls.csv</li>
+<li><code>polymarket_snapshots</code>: data\results\swiss_referendum_10mio_polymarket_snapshots.csv</li>
+<li><code>comparison</code>: data\results\swiss_referendum_10mio_comparison.csv</li>
+<li><code>latest_source_comparison</code>: data\results\swiss_referendum_10mio_latest_source_comparison.csv</li>
+<li><code>poll_impacts</code>: data\results\swiss_referendum_10mio_poll_impacts.csv</li>
+<li><code>poll_reaction_windows</code>: data\results\swiss_referendum_10mio_poll_reaction_windows.csv</li>
+<li><code>source_audit</code>: data\results\swiss_referendum_10mio_source_audit.csv</li>
+<li><code>figure</code>: data\results\swiss_referendum_10mio_efficiency.png</li>
+<li><code>reaction_figure</code>: data\results\swiss_referendum_10mio_reaction_windows.png</li></ul>
+</body>
+</html>

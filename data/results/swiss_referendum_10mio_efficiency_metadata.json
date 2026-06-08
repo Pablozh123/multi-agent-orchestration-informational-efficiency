@@ -1,0 +1,92 @@
+{
+  "dashboard_verification": {
+    "checked_figure_count": 2,
+    "dashboard_path": "data\\results\\swiss_referendum_10mio_dashboard.html",
+    "extra_figure_paths": [
+      "data\\results\\swiss_referendum_10mio_reaction_windows.png"
+    ],
+    "figure_nonblank": true,
+    "figure_path": "data\\results\\swiss_referendum_10mio_efficiency.png",
+    "figure_shape": [
+      880,
+      1600,
+      4
+    ],
+    "h1": "Swiss 10-Million Referendum Efficiency View",
+    "h2_sections": [
+      "Figure",
+      "Poll Reaction Window Figure",
+      "Comparison Rows",
+      "Latest Poll-Source Comparison",
+      "Poll Release Impact Checks",
+      "Curated Poll Inputs",
+      "Poll Reaction Window Rows",
+      "Limitations",
+      "Source Boundary Audit",
+      "Source Artifacts"
+    ],
+    "image_count": 2,
+    "required_text_present": true,
+    "table_count": 6,
+    "table_row_count": 76,
+    "title": "Swiss 10-Million Referendum Efficiency View"
+  },
+  "generated_at_utc": "2026-06-08T16:22:19+00:00",
+  "limitations": {
+    "bfs_is_context_not_poll_source": true,
+    "decided_share_is_not_a_forecast_model": true,
+    "no_causal_claim_from_poll_release_rows": true,
+    "no_profitability_or_tradeability_claim": true,
+    "polls_are_not_win_probability_model": true,
+    "requires_more_snapshots_for_release_impact_analysis": false,
+    "source_audit_confirms_bfs_context_only": true
+  },
+  "method": {
+    "decided_share_formula": "yes_share / (yes_share + no_share)",
+    "divergence_threshold": 0.05,
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "latest_prior_poll_matching": true,
+    "name": "swiss_referendum_10mio_efficiency_comparison",
+    "poll_impact_requires_pre_and_post_snapshot": true,
+    "poll_probability_transform": "none",
+    "read_only": true,
+    "uses_polymarket_price_history_for_impacts": true
+  },
+  "outputs": {
+    "comparison_row_count": 16,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "history_row_count": 504,
+    "impact_status_counts": {
+      "observed_pre_post": 7
+    },
+    "latest_decided_yes_gap": -0.23391752577319588,
+    "latest_divergence_label": "polymarket_below_poll_yes_share",
+    "latest_poll_proxy_valuation_label": "below_poll_proxy",
+    "latest_raw_yes_gap": -0.22,
+    "latest_source_comparison_row_count": 3,
+    "poll_count": 7,
+    "poll_impact_row_count": 7,
+    "poll_reaction_window_row_count": 28,
+    "snapshot_count": 16,
+    "source_audit_row_count": 9
+  },
+  "source_paths": {
+    "comparison": "data\\results\\swiss_referendum_10mio_comparison.csv",
+    "dashboard": "data\\results\\swiss_referendum_10mio_dashboard.html",
+    "figure": "data\\results\\swiss_referendum_10mio_efficiency.png",
+    "latest_source_comparison": "data\\results\\swiss_referendum_10mio_latest_source_comparison.csv",
+    "poll_impacts": "data\\results\\swiss_referendum_10mio_poll_impacts.csv",
+    "poll_input": "data\\swiss_referendum_10mio_polls.csv",
+    "poll_reaction_windows": "data\\results\\swiss_referendum_10mio_poll_reaction_windows.csv",
+    "polymarket_history": "data\\results\\swiss_referendum_10mio_polymarket_price_history.csv",
+    "polymarket_snapshots": "data\\results\\swiss_referendum_10mio_polymarket_snapshots.csv",
+    "reaction_figure": "data\\results\\swiss_referendum_10mio_reaction_windows.png",
+    "source_audit": "data\\results\\swiss_referendum_10mio_source_audit.csv",
+    "summary": "data\\results\\swiss_referendum_10mio_latest_summary.md"
+  }
+}

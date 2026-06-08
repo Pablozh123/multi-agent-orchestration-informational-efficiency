@@ -1,0 +1,35 @@
+{
+  "endpoints": {
+    "clob_prices_history": "https://clob.polymarket.com/prices-history"
+  },
+  "generated_at_utc": "2026-06-08T16:22:18+00:00",
+  "limitations": {
+    "historical_chart_points_are_public_clob_history": true,
+    "no_causal_claim_from_price_history": true,
+    "no_profitability_or_tradeability_claim": true
+  },
+  "method": {
+    "bounded_poll_windows_only": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_use_order_endpoints": true,
+    "does_not_write_database": true,
+    "fidelity_minutes": 60,
+    "hours_after": 48,
+    "hours_before": 24,
+    "name": "swiss_referendum_10mio_price_history_collector",
+    "read_only": true,
+    "source": "live",
+    "token_id": "110415947867502851823417163135703780640916104008376308987909133787379806125789"
+  },
+  "outputs": {
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "history_path": "data\\results\\swiss_referendum_10mio_polymarket_price_history.csv",
+    "poll_count": 7,
+    "poll_input_path": "data\\swiss_referendum_10mio_polls.csv",
+    "row_count": 504,
+    "snapshots_path": "data\\results\\swiss_referendum_10mio_polymarket_snapshots.csv"
+  }
+}

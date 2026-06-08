@@ -21,7 +21,7 @@
   <h1>Swiss 10-Million Referendum Efficiency View</h1>
   <p class="note">Read-only deterministic comparison. Poll shares are survey shares, not model-implied win probabilities. Divergence labels are descriptive and make no causal, trading, or profitability claim.</p>
   <section class="metrics">
-    <div class="metric">Snapshots<strong>16</strong></div>
+    <div class="metric">Snapshots<strong>18</strong></div>
     <div class="metric">Polls<strong>7</strong></div>
     <div class="metric">Latest Polymarket Yes<strong>23.0%</strong></div>
     <div class="metric">Latest poll comparison<strong>45.0% raw Yes, 46.4% decided Yes</strong></div>
@@ -29,7 +29,7 @@
     <div class="metric">Decided Yes gap<strong>-23.4 pp</strong></div>
     <div class="metric">Label<strong>polymarket_below_poll_yes_share</strong></div>
     <div class="metric">Poll proxy relation<strong>below_poll_proxy</strong></div>
-    <div class="metric compact">Latest local snapshot<strong>2026-06-08T16:22:16Z</strong></div>
+    <div class="metric compact">Latest local snapshot<strong>2026-06-08T17:00:19Z</strong></div>
     <div class="metric compact">Latest matched poll<strong>srg_gfs_bern_2026_w2</strong></div>
     <div class="metric compact">Matched poll published<strong>2026-06-03T03:55:00Z</strong></div>
     <div class="metric compact">Refresh mode<strong>manual bounded refresh</strong></div>
@@ -38,6 +38,9 @@
   <img src="swiss_referendum_10mio_efficiency.png" alt="Swiss referendum comparison figure">
   <h2>Poll Reaction Window Figure</h2>
   <img src="swiss_referendum_10mio_reaction_windows.png" alt="Swiss referendum reaction-window figure">
+  <h2>Information Response Figure</h2>
+  <p class="note">The black diamond is the new poll signal versus the immediately previous curated poll release. Bars show Polymarket movement after publication. Same sign means same direction; this is descriptive alignment, not causality.</p>
+  <img src="swiss_referendum_10mio_information_response.png" alt="Swiss referendum information-response figure">
   <h2>Comparison Rows</h2>
   <table>
     <thead><tr><th>Snapshot</th><th>Polymarket Yes</th><th>Poll</th><th>Poll Yes</th><th>Poll decided Yes</th><th>Raw gap</th><th>Decided gap</th><th>Label</th><th>Poll proxy relation</th></tr></thead>
@@ -56,7 +59,9 @@
 <tr><td>2026-06-08T15:51:55Z</td><td>0.225</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.225</td><td>-0.239</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
 <tr><td>2026-06-08T15:59:10Z</td><td>0.230</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.220</td><td>-0.234</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
 <tr><td>2026-06-08T16:08:56Z</td><td>0.230</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.220</td><td>-0.234</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
-<tr><td>2026-06-08T16:22:16Z</td><td>0.230</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.220</td><td>-0.234</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr></tbody>
+<tr><td>2026-06-08T16:22:16Z</td><td>0.230</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.220</td><td>-0.234</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
+<tr><td>2026-06-08T16:58:47Z</td><td>0.230</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.220</td><td>-0.234</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr>
+<tr><td>2026-06-08T17:00:19Z</td><td>0.230</td><td>srg_gfs_bern_2026_w2</td><td>0.450</td><td>0.464</td><td>-0.220</td><td>-0.234</td><td>polymarket_below_poll_yes_share</td><td>below_poll_proxy</td></tr></tbody>
   </table>
   <h2>Latest Poll-Source Comparison</h2>
   <p class="note">This table compares the latest local Polymarket snapshot with the newest prior poll from each curated poll source. It is a cross-source poll-proxy view, not a model average or mispricing test.</p>
@@ -69,13 +74,13 @@
   <h2>Poll Release Impact Checks</h2>
   <p class="note">Impact rows require at least one local Polymarket observation before and after the poll publication time. Observations can come from bounded snapshots or bounded public CLOB price-history windows.</p>
   <h3>Poll Release Timing Summary</h3>
-  <ul><li>tamedia_leewas_2026_w1 (Tamedia/20 Minuten/LeeWas, 2026-04-29T00:00:00Z): first post observation after 0.0 h, first change +1.0 pp; windows 1h +1.0 pp, 6h +2.0 pp, 24h +4.0 pp, 48h +5.0 pp; status observed_pre_post; descriptive no-causality scope.</li>
-<li>yougov_2026_w1 (YouGov Schweiz, 2026-05-05T00:00:00Z): first post observation after 0.0 h, first change +0.5 pp; windows 1h +0.5 pp, 6h +0.5 pp, 24h +0.0 pp, 48h -0.5 pp; status observed_pre_post; descriptive no-causality scope.</li>
-<li>srg_gfs_bern_2026_w1 (SRG/gfs.bern, 2026-05-08T03:56:00Z): first post observation after 0.1 h, first change +0.0 pp; windows 1h +0.0 pp, 6h +1.0 pp, 24h +1.0 pp, 48h -5.0 pp; status observed_pre_post; descriptive no-causality scope.</li>
-<li>yougov_2026_w2_interim (YouGov Schweiz, 2026-05-27T00:00:00Z): first post observation after 0.0 h, first change +1.0 pp; windows 1h +1.0 pp, 6h +1.5 pp, 24h -1.0 pp, 48h +1.0 pp; status observed_pre_post; descriptive no-causality scope.</li>
-<li>yougov_2026_w2_final (YouGov Schweiz, 2026-06-02T00:00:00Z): first post observation after 0.0 h, first change +3.0 pp; windows 1h +3.0 pp, 6h +1.5 pp, 24h +0.0 pp, 48h -5.0 pp; status observed_pre_post; descriptive no-causality scope.</li>
-<li>tamedia_leewas_2026_w2 (Tamedia/20 Minuten/LeeWas, 2026-06-03T00:00:00Z): first post observation after 0.0 h, first change +0.0 pp; windows 1h +0.0 pp, 6h -3.0 pp, 24h -5.0 pp, 48h -5.0 pp; status observed_pre_post; descriptive no-causality scope.</li>
-<li>srg_gfs_bern_2026_w2 (SRG/gfs.bern, 2026-06-03T03:55:00Z): first post observation after 0.1 h, first change +0.0 pp; windows 1h +0.0 pp, 6h -1.0 pp, 24h -4.0 pp, 48h -5.0 pp; status observed_pre_post; descriptive no-causality scope.</li></ul>
+  <ul><li>tamedia_leewas_2026_w1 (Tamedia/20 Minuten/LeeWas, 2026-04-29T00:00:00Z): first post observation after 0.2 min, first change +1.0 pp; windows 1h +1.0 pp, 6h +2.0 pp, 24h +4.0 pp, 48h +5.0 pp; status observed_pre_post; descriptive no-causality scope.</li>
+<li>yougov_2026_w1 (YouGov Schweiz, 2026-05-05T00:00:00Z): first post observation after 0.3 min, first change +0.5 pp; windows 1h +0.5 pp, 6h +0.5 pp, 24h +0.0 pp, 48h -0.5 pp; status observed_pre_post; descriptive no-causality scope.</li>
+<li>srg_gfs_bern_2026_w1 (SRG/gfs.bern, 2026-05-08T03:56:00Z): first post observation after 4.1 min, first change +0.0 pp; windows 1h +0.0 pp, 6h +1.0 pp, 24h +1.0 pp, 48h -5.0 pp; status observed_pre_post; descriptive no-causality scope.</li>
+<li>yougov_2026_w2_interim (YouGov Schweiz, 2026-05-27T00:00:00Z): first post observation after 0.1 min, first change +1.0 pp; windows 1h +1.0 pp, 6h +1.5 pp, 24h -1.0 pp, 48h +1.0 pp; status observed_pre_post; descriptive no-causality scope.</li>
+<li>yougov_2026_w2_final (YouGov Schweiz, 2026-06-02T00:00:00Z): first post observation after 0.1 min, first change +3.0 pp; windows 1h +3.0 pp, 6h +1.5 pp, 24h +0.0 pp, 48h -5.0 pp; status observed_pre_post; descriptive no-causality scope.</li>
+<li>tamedia_leewas_2026_w2 (Tamedia/20 Minuten/LeeWas, 2026-06-03T00:00:00Z): first post observation after 0.1 min, first change +0.0 pp; windows 1h +0.0 pp, 6h -3.0 pp, 24h -5.0 pp, 48h -5.0 pp; status observed_pre_post; descriptive no-causality scope.</li>
+<li>srg_gfs_bern_2026_w2 (SRG/gfs.bern, 2026-06-03T03:55:00Z): first post observation after 5.0 min, first change +0.0 pp; windows 1h +0.0 pp, 6h -1.0 pp, 24h -4.0 pp, 48h -5.0 pp; status observed_pre_post; descriptive no-causality scope.</li></ul>
   <table>
     <thead><tr><th>Poll</th><th>Source</th><th>Published</th><th>Status</th><th>Hours to first post observation</th><th>First change</th><th>1h change</th><th>6h change</th><th>24h change</th><th>48h change</th></tr></thead>
     <tbody><tr><td>tamedia_leewas_2026_w1</td><td>Tamedia/20 Minuten/LeeWas</td><td>2026-04-29T00:00:00Z</td><td>observed_pre_post</td><td>0.003</td><td>0.010</td><td>0.010</td><td>0.020</td><td>0.040</td><td>0.050</td></tr>
@@ -85,6 +90,18 @@
 <tr><td>yougov_2026_w2_final</td><td>YouGov Schweiz</td><td>2026-06-02T00:00:00Z</td><td>observed_pre_post</td><td>0.002</td><td>0.030</td><td>0.030</td><td>0.015</td><td>0.000</td><td>-0.050</td></tr>
 <tr><td>tamedia_leewas_2026_w2</td><td>Tamedia/20 Minuten/LeeWas</td><td>2026-06-03T00:00:00Z</td><td>observed_pre_post</td><td>0.002</td><td>0.000</td><td>0.000</td><td>-0.030</td><td>-0.050</td><td>-0.050</td></tr>
 <tr><td>srg_gfs_bern_2026_w2</td><td>SRG/gfs.bern</td><td>2026-06-03T03:55:00Z</td><td>observed_pre_post</td><td>0.084</td><td>0.000</td><td>0.000</td><td>-0.010</td><td>-0.040</td><td>-0.050</td></tr></tbody>
+  </table>
+  <h2>Information Response: Poll Signal vs Polymarket</h2>
+  <p class="note">This table makes the speed question explicit. The poll source updates at its publication timestamp; Polymarket is then checked in bounded 1h, 6h, 24h, and 48h windows. Labels classify direction-only alignment, not statistical significance.</p>
+  <table>
+    <thead><tr><th>Poll</th><th>Prior poll</th><th>Poll signal direction</th><th>Poll signal</th><th>First post obs hours</th><th>First PM change</th><th>First PM direction</th><th>1h PM</th><th>6h PM</th><th>24h PM</th><th>48h PM</th><th>First aligned window</th><th>Processing label</th></tr></thead>
+    <tbody><tr><td>tamedia_leewas_2026_w1</td><td></td><td>no_prior_poll</td><td></td><td>0.003</td><td>0.010</td><td>up</td><td>0.010</td><td>0.020</td><td>0.040</td><td>0.050</td><td></td><td>no_prior_poll_signal</td></tr>
+<tr><td>yougov_2026_w1</td><td>tamedia_leewas_2026_w1</td><td>down</td><td>-0.036</td><td>0.005</td><td>0.005</td><td>up</td><td>0.005</td><td>0.005</td><td>0.000</td><td>-0.005</td><td>48.00</td><td>delayed_same_direction_48h</td></tr>
+<tr><td>srg_gfs_bern_2026_w1</td><td>yougov_2026_w1</td><td>up</td><td>0.005</td><td>0.068</td><td>0.000</td><td>unchanged</td><td>0.000</td><td>0.010</td><td>0.010</td><td>-0.050</td><td>6.00</td><td>delayed_same_direction_6h</td></tr>
+<tr><td>yougov_2026_w2_interim</td><td>srg_gfs_bern_2026_w1</td><td>down</td><td>-0.043</td><td>0.002</td><td>0.010</td><td>up</td><td>0.010</td><td>0.015</td><td>-0.010</td><td>0.010</td><td>24.00</td><td>delayed_same_direction_24h</td></tr>
+<tr><td>yougov_2026_w2_final</td><td>yougov_2026_w2_interim</td><td>down</td><td>-0.049</td><td>0.002</td><td>0.030</td><td>up</td><td>0.030</td><td>0.015</td><td>0.000</td><td>-0.050</td><td>48.00</td><td>delayed_same_direction_48h</td></tr>
+<tr><td>tamedia_leewas_2026_w2</td><td>yougov_2026_w2_final</td><td>up</td><td>0.066</td><td>0.002</td><td>0.000</td><td>unchanged</td><td>0.000</td><td>-0.030</td><td>-0.050</td><td>-0.050</td><td></td><td>no_same_direction_within_48h</td></tr>
+<tr><td>srg_gfs_bern_2026_w2</td><td>tamedia_leewas_2026_w2</td><td>down</td><td>-0.011</td><td>0.084</td><td>0.000</td><td>unchanged</td><td>0.000</td><td>-0.010</td><td>-0.040</td><td>-0.050</td><td>6.00</td><td>delayed_same_direction_6h</td></tr></tbody>
   </table>
   <h2>Curated Poll Inputs</h2>
   <table>
@@ -158,8 +175,10 @@
 <li><code>latest_source_comparison</code>: data\results\swiss_referendum_10mio_latest_source_comparison.csv</li>
 <li><code>poll_impacts</code>: data\results\swiss_referendum_10mio_poll_impacts.csv</li>
 <li><code>poll_reaction_windows</code>: data\results\swiss_referendum_10mio_poll_reaction_windows.csv</li>
+<li><code>information_response</code>: data\results\swiss_referendum_10mio_information_response.csv</li>
 <li><code>source_audit</code>: data\results\swiss_referendum_10mio_source_audit.csv</li>
 <li><code>figure</code>: data\results\swiss_referendum_10mio_efficiency.png</li>
-<li><code>reaction_figure</code>: data\results\swiss_referendum_10mio_reaction_windows.png</li></ul>
+<li><code>reaction_figure</code>: data\results\swiss_referendum_10mio_reaction_windows.png</li>
+<li><code>information_response_figure</code>: data\results\swiss_referendum_10mio_information_response.png</li></ul>
 </body>
 </html>

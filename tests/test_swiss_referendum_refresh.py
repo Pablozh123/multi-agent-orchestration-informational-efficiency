@@ -38,6 +38,8 @@ def test_refresh_swiss_referendum_comparison_writes_all_outputs(tmp_path: Path) 
     assert paths["figure_path"].exists()
     assert paths["reaction_figure_path"].exists()
     assert paths["poll_reaction_windows_path"].exists()
+    assert paths["information_response_path"].exists()
+    assert paths["information_response_figure_path"].exists()
     assert paths["source_audit_path"].exists()
     assert paths["summary_path"].exists()
     assert paths["running_status_path"].exists()
@@ -45,6 +47,10 @@ def test_refresh_swiss_referendum_comparison_writes_all_outputs(tmp_path: Path) 
     assert result.running_status_path == paths["running_status_path"]
     assert result.source_audit_path == paths["source_audit_path"]
     assert result.latest_source_comparison_path == paths["latest_source_comparison_path"]
+    assert result.information_response_path == paths["information_response_path"]
+    assert result.information_response_figure_path == paths[
+        "information_response_figure_path"
+    ]
     assert metadata["method"]["bounded_single_snapshot_refresh"] is True
     assert metadata["method"]["collects_bounded_price_history"] is True
     assert metadata["method"]["does_not_use_order_endpoints"] is True
@@ -89,9 +95,11 @@ def test_build_running_status_reports_snapshot_recency(tmp_path: Path) -> None:
         latest_source_comparison_path=paths["latest_source_comparison_path"],
         poll_impact_path=paths["poll_impact_path"],
         poll_reaction_windows_path=paths["poll_reaction_windows_path"],
+        information_response_path=paths["information_response_path"],
         source_audit_path=paths["source_audit_path"],
         figure_path=paths["figure_path"],
         reaction_figure_path=paths["reaction_figure_path"],
+        information_response_figure_path=paths["information_response_figure_path"],
         dashboard_path=paths["dashboard_path"],
         summary_path=paths["summary_path"],
         efficiency_metadata_path=paths["efficiency_metadata_path"],
@@ -133,12 +141,16 @@ def test_refresh_cli_writes_outputs(tmp_path: Path, capsys) -> None:
             str(paths["poll_impact_path"]),
             "--poll-reaction-windows-output",
             str(paths["poll_reaction_windows_path"]),
+            "--information-response-output",
+            str(paths["information_response_path"]),
             "--source-audit-output",
             str(paths["source_audit_path"]),
             "--figure-output",
             str(paths["figure_path"]),
             "--reaction-figure-output",
             str(paths["reaction_figure_path"]),
+            "--information-response-figure-output",
+            str(paths["information_response_figure_path"]),
             "--dashboard-output",
             str(paths["dashboard_path"]),
             "--summary-output",
@@ -211,9 +223,11 @@ def _paths(root: Path) -> dict[str, Path]:
         "latest_source_comparison_path": root / "latest_source_comparison.csv",
         "poll_impact_path": root / "impacts.csv",
         "poll_reaction_windows_path": root / "reaction_windows.csv",
+        "information_response_path": root / "information_response.csv",
         "source_audit_path": root / "source_audit.csv",
         "figure_path": root / "figure.png",
         "reaction_figure_path": root / "reaction_figure.png",
+        "information_response_figure_path": root / "information_response_figure.png",
         "dashboard_path": root / "dashboard.html",
         "summary_path": root / "latest_summary.md",
         "efficiency_metadata_path": root / "efficiency_metadata.json",

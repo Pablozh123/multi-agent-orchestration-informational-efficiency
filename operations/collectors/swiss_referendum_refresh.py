@@ -23,6 +23,8 @@ from operations.analysis.swiss_referendum_efficiency import (
     COMPARISON_OUTPUT,
     DASHBOARD_OUTPUT,
     FIGURE_OUTPUT,
+    INFORMATION_RESPONSE_FIGURE_OUTPUT,
+    INFORMATION_RESPONSE_OUTPUT,
     LATEST_SOURCE_COMPARISON_OUTPUT,
     METADATA_OUTPUT,
     POLYMARKET_HISTORY_INPUT,
@@ -59,9 +61,11 @@ class SwissReferendumRefreshResult:
     latest_source_comparison_path: Path
     poll_impact_path: Path
     poll_reaction_windows_path: Path
+    information_response_path: Path
     source_audit_path: Path
     figure_path: Path
     reaction_figure_path: Path
+    information_response_figure_path: Path
     dashboard_path: Path
     summary_path: Path
     metadata_path: Path
@@ -85,9 +89,13 @@ class SwissReferendumRefreshResult:
             "latest_source_comparison_path": str(self.latest_source_comparison_path),
             "poll_impact_path": str(self.poll_impact_path),
             "poll_reaction_windows_path": str(self.poll_reaction_windows_path),
+            "information_response_path": str(self.information_response_path),
             "source_audit_path": str(self.source_audit_path),
             "figure_path": str(self.figure_path),
             "reaction_figure_path": str(self.reaction_figure_path),
+            "information_response_figure_path": str(
+                self.information_response_figure_path
+            ),
             "dashboard_path": str(self.dashboard_path),
             "summary_path": str(self.summary_path),
             "metadata_path": str(self.metadata_path),
@@ -117,9 +125,11 @@ def refresh_swiss_referendum_comparison(
     latest_source_comparison_path: Path = LATEST_SOURCE_COMPARISON_OUTPUT,
     poll_impact_path: Path = POLL_IMPACT_OUTPUT,
     poll_reaction_windows_path: Path = POLL_REACTION_WINDOWS_OUTPUT,
+    information_response_path: Path = INFORMATION_RESPONSE_OUTPUT,
     source_audit_path: Path = SOURCE_AUDIT_OUTPUT,
     figure_path: Path = FIGURE_OUTPUT,
     reaction_figure_path: Path = REACTION_FIGURE_OUTPUT,
+    information_response_figure_path: Path = INFORMATION_RESPONSE_FIGURE_OUTPUT,
     dashboard_path: Path = DASHBOARD_OUTPUT,
     summary_path: Path = SUMMARY_OUTPUT,
     efficiency_metadata_path: Path = METADATA_OUTPUT,
@@ -168,9 +178,11 @@ def refresh_swiss_referendum_comparison(
         latest_source_comparison_path=latest_source_comparison_path,
         poll_impact_path=poll_impact_path,
         poll_reaction_windows_path=poll_reaction_windows_path,
+        information_response_path=information_response_path,
         source_audit_path=source_audit_path,
         figure_path=figure_path,
         reaction_figure_path=reaction_figure_path,
+        information_response_figure_path=information_response_figure_path,
         dashboard_path=dashboard_path,
         summary_path=summary_path,
         metadata_path=efficiency_metadata_path,
@@ -182,9 +194,11 @@ def refresh_swiss_referendum_comparison(
         latest_source_comparison_path=latest_source_comparison_path,
         poll_impact_path=poll_impact_path,
         poll_reaction_windows_path=poll_reaction_windows_path,
+        information_response_path=information_response_path,
         source_audit_path=source_audit_path,
         figure_path=figure_path,
         reaction_figure_path=reaction_figure_path,
+        information_response_figure_path=information_response_figure_path,
         dashboard_path=dashboard_path,
         summary_path=summary_path,
         efficiency_metadata_path=efficiency_metadata_path,
@@ -216,9 +230,13 @@ def refresh_swiss_referendum_comparison(
         latest_source_comparison_path=efficiency_result.latest_source_comparison_path,
         poll_impact_path=efficiency_result.poll_impact_path,
         poll_reaction_windows_path=efficiency_result.poll_reaction_windows_path,
+        information_response_path=efficiency_result.information_response_path,
         source_audit_path=efficiency_result.source_audit_path,
         figure_path=efficiency_result.figure_path,
         reaction_figure_path=efficiency_result.reaction_figure_path,
+        information_response_figure_path=(
+            efficiency_result.information_response_figure_path
+        ),
         dashboard_path=efficiency_result.dashboard_path,
         summary_path=efficiency_result.summary_path,
         metadata_path=refresh_metadata_path,
@@ -262,9 +280,19 @@ def main(argv: Sequence[str] | None = None) -> int:
         type=Path,
         default=POLL_REACTION_WINDOWS_OUTPUT,
     )
+    parser.add_argument(
+        "--information-response-output",
+        type=Path,
+        default=INFORMATION_RESPONSE_OUTPUT,
+    )
     parser.add_argument("--source-audit-output", type=Path, default=SOURCE_AUDIT_OUTPUT)
     parser.add_argument("--figure-output", type=Path, default=FIGURE_OUTPUT)
     parser.add_argument("--reaction-figure-output", type=Path, default=REACTION_FIGURE_OUTPUT)
+    parser.add_argument(
+        "--information-response-figure-output",
+        type=Path,
+        default=INFORMATION_RESPONSE_FIGURE_OUTPUT,
+    )
     parser.add_argument("--dashboard-output", type=Path, default=DASHBOARD_OUTPUT)
     parser.add_argument("--summary-output", type=Path, default=SUMMARY_OUTPUT)
     parser.add_argument("--efficiency-metadata-output", type=Path, default=METADATA_OUTPUT)
@@ -287,9 +315,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             latest_source_comparison_path=args.latest_source_comparison_output,
             poll_impact_path=args.poll_impact_output,
             poll_reaction_windows_path=args.poll_reaction_windows_output,
+            information_response_path=args.information_response_output,
             source_audit_path=args.source_audit_output,
             figure_path=args.figure_output,
             reaction_figure_path=args.reaction_figure_output,
+            information_response_figure_path=args.information_response_figure_output,
             dashboard_path=args.dashboard_output,
             summary_path=args.summary_output,
             efficiency_metadata_path=args.efficiency_metadata_output,
@@ -317,9 +347,11 @@ def build_running_status(
     latest_source_comparison_path: Path,
     poll_impact_path: Path,
     poll_reaction_windows_path: Path,
+    information_response_path: Path,
     source_audit_path: Path,
     figure_path: Path,
     reaction_figure_path: Path,
+    information_response_figure_path: Path,
     dashboard_path: Path,
     summary_path: Path,
     efficiency_metadata_path: Path,
@@ -342,9 +374,11 @@ def build_running_status(
         "latest_source_comparison": latest_source_comparison_path,
         "poll_impacts": poll_impact_path,
         "poll_reaction_windows": poll_reaction_windows_path,
+        "information_response": information_response_path,
         "source_audit": source_audit_path,
         "figure": figure_path,
         "reaction_figure": reaction_figure_path,
+        "information_response_figure": information_response_figure_path,
         "dashboard": dashboard_path,
         "summary": summary_path,
         "efficiency_metadata": efficiency_metadata_path,

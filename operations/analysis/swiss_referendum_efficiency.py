@@ -40,9 +40,15 @@ POLL_IMPACT_OUTPUT = RESULTS_DIR / "swiss_referendum_10mio_poll_impacts.csv"
 POLL_REACTION_WINDOWS_OUTPUT = (
     RESULTS_DIR / "swiss_referendum_10mio_poll_reaction_windows.csv"
 )
+INFORMATION_RESPONSE_OUTPUT = (
+    RESULTS_DIR / "swiss_referendum_10mio_information_response.csv"
+)
 SOURCE_AUDIT_OUTPUT = RESULTS_DIR / "swiss_referendum_10mio_source_audit.csv"
 FIGURE_OUTPUT = RESULTS_DIR / "swiss_referendum_10mio_efficiency.png"
 REACTION_FIGURE_OUTPUT = RESULTS_DIR / "swiss_referendum_10mio_reaction_windows.png"
+INFORMATION_RESPONSE_FIGURE_OUTPUT = (
+    RESULTS_DIR / "swiss_referendum_10mio_information_response.png"
+)
 DASHBOARD_OUTPUT = RESULTS_DIR / "swiss_referendum_10mio_dashboard.html"
 SUMMARY_OUTPUT = RESULTS_DIR / "swiss_referendum_10mio_latest_summary.md"
 METADATA_OUTPUT = RESULTS_DIR / "swiss_referendum_10mio_efficiency_metadata.json"
@@ -143,6 +149,37 @@ POLL_REACTION_WINDOW_COLUMNS: tuple[str, ...] = (
     "interpretation_scope",
 )
 
+INFORMATION_RESPONSE_COLUMNS: tuple[str, ...] = (
+    "poll_id",
+    "poll_source",
+    "poll_published_at_utc",
+    "prior_poll_id",
+    "prior_poll_source",
+    "prior_poll_published_at_utc",
+    "poll_yes_decided_share",
+    "prior_poll_yes_decided_share",
+    "poll_decided_yes_signal_change",
+    "poll_signal_direction",
+    "first_post_observation_hours",
+    "first_polymarket_change",
+    "first_polymarket_direction",
+    "polymarket_change_1h",
+    "polymarket_change_6h",
+    "polymarket_change_24h",
+    "polymarket_change_48h",
+    "polymarket_direction_1h",
+    "polymarket_direction_6h",
+    "polymarket_direction_24h",
+    "polymarket_direction_48h",
+    "alignment_1h",
+    "alignment_6h",
+    "alignment_24h",
+    "alignment_48h",
+    "first_aligned_window_hours",
+    "information_processing_label",
+    "interpretation_scope",
+)
+
 
 @dataclass(frozen=True)
 class SwissReferendumEfficiencyResult:
@@ -152,9 +189,11 @@ class SwissReferendumEfficiencyResult:
     latest_source_comparison_path: Path
     poll_impact_path: Path
     poll_reaction_windows_path: Path
+    information_response_path: Path
     source_audit_path: Path
     figure_path: Path
     reaction_figure_path: Path
+    information_response_figure_path: Path
     dashboard_path: Path
     summary_path: Path
     metadata_path: Path
@@ -172,9 +211,13 @@ class SwissReferendumEfficiencyResult:
             "latest_source_comparison_path": str(self.latest_source_comparison_path),
             "poll_impact_path": str(self.poll_impact_path),
             "poll_reaction_windows_path": str(self.poll_reaction_windows_path),
+            "information_response_path": str(self.information_response_path),
             "source_audit_path": str(self.source_audit_path),
             "figure_path": str(self.figure_path),
             "reaction_figure_path": str(self.reaction_figure_path),
+            "information_response_figure_path": str(
+                self.information_response_figure_path
+            ),
             "dashboard_path": str(self.dashboard_path),
             "summary_path": str(self.summary_path),
             "metadata_path": str(self.metadata_path),
@@ -233,9 +276,11 @@ def generate_swiss_referendum_efficiency_outputs(
     latest_source_comparison_path: Path = LATEST_SOURCE_COMPARISON_OUTPUT,
     poll_impact_path: Path = POLL_IMPACT_OUTPUT,
     poll_reaction_windows_path: Path = POLL_REACTION_WINDOWS_OUTPUT,
+    information_response_path: Path = INFORMATION_RESPONSE_OUTPUT,
     source_audit_path: Path = SOURCE_AUDIT_OUTPUT,
     figure_path: Path = FIGURE_OUTPUT,
     reaction_figure_path: Path = REACTION_FIGURE_OUTPUT,
+    information_response_figure_path: Path = INFORMATION_RESPONSE_FIGURE_OUTPUT,
     dashboard_path: Path = DASHBOARD_OUTPUT,
     summary_path: Path = SUMMARY_OUTPUT,
     metadata_path: Path = METADATA_OUTPUT,
@@ -261,16 +306,22 @@ def generate_swiss_referendum_efficiency_outputs(
     )
     impacts = build_poll_impact_rows(snapshots=price_points, polls=polls)
     reaction_windows = build_poll_reaction_window_rows(impacts)
+    information_responses = build_information_response_rows(
+        polls=polls,
+        impacts=impacts,
+    )
     source_audit = build_source_audit_rows(polls)
 
     comparison_path.parent.mkdir(parents=True, exist_ok=True)
     latest_source_comparison_path.parent.mkdir(parents=True, exist_ok=True)
     poll_reaction_windows_path.parent.mkdir(parents=True, exist_ok=True)
+    information_response_path.parent.mkdir(parents=True, exist_ok=True)
     source_audit_path.parent.mkdir(parents=True, exist_ok=True)
     comparisons.to_csv(comparison_path, index=False)
     latest_source_comparisons.to_csv(latest_source_comparison_path, index=False)
     impacts.to_csv(poll_impact_path, index=False)
     reaction_windows.to_csv(poll_reaction_windows_path, index=False)
+    information_responses.to_csv(information_response_path, index=False)
     source_audit.to_csv(source_audit_path, index=False)
     _write_figure(
         snapshots=snapshots,
@@ -283,6 +334,10 @@ def generate_swiss_referendum_efficiency_outputs(
         reaction_windows=reaction_windows,
         figure_path=reaction_figure_path,
     )
+    _write_information_response_figure(
+        information_responses=information_responses,
+        figure_path=information_response_figure_path,
+    )
     latest = _latest_comparison(comparisons)
     dashboard_path.write_text(
         _render_dashboard(
@@ -292,9 +347,11 @@ def generate_swiss_referendum_efficiency_outputs(
             latest_source_comparisons=latest_source_comparisons,
             impacts=impacts,
             reaction_windows=reaction_windows,
+            information_responses=information_responses,
             source_audit=source_audit,
             figure_path=figure_path,
             reaction_figure_path=reaction_figure_path,
+            information_response_figure_path=information_response_figure_path,
             source_paths={
                 "poll_input": poll_input_path,
                 "polymarket_snapshots": polymarket_snapshots_path,
@@ -302,9 +359,11 @@ def generate_swiss_referendum_efficiency_outputs(
                 "latest_source_comparison": latest_source_comparison_path,
                 "poll_impacts": poll_impact_path,
                 "poll_reaction_windows": poll_reaction_windows_path,
+                "information_response": information_response_path,
                 "source_audit": source_audit_path,
                 "figure": figure_path,
                 "reaction_figure": reaction_figure_path,
+                "information_response_figure": information_response_figure_path,
             },
         ),
         encoding="utf-8",
@@ -312,10 +371,11 @@ def generate_swiss_referendum_efficiency_outputs(
     dashboard_verification = verify_dashboard_artifact(
         dashboard_path=dashboard_path,
         figure_path=figure_path,
-        extra_figure_paths=(reaction_figure_path,),
+        extra_figure_paths=(reaction_figure_path, information_response_figure_path),
         required_text=(
             "Swiss 10-Million Referendum Efficiency View",
             "Poll Reaction Window Figure",
+            "Information Response",
             "Poll proxy relation",
             "Source Boundary Audit",
             "BFS/admin.ch is used as official referendum",
@@ -333,9 +393,11 @@ def generate_swiss_referendum_efficiency_outputs(
             latest_source_comparisons=latest_source_comparisons,
             impacts=impacts,
             reaction_windows=reaction_windows,
+            information_responses=information_responses,
             source_audit=source_audit,
             figure_path=figure_path,
             reaction_figure_path=reaction_figure_path,
+            information_response_figure_path=information_response_figure_path,
             dashboard_path=dashboard_path,
         ),
         encoding="utf-8",
@@ -349,9 +411,11 @@ def generate_swiss_referendum_efficiency_outputs(
         latest_source_comparison_path=latest_source_comparison_path,
         poll_impact_path=poll_impact_path,
         poll_reaction_windows_path=poll_reaction_windows_path,
+        information_response_path=information_response_path,
         source_audit_path=source_audit_path,
         figure_path=figure_path,
         reaction_figure_path=reaction_figure_path,
+        information_response_figure_path=information_response_figure_path,
         dashboard_path=dashboard_path,
         summary_path=summary_path,
         polls=polls,
@@ -361,6 +425,7 @@ def generate_swiss_referendum_efficiency_outputs(
         latest_source_comparisons=latest_source_comparisons,
         impacts=impacts,
         reaction_windows=reaction_windows,
+        information_responses=information_responses,
         source_audit=source_audit,
         dashboard_verification=dashboard_verification,
         divergence_threshold=divergence_threshold,
@@ -376,9 +441,11 @@ def generate_swiss_referendum_efficiency_outputs(
         latest_source_comparison_path=latest_source_comparison_path,
         poll_impact_path=poll_impact_path,
         poll_reaction_windows_path=poll_reaction_windows_path,
+        information_response_path=information_response_path,
         source_audit_path=source_audit_path,
         figure_path=figure_path,
         reaction_figure_path=reaction_figure_path,
+        information_response_figure_path=information_response_figure_path,
         dashboard_path=dashboard_path,
         summary_path=summary_path,
         metadata_path=metadata_path,
@@ -860,6 +927,113 @@ def build_poll_reaction_window_rows(impacts: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows, columns=POLL_REACTION_WINDOW_COLUMNS)
 
 
+def build_information_response_rows(
+    *,
+    polls: pd.DataFrame,
+    impacts: pd.DataFrame,
+) -> pd.DataFrame:
+    """Compare each new poll signal with observed Polymarket reaction direction.
+
+    The poll signal is the change in decided Yes share versus the immediately
+    previous curated poll release. This is a direction-only diagnostic and not
+    a statistical event study.
+    """
+
+    impact_by_poll_id = {
+        str(item["poll_id"]): item for item in impacts.to_dict(orient="records")
+    }
+    poll_records = _poll_records_with_timestamps(polls)
+    rows: list[dict[str, Any]] = []
+    for index, poll in enumerate(poll_records):
+        prior_poll = poll_records[index - 1] if index > 0 else None
+        poll_decided = _decided_yes_share(poll)
+        prior_decided = (
+            float("nan") if prior_poll is None else _decided_yes_share(prior_poll)
+        )
+        signal_change = (
+            float("nan") if prior_poll is None else poll_decided - prior_decided
+        )
+        poll_direction = (
+            "no_prior_poll" if prior_poll is None else _direction_label(signal_change)
+        )
+        impact = impact_by_poll_id.get(str(poll["poll_id"]), {})
+        first_change = _optional_float(impact.get("yes_probability_change"))
+        first_direction = _direction_label(first_change)
+        window_changes = {
+            hours: _optional_float(impact.get(f"yes_probability_change_{hours}h"))
+            for hours in (1, 6, 24, 48)
+        }
+        window_directions = {
+            hours: _direction_label(change) for hours, change in window_changes.items()
+        }
+        alignments = {
+            hours: _alignment_label(
+                poll_direction=poll_direction,
+                polymarket_direction=window_directions[hours],
+            )
+            for hours in (1, 6, 24, 48)
+        }
+        first_aligned_window = next(
+            (
+                hours
+                for hours in (1, 6, 24, 48)
+                if alignments[hours] == "same_direction"
+            ),
+            None,
+        )
+        rows.append(
+            {
+                "poll_id": poll["poll_id"],
+                "poll_source": poll["source_name"],
+                "poll_published_at_utc": _format_timestamp(poll["published_ts"]),
+                "prior_poll_id": "" if prior_poll is None else prior_poll["poll_id"],
+                "prior_poll_source": (
+                    "" if prior_poll is None else prior_poll["source_name"]
+                ),
+                "prior_poll_published_at_utc": (
+                    "" if prior_poll is None else _format_timestamp(prior_poll["published_ts"])
+                ),
+                "poll_yes_decided_share": poll_decided,
+                "prior_poll_yes_decided_share": prior_decided,
+                "poll_decided_yes_signal_change": signal_change,
+                "poll_signal_direction": poll_direction,
+                "first_post_observation_hours": _optional_float(
+                    impact.get("hours_to_first_post_snapshot")
+                ),
+                "first_polymarket_change": (
+                    float("nan") if first_change is None else first_change
+                ),
+                "first_polymarket_direction": first_direction,
+                "polymarket_change_1h": _nan_if_none(window_changes[1]),
+                "polymarket_change_6h": _nan_if_none(window_changes[6]),
+                "polymarket_change_24h": _nan_if_none(window_changes[24]),
+                "polymarket_change_48h": _nan_if_none(window_changes[48]),
+                "polymarket_direction_1h": window_directions[1],
+                "polymarket_direction_6h": window_directions[6],
+                "polymarket_direction_24h": window_directions[24],
+                "polymarket_direction_48h": window_directions[48],
+                "alignment_1h": alignments[1],
+                "alignment_6h": alignments[6],
+                "alignment_24h": alignments[24],
+                "alignment_48h": alignments[48],
+                "first_aligned_window_hours": (
+                    float("nan")
+                    if first_aligned_window is None
+                    else first_aligned_window
+                ),
+                "information_processing_label": _information_processing_label(
+                    poll_direction=poll_direction,
+                    first_aligned_window=first_aligned_window,
+                    window_directions=window_directions,
+                ),
+                "interpretation_scope": (
+                    "descriptive_directional_alignment_no_causality_or_efficiency_proof"
+                ),
+            }
+        )
+    return pd.DataFrame(rows, columns=INFORMATION_RESPONSE_COLUMNS)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """CLI entry point."""
 
@@ -883,9 +1057,19 @@ def main(argv: Sequence[str] | None = None) -> int:
         type=Path,
         default=POLL_REACTION_WINDOWS_OUTPUT,
     )
+    parser.add_argument(
+        "--information-response-output",
+        type=Path,
+        default=INFORMATION_RESPONSE_OUTPUT,
+    )
     parser.add_argument("--source-audit-output", type=Path, default=SOURCE_AUDIT_OUTPUT)
     parser.add_argument("--figure-output", type=Path, default=FIGURE_OUTPUT)
     parser.add_argument("--reaction-figure-output", type=Path, default=REACTION_FIGURE_OUTPUT)
+    parser.add_argument(
+        "--information-response-figure-output",
+        type=Path,
+        default=INFORMATION_RESPONSE_FIGURE_OUTPUT,
+    )
     parser.add_argument("--dashboard-output", type=Path, default=DASHBOARD_OUTPUT)
     parser.add_argument("--summary-output", type=Path, default=SUMMARY_OUTPUT)
     parser.add_argument("--metadata-output", type=Path, default=METADATA_OUTPUT)
@@ -901,9 +1085,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             latest_source_comparison_path=args.latest_source_comparison_output,
             poll_impact_path=args.poll_impact_output,
             poll_reaction_windows_path=args.poll_reaction_windows_output,
+            information_response_path=args.information_response_output,
             source_audit_path=args.source_audit_output,
             figure_path=args.figure_output,
             reaction_figure_path=args.reaction_figure_output,
+            information_response_figure_path=args.information_response_figure_output,
             dashboard_path=args.dashboard_output,
             summary_path=args.summary_output,
             metadata_path=args.metadata_output,
@@ -1049,6 +1235,66 @@ def _write_reaction_window_figure(
     plt.close(fig)
 
 
+def _write_information_response_figure(
+    *,
+    information_responses: pd.DataFrame,
+    figure_path: Path,
+) -> None:
+    figure_path.parent.mkdir(parents=True, exist_ok=True)
+    fig, ax = plt.subplots(figsize=(10, 5.2), constrained_layout=True)
+    if information_responses.empty:
+        ax.text(0.5, 0.5, "No information-response rows", ha="center", va="center")
+        ax.set_axis_off()
+    else:
+        frame = information_responses.copy()
+        frame["poll_decided_yes_signal_change"] = pd.to_numeric(
+            frame["poll_decided_yes_signal_change"],
+            errors="coerce",
+        )
+        for column in (
+            "polymarket_change_1h",
+            "polymarket_change_6h",
+            "polymarket_change_24h",
+            "polymarket_change_48h",
+        ):
+            frame[column] = pd.to_numeric(frame[column], errors="coerce")
+        frame = frame.sort_values(["poll_published_at_utc", "poll_id"])
+        x_positions = range(len(frame))
+        width = 0.17
+        windows = (
+            ("polymarket_change_1h", "1h", "#4c78a8", -1.5 * width),
+            ("polymarket_change_6h", "6h", "#f58518", -0.5 * width),
+            ("polymarket_change_24h", "24h", "#54a24b", 0.5 * width),
+            ("polymarket_change_48h", "48h", "#b279a2", 1.5 * width),
+        )
+        for column, label, color, offset in windows:
+            ax.bar(
+                [position + offset for position in x_positions],
+                frame[column].astype(float) * 100.0,
+                width=width,
+                label=f"Polymarket {label}",
+                color=color,
+            )
+        ax.scatter(
+            list(x_positions),
+            frame["poll_decided_yes_signal_change"].astype(float) * 100.0,
+            marker="D",
+            s=54,
+            color="#111111",
+            label="Poll signal vs previous poll",
+            zorder=4,
+        )
+        ax.axhline(0, color="#333333", linewidth=0.8)
+        ax.set_xticks(list(x_positions))
+        ax.set_xticklabels(frame["poll_id"], rotation=20, ha="right")
+        ax.set_ylabel("Change, percentage points")
+        ax.set_title("Poll signal direction vs Polymarket reaction windows")
+        ax.grid(axis="y", alpha=0.25)
+        ax.legend(loc="best")
+    fig.savefig(figure_path, dpi=160)
+    plt.close(fig)
+
+
 class _DashboardHtmlParser(HTMLParser):
     """Small structural parser for the generated dashboard HTML."""
 
@@ -1107,9 +1353,11 @@ def _render_dashboard(
     latest_source_comparisons: pd.DataFrame,
     impacts: pd.DataFrame,
     reaction_windows: pd.DataFrame,
+    information_responses: pd.DataFrame,
     source_audit: pd.DataFrame,
     figure_path: Path,
     reaction_figure_path: Path,
+    information_response_figure_path: Path,
     source_paths: dict[str, Path],
 ) -> str:
     latest = _latest_comparison(comparisons)
@@ -1199,6 +1447,25 @@ def _render_dashboard(
         ),
         max_rows=40,
     )
+    information_response_rows = _table_rows(
+        information_responses,
+        (
+            "poll_id",
+            "prior_poll_id",
+            "poll_signal_direction",
+            "poll_decided_yes_signal_change",
+            "first_post_observation_hours",
+            "first_polymarket_change",
+            "first_polymarket_direction",
+            "polymarket_change_1h",
+            "polymarket_change_6h",
+            "polymarket_change_24h",
+            "polymarket_change_48h",
+            "first_aligned_window_hours",
+            "information_processing_label",
+        ),
+        max_rows=30,
+    )
     source_audit_rows = _table_rows(
         source_audit,
         (
@@ -1224,6 +1491,11 @@ def _render_dashboard(
         f'<img src="{escape(reaction_figure_path.name)}" alt="Swiss referendum reaction-window figure">'
         if reaction_figure_path.exists()
         else "<p>Reaction-window figure not found.</p>"
+    )
+    information_response_figure_html = (
+        f'<img src="{escape(information_response_figure_path.name)}" alt="Swiss referendum information-response figure">'
+        if information_response_figure_path.exists()
+        else "<p>Information-response figure not found.</p>"
     )
     return f"""<!doctype html>
 <html lang="en">
@@ -1265,6 +1537,9 @@ def _render_dashboard(
   {figure_html}
   <h2>Poll Reaction Window Figure</h2>
   {reaction_figure_html}
+  <h2>Information Response Figure</h2>
+  <p class="note">The black diamond is the new poll signal versus the immediately previous curated poll release. Bars show Polymarket movement after publication. Same sign means same direction; this is descriptive alignment, not causality.</p>
+  {information_response_figure_html}
   <h2>Comparison Rows</h2>
   <table>
     <thead><tr><th>Snapshot</th><th>Polymarket Yes</th><th>Poll</th><th>Poll Yes</th><th>Poll decided Yes</th><th>Raw gap</th><th>Decided gap</th><th>Label</th><th>Poll proxy relation</th></tr></thead>
@@ -1283,6 +1558,12 @@ def _render_dashboard(
   <table>
     <thead><tr><th>Poll</th><th>Source</th><th>Published</th><th>Status</th><th>Hours to first post observation</th><th>First change</th><th>1h change</th><th>6h change</th><th>24h change</th><th>48h change</th></tr></thead>
     <tbody>{impact_rows}</tbody>
+  </table>
+  <h2>Information Response: Poll Signal vs Polymarket</h2>
+  <p class="note">This table makes the speed question explicit. The poll source updates at its publication timestamp; Polymarket is then checked in bounded 1h, 6h, 24h, and 48h windows. Labels classify direction-only alignment, not statistical significance.</p>
+  <table>
+    <thead><tr><th>Poll</th><th>Prior poll</th><th>Poll signal direction</th><th>Poll signal</th><th>First post obs hours</th><th>First PM change</th><th>First PM direction</th><th>1h PM</th><th>6h PM</th><th>24h PM</th><th>48h PM</th><th>First aligned window</th><th>Processing label</th></tr></thead>
+    <tbody>{information_response_rows}</tbody>
   </table>
   <h2>Curated Poll Inputs</h2>
   <table>
@@ -1324,9 +1605,11 @@ def _render_latest_summary(
     latest_source_comparisons: pd.DataFrame,
     impacts: pd.DataFrame,
     reaction_windows: pd.DataFrame,
+    information_responses: pd.DataFrame,
     source_audit: pd.DataFrame,
     figure_path: Path,
     reaction_figure_path: Path,
+    information_response_figure_path: Path,
     dashboard_path: Path,
 ) -> str:
     latest = _latest_comparison(comparisons)
@@ -1339,6 +1622,7 @@ def _render_latest_summary(
     latest_snapshot_at = str(latest.get("collected_at_utc", ""))
     timing_summary = _poll_release_timing_summary(impacts)
     latest_source_summary = _latest_source_comparison_summary(latest_source_comparisons)
+    information_response_summary = _information_response_summary(information_responses)
     lines = [
         "# Swiss 10-Million Referendum Latest Summary",
         "",
@@ -1350,6 +1634,7 @@ def _render_latest_summary(
         f"- Curated poll rows: {len(polls)} from {poll_source_names}.",
         f"- Poll-impact rows: {len(impacts)} ({impact_summary}).",
         f"- Poll reaction-window rows: {len(reaction_windows)}.",
+        f"- Information-response rows: {len(information_responses)}.",
         f"- Poll reaction windows: {reaction_window_summary}.",
         f"- Latest poll-source comparison rows: {len(latest_source_comparisons)}.",
         f"- Source-audit rows: {len(source_audit)}.",
@@ -1361,6 +1646,10 @@ def _render_latest_summary(
         "## Latest Poll-Source Comparison",
         "",
         *[f"- {item}" for item in latest_source_summary],
+        "",
+        "## Information Response Summary",
+        "",
+        *[f"- {item}" for item in information_response_summary],
         "",
         "## Key Numerical Result",
         "",
@@ -1399,6 +1688,10 @@ def _render_latest_summary(
         "",
         f"![Swiss referendum reaction-window figure]({reaction_figure_path.name})",
         "",
+        "## Information Response Figure",
+        "",
+        f"![Swiss referendum information-response figure]({information_response_figure_path.name})",
+        "",
         "## Source Boundary",
         "",
         (
@@ -1424,9 +1717,11 @@ def _build_metadata(
     latest_source_comparison_path: Path,
     poll_impact_path: Path,
     poll_reaction_windows_path: Path,
+    information_response_path: Path,
     source_audit_path: Path,
     figure_path: Path,
     reaction_figure_path: Path,
+    information_response_figure_path: Path,
     dashboard_path: Path,
     summary_path: Path,
     polls: pd.DataFrame,
@@ -1436,6 +1731,7 @@ def _build_metadata(
     latest_source_comparisons: pd.DataFrame,
     impacts: pd.DataFrame,
     reaction_windows: pd.DataFrame,
+    information_responses: pd.DataFrame,
     source_audit: pd.DataFrame,
     dashboard_verification: DashboardVerificationResult,
     divergence_threshold: float,
@@ -1451,6 +1747,8 @@ def _build_metadata(
             "decided_share_formula": "yes_share / (yes_share + no_share)",
             "latest_prior_poll_matching": True,
             "poll_impact_requires_pre_and_post_snapshot": True,
+            "information_response_uses_prior_curated_poll_signal": True,
+            "information_response_alignment_is_direction_only": True,
             "uses_polymarket_price_history_for_impacts": not history.empty,
             "read_only": True,
             "does_not_collect_external_data": True,
@@ -1467,6 +1765,7 @@ def _build_metadata(
             "latest_source_comparison_row_count": int(len(latest_source_comparisons)),
             "poll_impact_row_count": int(len(impacts)),
             "poll_reaction_window_row_count": int(len(reaction_windows)),
+            "information_response_row_count": int(len(information_responses)),
             "source_audit_row_count": int(len(source_audit)),
             "impact_status_counts": {str(k): int(v) for k, v in impact_counts.items()},
             "latest_raw_yes_gap": _optional_float(latest.get("raw_yes_gap")),
@@ -1489,9 +1788,11 @@ def _build_metadata(
             "latest_source_comparison": str(latest_source_comparison_path),
             "poll_impacts": str(poll_impact_path),
             "poll_reaction_windows": str(poll_reaction_windows_path),
+            "information_response": str(information_response_path),
             "source_audit": str(source_audit_path),
             "figure": str(figure_path),
             "reaction_figure": str(reaction_figure_path),
+            "information_response_figure": str(information_response_figure_path),
             "dashboard": str(dashboard_path),
             "summary": str(summary_path),
         },
@@ -1501,6 +1802,7 @@ def _build_metadata(
             "bfs_is_context_not_poll_source": True,
             "source_audit_confirms_bfs_context_only": True,
             "no_causal_claim_from_poll_release_rows": True,
+            "information_response_is_not_efficiency_proof": True,
             "no_profitability_or_tradeability_claim": True,
             "requires_more_snapshots_for_release_impact_analysis": bool(
                 (impacts["impact_status"] != "observed_pre_post").any()
@@ -1547,6 +1849,62 @@ def _post_window_change(
         return float("nan")
     last_point = candidates[-1]
     return float(last_point["yes_probability"]) - pre_probability
+
+
+def _decided_yes_share(poll: dict[str, Any]) -> float:
+    yes = float(poll["yes_share"])
+    no = float(poll["no_share"])
+    denominator = yes + no
+    if denominator <= 0:
+        return float("nan")
+    return yes / denominator
+
+
+def _direction_label(value: float | None) -> str:
+    if value is None or pd.isna(value):
+        return "missing"
+    if value > 0:
+        return "up"
+    if value < 0:
+        return "down"
+    return "unchanged"
+
+
+def _alignment_label(*, poll_direction: str, polymarket_direction: str) -> str:
+    if poll_direction == "no_prior_poll":
+        return "not_classified_no_prior_poll"
+    if poll_direction in {"missing", "unchanged"}:
+        return "not_classified_neutral_or_missing_poll_signal"
+    if polymarket_direction == "missing":
+        return "missing_polymarket_observation"
+    if polymarket_direction == "unchanged":
+        return "polymarket_unchanged"
+    if polymarket_direction == poll_direction:
+        return "same_direction"
+    return "opposite_direction"
+
+
+def _information_processing_label(
+    *,
+    poll_direction: str,
+    first_aligned_window: int | None,
+    window_directions: dict[int, str],
+) -> str:
+    if poll_direction == "no_prior_poll":
+        return "no_prior_poll_signal"
+    if poll_direction in {"missing", "unchanged"}:
+        return "neutral_or_missing_poll_signal"
+    if all(direction == "missing" for direction in window_directions.values()):
+        return "no_observed_polymarket_window"
+    if first_aligned_window == 1:
+        return "immediate_same_direction_1h"
+    if first_aligned_window in {6, 24, 48}:
+        return f"delayed_same_direction_{first_aligned_window}h"
+    return "no_same_direction_within_48h"
+
+
+def _nan_if_none(value: float | None) -> float:
+    return float("nan") if value is None else value
 
 
 def _reaction_window_summary(impacts: pd.DataFrame) -> str:
@@ -1607,6 +1965,35 @@ def _latest_source_comparison_summary(comparisons: pd.DataFrame) -> list[str]:
             f"raw gap {_pct_points(item.get('raw_yes_gap'))}, "
             f"decided gap {_pct_points(item.get('decided_yes_gap'))}; "
             f"{item.get('poll_proxy_valuation_label', '')}."
+        )
+    return rows
+
+
+def _information_response_summary(responses: pd.DataFrame) -> list[str]:
+    if responses.empty:
+        return ["No information-response rows available."]
+    rows: list[str] = []
+    counts = responses["information_processing_label"].value_counts().sort_index()
+    rows.append(
+        "Processing-label counts: "
+        + ", ".join(f"{label}: {int(count)}" for label, count in counts.items())
+        + "."
+    )
+    for item in responses.sort_values(["poll_published_at_utc", "poll_id"]).to_dict(
+        orient="records"
+    ):
+        rows.append(
+            f"{item.get('poll_id', '')}: poll signal "
+            f"{item.get('poll_signal_direction', '')} "
+            f"({_pct_points(item.get('poll_decided_yes_signal_change')) or 'not classified'}); "
+            f"first Polymarket observation after "
+            f"{_hours(item.get('first_post_observation_hours')) or 'not observed'}, "
+            f"first change {_pct_points(item.get('first_polymarket_change')) or 'not observed'}; "
+            f"1h {_pct_points(item.get('polymarket_change_1h')) or 'not observed'}, "
+            f"6h {_pct_points(item.get('polymarket_change_6h')) or 'not observed'}, "
+            f"24h {_pct_points(item.get('polymarket_change_24h')) or 'not observed'}, "
+            f"48h {_pct_points(item.get('polymarket_change_48h')) or 'not observed'}; "
+            f"{item.get('information_processing_label', '')}."
         )
     return rows
 
@@ -1678,6 +2065,8 @@ def _hours(value: object) -> str:
         return ""
     if pd.isna(numeric):
         return ""
+    if 0 <= numeric < 1:
+        return f"{numeric * 60:.1f} min"
     return f"{numeric:.1f} h"
 
 

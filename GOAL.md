@@ -40,6 +40,10 @@ deliverables:
   later filtering, charting, and thesis tables.
 - Add a deterministic reaction-window figure so post-publication Polymarket
   movement windows are visible in the local dashboard.
+- Add a deterministic information-response output that compares each new poll
+  signal direction with Polymarket reaction-window directions.
+- Add a deterministic information-response figure so faster, delayed, or
+  different Polymarket processing is visible in the local dashboard.
 - Generate a local HTML dashboard and a simple figure from deterministic local
   artifacts.
 - Generate a deterministic latest-summary report for thesis-facing result
@@ -105,6 +109,9 @@ acceptance_criteria:
   be interpreted as causal poll effects.
 - The tidy reaction-window output uses the same descriptive no-causality scope
   as the wide poll-impact table.
+- Information-response labels remain direction-only descriptors and must not be
+  interpreted as statistical significance, causality, tradeability, or proven
+  market efficiency.
 - Historical Polymarket price points are fetched only for bounded windows
   around curated poll publication timestamps.
 - Outputs contain no wallet addresses and no order instructions.
@@ -114,7 +121,7 @@ acceptance_criteria:
   divergence labels, and output generation.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add swiss referendum efficiency comparison
+next_commit: feat: add swiss referendum information response view
 
 ## Decision Inputs For This Goal
 
@@ -158,6 +165,9 @@ next_commit: feat: add swiss referendum efficiency comparison
 - The latest source-level comparison can state, descriptively, whether the
   Polymarket Yes probability is above, near, or below each curated source's
   newest prior poll Yes share.
+- The information-response table can state, descriptively, whether Polymarket
+  moved in the same direction as a new poll signal immediately, with delay, or
+  not within the bounded 48h window.
 - The project can collect additional bounded snapshots later and rerun the same
   deterministic comparison without changing methodology.
 - Poll-publication impact rows can use bounded public CLOB price history to

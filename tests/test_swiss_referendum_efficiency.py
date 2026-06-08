@@ -9,6 +9,7 @@ import pytest
 from operations.analysis.swiss_referendum_efficiency import (
     POLL_INPUT,
     build_comparison_rows,
+    build_information_response_rows,
     build_latest_source_comparison_rows,
     build_poll_impact_rows,
     build_poll_reaction_window_rows,
@@ -184,6 +185,33 @@ def test_build_poll_reaction_window_rows_returns_tidy_windows(tmp_path: Path) ->
     assert round(float(one_hour["yes_probability_change"]), 3) == -0.010
 
 
+def test_build_information_response_rows_classifies_poll_signal_alignment(
+    tmp_path: Path,
+) -> None:
+    polls = read_poll_catalog(_poll_path(tmp_path))
+    snapshots = pd.read_csv(_snapshots_path(tmp_path))
+    impacts = build_poll_impact_rows(snapshots=snapshots, polls=polls)
+
+    responses = build_information_response_rows(polls=polls, impacts=impacts)
+
+    assert len(responses) == 2
+    first = responses.iloc[0]
+    assert first["poll_id"] == "poll_001"
+    assert first["poll_signal_direction"] == "no_prior_poll"
+    assert first["information_processing_label"] == "no_prior_poll_signal"
+    second = responses.iloc[1]
+    assert second["poll_id"] == "poll_002"
+    assert second["prior_poll_id"] == "poll_001"
+    assert second["poll_signal_direction"] == "down"
+    assert round(float(second["poll_decided_yes_signal_change"]), 3) == -0.036
+    assert second["alignment_48h"] == "same_direction"
+    assert int(float(second["first_aligned_window_hours"])) == 48
+    assert second["information_processing_label"] == "delayed_same_direction_48h"
+    assert second["interpretation_scope"] == (
+        "descriptive_directional_alignment_no_causality_or_efficiency_proof"
+    )
+
+
 def test_build_source_audit_rows_marks_bfs_as_context_only(tmp_path: Path) -> None:
     polls = read_poll_catalog(_poll_path(tmp_path))
 
@@ -214,6 +242,7 @@ def test_generate_outputs_writes_dashboard_metadata_and_figure(tmp_path: Path) -
     latest_source = pd.read_csv(paths["latest_source_comparison_path"])
     impacts = pd.read_csv(paths["poll_impact_path"])
     reaction_windows = pd.read_csv(paths["poll_reaction_windows_path"])
+    information_responses = pd.read_csv(paths["information_response_path"])
     source_audit = pd.read_csv(paths["source_audit_path"])
     assert result.comparison_row_count == 3
     assert result.poll_impact_row_count == 2
@@ -230,12 +259,16 @@ def test_generate_outputs_writes_dashboard_metadata_and_figure(tmp_path: Path) -
     assert "cross-source poll-proxy view" in dashboard
     assert "Poll Release Timing Summary" in dashboard
     assert "first post observation after" in dashboard
+    assert "Information Response" in dashboard
+    assert "direction-only alignment" in dashboard
     assert "below_poll_proxy" in dashboard
     assert "Swiss 10-Million Referendum Latest Summary" in summary
     assert "## Latest Poll-Source Comparison" in summary
     assert "## Poll Release Timing Summary" in summary
     assert "descriptive no-causality scope" in summary
     assert "Poll reaction-window rows" in summary
+    assert "Information-response rows" in summary
+    assert "## Information Response Summary" in summary
     assert "Poll reaction windows" in summary
     assert "## Key Numerical Result" in summary
     assert "## Bounded Interpretation" in summary
@@ -243,23 +276,27 @@ def test_generate_outputs_writes_dashboard_metadata_and_figure(tmp_path: Path) -
     assert "below_poll_proxy" in summary
     assert "![Swiss referendum comparison figure](figure.png)" in summary
     assert "![Swiss referendum reaction-window figure](reaction_figure.png)" in summary
+    assert "![Swiss referendum information-response figure](information_response_figure.png)" in summary
     assert paths["figure_path"].exists()
     assert paths["reaction_figure_path"].exists()
+    assert paths["information_response_figure_path"].exists()
     assert len(comparison) == 3
     assert len(latest_source) == 1
     assert len(impacts) == 2
     assert len(reaction_windows) == 8
+    assert len(information_responses) == 2
     assert len(source_audit) == 4
     assert metadata["method"]["poll_probability_transform"] == "none"
     assert metadata["limitations"]["bfs_is_context_not_poll_source"] is True
     assert metadata["limitations"]["source_audit_confirms_bfs_context_only"] is True
     assert metadata["outputs"]["poll_reaction_window_row_count"] == 8
+    assert metadata["outputs"]["information_response_row_count"] == 2
     assert metadata["outputs"]["latest_source_comparison_row_count"] == 1
     assert metadata["outputs"]["source_audit_row_count"] == 4
     assert metadata["outputs"]["latest_poll_proxy_valuation_label"] == "below_poll_proxy"
     assert metadata["outputs"]["contains_order_instructions"] is False
     assert metadata["dashboard_verification"]["figure_nonblank"] is True
-    assert metadata["dashboard_verification"]["checked_figure_count"] == 2
+    assert metadata["dashboard_verification"]["checked_figure_count"] == 3
     assert metadata["dashboard_verification"]["table_count"] >= 4
 
 
@@ -275,15 +312,18 @@ def test_verify_dashboard_artifact_checks_html_and_figure(tmp_path: Path) -> Non
     verification = verify_dashboard_artifact(
         dashboard_path=paths["dashboard_path"],
         figure_path=paths["figure_path"],
-        extra_figure_paths=(paths["reaction_figure_path"],),
+        extra_figure_paths=(
+            paths["reaction_figure_path"],
+            paths["information_response_figure_path"],
+        ),
         required_text=("below_poll_proxy", "Source Boundary Audit"),
     )
 
     assert verification.title == "Swiss 10-Million Referendum Efficiency View"
     assert verification.h1 == "Swiss 10-Million Referendum Efficiency View"
     assert verification.table_count >= 4
-    assert verification.image_count == 2
-    assert verification.checked_figure_count == 2
+    assert verification.image_count == 3
+    assert verification.checked_figure_count == 3
     assert verification.figure_nonblank is True
     assert verification.required_text_present is True
 
@@ -324,12 +364,16 @@ def test_cli_writes_outputs(tmp_path: Path, capsys) -> None:
             str(paths["poll_impact_path"]),
             "--poll-reaction-windows-output",
             str(paths["poll_reaction_windows_path"]),
+            "--information-response-output",
+            str(paths["information_response_path"]),
             "--source-audit-output",
             str(paths["source_audit_path"]),
             "--figure-output",
             str(paths["figure_path"]),
             "--reaction-figure-output",
             str(paths["reaction_figure_path"]),
+            "--information-response-figure-output",
+            str(paths["information_response_figure_path"]),
             "--dashboard-output",
             str(paths["dashboard_path"]),
             "--summary-output",
@@ -421,9 +465,11 @@ def _output_paths(root: Path) -> dict[str, Path]:
         "latest_source_comparison_path": root / "latest_source_comparison.csv",
         "poll_impact_path": root / "impacts.csv",
         "poll_reaction_windows_path": root / "reaction_windows.csv",
+        "information_response_path": root / "information_response.csv",
         "source_audit_path": root / "source_audit.csv",
         "figure_path": root / "figure.png",
         "reaction_figure_path": root / "reaction_figure.png",
+        "information_response_figure_path": root / "information_response_figure.png",
         "dashboard_path": root / "dashboard.html",
         "summary_path": root / "latest_summary.md",
         "metadata_path": root / "metadata.json",

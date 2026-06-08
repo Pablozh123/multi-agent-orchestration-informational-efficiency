@@ -22,8 +22,12 @@ popular vote on the initiative `Keine 10-Millionen-Schweiz`.
   `data/results/swiss_referendum_10mio_poll_reaction_windows.csv`.
 - Latest poll-source comparison:
   `data/results/swiss_referendum_10mio_latest_source_comparison.csv`.
+- Information-response rows:
+  `data/results/swiss_referendum_10mio_information_response.csv`.
 - Reaction-window figure:
   `data/results/swiss_referendum_10mio_reaction_windows.png`.
+- Information-response figure:
+  `data/results/swiss_referendum_10mio_information_response.png`.
 
 ## Source Boundary
 
@@ -112,6 +116,34 @@ thesis tables without changing the methodology.
 The dashboard also includes
 `data/results/swiss_referendum_10mio_reaction_windows.png`, a deterministic bar
 chart of the same 1h, 6h, 24h, and 48h descriptive changes.
+
+## Information Response Handling
+
+To make the "faster, slower, or different" question visible, the pipeline also
+builds an information-response table. For each curated poll release after the
+first one, it computes a direction-only poll signal:
+
+- `poll_decided_yes_signal_change`: current poll decided Yes share minus the
+  immediately previous curated poll decided Yes share.
+- `poll_signal_direction`: `up`, `down`, or `unchanged`.
+
+The table then compares that poll-signal direction with Polymarket movements in
+the 1h, 6h, 24h, and 48h post-publication windows. The resulting
+`information_processing_label` is interpreted as follows:
+
+- `immediate_same_direction_1h`: Polymarket moved in the same direction within
+  the first hour.
+- `delayed_same_direction_6h`, `delayed_same_direction_24h`, or
+  `delayed_same_direction_48h`: Polymarket moved in the same direction only in
+  a later window.
+- `no_same_direction_within_48h`: no same-direction Polymarket move was
+  observed within the bounded 48h window.
+- `no_prior_poll_signal`: the first curated poll has no previous poll baseline.
+
+This is not a statistical significance test and not causal evidence. It only
+shows whether the sign of the Polymarket move is aligned with the sign of the
+new poll signal, and how quickly that alignment first appears in the locally
+observed windows.
 
 ## Manual Refresh
 

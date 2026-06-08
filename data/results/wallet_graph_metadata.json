@@ -1,0 +1,35 @@
+{
+  "generated_at_utc": "2026-05-26T14:05:04+00:00",
+  "inputs": {
+    "activity_path": "data\\results\\monitor_v2_polymarket_public_wallet_activity.csv",
+    "activity_rows": 500
+  },
+  "limitations": {
+    "local_forensic_dashboard_only": true,
+    "not_a_funding_graph": true,
+    "not_a_identity_cluster": true,
+    "not_a_misconduct_finding": true
+  },
+  "method": {
+    "bucket_minutes": 5,
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "edge_rules": [
+      "shared_market",
+      "shared_time_bucket"
+    ],
+    "name": "monitor_wallet_graph"
+  },
+  "outputs": {
+    "contains_order_instructions": false,
+    "contains_public_wallet_addresses": true,
+    "dashboard_path": "data\\results\\wallet_graph_dashboard.html",
+    "edge_count": 7966,
+    "edges_path": "data\\results\\wallet_graph_edges.csv",
+    "metrics_path": "data\\results\\wallet_graph_metrics.csv",
+    "node_count": 238,
+    "nodes_path": "data\\results\\wallet_graph_nodes.csv"
+  }
+}

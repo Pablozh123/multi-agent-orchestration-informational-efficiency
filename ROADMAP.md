@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for literature-prior monitor risk score integration
+Status: paused after detection backtest and wallet graph dashboard work
 
 Done criteria:
 
@@ -443,6 +443,14 @@ Done criteria:
   graph features as unavailable rather than guessed.
 - Human-review cards and the main dashboard surface the literature-prior
   scores next to materiality and reference-review context.
+- Public Polymarket wallet-level activity is collected from the public Data
+  API and stored as a bounded local forensic artifact.
+- Wallet graph nodes, edges, metrics, and a bubblemap-style local dashboard
+  exist for public wallet-address review.
+- Detection-backtest outputs check whether current monitor candidates have
+  event, reference-case, or wallet-graph context.
+- The detection-backtest is a review-quality test, not a PnL or trading
+  strategy backtest.
 
 Blockers:
 
@@ -481,5 +489,47 @@ Blockers:
   shown before they are used as informed-flow examples.
 - Literature-prior score weights and thresholds are heuristic priors until
   calibrated against broader Polymarket distributions and reference cases.
+- Wallet graph v1 is based on shared market and shared time-bucket activity;
+  it is not an on-chain funding graph or identity cluster.
 - The next user-facing step is either another bounded live bucket or manual
   source-check fields for reviewed candidates.
+
+## Phase 11: Swiss Referendum Efficiency Comparison
+
+Status: active for the 14 June 2026 10-million initiative comparison
+
+Done criteria:
+
+- The active goal is the Swiss referendum comparison, separate from the
+  politics/geo wallet anomaly monitor.
+- A curated poll catalog exists for the 10-million initiative and records
+  source URLs, fieldwork windows, publication timestamps, timestamp precision,
+  Yes/No/undecided shares, sample sizes, and uncertainty metadata.
+- A read-only Polymarket collector targets the exact 10-million initiative
+  market and writes bounded local snapshot rows.
+- Comparison outputs attach the latest prior poll to each Polymarket snapshot.
+- The deterministic gap outputs include raw Yes gap and decided-voter Yes gap.
+- Bounded public CLOB price-history windows exist around curated poll releases.
+- The methodology note states that poll shares are not model-implied win
+  probabilities and that decided-voter normalization is not RCP.
+- Poll-release impact rows require a local snapshot before and after poll
+  publication before any timing interpretation is made.
+- The local HTML dashboard and PNG figure are generated from local
+  deterministic artifacts.
+- A bounded one-command refresh runner can collect one new Polymarket snapshot
+  and regenerate the local comparison dashboard without running continuously.
+- Tests cover poll validation, Polymarket snapshot extraction, comparison
+  matching, divergence labels, impact rows, refresh behavior, and output
+  generation.
+
+Blockers:
+
+- Chrome automation is unavailable until the Codex Chrome Extension/native host
+  setup is repaired; current source verification uses public web access and
+  official/source pages instead.
+- More bounded Polymarket snapshots are required before poll-release impact
+  timing can be interpreted.
+- BFS/admin.ch is context evidence only unless a future source-checked BFS poll
+  table exists.
+- No causal, profitability, tradeability, or mispricing proof may be claimed
+  from the current descriptive divergence labels.

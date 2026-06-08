@@ -33,6 +33,8 @@ def test_generate_monitor_v2_dashboard_writes_html_and_metadata(tmp_path: Path) 
     assert "monitor_reference_candidate_dashboard.html" in html
     assert "monitor_reference_candidate_sensitivity_dashboard.html" in html
     assert "monitor_candidate_human_review_report.html" in html
+    assert "wallet_graph_dashboard.html" in html
+    assert "monitor_detection_backtest_dashboard.html" in html
     assert "A zero-alert run means" in html
     assert "ok" in html
     assert metadata["outputs"]["contains_wallet_addresses"] is False
@@ -110,6 +112,10 @@ def test_dashboard_cli_writes_outputs(tmp_path: Path, capsys) -> None:
             str(paths["literature_risk_metadata_path"]),
             "--literature-risk-summary",
             str(paths["literature_risk_summary_path"]),
+            "--wallet-graph-dashboard",
+            str(paths["wallet_graph_dashboard_path"]),
+            "--detection-backtest-dashboard",
+            str(paths["detection_backtest_dashboard_path"]),
             "--dashboard-output",
             str(paths["dashboard_path"]),
             "--metadata-output",
@@ -142,6 +148,8 @@ def _write_inputs(root: Path) -> dict[str, Path]:
         "human_review_dashboard_path": root / "monitor_candidate_human_review_report.html",
         "literature_risk_metadata_path": root / "literature_risk_metadata.json",
         "literature_risk_summary_path": root / "monitor_literature_risk_score_summary.csv",
+        "wallet_graph_dashboard_path": root / "wallet_graph_dashboard.html",
+        "detection_backtest_dashboard_path": root / "monitor_detection_backtest_dashboard.html",
         "dashboard_path": root / "dashboard.html",
         "metadata_path": root / "dashboard_metadata.json",
     }
@@ -304,5 +312,7 @@ def _write_inputs(root: Path) -> dict[str, Path]:
     paths["reference_candidate_dashboard_path"].write_text("candidates", encoding="utf-8")
     paths["reference_sensitivity_dashboard_path"].write_text("sensitivity", encoding="utf-8")
     paths["human_review_dashboard_path"].write_text("human review", encoding="utf-8")
+    paths["wallet_graph_dashboard_path"].write_text("wallet graph", encoding="utf-8")
+    paths["detection_backtest_dashboard_path"].write_text("detection", encoding="utf-8")
     paths["figure_path"].write_bytes(b"not-a-real-png-but-present")
     return paths

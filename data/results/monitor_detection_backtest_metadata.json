@@ -1,0 +1,32 @@
+{
+  "generated_at_utc": "2026-05-26T14:05:04+00:00",
+  "inputs": {
+    "events_path": "data\\events_timeline_seed.csv",
+    "graph_metrics_path": "data\\results\\wallet_graph_metrics.csv",
+    "review_report_path": "data\\results\\monitor_candidate_human_review_report.csv",
+    "similarity_summary_path": "data\\results\\monitor_reference_candidate_similarity_summary.csv"
+  },
+  "limitations": {
+    "human_review_required": true,
+    "not_a_causal_test": true,
+    "not_a_return_backtest": true
+  },
+  "method": {
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "name": "monitor_detection_backtest",
+    "near_event_window_hours": 24.0,
+    "pre_event_window_hours": 24.0
+  },
+  "outputs": {
+    "candidate_count": 3,
+    "cases_path": "data\\results\\monitor_detection_backtest_cases.csv",
+    "contains_order_instructions": false,
+    "dashboard_path": "data\\results\\monitor_detection_backtest_dashboard.html",
+    "event_hit_count": 0,
+    "reference_hit_count": 1,
+    "summary_path": "data\\results\\monitor_detection_backtest_summary.csv"
+  }
+}

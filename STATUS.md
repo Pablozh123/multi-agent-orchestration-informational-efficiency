@@ -3,58 +3,98 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-05-26 15:38
+Generated: 2026-06-08 19:02
 
-Current goal: `goal-monitor-literature-risk-score-integration-001` - Integrate literature-prior wallet and market risk scores into monitor review
+Current goal: `goal-swiss-referendum-efficiency-001` - Build Swiss 10-million referendum Polymarket-vs-polls comparison
 
-Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
+Current roadmap phase: Phase 11: Swiss Referendum Efficiency Comparison
 
 Test status: PASS
 
-Pytest summary: `324 passed in 17.83s`
+Pytest summary: `361 passed in 37.62s`
 
 Git branch: `main`
 
-Latest commit: `730090e`
+Latest commit: `003e367`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
- M data/results/monitor_candidate_human_review_report.csv
- M data/results/monitor_candidate_human_review_report.html
- M data/results/monitor_candidate_human_review_report_metadata.json
+ M STATUS.md
  M data/results/monitor_v2_polymarket_dashboard.html
  M data/results/monitor_v2_polymarket_dashboard_metadata.json
+ M data/results/swiss_referendum_10mio_comparison.csv
+ M data/results/swiss_referendum_10mio_dashboard.html
+ M data/results/swiss_referendum_10mio_efficiency.png
+ M data/results/swiss_referendum_10mio_efficiency_metadata.json
+ M data/results/swiss_referendum_10mio_latest_source_comparison.csv
+ M data/results/swiss_referendum_10mio_latest_summary.md
+ M data/results/swiss_referendum_10mio_polymarket_price_history_metadata.json
+ M data/results/swiss_referendum_10mio_polymarket_snapshot_metadata.json
+ M data/results/swiss_referendum_10mio_polymarket_snapshots.csv
+ M data/results/swiss_referendum_10mio_refresh_metadata.json
+ M data/results/swiss_referendum_10mio_running_status.json
+ M docs/project/WORK_LOG.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
- M operations/analysis/monitor_candidate_review_report.py
+ M docs/research/SWISS_REFERENDUM_EFFICIENCY.md
  M operations/analysis/monitor_v2_dashboard.py
- M tests/test_monitor_candidate_review_report.py
+ M operations/analysis/swiss_referendum_efficiency.py
+ M operations/collectors/swiss_referendum_refresh.py
  M tests/test_monitor_v2_dashboard.py
-?? data/results/monitor_literature_risk_score_metadata.json
-?? data/results/monitor_literature_risk_score_rows.csv
-?? data/results/monitor_literature_risk_score_summary.csv
-?? operations/analysis/monitor_literature_risk_scores.py
-?? tests/test_monitor_literature_risk_scores.py
+ M tests/test_swiss_referendum_efficiency.py
+ M tests/test_swiss_referendum_refresh.py
+?? data/results/monitor_detection_backtest_cases.csv
+?? data/results/monitor_detection_backtest_dashboard.html
+?? data/results/monitor_detection_backtest_metadata.json
+?? data/results/monitor_detection_backtest_summary.csv
+?? data/results/monitor_v2_polymarket_public_wallet_activity.csv
+?? data/results/monitor_v2_polymarket_public_wallet_activity_metadata.json
+?? data/results/swiss_referendum_10mio_information_response.csv
+?? data/results/swiss_referendum_10mio_information_response.png
+?? data/results/wallet_graph_dashboard.html
+?? data/results/wallet_graph_edges.csv
+?? data/results/wallet_graph_metadata.json
+?? data/results/wallet_graph_metrics.csv
+?? data/results/wallet_graph_nodes.csv
+?? operations/analysis/monitor_detection_backtest.py
+?? operations/analysis/monitor_wallet_graph.py
+?? operations/collectors/polymarket_public_activity.py
+?? tests/test_monitor_detection_backtest.py
+?? tests/test_monitor_wallet_graph.py
+?? tests/test_polymarket_public_activity.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                            | 35 ++++++++-
- ROADMAP.md                                         | 12 ++-
- .../monitor_candidate_human_review_report.csv      |  8 +-
- .../monitor_candidate_human_review_report.html     | 24 ++++++
- ...tor_candidate_human_review_report_metadata.json |  5 +-
- data/results/monitor_v2_polymarket_dashboard.html  |  9 ++-
- .../monitor_v2_polymarket_dashboard_metadata.json  |  6 +-
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md       | 45 +++++++++++
- .../analysis/monitor_candidate_review_report.py    | 89 ++++++++++++++++++++++
- operations/analysis/monitor_v2_dashboard.py        | 48 ++++++++++++
- tests/test_monitor_candidate_review_report.py      | 21 +++++
- tests/test_monitor_v2_dashboard.py                 | 36 +++++++++
- 12 files changed, 327 insertions(+), 11 deletions(-)
+ GOAL.md                                            |  12 +-
+ ROADMAP.md                                         |  52 +-
+ STATUS.md                                          |  90 ++-
+ data/results/monitor_v2_polymarket_dashboard.html  |  12 +-
+ .../monitor_v2_polymarket_dashboard_metadata.json  |   2 +-
+ data/results/swiss_referendum_10mio_comparison.csv |   2 +
+ data/results/swiss_referendum_10mio_dashboard.html |  41 +-
+ data/results/swiss_referendum_10mio_efficiency.png | Bin 84949 -> 84869 bytes
+ ...swiss_referendum_10mio_efficiency_metadata.json |  25 +-
+ ...s_referendum_10mio_latest_source_comparison.csv |   6 +-
+ .../swiss_referendum_10mio_latest_summary.md       |  36 +-
+ ...um_10mio_polymarket_price_history_metadata.json |   2 +-
+ ...erendum_10mio_polymarket_snapshot_metadata.json |   8 +-
+ ...swiss_referendum_10mio_polymarket_snapshots.csv |   2 +
+ .../swiss_referendum_10mio_refresh_metadata.json   |  24 +-
+ .../swiss_referendum_10mio_running_status.json     |  16 +-
+ docs/project/WORK_LOG.md                           | 754 +++++++++++++++++++++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md       |  87 +++
+ docs/research/SWISS_REFERENDUM_EFFICIENCY.md       |  32 +
+ operations/analysis/monitor_v2_dashboard.py        |  34 +
+ operations/analysis/swiss_referendum_efficiency.py | 391 ++++++++++-
+ operations/collectors/swiss_referendum_refresh.py  |  34 +
+ tests/test_monitor_v2_dashboard.py                 |  10 +
+ tests/test_swiss_referendum_efficiency.py          |  54 +-
+ tests/test_swiss_referendum_refresh.py             |  14 +
+ 25 files changed, 1654 insertions(+), 86 deletions(-)
 ```
 
 Blockers:
@@ -63,7 +103,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: add literature-prior monitor risk scores
+- feat: add swiss referendum information response view
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

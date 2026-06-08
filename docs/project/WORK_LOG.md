@@ -3597,3 +3597,799 @@ Next step:
 
 - Decide whether to enrich the monitor with per-wallet aggregate inputs or
   first add manual source-check fields for the current reviewed candidates.
+
+## 2026-05-26 - goal-monitor-detection-backtest-wallet-graph-001
+
+Task:
+
+- Add a historical detection-backtest layer and public-wallet graph dashboard
+  for Polymarket politics/geopolitics monitor candidates.
+
+Files changed:
+
+- `operations/collectors/polymarket_public_activity.py`
+- `operations/analysis/monitor_wallet_graph.py`
+- `operations/analysis/monitor_detection_backtest.py`
+- `operations/analysis/monitor_v2_dashboard.py`
+- `tests/test_polymarket_public_activity.py`
+- `tests/test_monitor_wallet_graph.py`
+- `tests/test_monitor_detection_backtest.py`
+- `tests/test_monitor_v2_dashboard.py`
+- `data/results/monitor_v2_polymarket_public_wallet_activity.csv`
+- `data/results/monitor_v2_polymarket_public_wallet_activity_metadata.json`
+- `data/results/wallet_graph_nodes.csv`
+- `data/results/wallet_graph_edges.csv`
+- `data/results/wallet_graph_metrics.csv`
+- `data/results/wallet_graph_dashboard.html`
+- `data/results/wallet_graph_metadata.json`
+- `data/results/monitor_detection_backtest_cases.csv`
+- `data/results/monitor_detection_backtest_summary.csv`
+- `data/results/monitor_detection_backtest_dashboard.html`
+- `data/results/monitor_detection_backtest_metadata.json`
+- `data/results/monitor_v2_polymarket_dashboard.html`
+- `data/results/monitor_v2_polymarket_dashboard_metadata.json`
+- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`
+- `GOAL.md`
+- `ROADMAP.md`
+- `STATUS.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_polymarket_public_activity.py tests/test_monitor_wallet_graph.py tests/test_monitor_detection_backtest.py tests/test_monitor_v2_dashboard.py -q` -> 13 passed.
+- `.\.venv\Scripts\python.exe -m operations.collectors.polymarket_public_activity --source live --watchlist data\results\monitor_v2_polymarket_live_watchlist.csv --limit 500` -> 500 public activity rows, 238 public wallets, 12 markets.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_wallet_graph` -> 238 wallet nodes, 7'966 co-activity edges.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_detection_backtest` -> 3 candidates, 0 event hits, 1 reference-pattern hit.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_v2_dashboard` -> 12 markets, 21 buckets, 7 alerts.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 334 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> 334 passed.
+
+Decision:
+
+- Evaluate monitor quality as detection/review context first, not as PnL or
+  strategy profitability.
+- Use public Polymarket Data API activity rows for the first wallet-level
+  graph before adding Dune or Polygonscan funding enrichment.
+- Allow full public wallet addresses only in the local forensic graph
+  dashboard; compact thesis, LLM, and summary outputs remain bounded and
+  review-oriented.
+
+Next step:
+
+- Open and inspect the wallet graph and detection-backtest dashboards, then
+  decide whether to add Dune/Polygonscan enrichment, recurrence tracking across
+  live windows, or manual review fields for current candidates.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Start a deterministic Swiss 10-million referendum efficiency comparison
+  between Polymarket probabilities and curated public poll shares.
+
+Files changed:
+
+- `GOAL.md`
+- `ROADMAP.md`
+- `data/swiss_referendum_10mio_polls.csv`
+- `operations/collectors/swiss_referendum_polymarket.py`
+- `operations/analysis/swiss_referendum_efficiency.py`
+- `tests/test_swiss_referendum_polymarket.py`
+- `tests/test_swiss_referendum_efficiency.py`
+- `docs/research/SWISS_REFERENDUM_EFFICIENCY.md`
+- `data/results/swiss_referendum_10mio_*`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_efficiency.py -q` -> 11 passed.
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_polymarket --source live --append` -> 1 snapshot, Yes 0.225, No 0.775.
+- `.\.venv\Scripts\python.exe -m operations.analysis.swiss_referendum_efficiency` -> 1 comparison row, 3 poll-impact rows.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 345 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS, 345 passed.
+
+Decision:
+
+- Treat BFS/admin.ch as official referendum and population-context evidence,
+  not as the source of current voting-intention poll shares.
+- Compare Polymarket Yes probability with raw poll Yes share and decided-voter
+  Yes share only as descriptive deterministic gaps.
+- Mark poll-release impact rows incomplete until local snapshots exist before
+  and after poll publication.
+
+Next step:
+
+- Collect additional bounded Polymarket snapshots before interpreting poll
+  publication timing effects.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Add a one-command bounded refresh runner for the Swiss 10-million referendum
+  comparison dashboard.
+
+Files changed:
+
+- `operations/collectors/swiss_referendum_refresh.py`
+- `tests/test_swiss_referendum_refresh.py`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/SWISS_REFERENDUM_EFFICIENCY.md`
+- `data/results/swiss_referendum_10mio_*`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 14 passed.
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_refresh --source live` -> 2 snapshot rows, 2 comparison rows, 3 poll-impact rows, latest Yes 0.225.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 348 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS, 348 passed.
+
+Decision:
+
+- Use a manual bounded refresh command for the running view instead of a daemon
+  or scheduler.
+- Preserve poll-release impact rows as incomplete until local snapshot history
+  contains both pre- and post-publication observations.
+
+Next step:
+
+- Run the bounded refresh command at later times to build enough local
+  Polymarket history for poll-publication impact checks.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Add bounded public Polymarket CLOB price-history windows around curated poll
+  releases so poll-publication impact rows can use real pre/post observations.
+
+Files changed:
+
+- `operations/collectors/swiss_referendum_history.py`
+- `operations/collectors/swiss_referendum_refresh.py`
+- `operations/analysis/swiss_referendum_efficiency.py`
+- `tests/test_swiss_referendum_history.py`
+- `tests/test_swiss_referendum_refresh.py`
+- `tests/test_swiss_referendum_efficiency.py`
+- `GOAL.md`
+- `ROADMAP.md`
+- `docs/research/SWISS_REFERENDUM_EFFICIENCY.md`
+- `data/results/swiss_referendum_10mio_*`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 18 passed.
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_refresh --source live` -> 3 snapshot rows, 216 price-history rows, 3 comparison rows, 3 poll-impact rows.
+- `.\.venv\Scripts\python.exe -m operations.analysis.swiss_referendum_efficiency` -> 3 comparison rows, 3 poll-impact rows.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 352 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS, 352 passed.
+
+Decision:
+
+- Use bounded public CLOB `prices-history` windows around curated poll release
+  timestamps rather than chart scraping.
+- Treat the first pre/post change around poll publication as descriptive
+  timing context only, with no causal, mispricing, tradeability, or
+  profitability claim.
+
+Next step:
+
+- Continue refreshing bounded snapshots and add future poll releases to the
+  curated poll catalog only after source checks.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Add explicit poll-proxy over/under relation labels for the Swiss referendum
+  dashboard without turning them into mispricing or trading claims.
+
+Files changed:
+
+- `operations/analysis/swiss_referendum_efficiency.py`
+- `tests/test_swiss_referendum_efficiency.py`
+- `docs/research/SWISS_REFERENDUM_EFFICIENCY.md`
+- `data/results/swiss_referendum_10mio_*`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 18 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.swiss_referendum_efficiency` -> 3 comparison rows, 3 poll-impact rows.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 352 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS, 352 passed.
+
+Decision:
+
+- Use `above_poll_proxy`, `near_poll_proxy`, and `below_poll_proxy` for the
+  user's over/under question.
+- Keep the label scoped as a descriptive poll-proxy relation, not true
+  valuation, mispricing, causality, or tradeability evidence.
+
+Next step:
+
+- Keep collecting bounded refresh snapshots and curate any new poll releases
+  before rerunning the comparison.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Refresh the Swiss 10-million referendum running view and verify the current
+  deterministic outputs before stopping work.
+
+Files changed:
+
+- `data/results/swiss_referendum_10mio_*`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_refresh --source live` -> 4 snapshot rows, 216 price-history rows, 4 comparison rows, 3 poll-impact rows.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 18 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 352 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS, 352 passed.
+
+Decision:
+
+- Keep the refreshed live Polymarket snapshot as another bounded local
+  observation for the running dashboard.
+- Continue reporting the latest poll relation as descriptive
+  `below_poll_proxy`, not as a proven mispricing, causal effect, or trade
+  signal.
+
+Next step:
+
+- Commit the Swiss referendum comparison separately from the paused monitor and
+  wallet-graph work.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Add the second Tamedia/LeeWas poll wave and an explicit source-boundary audit
+  for BFS/admin.ch context versus voting-intention poll sources.
+
+Files changed:
+
+- `data/swiss_referendum_10mio_polls.csv`
+- `operations/analysis/swiss_referendum_efficiency.py`
+- `tests/test_swiss_referendum_efficiency.py`
+- `docs/research/SWISS_REFERENDUM_EFFICIENCY.md`
+- `GOAL.md`
+- `data/results/swiss_referendum_10mio_*`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_efficiency.py -q` -> 7 passed.
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_refresh --source live` -> 5 snapshot rows, 288 price-history rows, 5 comparison rows, 4 poll-impact rows.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 19 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 353 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS, 353 passed.
+
+Decision:
+
+- Include Tamedia/20 Minuten/LeeWas wave 2 as a curated poll row with date
+  precision because the public source gives the publication date but no exact
+  publication time.
+- Generate `swiss_referendum_10mio_source_audit.csv` so BFS/admin.ch sources
+  are explicitly marked as context only and not voting-intention inputs.
+
+Next step:
+
+- Commit the Swiss referendum comparison as a separate atomic change and keep
+  future poll additions source-checked before refresh.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Verify the generated Swiss referendum dashboard as a local HTML artifact and
+  record the remaining browser-environment limitation.
+
+Files changed:
+
+- `docs/project/WORK_LOG.md`
+- `STATUS.md`
+
+Tests:
+
+- Local dashboard structure check -> title present, 4 tables, 23 table rows
+  including headers, 1 figure image, nonblank PNG shape 880 x 1600 x 4.
+- Output metadata check -> 4 polls, 5 snapshots, 288 bounded price-history
+  rows, 4 poll-impact rows, 6 source-audit rows.
+- Output guardrail check -> `contains_wallet_addresses=false` and
+  `contains_order_instructions=false` in Swiss referendum metadata.
+
+Decision:
+
+- Treat the dashboard as locally verifiable from deterministic files because
+  the in-app browser target `iab` was not available in this session.
+- Keep Chrome marked as an environment setup issue: Google Chrome is installed
+  but not running, the Codex Chrome Extension is not installed/enabled in the
+  selected profile, and the native-host registry key is missing.
+
+Next step:
+
+- Repair the Chrome plugin/extension setup if Chrome-backed visual inspection
+  is required; otherwise commit the deterministic Swiss referendum comparison.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Add deterministic verification for the generated Swiss referendum dashboard
+  and figure so the running view is testable without relying on browser
+  availability.
+
+Files changed:
+
+- `operations/analysis/swiss_referendum_efficiency.py`
+- `tests/test_swiss_referendum_efficiency.py`
+- `docs/research/SWISS_REFERENDUM_EFFICIENCY.md`
+- `GOAL.md`
+- `data/results/swiss_referendum_10mio_*`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_efficiency.py -q` -> 9 passed.
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_refresh --source live` -> 6 snapshot rows, 288 price-history rows, 6 comparison rows, 4 poll-impact rows.
+- Dashboard verification metadata -> 4 tables, 24 table rows including headers,
+  1 image, nonblank PNG shape 880 x 1600 x 4, required text present.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 355 passed.
+
+Decision:
+
+- Store the dashboard-verification result under `dashboard_verification` in
+  `swiss_referendum_10mio_efficiency_metadata.json`.
+- Keep Chrome-backed visual verification separate because the local Chrome
+  extension/native-host setup is still unavailable.
+
+Next step:
+
+- Commit the Swiss referendum comparison and deterministic dashboard verifier
+  as one coherent feature change.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Add a deterministic latest-summary report for the Swiss referendum running
+  view so thesis-facing result reporting is generated from local artifacts.
+
+Files changed:
+
+- `operations/analysis/swiss_referendum_efficiency.py`
+- `operations/collectors/swiss_referendum_refresh.py`
+- `tests/test_swiss_referendum_efficiency.py`
+- `tests/test_swiss_referendum_refresh.py`
+- `docs/research/SWISS_REFERENDUM_EFFICIENCY.md`
+- `GOAL.md`
+- `data/results/swiss_referendum_10mio_*`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 12 passed.
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_refresh --source live` -> 7 snapshot rows, 288 price-history rows, 7 comparison rows, 4 poll-impact rows, latest summary written.
+- `data/results/swiss_referendum_10mio_latest_summary.md` -> includes generated/inspected counts, latest numerical result, bounded interpretation, main limitation, source boundary, and figure link.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 355 passed.
+
+Decision:
+
+- Render the latest summary in deterministic Python from comparison, impact,
+  source-audit, and figure artifacts rather than writing an LLM-authored result
+  narrative.
+- Keep the poll-proxy relation descriptive and avoid causal, tradeability, or
+  true-mispricing claims.
+
+Next step:
+
+- Commit the Swiss referendum comparison artifacts, including the latest
+  summary report, as a separate feature change.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Add a deterministic running-status artifact for the Swiss referendum view so
+  local output presence and snapshot recency are explicit after each refresh.
+
+Files changed:
+
+- `operations/collectors/swiss_referendum_refresh.py`
+- `tests/test_swiss_referendum_refresh.py`
+- `docs/research/SWISS_REFERENDUM_EFFICIENCY.md`
+- `GOAL.md`
+- `data/results/swiss_referendum_10mio_*`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_refresh.py -q` -> 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_refresh --source live` -> 8 snapshot rows, 288 price-history rows, 8 comparison rows, 4 poll-impact rows, running status written.
+- `data/results/swiss_referendum_10mio_running_status.json` -> all required local outputs exist, latest snapshot age 0.017 minutes, snapshot_recency_status fresh, ready_for_running_view true.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 22 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 356 passed.
+
+Decision:
+
+- Treat running status as a local artifact-recency check only. It does not
+  imply market-data completeness and does not add causal, tradeability, or
+  valuation claims.
+
+Next step:
+
+- Commit the Swiss referendum comparison with the running-status artifact as a
+  separate feature change.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Extend Swiss referendum poll-impact rows with deterministic 1h, 6h, 24h, and
+  48h post-publication reaction-window changes.
+
+Files changed:
+
+- `operations/analysis/swiss_referendum_efficiency.py`
+- `tests/test_swiss_referendum_efficiency.py`
+- `docs/research/SWISS_REFERENDUM_EFFICIENCY.md`
+- `GOAL.md`
+- `data/results/swiss_referendum_10mio_*`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_efficiency.py -q` -> 10 passed.
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_refresh --source live` -> 9 snapshot rows, 288 price-history rows, 9 comparison rows, 4 poll-impact rows.
+- Latest SRG/gfs.bern wave 2 reaction windows -> 1h 0.0 pp, 6h -1.0 pp, 24h -4.0 pp, 48h -5.0 pp.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 23 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 357 passed.
+
+Decision:
+
+- Compute reaction-window changes as descriptive changes from the closest
+  pre-publication observation to the last local observation inside each
+  post-publication window.
+- Keep these values as timing descriptors only, with no causal, efficiency,
+  tradeability, or true-mispricing claim.
+
+Next step:
+
+- Commit the Swiss referendum comparison with reaction-window impact metrics as
+  a separate feature change.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Add a tidy poll-reaction-window CSV so each poll/window combination can be
+  filtered, charted, or used in thesis tables without reshaping the wide
+  impact table.
+
+Files changed:
+
+- `operations/analysis/swiss_referendum_efficiency.py`
+- `operations/collectors/swiss_referendum_refresh.py`
+- `tests/test_swiss_referendum_efficiency.py`
+- `tests/test_swiss_referendum_refresh.py`
+- `docs/research/SWISS_REFERENDUM_EFFICIENCY.md`
+- `GOAL.md`
+- `data/results/swiss_referendum_10mio_*`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 15 passed.
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_refresh --source live` -> 10 snapshot rows, 288 price-history rows, 10 comparison rows, 4 poll-impact rows, 16 tidy reaction-window rows.
+- `data/results/swiss_referendum_10mio_poll_reaction_windows.csv` -> 16 rows, 4 windows per curated poll, descriptive no-causality interpretation scope.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 24 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 358 passed.
+
+Decision:
+
+- Keep the wide `poll_impacts.csv` for dashboard readability and add
+  `poll_reaction_windows.csv` for downstream filtering and plotting.
+- Preserve the same descriptive pre/post no-causality scope in the tidy file.
+
+Next step:
+
+- Commit the Swiss referendum comparison with tidy reaction-window output as a
+  separate feature change.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Add and verify the deterministic poll-reaction-window figure for the Swiss
+  referendum dashboard and rerun the live bounded refresh.
+
+Files changed:
+
+- `operations/analysis/swiss_referendum_efficiency.py`
+- `operations/collectors/swiss_referendum_refresh.py`
+- `tests/test_swiss_referendum_efficiency.py`
+- `tests/test_swiss_referendum_refresh.py`
+- `docs/research/SWISS_REFERENDUM_EFFICIENCY.md`
+- `GOAL.md`
+- `data/results/swiss_referendum_10mio_*`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_refresh --source live` -> 11 snapshot rows, 288 price-history rows, 11 comparison rows, 4 poll-impact rows, 16 tidy reaction-window rows.
+- `data/results/swiss_referendum_10mio_reaction_windows.png` -> nonblank figure with shape 832 x 1600 x 4.
+- `data/results/swiss_referendum_10mio_efficiency_metadata.json` -> dashboard verification sees 2 images, 5 tables, and 16 poll-reaction-window rows under `outputs`.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 24 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 358 passed.
+
+Decision:
+
+- Keep the reaction-window graphic as a deterministic dashboard artifact derived
+  only from local `poll_reaction_windows.csv` rows.
+- Continue to label all poll-window movements as descriptive pre/post changes,
+  not causal poll effects or trade signals.
+
+Next step:
+
+- Commit the Swiss referendum comparison with dashboard reaction-window figure
+  support as a separate feature change.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Fix Swiss refresh output routing so the source-boundary audit is written to
+  the explicit refresh output path instead of falling back to the default path.
+
+Files changed:
+
+- `operations/collectors/swiss_referendum_refresh.py`
+- `tests/test_swiss_referendum_refresh.py`
+- `data/results/swiss_referendum_10mio_*`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- Chrome plugin check -> unavailable: Chrome installed but not running; Codex
+  Chrome Extension not installed/enabled in selected profile; native-host
+  registry entry missing.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_refresh.py -q` -> 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_refresh --source live` -> 12 snapshot rows, 288 price-history rows, 12 comparison rows, 4 poll-impact rows, 16 tidy reaction-window rows, explicit source-audit output path.
+- `data/results/swiss_referendum_10mio_source_audit.csv` -> 6 rows matching `outputs.source_audit_row_count` in efficiency metadata.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 24 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 358 passed.
+
+Decision:
+
+- Treat the source-boundary audit as a required refresh artifact, like the
+  dashboard, comparison, impact, and reaction-window outputs.
+- Keep Chrome verification out of the claim until the user repairs the Codex
+  Chrome Extension/native-host setup.
+
+Next step:
+
+- Commit the Swiss referendum comparison with explicit source-audit refresh
+  routing as part of the same feature change.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Add first-glance running-view context to the Swiss referendum dashboard.
+
+Files changed:
+
+- `operations/analysis/swiss_referendum_efficiency.py`
+- `tests/test_swiss_referendum_efficiency.py`
+- `data/results/swiss_referendum_10mio_*`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- Chrome plugin check -> unavailable: Extension connection failed after retry;
+  Chrome installed but not running; Codex Chrome Extension not installed/enabled
+  in selected profile; native-host registry entry missing.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 15 passed.
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_refresh --source live` -> 13 snapshot rows, 288 price-history rows, 13 comparison rows, 4 poll-impact rows, 16 tidy reaction-window rows.
+- Dashboard verification -> 2 images, 5 tables, 48 table rows, 12 metric blocks, nonblank figure.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 24 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 358 passed.
+
+Decision:
+
+- Show latest local snapshot time, latest matched poll, matched poll publication
+  time, and manual bounded refresh mode in the dashboard metrics.
+- Keep these as display fields from deterministic comparison rows, not new
+  statistical metrics.
+
+Next step:
+
+- Commit the Swiss referendum comparison with dashboard running-context metrics
+  as part of the same feature change.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Add a deterministic poll-release timing summary to answer, per curated poll,
+  when the first post-release Polymarket observation appeared and how the
+  1h/6h/24h/48h windows moved.
+
+Files changed:
+
+- `operations/analysis/swiss_referendum_efficiency.py`
+- `tests/test_swiss_referendum_efficiency.py`
+- `data/results/swiss_referendum_10mio_*`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- Chrome plugin check -> unavailable after retry; Chrome installed but not
+  running; Codex Chrome Extension not installed/enabled in selected profile;
+  native-host registry entry missing.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 15 passed.
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_refresh --source live` -> 14 snapshot rows, 288 price-history rows, 14 comparison rows, 4 poll-impact rows, 16 tidy reaction-window rows.
+- `data/results/swiss_referendum_10mio_latest_summary.md` -> contains `Poll Release Timing Summary` with four poll-level timing bullets and descriptive no-causality scope.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 24 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 358 passed.
+
+Decision:
+
+- Render poll-release timing as a readable summary derived from `poll_impacts.csv`.
+- Keep the timing summary descriptive and bounded to existing local
+  observations; do not infer causality, efficiency, tradeability, or true
+  mispricing.
+
+Next step:
+
+- Commit the Swiss referendum comparison with poll-release timing summaries as
+  part of the same feature change.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Add YouGov Schweiz Stimmungsbarometer releases to the curated Swiss
+  referendum poll catalog after source-freshness checking.
+
+Files changed:
+
+- `data/swiss_referendum_10mio_polls.csv`
+- `operations/analysis/swiss_referendum_efficiency.py`
+- `tests/test_swiss_referendum_efficiency.py`
+- `docs/research/SWISS_REFERENDUM_EFFICIENCY.md`
+- `GOAL.md`
+- `data/results/swiss_referendum_10mio_*`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- Chrome plugin check -> unavailable after retry; Chrome installed but not
+  running; Codex Chrome Extension not installed/enabled in selected profile;
+  native-host registry entry missing.
+- Web source check -> YouGov Schweiz articles show wave 1 on 2026-05-05
+  with 45% Yes, 46% No, 8% undecided; interim wave 2 on 2026-05-27 with 43%
+  Yes, 51% No, 6% undecided; final wave 2 on 2026-06-02 with 38% Yes, 55%
+  No, 7% undecided.
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_refresh --source live` -> 15 snapshot rows, 504 price-history rows, 15 comparison rows, 7 poll-impact rows, 28 tidy reaction-window rows.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 16 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 25 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 359 passed.
+
+Decision:
+
+- Treat YouGov Schweiz as a curated voting-intention source, separate from
+  BFS/admin.ch context.
+- Document that YouGov's MRP use of BFS population proportions does not make
+  the reported vote-intention shares BFS values.
+
+Next step:
+
+- Commit the Swiss referendum comparison with YouGov poll releases included as
+  part of the same feature change.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Add a latest-by-source poll comparison output for the newest prior poll from
+  each curated source.
+
+Files changed:
+
+- `operations/analysis/swiss_referendum_efficiency.py`
+- `operations/collectors/swiss_referendum_refresh.py`
+- `tests/test_swiss_referendum_efficiency.py`
+- `tests/test_swiss_referendum_refresh.py`
+- `docs/research/SWISS_REFERENDUM_EFFICIENCY.md`
+- `GOAL.md`
+- `data/results/swiss_referendum_10mio_*`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- Chrome plugin check -> unavailable after retry; Chrome installed but not
+  running; Codex Chrome Extension not installed/enabled in selected profile;
+  native-host registry entry missing.
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_refresh --source live` -> 16 snapshot rows, 504 price-history rows, 16 comparison rows, 7 poll-impact rows, 28 tidy reaction-window rows, 3 latest-source comparison rows.
+- `data/results/swiss_referendum_10mio_latest_source_comparison.csv` -> latest Polymarket Yes 23.0% compared to SRG/gfs.bern 45.0%, Tamedia/LeeWas 47.0%, and YouGov Schweiz 38.0%; all labelled `below_poll_proxy`.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 26 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 360 passed.
+
+Decision:
+
+- Store the cross-source comparison in
+  `data/results/swiss_referendum_10mio_latest_source_comparison.csv` and render
+  it in the dashboard and latest summary.
+- Keep the table as a descriptive poll-proxy view only; it is not a poll
+  average, forecast model, valuation model, or true-mispricing test.
+
+Next step:
+
+- Commit the Swiss referendum comparison with latest-by-source poll comparison
+  as part of the same feature change.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Make the "faster, slower, or different" Polymarket processing question more
+  visible for the Swiss 10-million referendum comparison.
+
+Files changed:
+
+- `operations/analysis/swiss_referendum_efficiency.py`
+- `operations/collectors/swiss_referendum_refresh.py`
+- `tests/test_swiss_referendum_efficiency.py`
+- `tests/test_swiss_referendum_refresh.py`
+- `docs/research/SWISS_REFERENDUM_EFFICIENCY.md`
+- `GOAL.md`
+- `data/results/swiss_referendum_10mio_*`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 18 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q` -> 27 passed.
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_refresh --source live` -> 18 snapshot rows, 504 price-history rows, 18 comparison rows, 7 poll-impact rows, 7 information-response rows.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> 361 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS, 361 passed.
+
+Decision:
+
+- Define the poll signal as the change in decided Yes share versus the
+  immediately previous curated poll release.
+- Compare that poll-signal direction with Polymarket movements in 1h, 6h,
+  24h, and 48h post-publication windows.
+- Use direction-only labels such as `delayed_same_direction_6h` and
+  `no_same_direction_within_48h`; these are descriptive alignment labels, not
+  causality, statistical significance, tradeability, or market-efficiency proof.
+
+Next step:
+
+- Commit the Swiss referendum information-response dashboard extension as a
+  separate change from the paused monitor and wallet-graph work.

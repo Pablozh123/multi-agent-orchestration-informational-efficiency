@@ -3720,3 +3720,90 @@ Interpretation rules:
   zero as if observed.
 - Dune and Polygonscan enrichment remain v3 work after API-key handling,
   validation, and method review.
+
+## Detection Backtest And Wallet Graph Dashboard
+
+Status: implemented as a deterministic public-data review layer.
+
+Purpose:
+
+- Test whether the monitor produces review-worthy candidates that have event,
+  reference-case, or wallet-graph context.
+- Provide a local forensic dashboard that makes public Polymarket wallet
+  activity easier to inspect.
+- Keep the evaluation focused on detection and review quality, not PnL,
+  profitability, trading readiness, or misconduct claims.
+
+Implemented modules:
+
+- `operations.collectors.polymarket_public_activity`
+- `operations.analysis.monitor_wallet_graph`
+- `operations.analysis.monitor_detection_backtest`
+
+Generated artifacts:
+
+- `data/results/monitor_v2_polymarket_public_wallet_activity.csv`
+- `data/results/monitor_v2_polymarket_public_wallet_activity_metadata.json`
+- `data/results/wallet_graph_nodes.csv`
+- `data/results/wallet_graph_edges.csv`
+- `data/results/wallet_graph_metrics.csv`
+- `data/results/wallet_graph_dashboard.html`
+- `data/results/wallet_graph_metadata.json`
+- `data/results/monitor_detection_backtest_cases.csv`
+- `data/results/monitor_detection_backtest_summary.csv`
+- `data/results/monitor_detection_backtest_dashboard.html`
+- `data/results/monitor_detection_backtest_metadata.json`
+
+Public data scope:
+
+- The first implementation uses public Polymarket activity/trade rows from the
+  Data API and existing local monitor candidate artifacts.
+- It does not use authenticated CLOB order paths, user-channel credentials,
+  Dune, Polygonscan, agents, MCP, ML, database writes, or order execution.
+- The local wallet graph dashboard may show full public wallet addresses
+  because it is a local human-review artifact explicitly used for forensic
+  inspection.
+- Thesis-facing summaries, LLM-facing summaries, and MCP-facing future outputs
+  should still remain bounded and may use pseudonymised or aggregated wallet
+  fields when appropriate.
+
+Wallet graph interpretation:
+
+- Nodes are public Polymarket wallets observed in the collected activity rows.
+- Node size is based on observed public USDC activity in the current collection
+  window.
+- Edges are deterministic co-activity links, such as shared market and shared
+  timestamp bucket.
+- A graph edge does not prove common control, shared funding, private
+  information, coordination, or misconduct.
+- Funding, CEX, bridge, and identity-cluster evidence remain unavailable until
+  a separately validated Dune or Polygonscan enrichment step exists.
+
+Detection-backtest interpretation:
+
+- `event_hit` means a monitor candidate is near a curated event window.
+- `pre_event_hit` means the candidate timestamp is before or near the event
+  timestamp under the configured review window.
+- `reference_hit` means the candidate has neutral pattern overlap with a
+  curated reference profile.
+- `false_context_flag` marks candidates without event, reference, or
+  wallet-graph context.
+- These fields measure review context only. They do not measure returns, PnL,
+  profitability, causality, private information, or trading value.
+
+Current run summary:
+
+- The public activity collection produced 500 activity rows across 238 public
+  wallets and 12 monitored politics/geopolitics markets.
+- The wallet graph produced 238 nodes and 7'966 co-activity edges.
+- The detection backtest evaluated 3 current strict monitor candidates.
+- Current context results: 0 event hits, 0 pre-event hits, 1 reference-pattern
+  hit, and 0 false-context flags.
+
+Next validation direction:
+
+- Inspect whether the same candidates recur across later bounded live windows.
+- Add human-reviewed source and market-mapping fields before making stronger
+  thesis-facing claims.
+- Later, add Dune or Polygonscan enrichment only after API-key handling,
+  validation rules, and funding-link methodology are documented.

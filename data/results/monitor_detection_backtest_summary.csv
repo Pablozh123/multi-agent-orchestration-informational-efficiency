@@ -1,0 +1,2 @@
+summary_id,candidate_count,event_hit_count,pre_event_hit_count,reference_hit_count,false_context_count,review_yield_proxy,allowed_interpretation,limitation
+monitor_detection_backtest_v1,3,0,0,1,0,0.333333,"Detection quality proxy for monitor review candidates, not a return or trading backtest.",Event matching depends on curated timestamps and public reference similarity; human review remains required.

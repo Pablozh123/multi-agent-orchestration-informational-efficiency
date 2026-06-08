@@ -31,6 +31,12 @@ from operations.analysis.monitor_literature_risk_scores import (
     RISK_SCORE_METADATA_OUTPUT,
     RISK_SCORE_SUMMARY_OUTPUT,
 )
+from operations.analysis.monitor_detection_backtest import (
+    BACKTEST_DASHBOARD_OUTPUT,
+)
+from operations.analysis.monitor_wallet_graph import (
+    GRAPH_DASHBOARD_OUTPUT,
+)
 from operations.analysis.run_h2_event_windows import RESULTS_DIR
 from operations.analysis.wallet_reference_similarity import (
     SIMILARITY_DASHBOARD_OUTPUT,
@@ -95,6 +101,8 @@ def generate_monitor_v2_dashboard(
     human_review_dashboard_path: Path = REVIEW_DASHBOARD_OUTPUT,
     literature_risk_metadata_path: Path = RISK_SCORE_METADATA_OUTPUT,
     literature_risk_summary_path: Path = RISK_SCORE_SUMMARY_OUTPUT,
+    wallet_graph_dashboard_path: Path = GRAPH_DASHBOARD_OUTPUT,
+    detection_backtest_dashboard_path: Path = BACKTEST_DASHBOARD_OUTPUT,
     dashboard_path: Path = DASHBOARD_OUTPUT,
     metadata_path: Path = DASHBOARD_METADATA_OUTPUT,
 ) -> DashboardResult:
@@ -153,6 +161,8 @@ def generate_monitor_v2_dashboard(
         reference_sensitivity_dashboard_path=reference_sensitivity_dashboard_path,
         human_review_dashboard_path=human_review_dashboard_path,
         literature_risk_summary_path=literature_risk_summary_path,
+        wallet_graph_dashboard_path=wallet_graph_dashboard_path,
+        detection_backtest_dashboard_path=detection_backtest_dashboard_path,
         source_paths={
             "watchlist": watchlist_path,
             "market snapshots": market_snapshots_path,
@@ -166,6 +176,8 @@ def generate_monitor_v2_dashboard(
             "diagnostic sensitivity candidate dashboard": reference_sensitivity_dashboard_path,
             "human review report": human_review_dashboard_path,
             "literature-prior risk score summary": literature_risk_summary_path,
+            "wallet graph forensic dashboard": wallet_graph_dashboard_path,
+            "detection backtest dashboard": detection_backtest_dashboard_path,
         },
     )
     dashboard_path.parent.mkdir(parents=True, exist_ok=True)
@@ -275,6 +287,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         type=Path,
         default=RISK_SCORE_SUMMARY_OUTPUT,
     )
+    parser.add_argument("--wallet-graph-dashboard", type=Path, default=GRAPH_DASHBOARD_OUTPUT)
+    parser.add_argument(
+        "--detection-backtest-dashboard",
+        type=Path,
+        default=BACKTEST_DASHBOARD_OUTPUT,
+    )
     parser.add_argument("--dashboard-output", type=Path, default=DASHBOARD_OUTPUT)
     parser.add_argument("--metadata-output", type=Path, default=DASHBOARD_METADATA_OUTPUT)
     args = parser.parse_args(argv)
@@ -298,6 +316,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             human_review_dashboard_path=args.human_review_dashboard,
             literature_risk_metadata_path=args.literature_risk_metadata,
             literature_risk_summary_path=args.literature_risk_summary,
+            wallet_graph_dashboard_path=args.wallet_graph_dashboard,
+            detection_backtest_dashboard_path=args.detection_backtest_dashboard,
             dashboard_path=args.dashboard_output,
             metadata_path=args.metadata_output,
         )
@@ -365,6 +385,8 @@ def _render_dashboard(
     reference_sensitivity_dashboard_path: Path,
     human_review_dashboard_path: Path,
     literature_risk_summary_path: Path,
+    wallet_graph_dashboard_path: Path,
+    detection_backtest_dashboard_path: Path,
     source_paths: dict[str, Path],
 ) -> str:
     latest_market = _latest_market_table(watchlist, market, wallets)
@@ -378,6 +400,8 @@ def _render_dashboard(
         reference_sensitivity_dashboard_path=reference_sensitivity_dashboard_path,
         human_review_dashboard_path=human_review_dashboard_path,
         literature_risk_summary_path=literature_risk_summary_path,
+        wallet_graph_dashboard_path=wallet_graph_dashboard_path,
+        detection_backtest_dashboard_path=detection_backtest_dashboard_path,
     )
     summary_rows = _table_rows(
         alerts.head(20),
@@ -574,6 +598,8 @@ def _reference_review_section(
     reference_sensitivity_dashboard_path: Path,
     human_review_dashboard_path: Path,
     literature_risk_summary_path: Path,
+    wallet_graph_dashboard_path: Path,
+    detection_backtest_dashboard_path: Path,
 ) -> str:
     return f"""
   <h2>Reference Review</h2>
@@ -610,6 +636,14 @@ def _reference_review_section(
     <div class="link-card">
       <a href="{escape(literature_risk_summary_path.name)}">Open literature-prior risk score summary</a>
       <p>Shows diagnostic literature-prior wallet and market risk scores plus missing feature counts.</p>
+    </div>
+    <div class="link-card">
+      <a href="{escape(wallet_graph_dashboard_path.name)}">Open wallet graph forensic dashboard</a>
+      <p>Shows local public-wallet bubblemap context. This view may display full public wallet addresses.</p>
+    </div>
+    <div class="link-card">
+      <a href="{escape(detection_backtest_dashboard_path.name)}">Open detection backtest dashboard</a>
+      <p>Checks whether review candidates have event, reference, or wallet-graph context.</p>
     </div>
   </section>
 """

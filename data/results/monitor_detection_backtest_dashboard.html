@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Monitor Detection Backtest</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 28px; color: #17202a; }
+    .note { background: #fff7e6; border: 1px solid #f0d08a; padding: 12px; border-radius: 6px; }
+    .metrics { display: grid; grid-template-columns: repeat(4, minmax(120px, 1fr)); gap: 12px; }
+    .metric { border: 1px solid #d7dde5; border-radius: 6px; padding: 12px; background: #f8fafc; }
+    .metric strong { display: block; font-size: 22px; margin-top: 4px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; font-size: 13px; }
+    th, td { border: 1px solid #d7dde5; padding: 7px; text-align: left; vertical-align: top; }
+    th { background: #eef2f7; }
+  </style>
+</head>
+<body>
+  <h1>Monitor Detection Backtest</h1>
+  <p class="note">This measures whether review candidates have event, reference, or wallet-graph context. It is not a return test, not a causal test, and not a trading signal.</p>
+  <section class="metrics">
+    <div class="metric">Candidates<strong>3</strong></div>
+    <div class="metric">Event hits<strong>0</strong></div>
+    <div class="metric">Reference hits<strong>1</strong></div>
+    <div class="metric">Review-yield proxy<strong>0.33</strong></div>
+  </section>
+  <h2>Detection Cases</h2>
+  <table><thead><tr><th>Question</th><th>Severity</th><th>Event hit</th><th>Pre-event hit</th><th>Reference hit</th><th>Lead hours</th><th>Graph context</th><th>False context</th></tr></thead><tbody><tr><td>Will the U.S. invade Iran before 2027?</td><td>info</td><td>False</td><td>False</td><td>False</td><td>-14874.417</td><td>shared_bucket_cluster</td><td>False</td></tr>
+<tr><td>Will China invade Taiwan by end of 2026?</td><td>info</td><td>False</td><td>False</td><td>False</td><td>-14874.417</td><td>shared_bucket_cluster</td><td>False</td></tr>
+<tr><td>Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?</td><td>high</td><td>False</td><td>False</td><td>True</td><td>-14874.417</td><td>shared_bucket_cluster</td><td>False</td></tr></tbody></table>
+</body>
+</html>

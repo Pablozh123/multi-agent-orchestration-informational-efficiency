@@ -1,0 +1,31 @@
+{
+  "generated_at_utc": "2026-05-26T14:04:30+00:00",
+  "inputs": {
+    "data_api_endpoint": "https://data-api.polymarket.com/trades",
+    "limit": 500,
+    "watchlist_path": "data\\results\\monitor_v2_polymarket_live_watchlist.csv"
+  },
+  "limitations": {
+    "not_a_misconduct_finding": true,
+    "not_a_trade_or_return_test": true,
+    "public_activity_rows_only": true
+  },
+  "method": {
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "name": "polymarket_public_wallet_activity",
+    "source": "live",
+    "uses_authentication": false,
+    "uses_order_endpoints": false,
+    "uses_public_data_api": true
+  },
+  "outputs": {
+    "activity_path": "data\\results\\monitor_v2_polymarket_public_wallet_activity.csv",
+    "contains_order_instructions": false,
+    "contains_public_wallet_addresses": true,
+    "market_count": 12,
+    "row_count": 500,
+    "wallet_count": 238
+  }
+}

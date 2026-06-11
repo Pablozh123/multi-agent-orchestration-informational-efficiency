@@ -7870,3 +7870,46 @@ Verification:
   -> PASS, generated the access-contract artifact.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 488 passed in 50.55s.
+
+## 2026-06-11 - Anomaly review goal completion audit
+
+Context:
+
+- Audited the active deterministic anomaly-review queue goal after queue,
+  source-check, packet, transition, decision-readiness, and static access
+  contract layers were committed.
+- Did not add MCP tools, runtime agents, model routing, LLM metric
+  calculation, ML, database writes, order paths, wallet-address exposure, or
+  thesis-facing anomaly claims.
+
+Evidence checked:
+
+- `data/results/monitor_anomaly_review_queue.csv`: 3 rows, 24 columns.
+- `data/results/monitor_anomaly_review_summary.csv`: 1 row with
+  `source_check_pending=3`.
+- `data/results/monitor_anomaly_case_review_packets.csv`: 3 bounded packets.
+- `data/results/monitor_anomaly_review_status_transitions.csv`: 3 transition
+  rows.
+- `data/results/monitor_anomaly_review_decision_readiness.csv`: 3 rows, all
+  `no_decision_recorded`.
+- `data/results/monitor_anomaly_review_metadata.json`: wallet-address and
+  order-instruction safety flags are false for queue, packets, transitions,
+  and decision-readiness outputs.
+- `data/results/monitor_anomaly_review_access_contract.json`: status is
+  `contract_only_not_implemented`, max default rows is 50, raw SQL is blocked,
+  wallet-address exposure is blocked by default, order/trading paths are
+  blocked, and runtime MCP/agents are not implemented.
+
+Interpretation:
+
+- The deterministic anomaly-review layer is complete for the current bounded
+  monitor candidates.
+- The current cases remain human-review cues only and are not thesis-facing
+  evidence because no final manual decision has been recorded.
+- Future MCP/agent access is specified only as a static contract and remains
+  deferred.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 488 passed in 46.16s.

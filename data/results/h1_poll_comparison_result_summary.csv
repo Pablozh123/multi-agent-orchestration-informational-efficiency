@@ -1,0 +1,19 @@
+summary_id,value,unit,description
+primary_scope,<=90_days_low_middle_poll_distance,scope,Scope of the main bounded Polymarket-supporting poll comparison.
+primary_polymarket_support_count,262,state-date rows,Rows in the primary bounded scope where Polymarket has lower loss.
+primary_poll_support_count,23,state-date rows,Rows in the primary bounded scope where poll-derived probability has lower loss.
+primary_comparison_count,285,state-date rows,Rows in the primary bounded scope.
+primary_polymarket_support_share,0.9192982456140351,share,Polymarket lower-loss share in the primary bounded scope.
+primary_mean_loss_advantage,0.0932715877516982,brier_score,Positive values mean lower Polymarket mean Brier in the primary scope.
+primary_state_count,9,states,State count for the primary bounded sign-test scope.
+primary_polymarket_state_count,9,states,States where Polymarket has lower-loss majority in the primary bounded scope.
+primary_exact_binomial_p_value,0.001953125,p_value,One-sided exact binomial p-value for the primary state-as-unit diagnostic.
+primary_exact_95_ci_low,0.7168711644368863,share,Exact 95 percent lower confidence bound for the primary state support share.
+direct_poll_audit_support_count,12,audit rows,Direct poll-related audit rows supporting bounded Polymarket evidence.
+direct_poll_audit_row_count,15,audit rows,Direct poll-related audit rows.
+full_panel_polymarket_support_count,360,state-date rows,Full-panel rows where Polymarket has lower loss.
+full_panel_poll_support_count,1360,state-date rows,Full-panel rows where poll-derived probability has lower loss.
+late_high_distance_poll_support_count,72,state-date rows,Late high-distance rows where poll-derived probability has lower loss.
+bounded_polymarket_statement_supported,1,binary,The primary bounded late low/middle-distance poll statement is supported.
+broad_claim_proven,0,binary,The broad many-cases Polymarket-better claim remains unproven.
+h1_goal_completion_status,not_proven,status,"Current evidence supports a bounded poll statement, not the full broad objective."

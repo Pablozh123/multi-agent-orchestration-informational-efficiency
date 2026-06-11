@@ -1,0 +1,56 @@
+{
+  "generated_at_utc": "2026-06-10T19:42:40+00:00",
+  "limitations": {
+    "daily_rows_are_repeated_forecasts": true,
+    "no_causal_or_tradeability_claim": true,
+    "not_official_538_popular_vote_probability": true,
+    "one_resolved_popular_vote_outcome": true,
+    "poll_transform_is_model_dependent": true
+  },
+  "method": {
+    "calculation_scope": "deterministic_python_from_local_538_poll_shares_and_public_polymarket_history",
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "name": "h1_popular_vote_extension",
+    "poll_error_mae_points": 3.8,
+    "poll_error_sigma_points": 4.7625937217989005,
+    "poll_transform": "normal_margin_error_from_538_mae",
+    "rcp_included": false,
+    "read_only_public_endpoints": true,
+    "source": "live",
+    "trump_margin_probability_formula": "Phi((trump_share_minus_harris_share_points) / sigma_points)",
+    "uses_raw_poll_shares_directly_as_probabilities": false
+  },
+  "outputs": {
+    "case_count": 51,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "first_date": "2024-07-24",
+    "independent_resolved_outcome_count": 1,
+    "last_date": "2024-09-12",
+    "mean_loss_advantage": -0.03541895848211345,
+    "mean_poll_derived_brier": 0.48244035524337675,
+    "mean_polymarket_brier": 0.5178593137254902,
+    "poll_derived_lower_loss_count": 30,
+    "polymarket_better_share": 0.4117647058823529,
+    "polymarket_lower_loss_count": 21,
+    "supports_broad_polymarket_claim": false,
+    "tie_count": 0
+  },
+  "source_paths": {
+    "cases": "data\\results\\h1_popular_vote_cases.csv",
+    "database": "data\\thesis.db",
+    "figure": "data\\results\\h1_popular_vote.png",
+    "summary": "data\\results\\h1_popular_vote_summary.csv"
+  },
+  "source_urls": {
+    "clob_prices_history": "https://clob.polymarket.com/prices-history",
+    "gamma_events": "https://gamma-api.polymarket.com/events",
+    "outcome_source": "https://www.presidency.ucsb.edu/statistics/elections/2024",
+    "poll_average_source": "https://raw.githubusercontent.com/fivethirtyeight/data/master/polls/2024-averages/presidential_general_averages_2024-09-12_uncorrected.csv",
+    "poll_error_source": "https://abcnews.com/538/538s-final-forecasts-2024-election/story?id=115511051",
+    "polymarket_event": "https://polymarket.com/event/presidential-election-popular-vote-winner-2024"
+  }
+}

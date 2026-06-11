@@ -1,0 +1,57 @@
+{
+  "generated_at_utc": "2026-06-11T00:49:35+00:00",
+  "limitations": {
+    "all_rows_share_one_presidential_election_context": true,
+    "goal_many_cases_claim_not_yet_proven": true,
+    "no_causal_or_tradeability_claim": true,
+    "single_state_outlier_check_is_not_new_data": true,
+    "states_are_not_independent_elections": true,
+    "top_positive_exclusion_shows_concentration": true
+  },
+  "method": {
+    "calculation_scope": "deterministic_python_from_h1_direct_poll_state_clusters",
+    "does_not_collect_external_data": true,
+    "does_not_recompute_from_raw_database": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "name": "h1_direct_poll_outlier_robustness",
+    "rcp_included": false,
+    "state_clusters_equal_weighted": true,
+    "uses_raw_poll_shares_directly": false
+  },
+  "outputs": {
+    "broad_many_cases_claim_proven": false,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "full_mean_loss_advantage": 0.012179748962750443,
+    "max_top_positive_exclusion_k_with_positive_mean": 6,
+    "min_leave_one_out_mean_loss_advantage": 0.009498801293313323,
+    "outlier_robustness_supports_polymarket_mean": true,
+    "scenario_count": 57,
+    "state_count": 43
+  },
+  "source_paths": {
+    "figure": "data\\results\\h1_direct_poll_outlier_robustness.png",
+    "scenarios": "data\\results\\h1_direct_poll_outlier_robustness_scenarios.csv",
+    "state_input": "data\\results\\h1_direct_poll_state_cluster_diagnostic_states.csv",
+    "summary": "data\\results\\h1_direct_poll_outlier_robustness_summary.csv"
+  },
+  "summary": {
+    "broad_many_cases_claim_proven": 0,
+    "first_nonpositive_top_positive_exclusion_k": 7,
+    "first_nonpositive_top_positive_exclusion_mean": -9.535732990138818e-05,
+    "full_mean_loss_advantage": 0.012179748962750443,
+    "h1_goal_completion_status": "not_proven",
+    "largest_positive_state": "Wisconsin",
+    "largest_positive_state_loss_advantage": 0.1247795510791095,
+    "leave_one_out_all_positive": 1,
+    "leave_one_out_scenario_count": 43,
+    "max_top_positive_exclusion_k_with_positive_mean": 6,
+    "min_leave_one_out_mean_loss_advantage": 0.009498801293313323,
+    "most_influential_removed_state": "Wisconsin",
+    "outlier_robustness_supports_polymarket_mean": 1,
+    "state_count": 43
+  }
+}

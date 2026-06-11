@@ -1,0 +1,32 @@
+summary_id,value,unit,description
+frontier_row_count,30,rows,Horizon-cutoff x poll-distance scope rows in the frontier table.
+robust_scope_count,8,scopes,"Scopes with row majority, positive mean loss advantage, and state-month exact p < 0.05."
+largest_robust_scope_id,lte_120_days_low_middle_distance,scope,Largest robust frontier scope by state-date row count.
+largest_robust_horizon_label,<=120 days,scope,Horizon label for the largest robust frontier scope.
+largest_robust_tier_label,Low/middle distance,scope,Poll-distance tier label for the largest robust frontier scope.
+largest_robust_row_count,433,state-date rows,State-date rows in the largest robust frontier scope.
+largest_robust_polymarket_support_count,313,state-date rows,Rows where Polymarket has lower loss in the largest robust scope.
+largest_robust_poll_support_count,120,state-date rows,Rows where poll-derived probability has lower loss in the largest robust scope.
+largest_robust_polymarket_support_share,0.7228637413394919,share,Polymarket lower-loss share in the largest robust scope.
+largest_robust_state_count,11,states,States in the largest robust scope.
+largest_robust_state_month_polymarket_support_count,18,state_month units,State-month units supporting Polymarket in the largest robust scope.
+largest_robust_state_month_count,26,state_month units,State-month units in the largest robust scope.
+largest_robust_state_month_p_value,0.03775934875011444,p_value,State-month exact p-value for the largest robust scope.
+largest_robust_mean_loss_advantage,0.057212677617564774,brier_score,Mean poll-derived minus Polymarket Brier in the largest robust scope.
+strongest_robust_scope_id,lte_90_days_low_middle_distance,scope,Robust scope with the lowest state-month exact p-value.
+strongest_robust_row_count,285,state-date rows,Rows in the strongest robust frontier scope.
+strongest_robust_state_month_p_value,7.62939453125e-06,p_value,Lowest state-month exact p-value among robust scopes.
+lte_90_all_row_count,357,state-date rows,Rows in the <=90-day all-distance scope.
+lte_90_all_polymarket_support_count,262,state-date rows,Rows where Polymarket has lower loss in the <=90-day all-distance scope.
+lte_90_all_polymarket_support_share,0.7338935574229691,share,Polymarket lower-loss share in the <=90-day all-distance scope.
+lte_90_all_state_month_p_value,0.07579481601715088,p_value,State-month exact p-value in the <=90-day all-distance scope.
+lte_90_low_middle_row_count,285,state-date rows,Rows in the <=90-day low/middle-distance scope.
+lte_90_low_middle_polymarket_support_count,262,state-date rows,Rows where Polymarket has lower loss in the <=90-day low/middle-distance scope.
+lte_90_low_middle_state_month_support_count,17,state_month units,State-month units supporting Polymarket in the <=90-day low/middle scope.
+lte_90_low_middle_state_month_count,17,state_month units,State-month units in the <=90-day low/middle scope.
+lte_90_low_middle_state_month_p_value,7.62939453125e-06,p_value,State-month exact p-value in the <=90-day low/middle scope.
+full_panel_row_count,1720,state-date rows,Rows in the full all-distance panel.
+full_panel_polymarket_support_count,360,state-date rows,Rows where Polymarket has lower loss in the full all-distance panel.
+full_panel_poll_support_count,1360,state-date rows,Rows where poll-derived probability has lower loss in the full panel.
+broad_claim_proven,0,binary,The broad many-cases or many-elections claim remains unproven.
+h1_goal_completion_status,not_proven,status,Current frontier supports bounded poll statements and shows where they stop.

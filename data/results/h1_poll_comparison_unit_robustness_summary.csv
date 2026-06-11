@@ -1,0 +1,54 @@
+summary_id,value,unit,description
+input_row_count,1720,state-date rows,Input state-date poll panel rows.
+primary_row_count,285,state-date rows,Rows in the primary <=90-day low/middle poll-distance scope.
+primary_polymarket_lower_loss_count,262,state-date rows,Primary rows where Polymarket has lower Brier loss.
+primary_poll_lower_loss_count,23,state-date rows,Primary rows where poll-derived probability has lower Brier loss.
+primary_state_unit_count,9,state units,Primary scope state units.
+primary_state_polymarket_support_count,9,state units,Primary state units where Polymarket has lower mean Brier.
+primary_state_majority_support_count,9,state units,Primary state units where Polymarket has lower loss in a row majority.
+primary_state_polymarket_exact_binomial_p_value_greater,0.001953125,p_value,One-sided exact binomial p-value for Polymarket support across primary state units.
+primary_state_polymarket_exact_95_ci_low,0.7168711644368863,share,Exact 95 percent lower confidence bound for Polymarket support across primary state units.
+full_panel_state_unit_count,15,state units,Full panel state units.
+full_panel_state_polymarket_support_count,1,state units,Full-panel state units where Polymarket has lower mean Brier.
+full_panel_state_poll_support_count,14,state units,Full-panel state units where poll-derived probability has lower mean Brier.
+late_high_state_unit_count,5,state units,Late high-distance state units.
+late_high_state_poll_support_count,5,state units,Late high-distance state units where poll-derived probability has lower mean Brier.
+late_high_state_poll_exact_binomial_p_value_greater,0.03125,p_value,One-sided exact binomial p-value for poll-derived support across late high-distance state units.
+primary_state_month_unit_count,17,state_month units,Primary scope state_month units.
+primary_state_month_polymarket_support_count,17,state_month units,Primary state_month units where Polymarket has lower mean Brier.
+primary_state_month_majority_support_count,17,state_month units,Primary state_month units where Polymarket has lower loss in a row majority.
+primary_state_month_polymarket_exact_binomial_p_value_greater,7.62939453125e-06,p_value,One-sided exact binomial p-value for Polymarket support across primary state_month units.
+primary_state_month_polymarket_exact_95_ci_low,0.83843388873926,share,Exact 95 percent lower confidence bound for Polymarket support across primary state_month units.
+full_panel_state_month_unit_count,80,state_month units,Full panel state_month units.
+full_panel_state_month_polymarket_support_count,19,state_month units,Full-panel state_month units where Polymarket has lower mean Brier.
+full_panel_state_month_poll_support_count,61,state_month units,Full-panel state_month units where poll-derived probability has lower mean Brier.
+late_high_state_month_unit_count,8,state_month units,Late high-distance state_month units.
+late_high_state_month_poll_support_count,8,state_month units,Late high-distance state_month units where poll-derived probability has lower mean Brier.
+late_high_state_month_poll_exact_binomial_p_value_greater,0.00390625,p_value,One-sided exact binomial p-value for poll-derived support across late high-distance state_month units.
+primary_state_horizon_unit_count,17,state_horizon units,Primary scope state_horizon units.
+primary_state_horizon_polymarket_support_count,17,state_horizon units,Primary state_horizon units where Polymarket has lower mean Brier.
+primary_state_horizon_majority_support_count,17,state_horizon units,Primary state_horizon units where Polymarket has lower loss in a row majority.
+primary_state_horizon_polymarket_exact_binomial_p_value_greater,7.62939453125e-06,p_value,One-sided exact binomial p-value for Polymarket support across primary state_horizon units.
+primary_state_horizon_polymarket_exact_95_ci_low,0.83843388873926,share,Exact 95 percent lower confidence bound for Polymarket support across primary state_horizon units.
+full_panel_state_horizon_unit_count,71,state_horizon units,Full panel state_horizon units.
+full_panel_state_horizon_polymarket_support_count,22,state_horizon units,Full-panel state_horizon units where Polymarket has lower mean Brier.
+full_panel_state_horizon_poll_support_count,49,state_horizon units,Full-panel state_horizon units where poll-derived probability has lower mean Brier.
+late_high_state_horizon_unit_count,9,state_horizon units,Late high-distance state_horizon units.
+late_high_state_horizon_poll_support_count,9,state_horizon units,Late high-distance state_horizon units where poll-derived probability has lower mean Brier.
+late_high_state_horizon_poll_exact_binomial_p_value_greater,0.001953125,p_value,One-sided exact binomial p-value for poll-derived support across late high-distance state_horizon units.
+primary_horizon_tier_unit_count,4,horizon_tier units,Primary scope horizon_tier units.
+primary_horizon_tier_polymarket_support_count,4,horizon_tier units,Primary horizon_tier units where Polymarket has lower mean Brier.
+primary_horizon_tier_majority_support_count,4,horizon_tier units,Primary horizon_tier units where Polymarket has lower loss in a row majority.
+primary_horizon_tier_polymarket_exact_binomial_p_value_greater,0.0625,p_value,One-sided exact binomial p-value for Polymarket support across primary horizon_tier units.
+primary_horizon_tier_polymarket_exact_95_ci_low,0.472870804501588,share,Exact 95 percent lower confidence bound for Polymarket support across primary horizon_tier units.
+full_panel_horizon_tier_unit_count,18,horizon_tier units,Full panel horizon_tier units.
+full_panel_horizon_tier_polymarket_support_count,5,horizon_tier units,Full-panel horizon_tier units where Polymarket has lower mean Brier.
+full_panel_horizon_tier_poll_support_count,13,horizon_tier units,Full-panel horizon_tier units where poll-derived probability has lower mean Brier.
+late_high_horizon_tier_unit_count,2,horizon_tier units,Late high-distance horizon_tier units.
+late_high_horizon_tier_poll_support_count,2,horizon_tier units,Late high-distance horizon_tier units where poll-derived probability has lower mean Brier.
+late_high_horizon_tier_poll_exact_binomial_p_value_greater,0.25,p_value,One-sided exact binomial p-value for poll-derived support across late high-distance horizon_tier units.
+late_high_row_count,72,state-date rows,Rows in the <=90-day high poll-distance counterexample scope.
+late_high_poll_lower_loss_count,72,state-date rows,Late high-distance rows where poll-derived probability has lower Brier loss.
+primary_scope_supported_across_all_units,1,binary,Primary scope has Polymarket lower mean Brier in every reported aggregation unit.
+broad_claim_proven,0,binary,The broad Polymarket-better claim remains unproven.
+h1_goal_completion_status,not_proven,status,"The robust aggregation supports a bounded poll statement, not the full broad objective."

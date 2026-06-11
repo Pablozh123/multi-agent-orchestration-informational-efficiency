@@ -1,0 +1,18 @@
+summary_id,value,unit,description
+source_state_case_count,56,source-state cases,Input direct poll-transform source-state cases.
+state_count,43,states,State clusters with at least one direct poll-transform source.
+state_mean_polymarket_support_count,13,states,States where mean direct poll-transform Brier is lower for Polymarket.
+state_mean_poll_support_count,30,states,States where mean direct poll-transform Brier is lower for poll-derived comparators.
+state_mean_tie_count,0,states,States tied by mean direct poll-transform Brier.
+equal_state_mean_loss_advantage,0.012179748962750437,brier_score,Equal-state mean of poll-derived Brier minus Polymarket Brier.
+equal_state_median_loss_advantage,-0.00014129951518562073,brier_score,Equal-state median of poll-derived Brier minus Polymarket Brier.
+equal_state_bootstrap_95_ci_low,0.004091892987114947,brier_score,Deterministic state-cluster bootstrap 2.5 percent quantile.
+equal_state_bootstrap_95_ci_high,0.021670801161971762,brier_score,Deterministic state-cluster bootstrap 97.5 percent quantile.
+equal_state_bootstrap_positive_share,0.99975,share,Share of deterministic bootstrap means above zero.
+equal_state_sign_flip_p_value_greater,0.004549772511374431,p_value,Deterministic Monte Carlo sign-flip p-value for positive equal-state mean.
+state_mean_polymarket_exact_binomial_p_value_greater,0.9972992136727044,p_value,One-sided exact binomial p-value for Polymarket state-count support.
+state_mean_poll_exact_binomial_p_value_greater,0.00685909252933925,p_value,One-sided exact binomial p-value for poll-derived state-count support.
+state_cluster_mean_supports_polymarket,1,binary,Whether equal-state mean loss advantage is positive for Polymarket.
+state_count_majority_supports_polymarket,0,binary,Whether Polymarket wins more state clusters by mean Brier.
+broad_many_cases_claim_proven,0,binary,This state-cluster diagnostic does not prove the broad many-cases claim.
+h1_goal_completion_status,not_proven,status,"Equal-state mean supports Polymarket, but state-count majority and broad-scope proof remain incomplete."

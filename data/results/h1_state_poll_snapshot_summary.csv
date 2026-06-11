@@ -1,0 +1,10 @@
+summary_id,value,unit,description
+case_count,13.0,cases,Curated resolved state-level poll-snapshot outcomes.
+independent_resolved_outcome_count,13.0,outcomes,Each row is a distinct 2024 presidential state outcome.
+polymarket_lower_loss_count,8.0,cases,Cases where Polymarket has lower Brier loss.
+poll_derived_lower_loss_count,5.0,cases,Cases where the poll-derived probability has lower Brier loss.
+tie_count,0.0,cases,Cases with equal Brier loss.
+polymarket_better_share,0.6153846153846154,share,Share of state cases where Polymarket loss is lower.
+mean_polymarket_brier,0.13355132692307695,brier_score,Mean Brier loss across Polymarket state snapshots.
+mean_poll_derived_brier,0.17635906875132107,brier_score,Mean Brier loss across transformed 538 poll-average probabilities.
+mean_loss_advantage,0.04280774182824412,brier_score,Positive values mean lower mean Polymarket loss.

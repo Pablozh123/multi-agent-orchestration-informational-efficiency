@@ -1,0 +1,20 @@
+summary_id,value,unit,description
+case_count,156.0,source-state cases,Input source-state cases.
+state_count,50.0,states,Covered states.
+all_low_distance_case_count,52.0,source-state cases,All-source cases in the lowest comparator-distance tercile.
+all_low_distance_polymarket_lower_loss_count,35.0,source-state cases,Lowest-distance all-source cases where Polymarket has lower loss.
+all_low_distance_comparator_lower_loss_count,17.0,source-state cases,Lowest-distance all-source cases where comparators have lower loss.
+all_low_distance_mean_loss_advantage,0.028374399982100788,brier_score,Positive values mean lower Polymarket mean loss in the lowest-distance all-source tercile.
+all_high_distance_case_count,40.0,source-state cases,All-source cases in the highest comparator-distance tercile.
+all_high_distance_polymarket_lower_loss_count,0.0,source-state cases,Highest-distance all-source cases where Polymarket has lower loss.
+all_high_distance_comparator_lower_loss_count,40.0,source-state cases,Highest-distance all-source cases where comparators have lower loss.
+direct_low_distance_case_count,19.0,source-state cases,Direct poll-transform cases in their lowest comparator-distance tercile.
+direct_low_distance_polymarket_lower_loss_count,18.0,source-state cases,Lowest-distance direct poll-transform cases where Polymarket has lower loss.
+direct_low_distance_comparator_lower_loss_count,1.0,source-state cases,Lowest-distance direct poll-transform cases where poll-derived comparators have lower loss.
+direct_low_distance_mean_loss_advantage,0.05669626206823642,brier_score,Positive values mean lower Polymarket mean loss in the lowest-distance direct poll tercile.
+direct_high_distance_case_count,19.0,source-state cases,Direct poll-transform cases in their highest comparator-distance tercile.
+direct_high_distance_polymarket_lower_loss_count,0.0,source-state cases,Highest-distance direct poll-transform cases where Polymarket has lower loss.
+direct_high_distance_comparator_lower_loss_count,19.0,source-state cases,Highest-distance direct poll-transform cases where poll-derived comparators have lower loss.
+competitive_subset_supports_polymarket,1.0,binary,Lowest-distance terciles support a bounded Polymarket advantage.
+safe_state_subset_contradicts_strong_claim,1.0,binary,Highest-distance terciles contradict the broad Polymarket advantage claim.
+broad_many_cases_claim_supported_now,0.0,binary,This diagnostic does not prove the requested broad many-cases claim.

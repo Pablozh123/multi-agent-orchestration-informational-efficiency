@@ -1,0 +1,16 @@
+summary_id,value,unit,description
+case_count,43.0,cases,Matched 270toWin poll-average state outcomes.
+independent_resolved_outcome_count,43.0,outcomes,Each row is a distinct 2024 presidential state outcome.
+poll_average_endpoint_row_count,49.0,rows,"Rows returned by the 270toWin results object, including national and district rows."
+poll_average_state_rows,43.0,state rows,Rows in the 270toWin results object that match the 50-state universe.
+matched_state_count,43.0,states,States with both a 270toWin polling average and a local Polymarket state case.
+poll_average_missing_state_count,7.0,states,50-state rows absent from the 270toWin polling-average results object.
+polymarket_missing_matched_state_count,0.0,states,270toWin state rows without a local Polymarket state case.
+excluded_non_state_or_unmatched_poll_rows,6.0,rows,Endpoint rows that do not become matched state Brier cases.
+polymarket_lower_loss_count,14.0,cases,Cases where Polymarket has lower Brier loss.
+poll_derived_lower_loss_count,29.0,cases,Cases where the transformed 270toWin polling average has lower Brier loss.
+tie_count,0.0,cases,Cases with equal Brier loss.
+polymarket_better_share,0.32558139534883723,share,Share of matched cases where Polymarket loss is lower.
+mean_polymarket_brier,0.03044131976744186,brier_score,Mean Brier loss across Polymarket state snapshots.
+mean_poll_derived_brier,0.0415955678144349,brier_score,Mean Brier loss across transformed 270toWin poll-average probabilities.
+mean_loss_advantage,0.01115424804699304,brier_score,Positive values mean lower mean Polymarket loss.

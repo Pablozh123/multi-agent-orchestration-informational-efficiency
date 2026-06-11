@@ -1,0 +1,44 @@
+{
+  "generated_at_utc": "2026-06-10T14:17:20+00:00",
+  "limitations": {
+    "daily_rows_are_not_independent_election_outcomes": true,
+    "fivethirtyeight_is_poll_based_probability_not_raw_poll_share": true,
+    "no_causal_or_tradeability_claim": true,
+    "no_reaction_speed_claim_from_h1": true,
+    "raw_polls_require_documented_probability_transform_before_brier_use": true,
+    "single_resolved_event_limits_true_calibration_curve": true
+  },
+  "method": {
+    "calculation_scope": "deterministic_python_from_precomputed_h1_brier_rows",
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "name": "h1_forecast_quality_pairwise_brier_summary",
+    "outcome": "Trump won the 2024 US presidential election",
+    "primary_comparator": "FiveThirtyEight poll-based probability forecast",
+    "raw_poll_average_probability_transform_used": false,
+    "rcp_included": false
+  },
+  "outputs": {
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "end_date": "2024-09-12",
+    "fivethirtyeight_comparison_count": 194,
+    "h1_daily_rows": 194,
+    "mean_loss_advantage_vs_fivethirtyeight": 0.1020762560553918,
+    "pairwise_rows": 3,
+    "polymarket_better_than_fivethirtyeight_count": 194,
+    "polymarket_better_than_fivethirtyeight_share": 1.0,
+    "source_summary_rows": 4,
+    "start_date": "2024-03-01"
+  },
+  "source_paths": {
+    "brier_input": "data\\results\\h1_brier_scores.csv",
+    "dm_input": "data\\results\\h1_diebold_mariano.json",
+    "figure": "data\\results\\h1_forecast_quality.png",
+    "pairwise": "data\\results\\h1_forecast_quality_pairwise.csv",
+    "source_summary": "data\\results\\h1_forecast_quality_sources.csv"
+  }
+}

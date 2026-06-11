@@ -1,0 +1,46 @@
+{
+  "generated_at_utc": "2026-06-10T18:12:39+00:00",
+  "limitations": {
+    "does_not_prove_broad_independent_many_cases_claim": true,
+    "no_causal_or_tradeability_claim": true,
+    "panel_rows_are_repeated_forecasts": true,
+    "supporting_months_are_conditioned_diagnostic_subset": true
+  },
+  "method": {
+    "calculation_scope": "deterministic_python_from_state_date_poll_panel_cases",
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "name": "h1_state_poll_panel_temporal_diagnostic",
+    "rcp_included": false,
+    "uses_raw_poll_shares_directly": false
+  },
+  "outputs": {
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "full_panel_mean_poll_derived_brier": 0.10260026775705645,
+    "full_panel_mean_polymarket_brier": 0.1594798197674418,
+    "full_panel_poll_derived_lower_loss_count": 1360,
+    "full_panel_polymarket_lower_loss_count": 360,
+    "h1_goal_completion_status": "not_proven",
+    "month_count": 7,
+    "polymarket_supporting_mean_poll_derived_brier": 0.2542960939404588,
+    "polymarket_supporting_mean_polymarket_brier": 0.18421631782945733,
+    "polymarket_supporting_month_count": 2,
+    "polymarket_supporting_months": "2024-08,2024-09",
+    "polymarket_supporting_pm_lower_loss_count": 280,
+    "polymarket_supporting_poll_lower_loss_count": 107,
+    "polymarket_supporting_row_count": 387,
+    "row_count": 1720,
+    "state_count": 15
+  },
+  "source_paths": {
+    "case_input": "data\\results\\h1_state_poll_panel_cases.csv",
+    "claim_audit": "data\\results\\h1_state_poll_panel_temporal_claim_audit.csv",
+    "figure": "data\\results\\h1_state_poll_panel_temporal_diagnostic.png",
+    "state_month": "data\\results\\h1_state_poll_panel_temporal_state_month.csv",
+    "temporal_summary": "data\\results\\h1_state_poll_panel_temporal_summary.csv"
+  }
+}

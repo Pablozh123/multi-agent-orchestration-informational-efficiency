@@ -1,0 +1,41 @@
+{
+  "generated_at_utc": "2026-06-10T18:37:23+00:00",
+  "limitations": {
+    "does_not_prove_broad_independent_many_cases_claim": true,
+    "no_causal_or_tradeability_claim": true,
+    "panel_rows_are_repeated_forecasts": true,
+    "state_rows_share_one_election_context": true
+  },
+  "method": {
+    "calculation_scope": "deterministic_python_from_state_date_poll_panel_cases",
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "name": "h1_state_poll_panel_horizon_state_support",
+    "near_horizon_max_days": 90,
+    "rcp_included": false,
+    "uses_raw_poll_shares_directly": false
+  },
+  "outputs": {
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "h1_goal_completion_status": "not_proven",
+    "mean_poll_derived_brier": 0.2520477705719791,
+    "mean_polymarket_brier": 0.179920350140056,
+    "poll_derived_lower_loss_count": 95,
+    "polymarket_better_share": 0.7338935574229691,
+    "polymarket_lower_loss_count": 262,
+    "polymarket_majority_support_state_count": 8,
+    "polymarket_mean_support_state_count": 8,
+    "row_count": 357,
+    "state_count": 13
+  },
+  "source_paths": {
+    "case_input": "data\\results\\h1_state_poll_panel_cases.csv",
+    "figure": "data\\results\\h1_state_poll_panel_horizon_state_support.png",
+    "state_support": "data\\results\\h1_state_poll_panel_horizon_state_support.csv",
+    "summary": "data\\results\\h1_state_poll_panel_horizon_state_support_summary.csv"
+  }
+}

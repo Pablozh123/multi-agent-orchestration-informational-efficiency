@@ -1,0 +1,15 @@
+summary_id,value,unit,description
+state_count,43,states,Direct poll state clusters included in the outlier diagnostic.
+full_mean_loss_advantage,0.012179748962750443,brier_score,Equal-state mean loss advantage across all direct poll state clusters.
+leave_one_out_scenario_count,43,scenarios,Number of leave-one-state-out scenarios.
+min_leave_one_out_mean_loss_advantage,0.009498801293313323,brier_score,Smallest equal-state mean after removing one state.
+leave_one_out_all_positive,1,binary,Whether every leave-one-state-out mean remains positive.
+most_influential_removed_state,Wisconsin,state,Single removed state that yields the smallest remaining mean.
+max_top_positive_exclusion_k_with_positive_mean,6,states,Largest number of top positive states removable while mean remains positive.
+first_nonpositive_top_positive_exclusion_k,7,states,Smallest top-positive-state removal count where mean is not positive.
+first_nonpositive_top_positive_exclusion_mean,-9.535732990138818e-05,brier_score,Mean after the first top-positive-state exclusion that is not positive.
+largest_positive_state,Wisconsin,state,State with the largest positive Polymarket loss advantage.
+largest_positive_state_loss_advantage,0.1247795510791095,brier_score,Largest state-level positive loss advantage.
+outlier_robustness_supports_polymarket_mean,1,binary,Whether the positive mean survives all one-state exclusions.
+broad_many_cases_claim_proven,0,binary,This outlier diagnostic does not prove the broad many-cases claim.
+h1_goal_completion_status,not_proven,status,"Mean advantage survives single-state exclusions, but the result is still concentrated in top positive states."

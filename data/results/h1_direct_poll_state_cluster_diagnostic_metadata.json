@@ -1,0 +1,63 @@
+{
+  "generated_at_utc": "2026-06-11T00:29:51+00:00",
+  "limitations": {
+    "all_rows_share_one_presidential_election_context": true,
+    "cluster_bootstrap_is_diagnostic_not_new_data": true,
+    "goal_many_cases_claim_not_yet_proven": true,
+    "no_causal_or_tradeability_claim": true,
+    "state_count_majority_does_not_support_polymarket": true,
+    "states_are_not_independent_elections": true
+  },
+  "method": {
+    "bootstrap_iterations": 20000,
+    "calculation_scope": "deterministic_python_from_existing_h1_direct_poll_artifact",
+    "does_not_collect_external_data": true,
+    "does_not_recompute_from_raw_database": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "name": "h1_direct_poll_state_cluster_diagnostic",
+    "random_seed": 20240611,
+    "rcp_included": false,
+    "state_clusters_equal_weighted": true,
+    "uses_raw_poll_shares_directly": false
+  },
+  "outputs": {
+    "broad_many_cases_claim_proven": false,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "equal_state_mean_loss_advantage": 0.012179748962750437,
+    "source_state_case_count": 56,
+    "state_cluster_mean_supports_polymarket": true,
+    "state_count": 43,
+    "state_count_majority_supports_polymarket": false,
+    "state_mean_poll_support_count": 30,
+    "state_mean_polymarket_support_count": 13
+  },
+  "source_paths": {
+    "cases_input": "data\\results\\h1_direct_poll_loss_decomposition_cases.csv",
+    "figure": "data\\results\\h1_direct_poll_state_cluster_diagnostic.png",
+    "states": "data\\results\\h1_direct_poll_state_cluster_diagnostic_states.csv",
+    "summary": "data\\results\\h1_direct_poll_state_cluster_diagnostic_summary.csv"
+  },
+  "summary": {
+    "broad_many_cases_claim_proven": 0,
+    "equal_state_bootstrap_95_ci_high": 0.021670801161971762,
+    "equal_state_bootstrap_95_ci_low": 0.004091892987114947,
+    "equal_state_bootstrap_positive_share": 0.99975,
+    "equal_state_mean_loss_advantage": 0.012179748962750437,
+    "equal_state_median_loss_advantage": -0.00014129951518562073,
+    "equal_state_sign_flip_p_value_greater": 0.004549772511374431,
+    "h1_goal_completion_status": "not_proven",
+    "source_state_case_count": 56,
+    "state_cluster_mean_supports_polymarket": 1,
+    "state_count": 43,
+    "state_count_majority_supports_polymarket": 0,
+    "state_mean_poll_exact_binomial_p_value_greater": 0.00685909252933925,
+    "state_mean_poll_support_count": 30,
+    "state_mean_polymarket_exact_binomial_p_value_greater": 0.9972992136727044,
+    "state_mean_polymarket_support_count": 13,
+    "state_mean_tie_count": 0
+  }
+}

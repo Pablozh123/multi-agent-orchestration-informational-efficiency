@@ -1,0 +1,52 @@
+{
+  "generated_at_utc": "2026-06-10T23:24:24+00:00",
+  "limitations": {
+    "calibration_bins_are_descriptive_not_significance_tests": true,
+    "goal_many_cases_claim_not_yet_proven": true,
+    "limited_case_sets_have_low_bin_counts": true,
+    "no_causal_or_tradeability_claim": true,
+    "poll_transform_rows_are_model_dependent": true,
+    "state_rows_share_one_election_context": true,
+    "two_seventy_safe_state_probabilities_are_censored": true
+  },
+  "method": {
+    "calculation_scope": "deterministic_python_from_precomputed_h1_cases",
+    "daily_national_reliability_curve_excluded": true,
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "fixed_bin_count": 5,
+    "fixed_bin_width_probability_points": 0.2,
+    "name": "h1_fixed_bin_calibration_diagnostic",
+    "rcp_included": false,
+    "reliability_panel_min_case_count": 30,
+    "sparse_reliability_points_not_connected": true,
+    "uses_raw_poll_shares_directly": false
+  },
+  "outputs": {
+    "aggregate_support_row_count": 5,
+    "broad_many_cases_support_row_count": 0,
+    "calibration_bin_row_count": 26,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "forecast_case_row_count": 192,
+    "forecast_source_count": 7,
+    "h1_goal_completion_status": "not_proven",
+    "majority_support_row_count": 2,
+    "pairwise_comparison_count": 5,
+    "summary_row_count": 7
+  },
+  "source_paths": {
+    "calibration_bins": "data\\results\\h1_calibration_diagnostic_bins.csv",
+    "figure": "data\\results\\h1_calibration_diagnostic.png",
+    "final_snapshot_case_input": "data\\results\\h1_final_snapshot_cases.csv",
+    "forecast_cases": "data\\results\\h1_calibration_diagnostic_cases.csv",
+    "pairwise": "data\\results\\h1_calibration_diagnostic_pairwise.csv",
+    "rieke_case_input": "data\\results\\h1_rieke_state_forecast_cases.csv",
+    "state_poll_case_input": "data\\results\\h1_state_poll_snapshot_cases.csv",
+    "summary": "data\\results\\h1_calibration_diagnostic_summary.csv",
+    "two_seventy_case_input": "data\\results\\h1_270towin_state_forecast_cases.csv"
+  }
+}

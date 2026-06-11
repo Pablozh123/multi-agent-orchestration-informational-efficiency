@@ -1,0 +1,13 @@
+summary_id,value,unit,description
+late_non_safe_state_count,9.0,states,Late low/middle-distance state count.
+late_non_safe_polymarket_majority_state_count,9.0,states,Late low/middle-distance states with Polymarket lower-loss majority.
+late_non_safe_polymarket_majority_share,1.0,share,Late low/middle-distance Polymarket state-majority share.
+late_non_safe_polymarket_exact_binomial_p_value_greater,0.001953125,p_value,One-sided exact binomial p-value for Polymarket state-majority support.
+late_non_safe_polymarket_exact_95_ci_low,0.7168711644368863,share,Lower exact 95 percent confidence bound for Polymarket state-majority share.
+late_high_distance_state_count,5.0,states,Late high-distance state count.
+late_high_distance_polymarket_majority_state_count,0.0,states,Late high-distance states with Polymarket lower-loss majority.
+late_high_distance_poll_majority_state_count,5.0,states,Late high-distance states with poll-derived lower-loss majority.
+late_high_distance_poll_exact_binomial_p_value_greater,0.03125,p_value,One-sided exact binomial p-value for poll-derived state-majority support.
+late_non_safe_state_level_supports_polymarket,1.0,binary,The late low/middle-distance state-level sign test supports Polymarket.
+late_high_distance_state_level_contradicts_strong_claim,1.0,binary,The late high-distance state-level result contradicts the strong claim.
+broad_many_cases_claim_supported_now,0.0,binary,This diagnostic does not prove the requested broad many-cases claim.

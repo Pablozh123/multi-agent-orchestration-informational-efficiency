@@ -1,0 +1,27 @@
+forecast_source_id,forecast_source_label,case_set_id,source_family,bin_index,bin_label,bin_start,bin_end,case_count,positive_count,mean_forecast_probability,observed_frequency,mean_brier_loss,forecast_minus_observed,absolute_calibration_gap
+fivethirtyeight_final_snapshot_8,FiveThirtyEight final snapshot,final_snapshot_8,traditional_forecast,2,0.4-0.6,0.4,0.6,3,3.0,0.5248333333333334,1.0,0.22791008333333337,-0.4751666666666666,0.4751666666666666
+fivethirtyeight_final_snapshot_8,FiveThirtyEight final snapshot,final_snapshot_8,traditional_forecast,4,0.8-1.0,0.8,1.0,5,5.0,0.9057999999999999,1.0,0.012500200000000003,-0.09420000000000006,0.09420000000000006
+poll_derived_state_13,538 poll-derived state probability,state_poll_snapshot_13,traditional_poll_transform,0,0.0-0.2,0.0,0.2,3,0.0,0.04960157298850479,0.0,0.00372713521765494,0.04960157298850479,0.04960157298850479
+poll_derived_state_13,538 poll-derived state probability,state_poll_snapshot_13,traditional_poll_transform,1,0.2-0.4,0.2,0.4,2,2.0,0.315086843388039,1.0,0.4711543499360319,-0.6849131566119611,0.6849131566119611
+poll_derived_state_13,538 poll-derived state probability,state_poll_snapshot_13,traditional_poll_transform,2,0.4-0.6,0.4,0.6,5,5.0,0.4942932372182396,1.0,0.2578451641528585,-0.5057067627817604,0.5057067627817604
+poll_derived_state_13,538 poll-derived state probability,state_poll_snapshot_13,traditional_poll_transform,4,0.8-1.0,0.8,1.0,3,3.0,0.8896268671453335,1.0,0.01665065582595114,-0.11037313285466654,0.11037313285466654
+polymarket_final_snapshot_8,Polymarket final snapshot,final_snapshot_8,polymarket,2,0.4-0.6,0.4,0.6,1,1.0,0.505,1.0,0.245025,-0.495,0.495
+polymarket_final_snapshot_8,Polymarket final snapshot,final_snapshot_8,polymarket,3,0.6-0.8,0.6,0.8,2,2.0,0.62125,1.0,0.14349062500000004,-0.37875000000000003,0.37875000000000003
+polymarket_final_snapshot_8,Polymarket final snapshot,final_snapshot_8,polymarket,4,0.8-1.0,0.8,1.0,5,5.0,0.8762000000000001,1.0,0.019002200000000007,-0.12379999999999991,0.12379999999999991
+polymarket_state_final_50,Polymarket state final,state_final_50,polymarket,0,0.0-0.2,0.0,0.2,19,0.0,0.04228947368421052,0.0,0.00397303947368421,0.04228947368421052,0.04228947368421052
+polymarket_state_final_50,Polymarket state final,state_final_50,polymarket,1,0.2-0.4,0.2,0.4,1,1.0,0.395,1.0,0.366025,-0.605,0.605
+polymarket_state_final_50,Polymarket state final,state_final_50,polymarket,2,0.4-0.6,0.4,0.6,2,2.0,0.53,1.0,0.22512499999999996,-0.47,0.47
+polymarket_state_final_50,Polymarket state final,state_final_50,polymarket,3,0.6-0.8,0.6,0.8,4,4.0,0.69875,1.0,0.09451874999999998,-0.30125,0.30125
+polymarket_state_final_50,Polymarket state final,state_final_50,polymarket,4,0.8-1.0,0.8,1.0,24,24.0,0.9734583333333333,1.0,0.0016895625000000007,-0.026541666666666686,0.026541666666666686
+polymarket_state_poll_13,Polymarket state poll snapshot,state_poll_snapshot_13,polymarket,0,0.0-0.2,0.0,0.2,3,0.0,0.0795,0.0,0.008997416666666666,0.0795,0.0795
+polymarket_state_poll_13,Polymarket state poll snapshot,state_poll_snapshot_13,polymarket,2,0.4-0.6,0.4,0.6,6,6.0,0.5058333333333334,1.0,0.2491875,-0.49416666666666664,0.49416666666666664
+polymarket_state_poll_13,Polymarket state poll snapshot,state_poll_snapshot_13,polymarket,3,0.6-0.8,0.6,0.8,1,1.0,0.605,1.0,0.15602500000000002,-0.395,0.395
+polymarket_state_poll_13,Polymarket state poll snapshot,state_poll_snapshot_13,polymarket,4,0.8-1.0,0.8,1.0,3,3.0,0.8649999999999999,1.0,0.01934166666666667,-0.13500000000000012,0.13500000000000012
+rieke_state_final_50,Rieke poll-model state forecast,state_final_50,traditional_forecast,0,0.0-0.2,0.0,0.2,19,0.0,0.021894736842105234,0.0,0.0015614136842105233,0.021894736842105234,0.021894736842105234
+rieke_state_final_50,Rieke poll-model state forecast,state_final_50,traditional_forecast,2,0.4-0.6,0.4,0.6,4,4.0,0.47555000000000025,1.0,0.27734962499999977,-0.5244499999999997,0.5244499999999997
+rieke_state_final_50,Rieke poll-model state forecast,state_final_50,traditional_forecast,3,0.6-0.8,0.6,0.8,3,3.0,0.6758000000000001,1.0,0.10542725999999998,-0.32419999999999993,0.32419999999999993
+rieke_state_final_50,Rieke poll-model state forecast,state_final_50,traditional_forecast,4,0.8-1.0,0.8,1.0,24,24.0,0.9840416666666667,1.0,0.0009871758333333282,-0.015958333333333297,0.015958333333333297
+two_seventy_state_final_50,270toWin/JHK state forecast,state_final_50,traditional_forecast,0,0.0-0.2,0.0,0.2,19,0.0,0.028473684210526318,0.0,0.0023762631578947368,0.028473684210526318,0.028473684210526318
+two_seventy_state_final_50,270toWin/JHK state forecast,state_final_50,traditional_forecast,2,0.4-0.6,0.4,0.6,4,4.0,0.476,1.0,0.2769005,-0.524,0.524
+two_seventy_state_final_50,270toWin/JHK state forecast,state_final_50,traditional_forecast,3,0.6-0.8,0.6,0.8,3,3.0,0.6593333333333333,1.0,0.116658,-0.3406666666666667,0.3406666666666667
+two_seventy_state_final_50,270toWin/JHK state forecast,state_final_50,traditional_forecast,4,0.8-1.0,0.8,1.0,24,24.0,0.9854583333333333,1.0,0.0011342083333333336,-0.014541666666666675,0.014541666666666675

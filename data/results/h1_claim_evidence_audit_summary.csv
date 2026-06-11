@@ -1,0 +1,14 @@
+summary_id,value,unit,description
+audit_row_count,22,rows,Total claim-audit rows.
+support_row_count,16,rows,Audit rows that support a bounded Polymarket advantage.
+contradiction_row_count,5,rows,Audit rows that contradict the strong Polymarket advantage claim.
+direct_poll_audit_row_count,15,rows,"Rows directly tied to polls, poll-derived probabilities, or 538 snapshots."
+direct_poll_support_row_count,12,rows,Direct poll-related audit rows that support Polymarket.
+direct_poll_contradiction_row_count,3,rows,Direct poll-related audit rows that contradict the strong claim.
+late_window_state_date_row_count,357,state-date rows,State-date rows in the <=90-day poll-derived window.
+late_window_polymarket_lower_loss_count,262,state-date rows,Rows in the <=90-day window where Polymarket has lower loss.
+late_window_poll_lower_loss_count,95,state-date rows,Rows in the <=90-day window where poll-derived probability has lower loss.
+full_panel_polymarket_lower_loss_count,360,state-date rows,Rows in the full state-date panel where Polymarket has lower loss.
+full_panel_poll_lower_loss_count,1360,state-date rows,Rows in the full state-date panel where poll-derived probability has lower loss.
+broad_user_claim_proven,0,binary,The requested broad many-cases conclusion is not proven.
+h1_goal_completion_status,not_proven,status,"Bounded late-window support exists, but the broad claim remains open."

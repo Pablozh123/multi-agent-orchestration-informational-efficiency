@@ -1,0 +1,21 @@
+scope_id,scope_label,source_id,source_label,bin_index,bin_label,bin_start,bin_end,row_count,positive_count,mean_forecast_probability,observed_frequency,mean_brier_loss,forecast_minus_observed,absolute_calibration_gap
+largest_robust_lte120_low_middle,<=120 days + low/middle poll distance,poll_derived,538 poll-derived,0,0.0-0.2,0.0,0.2,0,0,,,,,
+largest_robust_lte120_low_middle,<=120 days + low/middle poll distance,poll_derived,538 poll-derived,1,0.2-0.4,0.2,0.4,131,116,0.31473857791321325,0.8854961832061069,0.4376131288254854,-0.5707576052928937,0.5707576052928937
+largest_robust_lte120_low_middle,<=120 days + low/middle poll distance,poll_derived,538 poll-derived,2,0.4-0.6,0.4,0.6,192,182,0.49838121617864967,0.9479166666666666,0.24913534388390168,-0.44953545048801696,0.44953545048801696
+largest_robust_lte120_low_middle,<=120 days + low/middle poll distance,poll_derived,538 poll-derived,3,0.6-0.8,0.6,0.8,37,37,0.6994385412377813,1.0,0.09398000924702019,-0.30056145876221874,0.30056145876221874
+largest_robust_lte120_low_middle,<=120 days + low/middle poll distance,poll_derived,538 poll-derived,4,0.8-1.0,0.8,1.0,73,73,0.8374427378391068,1.0,0.027060933759151893,-0.16255726216089317,0.16255726216089317
+largest_robust_lte120_low_middle,<=120 days + low/middle poll distance,polymarket,Polymarket,0,0.0-0.2,0.0,0.2,0,0,,,,,
+largest_robust_lte120_low_middle,<=120 days + low/middle poll distance,polymarket,Polymarket,1,0.2-0.4,0.2,0.4,48,28,0.35437499999999994,0.5833333333333334,0.2716708333333333,-0.22895833333333343,0.22895833333333343
+largest_robust_lte120_low_middle,<=120 days + low/middle poll distance,polymarket,Polymarket,2,0.4-0.6,0.4,0.6,252,247,0.5106150793650794,0.9801587301587301,0.24093085317460314,-0.4695436507936507,0.4695436507936507
+largest_robust_lte120_low_middle,<=120 days + low/middle poll distance,polymarket,Polymarket,3,0.6-0.8,0.6,0.8,99,99,0.669949494949495,1.0,0.11298358585858585,-0.33005050505050504,0.33005050505050504
+largest_robust_lte120_low_middle,<=120 days + low/middle poll distance,polymarket,Polymarket,4,0.8-1.0,0.8,1.0,34,34,0.8380882352941176,1.0,0.02649338235294117,-0.16191176470588242,0.16191176470588242
+strongest_robust_lte90_low_middle,<=90 days + low/middle poll distance,poll_derived,538 poll-derived,0,0.0-0.2,0.0,0.2,0,0,,,,,
+strongest_robust_lte90_low_middle,<=90 days + low/middle poll distance,poll_derived,538 poll-derived,1,0.2-0.4,0.2,0.4,102,102,0.3032948647424548,1.0,0.4887728800204808,-0.6967051352575452,0.6967051352575452
+strongest_robust_lte90_low_middle,<=90 days + low/middle poll distance,poll_derived,538 poll-derived,2,0.4-0.6,0.4,0.6,149,149,0.49308959334859,1.0,0.2596702117869413,-0.5069104066514101,0.5069104066514101
+strongest_robust_lte90_low_middle,<=90 days + low/middle poll distance,poll_derived,538 poll-derived,3,0.6-0.8,0.6,0.8,6,6,0.7914458829381831,1.0,0.043526174586876715,-0.20855411706181692,0.20855411706181692
+strongest_robust_lte90_low_middle,<=90 days + low/middle poll distance,poll_derived,538 poll-derived,4,0.8-1.0,0.8,1.0,28,28,0.8225089915148108,1.0,0.03166964797748072,-0.17749100848518917,0.17749100848518917
+strongest_robust_lte90_low_middle,<=90 days + low/middle poll distance,polymarket,Polymarket,0,0.0-0.2,0.0,0.2,0,0,,,,,
+strongest_robust_lte90_low_middle,<=90 days + low/middle poll distance,polymarket,Polymarket,1,0.2-0.4,0.2,0.4,28,28,0.3757142857142857,1.0,0.3900303571428572,-0.6242857142857143,0.6242857142857143
+strongest_robust_lte90_low_middle,<=90 days + low/middle poll distance,polymarket,Polymarket,2,0.4-0.6,0.4,0.6,187,187,0.5077540106951871,1.0,0.24566203208556145,-0.4922459893048129,0.4922459893048129
+strongest_robust_lte90_low_middle,<=90 days + low/middle poll distance,polymarket,Polymarket,3,0.6-0.8,0.6,0.8,36,36,0.6145833333333333,1.0,0.14863263888888886,-0.38541666666666674,0.38541666666666674
+strongest_robust_lte90_low_middle,<=90 days + low/middle poll distance,polymarket,Polymarket,4,0.8-1.0,0.8,1.0,34,34,0.8380882352941176,1.0,0.02649338235294117,-0.16191176470588242,0.16191176470588242

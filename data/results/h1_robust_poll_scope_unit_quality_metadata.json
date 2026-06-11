@@ -1,0 +1,68 @@
+{
+  "generated_at_utc": "2026-06-11T02:32:29+00:00",
+  "limitations": {
+    "bounded_scope_quality_not_broad_claim": true,
+    "no_causal_or_tradeability_claim": true,
+    "one_election_context_only": true,
+    "state_horizon_units_are_not_independent_elections": true,
+    "state_month_units_are_not_independent_elections": true,
+    "unit_aggregation_reduces_repeated_row_dependence": true
+  },
+  "method": {
+    "calculation_scope": "deterministic_python_from_h1_state_date_poll_panel_cases",
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "name": "h1_robust_poll_scope_unit_quality",
+    "rcp_included": false,
+    "scope_specs": [
+      {
+        "horizon_cutoff_days": 120,
+        "included_competitiveness_tiers": [
+          "low_distance_tercile",
+          "middle_distance_tercile"
+        ],
+        "scope_id": "largest_robust_lte120_low_middle",
+        "scope_label": "<=120 days + low/middle poll distance"
+      },
+      {
+        "horizon_cutoff_days": 90,
+        "included_competitiveness_tiers": [
+          "low_distance_tercile",
+          "middle_distance_tercile"
+        ],
+        "scope_id": "strongest_robust_lte90_low_middle",
+        "scope_label": "<=90 days + low/middle poll distance"
+      }
+    ],
+    "unit_types": [
+      "state",
+      "state_month",
+      "state_horizon",
+      "horizon_tier"
+    ]
+  },
+  "outputs": {
+    "broad_claim_proven": false,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "h1_goal_completion_status": "not_proven",
+    "input_row_count": 1720,
+    "largest_state_month_exact_binomial_p_value": 0.03775934875011444,
+    "largest_state_month_polymarket_support_count": 18,
+    "largest_state_month_unit_count": 26,
+    "strongest_state_month_exact_binomial_p_value": 7.62939453125e-06,
+    "strongest_state_month_polymarket_support_count": 17,
+    "strongest_state_month_unit_count": 17,
+    "summary_row_count": 8,
+    "unit_row_count": 116
+  },
+  "source_paths": {
+    "case_input": "data\\results\\h1_state_poll_panel_cases.csv",
+    "figure": "data\\results\\h1_robust_poll_scope_unit_quality.png",
+    "summary": "data\\results\\h1_robust_poll_scope_unit_quality_summary.csv",
+    "units": "data\\results\\h1_robust_poll_scope_unit_quality_units.csv"
+  }
+}

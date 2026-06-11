@@ -1,0 +1,24 @@
+summary_id,value,unit,description
+direct_poll_case_count,56,source-state cases,Direct poll-transform source-state cases.
+direct_poll_polymarket_lower_loss_count,22,source-state cases,Direct poll-transform cases where Polymarket has lower Brier loss.
+direct_poll_comparator_lower_loss_count,34,source-state cases,Direct poll-transform cases where the poll-derived comparator has lower Brier loss.
+direct_poll_tie_count,0,source-state cases,Direct poll-transform cases with equal Brier loss.
+direct_poll_polymarket_lower_loss_share,0.39285714285714285,share,Share of direct poll-transform cases won by Polymarket.
+direct_poll_mean_polymarket_brier,0.05437757142857141,brier_score,Mean Polymarket Brier across direct poll-transform cases.
+direct_poll_mean_poll_derived_brier,0.07287995196049775,brier_score,Mean poll-derived comparator Brier across direct poll-transform cases.
+direct_poll_mean_loss_advantage,0.01850238053192633,brier_score,Mean comparator Brier minus Polymarket Brier; positive supports Polymarket.
+polymarket_win_total_loss_advantage,1.096235929998941,brier_score_sum,Total positive loss advantage from cases won by Polymarket.
+comparator_win_total_loss_advantage_abs,0.060102620211066375,brier_score_sum,Total absolute negative loss advantage from cases won by poll-derived comparators.
+polymarket_win_mean_loss_advantage,0.04982890590904277,brier_score,Mean positive loss advantage in Polymarket-winning direct poll cases.
+comparator_win_mean_loss_advantage_abs,0.0017677241238548934,brier_score,Mean absolute loss advantage in comparator-winning direct poll cases.
+polymarket_win_total_to_comparator_win_abs_ratio,18.23940330969293,ratio,Ratio of total Polymarket-winning advantage to total comparator-winning advantage.
+direct_poll_aggregate_mean_supports_polymarket,1,binary,Whether aggregate mean Brier is lower for Polymarket.
+direct_poll_case_majority_supports_polymarket,0,binary,Whether Polymarket wins a majority of direct poll-transform cases.
+broad_many_cases_claim_proven,0,binary,This decomposition does not prove the requested broad many-cases claim.
+h1_goal_completion_status,not_proven,status,"Direct poll aggregate loss supports Polymarket, but case-majority and broad-scope proof remain incomplete."
+bounded_primary_row_count,285,state-date rows,Bounded <=90-day low/middle poll-distance row count.
+bounded_primary_polymarket_lower_loss_count,262,state-date rows,Bounded rows won by Polymarket.
+bounded_primary_state_month_unit_count,17,state_month units,Bounded state-month diagnostic unit count.
+bounded_primary_state_month_polymarket_support_count,17,state_month units,Bounded state-month units supporting Polymarket.
+bounded_primary_state_month_polymarket_exact_binomial_p_value_greater,7.62939453125e-06,p_value,One-sided exact p-value for bounded state-month Polymarket support.
+bounded_primary_state_month_polymarket_exact_95_ci_low,0.83843388873926,share,Exact 95 percent lower confidence bound for bounded state-month support.

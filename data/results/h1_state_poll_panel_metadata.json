@@ -1,0 +1,67 @@
+{
+  "generated_at_utc": "2026-06-10T17:52:06+00:00",
+  "limitations": {
+    "goal_many_cases_claim_not_proven": true,
+    "no_causal_or_tradeability_claim": true,
+    "not_official_538_state_win_forecast": true,
+    "not_raw_poll_comparison": true,
+    "panel_rows_are_not_independent_elections": true,
+    "poll_transform_is_documented_but_model_assumption": true,
+    "state_rows_share_one_election_context": true
+  },
+  "method": {
+    "calculation_scope": "deterministic_python_from_538_poll_average_panel_and_public_clob_history",
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "end_date": "2024-09-12",
+    "max_price_distance_seconds": 64800,
+    "name": "h1_state_date_poll_panel_extension",
+    "poll_error_mae_points": 3.8,
+    "poll_error_sigma_formula": "sigma = mae / sqrt(2/pi)",
+    "poll_error_sigma_points": 4.7625937217989005,
+    "poll_transform_name": "normal_margin_error_from_538_poll_mae",
+    "price_history_chunk_days": 14,
+    "price_history_fidelity_minutes": 1440,
+    "raw_poll_average_used_directly_as_probability": false,
+    "rcp_included": false,
+    "read_only_public_endpoints": true,
+    "source": "live",
+    "start_date": "2024-03-01"
+  },
+  "outputs": {
+    "aggregate_mean_supports_polymarket": false,
+    "broad_many_cases_claim_supported": false,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "coverage_rows": 15,
+    "h1_goal_completion_status": "not_proven",
+    "independent_state_outcome_count": 15,
+    "majority_rows_support_polymarket": false,
+    "matched_case_count": 1720,
+    "matched_date_count": 186,
+    "matched_state_count": 15,
+    "mean_loss_advantage": -0.05687955201038537,
+    "mean_poll_derived_brier": 0.10260026775705648,
+    "mean_polymarket_brier": 0.15947981976744185,
+    "poll_derived_lower_loss_count": 1360,
+    "poll_panel_candidate_pair_count": 1822,
+    "polymarket_lower_loss_count": 360,
+    "state_summary_rows": 15,
+    "tie_count": 0
+  },
+  "source_paths": {
+    "cases": "data\\results\\h1_state_poll_panel_cases.csv",
+    "coverage": "data\\results\\h1_state_poll_panel_coverage.csv",
+    "figure": "data\\results\\h1_state_poll_panel.png",
+    "market_case_input": "data\\results\\h1_rieke_state_forecast_cases.csv",
+    "state_summary": "data\\results\\h1_state_poll_panel_state_summary.csv",
+    "summary": "data\\results\\h1_state_poll_panel_summary.csv"
+  },
+  "source_urls": {
+    "clob_prices_history": "https://clob.polymarket.com/prices-history",
+    "poll_average_source": "https://raw.githubusercontent.com/fivethirtyeight/data/master/polls/2024-averages/presidential_general_averages_2024-09-12_uncorrected.csv",
+    "poll_error_source": "https://abcnews.com/538/538s-final-forecasts-2024-election/story?id=115511051"
+  }
+}

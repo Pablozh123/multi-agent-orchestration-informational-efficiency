@@ -1,0 +1,36 @@
+{
+  "generated_at_utc": "2026-06-10T14:27:09+00:00",
+  "limitations": {
+    "current_brier_evidence_has_one_independent_resolved_outcome": true,
+    "h2_events_are_not_independent_h1_outcomes": true,
+    "raw_poll_shares_require_documented_probability_transform": true,
+    "swiss_referendum_unresolved_as_of_2026_06_10": true
+  },
+  "method": {
+    "calculation_scope": "deterministic_python_from_local_artifacts",
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "name": "h1_evidence_scope_audit",
+    "separates_daily_rows_from_independent_outcomes": true
+  },
+  "outputs": {
+    "broad_many_cases_claim_supported_now": false,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "eligible_brier_case_rows": 1,
+    "eligible_daily_row_count": 194,
+    "eligible_independent_resolved_outcome_count": 1,
+    "scope_rows": 3
+  },
+  "source_paths": {
+    "brier_input": "data\\results\\h1_brier_scores.csv",
+    "event_input": "data\\events_timeline_seed.csv",
+    "figure_output": "data\\results\\h1_evidence_scope.png",
+    "pairwise_input": "data\\results\\h1_forecast_quality_pairwise.csv",
+    "scope_output": "data\\results\\h1_evidence_scope.csv",
+    "swiss_poll_input": "data\\swiss_referendum_10mio_polls.csv"
+  }
+}

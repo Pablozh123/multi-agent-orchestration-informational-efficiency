@@ -1,0 +1,10 @@
+summary_id,value,unit,description
+case_count,51.0,daily rows,Matched daily rows.
+independent_resolved_outcome_count,1.0,outcomes,Trump popular-vote outcome.
+polymarket_lower_loss_count,21.0,daily rows,Rows where Polymarket has lower Brier loss.
+poll_derived_lower_loss_count,30.0,daily rows,Rows where the transformed 538 poll margin has lower Brier loss.
+tie_count,0.0,daily rows,Rows with equal Brier loss.
+polymarket_better_share,0.4117647058823529,share,Share of rows where Polymarket has lower Brier loss.
+mean_polymarket_brier,0.5178593137254902,Brier loss,Mean Polymarket Brier loss.
+mean_poll_derived_brier,0.48244035524337675,Brier loss,Mean transformed-poll Brier loss.
+mean_loss_advantage,-0.03541895848211345,Brier loss difference,Mean poll-derived Brier minus Polymarket Brier.

@@ -1,0 +1,67 @@
+{
+  "generated_at_utc": "2026-06-11T02:13:58+00:00",
+  "limitations": {
+    "bounded_scope_quality_not_broad_claim": true,
+    "low_middle_scope_excludes_high_distance_counterexamples": true,
+    "no_causal_or_tradeability_claim": true,
+    "rows_repeat_resolved_state_outcomes": true,
+    "state_month_units_are_not_independent_elections": true
+  },
+  "method": {
+    "bin_count": 5,
+    "calculation_scope": "deterministic_python_from_h1_state_date_poll_panel_cases",
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "name": "h1_robust_poll_scope_quality",
+    "rcp_included": false,
+    "scope_specs": [
+      {
+        "horizon_cutoff_days": 120,
+        "included_competitiveness_tiers": [
+          "low_distance_tercile",
+          "middle_distance_tercile"
+        ],
+        "scope_id": "largest_robust_lte120_low_middle",
+        "scope_label": "<=120 days + low/middle poll distance"
+      },
+      {
+        "horizon_cutoff_days": 90,
+        "included_competitiveness_tiers": [
+          "low_distance_tercile",
+          "middle_distance_tercile"
+        ],
+        "scope_id": "strongest_robust_lte90_low_middle",
+        "scope_label": "<=90 days + low/middle poll distance"
+      }
+    ],
+    "uses_raw_poll_shares_directly": false
+  },
+  "outputs": {
+    "bin_row_count": 20,
+    "bounded_poll_claim_supported": true,
+    "broad_claim_proven": false,
+    "case_row_count": 718,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "forecast_row_count": 1436,
+    "h1_goal_completion_status": "not_proven",
+    "largest_case_count": 433,
+    "largest_polymarket_lower_loss_count": 313,
+    "pairwise_row_count": 2,
+    "strongest_case_count": 285,
+    "strongest_polymarket_lower_loss_count": 262,
+    "strongest_scope_all_positive_outcomes": true,
+    "summary_row_count": 4
+  },
+  "source_paths": {
+    "bins": "data\\results\\h1_robust_poll_scope_quality_bins.csv",
+    "case_input": "data\\results\\h1_state_poll_panel_cases.csv",
+    "figure": "data\\results\\h1_robust_poll_scope_quality.png",
+    "forecast_rows": "data\\results\\h1_robust_poll_scope_quality_rows.csv",
+    "pairwise": "data\\results\\h1_robust_poll_scope_quality_pairwise.csv",
+    "summary": "data\\results\\h1_robust_poll_scope_quality_summary.csv"
+  }
+}

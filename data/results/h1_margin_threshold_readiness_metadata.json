@@ -1,0 +1,51 @@
+{
+  "generated_at_utc": "2026-06-10T20:21:05+00:00",
+  "limitations": {
+    "audits_reviewed_threshold_candidates_only": true,
+    "later_traditional_poll_source_would_need_new_documented_transform": true,
+    "no_causal_or_tradeability_claim": true,
+    "no_new_brier_evidence_without_temporal_overlap": true,
+    "official_538_preserved_file_ends_before_late_threshold_market_history": true
+  },
+  "method": {
+    "calculation_scope": "deterministic_python_source_compatibility_audit",
+    "does_not_compute_brier_scores": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_use_order_endpoints": true,
+    "does_not_write_database": true,
+    "history_chunk_days": 14,
+    "history_fidelity_minutes": 1440,
+    "late_clob_window_end": "2024-10-31",
+    "late_clob_window_start": "2024-10-23",
+    "name": "h1_margin_threshold_readiness_audit",
+    "poll_window_end": "2024-09-12",
+    "poll_window_start": "2024-03-01",
+    "source": "live"
+  },
+  "outputs": {
+    "brier_rows_added": 0,
+    "broad_many_cases_claim_supported_now": false,
+    "candidate_count": 7,
+    "candidates_with_538_state_polls": 4,
+    "candidates_with_clob_poll_window_history": 0,
+    "compatible_candidate_count": 0,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "late_clob_candidate_count": 7,
+    "status_counts": {
+      "blocked_by_missing_538_state_poll_rows": 3,
+      "blocked_by_no_temporal_overlap": 4
+    }
+  },
+  "source_paths": {
+    "figure": "data\\results\\h1_margin_threshold_readiness.png",
+    "readiness": "data\\results\\h1_margin_threshold_readiness.csv"
+  },
+  "source_urls": {
+    "clob_prices_history": "https://clob.polymarket.com/prices-history",
+    "gamma_events": "https://gamma-api.polymarket.com/events",
+    "poll_average_source": "https://raw.githubusercontent.com/fivethirtyeight/data/master/polls/2024-averages/presidential_general_averages_2024-09-12_uncorrected.csv"
+  }
+}

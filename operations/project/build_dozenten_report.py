@@ -1,0 +1,3566 @@
+"""Build a supervisor-facing project report document.
+
+The report is a readable synthesis of the current repository state. It reads
+only local deterministic artifacts and does not run collectors, agents, MCP,
+LLMs, ML, database writes, or live endpoints.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import sqlite3
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from html import escape
+from pathlib import Path
+from typing import Any, Sequence
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import pandas as pd
+from docx import Document
+from docx.enum.section import WD_SECTION
+from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT, WD_TABLE_ALIGNMENT
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from docx.shared import Inches, Pt, RGBColor
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+RESULTS_DIR = REPO_ROOT / "data" / "results"
+DOCS_PROJECT_DIR = REPO_ROOT / "docs" / "project"
+DEFAULT_ASSET_DIR = DOCS_PROJECT_DIR / "dozentenbericht_assets"
+DEFAULT_MD_OUTPUT = DOCS_PROJECT_DIR / "dozentenbericht_ba_thesis.md"
+DEFAULT_HTML_OUTPUT = DOCS_PROJECT_DIR / "dozentenbericht_ba_thesis.html"
+DEFAULT_DOCX_OUTPUT = DOCS_PROJECT_DIR / "dozentenbericht_ba_thesis.docx"
+
+BLUE = RGBColor(46, 116, 181)
+DARK_BLUE = RGBColor(31, 77, 120)
+MUTED = RGBColor(90, 90, 90)
+LIGHT_FILL = "F2F4F7"
+CALLOUT_FILL = "F4F6F9"
+TABLE_WIDTH_DXA = 9360
+
+
+@dataclass(frozen=True)
+class FigureSpec:
+    """A report figure with a caption and optional paragraph."""
+
+    path: Path
+    caption: str
+    note: str
+
+
+def build_report(
+    *,
+    markdown_output: Path = DEFAULT_MD_OUTPUT,
+    html_output: Path = DEFAULT_HTML_OUTPUT,
+    docx_output: Path = DEFAULT_DOCX_OUTPUT,
+    asset_dir: Path = DEFAULT_ASSET_DIR,
+) -> dict[str, Any]:
+    """Generate the Markdown and DOCX supervisor report."""
+
+    asset_dir.mkdir(parents=True, exist_ok=True)
+    data = collect_report_data()
+    overview_path = write_pipeline_overview(asset_dir / "project_pipeline_overview.png")
+    data["figures"].insert(
+        0,
+        FigureSpec(
+            path=overview_path,
+            caption="Projektlogik: deterministische Analyse vor Interpretation.",
+            note=(
+                "Die Abbildung zeigt die einfache Lesart fuer die Praesentation: "
+                "Daten werden validiert, in Python analysiert und erst danach "
+                "als Bericht, Dashboard oder spaeter als bounded Interpretation verwendet."
+            ),
+        ),
+    )
+    markdown = render_markdown(data, markdown_output=markdown_output)
+    markdown_output.parent.mkdir(parents=True, exist_ok=True)
+    markdown_output.write_text(markdown, encoding="utf-8")
+    html_output.parent.mkdir(parents=True, exist_ok=True)
+    html_output.write_text(render_html(data, html_output=html_output), encoding="utf-8")
+    write_docx(data, docx_output)
+    return {
+        "markdown_output": str(markdown_output),
+        "html_output": str(html_output),
+        "docx_output": str(docx_output),
+        "overview_figure": str(overview_path),
+        "figure_count": len(data["figures"]),
+        "generated_at_utc": data["generated_at_utc"],
+    }
+
+
+def collect_report_data() -> dict[str, Any]:
+    """Read compact evidence from the current repository artifacts."""
+
+    h1_summary = _read_csv("data/results/thesis_h1_summary.csv")
+    h1_quality_pairwise = _read_csv("data/results/h1_forecast_quality_pairwise.csv")
+    h1_forecast_synthesis = _read_csv(
+        "data/results/h1_forecast_quality_synthesis.csv"
+    )
+    h1_claim_audit_summary = _read_csv(
+        "data/results/h1_claim_evidence_audit_summary.csv"
+    )
+    h1_poll_comparison_result = _read_csv(
+        "data/results/h1_poll_comparison_result_summary.csv"
+    )
+    h1_poll_claim_readiness = _read_csv(
+        "data/results/h1_poll_claim_readiness_summary.csv"
+    )
+    h1_poll_scope_frontier = _read_csv(
+        "data/results/h1_poll_scope_frontier_summary.csv"
+    )
+    h1_poll_decision_matrix = _read_csv(
+        "data/results/h1_poll_decision_matrix_summary.csv"
+    )
+    h1_robust_poll_scope_quality_pairwise = _read_csv(
+        "data/results/h1_robust_poll_scope_quality_pairwise.csv"
+    )
+    h1_robust_poll_scope_quality_summary = _read_csv(
+        "data/results/h1_robust_poll_scope_quality_summary.csv"
+    )
+    h1_robust_poll_scope_unit_quality = _read_csv(
+        "data/results/h1_robust_poll_scope_unit_quality_summary.csv"
+    )
+    h1_poll_comparison_unit_robustness = _read_csv(
+        "data/results/h1_poll_comparison_unit_robustness_summary.csv"
+    )
+    h1_direct_poll_loss_decomposition = _read_csv(
+        "data/results/h1_direct_poll_loss_decomposition_summary.csv"
+    )
+    h1_direct_poll_state_cluster = _read_csv(
+        "data/results/h1_direct_poll_state_cluster_diagnostic_summary.csv"
+    )
+    h1_direct_poll_outlier_robustness = _read_csv(
+        "data/results/h1_direct_poll_outlier_robustness_summary.csv"
+    )
+    h1_calibration_summary = _read_csv(
+        "data/results/h1_calibration_diagnostic_summary.csv"
+    )
+    h1_calibration_pairwise = _read_csv(
+        "data/results/h1_calibration_diagnostic_pairwise.csv"
+    )
+    h1_final_snapshot = _read_csv("data/results/h1_final_snapshot_summary.csv")
+    h1_state_poll_snapshot = _read_csv(
+        "data/results/h1_state_poll_snapshot_summary.csv"
+    )
+    h1_popular_vote = _read_csv("data/results/h1_popular_vote_summary.csv")
+    h1_margin_threshold_readiness = _read_csv(
+        "data/results/h1_margin_threshold_readiness.csv"
+    )
+    h1_state_poll_panel = _read_csv("data/results/h1_state_poll_panel_summary.csv")
+    h1_state_poll_panel_temporal = _read_csv(
+        "data/results/h1_state_poll_panel_temporal_claim_audit.csv"
+    )
+    h1_state_poll_panel_horizon = _read_csv(
+        "data/results/h1_state_poll_panel_horizon_claim_audit.csv"
+    )
+    h1_state_poll_panel_horizon_state = _read_csv(
+        "data/results/h1_state_poll_panel_horizon_state_support_summary.csv"
+    )
+    h1_state_poll_panel_near_quality = _read_csv(
+        "data/results/h1_state_poll_panel_near_window_quality_summary.csv"
+    )
+    h1_state_poll_sensitivity = _read_csv(
+        "data/results/h1_state_poll_snapshot_sensitivity.csv"
+    )
+    h1_state_poll_coverage = _read_csv(
+        "data/results/h1_state_poll_snapshot_coverage.csv"
+    )
+    h1_rieke_state_forecast = _read_csv(
+        "data/results/h1_rieke_state_forecast_summary.csv"
+    )
+    h1_270towin_state_forecast = _read_csv(
+        "data/results/h1_270towin_state_forecast_summary.csv"
+    )
+    h1_270towin_poll_average = _read_csv(
+        "data/results/h1_270towin_poll_average_summary.csv"
+    )
+    h1_state_source_consensus = _read_csv(
+        "data/results/h1_state_source_consensus_summary.csv"
+    )
+    h1_competitive_state = _read_csv(
+        "data/results/h1_competitive_state_diagnostic_summary.csv"
+    )
+    h1_state_poll_panel_competitiveness = _read_csv(
+        "data/results/h1_state_poll_panel_competitiveness_summary.csv"
+    )
+    h1_state_poll_panel_state_significance = _read_csv(
+        "data/results/h1_state_poll_panel_state_significance_summary.csv"
+    )
+    h2_summary = _read_csv("data/results/thesis_h2_summary.csv")
+    h3_summary = _read_csv("data/results/thesis_h3_summary.csv")
+    monitor_summary = _read_csv("data/results/monitor_v2_bounded_summary.csv")
+    swiss_comparison = _read_csv("data/results/swiss_referendum_10mio_comparison.csv")
+    swiss_latest_source = _read_csv(
+        "data/results/swiss_referendum_10mio_latest_source_comparison.csv"
+    )
+    swiss_information = _read_csv(
+        "data/results/swiss_referendum_10mio_information_response.csv"
+    )
+    event_seed = _read_csv("data/events_timeline_seed.csv")
+    swiss_polls = _read_csv("data/swiss_referendum_10mio_polls.csv")
+    literature = _read_csv("data/literature/literature_index.csv")
+
+    return {
+        "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
+        "project": {
+            "working_title": (
+                "Informationelle Effizienz dezentraler Prognosemaerkte "
+                "am Beispiel Polymarket im Vergleich zu traditionellen "
+                "Prognosequellen"
+            ),
+            "database": _database_summary(),
+            "folder_inventory": _folder_inventory(),
+            "test_summary": _status_test_summary(),
+        },
+        "h1": _h1_data(
+            h1_summary,
+            h1_quality_pairwise,
+            h1_forecast_synthesis,
+            h1_claim_audit_summary,
+            h1_poll_comparison_result,
+            h1_poll_claim_readiness,
+            h1_poll_scope_frontier,
+            h1_poll_decision_matrix,
+            h1_robust_poll_scope_quality_pairwise,
+            h1_robust_poll_scope_quality_summary,
+            h1_robust_poll_scope_unit_quality,
+            h1_poll_comparison_unit_robustness,
+            h1_direct_poll_loss_decomposition,
+            h1_direct_poll_state_cluster,
+            h1_direct_poll_outlier_robustness,
+            h1_calibration_summary,
+            h1_calibration_pairwise,
+            h1_final_snapshot,
+            h1_state_poll_snapshot,
+            h1_popular_vote,
+            h1_margin_threshold_readiness,
+            h1_state_poll_panel,
+            h1_state_poll_panel_temporal,
+            h1_state_poll_panel_horizon,
+            h1_state_poll_panel_horizon_state,
+            h1_state_poll_panel_near_quality,
+            h1_state_poll_sensitivity,
+            h1_state_poll_coverage,
+            h1_rieke_state_forecast,
+            h1_270towin_state_forecast,
+            h1_270towin_poll_average,
+            h1_state_source_consensus,
+            h1_competitive_state,
+            h1_state_poll_panel_competitiveness,
+            h1_state_poll_panel_state_significance,
+        ),
+        "h2": _h2_data(h2_summary, event_seed),
+        "h3": _h3_data(h3_summary),
+        "monitor": _monitor_data(monitor_summary),
+        "swiss": _swiss_data(
+            swiss_comparison,
+            swiss_latest_source,
+            swiss_information,
+            swiss_polls,
+        ),
+        "source_counts": {
+            "curated_events": len(event_seed),
+            "literature_rows": len(literature),
+            "swiss_poll_rows": len(swiss_polls),
+        },
+        "figures": _figure_specs(),
+    }
+
+
+def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
+    """Render the report body as Markdown for transparent review."""
+
+    h1 = data["h1"]
+    h2 = data["h2"]
+    h3 = data["h3"]
+    monitor = data["monitor"]
+    swiss = data["swiss"]
+    db = data["project"]["database"]
+    folders = data["project"]["folder_inventory"]
+
+    lines = [
+        "# Dozentenbericht zur Bachelorarbeit",
+        "",
+        f"Erstellt: {data['generated_at_utc']}",
+        "",
+        f"**Arbeitstitel:** {data['project']['working_title']}.",
+        "",
+        "## Kurzfazit",
+        "",
+        (
+            "Das Projekt hat eine deterministische Analysegrundlage aufgebaut. "
+            "Statistische Kennzahlen werden in Python berechnet; LLMs oder "
+            "Agenten interpretieren keine Rohdaten und berechnen keine Metriken."
+        ),
+        "",
+        "- H1 ist ein Forecast-Qualitaetsvergleich.",
+        "- H2 ist eine taegliche Event-Window-Analyse.",
+        "- H3 ist eine Wallet-Tier-Timing-Diagnostik.",
+        "- Der Monitor ist ein pausierter read-only Forschungsprototyp.",
+        "- Die aktuelle Phase vergleicht das Schweizer 10-Millionen-Referendum auf Polymarket mit kuratierten Umfragen.",
+        "",
+        "## Projektstruktur",
+        "",
+        f"- SQLite-Datenbank: {db['table_count']} Tabellen.",
+        f"- Ergebnisartefakte: {folders.get('data/results', 0)} Dateien unter `data/results`.",
+        f"- Analyse-Module: {folders.get('operations/analysis', 0)} Dateien.",
+        f"- Collector-Module: {folders.get('operations/collectors', 0)} Dateien.",
+        f"- Tests: {folders.get('tests', 0)} Testdateien; letzter Status: {data['project']['test_summary']}.",
+        "",
+        "## H1 - Forecast-Qualitaet",
+        "",
+        f"- Beobachtungen: {h1['observation_count']}.",
+        f"- Mean Brier Polymarket: {h1['brier_polymarket']:.4f}.",
+        f"- Mean Brier FiveThirtyEight: {h1['brier_fivethirtyeight']:.4f}.",
+        f"- Mean Brier 50-Prozent-Baseline: {h1['brier_always_50']:.4f}.",
+        f"- Mean Brier Vortag-Polymarket: {h1['brier_prior_day']:.4f}.",
+        (
+            f"- DM p-Wert Polymarket vs FiveThirtyEight: "
+            f"{h1['dm_polymarket_vs_538']:.3g}."
+        ),
+        (
+            f"- Polymarket niedrigerer Tagesverlust als FiveThirtyEight: "
+            f"{h1['pm_better_vs_538_count']} von {h1['pm_vs_538_count']} "
+            f"Tagen ({h1['pm_better_vs_538_share'] * 100:.1f}%)."
+        ),
+        (
+            f"- Mittlerer Verlustvorteil gegenueber FiveThirtyEight: "
+            f"{h1['mean_loss_advantage_vs_538']:.4f} Brier-Punkte."
+        ),
+        (
+            f"- H1-Synthesis ueber traditionelle Vergleichsquellen: "
+            f"{h1['synthesis_aggregate_support_count']} von "
+            f"{h1['synthesis_evidence_row_count']} Vergleichszeilen stuetzen "
+            f"Polymarket im mittleren Brier; "
+            f"{h1['synthesis_majority_support_count']} von "
+            f"{h1['synthesis_evidence_row_count']} zeigen auch eine Mehrheit "
+            f"niedrigerer Einzelfallverluste. "
+            f"Breiter Viele-Faelle-Beweis: "
+            f"{h1['synthesis_broad_support_count']} von "
+            f"{h1['synthesis_evidence_row_count']}."
+        ),
+        (
+            f"- H1-Claim-Evidence-Audit: "
+            f"{h1['claim_audit_support_row_count']} von "
+            f"{h1['claim_audit_row_count']} Audit-Zeilen stuetzen "
+            f"Polymarket begrenzt, "
+            f"{h1['claim_audit_contradiction_row_count']} widerspricht dem "
+            f"starken Claim; bei direkt pollbezogenen Zeilen sind "
+            f"{h1['claim_audit_direct_poll_support_row_count']} von "
+            f"{h1['claim_audit_direct_poll_row_count']} stuetzend und "
+            f"{h1['claim_audit_direct_poll_contradiction_row_count']} "
+            f"widersprechend. Breiter User-Claim belegt: "
+            f"{h1['claim_audit_broad_user_claim_proven']}."
+        ),
+        (
+            f"- H1-Poll-Comparison-Result: Im primaeren <=90-Tage-"
+            f"Low/Middle-Poll-Distanz-Scope hat Polymarket in "
+            f"{h1['poll_result_primary_pm_count']} von "
+            f"{h1['poll_result_primary_row_count']} State-Date-Zeilen "
+            f"({h1['poll_result_primary_pm_share'] * 100:.1f}%) den "
+            f"niedrigeren Brier-Verlust; poll-derived gewinnt "
+            f"{h1['poll_result_primary_poll_count']} Zeilen. Auf State-Ebene "
+            f"sind es {h1['poll_result_primary_pm_state_count']} von "
+            f"{h1['poll_result_primary_state_count']} States, exakter "
+            f"einseitiger p-Wert "
+            f"{h1['poll_result_primary_p_value']:.4f}. Direkt pollbezogen "
+            f"stuetzen {h1['poll_result_direct_poll_support_count']} von "
+            f"{h1['poll_result_direct_poll_row_count']} Audit-Zeilen "
+            f"Polymarket begrenzt; das Vollpanel bleibt Gegenbeleg mit "
+            f"poll-derived {h1['poll_result_full_panel_poll_count']} von "
+            f"{h1['poll_result_full_panel_row_count']} Zeilen. Status: "
+            f"{h1['poll_result_goal_status']}."
+        ),
+        (
+            f"- H1-Poll-Claim-Readiness: "
+            f"{h1['poll_claim_supported_bounded_count']} von "
+            f"{h1['poll_claim_row_count']} Claim-Zeilen stuetzen den "
+            f"bounded <=90-Tage Low/Middle-Poll-Distanz-Scope, "
+            f"{h1['poll_claim_counterexample_count']} sind Gegenbeispiel-"
+            f"Scopes und {h1['poll_claim_mixed_mean_count']} zeigen nur "
+            f"Mean-Loss-Stuetze ohne Fall- oder State-Mehrheit. Im bounded "
+            f"Scope hat Polymarket {h1['poll_claim_primary_pm_count']} von "
+            f"{h1['poll_claim_primary_count']} State-Date-Zeilen "
+            f"({h1['poll_claim_primary_pm_share'] * 100:.1f}%) und "
+            f"{h1['poll_claim_state_month_pm_count']} von "
+            f"{h1['poll_claim_state_month_count']} State-Month-Einheiten "
+            f"(exact p={h1['poll_claim_state_month_p_value']:.2g}, "
+            f"95-Prozent-Untergrenze "
+            f"{h1['poll_claim_state_month_ci_low']:.3f}) auf seiner Seite. "
+            f"Bounded Claim supported: {h1['poll_claim_bounded_supported']}; "
+            f"breiter Claim belegt: {h1['poll_claim_broad_proven']}."
+        ),
+        (
+            f"- H1-Poll-Scope-Frontier: "
+            f"{h1['poll_frontier_robust_scope_count']} von "
+            f"{h1['poll_frontier_row_count']} Horizont-x-Poll-Distanz-Scopes "
+            f"erfuellen die robuste Regel. Der groesste robuste Scope ist "
+            f"{h1['poll_frontier_largest_horizon']} + "
+            f"{h1['poll_frontier_largest_tier']}: Polymarket "
+            f"{h1['poll_frontier_largest_pm_count']} von "
+            f"{h1['poll_frontier_largest_row_count']} State-Date-Zeilen "
+            f"({h1['poll_frontier_largest_pm_share'] * 100:.1f}%), "
+            f"{h1['poll_frontier_largest_state_month_pm_count']} von "
+            f"{h1['poll_frontier_largest_state_month_count']} State-Month-"
+            f"Einheiten, exact p="
+            f"{h1['poll_frontier_largest_state_month_p_value']:.3g}. "
+            f"Der staerkste Scope bleibt "
+            f"{h1['poll_frontier_strongest_scope_id']} mit "
+            f"{h1['poll_frontier_strongest_row_count']} Zeilen und p="
+            f"{h1['poll_frontier_strongest_p_value']:.2g}. "
+            f"<=90 Tage ueber alle Distanzen stuetzen Polymarket zwar in "
+            f"{h1['poll_frontier_lte_90_all_pm_count']} von "
+            f"{h1['poll_frontier_lte_90_all_row_count']} Zeilen "
+            f"({h1['poll_frontier_lte_90_all_pm_share'] * 100:.1f}%), "
+            f"aber State-Month p="
+            f"{h1['poll_frontier_lte_90_all_state_month_p_value']:.3g}; "
+            f"das Vollpanel bleibt Gegenbeleg mit poll-derived "
+            f"{h1['poll_frontier_full_panel_poll_count']} von "
+            f"{h1['poll_frontier_full_panel_row_count']} Zeilen. Status "
+            f"{h1['poll_frontier_goal_status']}."
+        ),
+        (
+            f"- H1-Poll-Decision-Matrix: "
+            f"{h1['poll_decision_robust_yes_count']} von "
+            f"{h1['poll_decision_row_count']} Entscheidungszeilen sind robuste "
+            f"bounded-Yes-Zeilen, {h1['poll_decision_mixed_mean_count']} zeigen "
+            f"Mean-Loss-Stuetze ohne Fall-/Unit-Mehrheit und "
+            f"{h1['poll_decision_counterexample_count']} sind Gegenbelege. "
+            f"Groesster robuster Scope: Polymarket "
+            f"{h1['poll_decision_largest_pm_count']} von "
+            f"{h1['poll_decision_largest_row_count']} State-Date-Zeilen "
+            f"({h1['poll_decision_largest_pm_share'] * 100:.1f}%), "
+            f"{h1['poll_decision_largest_state_month_pm_count']} von "
+            f"{h1['poll_decision_largest_state_month_count']} State-Month-"
+            f"Einheiten, p={h1['poll_decision_largest_p_value']:.4f}. "
+            f"Kalibrierungskontext: "
+            f"{h1['poll_decision_calibration_aggregate_count']} von "
+            f"{h1['poll_decision_calibration_pairwise_count']} Pairwise-Reihen "
+            f"stuetzen Polymarket im mittleren Brier, aber nur "
+            f"{h1['poll_decision_calibration_majority_count']} auch per "
+            f"Fallmehrheit. Bounded ready "
+            f"{h1['poll_decision_bounded_ready']}; breiter Claim "
+            f"{h1['poll_decision_broad_proven']}; Status "
+            f"{h1['poll_decision_goal_status']}."
+        ),
+        (
+            f"- H1-Robust-Poll-Scope-Quality: "
+            f"{h1['robust_quality_forecast_row_count']} Forecast-Zeilen aus "
+            f"{h1['robust_quality_case_count']} State-Date-Faellen und "
+            f"{h1['robust_quality_scope_count']} robusten Poll-Scopes. "
+            f"Groesster robuster Scope: Polymarket "
+            f"{h1['robust_quality_largest_pm_count']} von "
+            f"{h1['robust_quality_largest_case_count']} Zeilen "
+            f"({h1['robust_quality_largest_pm_share'] * 100:.1f}%), "
+            f"Mean Brier {h1['robust_quality_largest_pm_brier']:.4f} vs "
+            f"{h1['robust_quality_largest_poll_brier']:.4f}, ECE "
+            f"{h1['robust_quality_largest_pm_ece']:.4f} vs "
+            f"{h1['robust_quality_largest_poll_ece']:.4f}, Separation "
+            f"{h1['robust_quality_largest_pm_separation']:.4f} vs "
+            f"{h1['robust_quality_largest_poll_separation']:.4f}. "
+            f"Staerkster robuster Scope: Polymarket "
+            f"{h1['robust_quality_strongest_pm_count']} von "
+            f"{h1['robust_quality_strongest_case_count']} Zeilen "
+            f"({h1['robust_quality_strongest_pm_share'] * 100:.1f}%), "
+            f"Mean Brier {h1['robust_quality_strongest_pm_brier']:.4f} vs "
+            f"{h1['robust_quality_strongest_poll_brier']:.4f}, ECE "
+            f"{h1['robust_quality_strongest_pm_ece']:.4f} vs "
+            f"{h1['robust_quality_strongest_poll_ece']:.4f}. "
+            f"Dort sind alle Outcomes positiv, deshalb ist Separation nicht "
+            f"definiert. Breiter Claim belegt "
+            f"{h1['robust_quality_broad_claim_proven']}."
+        ),
+        (
+            f"- H1-Robust-Poll-Scope-Unit-Quality: Die robusten Scopes "
+            f"bleiben auch auf weniger wiederholten Einheiten sichtbar. "
+            f"Groesster robuster Scope: State-Ebene Polymarket "
+            f"{h1['robust_unit_largest_state_pm_count']} von "
+            f"{h1['robust_unit_largest_state_count']} (p="
+            f"{h1['robust_unit_largest_state_p_value']:.3g}), State-Month "
+            f"{h1['robust_unit_largest_state_month_pm_count']} von "
+            f"{h1['robust_unit_largest_state_month_count']} (p="
+            f"{h1['robust_unit_largest_state_month_p_value']:.4f}), "
+            f"State-Horizon {h1['robust_unit_largest_state_horizon_pm_count']} "
+            f"von {h1['robust_unit_largest_state_horizon_count']} (p="
+            f"{h1['robust_unit_largest_state_horizon_p_value']:.3g}). "
+            f"Staerkster robuster Scope: States "
+            f"{h1['robust_unit_strongest_state_pm_count']} von "
+            f"{h1['robust_unit_strongest_state_count']} (p="
+            f"{h1['robust_unit_strongest_state_p_value']:.3g}), "
+            f"State-Month {h1['robust_unit_strongest_state_month_pm_count']} "
+            f"von {h1['robust_unit_strongest_state_month_count']} (p="
+            f"{h1['robust_unit_strongest_state_month_p_value']:.2g}). "
+            f"Medianer State-Month-Brier-Vorteil: "
+            f"{h1['robust_unit_largest_state_month_median_advantage']:.4f} "
+            f"im groessten und "
+            f"{h1['robust_unit_strongest_state_month_median_advantage']:.4f} "
+            f"im staerksten Scope. Breiter Claim belegt "
+            f"{h1['robust_unit_broad_claim_proven']}."
+        ),
+        (
+            f"- H1-Poll-Comparison-Unit-Robustness: Der primaere Scope haelt "
+            f"auch nach Aggregation: Polymarket wird in "
+            f"{h1['poll_unit_state_pm_count']} von "
+            f"{h1['poll_unit_state_count']} States, "
+            f"{h1['poll_unit_state_month_pm_count']} von "
+            f"{h1['poll_unit_state_month_count']} State-Month-Einheiten und "
+            f"{h1['poll_unit_state_horizon_pm_count']} von "
+            f"{h1['poll_unit_state_horizon_count']} State-Horizon-Einheiten "
+            f"gestuetzt; State-Month exact p="
+            f"{h1['poll_unit_state_month_p_value']:.2g}, 95-Prozent-"
+            f"Untergrenze {h1['poll_unit_state_month_ci_low']:.3f}. "
+            f"Full-Panel-State-Month-Gegenbeleg: poll-derived "
+            f"{h1['poll_unit_full_panel_state_month_poll_count']} von "
+            f"{h1['poll_unit_full_panel_state_month_count']}; "
+            f"Late-High-Distance-State-Month-Gegenbeleg: poll-derived "
+            f"{h1['poll_unit_late_high_state_month_poll_count']} von "
+            f"{h1['poll_unit_late_high_state_month_count']}, exact p="
+            f"{h1['poll_unit_late_high_state_month_poll_p_value']:.4f}. Status: "
+            f"{h1['poll_unit_goal_status']}."
+        ),
+        (
+            f"- H1-Direct-Poll-Loss-Decomposition: Direkte Poll-Transform-"
+            f"Vergleiche ergeben Mean Brier {h1['direct_poll_loss_pm_brier']:.4f} "
+            f"fuer Polymarket vs {h1['direct_poll_loss_poll_brier']:.4f} fuer "
+            f"poll-derived Comparatoren. Polymarket hat niedrigeren Verlust in "
+            f"{h1['direct_poll_loss_pm_count']} von "
+            f"{h1['direct_poll_loss_case_count']} Source-State-Faellen, "
+            f"poll-derived in {h1['direct_poll_loss_poll_count']}; die "
+            f"Polymarket-Gewinnfaelle haben aber im Mittel "
+            f"{h1['direct_poll_loss_pm_win_mean_advantage']:.4f} Brier-Vorteil "
+            f"gegenueber {h1['direct_poll_loss_poll_win_mean_advantage']:.4f} "
+            f"bei poll-derived Gewinnfaellen. Das erklaert den aggregierten "
+            f"Brier-Vorteil, ersetzt aber keinen Fallmehrheits- oder "
+            f"Viele-Wahlen-Beweis."
+        ),
+        (
+            f"- H1-Direct-Poll-State-Cluster-Diagnostic: Auf "
+            f"{h1['direct_poll_state_cluster_state_count']} State-Clustern "
+            f"bleibt der gleichgewichtete mittlere Verlustvorteil positiv "
+            f"({h1['direct_poll_state_cluster_mean_advantage']:.4f}; "
+            f"Bootstrap-95%-Intervall "
+            f"{h1['direct_poll_state_cluster_bootstrap_ci_low']:.4f} bis "
+            f"{h1['direct_poll_state_cluster_bootstrap_ci_high']:.4f}; "
+            f"Sign-Flip-p={h1['direct_poll_state_cluster_sign_flip_p']:.4f}). "
+            f"Die State-Mehrheit geht aber gegen Polymarket: "
+            f"{h1['direct_poll_state_cluster_pm_state_count']} States fuer "
+            f"Polymarket, {h1['direct_poll_state_cluster_poll_state_count']} "
+            f"fuer poll-derived Comparatoren. Das stuetzt einen mittleren "
+            f"Verlustvorteil, nicht eine State-Mehrheitsbehauptung."
+        ),
+        (
+            f"- H1-Direct-Poll-Outlier-Robustness: Der gleiche "
+            f"State-Cluster-Mean von "
+            f"{h1['direct_poll_outlier_full_mean_advantage']:.4f} bleibt nach "
+            f"jeder einzelnen State-Entfernung positiv; das Minimum ist "
+            f"{h1['direct_poll_outlier_min_leave_one_mean']:.4f} ohne "
+            f"{h1['direct_poll_outlier_most_influential_state']}. Entfernt man "
+            f"die groessten positiven State-Beitraege, bleibt der Mean bis "
+            f"{h1['direct_poll_outlier_top_k_positive']} entfernte States "
+            f"positiv und kippt bei "
+            f"{h1['direct_poll_outlier_first_nonpositive_k']} entfernten "
+            f"States auf "
+            f"{h1['direct_poll_outlier_first_nonpositive_mean']:.4f}. "
+            f"Das zeigt: nicht ein einzelner Ausreisser, aber Konzentration in "
+            f"den groessten positiven State-Beitraegen; Status "
+            f"{h1['direct_poll_outlier_goal_status']}."
+        ),
+        (
+            f"- H1-State-Source-Konsens: "
+            f"{h1['state_source_consensus_case_count']} Source-State-Vergleiche "
+            f"ueber {h1['state_source_consensus_state_count']} States; "
+            f"Polymarket hat niedrigeren Verlust in "
+            f"{h1['state_source_consensus_pm_case_count']} Source-State-Faellen, "
+            f"traditionelle Comparatoren in "
+            f"{h1['state_source_consensus_comparator_case_count']}. "
+            f"Im All-Source-State-Konsens gewinnt Polymarket "
+            f"{h1['state_source_consensus_pm_state_count']} States, "
+            f"Comparatoren {h1['state_source_consensus_comparator_state_count']}, "
+            f"Ties {h1['state_source_consensus_tie_state_count']}. "
+            f"Bei States mit zwei direkten Poll-Transform-Quellen gewinnt "
+            f"Polymarket {h1['state_source_consensus_direct_two_pm_state_count']} "
+            f"von {h1['state_source_consensus_direct_two_state_count']} States."
+        ),
+        (
+            f"- H1-Competitive-State-Diagnose: In den niedrigsten "
+            f"Comparator-Distanz-Terzilen gewinnt Polymarket "
+            f"{h1['competitive_state_all_low_pm_count']} von "
+            f"{h1['competitive_state_all_low_case_count']} All-Source-Faellen "
+            f"und {h1['competitive_state_direct_low_pm_count']} von "
+            f"{h1['competitive_state_direct_low_case_count']} direkten "
+            f"Poll-Transform-Faellen. In der hoechsten Distanz-Terzile gewinnt "
+            f"Polymarket {h1['competitive_state_all_high_pm_count']} von "
+            f"{h1['competitive_state_all_high_case_count']} All-Source-Faellen, "
+            f"Comparatoren {h1['competitive_state_all_high_comparator_count']} "
+            f"von {h1['competitive_state_all_high_case_count']}. Das stuetzt "
+            f"eine begrenzte Competitive-State-Ausnahme, aber keinen breiten "
+            f"Viele-Faelle-Beweis."
+        ),
+        (
+            f"- H1-State-Date-Competitiveness-x-Horizon: Im <=90-Tage-Fenster "
+            f"und in Low/Middle-Poll-Distanz-Terzilen hat Polymarket in "
+            f"{h1['panel_comp_late_non_safe_pm_count']} von "
+            f"{h1['panel_comp_late_non_safe_row_count']} State-Date-Zeilen "
+            f"niedrigeren Verlust und in "
+            f"{h1['panel_comp_late_non_safe_state_support_count']} von "
+            f"{h1['panel_comp_late_non_safe_state_count']} States eine "
+            f"Mehrheit niedrigerer Verluste. In der spaeten High-Distance-"
+            f"Terzile gewinnt Polymarket {h1['panel_comp_late_high_pm_count']} "
+            f"von {h1['panel_comp_late_high_row_count']} Zeilen, poll-derived "
+            f"{h1['panel_comp_late_high_poll_count']} von "
+            f"{h1['panel_comp_late_high_row_count']}. Das ist ein starker "
+            f"spaeter Competitive-Poll-Befund, aber wegen wiederholter "
+            f"State-Date-Zeilen kein unabhaengiger Viele-Wahlen-Beweis."
+        ),
+        (
+            f"- H1-State-Level-Signifikanzdiagnose: Fuer dieselben spaeten "
+            f"Low/Middle-Poll-Distanz-Faelle stuetzt Polymarket "
+            f"{h1['state_sign_late_non_safe_pm_state_count']} von "
+            f"{h1['state_sign_late_non_safe_state_count']} States; der "
+            f"exakte einseitige Binomial-p-Wert betraegt "
+            f"{h1['state_sign_late_non_safe_p_value']:.4f}, die exakte "
+            f"95-Prozent-Untergrenze der Support-Quote "
+            f"{h1['state_sign_late_non_safe_ci_low']:.3f}. Die spaeten "
+            f"High-Distance-States bleiben ein Gegenbeleg: poll-derived "
+            f"{h1['state_sign_late_high_poll_state_count']} von "
+            f"{h1['state_sign_late_high_state_count']} States."
+        ),
+        (
+            f"- H1-Kalibrierungsdiagnostik: "
+            f"{h1['calibration_forecast_case_rows']} Forecast-Case-Zeilen "
+            f"aus {h1['calibration_forecast_source_count']} Quellen und "
+            f"{h1['calibration_pairwise_count']} Pairwise-Reihen; "
+            f"{h1['calibration_aggregate_support_count']} von "
+            f"{h1['calibration_pairwise_count']} zeigen niedrigeren mittleren "
+            f"Polymarket-Brier, {h1['calibration_majority_support_count']} "
+            f"von {h1['calibration_pairwise_count']} auch eine Mehrheit "
+            f"niedrigerer Einzelfallverluste, breiter Viele-Faelle-Beweis "
+            f"{h1['calibration_broad_support_count']} von "
+            f"{h1['calibration_pairwise_count']}."
+        ),
+        (
+            f"- 50-State-Kalibrierung: Polymarket Mean Brier "
+            f"{h1['calibration_pm_state_brier']:.4f} und Fixed-Bin-ECE "
+            f"{h1['calibration_pm_state_ece']:.4f}; Rieke ECE "
+            f"{h1['calibration_rieke_state_ece']:.4f}, 270toWin/JHK ECE "
+            f"{h1['calibration_270_state_ece']:.4f}. Das ist ein "
+            f"Forecast-Qualitaets-, aber kein klarer Kalibrierungssieg."
+        ),
+        (
+            f"- Final-Snapshot-Erweiterung: Polymarket niedrigerer Verlust in "
+            f"{h1['final_snapshot_pm_lower_loss_count']} von "
+            f"{h1['final_snapshot_case_count']} geloesten 2024-Outcomes; "
+            f"Mean Brier Polymarket {h1['final_snapshot_mean_pm_brier']:.4f} "
+            f"vs 538 final forecast {h1['final_snapshot_mean_traditional_brier']:.4f}."
+        ),
+        (
+            f"- State-Poll-Snapshot-Erweiterung: Polymarket niedrigerer Verlust in "
+            f"{h1['state_poll_snapshot_pm_lower_loss_count']} von "
+            f"{h1['state_poll_snapshot_case_count']} geloesten State-Outcomes; "
+            f"Mean Brier Polymarket {h1['state_poll_snapshot_mean_pm_brier']:.4f} "
+            f"vs poll-derived {h1['state_poll_snapshot_mean_poll_brier']:.4f}."
+        ),
+        (
+            f"- 270toWin-Polling-Average-Erweiterung: "
+            f"{h1['two_seventy_poll_average_case_count']} gematchte State-Outcomes; "
+            f"Polymarket niedrigerer Verlust in "
+            f"{h1['two_seventy_poll_average_pm_lower_loss_count']} Faellen, "
+            f"poll-derived in {h1['two_seventy_poll_average_poll_lower_loss_count']}. "
+            f"Mean Brier Polymarket "
+            f"{h1['two_seventy_poll_average_mean_pm_brier']:.4f} vs "
+            f"270toWin poll-derived "
+            f"{h1['two_seventy_poll_average_mean_poll_brier']:.4f}."
+        ),
+        (
+            f"- Popular-Vote-Erweiterung: {h1['popular_vote_case_count']} nationale "
+            f"Tageszeilen fuer Trump popular vote; Polymarket niedrigerer Verlust "
+            f"in {h1['popular_vote_pm_lower_loss_count']} Zeilen, poll-derived in "
+            f"{h1['popular_vote_poll_lower_loss_count']}. Mean Brier Polymarket "
+            f"{h1['popular_vote_mean_pm_brier']:.4f} vs poll-derived "
+            f"{h1['popular_vote_mean_poll_brier']:.4f}; dieser Zusatz ist ein "
+            f"Gegenbeleg zum starken Claim."
+        ),
+        (
+            f"- Margin-Threshold-Readiness: "
+            f"{h1['margin_threshold_candidate_count']} Trump-State-Margin-Maerkte "
+            f"geprueft; {h1['margin_threshold_with_538_poll_count']} haben "
+            f"538-State-Poll-Average-Zeilen, aber "
+            f"{h1['margin_threshold_with_clob_overlap_count']} haben CLOB-Historie "
+            f"im bewahrten 538-Fenster. H1-kompatible neue Brier-Faelle: "
+            f"{h1['margin_threshold_compatible_count']}; "
+            f"{h1['margin_threshold_no_overlap_count']} blockiert durch fehlende "
+            f"zeitliche Ueberlappung und "
+            f"{h1['margin_threshold_missing_poll_count']} durch fehlende 538-State-Polls."
+        ),
+        (
+            f"- State-Date-Poll-Panel: "
+            f"{h1['state_poll_panel_case_count']} gematchte State-Date-Zeilen "
+            f"ueber {h1['state_poll_panel_state_count']} States und "
+            f"{h1['state_poll_panel_date_count']} Daten; Polymarket hat nur in "
+            f"{h1['state_poll_panel_pm_lower_loss_count']} Zeilen niedrigeren "
+            f"Verlust, die poll-derived 538-Transformation in "
+            f"{h1['state_poll_panel_poll_lower_loss_count']}. Mean Brier "
+            f"Polymarket {h1['state_poll_panel_mean_pm_brier']:.4f} vs "
+            f"poll-derived {h1['state_poll_panel_mean_poll_brier']:.4f}."
+        ),
+        (
+            f"- Temporal-Diagnose des State-Date-Panels: In den "
+            f"Polymarket-stuetzenden Monaten "
+            f"{h1['state_poll_temporal_support_months']} liegen "
+            f"{h1['state_poll_temporal_support_row_count']} Zeilen ueber "
+            f"{h1['state_poll_temporal_support_state_count']} States vor; "
+            f"Polymarket hat dort in "
+            f"{h1['state_poll_temporal_support_pm_lower_loss_count']} Zeilen "
+            f"niedrigeren Verlust, poll-derived in "
+            f"{h1['state_poll_temporal_support_poll_lower_loss_count']}. "
+            f"Mean Brier {h1['state_poll_temporal_support_mean_pm_brier']:.4f} "
+            f"vs {h1['state_poll_temporal_support_mean_poll_brier']:.4f}. "
+            f"Das erklaert den spaeten Polymarket-Vorteil, hebt aber den "
+            f"negativen Vollpanel-Befund nicht auf."
+        ),
+        (
+            f"- Forecast-Horizon-Diagnose: Im <=90-Tage-Fenster vor der "
+            f"Wahl ({h1['state_poll_horizon_near_bins']}) liegen "
+            f"{h1['state_poll_horizon_near_row_count']} Zeilen ueber "
+            f"{h1['state_poll_horizon_near_state_count']} States vor; "
+            f"Polymarket hat in "
+            f"{h1['state_poll_horizon_near_pm_lower_loss_count']} Zeilen "
+            f"niedrigeren Verlust, poll-derived in "
+            f"{h1['state_poll_horizon_near_poll_lower_loss_count']}. "
+            f"Mean Brier {h1['state_poll_horizon_near_mean_pm_brier']:.4f} "
+            f"vs {h1['state_poll_horizon_near_mean_poll_brier']:.4f}. "
+            f"Diese Horizon-Diagnose stuetzt Polymarket naeher an der Wahl, "
+            f"bleibt aber ein wiederholtes Forecast-Row-Fenster."
+        ),
+        (
+            f"- State-Level-Horizon-Diagnose: Im selben <=90-Tage-Fenster "
+            f"stuetzt Polymarket {h1['state_poll_horizon_state_pm_mean_support_count']} "
+            f"von {h1['state_poll_horizon_state_count']} States nach mittlerem "
+            f"Brier und {h1['state_poll_horizon_state_pm_majority_support_count']} "
+            f"von {h1['state_poll_horizon_state_count']} States nach Mehrheit "
+            f"niedrigerer Tagesverluste; "
+            f"{h1['state_poll_horizon_state_poll_support_count']} States "
+            f"stuetzen Polymarket nicht."
+        ),
+        (
+            f"- <=90-Day-Score-Quality-Diagnose: "
+            f"{h1['state_poll_near_quality_forecast_row_count']} Forecast-Zeilen "
+            f"aus {h1['state_poll_near_quality_case_count']} State-Date-Faellen "
+            f"und zwei Quellen. Polymarket hat niedrigeren Mean Brier "
+            f"{h1['state_poll_near_quality_pm_mean_brier']:.4f} vs "
+            f"{h1['state_poll_near_quality_poll_mean_brier']:.4f}, niedrigeren "
+            f"Fixed-Bin-ECE {h1['state_poll_near_quality_pm_ece']:.4f} vs "
+            f"{h1['state_poll_near_quality_poll_ece']:.4f} und hoehere "
+            f"Probability-Separation "
+            f"{h1['state_poll_near_quality_pm_separation']:.4f} vs "
+            f"{h1['state_poll_near_quality_poll_separation']:.4f}. "
+            f"Das stuetzt Forecast-Qualitaet im spaeten Fenster, bleibt aber "
+            f"ein wiederholtes State-Date-Forecast-Panel."
+        ),
+        (
+            f"- Poll-Transform-Sensitivitaet: MAE "
+            f"{h1['state_poll_sensitivity_min_mae']:.1f} bis "
+            f"{h1['state_poll_sensitivity_max_mae']:.1f} Prozentpunkte; "
+            f"Polymarket bleibt im mittleren Brier in allen "
+            f"{h1['state_poll_sensitivity_row_count']} Parameterzeilen niedriger "
+            f"und hat in {h1['state_poll_sensitivity_min_pm_lower_loss_count']} bis "
+            f"{h1['state_poll_sensitivity_max_pm_lower_loss_count']} von "
+            f"{h1['state_poll_snapshot_case_count']} State-Outcomes den niedrigeren "
+            f"Einzelfallverlust."
+        ),
+        (
+            f"- State-Poll-Coverage-Audit: {h1['state_poll_coverage_state_count']} "
+            f"US-States geprueft, {h1['state_poll_coverage_polymarket_market_count']} "
+            f"mit Polymarket-State-Markt, aber nur "
+            f"{h1['state_poll_coverage_valid_pair_count']} mit REP/DEM-Zeilen "
+            f"im bewahrten 538-Polling-Average-Snapshot. "
+            f"{h1['state_poll_coverage_missing_poll_count']} States fallen wegen "
+            f"fehlender 538-Snapshot-Pollwerte aus."
+        ),
+        (
+            f"- Rieke-50-State-Erweiterung: {h1['rieke_state_case_count']} "
+            f"geloeste State-Outcomes gegen ein unabhaengiges pollbasiertes "
+            f"Rieke-Modell; Mean Brier Polymarket "
+            f"{h1['rieke_state_mean_pm_brier']:.4f} vs Rieke "
+            f"{h1['rieke_state_mean_rieke_brier']:.4f}. Polymarket hat nur in "
+            f"{h1['rieke_state_pm_lower_loss_count']} von "
+            f"{h1['rieke_state_case_count']} State-Einzelfaellen den niedrigeren "
+            f"Verlust, Rieke in {h1['rieke_state_rieke_lower_loss_count']} von "
+            f"{h1['rieke_state_case_count']}."
+        ),
+        (
+            f"- 270toWin/JHK-50-State-Erweiterung: "
+            f"{h1['two_seventy_state_case_count']} geloeste State-Outcomes, davon "
+            f"{h1['two_seventy_state_exact_case_count']} exakt ausgewiesene "
+            f"State-Wahrscheinlichkeiten und "
+            f"{h1['two_seventy_state_censored_case_count']} zensierte "
+            f">99.9-Prozent-Boundary-Werte; Mean Brier Polymarket "
+            f"{h1['two_seventy_state_mean_pm_brier']:.4f} vs 270toWin/JHK "
+            f"{h1['two_seventy_state_mean_270_brier']:.4f}. Polymarket hat in "
+            f"{h1['two_seventy_state_pm_lower_loss_count']} von "
+            f"{h1['two_seventy_state_case_count']} Einzelfaellen den niedrigeren "
+            f"Verlust, 270toWin/JHK in "
+            f"{h1['two_seventy_state_270_lower_loss_count']} von "
+            f"{h1['two_seventy_state_case_count']}."
+        ),
+        (
+            f"- H1-Zusatzchecks insgesamt: "
+            f"{h1['final_snapshot_case_count'] + h1['state_poll_snapshot_case_count']} "
+            f"geloeste Outcomes in den 538-nahen Zusatzchecks, davon "
+            f"{h1['final_snapshot_pm_lower_loss_count'] + h1['state_poll_snapshot_pm_lower_loss_count']} "
+            f"mit niedrigerem Polymarket-Verlust. Die Rieke- und 270toWin/JHK-"
+            f"State-Reihen werden separat berichtet, weil sie dasselbe "
+            f"Praesidentschaftsrennen mit anderen traditionellen Modellen "
+            f"abdecken."
+        ),
+        "",
+        "## H2 - Event-Window-Reaktion",
+        "",
+        f"- Kuratierte Ereignisse: {h2['event_count']}.",
+        f"- Kompakte H2-Zeilen: {h2['summary_rows']}.",
+        "- Beispielhafte Primaerfenster:",
+        *[
+            f"  - {row['event']}: {row['change_pp']:+.1f} Prozentpunkte"
+            for row in h2["primary_examples"]
+        ],
+        "",
+        "## H3 - Wallet-Tier-Timing",
+        "",
+        f"- Aligned model rows: {h3['model_rows']}.",
+        f"- Tier counts: {h3['tier_counts_text']}.",
+        (
+            f"- Staerkste dokumentierte Lead-Lag-Korrelation: "
+            f"{h3['top_correlation_label']} = {h3['top_correlation']:.4f}."
+        ),
+        (
+            f"- Kleinster dokumentierter Granger-p-Wert: "
+            f"{h3['min_granger_label']} = {h3['min_granger_p']:.4f}."
+        ),
+        "",
+        "## Monitor-Prototyp",
+        "",
+        f"- Recorded replay rows: {monitor['snapshot_count']}.",
+        f"- Severity counts: {monitor['severity_counts_text']}.",
+        f"- Latest live dashboard markets: {monitor['live_market_count']}; alert rows: {monitor['live_alert_count']}.",
+        f"- Wallet graph: {monitor['wallet_graph_nodes']} nodes, {monitor['wallet_graph_edges']} edges.",
+        "",
+        "## Schweizer Referendum",
+        "",
+        f"- Kuratierte Umfragen: {swiss['poll_count']}.",
+        f"- Polymarket snapshots: {swiss['snapshot_count']}.",
+        f"- Bounded price-history rows: {swiss['history_rows']}.",
+        f"- Latest Polymarket Yes: {swiss['latest_poly_yes_pct']:.1f} Prozent.",
+        f"- Latest matched poll Yes: {swiss['latest_poll_yes_pct']:.1f} Prozent.",
+        f"- Raw gap: {swiss['latest_raw_gap_pp']:+.1f} Prozentpunkte.",
+        f"- Decided-voter gap: {swiss['latest_decided_gap_pp']:+.1f} Prozentpunkte.",
+        "",
+        "## Abbildungen",
+        "",
+    ]
+    for figure in data["figures"]:
+        rel = Path(
+            figure.path.resolve().relative_to(markdown_output.parent.resolve())
+            if figure.path.resolve().is_relative_to(markdown_output.parent.resolve())
+            else Path(
+                _relative_path(figure.path.resolve(), markdown_output.parent.resolve())
+            )
+        )
+        lines.append(f"![{figure.caption}]({rel.as_posix()})")
+        lines.append("")
+        lines.append(f"*{figure.note}*")
+        lines.append("")
+    return "\n".join(lines)
+
+
+def render_html(data: dict[str, Any], *, html_output: Path) -> str:
+    """Render a standalone readable HTML companion report."""
+
+    h1 = data["h1"]
+    h2 = data["h2"]
+    h3 = data["h3"]
+    monitor = data["monitor"]
+    swiss = data["swiss"]
+    figures = "\n".join(
+        _figure_html(figure, html_output=html_output)
+        for figure in data["figures"]
+    )
+    h2_rows = "\n".join(
+        f"<tr><td>{escape(row['event'])}</td><td>{row['change_pp']:+.1f} pp</td></tr>"
+        for row in h2["primary_examples"]
+    )
+    swiss_source_rows = "\n".join(
+        "<tr>"
+        f"<td>{escape(row['source'])}</td>"
+        f"<td>{escape(row['poll_id'])}</td>"
+        f"<td>{row['poll_yes']:.1f}%</td>"
+        f"<td>{row['raw_gap_pp']:+.1f} pp</td>"
+        "</tr>"
+        for row in swiss["latest_source_rows"]
+    )
+    return f"""<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>Dozentenbericht BA Thesis</title>
+  <style>
+    body {{ font-family: Calibri, Arial, sans-serif; margin: 36px auto; max-width: 1040px; color: #1d1d1f; line-height: 1.45; }}
+    h1 {{ font-size: 30px; margin-bottom: 4px; color: #0b2545; }}
+    h2 {{ margin-top: 34px; color: #2e74b5; border-bottom: 1px solid #d8e1ec; padding-bottom: 5px; }}
+    h3 {{ color: #1f4d78; }}
+    .subtitle {{ color: #555; font-size: 16px; margin-top: 0; }}
+    .callout {{ background: #f4f6f9; border-left: 5px solid #2e74b5; padding: 14px 16px; margin: 18px 0; }}
+    .grid {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 16px 0; }}
+    .metric {{ background: #f2f4f7; padding: 12px; border-radius: 6px; }}
+    .metric strong {{ display: block; color: #0b2545; font-size: 20px; }}
+    table {{ border-collapse: collapse; width: 100%; margin: 12px 0 18px; }}
+    th, td {{ border: 1px solid #ccd5df; padding: 8px 10px; vertical-align: top; }}
+    th {{ background: #f2f4f7; color: #0b2545; text-align: left; }}
+    figure {{ margin: 26px 0; }}
+    figure img {{ max-width: 100%; border: 1px solid #e2e6ea; }}
+    figcaption {{ color: #444; font-size: 14px; margin-top: 6px; }}
+    .small {{ color: #666; font-size: 13px; }}
+  </style>
+</head>
+<body>
+  <h1>Dozentenbericht zur Bachelorarbeit</h1>
+  <p class="subtitle">{escape(data['project']['working_title'])}</p>
+  <p class="small">Erstellt aus lokalen deterministischen Artefakten: {escape(data['generated_at_utc'])}</p>
+  <div class="callout"><strong>Kurzfazit.</strong> Das Projekt prueft informationelle Effizienz ueber drei reproduzierbare Analyseebenen: H1 Forecast-Qualitaet, H2 taegliche Event-Window-Reaktion und H3 Wallet-Tier-Timing. Der Monitor ist ein read-only Forschungsprototyp; die aktive Phase ist der Swiss-Referendum-Vergleich.</div>
+
+  <h2>Projektstruktur</h2>
+  <div class="grid">
+    <div class="metric"><strong>{data['project']['database']['table_count']}</strong>Datenbanktabellen</div>
+    <div class="metric"><strong>{data['project']['folder_inventory'].get('data/results', 0)}</strong>Result-Artefakte</div>
+    <div class="metric"><strong>{data['project']['folder_inventory'].get('operations/analysis', 0)}</strong>Analyse-Module</div>
+    <div class="metric"><strong>{data['project']['folder_inventory'].get('tests', 0)}</strong>Testdateien</div>
+  </div>
+  <p>Letzter Teststatus: <code>{escape(data['project']['test_summary'])}</code>.</p>
+
+  <h2>H1 - Forecast-Qualitaet</h2>
+  <table><tr><th>Aspekt</th><th>Wert</th></tr>
+    <tr><td>Beobachtungen</td><td>{h1['observation_count']}</td></tr>
+    <tr><td>Polymarket Mean Brier</td><td>{h1['brier_polymarket']:.4f}</td></tr>
+    <tr><td>FiveThirtyEight Mean Brier</td><td>{h1['brier_fivethirtyeight']:.4f}</td></tr>
+    <tr><td>DM p-Wert Polymarket vs FiveThirtyEight</td><td>{h1['dm_polymarket_vs_538']:.3g}</td></tr>
+    <tr><td>Polymarket niedrigerer Tagesverlust</td><td>{h1['pm_better_vs_538_count']} von {h1['pm_vs_538_count']} Tagen ({h1['pm_better_vs_538_share'] * 100:.1f}%)</td></tr>
+    <tr><td>Mittlerer Verlustvorteil vs FiveThirtyEight</td><td>{h1['mean_loss_advantage_vs_538']:.4f}</td></tr>
+    <tr><td>H1-Synthesis</td><td>{h1['synthesis_aggregate_support_count']} von {h1['synthesis_evidence_row_count']} Vergleichszeilen stuetzen Polymarket im mittleren Brier; {h1['synthesis_majority_support_count']} von {h1['synthesis_evidence_row_count']} zeigen eine Mehrheit niedrigerer Einzelfallverluste; breiter Viele-Faelle-Beweis {h1['synthesis_broad_support_count']} von {h1['synthesis_evidence_row_count']}.</td></tr>
+    <tr><td>H1-Claim-Evidence-Audit</td><td>{h1['claim_audit_support_row_count']} von {h1['claim_audit_row_count']} Audit-Zeilen stuetzen Polymarket begrenzt; {h1['claim_audit_contradiction_row_count']} widerspricht dem starken Claim; direkt pollbezogen {h1['claim_audit_direct_poll_support_row_count']} von {h1['claim_audit_direct_poll_row_count']} stuetzend; breiter User-Claim belegt {h1['claim_audit_broad_user_claim_proven']}.</td></tr>
+    <tr><td>H1-Poll-Comparison-Result</td><td>Primaerer &lt;=90-Tage-Low/Middle-Poll-Distanz-Scope: Polymarket {h1['poll_result_primary_pm_count']} von {h1['poll_result_primary_row_count']} State-Date-Zeilen ({h1['poll_result_primary_pm_share'] * 100:.1f}%), poll-derived {h1['poll_result_primary_poll_count']}; State-Ebene Polymarket {h1['poll_result_primary_pm_state_count']} von {h1['poll_result_primary_state_count']}, exakter einseitiger p-Wert {h1['poll_result_primary_p_value']:.4f}. Direkt pollbezogen {h1['poll_result_direct_poll_support_count']} von {h1['poll_result_direct_poll_row_count']} Audit-Zeilen stuetzend; Vollpanel-Gegenbeleg poll-derived {h1['poll_result_full_panel_poll_count']} von {h1['poll_result_full_panel_row_count']}; Status {h1['poll_result_goal_status']}.</td></tr>
+    <tr><td>H1-Poll-Claim-Readiness</td><td>{h1['poll_claim_supported_bounded_count']} von {h1['poll_claim_row_count']} Claim-Zeilen stuetzen den bounded &lt;=90-Tage Low/Middle-Poll-Distanz-Scope; {h1['poll_claim_counterexample_count']} Gegenbeispiel-Scopes und {h1['poll_claim_mixed_mean_count']} Mean-Loss-Stuetze-ohne-Mehrheit-Zeilen bleiben als Grenzen. Bounded Scope: Polymarket {h1['poll_claim_primary_pm_count']} von {h1['poll_claim_primary_count']} State-Date-Zeilen ({h1['poll_claim_primary_pm_share'] * 100:.1f}%) und {h1['poll_claim_state_month_pm_count']} von {h1['poll_claim_state_month_count']} State-Month-Einheiten, exact p={h1['poll_claim_state_month_p_value']:.2g}, 95-Prozent-Untergrenze {h1['poll_claim_state_month_ci_low']:.3f}. Bounded Claim supported {h1['poll_claim_bounded_supported']}; breiter Claim belegt {h1['poll_claim_broad_proven']}; Status {h1['poll_claim_goal_status']}.</td></tr>
+    <tr><td>H1-Poll-Scope-Frontier</td><td>{h1['poll_frontier_robust_scope_count']} von {h1['poll_frontier_row_count']} Horizont-x-Poll-Distanz-Scopes erfuellen die robuste Regel. Groesster robuster Scope: {h1['poll_frontier_largest_horizon']} + {h1['poll_frontier_largest_tier']}, Polymarket {h1['poll_frontier_largest_pm_count']} von {h1['poll_frontier_largest_row_count']} State-Date-Zeilen ({h1['poll_frontier_largest_pm_share'] * 100:.1f}%), {h1['poll_frontier_largest_state_month_pm_count']} von {h1['poll_frontier_largest_state_month_count']} State-Month-Einheiten, exact p={h1['poll_frontier_largest_state_month_p_value']:.3g}. Staerkster Scope {h1['poll_frontier_strongest_scope_id']}: {h1['poll_frontier_strongest_row_count']} Zeilen, p={h1['poll_frontier_strongest_p_value']:.2g}. &lt;=90 Tage alle Distanzen: Polymarket {h1['poll_frontier_lte_90_all_pm_count']} von {h1['poll_frontier_lte_90_all_row_count']} Zeilen ({h1['poll_frontier_lte_90_all_pm_share'] * 100:.1f}%), State-Month p={h1['poll_frontier_lte_90_all_state_month_p_value']:.3g}; Vollpanel-Gegenbeleg poll-derived {h1['poll_frontier_full_panel_poll_count']} von {h1['poll_frontier_full_panel_row_count']}; Status {h1['poll_frontier_goal_status']}.</td></tr>
+    <tr><td>H1-Poll-Decision-Matrix</td><td>{h1['poll_decision_robust_yes_count']} von {h1['poll_decision_row_count']} Entscheidungszeilen sind robuste bounded-Yes-Zeilen; {h1['poll_decision_mixed_mean_count']} Mean-Loss-Stuetze-ohne-Mehrheit-Zeilen und {h1['poll_decision_counterexample_count']} Gegenbelege bleiben als Grenzen. Groesster robuster Scope: Polymarket {h1['poll_decision_largest_pm_count']} von {h1['poll_decision_largest_row_count']} State-Date-Zeilen ({h1['poll_decision_largest_pm_share'] * 100:.1f}%), {h1['poll_decision_largest_state_month_pm_count']} von {h1['poll_decision_largest_state_month_count']} State-Month-Einheiten, p={h1['poll_decision_largest_p_value']:.4f}. Kalibrierungskontext: {h1['poll_decision_calibration_aggregate_count']} von {h1['poll_decision_calibration_pairwise_count']} Pairwise-Reihen stuetzen Polymarket im mittleren Brier; {h1['poll_decision_calibration_majority_count']} von {h1['poll_decision_calibration_pairwise_count']} auch per Fallmehrheit. Bounded ready {h1['poll_decision_bounded_ready']}; breiter Claim {h1['poll_decision_broad_proven']}; Status {h1['poll_decision_goal_status']}.</td></tr>
+    <tr><td>H1-Robust-Poll-Scope-Quality</td><td>{h1['robust_quality_forecast_row_count']} Forecast-Zeilen aus {h1['robust_quality_case_count']} State-Date-Faellen und {h1['robust_quality_scope_count']} robusten Poll-Scopes. Groesster robuster Scope: Polymarket {h1['robust_quality_largest_pm_count']} von {h1['robust_quality_largest_case_count']} Zeilen ({h1['robust_quality_largest_pm_share'] * 100:.1f}%), Mean Brier {h1['robust_quality_largest_pm_brier']:.4f} vs poll-derived {h1['robust_quality_largest_poll_brier']:.4f}, ECE {h1['robust_quality_largest_pm_ece']:.4f} vs {h1['robust_quality_largest_poll_ece']:.4f}, Probability-Separation {h1['robust_quality_largest_pm_separation']:.4f} vs {h1['robust_quality_largest_poll_separation']:.4f}. Staerkster robuster Scope: Polymarket {h1['robust_quality_strongest_pm_count']} von {h1['robust_quality_strongest_case_count']} Zeilen ({h1['robust_quality_strongest_pm_share'] * 100:.1f}%), Mean Brier {h1['robust_quality_strongest_pm_brier']:.4f} vs {h1['robust_quality_strongest_poll_brier']:.4f}, ECE {h1['robust_quality_strongest_pm_ece']:.4f} vs {h1['robust_quality_strongest_poll_ece']:.4f}; alle Outcomes dort positiv, Separation nicht definiert. Breiter Claim belegt {h1['robust_quality_broad_claim_proven']}.</td></tr>
+    <tr><td>H1-Robust-Poll-Scope-Unit-Quality</td><td>{h1['robust_unit_summary_row_count']} Aggregationszeilen ueber robuste Poll-Scopes. Groesster robuster Scope: State {h1['robust_unit_largest_state_pm_count']} von {h1['robust_unit_largest_state_count']} (p={h1['robust_unit_largest_state_p_value']:.3g}), State-Month {h1['robust_unit_largest_state_month_pm_count']} von {h1['robust_unit_largest_state_month_count']} (poll-derived {h1['robust_unit_largest_state_month_poll_count']}, p={h1['robust_unit_largest_state_month_p_value']:.4f}, 95-Prozent-Untergrenze {h1['robust_unit_largest_state_month_ci_low']:.3f}), State-Horizon {h1['robust_unit_largest_state_horizon_pm_count']} von {h1['robust_unit_largest_state_horizon_count']} (p={h1['robust_unit_largest_state_horizon_p_value']:.3g}). Staerkster robuster Scope: State {h1['robust_unit_strongest_state_pm_count']} von {h1['robust_unit_strongest_state_count']} (p={h1['robust_unit_strongest_state_p_value']:.3g}), State-Month {h1['robust_unit_strongest_state_month_pm_count']} von {h1['robust_unit_strongest_state_month_count']} (p={h1['robust_unit_strongest_state_month_p_value']:.2g}, 95-Prozent-Untergrenze {h1['robust_unit_strongest_state_month_ci_low']:.3f}), State-Horizon {h1['robust_unit_strongest_state_horizon_pm_count']} von {h1['robust_unit_strongest_state_horizon_count']} (p={h1['robust_unit_strongest_state_horizon_p_value']:.2g}). Medianer State-Month-Brier-Vorteil {h1['robust_unit_largest_state_month_median_advantage']:.4f} im groessten und {h1['robust_unit_strongest_state_month_median_advantage']:.4f} im staerksten Scope. Breiter Claim belegt {h1['robust_unit_broad_claim_proven']}.</td></tr>
+    <tr><td>H1-Poll-Comparison-Unit-Robustness</td><td>Primaerer Scope nach Aggregation: Polymarket {h1['poll_unit_state_pm_count']} von {h1['poll_unit_state_count']} States, {h1['poll_unit_state_month_pm_count']} von {h1['poll_unit_state_month_count']} State-Month-Einheiten und {h1['poll_unit_state_horizon_pm_count']} von {h1['poll_unit_state_horizon_count']} State-Horizon-Einheiten; State-Month exact p={h1['poll_unit_state_month_p_value']:.2g}, 95-Prozent-Untergrenze {h1['poll_unit_state_month_ci_low']:.3f}. Full-Panel-State-Month-Gegenbeleg: poll-derived {h1['poll_unit_full_panel_state_month_poll_count']} von {h1['poll_unit_full_panel_state_month_count']}; Late-High-Distance-State-Month-Gegenbeleg: poll-derived {h1['poll_unit_late_high_state_month_poll_count']} von {h1['poll_unit_late_high_state_month_count']}, exact p={h1['poll_unit_late_high_state_month_poll_p_value']:.4f}; Status {h1['poll_unit_goal_status']}.</td></tr>
+    <tr><td>H1-Direct-Poll-Loss-Decomposition</td><td>Direkte Poll-Transform-Vergleiche: Mean Brier Polymarket {h1['direct_poll_loss_pm_brier']:.4f} vs poll-derived {h1['direct_poll_loss_poll_brier']:.4f}; Polymarket niedrigerer Verlust in {h1['direct_poll_loss_pm_count']} von {h1['direct_poll_loss_case_count']} Source-State-Faellen, poll-derived in {h1['direct_poll_loss_poll_count']}. Polymarket-Gewinnfaelle haben mittleren Brier-Vorteil {h1['direct_poll_loss_pm_win_mean_advantage']:.4f}, poll-derived Gewinnfaelle {h1['direct_poll_loss_poll_win_mean_advantage']:.4f}; Total-Margin-Ratio {h1['direct_poll_loss_margin_ratio']:.1f}. Fallmehrheit belegt: {h1['direct_poll_loss_case_majority_supports_pm']}.</td></tr>
+    <tr><td>H1-Direct-Poll-State-Cluster</td><td>State-Cluster-Diagnostik ueber {h1['direct_poll_state_cluster_state_count']} States: gleichgewichteter mittlerer Verlustvorteil {h1['direct_poll_state_cluster_mean_advantage']:.4f}, Bootstrap-95%-Intervall {h1['direct_poll_state_cluster_bootstrap_ci_low']:.4f} bis {h1['direct_poll_state_cluster_bootstrap_ci_high']:.4f}, Sign-Flip-p={h1['direct_poll_state_cluster_sign_flip_p']:.4f}. State-Mehrheit: Polymarket {h1['direct_poll_state_cluster_pm_state_count']} States, poll-derived {h1['direct_poll_state_cluster_poll_state_count']}; Polymarket-State-Mehrheit belegt: {h1['direct_poll_state_cluster_majority_supports_pm']}.</td></tr>
+    <tr><td>H1-Direct-Poll-Outlier-Robustness</td><td>Outlier-Diagnostik ueber {h1['direct_poll_outlier_state_count']} State-Cluster: voller Mean {h1['direct_poll_outlier_full_mean_advantage']:.4f}; alle Leave-one-state-out Means positiv {h1['direct_poll_outlier_leave_one_all_positive']}, Minimum {h1['direct_poll_outlier_min_leave_one_mean']:.4f} ohne {h1['direct_poll_outlier_most_influential_state']}. Top-positive Exclusion: Mean bleibt bis {h1['direct_poll_outlier_top_k_positive']} entfernte States positiv und kippt bei {h1['direct_poll_outlier_first_nonpositive_k']} entfernten States auf {h1['direct_poll_outlier_first_nonpositive_mean']:.4f}; groesster positiver State {h1['direct_poll_outlier_largest_positive_state']} ({h1['direct_poll_outlier_largest_positive_advantage']:.4f}). Status {h1['direct_poll_outlier_goal_status']}.</td></tr>
+    <tr><td>H1-State-Source-Konsens</td><td>{h1['state_source_consensus_case_count']} Source-State-Vergleiche ueber {h1['state_source_consensus_state_count']} States; Polymarket niedrigerer Verlust in {h1['state_source_consensus_pm_case_count']} Source-State-Faellen, Comparatoren in {h1['state_source_consensus_comparator_case_count']}. All-Source-State-Konsens: Polymarket {h1['state_source_consensus_pm_state_count']} States, Comparatoren {h1['state_source_consensus_comparator_state_count']}, Ties {h1['state_source_consensus_tie_state_count']}. Zwei direkte Poll-Transform-Quellen: Polymarket {h1['state_source_consensus_direct_two_pm_state_count']} von {h1['state_source_consensus_direct_two_state_count']} States.</td></tr>
+    <tr><td>H1-Competitive-State-Diagnose</td><td>Niedrigste Comparator-Distanz-Terzile: Polymarket {h1['competitive_state_all_low_pm_count']} von {h1['competitive_state_all_low_case_count']} All-Source-Faellen und {h1['competitive_state_direct_low_pm_count']} von {h1['competitive_state_direct_low_case_count']} direkten Poll-Transform-Faellen; hoechste Distanz-Terzile: Polymarket {h1['competitive_state_all_high_pm_count']} von {h1['competitive_state_all_high_case_count']}, Comparatoren {h1['competitive_state_all_high_comparator_count']} von {h1['competitive_state_all_high_case_count']}. Begrenzte Competitive-State-Ausnahme, kein breiter Viele-Faelle-Beweis.</td></tr>
+    <tr><td>H1-State-Date-Competitiveness-x-Horizon</td><td>&lt;=90 Tage und Low/Middle-Poll-Distanz: Polymarket {h1['panel_comp_late_non_safe_pm_count']} von {h1['panel_comp_late_non_safe_row_count']} State-Date-Zeilen und {h1['panel_comp_late_non_safe_state_support_count']} von {h1['panel_comp_late_non_safe_state_count']} States; spaete High-Distance-Zeilen: Polymarket {h1['panel_comp_late_high_pm_count']} von {h1['panel_comp_late_high_row_count']}, poll-derived {h1['panel_comp_late_high_poll_count']} von {h1['panel_comp_late_high_row_count']}. Starker spaeter Competitive-Poll-Befund, aber kein unabhaengiger Viele-Wahlen-Beweis.</td></tr>
+    <tr><td>H1-State-Level-Signifikanzdiagnose</td><td>Spaete Low/Middle-Poll-Distanz: Polymarket {h1['state_sign_late_non_safe_pm_state_count']} von {h1['state_sign_late_non_safe_state_count']} States; exakter einseitiger Binomial-p-Wert {h1['state_sign_late_non_safe_p_value']:.4f}; exakte 95-Prozent-Untergrenze {h1['state_sign_late_non_safe_ci_low']:.3f}. Spaete High-Distance-States: poll-derived {h1['state_sign_late_high_poll_state_count']} von {h1['state_sign_late_high_state_count']} States.</td></tr>
+    <tr><td>H1-Kalibrierungsdiagnostik</td><td>{h1['calibration_forecast_case_rows']} Forecast-Case-Zeilen aus {h1['calibration_forecast_source_count']} Quellen und {h1['calibration_pairwise_count']} Pairwise-Reihen; {h1['calibration_aggregate_support_count']} von {h1['calibration_pairwise_count']} zeigen niedrigeren mittleren Polymarket-Brier; {h1['calibration_majority_support_count']} von {h1['calibration_pairwise_count']} auch eine Mehrheit niedrigerer Einzelfallverluste; breiter Viele-Faelle-Beweis {h1['calibration_broad_support_count']} von {h1['calibration_pairwise_count']}.</td></tr>
+    <tr><td>50-State-Kalibrierung</td><td>Polymarket Mean Brier {h1['calibration_pm_state_brier']:.4f} und Fixed-Bin-ECE {h1['calibration_pm_state_ece']:.4f}; Rieke ECE {h1['calibration_rieke_state_ece']:.4f}; 270toWin/JHK ECE {h1['calibration_270_state_ece']:.4f}. Forecast-Qualitaets-, aber kein klarer Kalibrierungssieg.</td></tr>
+    <tr><td>Final-Snapshot-Erweiterung</td><td>{h1['final_snapshot_pm_lower_loss_count']} von {h1['final_snapshot_case_count']} geloesten 2024-Outcomes mit niedrigerem Polymarket-Verlust; Mean Brier {h1['final_snapshot_mean_pm_brier']:.4f} vs {h1['final_snapshot_mean_traditional_brier']:.4f}</td></tr>
+    <tr><td>State-Poll-Snapshot-Erweiterung</td><td>{h1['state_poll_snapshot_pm_lower_loss_count']} von {h1['state_poll_snapshot_case_count']} geloesten State-Outcomes mit niedrigerem Polymarket-Verlust; Mean Brier {h1['state_poll_snapshot_mean_pm_brier']:.4f} vs {h1['state_poll_snapshot_mean_poll_brier']:.4f}</td></tr>
+    <tr><td>270toWin-Polling-Average-Erweiterung</td><td>{h1['two_seventy_poll_average_case_count']} gematchte State-Outcomes; Polymarket niedrigerer Verlust in {h1['two_seventy_poll_average_pm_lower_loss_count']} Faellen, poll-derived in {h1['two_seventy_poll_average_poll_lower_loss_count']}; Mean Brier {h1['two_seventy_poll_average_mean_pm_brier']:.4f} vs {h1['two_seventy_poll_average_mean_poll_brier']:.4f}</td></tr>
+    <tr><td>Popular-Vote-Erweiterung</td><td>{h1['popular_vote_case_count']} nationale Tageszeilen fuer Trump popular vote; Polymarket niedrigerer Verlust in {h1['popular_vote_pm_lower_loss_count']} Zeilen, poll-derived in {h1['popular_vote_poll_lower_loss_count']}; Mean Brier {h1['popular_vote_mean_pm_brier']:.4f} vs {h1['popular_vote_mean_poll_brier']:.4f}. Gegenbeleg zum starken Claim.</td></tr>
+    <tr><td>Margin-Threshold-Readiness</td><td>{h1['margin_threshold_candidate_count']} Trump-State-Margin-Maerkte geprueft; {h1['margin_threshold_with_538_poll_count']} mit 538-State-Poll-Average-Zeilen, {h1['margin_threshold_with_clob_overlap_count']} mit CLOB-Historie im bewahrten 538-Fenster, {h1['margin_threshold_compatible_count']} neue H1-Brier-Faelle. {h1['margin_threshold_no_overlap_count']} sind durch fehlende zeitliche Ueberlappung blockiert, {h1['margin_threshold_missing_poll_count']} durch fehlende 538-State-Polls.</td></tr>
+    <tr><td>State-Date-Poll-Panel</td><td>{h1['state_poll_panel_case_count']} gematchte State-Date-Zeilen ueber {h1['state_poll_panel_state_count']} States und {h1['state_poll_panel_date_count']} Daten; Polymarket niedrigerer Verlust in {h1['state_poll_panel_pm_lower_loss_count']} Zeilen, poll-derived niedrigerer Verlust in {h1['state_poll_panel_poll_lower_loss_count']}; Mean Brier {h1['state_poll_panel_mean_pm_brier']:.4f} vs {h1['state_poll_panel_mean_poll_brier']:.4f}.</td></tr>
+    <tr><td>Temporal-Diagnose State-Date-Panel</td><td>Polymarket-stuetzende Monate {h1['state_poll_temporal_support_months']}: {h1['state_poll_temporal_support_pm_lower_loss_count']} von {h1['state_poll_temporal_support_row_count']} Zeilen mit niedrigerem Polymarket-Verlust ueber {h1['state_poll_temporal_support_state_count']} States; poll-derived niedrigerer Verlust in {h1['state_poll_temporal_support_poll_lower_loss_count']}; Mean Brier {h1['state_poll_temporal_support_mean_pm_brier']:.4f} vs {h1['state_poll_temporal_support_mean_poll_brier']:.4f}.</td></tr>
+    <tr><td>Forecast-Horizon-Diagnose</td><td>&lt;=90-Tage-Fenster ({h1['state_poll_horizon_near_bins']}): {h1['state_poll_horizon_near_pm_lower_loss_count']} von {h1['state_poll_horizon_near_row_count']} Zeilen mit niedrigerem Polymarket-Verlust ueber {h1['state_poll_horizon_near_state_count']} States; poll-derived niedrigerer Verlust in {h1['state_poll_horizon_near_poll_lower_loss_count']}; Mean Brier {h1['state_poll_horizon_near_mean_pm_brier']:.4f} vs {h1['state_poll_horizon_near_mean_poll_brier']:.4f}.</td></tr>
+    <tr><td>State-Level-Horizon-Diagnose</td><td>Im &lt;=90-Tage-Fenster stuetzt Polymarket {h1['state_poll_horizon_state_pm_mean_support_count']} von {h1['state_poll_horizon_state_count']} States nach mittlerem Brier und {h1['state_poll_horizon_state_pm_majority_support_count']} von {h1['state_poll_horizon_state_count']} States nach Mehrheit niedrigerer Tagesverluste; {h1['state_poll_horizon_state_poll_support_count']} States stuetzen Polymarket nicht.</td></tr>
+    <tr><td>&lt;=90-Day Score Quality</td><td>{h1['state_poll_near_quality_forecast_row_count']} Forecast-Zeilen aus {h1['state_poll_near_quality_case_count']} State-Date-Faellen und zwei Quellen: Polymarket Mean Brier {h1['state_poll_near_quality_pm_mean_brier']:.4f} vs poll-derived {h1['state_poll_near_quality_poll_mean_brier']:.4f}; Fixed-Bin-ECE {h1['state_poll_near_quality_pm_ece']:.4f} vs {h1['state_poll_near_quality_poll_ece']:.4f}; Probability-Separation {h1['state_poll_near_quality_pm_separation']:.4f} vs {h1['state_poll_near_quality_poll_separation']:.4f}.</td></tr>
+    <tr><td>Poll-Transform-Sensitivitaet</td><td>MAE {h1['state_poll_sensitivity_min_mae']:.1f} bis {h1['state_poll_sensitivity_max_mae']:.1f} Prozentpunkte; Polymarket bleibt in allen {h1['state_poll_sensitivity_row_count']} Parameterzeilen im mittleren Brier niedriger; Lower-Loss-Spanne {h1['state_poll_sensitivity_min_pm_lower_loss_count']} bis {h1['state_poll_sensitivity_max_pm_lower_loss_count']} von {h1['state_poll_snapshot_case_count']} State-Outcomes.</td></tr>
+    <tr><td>State-Poll-Coverage-Audit</td><td>{h1['state_poll_coverage_state_count']} US-States geprueft; {h1['state_poll_coverage_polymarket_market_count']} mit Polymarket-State-Markt; {h1['state_poll_coverage_valid_pair_count']} valide H1-Brier-Paare; {h1['state_poll_coverage_missing_poll_count']} wegen fehlender 538-Snapshot-Pollwerte ausgeschlossen.</td></tr>
+    <tr><td>Rieke-50-State-Erweiterung</td><td>{h1['rieke_state_case_count']} geloeste State-Outcomes gegen Rieke poll-based model; Mean Brier {h1['rieke_state_mean_pm_brier']:.4f} vs {h1['rieke_state_mean_rieke_brier']:.4f}; Polymarket niedrigerer Einzelfallverlust in {h1['rieke_state_pm_lower_loss_count']} von {h1['rieke_state_case_count']}, Rieke in {h1['rieke_state_rieke_lower_loss_count']} von {h1['rieke_state_case_count']}.</td></tr>
+    <tr><td>270toWin/JHK-50-State-Erweiterung</td><td>{h1['two_seventy_state_case_count']} geloeste State-Outcomes gegen 270toWin/JHK; {h1['two_seventy_state_exact_case_count']} exakt ausgewiesene Wahrscheinlichkeiten und {h1['two_seventy_state_censored_case_count']} zensierte &gt;99.9-Prozent-Boundary-Werte; Mean Brier {h1['two_seventy_state_mean_pm_brier']:.4f} vs {h1['two_seventy_state_mean_270_brier']:.4f}; Polymarket niedrigerer Einzelfallverlust in {h1['two_seventy_state_pm_lower_loss_count']} von {h1['two_seventy_state_case_count']}, 270toWin/JHK in {h1['two_seventy_state_270_lower_loss_count']} von {h1['two_seventy_state_case_count']}.</td></tr>
+  </table>
+  <p>Interpretation: H1 spricht fuer tiefere Forecast-Verluste von Polymarket im getesteten Fenster. Die neue Kalibrierungsdiagnostik ersetzt die schwache Ein-Outcome-Reliability-Kurve durch geloeste Fallartefakte und zeigt die Grenze klarer: niedrigere mittlere Brier-Verluste ja, klarer Kalibrierungssieg oder breiter Viele-Faelle-Beweis nein. Das neue State-Date-Poll-Panel ist der groesste poll-derived Vergleich und spricht gegen den starken Polymarket-Claim: {h1['state_poll_panel_poll_lower_loss_count']} von {h1['state_poll_panel_case_count']} Zeilen liegen bei der poll-derived Transformation niedriger, Polymarket nur in {h1['state_poll_panel_pm_lower_loss_count']}. Die Temporal-Diagnose macht die Nuance sichtbar: In den Polymarket-stuetzenden Monaten {h1['state_poll_temporal_support_months']} liegt Polymarket in {h1['state_poll_temporal_support_pm_lower_loss_count']} von {h1['state_poll_temporal_support_row_count']} Zeilen niedriger, aber die frueheren Monate dominieren den Vollpanel-Befund. Die Forecast-Horizon-Diagnose zeigt dieselbe Grenze methodisch klarer: Im &lt;=90-Tage-Fenster vor der Wahl liegt Polymarket in {h1['state_poll_horizon_near_pm_lower_loss_count']} von {h1['state_poll_horizon_near_row_count']} Zeilen niedriger; auf State-Ebene stuetzen {h1['state_poll_horizon_state_pm_mean_support_count']} von {h1['state_poll_horizon_state_count']} States Polymarket nach mittlerem Brier und Mehrheit niedrigerer Tagesverluste. Die &lt;=90-Day-Score-Quality-Diagnose verdichtet dieses Fenster auf {h1['state_poll_near_quality_forecast_row_count']} Forecast-Zeilen und zeigt Polymarket mit niedrigerem Mean Brier ({h1['state_poll_near_quality_pm_mean_brier']:.4f} vs {h1['state_poll_near_quality_poll_mean_brier']:.4f}), niedrigerem Fixed-Bin-ECE ({h1['state_poll_near_quality_pm_ece']:.4f} vs {h1['state_poll_near_quality_poll_ece']:.4f}) und hoeherer Probability-Separation ({h1['state_poll_near_quality_pm_separation']:.4f} vs {h1['state_poll_near_quality_poll_separation']:.4f}). Ueber 90 Tage vor der Wahl dominiert die poll-derived Transformation. Die Final-Snapshot-Erweiterung stuetzt dieselbe Richtung in {h1['final_snapshot_pm_lower_loss_count']} von {h1['final_snapshot_case_count']} geloesten 2024-Outcomes. Die State-Poll-Snapshot-Erweiterung zeigt Polymarket in {h1['state_poll_snapshot_pm_lower_loss_count']} von {h1['state_poll_snapshot_case_count']} Faellen mit niedrigerem Verlust, wird aber vom groesseren Panel relativiert. Die 270toWin-Polling-Average-Erweiterung bringt {h1['two_seventy_poll_average_case_count']} weitere direkt pollbasierte State-Faelle: Polymarket hat den niedrigeren mittleren Brier ({h1['two_seventy_poll_average_mean_pm_brier']:.4f} vs {h1['two_seventy_poll_average_mean_poll_brier']:.4f}), aber nur in {h1['two_seventy_poll_average_pm_lower_loss_count']} von {h1['two_seventy_poll_average_case_count']} States den niedrigeren Einzelfallverlust. Die Sensitivitaet variiert nur die Poll-Fehlerannahme und zeigt fuer MAE {h1['state_poll_sensitivity_min_mae']:.1f} bis {h1['state_poll_sensitivity_max_mae']:.1f} Prozentpunkte in allen {h1['state_poll_sensitivity_row_count']} Parameterzeilen einen niedrigeren mittleren Polymarket-Brier im Snapshot. Der Coverage-Audit zeigt zugleich, dass die oeffentlich auffindbaren Polymarket-State-Maerkte nicht automatisch H1-Brier-Paare sind: von {h1['state_poll_coverage_polymarket_market_count']} Polymarket-State-Maerkten bleiben wegen der bewahrten 538-Snapshot-Abdeckung nur {h1['state_poll_coverage_valid_pair_count']} valide Snapshot-Paare. Die Rieke-Erweiterung deckt alle {h1['rieke_state_case_count']} US-State-Outcomes ab und zeigt im Aggregat ebenfalls einen niedrigeren mittleren Polymarket-Brier ({h1['rieke_state_mean_pm_brier']:.4f} vs {h1['rieke_state_mean_rieke_brier']:.4f}), aber nicht eine Mehrheit niedrigerer Einzelfallverluste: Polymarket liegt in {h1['rieke_state_pm_lower_loss_count']} von {h1['rieke_state_case_count']} States vorne, Rieke in {h1['rieke_state_rieke_lower_loss_count']} von {h1['rieke_state_case_count']}. Die 270toWin/JHK-Erweiterung stuetzt den aggregierten Brier-Befund erneut ({h1['two_seventy_state_mean_pm_brier']:.4f} vs {h1['two_seventy_state_mean_270_brier']:.4f}), zeigt aber wegen sicherer zensierter States ebenfalls keine Mehrheit niedrigerer Einzelfallverluste fuer Polymarket ({h1['two_seventy_state_pm_lower_loss_count']} von {h1['two_seventy_state_case_count']}). Deshalb ist die belastbare Aussage eine gemischte H1-Evidenz, kein Nachweis, dass Polymarket in den meisten State-Faellen oder im groesseren Poll-Panel besser ist. Die State-Erweiterungen verwenden dokumentierte Wahrscheinlichkeitsmodelle; sie sind keine Rohpolls, kein RCP-Vergleich und kein Speed-Test.</p>
+
+  <h2>H2 - Event-Window-Reaktion</h2>
+  <p>{h2['event_count']} kuratierte Ereignisse, {h2['summary_rows']} kompakte Summary-Zeilen. Daily-Daten erlauben keine Intraday-Speed-Aussage.</p>
+  <table><tr><th>Primaerfenster</th><th>Finaler Change</th></tr>{h2_rows}</table>
+
+  <h2>H3 - Wallet-Tier-Timing</h2>
+  <p>{h3['model_rows']} alignierte Modellzeilen. Tier counts: {escape(h3['tier_counts_text'])}.</p>
+  <p>Staerkste dokumentierte Korrelation: {escape(h3['top_correlation_label'])} = {h3['top_correlation']:.4f}. Kleinster Granger-p-Wert: {escape(h3['min_granger_label'])} = {h3['min_granger_p']:.4f}.</p>
+  <p>Grenze: BUY-only Quelle, taegliche Aggregation und Multiple-Testing-Sensitivitaet.</p>
+
+  <h2>Monitor-Prototyp</h2>
+  <p>Recorded replay rows: {monitor['snapshot_count']}. Severity counts: {escape(monitor['severity_counts_text'])}. Latest live dashboard: {monitor['live_market_count']} Maerkte, {monitor['live_alert_count']} Alert-Zeilen. Wallet graph: {monitor['wallet_graph_nodes']} Nodes und {monitor['wallet_graph_edges']} Edges.</p>
+  <p>Der Monitor bleibt read-only und ist keine Trading- oder Profitabilitaetskomponente.</p>
+
+  <h2>Schweizer Referendum</h2>
+  <p>{swiss['poll_count']} Umfragen, {swiss['snapshot_count']} Polymarket-Snapshots und {swiss['history_rows']} bounded price-history rows.</p>
+  <table><tr><th>Quelle</th><th>Neuester Poll</th><th>Poll Yes</th><th>Raw Gap</th></tr>{swiss_source_rows}</table>
+  <p>Latest result: Polymarket Yes {swiss['latest_poly_yes_pct']:.1f}%, latest matched poll Yes {swiss['latest_poll_yes_pct']:.1f}%, raw gap {swiss['latest_raw_gap_pp']:+.1f} pp, decided-voter gap {swiss['latest_decided_gap_pp']:+.1f} pp.</p>
+
+  <h2>Visualisierungen</h2>
+  {figures}
+</body>
+</html>
+"""
+
+
+def _figure_html(figure: FigureSpec, *, html_output: Path) -> str:
+    rel = Path(_relative_path(figure.path.resolve(), html_output.parent.resolve()))
+    return (
+        "<figure>"
+        f"<img src=\"{escape(rel.as_posix())}\" alt=\"{escape(figure.caption)}\">"
+        f"<figcaption><strong>{escape(figure.caption)}</strong><br>{escape(figure.note)}</figcaption>"
+        "</figure>"
+    )
+
+
+def write_docx(data: dict[str, Any], output_path: Path) -> None:
+    """Write the formatted DOCX report."""
+
+    doc = Document()
+    _setup_document(doc)
+    _add_cover(doc, data)
+    _add_toc_note(doc)
+    _add_project_overview(doc, data)
+    _add_h1_section(doc, data["h1"])
+    _add_h2_section(doc, data["h2"])
+    _add_h3_section(doc, data["h3"])
+    _add_monitor_section(doc, data["monitor"])
+    _add_swiss_section(doc, data["swiss"])
+    _add_figures_section(doc, data["figures"])
+    _add_presentation_section(doc)
+    _add_appendix(doc, data)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    doc.save(output_path)
+
+
+def write_pipeline_overview(path: Path) -> Path:
+    """Create a simple pipeline overview figure for the report."""
+
+    labels = [
+        ("Datenquellen", "SQLite, Polymarket,\nFiveThirtyEight, Umfragen"),
+        ("Validierung", "Schemas, Tests,\nProjekt-Guardrails"),
+        ("Python-Analyse", "H1 Brier, H2 Event-Windows,\nH3 Wallet-Tiers, Swiss Vergleich"),
+        ("Artefakte", "CSV, JSON, PNG,\nHTML-Dashboards"),
+        ("Interpretation", "Dozentenbericht,\nThesis-Text, spaetere LLMs nur auditiert"),
+    ]
+    fig, ax = plt.subplots(figsize=(13, 4.2))
+    ax.axis("off")
+    x_positions = [0.08, 0.29, 0.50, 0.71, 0.90]
+    for idx, ((title, body), x) in enumerate(zip(labels, x_positions, strict=True)):
+        ax.text(
+            x,
+            0.62,
+            title,
+            ha="center",
+            va="center",
+            fontsize=11.5,
+            fontweight="bold",
+            color="#0B2545",
+            bbox=dict(boxstyle="round,pad=0.45", facecolor="#E8EEF5", edgecolor="#5B7EA4"),
+        )
+        ax.text(x, 0.34, body, ha="center", va="top", fontsize=9.5, color="#333333")
+        if idx < len(x_positions) - 1:
+            ax.annotate(
+                "",
+                xy=(x_positions[idx + 1] - 0.075, 0.62),
+                xytext=(x + 0.075, 0.62),
+                arrowprops=dict(arrowstyle="->", color="#5B7EA4", lw=2),
+            )
+    ax.text(
+        0.5,
+        0.06,
+        "Kernregel: Die Analyse berechnet Metriken deterministisch in Python. "
+        "Interpretation kommt erst nach validierten Artefakten.",
+        ha="center",
+        fontsize=10,
+        color="#555555",
+    )
+    fig.tight_layout()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(path, dpi=180, bbox_inches="tight")
+    plt.close(fig)
+    return path
+
+
+def _relative_path(path: Path, base: Path) -> str:
+    return os.path.relpath(path, base)
+
+
+def _setup_document(doc: Document) -> None:
+    section = doc.sections[0]
+    section.page_width = Inches(8.5)
+    section.page_height = Inches(11)
+    section.top_margin = Inches(1)
+    section.bottom_margin = Inches(1)
+    section.left_margin = Inches(1)
+    section.right_margin = Inches(1)
+    section.header_distance = Inches(0.492)
+    section.footer_distance = Inches(0.492)
+
+    styles = doc.styles
+    normal = styles["Normal"]
+    normal.font.name = "Calibri"
+    normal._element.rPr.rFonts.set(qn("w:ascii"), "Calibri")
+    normal._element.rPr.rFonts.set(qn("w:hAnsi"), "Calibri")
+    normal.font.size = Pt(11)
+    normal.paragraph_format.space_after = Pt(6)
+    normal.paragraph_format.line_spacing = 1.10
+
+    for style_name, size, color, before, after in (
+        ("Heading 1", 16, BLUE, 16, 8),
+        ("Heading 2", 13, BLUE, 12, 6),
+        ("Heading 3", 12, DARK_BLUE, 8, 4),
+    ):
+        style = styles[style_name]
+        style.font.name = "Calibri"
+        style._element.rPr.rFonts.set(qn("w:ascii"), "Calibri")
+        style._element.rPr.rFonts.set(qn("w:hAnsi"), "Calibri")
+        style.font.size = Pt(size)
+        style.font.color.rgb = color
+        style.paragraph_format.space_before = Pt(before)
+        style.paragraph_format.space_after = Pt(after)
+
+    header = section.header.paragraphs[0]
+    header.text = "BA Thesis Projektbericht"
+    header.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    _set_paragraph_font(header, size=9, color=MUTED)
+    footer = section.footer.paragraphs[0]
+    footer.text = "Deterministischer Bericht aus lokalen Artefakten"
+    footer.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    _set_paragraph_font(footer, size=9, color=MUTED)
+
+
+def _add_cover(doc: Document, data: dict[str, Any]) -> None:
+    p = doc.add_paragraph()
+    p.paragraph_format.space_before = Pt(18)
+    p.paragraph_format.space_after = Pt(4)
+    run = p.add_run("DOZENTENBERICHT")
+    _set_run(run, size=11, bold=True, color=MUTED)
+
+    title = doc.add_paragraph()
+    title.paragraph_format.space_after = Pt(4)
+    run = title.add_run("Projektueberblick Bachelorarbeit")
+    _set_run(run, size=24, bold=True, color=RGBColor(0, 0, 0))
+
+    subtitle = doc.add_paragraph()
+    subtitle.paragraph_format.space_after = Pt(14)
+    run = subtitle.add_run(data["project"]["working_title"])
+    _set_run(run, size=13, color=MUTED)
+
+    metadata = [
+        ("Stand", data["generated_at_utc"]),
+        ("Aktive Projektphase", "Phase 11: Swiss Referendum Efficiency Comparison"),
+        ("Teststatus", data["project"]["test_summary"]),
+        ("Berichtsquelle", "Lokaler Worktree und deterministische Artefakte"),
+    ]
+    table = _add_table(doc, metadata, ["Feld", "Wert"], [1800, 7560])
+    _shade_table_header(table)
+    _add_callout(
+        doc,
+        "Kernaussage",
+        (
+            "Das Projekt ist methodisch so aufgebaut, dass die deterministische "
+            "Analyse vor jeder Interpretation steht. H1-H3 bilden die empirische "
+            "Basis; der Monitor ist ein read-only Forschungsprototyp; die aktuelle "
+            "Swiss-Referendum-Spur ist eine separate, aktuelle Vergleichsanalyse."
+        ),
+    )
+
+
+def _add_toc_note(doc: Document) -> None:
+    doc.add_heading("Lesefuehrung", level=1)
+    _add_bullets(
+        doc,
+        [
+            "Abschnitt 1 erklaert, welche Ordner und Artefakte wofuer stehen.",
+            "Abschnitte 2 bis 4 erklaeren H1, H2 und H3: Warum, Methode, Ergebnis, Grenze.",
+            "Abschnitt 5 ordnet den Monitor-Prototyp ein.",
+            "Abschnitt 6 beschreibt die aktive Schweizer Referendumsanalyse.",
+            "Abschnitt 7 enthaelt Visualisierungen und einen kurzen Praesentationsplan.",
+        ],
+    )
+
+
+def _add_project_overview(doc: Document, data: dict[str, Any]) -> None:
+    doc.add_heading("1. Projektlandkarte", level=1)
+    doc.add_paragraph(
+        "Die Repository-Struktur trennt Forschungssteuerung, Daten, deterministische "
+        "Analyse, Collector-Code, Tests, Dokumentation und geparkte Legacy-Agenten. "
+        "Diese Trennung ist wichtig, weil die Bachelorarbeit nicht auf frei "
+        "formulierter KI-Interpretation basiert, sondern auf reproduzierbaren "
+        "Python-Outputs."
+    )
+    db = data["project"]["database"]
+    rows = [
+        ("Datenbank", f"{db['table_count']} Tabellen, u.a. polymarket_prices, poll_forecasts, whale_trades."),
+        ("Datenartefakte", f"{data['project']['folder_inventory'].get('data/results', 0)} Dateien unter data/results."),
+        ("Analysecode", f"{data['project']['folder_inventory'].get('operations/analysis', 0)} Module fuer H1-H3, Monitor und Swiss-Analyse."),
+        ("Collector-Code", f"{data['project']['folder_inventory'].get('operations/collectors', 0)} read-only oder lokale Collector/Refresh-Module."),
+        ("Tests", f"{data['project']['folder_inventory'].get('tests', 0)} Testdateien; {data['project']['test_summary']}."),
+        ("Legacy/Agenten", "Agent- und MCP-Einstiege bleiben guard-railed und sind nicht Teil der aktiven Laufzeit."),
+    ]
+    table = _add_table(doc, rows, ["Bereich", "Bedeutung"], [1900, 7460])
+    _shade_table_header(table)
+    doc.add_paragraph(
+        "Wichtige Steuerdateien sind AGENTS.md, GOAL.md, ROADMAP.md und STATUS.md. "
+        "Sie definieren Scope, aktive Phase, Sicherheitsregeln, Teststatus und "
+        "naechste Commits."
+    )
+
+
+def _add_h1_section(doc: Document, h1: dict[str, Any]) -> None:
+    doc.add_heading("2. H1 - Forecast-Qualitaet", level=1)
+    doc.add_paragraph(
+        "H1 beantwortet die Frage, ob Polymarket im untersuchten Ueberlappungsfenster "
+        "eine niedrigere Prognoseabweichung zeigt als vergleichbare traditionelle "
+        "Probability-Forecasts. Der Zweck war nicht, Reaktionsgeschwindigkeit zu "
+        "messen, sondern Forecast-Qualitaet."
+    )
+    rows = [
+        ("Warum", "Vergleich der Prognosequalitaet zwischen Polymarket, FiveThirtyEight und einfachen Baselines."),
+        ("Methode", "Brier Score und Diebold-Mariano-Vergleiche aus Python-Outputs."),
+        ("Datenform", f"{h1['observation_count']} taegliche Ueberlappungsbeobachtungen."),
+        ("Ergebnis", f"Polymarket Mean Brier {h1['brier_polymarket']:.4f}; FiveThirtyEight {h1['brier_fivethirtyeight']:.4f}; 50-Prozent-Baseline {h1['brier_always_50']:.4f}."),
+        ("Head-to-head", f"Polymarket niedrigerer Tagesverlust in {h1['pm_better_vs_538_count']} von {h1['pm_vs_538_count']} Tagen ({h1['pm_better_vs_538_share'] * 100:.1f}%)."),
+        ("H1 Synthesis", f"{h1['synthesis_aggregate_support_count']} von {h1['synthesis_evidence_row_count']} Vergleichszeilen stuetzen Polymarket im mittleren Brier; {h1['synthesis_majority_support_count']} von {h1['synthesis_evidence_row_count']} zeigen eine Mehrheit niedrigerer Einzelfallverluste; breiter Viele-Faelle-Beweis {h1['synthesis_broad_support_count']} von {h1['synthesis_evidence_row_count']}."),
+        ("Claim Evidence Audit", f"{h1['claim_audit_support_row_count']} von {h1['claim_audit_row_count']} Audit-Zeilen stuetzen Polymarket begrenzt; {h1['claim_audit_contradiction_row_count']} widerspricht dem starken Claim; direkt pollbezogen {h1['claim_audit_direct_poll_support_row_count']} von {h1['claim_audit_direct_poll_row_count']} stuetzend; breiter User-Claim belegt {h1['claim_audit_broad_user_claim_proven']}."),
+        ("Poll Comparison Result", f"Primaerer <=90-Tage-Low/Middle-Poll-Distanz-Scope: Polymarket {h1['poll_result_primary_pm_count']} von {h1['poll_result_primary_row_count']} State-Date-Zeilen ({h1['poll_result_primary_pm_share'] * 100:.1f}%), poll-derived {h1['poll_result_primary_poll_count']}; State-Ebene Polymarket {h1['poll_result_primary_pm_state_count']} von {h1['poll_result_primary_state_count']}, exakter einseitiger p-Wert {h1['poll_result_primary_p_value']:.4f}, 95-Prozent-Untergrenze {h1['poll_result_primary_ci_low']:.3f}. Direkt pollbezogen {h1['poll_result_direct_poll_support_count']} von {h1['poll_result_direct_poll_row_count']} Audit-Zeilen stuetzend; Vollpanel-Gegenbeleg poll-derived {h1['poll_result_full_panel_poll_count']} von {h1['poll_result_full_panel_row_count']}; Status {h1['poll_result_goal_status']}."),
+        ("Poll Claim Readiness", f"{h1['poll_claim_supported_bounded_count']} von {h1['poll_claim_row_count']} Claim-Zeilen stuetzen den bounded <=90-Tage Low/Middle-Poll-Distanz-Scope; {h1['poll_claim_counterexample_count']} Gegenbeispiel-Scopes und {h1['poll_claim_mixed_mean_count']} Mean-Loss-Stuetze-ohne-Mehrheit-Zeilen bleiben als Grenzen. Bounded Scope: Polymarket {h1['poll_claim_primary_pm_count']} von {h1['poll_claim_primary_count']} State-Date-Zeilen ({h1['poll_claim_primary_pm_share'] * 100:.1f}%) und {h1['poll_claim_state_month_pm_count']} von {h1['poll_claim_state_month_count']} State-Month-Einheiten, exact p={h1['poll_claim_state_month_p_value']:.2g}, 95-Prozent-Untergrenze {h1['poll_claim_state_month_ci_low']:.3f}. Bounded Claim supported {h1['poll_claim_bounded_supported']}; breiter Claim belegt {h1['poll_claim_broad_proven']}; Status {h1['poll_claim_goal_status']}."),
+        ("Poll Scope Frontier", f"{h1['poll_frontier_robust_scope_count']} von {h1['poll_frontier_row_count']} Horizont-x-Poll-Distanz-Scopes erfuellen die robuste Regel. Groesster robuster Scope: {h1['poll_frontier_largest_horizon']} + {h1['poll_frontier_largest_tier']}, Polymarket {h1['poll_frontier_largest_pm_count']} von {h1['poll_frontier_largest_row_count']} State-Date-Zeilen ({h1['poll_frontier_largest_pm_share'] * 100:.1f}%), {h1['poll_frontier_largest_state_month_pm_count']} von {h1['poll_frontier_largest_state_month_count']} State-Month-Einheiten, exact p={h1['poll_frontier_largest_state_month_p_value']:.3g}. Staerkster Scope {h1['poll_frontier_strongest_scope_id']}: {h1['poll_frontier_strongest_row_count']} Zeilen, p={h1['poll_frontier_strongest_p_value']:.2g}. <=90 Tage alle Distanzen: Polymarket {h1['poll_frontier_lte_90_all_pm_count']} von {h1['poll_frontier_lte_90_all_row_count']} Zeilen ({h1['poll_frontier_lte_90_all_pm_share'] * 100:.1f}%), State-Month p={h1['poll_frontier_lte_90_all_state_month_p_value']:.3g}; Vollpanel-Gegenbeleg poll-derived {h1['poll_frontier_full_panel_poll_count']} von {h1['poll_frontier_full_panel_row_count']}; Status {h1['poll_frontier_goal_status']}."),
+        ("Poll Decision Matrix", f"{h1['poll_decision_robust_yes_count']} von {h1['poll_decision_row_count']} Entscheidungszeilen sind robuste bounded-Yes-Zeilen; {h1['poll_decision_mixed_mean_count']} Mean-Loss-Stuetze-ohne-Mehrheit-Zeilen und {h1['poll_decision_counterexample_count']} Gegenbelege bleiben als Grenzen. Groesster robuster Scope: Polymarket {h1['poll_decision_largest_pm_count']} von {h1['poll_decision_largest_row_count']} State-Date-Zeilen ({h1['poll_decision_largest_pm_share'] * 100:.1f}%), {h1['poll_decision_largest_state_month_pm_count']} von {h1['poll_decision_largest_state_month_count']} State-Month-Einheiten, p={h1['poll_decision_largest_p_value']:.4f}. Kalibrierungskontext: {h1['poll_decision_calibration_aggregate_count']} von {h1['poll_decision_calibration_pairwise_count']} Pairwise-Reihen stuetzen Polymarket im mittleren Brier; {h1['poll_decision_calibration_majority_count']} von {h1['poll_decision_calibration_pairwise_count']} auch per Fallmehrheit. Bounded ready {h1['poll_decision_bounded_ready']}; breiter Claim {h1['poll_decision_broad_proven']}; Status {h1['poll_decision_goal_status']}."),
+        ("Robust Poll-Scope Quality", f"{h1['robust_quality_forecast_row_count']} Forecast-Zeilen aus {h1['robust_quality_case_count']} State-Date-Faellen und {h1['robust_quality_scope_count']} robusten Poll-Scopes. Groesster robuster Scope: Polymarket {h1['robust_quality_largest_pm_count']} von {h1['robust_quality_largest_case_count']} Zeilen ({h1['robust_quality_largest_pm_share'] * 100:.1f}%), Mean Brier {h1['robust_quality_largest_pm_brier']:.4f} vs poll-derived {h1['robust_quality_largest_poll_brier']:.4f}, ECE {h1['robust_quality_largest_pm_ece']:.4f} vs {h1['robust_quality_largest_poll_ece']:.4f}, Probability-Separation {h1['robust_quality_largest_pm_separation']:.4f} vs {h1['robust_quality_largest_poll_separation']:.4f}. Staerkster robuster Scope: Polymarket {h1['robust_quality_strongest_pm_count']} von {h1['robust_quality_strongest_case_count']} Zeilen ({h1['robust_quality_strongest_pm_share'] * 100:.1f}%), Mean Brier {h1['robust_quality_strongest_pm_brier']:.4f} vs {h1['robust_quality_strongest_poll_brier']:.4f}, ECE {h1['robust_quality_strongest_pm_ece']:.4f} vs {h1['robust_quality_strongest_poll_ece']:.4f}. Der staerkste Scope hat positive Rate {h1['robust_quality_strongest_positive_rate']:.1f}; Separation ist dort nicht definiert. Breiter Claim belegt {h1['robust_quality_broad_claim_proven']}."),
+        ("Robust Poll-Scope Unit Quality", f"{h1['robust_unit_summary_row_count']} Aggregationszeilen ueber robuste Poll-Scopes. Groesster robuster Scope: Polymarket {h1['robust_unit_largest_state_pm_count']} von {h1['robust_unit_largest_state_count']} States, {h1['robust_unit_largest_state_month_pm_count']} von {h1['robust_unit_largest_state_month_count']} State-Month-Einheiten und {h1['robust_unit_largest_state_horizon_pm_count']} von {h1['robust_unit_largest_state_horizon_count']} State-Horizon-Einheiten; State-Month p={h1['robust_unit_largest_state_month_p_value']:.4f}, 95-Prozent-Untergrenze {h1['robust_unit_largest_state_month_ci_low']:.3f}. Staerkster robuster Scope: Polymarket {h1['robust_unit_strongest_state_pm_count']} von {h1['robust_unit_strongest_state_count']} States, {h1['robust_unit_strongest_state_month_pm_count']} von {h1['robust_unit_strongest_state_month_count']} State-Month-Einheiten und {h1['robust_unit_strongest_state_horizon_pm_count']} von {h1['robust_unit_strongest_state_horizon_count']} State-Horizon-Einheiten; State-Month p={h1['robust_unit_strongest_state_month_p_value']:.2g}, 95-Prozent-Untergrenze {h1['robust_unit_strongest_state_month_ci_low']:.3f}. Medianer State-Month-Brier-Vorteil {h1['robust_unit_largest_state_month_median_advantage']:.4f} im groessten und {h1['robust_unit_strongest_state_month_median_advantage']:.4f} im staerksten Scope. Breiter Claim belegt {h1['robust_unit_broad_claim_proven']}."),
+        ("Poll Comparison Unit Robustness", f"Primaerer Scope nach Aggregation: Polymarket {h1['poll_unit_state_pm_count']} von {h1['poll_unit_state_count']} States, {h1['poll_unit_state_month_pm_count']} von {h1['poll_unit_state_month_count']} State-Month-Einheiten, {h1['poll_unit_state_horizon_pm_count']} von {h1['poll_unit_state_horizon_count']} State-Horizon-Einheiten und {h1['poll_unit_horizon_tier_pm_count']} von {h1['poll_unit_horizon_tier_count']} Horizon-Tier-Einheiten. State-Month exact p={h1['poll_unit_state_month_p_value']:.2g}, 95-Prozent-Untergrenze {h1['poll_unit_state_month_ci_low']:.3f}; Full-Panel-State-Month-Gegenbeleg: poll-derived {h1['poll_unit_full_panel_state_month_poll_count']} von {h1['poll_unit_full_panel_state_month_count']}; Late-High-Distance-State-Month-Gegenbeleg: poll-derived {h1['poll_unit_late_high_state_month_poll_count']} von {h1['poll_unit_late_high_state_month_count']}, exact p={h1['poll_unit_late_high_state_month_poll_p_value']:.4f}; Status {h1['poll_unit_goal_status']}."),
+        ("Direct Poll Loss Decomposition", f"Direkte Poll-Transform-Vergleiche: Mean Brier Polymarket {h1['direct_poll_loss_pm_brier']:.4f} vs poll-derived {h1['direct_poll_loss_poll_brier']:.4f}; Polymarket niedrigerer Verlust in {h1['direct_poll_loss_pm_count']} von {h1['direct_poll_loss_case_count']} Source-State-Faellen, poll-derived in {h1['direct_poll_loss_poll_count']}. Polymarket-Gewinnfaelle haben mittleren Brier-Vorteil {h1['direct_poll_loss_pm_win_mean_advantage']:.4f}, poll-derived Gewinnfaelle {h1['direct_poll_loss_poll_win_mean_advantage']:.4f}; Total-Margin-Ratio {h1['direct_poll_loss_margin_ratio']:.1f}."),
+        ("Direct Poll State Cluster", f"State-Cluster-Diagnostik ueber {h1['direct_poll_state_cluster_state_count']} States: gleichgewichteter mittlerer Verlustvorteil {h1['direct_poll_state_cluster_mean_advantage']:.4f}, Bootstrap-95%-Intervall {h1['direct_poll_state_cluster_bootstrap_ci_low']:.4f} bis {h1['direct_poll_state_cluster_bootstrap_ci_high']:.4f}, Sign-Flip-p={h1['direct_poll_state_cluster_sign_flip_p']:.4f}. State-Mehrheit: Polymarket {h1['direct_poll_state_cluster_pm_state_count']} States, poll-derived {h1['direct_poll_state_cluster_poll_state_count']}; Polymarket-State-Mehrheit belegt {h1['direct_poll_state_cluster_majority_supports_pm']}."),
+        ("Direct Poll Outlier Robustness", f"Outlier-Diagnostik ueber {h1['direct_poll_outlier_state_count']} State-Cluster: voller Mean {h1['direct_poll_outlier_full_mean_advantage']:.4f}; alle Leave-one-state-out Means positiv {h1['direct_poll_outlier_leave_one_all_positive']}, Minimum {h1['direct_poll_outlier_min_leave_one_mean']:.4f} ohne {h1['direct_poll_outlier_most_influential_state']}. Entfernt man die groessten positiven State-Beitraege, bleibt der Mean bis {h1['direct_poll_outlier_top_k_positive']} entfernte States positiv und kippt bei {h1['direct_poll_outlier_first_nonpositive_k']} entfernten States auf {h1['direct_poll_outlier_first_nonpositive_mean']:.4f}. Groesster positiver State: {h1['direct_poll_outlier_largest_positive_state']} ({h1['direct_poll_outlier_largest_positive_advantage']:.4f}); Status {h1['direct_poll_outlier_goal_status']}."),
+        ("State-Source-Konsens", f"{h1['state_source_consensus_case_count']} Source-State-Vergleiche ueber {h1['state_source_consensus_state_count']} States: Polymarket niedrigerer Verlust in {h1['state_source_consensus_pm_case_count']} Source-State-Faellen, Comparatoren in {h1['state_source_consensus_comparator_case_count']}. All-Source-State-Konsens: Polymarket {h1['state_source_consensus_pm_state_count']} States, Comparatoren {h1['state_source_consensus_comparator_state_count']}, Ties {h1['state_source_consensus_tie_state_count']}. Bei States mit zwei direkten Poll-Transform-Quellen gewinnt Polymarket {h1['state_source_consensus_direct_two_pm_state_count']} von {h1['state_source_consensus_direct_two_state_count']} States."),
+        ("Competitive-State-Diagnose", f"Niedrigste Comparator-Distanz-Terzile: Polymarket {h1['competitive_state_all_low_pm_count']} von {h1['competitive_state_all_low_case_count']} All-Source-Faellen und {h1['competitive_state_direct_low_pm_count']} von {h1['competitive_state_direct_low_case_count']} direkten Poll-Transform-Faellen; hoechste Distanz-Terzile: Polymarket {h1['competitive_state_all_high_pm_count']} von {h1['competitive_state_all_high_case_count']}, Comparatoren {h1['competitive_state_all_high_comparator_count']} von {h1['competitive_state_all_high_case_count']}. Begrenzte Competitive-State-Ausnahme, kein breiter Viele-Faelle-Beweis."),
+        ("State-Date Competitiveness x Horizon", f"<=90 Tage und Low/Middle-Poll-Distanz: Polymarket {h1['panel_comp_late_non_safe_pm_count']} von {h1['panel_comp_late_non_safe_row_count']} State-Date-Zeilen und {h1['panel_comp_late_non_safe_state_support_count']} von {h1['panel_comp_late_non_safe_state_count']} States; spaete High-Distance-Zeilen: Polymarket {h1['panel_comp_late_high_pm_count']} von {h1['panel_comp_late_high_row_count']}, poll-derived {h1['panel_comp_late_high_poll_count']} von {h1['panel_comp_late_high_row_count']}. Starker spaeter Competitive-Poll-Befund, aber kein unabhaengiger Viele-Wahlen-Beweis."),
+        ("State-Level Signifikanzdiagnose", f"Spaete Low/Middle-Poll-Distanz: Polymarket {h1['state_sign_late_non_safe_pm_state_count']} von {h1['state_sign_late_non_safe_state_count']} States; exakter einseitiger Binomial-p-Wert {h1['state_sign_late_non_safe_p_value']:.4f}; exakte 95-Prozent-Untergrenze {h1['state_sign_late_non_safe_ci_low']:.3f}. Spaete High-Distance-States: poll-derived {h1['state_sign_late_high_poll_state_count']} von {h1['state_sign_late_high_state_count']} States."),
+        ("Kalibrierungsdiagnostik", f"{h1['calibration_forecast_case_rows']} Forecast-Case-Zeilen aus {h1['calibration_forecast_source_count']} Quellen und {h1['calibration_pairwise_count']} Pairwise-Reihen: {h1['calibration_aggregate_support_count']} von {h1['calibration_pairwise_count']} mit niedrigerem mittleren Polymarket-Brier, {h1['calibration_majority_support_count']} von {h1['calibration_pairwise_count']} mit Mehrheit niedrigerer Einzelfallverluste, breiter Viele-Faelle-Beweis {h1['calibration_broad_support_count']} von {h1['calibration_pairwise_count']}."),
+        ("50-State-Kalibrierung", f"Polymarket Mean Brier {h1['calibration_pm_state_brier']:.4f} und Fixed-Bin-ECE {h1['calibration_pm_state_ece']:.4f}; Rieke ECE {h1['calibration_rieke_state_ece']:.4f}; 270toWin/JHK ECE {h1['calibration_270_state_ece']:.4f}. Forecast-Qualitaets-, aber kein klarer Kalibrierungssieg."),
+        ("Final Snapshot", f"{h1['final_snapshot_case_count']} geloeste 2024-Final-Snapshot-Outcomes gegen 538 final forecast: Polymarket niedrigerer Verlust in {h1['final_snapshot_pm_lower_loss_count']} von {h1['final_snapshot_case_count']} Faellen; Mean Brier {h1['final_snapshot_mean_pm_brier']:.4f} vs {h1['final_snapshot_mean_traditional_brier']:.4f}."),
+        ("State Poll Snapshot", f"{h1['state_poll_snapshot_case_count']} geloeste State-Outcomes gegen dokumentiert transformierte 538 Polling-Averages: Polymarket niedrigerer Verlust in {h1['state_poll_snapshot_pm_lower_loss_count']} von {h1['state_poll_snapshot_case_count']} Faellen; Mean Brier {h1['state_poll_snapshot_mean_pm_brier']:.4f} vs {h1['state_poll_snapshot_mean_poll_brier']:.4f}."),
+        ("270toWin Polling Average", f"{h1['two_seventy_poll_average_case_count']} gematchte State-Outcomes gegen dokumentiert transformierte 270toWin-Polling-Averages: Polymarket niedrigerer Verlust in {h1['two_seventy_poll_average_pm_lower_loss_count']} Faellen, poll-derived in {h1['two_seventy_poll_average_poll_lower_loss_count']}; Mean Brier {h1['two_seventy_poll_average_mean_pm_brier']:.4f} vs {h1['two_seventy_poll_average_mean_poll_brier']:.4f}."),
+        ("Popular Vote", f"{h1['popular_vote_case_count']} nationale Tageszeilen fuer Trump popular vote: Polymarket niedrigerer Verlust in {h1['popular_vote_pm_lower_loss_count']} Zeilen, poll-derived in {h1['popular_vote_poll_lower_loss_count']}; Mean Brier {h1['popular_vote_mean_pm_brier']:.4f} vs {h1['popular_vote_mean_poll_brier']:.4f}. Gegenbeleg zum starken Claim."),
+        ("Margin Threshold Readiness", f"{h1['margin_threshold_candidate_count']} Trump-State-Margin-Maerkte geprueft: {h1['margin_threshold_with_538_poll_count']} mit 538-State-Poll-Average-Zeilen, {h1['margin_threshold_with_clob_overlap_count']} mit CLOB-Historie im bewahrten 538-Fenster, {h1['margin_threshold_compatible_count']} neue H1-Brier-Faelle; {h1['margin_threshold_no_overlap_count']} durch fehlende zeitliche Ueberlappung blockiert, {h1['margin_threshold_missing_poll_count']} durch fehlende 538-State-Polls."),
+        ("State-Date Poll Panel", f"{h1['state_poll_panel_case_count']} gematchte State-Date-Zeilen ueber {h1['state_poll_panel_state_count']} States und {h1['state_poll_panel_date_count']} Daten: Polymarket niedrigerer Verlust in {h1['state_poll_panel_pm_lower_loss_count']} Zeilen, poll-derived niedrigerer Verlust in {h1['state_poll_panel_poll_lower_loss_count']}; Mean Brier {h1['state_poll_panel_mean_pm_brier']:.4f} vs {h1['state_poll_panel_mean_poll_brier']:.4f}."),
+        ("State-Date Temporal Diagnostic", f"Polymarket-stuetzende Monate {h1['state_poll_temporal_support_months']}: {h1['state_poll_temporal_support_pm_lower_loss_count']} von {h1['state_poll_temporal_support_row_count']} Zeilen mit niedrigerem Polymarket-Verlust ueber {h1['state_poll_temporal_support_state_count']} States; poll-derived niedrigerer Verlust in {h1['state_poll_temporal_support_poll_lower_loss_count']}; Mean Brier {h1['state_poll_temporal_support_mean_pm_brier']:.4f} vs {h1['state_poll_temporal_support_mean_poll_brier']:.4f}."),
+        ("State-Date Horizon Diagnostic", f"<=90-Tage-Fenster ({h1['state_poll_horizon_near_bins']}): {h1['state_poll_horizon_near_pm_lower_loss_count']} von {h1['state_poll_horizon_near_row_count']} Zeilen mit niedrigerem Polymarket-Verlust ueber {h1['state_poll_horizon_near_state_count']} States; poll-derived niedrigerer Verlust in {h1['state_poll_horizon_near_poll_lower_loss_count']}; Mean Brier {h1['state_poll_horizon_near_mean_pm_brier']:.4f} vs {h1['state_poll_horizon_near_mean_poll_brier']:.4f}."),
+        ("State-Level Horizon Support", f"Im <=90-Tage-Fenster stuetzt Polymarket {h1['state_poll_horizon_state_pm_mean_support_count']} von {h1['state_poll_horizon_state_count']} States nach mittlerem Brier und {h1['state_poll_horizon_state_pm_majority_support_count']} von {h1['state_poll_horizon_state_count']} States nach Mehrheit niedrigerer Tagesverluste; {h1['state_poll_horizon_state_poll_support_count']} States stuetzen Polymarket nicht."),
+        ("<=90-Day Score Quality", f"{h1['state_poll_near_quality_forecast_row_count']} Forecast-Zeilen aus {h1['state_poll_near_quality_case_count']} State-Date-Faellen und zwei Quellen: Polymarket Mean Brier {h1['state_poll_near_quality_pm_mean_brier']:.4f} vs poll-derived {h1['state_poll_near_quality_poll_mean_brier']:.4f}; Fixed-Bin-ECE {h1['state_poll_near_quality_pm_ece']:.4f} vs {h1['state_poll_near_quality_poll_ece']:.4f}; Probability-Separation {h1['state_poll_near_quality_pm_separation']:.4f} vs {h1['state_poll_near_quality_poll_separation']:.4f}."),
+        ("Poll Transform Sensitivitaet", f"MAE {h1['state_poll_sensitivity_min_mae']:.1f} bis {h1['state_poll_sensitivity_max_mae']:.1f} Prozentpunkte: Polymarket bleibt in allen {h1['state_poll_sensitivity_row_count']} Parameterzeilen im mittleren Brier niedriger; Lower-Loss-Spanne {h1['state_poll_sensitivity_min_pm_lower_loss_count']} bis {h1['state_poll_sensitivity_max_pm_lower_loss_count']} von {h1['state_poll_snapshot_case_count']} State-Outcomes."),
+        ("Coverage Audit", f"{h1['state_poll_coverage_state_count']} US-States geprueft; {h1['state_poll_coverage_polymarket_market_count']} Polymarket-State-Maerkte; {h1['state_poll_coverage_valid_pair_count']} valide H1-Brier-Paare mit REP/DEM-Zeilen im 538-Snapshot; {h1['state_poll_coverage_missing_poll_count']} States wegen fehlender 538-Snapshot-Pollwerte ausgeschlossen."),
+        ("Rieke 50-State Forecast", f"{h1['rieke_state_case_count']} geloeste State-Outcomes gegen ein unabhaengiges pollbasiertes Rieke-Modell: Mean Brier {h1['rieke_state_mean_pm_brier']:.4f} vs {h1['rieke_state_mean_rieke_brier']:.4f}; Polymarket niedrigerer Einzelfallverlust in {h1['rieke_state_pm_lower_loss_count']} von {h1['rieke_state_case_count']}, Rieke in {h1['rieke_state_rieke_lower_loss_count']} von {h1['rieke_state_case_count']}."),
+        ("270toWin/JHK 50-State Forecast", f"{h1['two_seventy_state_case_count']} geloeste State-Outcomes gegen 270toWin/JHK: {h1['two_seventy_state_exact_case_count']} exakt ausgewiesene Wahrscheinlichkeiten und {h1['two_seventy_state_censored_case_count']} zensierte >99.9-Prozent-Boundary-Werte; Mean Brier {h1['two_seventy_state_mean_pm_brier']:.4f} vs {h1['two_seventy_state_mean_270_brier']:.4f}; Polymarket niedrigerer Einzelfallverlust in {h1['two_seventy_state_pm_lower_loss_count']} von {h1['two_seventy_state_case_count']}, 270toWin/JHK in {h1['two_seventy_state_270_lower_loss_count']} von {h1['two_seventy_state_case_count']}."),
+        ("Grenze", "H1 ist kein Speed-Test; die Tagespaare gehoeren zu einem geloesten Wahl-Outcome. Die neuen State-Faelle sind poll-derived beziehungsweise modellbasiert, keine Rohpolls und kein RCP-Vergleich."),
+    ]
+    table = _add_table(doc, rows, ["Frage", "Antwort"], [1700, 7660])
+    _shade_table_header(table)
+    _add_callout(
+        doc,
+        "Interpretation",
+        (
+            f"Im getesteten Fenster spricht H1 fuer tiefere Forecast-Verluste "
+            f"von Polymarket gegenueber FiveThirtyEight. Der DM-p-Wert fuer "
+            f"Polymarket vs FiveThirtyEight liegt bei {h1['dm_polymarket_vs_538']:.3g}. "
+            f"Im Head-to-head-Vergleich hat Polymarket in "
+            f"{h1['pm_better_vs_538_count']} von {h1['pm_vs_538_count']} "
+            f"taeglichen Paaren den niedrigeren Brier-Verlust. "
+            f"Die H1-Synthesis ueber alle aktuellen traditionellen "
+            f"Vergleichszeilen zeigt {h1['synthesis_aggregate_support_count']} "
+            f"von {h1['synthesis_evidence_row_count']} Zeilen mit niedrigerem "
+            f"mittleren Polymarket-Brier, aber nur "
+            f"{h1['synthesis_majority_support_count']} von "
+            f"{h1['synthesis_evidence_row_count']} Zeilen mit Mehrheit "
+            f"niedrigerer Einzelfallverluste und "
+            f"{h1['synthesis_broad_support_count']} von "
+            f"{h1['synthesis_evidence_row_count']} Zeilen, die den breiten "
+            f"Viele-Faelle-Anspruch tragen. "
+            f"Die fokussierte Poll-Comparison-Scorecard belegt die belastbarste "
+            f"direkte Poll-Aussage: Polymarket hat im primaeren spaeten "
+            f"Low/Middle-Poll-Distanz-Scope in "
+            f"{h1['poll_result_primary_pm_count']} von "
+            f"{h1['poll_result_primary_row_count']} State-Date-Zeilen "
+            f"({h1['poll_result_primary_pm_share'] * 100:.1f}%) und "
+            f"{h1['poll_result_primary_pm_state_count']} von "
+            f"{h1['poll_result_primary_state_count']} States den niedrigeren "
+            f"Brier-Verlust; der breite Zielstatus bleibt "
+            f"{h1['poll_result_goal_status']}. "
+            f"Die neue Unit-Robustness-Aggregation reduziert die Abhaengigkeit "
+            f"von wiederholten Tageszeilen: Im selben primaeren Scope wird "
+            f"Polymarket in {h1['poll_unit_state_month_pm_count']} von "
+            f"{h1['poll_unit_state_month_count']} State-Month-Einheiten und "
+            f"{h1['poll_unit_state_horizon_pm_count']} von "
+            f"{h1['poll_unit_state_horizon_count']} State-Horizon-Einheiten "
+            f"gestuetzt; fuer State-Month-Einheiten betraegt der exakte "
+            f"einseitige p-Wert {h1['poll_unit_state_month_p_value']:.2g} "
+            f"und die exakte 95-Prozent-Untergrenze "
+            f"{h1['poll_unit_state_month_ci_low']:.3f}. "
+            f"Die Grenzen bleiben sichtbar: Im Full Panel stuetzen "
+            f"{h1['poll_unit_full_panel_state_month_poll_count']} von "
+            f"{h1['poll_unit_full_panel_state_month_count']} State-Month-"
+            f"Einheiten poll-derived, im Late-High-Distance-Scope "
+            f"{h1['poll_unit_late_high_state_month_poll_count']} von "
+            f"{h1['poll_unit_late_high_state_month_count']}. "
+            f"Die neue Kalibrierungsdiagnostik nutzt "
+            f"{h1['calibration_forecast_case_rows']} Forecast-Case-Zeilen und "
+            f"zeigt fuer die 50-State-Fallreihe einen Polymarket-ECE von "
+            f"{h1['calibration_pm_state_ece']:.4f} gegenueber "
+            f"{h1['calibration_rieke_state_ece']:.4f} fuer Rieke und "
+            f"{h1['calibration_270_state_ece']:.4f} fuer 270toWin/JHK; "
+            f"das ist kein klarer Kalibrierungssieg. "
+            f"Die kuratierte Final-Snapshot-Erweiterung zeigt zusaetzlich "
+            f"{h1['final_snapshot_pm_lower_loss_count']} von "
+            f"{h1['final_snapshot_case_count']} geloesten 2024-Outcomes mit "
+            f"niedrigerem Polymarket-Verlust; der mittlere Brier liegt bei "
+            f"{h1['final_snapshot_mean_pm_brier']:.4f} vs "
+            f"{h1['final_snapshot_mean_traditional_brier']:.4f}. "
+            f"Die State-Poll-Snapshot-Erweiterung fuegt "
+            f"{h1['state_poll_snapshot_case_count']} State-Outcomes hinzu; "
+            f"Polymarket hat dort in "
+            f"{h1['state_poll_snapshot_pm_lower_loss_count']} Faellen den "
+            f"niedrigeren Verlust, Mean Brier "
+            f"{h1['state_poll_snapshot_mean_pm_brier']:.4f} vs "
+            f"{h1['state_poll_snapshot_mean_poll_brier']:.4f}. "
+            f"Die 270toWin-Polling-Average-Erweiterung erhoeht die direkt "
+            f"pollbasierte State-Abdeckung auf "
+            f"{h1['two_seventy_poll_average_case_count']} gematchte States; "
+            f"Polymarket hat dort niedrigeren mittleren Brier "
+            f"{h1['two_seventy_poll_average_mean_pm_brier']:.4f} vs "
+            f"{h1['two_seventy_poll_average_mean_poll_brier']:.4f}, aber nur "
+            f"{h1['two_seventy_poll_average_pm_lower_loss_count']} von "
+            f"{h1['two_seventy_poll_average_case_count']} niedrigere "
+            f"Einzelfallverluste. "
+            f"Das groessere State-Date-Poll-Panel relativiert diesen "
+            f"Snapshot-Befund: Es enthaelt "
+            f"{h1['state_poll_panel_case_count']} gematchte Zeilen, davon "
+            f"{h1['state_poll_panel_pm_lower_loss_count']} mit niedrigerem "
+            f"Polymarket-Verlust und "
+            f"{h1['state_poll_panel_poll_lower_loss_count']} mit niedrigerem "
+            f"poll-derived Verlust; Mean Brier "
+            f"{h1['state_poll_panel_mean_pm_brier']:.4f} vs "
+            f"{h1['state_poll_panel_mean_poll_brier']:.4f}. "
+            f"Die Temporal-Diagnose zeigt aber eine spaete Gegenbewegung: "
+            f"In {h1['state_poll_temporal_support_months']} hat Polymarket "
+            f"in {h1['state_poll_temporal_support_pm_lower_loss_count']} von "
+            f"{h1['state_poll_temporal_support_row_count']} Zeilen den "
+            f"niedrigeren Verlust, Mean Brier "
+            f"{h1['state_poll_temporal_support_mean_pm_brier']:.4f} vs "
+            f"{h1['state_poll_temporal_support_mean_poll_brier']:.4f}. "
+            f"Die Forecast-Horizon-Diagnose zeigt fuer das <=90-Tage-Fenster "
+            f"{h1['state_poll_horizon_near_pm_lower_loss_count']} von "
+            f"{h1['state_poll_horizon_near_row_count']} Zeilen mit niedrigerem "
+            f"Polymarket-Verlust, Mean Brier "
+            f"{h1['state_poll_horizon_near_mean_pm_brier']:.4f} vs "
+            f"{h1['state_poll_horizon_near_mean_poll_brier']:.4f}. "
+            f"Auf State-Ebene sind es "
+            f"{h1['state_poll_horizon_state_pm_mean_support_count']} von "
+            f"{h1['state_poll_horizon_state_count']} States mit niedrigerem "
+            f"mittleren Polymarket-Brier und "
+            f"{h1['state_poll_horizon_state_pm_majority_support_count']} von "
+            f"{h1['state_poll_horizon_state_count']} States mit Mehrheit "
+            f"niedrigerer Polymarket-Tagesverluste. "
+            f"Die <=90-Day-Score-Quality-Diagnose verdichtet dasselbe Fenster "
+            f"zu {h1['state_poll_near_quality_forecast_row_count']} "
+            f"Forecast-Zeilen und zeigt Polymarket mit niedrigerem Mean Brier "
+            f"{h1['state_poll_near_quality_pm_mean_brier']:.4f} vs "
+            f"{h1['state_poll_near_quality_poll_mean_brier']:.4f}, niedrigerem "
+            f"Fixed-Bin-ECE {h1['state_poll_near_quality_pm_ece']:.4f} vs "
+            f"{h1['state_poll_near_quality_poll_ece']:.4f} und hoeherer "
+            f"Probability-Separation "
+            f"{h1['state_poll_near_quality_pm_separation']:.4f} vs "
+            f"{h1['state_poll_near_quality_poll_separation']:.4f}. "
+            f"Die Poll-Transform-Sensitivitaet variiert MAE von "
+            f"{h1['state_poll_sensitivity_min_mae']:.1f} bis "
+            f"{h1['state_poll_sensitivity_max_mae']:.1f} Prozentpunkten; "
+            f"Polymarket bleibt in allen "
+            f"{h1['state_poll_sensitivity_row_count']} Parameterzeilen im "
+            f"mittleren Brier niedriger und liegt je nach Annahme in "
+            f"{h1['state_poll_sensitivity_min_pm_lower_loss_count']} bis "
+            f"{h1['state_poll_sensitivity_max_pm_lower_loss_count']} von "
+            f"{h1['state_poll_snapshot_case_count']} State-Outcomes vorne. "
+            f"Der Coverage-Audit prueft {h1['state_poll_coverage_state_count']} "
+            f"US-States und findet {h1['state_poll_coverage_polymarket_market_count']} "
+            f"Polymarket-State-Maerkte, aber nur "
+            f"{h1['state_poll_coverage_valid_pair_count']} valide H1-Paare "
+            f"mit REP/DEM-Zeilen im 538-Snapshot. "
+            f"Die Rieke-Erweiterung deckt alle "
+            f"{h1['rieke_state_case_count']} State-Outcomes ab und zeigt "
+            f"einen niedrigeren mittleren Polymarket-Brier "
+            f"({h1['rieke_state_mean_pm_brier']:.4f} vs "
+            f"{h1['rieke_state_mean_rieke_brier']:.4f}), aber nur "
+            f"{h1['rieke_state_pm_lower_loss_count']} von "
+            f"{h1['rieke_state_case_count']} Einzelfaellen mit niedrigerem "
+            f"Polymarket-Verlust; Rieke liegt in "
+            f"{h1['rieke_state_rieke_lower_loss_count']} von "
+            f"{h1['rieke_state_case_count']} vorne. "
+            f"Zusammen ergeben die 538-nahen Zusatzchecks "
+            f"{h1['final_snapshot_case_count'] + h1['state_poll_snapshot_case_count']} "
+            f"geloeste Outcomes, davon "
+            f"{h1['final_snapshot_pm_lower_loss_count'] + h1['state_poll_snapshot_pm_lower_loss_count']} "
+            f"mit niedrigerem Polymarket-Verlust; die Quellen bleiben "
+            f"methodisch getrennt. "
+            f"Die 270toWin/JHK-Erweiterung zeigt ebenfalls einen niedrigeren "
+            f"mittleren Polymarket-Brier ({h1['two_seventy_state_mean_pm_brier']:.4f} "
+            f"vs {h1['two_seventy_state_mean_270_brier']:.4f}), aber nur "
+            f"{h1['two_seventy_state_pm_lower_loss_count']} von "
+            f"{h1['two_seventy_state_case_count']} Einzelfaellen mit niedrigerem "
+            f"Polymarket-Verlust; 270toWin/JHK liegt in "
+            f"{h1['two_seventy_state_270_lower_loss_count']} von "
+            f"{h1['two_seventy_state_case_count']} vorne. "
+            "Das erklaert aber nicht den Mechanismus, beweist keine schnellere "
+            "Informationsverarbeitung; die Rieke-Zahlen sind aggregierte "
+            "Forecast-Qualitaetsstuetze und die 270toWin/JHK-Zahlen bestaetigen "
+            "dieselbe Aggregatgrenze, aber keinen Mehrheit-der-States-Beweis."
+        ),
+    )
+
+
+def _add_h2_section(doc: Document, h2: dict[str, Any]) -> None:
+    doc.add_heading("3. H2 - Taegliche Event-Window-Reaktion", level=1)
+    doc.add_paragraph(
+        "H2 prueft, ob Polymarket-Wahrscheinlichkeiten um vorab kuratierte "
+        "politische Ereignisse in plausibler Weise reagieren. Die Ereignisse "
+        "wurden vor der Analyse fixiert, damit keine nachtraegliche Auswahl nach "
+        "sichtbaren Preisbewegungen entsteht."
+    )
+    rows = [
+        ("Warum", "Oeffentliche Informationen koennen sich in Prediction-Market-Preisen zeigen."),
+        ("Methode", "Daily Event-Windows mit primaerem Fenster [0d,+1d] und Sensitivitaetsfenster [-1d,+3d]."),
+        ("Datenform", f"{h2['event_count']} kuratierte Ereignisse, {h2['summary_rows']} kompakte Summary-Zeilen."),
+        ("Ergebnis", "Mehrere Ereignisse zeigen sichtbare taegliche Bewegungen, z.B. Trump shooting +7.2 pp im Primaerfenster."),
+        ("Grenze", "Daily-Daten erlauben keine Intraday-Speed-Aussage."),
+    ]
+    table = _add_table(doc, rows, ["Frage", "Antwort"], [1700, 7660])
+    _shade_table_header(table)
+    primary_rows = [
+        (row["event"], f"{row['change_pp']:+.1f} pp")
+        for row in h2["primary_examples"]
+    ]
+    table = _add_table(doc, primary_rows, ["Primaerfenster", "Finaler Change"], [7060, 2300])
+    _shade_table_header(table)
+
+
+def _add_h3_section(doc: Document, h3: dict[str, Any]) -> None:
+    doc.add_heading("4. H3 - Wallet-Tier-Timing-Diagnostik", level=1)
+    doc.add_paragraph(
+        "H3 untersucht, ob aggregierte Wallet-Aktivitaet zeitliche Muster vor "
+        "oder um Polymarket-Preisbewegungen zeigt. Die Wallet-Tiers sind "
+        "dataset-relativ und aus der beobachteten Wallet-Verteilung abgeleitet, "
+        "nicht aus einem willkuerlichen USD-Schwellenwert."
+    )
+    rows = [
+        ("Warum", "Wallet-Aktivitaet kann ein fruehes Signal fuer Informationsverarbeitung sein."),
+        ("Methode", "Wallet-Level cumulative amount_usd percentiles, Lead-Lag-Korrelationen und Granger-Diagnostik."),
+        ("Datenform", f"{h3['model_rows']} alignierte Modellzeilen; Tier counts: {h3['tier_counts_text']}."),
+        ("Ergebnis", f"Top-Tier zeigt staerkste dokumentierte Korrelation bei {h3['top_correlation_label']} = {h3['top_correlation']:.4f}; kleinster Granger-p-Wert {h3['min_granger_p']:.4f}."),
+        ("Grenze", "BUY-only Quelle, taegliche Aggregation und Multiple-Testing-Sensitivitaet."),
+    ]
+    table = _add_table(doc, rows, ["Frage", "Antwort"], [1700, 7660])
+    _shade_table_header(table)
+    _add_callout(
+        doc,
+        "Wording fuer die Verteidigung",
+        (
+            "Formuliere H3 als Timing-Diagnostik, nicht als Beweis fuer private "
+            "Information, Fehlverhalten, Kausalitaet oder Profitabilitaet."
+        ),
+    )
+
+
+def _add_monitor_section(doc: Document, monitor: dict[str, Any]) -> None:
+    doc.add_heading("5. Politics/Geo Monitor-Prototyp", level=1)
+    doc.add_paragraph(
+        "Der Monitor ist eine Forschungs-Erweiterung, nicht der deterministische "
+        "Kern der Thesis. Er soll spaeter auffaellige Kombinationen aus Marktbewegung, "
+        "Wallet-Tier-Aktivitaet, Konzentration und Event-Kontext sichtbar machen. "
+        "Er bleibt read-only und darf keine Orders, Trading-Credentials oder "
+        "Profitversprechen enthalten."
+    )
+    rows = [
+        ("Warum", "Pruefen, ob H1-H3 eine spaetere Anomalie- und Signalhypothesen-Schicht motivieren koennen."),
+        ("Methode", "Robuste rolling Baselines, Rule C mit combined-family confirmation, bounded summaries."),
+        ("Recorded Replay", f"{monitor['snapshot_count']} Snapshot/Alert-Zeilen; Severity: {monitor['severity_counts_text']}."),
+        ("Live Dashboard", f"{monitor['live_market_count']} Maerkte, {monitor['live_alert_count']} Alert-Zeilen, {monitor['live_scoring_rows']} Scoring-Zeilen."),
+        ("Wallet Graph", f"{monitor['wallet_graph_nodes']} Nodes und {monitor['wallet_graph_edges']} Co-Activity-Edges als lokaler Review-Layer."),
+        ("Grenze", "Keine PnL-Backtests, keine autonome Ausfuehrung, keine kausalen oder tradingbezogenen Schlussfolgerungen."),
+    ]
+    table = _add_table(doc, rows, ["Aspekt", "Stand"], [1900, 7460])
+    _shade_table_header(table)
+
+
+def _add_swiss_section(doc: Document, swiss: dict[str, Any]) -> None:
+    doc.add_heading("6. Aktive Phase - Schweizer 10-Millionen-Referendum", level=1)
+    doc.add_paragraph(
+        "Die aktuelle Phase ist ein eigener, aktueller Vergleich: Polymarket-"
+        "Wahrscheinlichkeit fuer die Annahme der Initiative gegen kuratierte "
+        "Umfragewerte von SRG/gfs.bern, Tamedia/LeeWas und YouGov Schweiz. "
+        "BFS/admin.ch dienen nur als Kontextquellen, nicht als Umfragequelle."
+    )
+    rows = [
+        ("Warum", "Aktueller realer Referendumsmarkt erlaubt einen bounded Vergleich zwischen Polymarket und traditionellen Umfragen."),
+        ("Methode", "Curated poll catalog, read-only Gamma Snapshot, bounded CLOB price-history um Poll-Releases."),
+        ("Datenform", f"{swiss['poll_count']} Umfragen, {swiss['snapshot_count']} Snapshots, {swiss['history_rows']} Price-History-Zeilen."),
+        ("Latest Result", f"Polymarket Yes {swiss['latest_poly_yes_pct']:.1f}%; latest poll Yes {swiss['latest_poll_yes_pct']:.1f}%; raw gap {swiss['latest_raw_gap_pp']:+.1f} pp."),
+        ("Information Response", swiss["information_response_counts_text"]),
+        ("Grenze", "Umfrageanteile sind keine Modell-Wahrscheinlichkeiten; keine Kausalitaet, Tradeability oder Mispricing-Behauptung."),
+    ]
+    table = _add_table(doc, rows, ["Aspekt", "Stand"], [1900, 7460])
+    _shade_table_header(table)
+    source_rows = [
+        (item["source"], item["poll_id"], f"{item['poll_yes']:.1f}%", f"{item['raw_gap_pp']:+.1f} pp")
+        for item in swiss["latest_source_rows"]
+    ]
+    table = _add_table(doc, source_rows, ["Quelle", "Neuester Poll", "Poll Yes", "Raw Gap"], [2800, 3300, 1500, 1760])
+    _shade_table_header(table)
+
+
+def _add_figures_section(doc: Document, figures: list[FigureSpec]) -> None:
+    doc.add_heading("7. Visualisierungen", level=1)
+    doc.add_paragraph(
+        "Die folgenden Abbildungen sind bestehende oder lokal generierte Artefakte. "
+        "Sie fuehren keine neuen statistischen Metriken ein, sondern visualisieren "
+        "bereits vorhandene deterministische Outputs."
+    )
+    for idx, figure in enumerate(figures, start=1):
+        if idx > 1:
+            doc.add_section(WD_SECTION.CONTINUOUS)
+        heading = doc.add_paragraph()
+        heading.paragraph_format.space_before = Pt(10)
+        heading.paragraph_format.space_after = Pt(3)
+        run = heading.add_run(f"Abbildung {idx}: {figure.caption}")
+        _set_run(run, bold=True, color=DARK_BLUE)
+        if figure.path.exists():
+            try:
+                doc.add_picture(str(figure.path), width=Inches(6.25))
+                last = doc.paragraphs[-1]
+                last.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            except Exception:
+                doc.add_paragraph(f"[Abbildung konnte nicht eingebettet werden: {figure.path}]")
+        doc.add_paragraph(figure.note)
+
+
+def _add_presentation_section(doc: Document) -> None:
+    doc.add_heading("8. Vorschlag fuer die Dozentenpraesentation", level=1)
+    rows = [
+        ("1", "Problem", "Prediction Markets koennen Informationen aggregieren; die Arbeit prueft beobachtbare Effizienz-Proxies."),
+        ("2", "Methodische Regel", "Alle Metriken werden deterministisch in Python berechnet; keine LLM-Rohdateninterpretation."),
+        ("3", "H1-H3", "Forecast-Qualitaet, taegliche Event-Reaktionen, Wallet-Timing-Diagnostik."),
+        ("4", "Ergebnisse", "Polymarket zeigt tiefere H1-Brier-Verluste; H2 findet Event-Bewegungen; H3 findet Timing-Diagnostik mit klaren Grenzen."),
+        ("5", "Aktueller Zusatz", "Swiss-Referendum-Track zeigt Polymarket deutlich unter den neuesten Umfrage-Yes-Anteilen."),
+        ("6", "Naechster Schritt", "Finale Thesis-Integration, Sensitivitaetschecks und vorsichtige Interpretation."),
+    ]
+    table = _add_table(doc, rows, ["#", "Teil", "Kernaussage"], [700, 1900, 6760])
+    _shade_table_header(table)
+
+
+def _add_appendix(doc: Document, data: dict[str, Any]) -> None:
+    doc.add_heading("9. Wichtige Artefakte fuer Rueckfragen", level=1)
+    rows = [
+        ("Steuerung", "GOAL.md, ROADMAP.md, STATUS.md, docs/project/WORK_LOG.md"),
+        ("H1", "data/results/thesis_h1_summary.csv, h1_brier_scores.csv, h1_diebold_mariano.json, h1_forecast_quality_pairwise.csv, h1_forecast_quality_synthesis.csv, h1_claim_evidence_audit.csv, h1_claim_evidence_audit_summary.csv, h1_poll_comparison_result.csv, h1_poll_comparison_result_summary.csv, h1_poll_comparison_result.png, h1_poll_comparison_result_metadata.json, h1_poll_claim_readiness.csv, h1_poll_claim_readiness_summary.csv, h1_poll_claim_readiness.png, h1_poll_claim_readiness_metadata.json, h1_poll_scope_frontier.csv, h1_poll_scope_frontier_summary.csv, h1_poll_scope_frontier.png, h1_poll_scope_frontier_metadata.json, h1_poll_decision_matrix.csv, h1_poll_decision_matrix_summary.csv, h1_poll_decision_matrix.png, h1_poll_decision_matrix_metadata.json, h1_robust_poll_scope_quality_rows.csv, h1_robust_poll_scope_quality_bins.csv, h1_robust_poll_scope_quality_summary.csv, h1_robust_poll_scope_quality_pairwise.csv, h1_robust_poll_scope_quality.png, h1_robust_poll_scope_quality_metadata.json, h1_robust_poll_scope_unit_quality_units.csv, h1_robust_poll_scope_unit_quality_summary.csv, h1_robust_poll_scope_unit_quality.png, h1_robust_poll_scope_unit_quality_metadata.json, h1_poll_comparison_unit_robustness_units.csv, h1_poll_comparison_unit_robustness_summary.csv, h1_poll_comparison_unit_robustness.png, h1_poll_comparison_unit_robustness_metadata.json, h1_direct_poll_loss_decomposition_cases.csv, h1_direct_poll_loss_decomposition_summary.csv, h1_direct_poll_loss_decomposition.png, h1_direct_poll_loss_decomposition_metadata.json, h1_direct_poll_state_cluster_diagnostic_states.csv, h1_direct_poll_state_cluster_diagnostic_summary.csv, h1_direct_poll_state_cluster_diagnostic.png, h1_direct_poll_state_cluster_diagnostic_metadata.json, h1_direct_poll_outlier_robustness_scenarios.csv, h1_direct_poll_outlier_robustness_summary.csv, h1_direct_poll_outlier_robustness.png, h1_direct_poll_outlier_robustness_metadata.json, h1_calibration_diagnostic_summary.csv, h1_calibration_diagnostic_pairwise.csv, h1_evidence_scope.csv, h1_expansion_readiness.csv, h1_final_snapshot_cases.csv, h1_final_snapshot_summary.csv, h1_state_poll_snapshot_cases.csv, h1_state_poll_snapshot_summary.csv, h1_270towin_poll_average_cases.csv, h1_270towin_poll_average_summary.csv, h1_270towin_poll_average.png, h1_popular_vote_cases.csv, h1_popular_vote_summary.csv, h1_state_poll_panel_cases.csv, h1_state_poll_panel_summary.csv, h1_state_poll_panel_state_summary.csv, h1_state_poll_panel_temporal_summary.csv, h1_state_poll_panel_temporal_claim_audit.csv, h1_state_poll_panel_horizon_summary.csv, h1_state_poll_panel_horizon_claim_audit.csv, h1_state_poll_panel_horizon_state_support.csv, h1_state_poll_panel_horizon_state_support_summary.csv, h1_state_poll_panel_near_window_quality_summary.csv, h1_state_poll_panel_near_window_quality_bins.csv, h1_state_poll_panel_near_window_quality_rows.csv, h1_state_poll_panel_competitiveness_grid.csv, h1_state_poll_panel_competitiveness_summary.csv, h1_state_poll_panel_competitiveness.png, h1_state_poll_panel_state_significance.csv, h1_state_poll_panel_state_significance_summary.csv, h1_state_poll_panel_state_significance.png, h1_state_poll_snapshot_sensitivity.csv, h1_state_poll_snapshot_coverage.csv, h1_rieke_state_forecast_cases.csv, h1_rieke_state_forecast_summary.csv, h1_270towin_state_forecast_cases.csv, h1_270towin_state_forecast_summary.csv, h1_state_source_consensus_cases.csv, h1_state_source_consensus_summary.csv, h1_competitive_state_diagnostic_cases.csv, h1_competitive_state_diagnostic_summary.csv"),
+        ("H2", "data/events_timeline_seed.csv, h2_event_window_summary.csv, thesis_h2_event_window_car.png"),
+        ("H3", "h3_wallet_distribution_inventory.json, h3_granger_results.csv, thesis_h3_summary.csv"),
+        ("Monitor", "monitor_v2_bounded_summary.csv, monitor_v2_polymarket_dashboard.html, wallet_graph_dashboard.html"),
+        ("Swiss", "data/swiss_referendum_10mio_polls.csv, swiss_referendum_10mio_latest_summary.md, dashboard HTML"),
+        ("Tests", "tests/ und operations/project/review_check.py"),
+    ]
+    table = _add_table(doc, rows, ["Bereich", "Artefakte"], [1700, 7660])
+    _shade_table_header(table)
+
+
+def _h1_data(
+    summary: pd.DataFrame,
+    pairwise: pd.DataFrame,
+    synthesis: pd.DataFrame,
+    claim_audit_summary: pd.DataFrame,
+    poll_comparison_result: pd.DataFrame,
+    poll_claim_readiness: pd.DataFrame,
+    poll_scope_frontier: pd.DataFrame,
+    poll_decision_matrix: pd.DataFrame,
+    robust_poll_scope_quality_pairwise: pd.DataFrame,
+    robust_poll_scope_quality_summary: pd.DataFrame,
+    robust_poll_scope_unit_quality: pd.DataFrame,
+    poll_comparison_unit_robustness: pd.DataFrame,
+    direct_poll_loss_decomposition: pd.DataFrame,
+    direct_poll_state_cluster: pd.DataFrame,
+    direct_poll_outlier_robustness: pd.DataFrame,
+    calibration_summary: pd.DataFrame,
+    calibration_pairwise: pd.DataFrame,
+    final_snapshot: pd.DataFrame,
+    state_poll_snapshot: pd.DataFrame,
+    popular_vote: pd.DataFrame,
+    margin_threshold_readiness: pd.DataFrame,
+    state_poll_panel: pd.DataFrame,
+    state_poll_panel_temporal: pd.DataFrame,
+    state_poll_panel_horizon: pd.DataFrame,
+    state_poll_panel_horizon_state: pd.DataFrame,
+    state_poll_panel_near_quality: pd.DataFrame,
+    state_poll_sensitivity: pd.DataFrame,
+    state_poll_coverage: pd.DataFrame,
+    rieke_state_forecast: pd.DataFrame,
+    two_seventy_state_forecast: pd.DataFrame,
+    two_seventy_poll_average: pd.DataFrame,
+    state_source_consensus: pd.DataFrame,
+    competitive_state: pd.DataFrame,
+    panel_competitiveness: pd.DataFrame,
+    state_significance: pd.DataFrame,
+) -> dict[str, Any]:
+    fte = pairwise.loc[pairwise["comparator"] == "fivethirtyeight"].iloc[0]
+    sensitivity = state_poll_sensitivity.sort_values("poll_error_mae_points")
+    coverage_status = state_poll_coverage["coverage_status"].value_counts()
+    calibration_by_source = calibration_summary.set_index("forecast_source_id")
+    calibration_pm_state = calibration_by_source.loc["polymarket_state_final_50"]
+    calibration_rieke_state = calibration_by_source.loc["rieke_state_final_50"]
+    calibration_270_state = calibration_by_source.loc["two_seventy_state_final_50"]
+    temporal_by_scope = state_poll_panel_temporal.set_index("audit_scope")
+    temporal_support = temporal_by_scope.loc["polymarket_supporting_months"]
+    temporal_full = temporal_by_scope.loc["full_panel"]
+    horizon_by_scope = state_poll_panel_horizon.set_index("audit_scope")
+    horizon_near = horizon_by_scope.loc["within_90_days_before_election"]
+    near_quality = state_poll_panel_near_quality.set_index("source_id")
+    near_quality_pm = near_quality.loc["polymarket"]
+    near_quality_poll = near_quality.loc["poll_derived"]
+    robust_quality_by_scope = robust_poll_scope_quality_pairwise.set_index("scope_id")
+    robust_quality_largest = robust_quality_by_scope.loc[
+        "largest_robust_lte120_low_middle"
+    ]
+    robust_quality_strongest = robust_quality_by_scope.loc[
+        "strongest_robust_lte90_low_middle"
+    ]
+    robust_quality_summary = robust_poll_scope_quality_summary.set_index(
+        ["scope_id", "source_id"]
+    )
+    robust_quality_strongest_pm = robust_quality_summary.loc[
+        ("strongest_robust_lte90_low_middle", "polymarket")
+    ]
+    robust_unit_quality = robust_poll_scope_unit_quality.set_index(
+        ["scope_id", "unit_type"]
+    )
+    robust_unit_largest_state = robust_unit_quality.loc[
+        ("largest_robust_lte120_low_middle", "state")
+    ]
+    robust_unit_largest_state_month = robust_unit_quality.loc[
+        ("largest_robust_lte120_low_middle", "state_month")
+    ]
+    robust_unit_largest_state_horizon = robust_unit_quality.loc[
+        ("largest_robust_lte120_low_middle", "state_horizon")
+    ]
+    robust_unit_strongest_state = robust_unit_quality.loc[
+        ("strongest_robust_lte90_low_middle", "state")
+    ]
+    robust_unit_strongest_state_month = robust_unit_quality.loc[
+        ("strongest_robust_lte90_low_middle", "state_month")
+    ]
+    robust_unit_strongest_state_horizon = robust_unit_quality.loc[
+        ("strongest_robust_lte90_low_middle", "state_horizon")
+    ]
+    margin_status = margin_threshold_readiness["status"].value_counts()
+    return {
+        "observation_count": int(_summary_value(summary, "h1_observation_count")),
+        "brier_polymarket": _summary_value(summary, "h1_mean_brier_polymarket"),
+        "brier_fivethirtyeight": _summary_value(summary, "h1_mean_brier_fivethirtyeight"),
+        "brier_always_50": _summary_value(summary, "h1_mean_brier_always_50"),
+        "brier_prior_day": _summary_value(summary, "h1_mean_brier_prior_day_polymarket"),
+        "dm_polymarket_vs_538": _summary_value(
+            summary,
+            "h1_dm_polymarket_vs_fivethirtyeight",
+        ),
+        "pm_better_vs_538_count": int(fte["polymarket_lower_loss_count"]),
+        "pm_vs_538_count": int(fte["comparison_row_count"]),
+        "pm_better_vs_538_share": float(fte["polymarket_better_share"]),
+        "mean_loss_advantage_vs_538": float(fte["mean_loss_advantage"]),
+        "synthesis_evidence_row_count": int(len(synthesis)),
+        "synthesis_aggregate_support_count": _bool_count(
+            synthesis,
+            "aggregate_mean_supports_polymarket",
+        ),
+        "synthesis_majority_support_count": _bool_count(
+            synthesis,
+            "majority_cases_supports_polymarket",
+        ),
+        "synthesis_broad_support_count": _bool_count(
+            synthesis,
+            "broad_many_cases_claim_supported",
+        ),
+        "claim_audit_row_count": int(
+            _summary_value(claim_audit_summary, "audit_row_count")
+        ),
+        "claim_audit_support_row_count": int(
+            _summary_value(claim_audit_summary, "support_row_count")
+        ),
+        "claim_audit_contradiction_row_count": int(
+            _summary_value(claim_audit_summary, "contradiction_row_count")
+        ),
+        "claim_audit_direct_poll_row_count": int(
+            _summary_value(claim_audit_summary, "direct_poll_audit_row_count")
+        ),
+        "claim_audit_direct_poll_support_row_count": int(
+            _summary_value(claim_audit_summary, "direct_poll_support_row_count")
+        ),
+        "claim_audit_direct_poll_contradiction_row_count": int(
+            _summary_value(claim_audit_summary, "direct_poll_contradiction_row_count")
+        ),
+        "claim_audit_broad_user_claim_proven": int(
+            _summary_value(claim_audit_summary, "broad_user_claim_proven")
+        ),
+        "poll_result_primary_pm_count": int(
+            _summary_value(poll_comparison_result, "primary_polymarket_support_count")
+        ),
+        "poll_result_primary_poll_count": int(
+            _summary_value(poll_comparison_result, "primary_poll_support_count")
+        ),
+        "poll_result_primary_row_count": int(
+            _summary_value(poll_comparison_result, "primary_comparison_count")
+        ),
+        "poll_result_primary_pm_share": _summary_value(
+            poll_comparison_result,
+            "primary_polymarket_support_share",
+        ),
+        "poll_result_primary_state_count": int(
+            _summary_value(poll_comparison_result, "primary_state_count")
+        ),
+        "poll_result_primary_pm_state_count": int(
+            _summary_value(poll_comparison_result, "primary_polymarket_state_count")
+        ),
+        "poll_result_primary_p_value": _summary_value(
+            poll_comparison_result,
+            "primary_exact_binomial_p_value",
+        ),
+        "poll_result_primary_ci_low": _summary_value(
+            poll_comparison_result,
+            "primary_exact_95_ci_low",
+        ),
+        "poll_result_direct_poll_support_count": int(
+            _summary_value(poll_comparison_result, "direct_poll_audit_support_count")
+        ),
+        "poll_result_direct_poll_row_count": int(
+            _summary_value(poll_comparison_result, "direct_poll_audit_row_count")
+        ),
+        "poll_result_full_panel_pm_count": int(
+            _summary_value(
+                poll_comparison_result,
+                "full_panel_polymarket_support_count",
+            )
+        ),
+        "poll_result_full_panel_poll_count": int(
+            _summary_value(poll_comparison_result, "full_panel_poll_support_count")
+        ),
+        "poll_result_full_panel_row_count": int(
+            _summary_value(poll_comparison_result, "full_panel_polymarket_support_count")
+            + _summary_value(poll_comparison_result, "full_panel_poll_support_count")
+        ),
+        "poll_result_late_high_poll_count": int(
+            _summary_value(
+                poll_comparison_result,
+                "late_high_distance_poll_support_count",
+            )
+        ),
+        "poll_result_bounded_supported": int(
+            _summary_value(
+                poll_comparison_result,
+                "bounded_polymarket_statement_supported",
+            )
+        ),
+        "poll_result_broad_claim_proven": int(
+            _summary_value(poll_comparison_result, "broad_claim_proven")
+        ),
+        "poll_result_goal_status": _summary_text_value(
+            poll_comparison_result,
+            "h1_goal_completion_status",
+        ),
+        "poll_claim_row_count": int(
+            _summary_value(poll_claim_readiness, "claim_row_count")
+        ),
+        "poll_claim_supported_bounded_count": int(
+            _summary_value(
+                poll_claim_readiness,
+                "supported_bounded_scope_row_count",
+            )
+        ),
+        "poll_claim_mixed_mean_count": int(
+            _summary_value(poll_claim_readiness, "mixed_mean_support_row_count")
+        ),
+        "poll_claim_counterexample_count": int(
+            _summary_value(poll_claim_readiness, "counterexample_row_count")
+        ),
+        "poll_claim_primary_pm_count": int(
+            _summary_value(
+                poll_claim_readiness,
+                "primary_polymarket_support_count",
+            )
+        ),
+        "poll_claim_primary_count": int(
+            _summary_value(poll_claim_readiness, "primary_comparison_count")
+        ),
+        "poll_claim_primary_pm_share": _summary_value(
+            poll_claim_readiness,
+            "primary_polymarket_support_share",
+        ),
+        "poll_claim_state_month_pm_count": int(
+            _summary_value(
+                poll_claim_readiness,
+                "primary_state_month_polymarket_support_count",
+            )
+        ),
+        "poll_claim_state_month_count": int(
+            _summary_value(poll_claim_readiness, "primary_state_month_unit_count")
+        ),
+        "poll_claim_state_month_p_value": _summary_value(
+            poll_claim_readiness,
+            "primary_state_month_exact_p_value",
+        ),
+        "poll_claim_state_month_ci_low": _summary_value(
+            poll_claim_readiness,
+            "primary_state_month_exact_95_ci_low",
+        ),
+        "poll_claim_bounded_supported": int(
+            _summary_value(poll_claim_readiness, "bounded_poll_claim_supported")
+        ),
+        "poll_claim_broad_proven": int(
+            _summary_value(poll_claim_readiness, "broad_claim_proven")
+        ),
+        "poll_claim_goal_status": _summary_text_value(
+            poll_claim_readiness,
+            "h1_goal_completion_status",
+        ),
+        "poll_frontier_row_count": int(
+            _summary_value(poll_scope_frontier, "frontier_row_count")
+        ),
+        "poll_frontier_robust_scope_count": int(
+            _summary_value(poll_scope_frontier, "robust_scope_count")
+        ),
+        "poll_frontier_largest_scope_id": _summary_text_value(
+            poll_scope_frontier,
+            "largest_robust_scope_id",
+        ),
+        "poll_frontier_largest_horizon": _summary_text_value(
+            poll_scope_frontier,
+            "largest_robust_horizon_label",
+        ),
+        "poll_frontier_largest_tier": _summary_text_value(
+            poll_scope_frontier,
+            "largest_robust_tier_label",
+        ),
+        "poll_frontier_largest_row_count": int(
+            _summary_value(poll_scope_frontier, "largest_robust_row_count")
+        ),
+        "poll_frontier_largest_pm_count": int(
+            _summary_value(
+                poll_scope_frontier,
+                "largest_robust_polymarket_support_count",
+            )
+        ),
+        "poll_frontier_largest_poll_count": int(
+            _summary_value(poll_scope_frontier, "largest_robust_poll_support_count")
+        ),
+        "poll_frontier_largest_pm_share": _summary_value(
+            poll_scope_frontier,
+            "largest_robust_polymarket_support_share",
+        ),
+        "poll_frontier_largest_state_count": int(
+            _summary_value(poll_scope_frontier, "largest_robust_state_count")
+        ),
+        "poll_frontier_largest_state_month_pm_count": int(
+            _summary_value(
+                poll_scope_frontier,
+                "largest_robust_state_month_polymarket_support_count",
+            )
+        ),
+        "poll_frontier_largest_state_month_count": int(
+            _summary_value(poll_scope_frontier, "largest_robust_state_month_count")
+        ),
+        "poll_frontier_largest_state_month_p_value": _summary_value(
+            poll_scope_frontier,
+            "largest_robust_state_month_p_value",
+        ),
+        "poll_frontier_largest_mean_loss_advantage": _summary_value(
+            poll_scope_frontier,
+            "largest_robust_mean_loss_advantage",
+        ),
+        "poll_frontier_strongest_scope_id": _summary_text_value(
+            poll_scope_frontier,
+            "strongest_robust_scope_id",
+        ),
+        "poll_frontier_strongest_row_count": int(
+            _summary_value(poll_scope_frontier, "strongest_robust_row_count")
+        ),
+        "poll_frontier_strongest_p_value": _summary_value(
+            poll_scope_frontier,
+            "strongest_robust_state_month_p_value",
+        ),
+        "poll_frontier_lte_90_all_row_count": int(
+            _summary_value(poll_scope_frontier, "lte_90_all_row_count")
+        ),
+        "poll_frontier_lte_90_all_pm_count": int(
+            _summary_value(
+                poll_scope_frontier,
+                "lte_90_all_polymarket_support_count",
+            )
+        ),
+        "poll_frontier_lte_90_all_pm_share": _summary_value(
+            poll_scope_frontier,
+            "lte_90_all_polymarket_support_share",
+        ),
+        "poll_frontier_lte_90_all_state_month_p_value": _summary_value(
+            poll_scope_frontier,
+            "lte_90_all_state_month_p_value",
+        ),
+        "poll_frontier_full_panel_pm_count": int(
+            _summary_value(poll_scope_frontier, "full_panel_polymarket_support_count")
+        ),
+        "poll_frontier_full_panel_poll_count": int(
+            _summary_value(poll_scope_frontier, "full_panel_poll_support_count")
+        ),
+        "poll_frontier_full_panel_row_count": int(
+            _summary_value(poll_scope_frontier, "full_panel_row_count")
+        ),
+        "poll_frontier_broad_claim_proven": int(
+            _summary_value(poll_scope_frontier, "broad_claim_proven")
+        ),
+        "poll_frontier_goal_status": _summary_text_value(
+            poll_scope_frontier,
+            "h1_goal_completion_status",
+        ),
+        "poll_decision_row_count": int(
+            _summary_value(poll_decision_matrix, "decision_row_count")
+        ),
+        "poll_decision_robust_yes_count": int(
+            _summary_value(poll_decision_matrix, "robust_bounded_yes_count")
+        ),
+        "poll_decision_mixed_mean_count": int(
+            _summary_value(poll_decision_matrix, "mixed_mean_only_count")
+        ),
+        "poll_decision_counterexample_count": int(
+            _summary_value(poll_decision_matrix, "counterexample_count")
+        ),
+        "poll_decision_largest_pm_count": int(
+            _summary_value(
+                poll_decision_matrix,
+                "largest_robust_polymarket_support_count",
+            )
+        ),
+        "poll_decision_largest_poll_count": int(
+            _summary_value(
+                poll_decision_matrix,
+                "largest_robust_comparator_support_count",
+            )
+        ),
+        "poll_decision_largest_row_count": int(
+            _summary_value(poll_decision_matrix, "largest_robust_row_count")
+        ),
+        "poll_decision_largest_pm_share": _summary_value(
+            poll_decision_matrix,
+            "largest_robust_polymarket_support_share",
+        ),
+        "poll_decision_largest_state_month_pm_count": int(
+            _summary_value(
+                poll_decision_matrix,
+                "largest_robust_state_month_polymarket_support_count",
+            )
+        ),
+        "poll_decision_largest_state_month_count": int(
+            _summary_value(poll_decision_matrix, "largest_robust_state_month_count")
+        ),
+        "poll_decision_largest_p_value": _summary_value(
+            poll_decision_matrix,
+            "largest_robust_p_value",
+        ),
+        "poll_decision_strongest_scope_id": _summary_text_value(
+            poll_decision_matrix,
+            "strongest_robust_scope_id",
+        ),
+        "poll_decision_strongest_pm_count": int(
+            _summary_value(
+                poll_decision_matrix,
+                "strongest_robust_polymarket_support_count",
+            )
+        ),
+        "poll_decision_strongest_row_count": int(
+            _summary_value(poll_decision_matrix, "strongest_robust_row_count")
+        ),
+        "poll_decision_strongest_p_value": _summary_value(
+            poll_decision_matrix,
+            "strongest_robust_p_value",
+        ),
+        "poll_decision_full_panel_poll_count": int(
+            _summary_value(poll_decision_matrix, "full_panel_poll_support_count")
+        ),
+        "poll_decision_full_panel_row_count": int(
+            _summary_value(poll_decision_matrix, "full_panel_row_count")
+        ),
+        "poll_decision_calibration_pairwise_count": int(
+            _summary_value(poll_decision_matrix, "calibration_pairwise_count")
+        ),
+        "poll_decision_calibration_aggregate_count": int(
+            _summary_value(
+                poll_decision_matrix,
+                "calibration_aggregate_support_count",
+            )
+        ),
+        "poll_decision_calibration_majority_count": int(
+            _summary_value(
+                poll_decision_matrix,
+                "calibration_majority_support_count",
+            )
+        ),
+        "poll_decision_bounded_ready": int(
+            _summary_value(poll_decision_matrix, "bounded_poll_claim_ready")
+        ),
+        "poll_decision_broad_proven": int(
+            _summary_value(poll_decision_matrix, "broad_claim_proven")
+        ),
+        "poll_decision_goal_status": _summary_text_value(
+            poll_decision_matrix,
+            "h1_goal_completion_status",
+        ),
+        "robust_quality_scope_count": int(len(robust_poll_scope_quality_pairwise)),
+        "robust_quality_forecast_row_count": int(
+            (
+                robust_quality_largest["case_count"]
+                + robust_quality_strongest["case_count"]
+            )
+            * 2
+        ),
+        "robust_quality_case_count": int(
+            robust_quality_largest["case_count"]
+            + robust_quality_strongest["case_count"]
+        ),
+        "robust_quality_largest_case_count": int(
+            robust_quality_largest["case_count"]
+        ),
+        "robust_quality_largest_pm_count": int(
+            robust_quality_largest["polymarket_lower_loss_count"]
+        ),
+        "robust_quality_largest_poll_count": int(
+            robust_quality_largest["poll_derived_lower_loss_count"]
+        ),
+        "robust_quality_largest_pm_share": float(
+            robust_quality_largest["polymarket_lower_loss_share"]
+        ),
+        "robust_quality_largest_pm_brier": float(
+            robust_quality_largest["mean_polymarket_brier"]
+        ),
+        "robust_quality_largest_poll_brier": float(
+            robust_quality_largest["mean_poll_derived_brier"]
+        ),
+        "robust_quality_largest_mean_advantage": float(
+            robust_quality_largest["mean_loss_advantage"]
+        ),
+        "robust_quality_largest_pm_ece": float(
+            robust_quality_largest["polymarket_expected_calibration_error"]
+        ),
+        "robust_quality_largest_poll_ece": float(
+            robust_quality_largest["poll_derived_expected_calibration_error"]
+        ),
+        "robust_quality_largest_pm_separation": float(
+            robust_quality_largest["polymarket_probability_separation"]
+        ),
+        "robust_quality_largest_poll_separation": float(
+            robust_quality_largest["poll_derived_probability_separation"]
+        ),
+        "robust_quality_strongest_case_count": int(
+            robust_quality_strongest["case_count"]
+        ),
+        "robust_quality_strongest_pm_count": int(
+            robust_quality_strongest["polymarket_lower_loss_count"]
+        ),
+        "robust_quality_strongest_poll_count": int(
+            robust_quality_strongest["poll_derived_lower_loss_count"]
+        ),
+        "robust_quality_strongest_pm_share": float(
+            robust_quality_strongest["polymarket_lower_loss_share"]
+        ),
+        "robust_quality_strongest_pm_brier": float(
+            robust_quality_strongest["mean_polymarket_brier"]
+        ),
+        "robust_quality_strongest_poll_brier": float(
+            robust_quality_strongest["mean_poll_derived_brier"]
+        ),
+        "robust_quality_strongest_pm_ece": float(
+            robust_quality_strongest["polymarket_expected_calibration_error"]
+        ),
+        "robust_quality_strongest_poll_ece": float(
+            robust_quality_strongest["poll_derived_expected_calibration_error"]
+        ),
+        "robust_quality_strongest_positive_rate": float(
+            robust_quality_strongest_pm["positive_rate"]
+        ),
+        "robust_quality_broad_claim_proven": int(
+            _bool_count(robust_poll_scope_quality_pairwise, "broad_claim_supported")
+        ),
+        "robust_unit_summary_row_count": int(len(robust_poll_scope_unit_quality)),
+        "robust_unit_largest_state_count": int(
+            robust_unit_largest_state["unit_count"]
+        ),
+        "robust_unit_largest_state_pm_count": int(
+            robust_unit_largest_state["polymarket_support_count"]
+        ),
+        "robust_unit_largest_state_p_value": float(
+            robust_unit_largest_state["exact_binomial_p_value_greater"]
+        ),
+        "robust_unit_largest_state_month_count": int(
+            robust_unit_largest_state_month["unit_count"]
+        ),
+        "robust_unit_largest_state_month_pm_count": int(
+            robust_unit_largest_state_month["polymarket_support_count"]
+        ),
+        "robust_unit_largest_state_month_poll_count": int(
+            robust_unit_largest_state_month["poll_derived_support_count"]
+        ),
+        "robust_unit_largest_state_month_p_value": float(
+            robust_unit_largest_state_month["exact_binomial_p_value_greater"]
+        ),
+        "robust_unit_largest_state_month_ci_low": float(
+            robust_unit_largest_state_month["exact_95_ci_low"]
+        ),
+        "robust_unit_largest_state_month_median_advantage": float(
+            robust_unit_largest_state_month["median_unit_loss_advantage"]
+        ),
+        "robust_unit_largest_state_horizon_count": int(
+            robust_unit_largest_state_horizon["unit_count"]
+        ),
+        "robust_unit_largest_state_horizon_pm_count": int(
+            robust_unit_largest_state_horizon["polymarket_support_count"]
+        ),
+        "robust_unit_largest_state_horizon_p_value": float(
+            robust_unit_largest_state_horizon["exact_binomial_p_value_greater"]
+        ),
+        "robust_unit_strongest_state_count": int(
+            robust_unit_strongest_state["unit_count"]
+        ),
+        "robust_unit_strongest_state_pm_count": int(
+            robust_unit_strongest_state["polymarket_support_count"]
+        ),
+        "robust_unit_strongest_state_p_value": float(
+            robust_unit_strongest_state["exact_binomial_p_value_greater"]
+        ),
+        "robust_unit_strongest_state_month_count": int(
+            robust_unit_strongest_state_month["unit_count"]
+        ),
+        "robust_unit_strongest_state_month_pm_count": int(
+            robust_unit_strongest_state_month["polymarket_support_count"]
+        ),
+        "robust_unit_strongest_state_month_p_value": float(
+            robust_unit_strongest_state_month["exact_binomial_p_value_greater"]
+        ),
+        "robust_unit_strongest_state_month_ci_low": float(
+            robust_unit_strongest_state_month["exact_95_ci_low"]
+        ),
+        "robust_unit_strongest_state_month_median_advantage": float(
+            robust_unit_strongest_state_month["median_unit_loss_advantage"]
+        ),
+        "robust_unit_strongest_state_horizon_count": int(
+            robust_unit_strongest_state_horizon["unit_count"]
+        ),
+        "robust_unit_strongest_state_horizon_pm_count": int(
+            robust_unit_strongest_state_horizon["polymarket_support_count"]
+        ),
+        "robust_unit_strongest_state_horizon_p_value": float(
+            robust_unit_strongest_state_horizon["exact_binomial_p_value_greater"]
+        ),
+        "robust_unit_broad_claim_proven": int(
+            _bool_count(robust_poll_scope_unit_quality, "broad_claim_supported")
+        ),
+        "poll_unit_state_count": int(
+            _summary_value(poll_comparison_unit_robustness, "primary_state_unit_count")
+        ),
+        "poll_unit_state_pm_count": int(
+            _summary_value(
+                poll_comparison_unit_robustness,
+                "primary_state_polymarket_support_count",
+            )
+        ),
+        "poll_unit_state_month_count": int(
+            _summary_value(
+                poll_comparison_unit_robustness,
+                "primary_state_month_unit_count",
+            )
+        ),
+        "poll_unit_state_month_pm_count": int(
+            _summary_value(
+                poll_comparison_unit_robustness,
+                "primary_state_month_polymarket_support_count",
+            )
+        ),
+        "poll_unit_state_month_p_value": _summary_value(
+            poll_comparison_unit_robustness,
+            "primary_state_month_polymarket_exact_binomial_p_value_greater",
+        ),
+        "poll_unit_state_month_ci_low": _summary_value(
+            poll_comparison_unit_robustness,
+            "primary_state_month_polymarket_exact_95_ci_low",
+        ),
+        "poll_unit_state_horizon_count": int(
+            _summary_value(
+                poll_comparison_unit_robustness,
+                "primary_state_horizon_unit_count",
+            )
+        ),
+        "poll_unit_state_horizon_pm_count": int(
+            _summary_value(
+                poll_comparison_unit_robustness,
+                "primary_state_horizon_polymarket_support_count",
+            )
+        ),
+        "poll_unit_horizon_tier_count": int(
+            _summary_value(
+                poll_comparison_unit_robustness,
+                "primary_horizon_tier_unit_count",
+            )
+        ),
+        "poll_unit_horizon_tier_pm_count": int(
+            _summary_value(
+                poll_comparison_unit_robustness,
+                "primary_horizon_tier_polymarket_support_count",
+            )
+        ),
+        "poll_unit_full_panel_state_month_count": int(
+            _summary_value(
+                poll_comparison_unit_robustness,
+                "full_panel_state_month_unit_count",
+            )
+        ),
+        "poll_unit_full_panel_state_month_poll_count": int(
+            _summary_value(
+                poll_comparison_unit_robustness,
+                "full_panel_state_month_poll_support_count",
+            )
+        ),
+        "poll_unit_late_high_state_month_count": int(
+            _summary_value(
+                poll_comparison_unit_robustness,
+                "late_high_state_month_unit_count",
+            )
+        ),
+        "poll_unit_late_high_state_month_poll_count": int(
+            _summary_value(
+                poll_comparison_unit_robustness,
+                "late_high_state_month_poll_support_count",
+            )
+        ),
+        "poll_unit_late_high_state_month_poll_p_value": _summary_value(
+            poll_comparison_unit_robustness,
+            "late_high_state_month_poll_exact_binomial_p_value_greater",
+        ),
+        "poll_unit_scope_supported_across_all_units": int(
+            _summary_value(
+                poll_comparison_unit_robustness,
+                "primary_scope_supported_across_all_units",
+            )
+        ),
+        "poll_unit_broad_claim_proven": int(
+            _summary_value(poll_comparison_unit_robustness, "broad_claim_proven")
+        ),
+        "poll_unit_goal_status": _summary_text_value(
+            poll_comparison_unit_robustness,
+            "h1_goal_completion_status",
+        ),
+        "direct_poll_loss_case_count": int(
+            _summary_value(direct_poll_loss_decomposition, "direct_poll_case_count")
+        ),
+        "direct_poll_loss_pm_count": int(
+            _summary_value(
+                direct_poll_loss_decomposition,
+                "direct_poll_polymarket_lower_loss_count",
+            )
+        ),
+        "direct_poll_loss_poll_count": int(
+            _summary_value(
+                direct_poll_loss_decomposition,
+                "direct_poll_comparator_lower_loss_count",
+            )
+        ),
+        "direct_poll_loss_pm_brier": _summary_value(
+            direct_poll_loss_decomposition,
+            "direct_poll_mean_polymarket_brier",
+        ),
+        "direct_poll_loss_poll_brier": _summary_value(
+            direct_poll_loss_decomposition,
+            "direct_poll_mean_poll_derived_brier",
+        ),
+        "direct_poll_loss_mean_advantage": _summary_value(
+            direct_poll_loss_decomposition,
+            "direct_poll_mean_loss_advantage",
+        ),
+        "direct_poll_loss_pm_win_total_advantage": _summary_value(
+            direct_poll_loss_decomposition,
+            "polymarket_win_total_loss_advantage",
+        ),
+        "direct_poll_loss_poll_win_total_advantage": _summary_value(
+            direct_poll_loss_decomposition,
+            "comparator_win_total_loss_advantage_abs",
+        ),
+        "direct_poll_loss_pm_win_mean_advantage": _summary_value(
+            direct_poll_loss_decomposition,
+            "polymarket_win_mean_loss_advantage",
+        ),
+        "direct_poll_loss_poll_win_mean_advantage": _summary_value(
+            direct_poll_loss_decomposition,
+            "comparator_win_mean_loss_advantage_abs",
+        ),
+        "direct_poll_loss_margin_ratio": _summary_value(
+            direct_poll_loss_decomposition,
+            "polymarket_win_total_to_comparator_win_abs_ratio",
+        ),
+        "direct_poll_loss_aggregate_supports_pm": int(
+            _summary_value(
+                direct_poll_loss_decomposition,
+                "direct_poll_aggregate_mean_supports_polymarket",
+            )
+        ),
+        "direct_poll_loss_case_majority_supports_pm": int(
+            _summary_value(
+                direct_poll_loss_decomposition,
+                "direct_poll_case_majority_supports_polymarket",
+            )
+        ),
+        "direct_poll_state_cluster_case_count": int(
+            _summary_value(direct_poll_state_cluster, "source_state_case_count")
+        ),
+        "direct_poll_state_cluster_state_count": int(
+            _summary_value(direct_poll_state_cluster, "state_count")
+        ),
+        "direct_poll_state_cluster_pm_state_count": int(
+            _summary_value(
+                direct_poll_state_cluster,
+                "state_mean_polymarket_support_count",
+            )
+        ),
+        "direct_poll_state_cluster_poll_state_count": int(
+            _summary_value(direct_poll_state_cluster, "state_mean_poll_support_count")
+        ),
+        "direct_poll_state_cluster_mean_advantage": _summary_value(
+            direct_poll_state_cluster,
+            "equal_state_mean_loss_advantage",
+        ),
+        "direct_poll_state_cluster_median_advantage": _summary_value(
+            direct_poll_state_cluster,
+            "equal_state_median_loss_advantage",
+        ),
+        "direct_poll_state_cluster_bootstrap_ci_low": _summary_value(
+            direct_poll_state_cluster,
+            "equal_state_bootstrap_95_ci_low",
+        ),
+        "direct_poll_state_cluster_bootstrap_ci_high": _summary_value(
+            direct_poll_state_cluster,
+            "equal_state_bootstrap_95_ci_high",
+        ),
+        "direct_poll_state_cluster_sign_flip_p": _summary_value(
+            direct_poll_state_cluster,
+            "equal_state_sign_flip_p_value_greater",
+        ),
+        "direct_poll_state_cluster_pm_state_p": _summary_value(
+            direct_poll_state_cluster,
+            "state_mean_polymarket_exact_binomial_p_value_greater",
+        ),
+        "direct_poll_state_cluster_poll_state_p": _summary_value(
+            direct_poll_state_cluster,
+            "state_mean_poll_exact_binomial_p_value_greater",
+        ),
+        "direct_poll_state_cluster_mean_supports_pm": int(
+            _summary_value(
+                direct_poll_state_cluster,
+                "state_cluster_mean_supports_polymarket",
+            )
+        ),
+        "direct_poll_state_cluster_majority_supports_pm": int(
+            _summary_value(
+                direct_poll_state_cluster,
+                "state_count_majority_supports_polymarket",
+            )
+        ),
+        "direct_poll_outlier_state_count": int(
+            _summary_value(direct_poll_outlier_robustness, "state_count")
+        ),
+        "direct_poll_outlier_full_mean_advantage": _summary_value(
+            direct_poll_outlier_robustness,
+            "full_mean_loss_advantage",
+        ),
+        "direct_poll_outlier_min_leave_one_mean": _summary_value(
+            direct_poll_outlier_robustness,
+            "min_leave_one_out_mean_loss_advantage",
+        ),
+        "direct_poll_outlier_leave_one_all_positive": int(
+            _summary_value(direct_poll_outlier_robustness, "leave_one_out_all_positive")
+        ),
+        "direct_poll_outlier_most_influential_state": _summary_text_value(
+            direct_poll_outlier_robustness,
+            "most_influential_removed_state",
+        ),
+        "direct_poll_outlier_top_k_positive": int(
+            _summary_value(
+                direct_poll_outlier_robustness,
+                "max_top_positive_exclusion_k_with_positive_mean",
+            )
+        ),
+        "direct_poll_outlier_first_nonpositive_k": int(
+            _summary_value(
+                direct_poll_outlier_robustness,
+                "first_nonpositive_top_positive_exclusion_k",
+            )
+        ),
+        "direct_poll_outlier_first_nonpositive_mean": _summary_value(
+            direct_poll_outlier_robustness,
+            "first_nonpositive_top_positive_exclusion_mean",
+        ),
+        "direct_poll_outlier_largest_positive_state": _summary_text_value(
+            direct_poll_outlier_robustness,
+            "largest_positive_state",
+        ),
+        "direct_poll_outlier_largest_positive_advantage": _summary_value(
+            direct_poll_outlier_robustness,
+            "largest_positive_state_loss_advantage",
+        ),
+        "direct_poll_outlier_supports_pm_mean": int(
+            _summary_value(
+                direct_poll_outlier_robustness,
+                "outlier_robustness_supports_polymarket_mean",
+            )
+        ),
+        "direct_poll_outlier_goal_status": _summary_text_value(
+            direct_poll_outlier_robustness,
+            "h1_goal_completion_status",
+        ),
+        "state_source_consensus_case_count": int(
+            _summary_value(state_source_consensus, "source_state_case_count")
+        ),
+        "state_source_consensus_state_count": int(
+            _summary_value(state_source_consensus, "state_count")
+        ),
+        "state_source_consensus_pm_case_count": int(
+            _summary_value(
+                state_source_consensus,
+                "all_source_polymarket_lower_loss_count",
+            )
+        ),
+        "state_source_consensus_comparator_case_count": int(
+            _summary_value(
+                state_source_consensus,
+                "all_source_comparator_lower_loss_count",
+            )
+        ),
+        "state_source_consensus_pm_state_count": int(
+            _summary_value(
+                state_source_consensus,
+                "all_source_polymarket_majority_state_count",
+            )
+        ),
+        "state_source_consensus_comparator_state_count": int(
+            _summary_value(
+                state_source_consensus,
+                "all_source_comparator_majority_state_count",
+            )
+        ),
+        "state_source_consensus_tie_state_count": int(
+            _summary_value(state_source_consensus, "all_source_tie_state_count")
+        ),
+        "state_source_consensus_direct_two_state_count": int(
+            _summary_value(state_source_consensus, "direct_poll_two_source_state_count")
+        ),
+        "state_source_consensus_direct_two_pm_state_count": int(
+            _summary_value(
+                state_source_consensus,
+                "direct_poll_two_source_polymarket_majority_state_count",
+            )
+        ),
+        "state_source_consensus_direct_two_comparator_state_count": int(
+            _summary_value(
+                state_source_consensus,
+                "direct_poll_two_source_comparator_majority_state_count",
+            )
+        ),
+        "state_source_consensus_direct_two_tie_state_count": int(
+            _summary_value(
+                state_source_consensus,
+                "direct_poll_two_source_tie_state_count",
+            )
+        ),
+        "competitive_state_case_count": int(
+            _summary_value(competitive_state, "case_count")
+        ),
+        "competitive_state_all_low_case_count": int(
+            _summary_value(competitive_state, "all_low_distance_case_count")
+        ),
+        "competitive_state_all_low_pm_count": int(
+            _summary_value(
+                competitive_state,
+                "all_low_distance_polymarket_lower_loss_count",
+            )
+        ),
+        "competitive_state_all_low_comparator_count": int(
+            _summary_value(
+                competitive_state,
+                "all_low_distance_comparator_lower_loss_count",
+            )
+        ),
+        "competitive_state_all_low_advantage": _summary_value(
+            competitive_state,
+            "all_low_distance_mean_loss_advantage",
+        ),
+        "competitive_state_all_high_case_count": int(
+            _summary_value(competitive_state, "all_high_distance_case_count")
+        ),
+        "competitive_state_all_high_pm_count": int(
+            _summary_value(
+                competitive_state,
+                "all_high_distance_polymarket_lower_loss_count",
+            )
+        ),
+        "competitive_state_all_high_comparator_count": int(
+            _summary_value(
+                competitive_state,
+                "all_high_distance_comparator_lower_loss_count",
+            )
+        ),
+        "competitive_state_direct_low_case_count": int(
+            _summary_value(competitive_state, "direct_low_distance_case_count")
+        ),
+        "competitive_state_direct_low_pm_count": int(
+            _summary_value(
+                competitive_state,
+                "direct_low_distance_polymarket_lower_loss_count",
+            )
+        ),
+        "competitive_state_direct_low_comparator_count": int(
+            _summary_value(
+                competitive_state,
+                "direct_low_distance_comparator_lower_loss_count",
+            )
+        ),
+        "competitive_state_direct_low_advantage": _summary_value(
+            competitive_state,
+            "direct_low_distance_mean_loss_advantage",
+        ),
+        "competitive_state_direct_high_case_count": int(
+            _summary_value(competitive_state, "direct_high_distance_case_count")
+        ),
+        "competitive_state_direct_high_pm_count": int(
+            _summary_value(
+                competitive_state,
+                "direct_high_distance_polymarket_lower_loss_count",
+            )
+        ),
+        "competitive_state_direct_high_comparator_count": int(
+            _summary_value(
+                competitive_state,
+                "direct_high_distance_comparator_lower_loss_count",
+            )
+        ),
+        "panel_comp_row_count": int(
+            _summary_value(panel_competitiveness, "panel_row_count")
+        ),
+        "panel_comp_late_non_safe_row_count": int(
+            _summary_value(panel_competitiveness, "late_non_safe_row_count")
+        ),
+        "panel_comp_late_non_safe_state_count": int(
+            _summary_value(panel_competitiveness, "late_non_safe_state_count")
+        ),
+        "panel_comp_late_non_safe_pm_count": int(
+            _summary_value(
+                panel_competitiveness,
+                "late_non_safe_polymarket_lower_loss_count",
+            )
+        ),
+        "panel_comp_late_non_safe_poll_count": int(
+            _summary_value(panel_competitiveness, "late_non_safe_poll_lower_loss_count")
+        ),
+        "panel_comp_late_non_safe_state_support_count": int(
+            _summary_value(
+                panel_competitiveness,
+                "late_non_safe_polymarket_state_support_count",
+            )
+        ),
+        "panel_comp_late_non_safe_advantage": _summary_value(
+            panel_competitiveness,
+            "late_non_safe_mean_loss_advantage",
+        ),
+        "panel_comp_late_high_row_count": int(
+            _summary_value(panel_competitiveness, "late_high_distance_row_count")
+        ),
+        "panel_comp_late_high_state_count": int(
+            _summary_value(panel_competitiveness, "late_high_distance_state_count")
+        ),
+        "panel_comp_late_high_pm_count": int(
+            _summary_value(
+                panel_competitiveness,
+                "late_high_distance_polymarket_lower_loss_count",
+            )
+        ),
+        "panel_comp_late_high_poll_count": int(
+            _summary_value(
+                panel_competitiveness,
+                "late_high_distance_poll_lower_loss_count",
+            )
+        ),
+        "panel_comp_late_high_advantage": _summary_value(
+            panel_competitiveness,
+            "late_high_distance_mean_loss_advantage",
+        ),
+        "state_sign_late_non_safe_state_count": int(
+            _summary_value(state_significance, "late_non_safe_state_count")
+        ),
+        "state_sign_late_non_safe_pm_state_count": int(
+            _summary_value(
+                state_significance,
+                "late_non_safe_polymarket_majority_state_count",
+            )
+        ),
+        "state_sign_late_non_safe_p_value": _summary_value(
+            state_significance,
+            "late_non_safe_polymarket_exact_binomial_p_value_greater",
+        ),
+        "state_sign_late_non_safe_ci_low": _summary_value(
+            state_significance,
+            "late_non_safe_polymarket_exact_95_ci_low",
+        ),
+        "state_sign_late_high_state_count": int(
+            _summary_value(state_significance, "late_high_distance_state_count")
+        ),
+        "state_sign_late_high_pm_state_count": int(
+            _summary_value(
+                state_significance,
+                "late_high_distance_polymarket_majority_state_count",
+            )
+        ),
+        "state_sign_late_high_poll_state_count": int(
+            _summary_value(
+                state_significance,
+                "late_high_distance_poll_majority_state_count",
+            )
+        ),
+        "state_sign_late_high_poll_p_value": _summary_value(
+            state_significance,
+            "late_high_distance_poll_exact_binomial_p_value_greater",
+        ),
+        "calibration_forecast_case_rows": int(calibration_summary["case_count"].sum()),
+        "calibration_forecast_source_count": int(len(calibration_summary)),
+        "calibration_pairwise_count": int(len(calibration_pairwise)),
+        "calibration_aggregate_support_count": _bool_count(
+            calibration_pairwise,
+            "aggregate_mean_supports_polymarket",
+        ),
+        "calibration_majority_support_count": _bool_count(
+            calibration_pairwise,
+            "majority_cases_supports_polymarket",
+        ),
+        "calibration_broad_support_count": _bool_count(
+            calibration_pairwise,
+            "broad_many_cases_claim_supported",
+        ),
+        "calibration_pm_state_brier": float(
+            calibration_pm_state["mean_brier_loss"]
+        ),
+        "calibration_pm_state_ece": float(
+            calibration_pm_state["expected_calibration_error"]
+        ),
+        "calibration_rieke_state_ece": float(
+            calibration_rieke_state["expected_calibration_error"]
+        ),
+        "calibration_270_state_ece": float(
+            calibration_270_state["expected_calibration_error"]
+        ),
+        "final_snapshot_case_count": int(_summary_value(final_snapshot, "case_count")),
+        "final_snapshot_pm_lower_loss_count": int(
+            _summary_value(final_snapshot, "polymarket_lower_loss_count")
+        ),
+        "final_snapshot_traditional_lower_loss_count": int(
+            _summary_value(final_snapshot, "traditional_lower_loss_count")
+        ),
+        "final_snapshot_mean_pm_brier": _summary_value(
+            final_snapshot,
+            "mean_polymarket_brier",
+        ),
+        "final_snapshot_mean_traditional_brier": _summary_value(
+            final_snapshot,
+            "mean_traditional_brier",
+        ),
+        "final_snapshot_mean_loss_advantage": _summary_value(
+            final_snapshot,
+            "mean_loss_advantage",
+        ),
+        "state_poll_snapshot_case_count": int(
+            _summary_value(state_poll_snapshot, "case_count")
+        ),
+        "state_poll_snapshot_pm_lower_loss_count": int(
+            _summary_value(state_poll_snapshot, "polymarket_lower_loss_count")
+        ),
+        "state_poll_snapshot_poll_lower_loss_count": int(
+            _summary_value(state_poll_snapshot, "poll_derived_lower_loss_count")
+        ),
+        "state_poll_snapshot_mean_pm_brier": _summary_value(
+            state_poll_snapshot,
+            "mean_polymarket_brier",
+        ),
+        "state_poll_snapshot_mean_poll_brier": _summary_value(
+            state_poll_snapshot,
+            "mean_poll_derived_brier",
+        ),
+        "state_poll_snapshot_mean_loss_advantage": _summary_value(
+            state_poll_snapshot,
+            "mean_loss_advantage",
+        ),
+        "popular_vote_case_count": int(_summary_value(popular_vote, "case_count")),
+        "popular_vote_pm_lower_loss_count": int(
+            _summary_value(popular_vote, "polymarket_lower_loss_count")
+        ),
+        "popular_vote_poll_lower_loss_count": int(
+            _summary_value(popular_vote, "poll_derived_lower_loss_count")
+        ),
+        "popular_vote_mean_pm_brier": _summary_value(
+            popular_vote,
+            "mean_polymarket_brier",
+        ),
+        "popular_vote_mean_poll_brier": _summary_value(
+            popular_vote,
+            "mean_poll_derived_brier",
+        ),
+        "popular_vote_mean_loss_advantage": _summary_value(
+            popular_vote,
+            "mean_loss_advantage",
+        ),
+        "margin_threshold_candidate_count": int(len(margin_threshold_readiness)),
+        "margin_threshold_with_538_poll_count": _bool_count(
+            margin_threshold_readiness,
+            "has_538_state_poll_rows",
+        ),
+        "margin_threshold_with_clob_overlap_count": _bool_count(
+            margin_threshold_readiness,
+            "has_clob_history_during_538_poll_window",
+        ),
+        "margin_threshold_compatible_count": _bool_count(
+            margin_threshold_readiness,
+            "compatible_for_h1_brier_now",
+        ),
+        "margin_threshold_no_overlap_count": int(
+            margin_status.get("blocked_by_no_temporal_overlap", 0)
+        ),
+        "margin_threshold_missing_poll_count": int(
+            margin_status.get("blocked_by_missing_538_state_poll_rows", 0)
+        ),
+        "state_poll_panel_case_count": int(
+            _summary_value(state_poll_panel, "matched_case_count")
+        ),
+        "state_poll_panel_state_count": int(
+            _summary_value(state_poll_panel, "matched_state_count")
+        ),
+        "state_poll_panel_date_count": int(
+            _summary_value(state_poll_panel, "matched_date_count")
+        ),
+        "state_poll_panel_pm_lower_loss_count": int(
+            _summary_value(state_poll_panel, "polymarket_lower_loss_count")
+        ),
+        "state_poll_panel_poll_lower_loss_count": int(
+            _summary_value(state_poll_panel, "poll_derived_lower_loss_count")
+        ),
+        "state_poll_panel_mean_pm_brier": _summary_value(
+            state_poll_panel,
+            "mean_polymarket_brier",
+        ),
+        "state_poll_panel_mean_poll_brier": _summary_value(
+            state_poll_panel,
+            "mean_poll_derived_brier",
+        ),
+        "state_poll_panel_mean_loss_advantage": _summary_value(
+            state_poll_panel,
+            "mean_loss_advantage",
+        ),
+        "state_poll_temporal_support_months": str(
+            temporal_support["included_months"]
+        ).replace(",", ", "),
+        "state_poll_temporal_support_row_count": int(
+            temporal_support["row_count"]
+        ),
+        "state_poll_temporal_support_state_count": int(
+            temporal_support["state_count"]
+        ),
+        "state_poll_temporal_support_pm_lower_loss_count": int(
+            temporal_support["polymarket_lower_loss_count"]
+        ),
+        "state_poll_temporal_support_poll_lower_loss_count": int(
+            temporal_support["poll_derived_lower_loss_count"]
+        ),
+        "state_poll_temporal_support_mean_pm_brier": float(
+            temporal_support["mean_polymarket_brier"]
+        ),
+        "state_poll_temporal_support_mean_poll_brier": float(
+            temporal_support["mean_poll_derived_brier"]
+        ),
+        "state_poll_temporal_full_pm_lower_loss_count": int(
+            temporal_full["polymarket_lower_loss_count"]
+        ),
+        "state_poll_temporal_full_poll_lower_loss_count": int(
+            temporal_full["poll_derived_lower_loss_count"]
+        ),
+        "state_poll_horizon_near_bins": str(
+            horizon_near["included_horizon_bins"]
+        ).replace(",", ", "),
+        "state_poll_horizon_near_row_count": int(horizon_near["row_count"]),
+        "state_poll_horizon_near_state_count": int(horizon_near["state_count"]),
+        "state_poll_horizon_near_pm_lower_loss_count": int(
+            horizon_near["polymarket_lower_loss_count"]
+        ),
+        "state_poll_horizon_near_poll_lower_loss_count": int(
+            horizon_near["poll_derived_lower_loss_count"]
+        ),
+        "state_poll_horizon_near_mean_pm_brier": float(
+            horizon_near["mean_polymarket_brier"]
+        ),
+        "state_poll_horizon_near_mean_poll_brier": float(
+            horizon_near["mean_poll_derived_brier"]
+        ),
+        "state_poll_horizon_state_count": int(
+            _summary_value(state_poll_panel_horizon_state, "state_count")
+        ),
+        "state_poll_horizon_state_pm_mean_support_count": int(
+            _summary_value(
+                state_poll_panel_horizon_state,
+                "polymarket_mean_support_state_count",
+            )
+        ),
+        "state_poll_horizon_state_pm_majority_support_count": int(
+            _summary_value(
+                state_poll_panel_horizon_state,
+                "polymarket_majority_support_state_count",
+            )
+        ),
+        "state_poll_horizon_state_poll_support_count": int(
+            _summary_value(
+                state_poll_panel_horizon_state,
+                "poll_derived_or_no_polymarket_support_state_count",
+            )
+        ),
+        "state_poll_near_quality_case_count": int(near_quality_pm["row_count"]),
+        "state_poll_near_quality_forecast_row_count": int(
+            near_quality_pm["row_count"] + near_quality_poll["row_count"]
+        ),
+        "state_poll_near_quality_state_count": int(near_quality_pm["state_count"]),
+        "state_poll_near_quality_pm_mean_brier": float(
+            near_quality_pm["mean_brier_loss"]
+        ),
+        "state_poll_near_quality_poll_mean_brier": float(
+            near_quality_poll["mean_brier_loss"]
+        ),
+        "state_poll_near_quality_pm_ece": float(
+            near_quality_pm["expected_calibration_error"]
+        ),
+        "state_poll_near_quality_poll_ece": float(
+            near_quality_poll["expected_calibration_error"]
+        ),
+        "state_poll_near_quality_pm_separation": float(
+            near_quality_pm["probability_separation"]
+        ),
+        "state_poll_near_quality_poll_separation": float(
+            near_quality_poll["probability_separation"]
+        ),
+        "state_poll_sensitivity_row_count": int(len(sensitivity)),
+        "state_poll_sensitivity_min_mae": float(
+            sensitivity["poll_error_mae_points"].min()
+        ),
+        "state_poll_sensitivity_max_mae": float(
+            sensitivity["poll_error_mae_points"].max()
+        ),
+        "state_poll_sensitivity_min_pm_lower_loss_count": int(
+            sensitivity["polymarket_lower_loss_count"].min()
+        ),
+        "state_poll_sensitivity_max_pm_lower_loss_count": int(
+            sensitivity["polymarket_lower_loss_count"].max()
+        ),
+        "state_poll_sensitivity_min_mean_loss_advantage": float(
+            sensitivity["mean_loss_advantage"].min()
+        ),
+        "state_poll_sensitivity_max_mean_loss_advantage": float(
+            sensitivity["mean_loss_advantage"].max()
+        ),
+        "state_poll_coverage_state_count": int(len(state_poll_coverage)),
+        "state_poll_coverage_polymarket_market_count": int(
+            state_poll_coverage["polymarket_market_available"].sum()
+        ),
+        "state_poll_coverage_poll_snapshot_count": int(
+            state_poll_coverage["poll_snapshot_has_rep_dem"].sum()
+        ),
+        "state_poll_coverage_valid_pair_count": int(
+            state_poll_coverage["included_in_brier_comparison"].sum()
+        ),
+        "state_poll_coverage_missing_poll_count": int(
+            coverage_status.get("excluded_missing_538_poll_snapshot", 0)
+        ),
+        "state_poll_coverage_missing_both_count": int(
+            coverage_status.get("excluded_missing_both_sources", 0)
+        ),
+        "rieke_state_case_count": int(
+            _summary_value(rieke_state_forecast, "case_count")
+        ),
+        "rieke_state_pm_lower_loss_count": int(
+            _summary_value(rieke_state_forecast, "polymarket_lower_loss_count")
+        ),
+        "rieke_state_rieke_lower_loss_count": int(
+            _summary_value(rieke_state_forecast, "rieke_lower_loss_count")
+        ),
+        "rieke_state_mean_pm_brier": _summary_value(
+            rieke_state_forecast,
+            "mean_polymarket_brier",
+        ),
+        "rieke_state_mean_rieke_brier": _summary_value(
+            rieke_state_forecast,
+            "mean_rieke_brier",
+        ),
+        "rieke_state_mean_loss_advantage": _summary_value(
+            rieke_state_forecast,
+            "mean_loss_advantage",
+        ),
+        "two_seventy_state_case_count": int(
+            _summary_value(two_seventy_state_forecast, "case_count")
+        ),
+        "two_seventy_state_exact_case_count": int(
+            _summary_value(two_seventy_state_forecast, "exact_probability_case_count")
+        ),
+        "two_seventy_state_censored_case_count": int(
+            _summary_value(two_seventy_state_forecast, "censored_boundary_case_count")
+        ),
+        "two_seventy_state_pm_lower_loss_count": int(
+            _summary_value(two_seventy_state_forecast, "polymarket_lower_loss_count")
+        ),
+        "two_seventy_state_270_lower_loss_count": int(
+            _summary_value(two_seventy_state_forecast, "two_seventy_lower_loss_count")
+        ),
+        "two_seventy_state_tie_count": int(
+            _summary_value(two_seventy_state_forecast, "tie_count")
+        ),
+        "two_seventy_state_exact_pm_lower_loss_count": int(
+            _summary_value(
+                two_seventy_state_forecast,
+                "exact_probability_polymarket_lower_loss_count",
+            )
+        ),
+        "two_seventy_state_exact_270_lower_loss_count": int(
+            _summary_value(
+                two_seventy_state_forecast,
+                "exact_probability_two_seventy_lower_loss_count",
+            )
+        ),
+        "two_seventy_state_exact_tie_count": int(
+            _summary_value(two_seventy_state_forecast, "exact_probability_tie_count")
+        ),
+        "two_seventy_state_mean_pm_brier": _summary_value(
+            two_seventy_state_forecast,
+            "mean_polymarket_brier",
+        ),
+        "two_seventy_state_mean_270_brier": _summary_value(
+            two_seventy_state_forecast,
+            "mean_two_seventy_brier",
+        ),
+        "two_seventy_state_mean_loss_advantage": _summary_value(
+            two_seventy_state_forecast,
+            "mean_loss_advantage",
+        ),
+        "two_seventy_state_exact_mean_pm_brier": _summary_value(
+            two_seventy_state_forecast,
+            "exact_probability_mean_polymarket_brier",
+        ),
+        "two_seventy_state_exact_mean_270_brier": _summary_value(
+            two_seventy_state_forecast,
+            "exact_probability_mean_two_seventy_brier",
+        ),
+        "two_seventy_poll_average_case_count": int(
+            _summary_value(two_seventy_poll_average, "case_count")
+        ),
+        "two_seventy_poll_average_state_rows": int(
+            _summary_value(two_seventy_poll_average, "poll_average_state_rows")
+        ),
+        "two_seventy_poll_average_missing_state_count": int(
+            _summary_value(two_seventy_poll_average, "poll_average_missing_state_count")
+        ),
+        "two_seventy_poll_average_pm_lower_loss_count": int(
+            _summary_value(two_seventy_poll_average, "polymarket_lower_loss_count")
+        ),
+        "two_seventy_poll_average_poll_lower_loss_count": int(
+            _summary_value(two_seventy_poll_average, "poll_derived_lower_loss_count")
+        ),
+        "two_seventy_poll_average_mean_pm_brier": _summary_value(
+            two_seventy_poll_average,
+            "mean_polymarket_brier",
+        ),
+        "two_seventy_poll_average_mean_poll_brier": _summary_value(
+            two_seventy_poll_average,
+            "mean_poll_derived_brier",
+        ),
+        "two_seventy_poll_average_mean_loss_advantage": _summary_value(
+            two_seventy_poll_average,
+            "mean_loss_advantage",
+        ),
+    }
+
+
+def _h2_data(summary: pd.DataFrame, event_seed: pd.DataFrame) -> dict[str, Any]:
+    primary = summary[
+        summary["summary_id"].str.contains("primary_0d_to_1d", na=False)
+    ].copy()
+    examples = []
+    for _, row in primary.iterrows():
+        event = str(row["label"]).split(" | ")[0].replace("evt_2024_", "")
+        examples.append({"event": event, "change_pp": float(row["value"]) * 100.0})
+    return {
+        "event_count": int(len(event_seed)),
+        "summary_rows": int(len(summary)),
+        "primary_examples": examples,
+    }
+
+
+def _h3_data(summary: pd.DataFrame) -> dict[str, Any]:
+    tier_rows = summary[summary["summary_type"] == "wallet_tier"]
+    tier_counts = {
+        str(row["label"]): int(float(row["value"]))
+        for _, row in tier_rows.iterrows()
+    }
+    corr_rows = summary[summary["summary_type"] == "lead_lag_correlation"].copy()
+    corr_rows["abs_value"] = corr_rows["value"].astype(float).abs()
+    top_corr = corr_rows.sort_values("abs_value", ascending=False).iloc[0]
+    granger_rows = summary[summary["summary_type"] == "granger"].copy()
+    granger_rows["value"] = granger_rows["value"].astype(float)
+    min_granger = granger_rows.sort_values("value").iloc[0]
+    return {
+        "model_rows": int(_summary_value(summary, "h3_model_row_count")),
+        "tier_counts": tier_counts,
+        "tier_counts_text": ", ".join(f"{key}: {value}" for key, value in tier_counts.items()),
+        "top_correlation_label": str(top_corr["label"]),
+        "top_correlation": float(top_corr["value"]),
+        "min_granger_label": str(min_granger["label"]),
+        "min_granger_p": float(min_granger["value"]),
+    }
+
+
+def _monitor_data(summary: pd.DataFrame) -> dict[str, Any]:
+    severity = {
+        str(row["label"]): int(float(row["value"]))
+        for _, row in summary[summary["summary_type"] == "direct_severity_count"].iterrows()
+    }
+    dashboard_meta = _read_json("data/results/monitor_v2_polymarket_dashboard_metadata.json")
+    graph_meta = _read_json("data/results/wallet_graph_metadata.json")
+    outputs = dashboard_meta.get("outputs", {})
+    graph_outputs = graph_meta.get("outputs", {})
+    return {
+        "snapshot_count": int(
+            _summary_value(summary, "monitor_v2_snapshot_count", default=0)
+        ),
+        "severity_counts": severity,
+        "severity_counts_text": ", ".join(f"{k}: {v}" for k, v in severity.items()),
+        "live_market_count": int(outputs.get("market_count", 0)),
+        "live_alert_count": int(outputs.get("alert_count", 0)),
+        "live_scoring_rows": int(outputs.get("scoring_row_count", 0)),
+        "wallet_graph_nodes": int(graph_outputs.get("node_count", 0)),
+        "wallet_graph_edges": int(graph_outputs.get("edge_count", 0)),
+    }
+
+
+def _swiss_data(
+    comparison: pd.DataFrame,
+    latest_source: pd.DataFrame,
+    information: pd.DataFrame,
+    polls: pd.DataFrame,
+) -> dict[str, Any]:
+    metadata = _read_json("data/results/swiss_referendum_10mio_efficiency_metadata.json")
+    outputs = metadata.get("outputs", {})
+    latest = comparison.sort_values("collected_at_utc").iloc[-1]
+    info_counts = information["information_processing_label"].value_counts().sort_index()
+    latest_source_rows = []
+    for _, row in latest_source.sort_values("source_name").iterrows():
+        latest_source_rows.append(
+            {
+                "source": str(row["source_name"]),
+                "poll_id": str(row["poll_id"]),
+                "poll_yes": float(row["poll_yes_share"]) * 100.0,
+                "raw_gap_pp": float(row["raw_yes_gap"]) * 100.0,
+            }
+        )
+    return {
+        "poll_count": int(len(polls)),
+        "snapshot_count": int(outputs.get("snapshot_count", len(comparison))),
+        "history_rows": int(outputs.get("history_row_count", 0)),
+        "latest_poly_yes_pct": float(latest["polymarket_yes_probability"]) * 100.0,
+        "latest_poll_yes_pct": float(latest["poll_yes_share"]) * 100.0,
+        "latest_raw_gap_pp": float(latest["raw_yes_gap"]) * 100.0,
+        "latest_decided_gap_pp": float(latest["decided_yes_gap"]) * 100.0,
+        "information_response_counts_text": ", ".join(
+            f"{label}: {int(count)}" for label, count in info_counts.items()
+        ),
+        "latest_source_rows": latest_source_rows,
+    }
+
+
+def _database_summary() -> dict[str, Any]:
+    db_path = REPO_ROOT / "data" / "thesis.db"
+    if not db_path.exists():
+        return {"table_count": 0, "tables": {}}
+    con = sqlite3.connect(db_path)
+    try:
+        tables = [
+            row[0]
+            for row in con.execute(
+                "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
+            ).fetchall()
+        ]
+        counts = {
+            table: int(con.execute(f'SELECT COUNT(*) FROM "{table}"').fetchone()[0])
+            for table in tables
+        }
+    finally:
+        con.close()
+    return {"table_count": len(tables), "tables": counts}
+
+
+def _folder_inventory() -> dict[str, int]:
+    folders = [
+        "data/results",
+        "docs/research",
+        "docs/project",
+        "operations/analysis",
+        "operations/collectors",
+        "operations/project",
+        "tests",
+        "ingest",
+        "legacy",
+    ]
+    inventory: dict[str, int] = {}
+    for name in folders:
+        folder = REPO_ROOT / name
+        if not folder.exists():
+            inventory[name] = 0
+        elif name in {"data/results", "legacy"}:
+            inventory[name] = sum(1 for path in folder.rglob("*") if path.is_file())
+        else:
+            inventory[name] = sum(1 for path in folder.iterdir() if path.is_file())
+    return inventory
+
+
+def _status_test_summary() -> str:
+    status_path = REPO_ROOT / "STATUS.md"
+    if not status_path.exists():
+        return "Statusdatei fehlt"
+    text = status_path.read_text(encoding="utf-8")
+    for line in text.splitlines():
+        if line.startswith("Pytest summary:"):
+            return line.replace("Pytest summary:", "").strip().strip("`")
+    return "Pytest summary nicht gefunden"
+
+
+def _figure_specs() -> list[FigureSpec]:
+    specs = [
+        (
+            "h1_forecast_quality.png",
+            "H1 Forecast-Quality Vergleich",
+            "Zeigt Brier Scores, Head-to-head-Tagesverluste und Forecast-Zeitreihen ohne ueberstarken Kalibrierungsanspruch.",
+        ),
+        (
+            "h1_forecast_quality_synthesis.png",
+            "H1 Forecast-Quality Synthesis",
+            "Fasst alle aktuellen H1-Vergleichsquellen zusammen und trennt aggregierte Brier-Stuetze von einem breiten Viele-Faelle-Beweis.",
+        ),
+        (
+            "h1_claim_evidence_audit.png",
+            "H1 Claim-Evidence Audit",
+            "Fuehrt die H1-Evidenz als Claim-Ledger zusammen: spaete Polymarket-Stuetze, widersprechendes Full-Panel und weiterhin nicht belegter breiter User-Claim.",
+        ),
+        (
+            "h1_poll_comparison_result.png",
+            "H1 Poll-Comparison Result",
+            "Verdichtet die direkt pollbezogene H1-Evidenz: 262 von 285 spaeten Low/Middle-Poll-Distanz-Zeilen und 9 von 9 States stuetzen Polymarket, waehrend Vollpanel und High-Distance-Zeilen Grenzen bleiben.",
+        ),
+        (
+            "h1_poll_claim_readiness.png",
+            "H1 Poll-Claim Readiness",
+            "Trennt die aktuell belegbare bounded Aussage von Gegenbeispiel-Scopes: Polymarket ist im <=90-Tage Low/Middle-Poll-Distanz-Scope stark, aber der breite Claim bleibt nicht belegt.",
+        ),
+        (
+            "h1_poll_scope_frontier.png",
+            "H1 Poll-Scope Frontier",
+            "Visualisiert systematisch, wie weit sich der H1-Poll-Scope nach Horizont und quantilbasierter Poll-Distanz ausweiten laesst: groesster robuster Scope <=120 Tage Low/Middle, Vollpanel bleibt Gegenbeleg.",
+        ),
+        (
+            "h1_poll_decision_matrix.png",
+            "H1 Poll-Decision Matrix",
+            "Verdichtet die H1-Poll-Evidenz in eine Claim-Matrix: robuste bounded-Yes-Zeilen, Mean-Loss-Stuetze ohne Mehrheit, Kalibrierungskontext und Vollpanel-Gegenbeleg.",
+        ),
+        (
+            "h1_robust_poll_scope_quality.png",
+            "H1 Robust Poll-Scope Quality",
+            "Visualisiert Mean Brier, Fixed-Bin-ECE, Kalibrierungsbins und Lower-Loss-Zaehler fuer die robusten late Low/Middle-Poll-Distanz-Scopes.",
+        ),
+        (
+            "h1_robust_poll_scope_unit_quality.png",
+            "H1 Robust Poll-Scope Unit Quality",
+            "Aggregiert die beiden robusten Poll-Scopes zu State-, State-Month-, State-Horizon- und Horizon-Tier-Einheiten, damit der bounded H1-Befund weniger von wiederholten State-Date-Zeilen abhaengt.",
+        ),
+        (
+            "h1_poll_comparison_unit_robustness.png",
+            "H1 Poll-Comparison Unit Robustness",
+            "Aggregiert den primaeren H1-Poll-Scope zu State-, State-Month-, State-Horizon- und Horizon-Tier-Einheiten; Polymarket wird in allen primaeren Einheiten gestuetzt, waehrend Full-Panel und High-Distance Grenzen bleiben.",
+        ),
+        (
+            "h1_direct_poll_loss_decomposition.png",
+            "H1 Direct Poll Loss Decomposition",
+            "Zerlegt direkte Poll-Transform-Vergleiche: Polymarket hat den niedrigeren mittleren Brier, obwohl poll-derived Comparatoren mehr Einzel-Faelle gewinnen.",
+        ),
+        (
+            "h1_direct_poll_state_cluster_diagnostic.png",
+            "H1 Direct Poll State-Cluster Diagnostic",
+            "Prueft direkte Poll-Transform-Vergleiche mit gleichgewichteten State-Clustern: Der mittlere Verlustvorteil bleibt positiv, aber die State-Mehrheit stuetzt poll-derived Comparatoren.",
+        ),
+        (
+            "h1_direct_poll_outlier_robustness.png",
+            "H1 Direct Poll Outlier Robustness",
+            "Prueft, ob der direkte Poll-State-Cluster-Vorteil nur von einzelnen Ausreissern getragen wird: alle Leave-one-state-out Means bleiben positiv, aber Top-k-Exclusions zeigen Konzentration.",
+        ),
+        (
+            "h1_calibration_diagnostic.png",
+            "H1 Calibration Diagnostic",
+            "Visualisiert feste Kalibrierungsbins, Mean Brier, ECE und Pairwise-Lower-Loss-Zaehler aus geloesten H1-Fallartefakten.",
+        ),
+        (
+            "h1_evidence_scope.png",
+            "H1 Evidence-Scope Audit",
+            "Trennt die 194 taeglichen Forecast-Paare von der Anzahl unabhaengiger geloester H1-Outcomes.",
+        ),
+        (
+            "h1_expansion_readiness.png",
+            "H1 Expansion-Readiness Audit",
+            "Zeigt, dass zusaetzliche Polymarket-Tagespreise ohne kompatible Probability-Forecast-Vergleichsreihe noch keine weiteren H1-Brier-Paare ergeben.",
+        ),
+        (
+            "h1_margin_threshold_readiness.png",
+            "H1 Margin-Threshold Readiness",
+            "Prueft sieben Trump-State-Margin-Maerkte und zeigt, dass ohne zeitliche Ueberlappung zwischen bewahrten 538-Poll-Averages und CLOB-Historie keine neuen H1-Brier-Faelle entstehen.",
+        ),
+        (
+            "h1_final_snapshot.png",
+            "H1 Final-Snapshot Extension",
+            "Vergleicht acht geloeste 2024-Final-Snapshot-Outcomes gegen 538 final forecast; kleine Erweiterung, kein Viele-Faelle-Beweis.",
+        ),
+        (
+            "h1_state_poll_snapshot.png",
+            "H1 State-Poll-Snapshot Extension",
+            "Vergleicht 13 geloeste State-Outcomes gegen eine dokumentiert transformierte 538 Polling-Average-Wahrscheinlichkeit; nicht Rohpoll und kein offizieller 538 State-Forecast.",
+        ),
+        (
+            "h1_270towin_poll_average.png",
+            "H1 270toWin Polling-Average Extension",
+            "Vergleicht 43 gematchte State-Outcomes gegen eine dokumentiert transformierte 270toWin-Polling-Average-Wahrscheinlichkeit.",
+        ),
+        (
+            "h1_popular_vote.png",
+            "H1 Popular-Vote Extension",
+            "Vergleicht 51 nationale 538-Poll-Transform-Tageszeilen mit dem Polymarket-Trump-popular-vote-Markt und zeigt einen Gegenbeleg zum starken Claim.",
+        ),
+        (
+            "h1_state_poll_panel.png",
+            "H1 State-Date Poll Panel",
+            "Vergleicht 1720 gematchte State-Date-Zeilen gegen transformierte 538 Polling-Averages; das groessere Panel spricht gegen den starken Polymarket-Claim.",
+        ),
+        (
+            "h1_state_poll_panel_temporal_diagnostic.png",
+            "H1 State-Date Poll Panel Temporal Diagnostic",
+            "Zeigt, dass der Vollpanel-Befund gegen Polymarket spricht, waehrend August und September 2024 als diagnostischer Teilbereich Polymarket stuetzen.",
+        ),
+        (
+            "h1_state_poll_panel_horizon_diagnostic.png",
+            "H1 State-Date Poll Panel Horizon Diagnostic",
+            "Zeigt, dass das <=90-Tage-Forecast-Fenster Polymarket stuetzt, waehrend der Vollpanel-Befund weiter gegen den starken Claim spricht.",
+        ),
+        (
+            "h1_state_poll_panel_horizon_state_support.png",
+            "H1 <=90-Day State-Level Support",
+            "Aggregiert das <=90-Tage-Fenster auf State-Ebene: Polymarket wird in 8 von 13 States nach mittlerem Brier und Row-Majority gestuetzt.",
+        ),
+        (
+            "h1_state_poll_panel_near_window_quality.png",
+            "H1 <=90-Day Score Quality",
+            "Visualisiert Mean Brier, Fixed-Bin-ECE, Probability-Separation und lower-loss rows im <=90-Tage-Fenster des State-Date-Panels.",
+        ),
+        (
+            "h1_state_poll_snapshot_sensitivity.png",
+            "H1 Poll-Transform Sensitivity",
+            "Prueft die State-Poll-Erweiterung ueber MAE-Annahmen von 2.0 bis 10.0 Prozentpunkten, ohne den Parameter auf Outcomes zu fitten.",
+        ),
+        (
+            "h1_state_poll_snapshot_coverage.png",
+            "H1 State-Poll Coverage Audit",
+            "Zeigt, warum 50 States und 50 Polymarket-State-Maerkte nur 13 valide H1-Brier-Paare mit dem bewahrten 538-Polling-Average-Snapshot ergeben.",
+        ),
+        (
+            "h1_rieke_state_forecast.png",
+            "H1 Rieke 50-State Forecast Extension",
+            "Vergleicht 50 Polymarket State-Winner-Maerkte mit dem pollbasierten Rieke-Forecast; Polymarket hat niedrigeren mittleren Brier, aber nur in 12 von 50 Einzelstaaten niedrigeren Verlust.",
+        ),
+        (
+            "h1_270towin_state_forecast.png",
+            "H1 270toWin/JHK 50-State Forecast Extension",
+            "Vergleicht 50 Polymarket State-Winner-Maerkte mit 270toWin/JHK; Polymarket hat niedrigeren mittleren Brier, aber nur in 9 von 50 Einzelstaaten niedrigeren Verlust.",
+        ),
+        (
+            "h1_state_source_consensus.png",
+            "H1 State-Source Consensus Diagnostic",
+            "Aggregiert bestehende H1-State-Artefakte ueber 156 Source-State-Vergleiche und trennt All-Source-Konsens von direktem Poll-Transform-Konsens.",
+        ),
+        (
+            "h1_competitive_state_diagnostic.png",
+            "H1 Competitive-State Diagnostic",
+            "Quantilbasierte Diagnose: Polymarket ist in der niedrigsten Distanz-/kompetitivsten Terzile besser, sichere States bleiben Gegenbeleg.",
+        ),
+        (
+            "h1_state_poll_panel_competitiveness.png",
+            "H1 State-Date Competitiveness x Horizon",
+            "Zeigt, dass Polymarket im <=90-Tage-Fenster bei Low/Middle-Poll-Distanz 262 von 285 State-Date-Zeilen gewinnt, waehrend spaete High-Distance-Zeilen Gegenbeleg bleiben.",
+        ),
+        (
+            "h1_state_poll_panel_state_significance.png",
+            "H1 State-Level Significance Diagnostic",
+            "Zeigt den exakten State-Level-Sign-Test fuer spaete Low/Middle-Poll-Distanz-Faelle: Polymarket 9 von 9 States, einseitiger p-Wert 0.0020.",
+        ),
+        (
+            "thesis_h2_event_window_car.png",
+            "H2 Event-Window Movement",
+            "Zeigt taegliche Event-Window-Bewegungen fuer die kuratierten Ereignisse.",
+        ),
+        (
+            "thesis_h3_wallet_tier_counts.png",
+            "H3 Wallet-Tier-Verteilung",
+            "Zeigt, dass Wallet-Tiers aus der beobachteten Verteilung abgeleitet wurden.",
+        ),
+        (
+            "thesis_h3_granger_pvalues.png",
+            "H3 Granger-Diagnostik",
+            "Fasst predictive timing diagnostics zusammen, ohne Kausalitaet zu behaupten.",
+        ),
+        (
+            "thesis_h3_event_wallet_anomalies.png",
+            "Historische Event-Wallet-Anomalien",
+            "Zeigt den pausierten Monitor-Prototyp als deskriptive Review-Schicht.",
+        ),
+        (
+            "monitor_v2_polymarket_rolling_history.png",
+            "Monitor-v2 Rolling History",
+            "Visualisiert die kurze read-only Polymarket-Monitor-Historie.",
+        ),
+        (
+            "swiss_referendum_10mio_efficiency.png",
+            "Swiss Referendum: Polymarket vs Polls",
+            "Vergleicht die lokale Polymarket-Wahrscheinlichkeit mit kuratierten Umfragen.",
+        ),
+        (
+            "swiss_referendum_10mio_reaction_windows.png",
+            "Swiss Referendum: Reaction Windows",
+            "Zeigt beschreibende 1h/6h/24h/48h-Fenster nach Poll-Releases.",
+        ),
+        (
+            "swiss_referendum_10mio_information_response.png",
+            "Swiss Referendum: Information Response",
+            "Zeigt Richtungsgleichheit zwischen neuer Poll-Signalrichtung und Polymarket-Bewegungen.",
+        ),
+    ]
+    return [
+        FigureSpec(path=RESULTS_DIR / filename, caption=caption, note=note)
+        for filename, caption, note in specs
+        if (RESULTS_DIR / filename).exists()
+    ]
+
+
+def _summary_value(
+    frame: pd.DataFrame,
+    summary_id: str,
+    *,
+    default: float | None = None,
+) -> float:
+    rows = frame.loc[frame["summary_id"] == summary_id, "value"]
+    if rows.empty:
+        if default is not None:
+            return default
+        raise ValueError(f"summary_id not found: {summary_id}")
+    return float(rows.iloc[0])
+
+
+def _summary_text_value(frame: pd.DataFrame, summary_id: str) -> str:
+    rows = frame.loc[frame["summary_id"] == summary_id, "value"]
+    if rows.empty:
+        raise ValueError(f"summary_id not found: {summary_id}")
+    return str(rows.iloc[0])
+
+
+def _bool_count(frame: pd.DataFrame, column: str) -> int:
+    if column not in frame.columns:
+        raise ValueError(f"boolean column not found: {column}")
+    return int(frame[column].astype(str).str.lower().eq("true").sum())
+
+
+def _read_csv(path: str) -> pd.DataFrame:
+    full_path = REPO_ROOT / path
+    if not full_path.exists():
+        raise FileNotFoundError(f"required report source missing: {path}")
+    return pd.read_csv(full_path)
+
+
+def _read_json(path: str) -> dict[str, Any]:
+    full_path = REPO_ROOT / path
+    if not full_path.exists():
+        return {}
+    return json.loads(full_path.read_text(encoding="utf-8"))
+
+
+def _add_callout(doc: Document, title: str, body: str) -> None:
+    table = doc.add_table(rows=1, cols=1)
+    table.alignment = WD_TABLE_ALIGNMENT.LEFT
+    _set_table_width(table, [TABLE_WIDTH_DXA])
+    cell = table.cell(0, 0)
+    _shade_cell(cell, CALLOUT_FILL)
+    p = cell.paragraphs[0]
+    p.paragraph_format.space_after = Pt(2)
+    run = p.add_run(title)
+    _set_run(run, bold=True, color=DARK_BLUE)
+    p2 = cell.add_paragraph(body)
+    p2.paragraph_format.space_after = Pt(0)
+
+
+def _add_bullets(doc: Document, items: Sequence[str]) -> None:
+    for item in items:
+        p = doc.add_paragraph(style="List Bullet")
+        p.paragraph_format.space_after = Pt(4)
+        p.add_run(item)
+
+
+def _add_table(
+    doc: Document,
+    rows: Sequence[Sequence[Any]],
+    headers: Sequence[str],
+    widths: Sequence[int],
+):
+    table = doc.add_table(rows=1, cols=len(headers))
+    table.style = "Table Grid"
+    table.alignment = WD_TABLE_ALIGNMENT.LEFT
+    _set_table_width(table, widths)
+    for idx, header in enumerate(headers):
+        cell = table.rows[0].cells[idx]
+        cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+        cell.text = str(header)
+        _set_cell_font(cell, bold=True)
+    for row in rows:
+        cells = table.add_row().cells
+        for idx, value in enumerate(row):
+            cells[idx].vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+            cells[idx].text = str(value)
+            _set_cell_font(cells[idx])
+    return table
+
+
+def _shade_table_header(table) -> None:
+    for cell in table.rows[0].cells:
+        _shade_cell(cell, LIGHT_FILL)
+
+
+def _shade_cell(cell, fill: str) -> None:
+    tc_pr = cell._tc.get_or_add_tcPr()
+    shd = tc_pr.find(qn("w:shd"))
+    if shd is None:
+        shd = OxmlElement("w:shd")
+        tc_pr.append(shd)
+    shd.set(qn("w:fill"), fill)
+
+
+def _set_table_width(table, widths: Sequence[int]) -> None:
+    table.autofit = False
+    tbl_pr = table._tbl.tblPr
+    tbl_w = tbl_pr.find(qn("w:tblW"))
+    if tbl_w is None:
+        tbl_w = OxmlElement("w:tblW")
+        tbl_pr.append(tbl_w)
+    tbl_w.set(qn("w:w"), str(sum(widths)))
+    tbl_w.set(qn("w:type"), "dxa")
+    tbl_ind = tbl_pr.find(qn("w:tblInd"))
+    if tbl_ind is None:
+        tbl_ind = OxmlElement("w:tblInd")
+        tbl_pr.append(tbl_ind)
+    tbl_ind.set(qn("w:w"), "120")
+    tbl_ind.set(qn("w:type"), "dxa")
+    grid = table._tbl.tblGrid
+    if grid is None:
+        grid = OxmlElement("w:tblGrid")
+        table._tbl.insert(0, grid)
+    for child in list(grid):
+        grid.remove(child)
+    for width in widths:
+        col = OxmlElement("w:gridCol")
+        col.set(qn("w:w"), str(width))
+        grid.append(col)
+    for row in table.rows:
+        for idx, cell in enumerate(row.cells):
+            tc_pr = cell._tc.get_or_add_tcPr()
+            tc_w = tc_pr.find(qn("w:tcW"))
+            if tc_w is None:
+                tc_w = OxmlElement("w:tcW")
+                tc_pr.append(tc_w)
+            tc_w.set(qn("w:w"), str(widths[idx]))
+            tc_w.set(qn("w:type"), "dxa")
+            cell.width = Inches(widths[idx] / 1440)
+
+
+def _set_cell_font(cell, *, bold: bool = False) -> None:
+    for paragraph in cell.paragraphs:
+        paragraph.paragraph_format.space_after = Pt(2)
+        for run in paragraph.runs:
+            _set_run(run, size=9.5, bold=bold)
+
+
+def _set_paragraph_font(paragraph, *, size: float, color: RGBColor) -> None:
+    for run in paragraph.runs:
+        _set_run(run, size=size, color=color)
+
+
+def _set_run(
+    run,
+    *,
+    size: float | None = None,
+    bold: bool | None = None,
+    color: RGBColor | None = None,
+) -> None:
+    run.font.name = "Calibri"
+    run._element.rPr.rFonts.set(qn("w:ascii"), "Calibri")
+    run._element.rPr.rFonts.set(qn("w:hAnsi"), "Calibri")
+    if size is not None:
+        run.font.size = Pt(size)
+    if bold is not None:
+        run.bold = bold
+    if color is not None:
+        run.font.color.rgb = color
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--markdown-output", type=Path, default=DEFAULT_MD_OUTPUT)
+    parser.add_argument("--html-output", type=Path, default=DEFAULT_HTML_OUTPUT)
+    parser.add_argument("--docx-output", type=Path, default=DEFAULT_DOCX_OUTPUT)
+    parser.add_argument("--asset-dir", type=Path, default=DEFAULT_ASSET_DIR)
+    return parser
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    result = build_report(
+        markdown_output=args.markdown_output,
+        html_output=args.html_output,
+        docx_output=args.docx_output,
+        asset_dir=args.asset_dir,
+    )
+    print(json.dumps(result, indent=2, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

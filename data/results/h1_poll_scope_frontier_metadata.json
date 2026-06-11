@@ -1,0 +1,147 @@
+{
+  "generated_at_utc": "2026-06-11T01:27:20+00:00",
+  "limitations": {
+    "frontier_is_scope_sensitivity_not_new_data": true,
+    "full_panel_still_contradicts_broad_claim": true,
+    "low_middle_scope_excludes_high_distance_counterexamples": true,
+    "no_causal_or_tradeability_claim": true,
+    "rows_repeat_resolved_state_outcomes": true,
+    "state_month_units_are_not_independent_elections": true
+  },
+  "method": {
+    "calculation_scope": "deterministic_python_from_h1_state_date_poll_panel_cases",
+    "competitiveness_distance": "abs(poll_derived_probability - 0.5)",
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "horizon_cutoffs": [
+      {
+        "horizon_cutoff_days": 60,
+        "horizon_label": "<=60 days",
+        "horizon_scope": "lte_60_days"
+      },
+      {
+        "horizon_cutoff_days": 90,
+        "horizon_label": "<=90 days",
+        "horizon_scope": "lte_90_days"
+      },
+      {
+        "horizon_cutoff_days": 120,
+        "horizon_label": "<=120 days",
+        "horizon_scope": "lte_120_days"
+      },
+      {
+        "horizon_cutoff_days": 150,
+        "horizon_label": "<=150 days",
+        "horizon_scope": "lte_150_days"
+      },
+      {
+        "horizon_cutoff_days": 180,
+        "horizon_label": "<=180 days",
+        "horizon_scope": "lte_180_days"
+      },
+      {
+        "horizon_cutoff_days": 10000,
+        "horizon_label": "Full panel",
+        "horizon_scope": "full_panel"
+      }
+    ],
+    "minimum_state_month_units_for_robust_status": 5,
+    "name": "h1_poll_scope_frontier",
+    "rcp_included": false,
+    "robust_support_rule": "row majority and positive mean loss advantage and state-month exact one-sided binomial p-value < 0.05",
+    "tier_method": "uses_existing quantile-derived poll-distance terciles",
+    "tier_scopes": [
+      {
+        "included_tiers": [
+          "low_distance_tercile",
+          "middle_distance_tercile",
+          "high_distance_tercile"
+        ],
+        "tier_label": "All distances",
+        "tier_scope": "all_distances"
+      },
+      {
+        "included_tiers": [
+          "low_distance_tercile",
+          "middle_distance_tercile"
+        ],
+        "tier_label": "Low/middle distance",
+        "tier_scope": "low_middle_distance"
+      },
+      {
+        "included_tiers": [
+          "low_distance_tercile"
+        ],
+        "tier_label": "Low distance",
+        "tier_scope": "low_distance"
+      },
+      {
+        "included_tiers": [
+          "middle_distance_tercile"
+        ],
+        "tier_label": "Middle distance",
+        "tier_scope": "middle_distance"
+      },
+      {
+        "included_tiers": [
+          "high_distance_tercile"
+        ],
+        "tier_label": "High distance",
+        "tier_scope": "high_distance"
+      }
+    ],
+    "uses_raw_poll_shares_directly": false
+  },
+  "outputs": {
+    "broad_claim_proven": false,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "frontier_row_count": 30,
+    "input_row_count": 1720,
+    "largest_robust_row_count": 433,
+    "largest_robust_scope_id": "lte_120_days_low_middle_distance",
+    "robust_scope_count": 8
+  },
+  "source_paths": {
+    "case_input": "data\\results\\h1_state_poll_panel_cases.csv",
+    "figure": "data\\results\\h1_poll_scope_frontier.png",
+    "frontier": "data\\results\\h1_poll_scope_frontier.csv",
+    "summary": "data\\results\\h1_poll_scope_frontier_summary.csv"
+  },
+  "summary": {
+    "broad_claim_proven": 0,
+    "frontier_row_count": 30,
+    "full_panel_poll_support_count": 1360,
+    "full_panel_polymarket_support_count": 360,
+    "full_panel_row_count": 1720,
+    "h1_goal_completion_status": "not_proven",
+    "largest_robust_horizon_label": "<=120 days",
+    "largest_robust_mean_loss_advantage": 0.057212677617564774,
+    "largest_robust_poll_support_count": 120,
+    "largest_robust_polymarket_support_count": 313,
+    "largest_robust_polymarket_support_share": 0.7228637413394919,
+    "largest_robust_row_count": 433,
+    "largest_robust_scope_id": "lte_120_days_low_middle_distance",
+    "largest_robust_state_count": 11,
+    "largest_robust_state_month_count": 26,
+    "largest_robust_state_month_p_value": 0.03775934875011444,
+    "largest_robust_state_month_polymarket_support_count": 18,
+    "largest_robust_tier_label": "Low/middle distance",
+    "lte_90_all_polymarket_support_count": 262,
+    "lte_90_all_polymarket_support_share": 0.7338935574229691,
+    "lte_90_all_row_count": 357,
+    "lte_90_all_state_month_p_value": 0.07579481601715088,
+    "lte_90_low_middle_polymarket_support_count": 262,
+    "lte_90_low_middle_row_count": 285,
+    "lte_90_low_middle_state_month_count": 17,
+    "lte_90_low_middle_state_month_p_value": 7.62939453125e-06,
+    "lte_90_low_middle_state_month_support_count": 17,
+    "robust_scope_count": 8,
+    "strongest_robust_row_count": 285,
+    "strongest_robust_scope_id": "lte_90_days_low_middle_distance",
+    "strongest_robust_state_month_p_value": 7.62939453125e-06
+  }
+}

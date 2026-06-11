@@ -1,0 +1,18 @@
+summary_id,value,unit,description
+case_count,50.0,cases,Resolved 50-state final forecast outcomes.
+exact_probability_case_count,22.0,cases,States with exact 270toWin percentages shown in the source table.
+censored_boundary_case_count,28.0,cases,States represented by source >99.9% buckets and boundary probabilities.
+independent_resolved_outcome_count,50.0,outcomes,Each row is a distinct 2024 presidential state outcome.
+polymarket_lower_loss_count,9.0,cases,Cases where Polymarket has lower Brier loss.
+two_seventy_lower_loss_count,40.0,cases,Cases where 270toWin/JHK has lower Brier loss.
+tie_count,1.0,cases,Cases with equal Brier loss.
+exact_probability_polymarket_lower_loss_count,9.0,cases,Exact-probability states where Polymarket has lower Brier loss.
+exact_probability_two_seventy_lower_loss_count,12.0,cases,Exact-probability states where 270toWin/JHK has lower Brier loss.
+exact_probability_tie_count,1.0,cases,Exact-probability states with equal Brier loss.
+polymarket_better_share,0.18,share,Share of all 50 states where Polymarket loss is lower.
+mean_polymarket_brier,0.026207745000000005,brier_score,Mean Brier loss across Polymarket state snapshots.
+mean_two_seventy_brier,0.03059891999999999,brier_score,Mean Brier loss across 270toWin/JHK state probabilities.
+mean_loss_advantage,0.004391174999999987,brier_score,Positive values mean lower mean Polymarket loss.
+exact_probability_mean_polymarket_brier,0.059292840909090906,brier_score,Mean Polymarket Brier loss on the 22 exact-probability states.
+exact_probability_mean_two_seventy_brier,0.06954172727272727,brier_score,Mean 270toWin/JHK Brier loss on the 22 exact-probability states.
+exact_probability_mean_loss_advantage,0.010248886363636363,brier_score,Positive values mean lower mean Polymarket loss on exact states.

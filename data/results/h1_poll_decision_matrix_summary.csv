@@ -1,0 +1,27 @@
+summary_id,value,unit,description
+decision_row_count,9,rows,Rows in the H1 poll decision matrix.
+robust_bounded_yes_count,2,rows,Decision rows with robust bounded Polymarket support.
+directional_not_robust_count,1,rows,Rows with directional Polymarket support that miss the robust rule.
+mixed_mean_only_count,3,rows,Rows where aggregate or mean support does not imply case/unit majority.
+counterexample_count,2,rows,Rows that contradict the broad Polymarket-better claim.
+largest_robust_scope_id,lte_120_days_low_middle_distance,scope,Largest robust poll-scope frontier row.
+largest_robust_row_count,433,state-date rows,State-date rows in the largest robust decision row.
+largest_robust_polymarket_support_count,313,state-date rows,Rows where Polymarket has lower loss in the largest robust row.
+largest_robust_comparator_support_count,120,state-date rows,Rows where poll-derived probabilities have lower loss in the largest robust row.
+largest_robust_polymarket_support_share,0.7228637413394919,share,Polymarket lower-loss share in the largest robust decision row.
+largest_robust_state_month_polymarket_support_count,18,state_month units,State-month units supporting Polymarket in the largest robust row.
+largest_robust_state_month_count,26,state_month units,State-month units in the largest robust row.
+largest_robust_p_value,0.0377593487501144,p_value,State-month exact p-value in the largest robust row.
+strongest_robust_scope_id,lte_90_days_low_middle_distance,scope,Strongest robust poll-scope frontier row.
+strongest_robust_row_count,285,state-date rows,State-date rows in the strongest robust decision row.
+strongest_robust_polymarket_support_count,262,state-date rows,Rows where Polymarket has lower loss in the strongest robust row.
+strongest_robust_p_value,7.62939453125e-06,p_value,State-month exact p-value in the strongest robust row.
+frontier_robust_scope_count,8,scopes,Robust scopes in the full horizon x poll-distance frontier.
+full_panel_poll_support_count,1360,state-date rows,Full-panel rows where poll-derived probabilities have lower loss.
+full_panel_row_count,1720,state-date rows,Full-panel state-date rows.
+calibration_pairwise_count,5,pairwise rows,Resolved-case calibration pairwise diagnostics.
+calibration_aggregate_support_count,5,pairwise rows,Calibration rows where mean Brier supports Polymarket.
+calibration_majority_support_count,2,pairwise rows,Calibration rows where case majority also supports Polymarket.
+bounded_poll_claim_ready,1,binary,A bounded poll claim is supported for late low/middle poll-distance scopes.
+broad_claim_proven,0,binary,The broad many-cases or many-elections claim remains unproven.
+h1_goal_completion_status,not_proven,status,"The bounded poll claim is supported, but the broad thread objective remains incomplete."

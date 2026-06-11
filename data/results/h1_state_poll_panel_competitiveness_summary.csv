@@ -1,0 +1,23 @@
+summary_id,value,unit,description
+panel_row_count,1720.0,state-date forecast rows,Input H1 state-date poll panel rows.
+panel_state_count,15.0,states,Covered states.
+late_row_count,357.0,state-date forecast rows,Rows in the <=90-day window before election day.
+late_non_safe_row_count,285.0,state-date forecast rows,Late rows in low or middle poll-distance terciles.
+late_non_safe_state_count,9.0,states,States covered by late low/middle poll-distance rows.
+late_non_safe_polymarket_lower_loss_count,262.0,state-date forecast rows,Late low/middle-distance rows where Polymarket has lower loss.
+late_non_safe_poll_lower_loss_count,23.0,state-date forecast rows,Late low/middle-distance rows where poll-derived has lower loss.
+late_non_safe_mean_loss_advantage,0.09327158775169828,brier_score,Positive values mean lower Polymarket mean loss in late low/middle-distance rows.
+late_non_safe_mean_polymarket_brier,0.2214428070175438,brier_score,Mean Polymarket Brier in late low/middle-distance rows.
+late_non_safe_mean_poll_brier,0.3147143947692421,brier_score,Mean poll-derived Brier in late low/middle-distance rows.
+late_non_safe_polymarket_state_support_count,9.0,states,States where Polymarket has majority lower-loss rows in the late low/middle-distance scope.
+late_high_distance_row_count,72.0,state-date forecast rows,Late rows in the highest poll-distance tercile.
+late_high_distance_state_count,5.0,states,States covered by late high poll-distance rows.
+late_high_distance_polymarket_lower_loss_count,0.0,state-date forecast rows,Late high-distance rows where Polymarket has lower loss.
+late_high_distance_poll_lower_loss_count,72.0,state-date forecast rows,Late high-distance rows where poll-derived has lower loss.
+late_high_distance_mean_loss_advantage,-0.01156824187552041,brier_score,Positive values mean lower Polymarket mean loss in late high-distance rows.
+late_high_distance_mean_polymarket_brier,0.015560624999999988,brier_score,Mean Polymarket Brier in late high-distance rows.
+late_high_distance_mean_poll_brier,0.0039923831244795,brier_score,Mean poll-derived Brier in late high-distance rows.
+late_high_distance_polymarket_state_support_count,0.0,states,States where Polymarket has majority lower-loss rows in the late high-distance scope.
+late_non_safe_supports_polymarket,1.0,binary,Late low/middle-distance rows support a bounded Polymarket advantage.
+late_high_distance_contradicts_strong_claim,1.0,binary,Late high-distance rows contradict the strong broad Polymarket advantage claim.
+broad_many_cases_claim_supported_now,0.0,binary,This diagnostic does not prove the requested broad many-cases claim.

@@ -1,0 +1,25 @@
+summary_id,value,unit,description
+source_state_case_count,156.0,source-state cases,Total long rows across all included H1 state source artifacts.
+source_count,4.0,sources,Included state-level traditional comparator sources.
+state_count,50.0,states,Distinct resolved state outcomes covered by at least one source.
+all_source_polymarket_lower_loss_count,43.0,source-state cases,Cases where Polymarket has lower Brier loss.
+all_source_comparator_lower_loss_count,112.0,source-state cases,Cases where the traditional comparator has lower Brier loss.
+all_source_tie_count,1.0,source-state cases,Cases with equal Brier loss.
+all_source_mean_polymarket_brier,0.036319990384615364,brier_score,Mean Polymarket Brier across source-state cases.
+all_source_mean_comparator_brier,0.04545040172940943,brier_score,Mean comparator Brier across source-state cases.
+all_source_mean_loss_advantage,0.009130411344794068,brier_score,Positive values mean lower mean Polymarket loss across source-state cases.
+all_source_polymarket_majority_state_count,9.0,states,States where Polymarket has the most lower-loss source comparisons.
+all_source_comparator_majority_state_count,37.0,states,States where comparators have the most lower-loss source comparisons.
+all_source_tie_state_count,4.0,states,States tied by source lower-loss consensus.
+direct_poll_source_state_case_count,56.0,source-state cases,Long rows from direct poll-transform sources only.
+direct_poll_state_count,43.0,states,States with at least one direct poll-transform source.
+direct_poll_polymarket_lower_loss_count,22.0,source-state cases,Direct poll-transform cases where Polymarket has lower Brier loss.
+direct_poll_comparator_lower_loss_count,34.0,source-state cases,Direct poll-transform cases where the poll-derived comparator has lower loss.
+direct_poll_polymarket_majority_state_count,13.0,states,Direct-poll states where Polymarket has the most lower-loss source rows.
+direct_poll_comparator_majority_state_count,29.0,states,Direct-poll states where poll-derived comparators have the most lower-loss source rows.
+direct_poll_tie_state_count,1.0,states,Direct-poll states tied by source lower-loss consensus.
+direct_poll_two_source_state_count,13.0,states,States covered by at least two direct poll-transform sources.
+direct_poll_two_source_polymarket_majority_state_count,8.0,states,Two-direct-source states where Polymarket has more lower-loss source rows.
+direct_poll_two_source_comparator_majority_state_count,4.0,states,Two-direct-source states where poll-derived comparators have more lower-loss source rows.
+direct_poll_two_source_tie_state_count,1.0,states,Two-direct-source states tied by source lower-loss consensus.
+broad_many_cases_claim_supported_now,0.0,binary,This diagnostic does not prove the requested broad many-cases claim.

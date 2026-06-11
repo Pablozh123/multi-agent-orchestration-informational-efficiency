@@ -1,0 +1,10 @@
+summary_id,value,unit,description
+case_count,8.0,cases,Curated resolved final-snapshot outcomes.
+independent_resolved_outcome_count,8.0,outcomes,Each row is a distinct resolved 2024 election outcome.
+polymarket_lower_loss_count,5.0,cases,Cases where Polymarket has lower Brier loss.
+traditional_lower_loss_count,3.0,cases,Cases where the 538 final forecast has lower Brier loss.
+tie_count,0.0,cases,Cases with equal Brier loss.
+polymarket_better_share,0.625,share,Share of final-snapshot cases where Polymarket loss is lower.
+mean_polymarket_brier,0.07837715625000001,brier_score,Mean Brier loss across Polymarket final snapshots.
+mean_traditional_brier,0.09327890625000002,brier_score,Mean Brier loss across 538 final probabilities.
+mean_loss_advantage,0.014901750000000005,brier_score,Positive values mean lower mean Polymarket loss.

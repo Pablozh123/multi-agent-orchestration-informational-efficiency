@@ -1,0 +1,46 @@
+{
+  "generated_at_utc": "2026-06-11T01:46:30+00:00",
+  "limitations": {
+    "calibration_row_is_not_poll_only": true,
+    "direct_poll_probabilities_are_transformed_from_polling_margins": true,
+    "full_panel_still_contradicts_broad_claim": true,
+    "goal_many_cases_claim_not_yet_proven": true,
+    "no_causal_or_tradeability_claim": true,
+    "rows_repeat_resolved_state_outcomes": true,
+    "state_month_units_are_not_independent_elections": true
+  },
+  "method": {
+    "calculation_scope": "deterministic_python_from_precomputed_h1_artifacts",
+    "does_not_collect_external_data": true,
+    "does_not_recompute_brier_from_raw_rows": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "name": "h1_poll_decision_matrix",
+    "rcp_included": false,
+    "uses_raw_poll_shares_directly": false
+  },
+  "outputs": {
+    "bounded_poll_claim_ready": true,
+    "broad_claim_proven": false,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "counterexample_count": 2,
+    "decision_row_count": 9,
+    "h1_goal_completion_status": "not_proven",
+    "robust_bounded_yes_count": 2,
+    "summary_row_count": 26
+  },
+  "source_paths": {
+    "calibration_pairwise_input": "data\\results\\h1_calibration_diagnostic_pairwise.csv",
+    "decision": "data\\results\\h1_poll_decision_matrix.csv",
+    "direct_poll_state_cluster_input": "data\\results\\h1_direct_poll_state_cluster_diagnostic_summary.csv",
+    "figure": "data\\results\\h1_poll_decision_matrix.png",
+    "frontier_input": "data\\results\\h1_poll_scope_frontier.csv",
+    "frontier_summary_input": "data\\results\\h1_poll_scope_frontier_summary.csv",
+    "state_source_consensus_input": "data\\results\\h1_state_source_consensus_summary.csv",
+    "summary": "data\\results\\h1_poll_decision_matrix_summary.csv",
+    "two_seventy_poll_average_input": "data\\results\\h1_270towin_poll_average_summary.csv"
+  }
+}

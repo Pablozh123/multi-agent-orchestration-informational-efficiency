@@ -1,0 +1,73 @@
+{
+  "generated_at_utc": "2026-06-10T23:07:32+00:00",
+  "limitations": {
+    "broad_many_cases_claim_not_yet_proven": true,
+    "competitive_subset_supports_polymarket_bounded": true,
+    "full_state_date_panel_contradicts_strong_claim": true,
+    "late_high_distance_state_date_contradicts_strong_claim": true,
+    "late_non_safe_state_date_supports_polymarket_bounded": true,
+    "late_non_safe_state_sign_test_supports_polymarket": true,
+    "late_window_support_is_repeated_forecast_rows": true,
+    "model_forecasts_are_not_raw_polls": true,
+    "no_causal_or_tradeability_claim": true,
+    "popular_vote_extension_contradicts_strong_claim": true,
+    "safe_state_subset_contradicts_strong_claim": true,
+    "state_rows_share_one_election_context": true,
+    "two_seventy_poll_average_is_poll_transform": true
+  },
+  "method": {
+    "calculation_scope": "deterministic_python_from_precomputed_h1_artifacts",
+    "does_not_collect_external_data": true,
+    "does_not_recompute_raw_brier_rows": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "name": "h1_claim_evidence_audit",
+    "rcp_included": false,
+    "uses_raw_poll_shares_directly": false
+  },
+  "outputs": {
+    "audit_row_count": 22,
+    "broad_user_claim_proven": false,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "contradiction_row_count": 5,
+    "h1_goal_completion_status": "not_proven",
+    "support_row_count": 16
+  },
+  "source_paths": {
+    "audit_output": "data\\results\\h1_claim_evidence_audit.csv",
+    "competitive_state_input": "data\\results\\h1_competitive_state_diagnostic_summary.csv",
+    "figure_output": "data\\results\\h1_claim_evidence_audit.png",
+    "final_snapshot_input": "data\\results\\h1_final_snapshot_summary.csv",
+    "horizon_claim_input": "data\\results\\h1_state_poll_panel_horizon_claim_audit.csv",
+    "horizon_state_input": "data\\results\\h1_state_poll_panel_horizon_state_support_summary.csv",
+    "near_quality_input": "data\\results\\h1_state_poll_panel_near_window_quality_summary.csv",
+    "panel_competitiveness_input": "data\\results\\h1_state_poll_panel_competitiveness_summary.csv",
+    "popular_vote_input": "data\\results\\h1_popular_vote_summary.csv",
+    "rieke_input": "data\\results\\h1_rieke_state_forecast_summary.csv",
+    "state_poll_input": "data\\results\\h1_state_poll_snapshot_summary.csv",
+    "state_significance_input": "data\\results\\h1_state_poll_panel_state_significance_summary.csv",
+    "state_source_consensus_input": "data\\results\\h1_state_source_consensus_summary.csv",
+    "summary_output": "data\\results\\h1_claim_evidence_audit_summary.csv",
+    "synthesis_input": "data\\results\\h1_forecast_quality_synthesis.csv",
+    "two_seventy_input": "data\\results\\h1_270towin_state_forecast_summary.csv",
+    "two_seventy_poll_average_input": "data\\results\\h1_270towin_poll_average_summary.csv"
+  },
+  "summary": {
+    "audit_row_count": 22,
+    "broad_user_claim_proven": 0,
+    "contradiction_row_count": 5,
+    "direct_poll_audit_row_count": 15,
+    "direct_poll_contradiction_row_count": 3,
+    "direct_poll_support_row_count": 12,
+    "full_panel_poll_lower_loss_count": 1360,
+    "full_panel_polymarket_lower_loss_count": 360,
+    "h1_goal_completion_status": "not_proven",
+    "late_window_poll_lower_loss_count": 95,
+    "late_window_polymarket_lower_loss_count": 262,
+    "late_window_state_date_row_count": 357,
+    "support_row_count": 16
+  }
+}

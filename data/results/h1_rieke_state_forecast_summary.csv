@@ -1,0 +1,10 @@
+summary_id,value,unit,description
+case_count,50.0,cases,Resolved 50-state final forecast outcomes.
+independent_resolved_outcome_count,50.0,outcomes,Each row is a distinct 2024 presidential state outcome.
+polymarket_lower_loss_count,12.0,cases,Cases where Polymarket has lower Brier loss.
+rieke_lower_loss_count,38.0,cases,Cases where Rieke forecast has lower Brier loss.
+tie_count,0.0,cases,Cases with equal Brier loss.
+polymarket_better_share,0.24,share,Share of states where Polymarket loss is lower.
+mean_polymarket_brier,0.026207745000000005,brier_score,Mean Brier loss across Polymarket state snapshots.
+mean_rieke_brier,0.029580787199999972,brier_score,Mean Brier loss across Rieke state probabilities.
+mean_loss_advantage,0.0033730421999999677,brier_score,Positive values mean lower mean Polymarket loss.

@@ -1,0 +1,49 @@
+{
+  "generated_at_utc": "2026-06-10T14:46:30+00:00",
+  "limitations": {
+    "current_brier_evidence_has_one_independent_resolved_outcome": true,
+    "no_causal_or_tradeability_claim": true,
+    "polymarket_tail_lacks_compatible_traditional_probability_forecast": true,
+    "raw_poll_shares_require_documented_probability_transform": true,
+    "single_final_forecast_article_is_not_many_cases": true
+  },
+  "method": {
+    "calculation_scope": "deterministic_python_from_local_artifacts",
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "name": "h1_expansion_readiness_audit",
+    "raw_poll_average_probability_transform_used": false,
+    "rcp_included": false
+  },
+  "outputs": {
+    "broad_many_cases_claim_supported_now": false,
+    "compatible_additional_h1_pair_rows_now": 0,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "current_h1_end_date": "2024-09-12",
+    "current_h1_pair_rows": 194,
+    "current_h1_start_date": "2024-03-01",
+    "eligible_independent_resolved_outcome_count": 1,
+    "fivethirtyeight_probability_rows_after_current_h1_end": 0,
+    "fivethirtyeight_probability_rows_total": 194,
+    "polymarket_daily_rows_after_current_h1_end": 55,
+    "polymarket_daily_rows_total": 307,
+    "readiness_rows": 6,
+    "swiss_poll_rows": 7
+  },
+  "reviewed_external_source_urls": {
+    "fivethirtyeight_2024_averages_directory": "https://github.com/fivethirtyeight/data/tree/master/polls/2024-averages",
+    "fivethirtyeight_final_forecast_article": "https://abcnews.com/538/538s-final-forecasts-2024-election/story?id=115511051",
+    "fivethirtyeight_polls_readme": "https://github.com/fivethirtyeight/data/blob/master/polls/README.md"
+  },
+  "source_paths": {
+    "brier_input": "data\\results\\h1_brier_scores.csv",
+    "db_path": "data\\thesis.db",
+    "figure_output": "data\\results\\h1_expansion_readiness.png",
+    "readiness_output": "data\\results\\h1_expansion_readiness.csv",
+    "swiss_poll_input": "data\\swiss_referendum_10mio_polls.csv"
+  }
+}

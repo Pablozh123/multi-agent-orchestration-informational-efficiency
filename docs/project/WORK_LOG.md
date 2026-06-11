@@ -4393,3 +4393,2929 @@ Next step:
 
 - Commit the Swiss referendum information-response dashboard extension as a
   separate change from the paused monitor and wallet-graph work.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Inspect current project state and prepare a supervisor-facing overview of
+  completed thesis work and current Swiss referendum comparison outputs.
+
+Files changed:
+
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  361 passed.
+
+Decision:
+
+- Use `GOAL.md`, `STATUS.md`, `ROADMAP.md`, `docs/project/WORK_LOG.md`, and
+  generated deterministic result artifacts as the source for the overview.
+- Treat the latest Swiss referendum comparison as descriptive poll-proxy
+  evidence only; no causal, tradeability, or true-mispricing claim is made.
+
+Next step:
+
+- Share the supervisor-facing project overview and decide whether to commit
+  the status/work-log maintenance update separately.
+
+## 2026-06-08 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Expand the supervisor-facing overview to cover the full project before the
+  Swiss referendum track, including H1-H3 methods, deterministic results,
+  thesis figures, and the paused monitor prototype.
+
+Files changed:
+
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- Pending final project-control checks after the overview inspection.
+
+Decision:
+
+- Present H1 as forecast-quality comparison, H2 as daily event-window response,
+  H3 as wallet-tier timing diagnostics, and monitor-v2 as a paused read-only
+  research prototype rather than thesis-core causal evidence.
+- Keep Swiss referendum outputs separate as the active current goal.
+
+Next step:
+
+- Run project-control checks and report the expanded overview with limitations.
+
+## 2026-06-10 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Assess `warproxxx/poly_data` for possible usefulness to the active Swiss
+  referendum Polymarket-vs-polls comparison pipeline.
+
+Files changed:
+
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `python -m operations.project.update_status` -> PASS for status update, but
+  recorded pytest as FAIL because `C:\Python314\python.exe` has no `pytest`
+  module.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  361 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check` -> PASS,
+  361 passed.
+
+Decision:
+
+- Treat `poly_data` as a useful reference for read-only on-chain trade-event
+  backfill and maker/taker trade structuring, not as a drop-in dependency for
+  the current referendum dashboard.
+- Do not import or vendor GPL-covered code without a separate license decision;
+  reuse concepts only.
+
+Next step:
+
+- If trade-level microstructure is added later, implement a narrow,
+  tested collector behind the existing deterministic artifact boundary and
+  keep wallet-address outputs out of default thesis-facing views.
+
+## 2026-06-10 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Build an easy-to-read supervisor report covering the full project folder
+  contents, methodological rationale, deterministic H1-H3 results, paused
+  monitor work, active Swiss referendum track, and visual artifacts.
+
+Files changed:
+
+- `requirements.txt`
+- `operations/project/build_dozenten_report.py`
+- `tests/test_dozenten_report.py`
+- `docs/project/dozentenbericht_ba_thesis.md`
+- `docs/project/dozentenbericht_ba_thesis.html`
+- `docs/project/dozentenbericht_ba_thesis.docx`
+- `docs/project/dozentenbericht_assets/project_pipeline_overview.png`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_dozenten_report.py -q`
+  -> PASS, 1 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> PASS, 362 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  362 passed.
+
+QA:
+
+- DOCX structural check found 65 paragraphs, 14 tables, 10 sections, and 10
+  embedded images.
+- HTML structural check found 10 image references and no missing local image
+  paths.
+- `render_docx.py` could not complete because the local machine has no
+  available Office/LibreOffice conversion executable after renderer dependency
+  setup; visual DOCX render QA remains unavailable on this machine.
+
+Decision:
+
+- Deliver the DOCX as the Word-facing document and the HTML/Markdown files as
+  readable/reviewable companion artifacts.
+- Keep all claims tied to deterministic local artifacts and preserve the
+  no-causality, no-tradeability, no-profitability, no-agent-runtime scope.
+
+Next step:
+
+- Use `docs/project/dozentenbericht_ba_thesis.docx` for the Dozenten meeting;
+  open the HTML companion if a browser-readable version is easier to present.
+
+## 2026-06-10 - goal-swiss-referendum-efficiency-001
+
+Task:
+
+- Reassess `warproxxx/poly_data` against the active deterministic Swiss
+  referendum pipeline and current project guardrails.
+
+Files changed:
+
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  362 passed.
+
+Decision:
+
+- The repository is useful as a reference for read-only on-chain `OrderFilled`
+  backfills and trade-level microstructure, but not as a drop-in dependency for
+  the active referendum dashboard.
+- Current Swiss referendum work should continue to use bounded Gamma/CLOB
+  snapshot and price-history artifacts; any future trade collector should be a
+  narrow, tested local adapter with explicit wallet/privacy boundaries.
+
+Next step:
+
+- If trade-level microstructure becomes part of the accepted scope, draft a
+  separate implementation goal before adding a new collector.
+
+## 2026-06-10 - H1 forecast-quality continuation
+
+Task:
+
+- Replace the weak H1 reliability/calibration presentation with a clearer
+  deterministic forecast-quality output for Polymarket versus FiveThirtyEight
+  and simple baselines.
+
+Files changed:
+
+- `operations/analysis/h1_forecast_quality.py`
+- `tests/test_h1_forecast_quality.py`
+- `operations/project/build_dozenten_report.py`
+- `tests/test_dozenten_report.py`
+- `docs/research/RESEARCH_SPEC.md`
+- `data/results/h1_forecast_quality_sources.csv`
+- `data/results/h1_forecast_quality_pairwise.csv`
+- `data/results/h1_forecast_quality_metadata.json`
+- `data/results/h1_forecast_quality.png`
+- `docs/project/dozentenbericht_ba_thesis.md`
+- `docs/project/dozentenbericht_ba_thesis.html`
+- `docs/project/dozentenbericht_ba_thesis_h1_forecast_quality.docx`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_forecast_quality.py -q`
+  -> PASS, 2 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_dozenten_report.py -q`
+  -> PASS, 1 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> PASS, 364 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  364 passed.
+
+Key output:
+
+- H1 paired daily rows: 194, from 2024-03-01 to 2024-09-12.
+- Polymarket lower Brier loss than FiveThirtyEight: 194 of 194 paired days.
+- Mean Brier Polymarket: 0.2303.
+- Mean Brier FiveThirtyEight: 0.3324.
+- Mean loss advantage versus FiveThirtyEight: 0.1021 Brier points.
+- Polymarket lower Brier loss than the 50-percent baseline: 121 of 194 days.
+- Polymarket and prior-day Polymarket remain effectively tied; current
+  Polymarket is lower on 55 days, prior-day lower on 57 days, with 82 ties.
+
+Decision:
+
+- Use `data/results/h1_forecast_quality.png` as the H1 visual instead of the
+  old reliability curve in the supervisor report and research spec.
+- Keep wording bounded: FiveThirtyEight is a poll-based probability forecast,
+  not a raw poll share; the daily rows are repeated forecasts for one resolved
+  election, not independent election outcomes.
+
+Limitation:
+
+- The result supports a forecast-quality claim for the tested overlap window
+  only. It does not prove reaction speed, causality, tradeability, or general
+  superiority across all Polymarket markets.
+
+Note:
+
+- The existing default DOCX report could not be overwritten because the file
+  was locked locally. The updated Word output was written to
+  `docs/project/dozentenbericht_ba_thesis_h1_forecast_quality.docx`.
+
+Next step:
+
+- Review the new H1 figure and decide whether to add more independent
+  probability-forecast events before making broader thesis claims.
+
+## 2026-06-10 - H1 evidence-scope audit continuation
+
+Task:
+
+- Add a deterministic audit that separates H1 daily forecast rows from
+  independent resolved forecast-quality cases.
+
+Files changed:
+
+- `operations/analysis/h1_evidence_scope.py`
+- `tests/test_h1_evidence_scope.py`
+- `operations/project/build_dozenten_report.py`
+- `tests/test_dozenten_report.py`
+- `docs/research/RESEARCH_SPEC.md`
+- `data/results/h1_evidence_scope.csv`
+- `data/results/h1_evidence_scope_metadata.json`
+- `data/results/h1_evidence_scope.png`
+- `docs/project/dozentenbericht_ba_thesis.md`
+- `docs/project/dozentenbericht_ba_thesis.html`
+- `docs/project/dozentenbericht_ba_thesis_h1_forecast_quality.docx`
+- `STATUS.md`
+- `docs/project/WORK_LOG.md`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_evidence_scope.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_dozenten_report.py -q`
+  -> PASS, 1 passed.
+- `.\.venv\Scripts\python.exe -m pytest -q` -> PASS, 367 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status` -> PASS,
+  367 passed.
+
+Key output:
+
+- Eligible Brier-computable H1 independent resolved outcome count: 1.
+- Eligible daily paired forecast rows: 194.
+- Polymarket lower Brier loss than FiveThirtyEight inside the eligible case:
+  194 of 194 paired daily rows.
+- Swiss 10-million referendum local poll rows: 7, but unresolved as of
+  2026-06-10 and therefore not Brier-computable.
+- Curated H2 event rows: 7, but they are event windows inside one presidential
+  market and not independent H1 forecast outcomes.
+
+Decision:
+
+- Do not claim that H1 already proves Polymarket is better in many independent
+  cases. The current deterministic evidence supports a strong one-case
+  forecast-quality finding and identifies the data needed for a broader claim.
+- Include `data/results/h1_evidence_scope.png` in the Dozentenbericht so the
+  methodological boundary is visible next to the H1 forecast-quality figure.
+
+Next step:
+
+- For a broader H1 claim, collect or curate additional resolved markets with
+  Polymarket probability history and compatible probability forecasts, or
+  document a poll-to-probability transformation before using raw poll shares in
+  Brier scoring.
+
+## 2026-06-10 - External poly_data repository review
+
+Task:
+
+- Review `warproxxx/poly_data` for possible use in the local Polymarket data
+  pipeline.
+
+Files changed:
+
+- `docs/project/WORK_LOG.md`
+- `STATUS.md`
+
+Checks:
+
+- Repository reviewed from a temporary clone at commit
+  `bda27941c0c7e1bab05539b9fd195dc567e85edc`.
+- Local project goal checked: exactly one active goal remains in `GOAL.md`.
+
+Decision:
+
+- Do not vendor or directly depend on `poly_data` now. Its on-chain
+  `OrderFilled` approach is useful as a reference for future fill-side trade
+  collection, but it is not a drop-in improvement for the active Swiss
+  referendum probability-vs-polls pipeline.
+- Reuse only ideas after reimplementation with local validation, tests,
+  bounded outputs, no wallet exposure by default, and explicit read-only
+  guardrails.
+
+Limitation:
+
+- No live RPC backfill was run. The review inspected source code, project
+  metadata, official Polymarket documentation, and the local collector scope.
+
+## 2026-06-10 - H1 expansion-readiness audit
+
+Task:
+
+- Audit whether the current H1 forecast-quality baseline can be expanded from
+  existing local artifacts before claiming that Polymarket is better across
+  many cases.
+
+Files changed:
+
+- `operations/analysis/h1_expansion_readiness.py`
+- `tests/test_h1_expansion_readiness.py`
+- `operations/project/build_dozenten_report.py`
+- `tests/test_dozenten_report.py`
+- `docs/research/RESEARCH_SPEC.md`
+- `data/results/h1_expansion_readiness.csv`
+- `data/results/h1_expansion_readiness_metadata.json`
+- `data/results/h1_expansion_readiness.png`
+- `docs/project/dozentenbericht_ba_thesis.md`
+- `docs/project/dozentenbericht_ba_thesis.html`
+- `docs/project/dozentenbericht_ba_thesis_h1_forecast_quality.docx`
+
+Tests:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_expansion_readiness.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_expansion_readiness.py tests\test_h1_forecast_quality.py tests\test_h1_evidence_scope.py tests\test_dozenten_report.py -q`
+  -> PASS, 9 passed.
+
+Key output:
+
+- Current H1 paired daily Brier rows: 194.
+- Eligible independent resolved H1 outcomes: 1.
+- Local Polymarket daily rows after the current H1 end date 2024-09-12: 55.
+- Local FiveThirtyEight probability rows after 2024-09-12: 0.
+- Additional compatible H1 Brier pairs available now: 0.
+
+Decision:
+
+- Do not extend H1 with Polymarket-only tail rows or raw polling averages.
+- Keep the broad many-cases Polymarket-better-than-polls claim unsupported
+  until additional resolved markets with compatible probability forecasts are
+  curated, or until a poll-share-to-probability transformation is documented
+  and tested.
+
+Next step:
+
+- Search for additional resolved markets with both Polymarket probability
+  history and a traditional probability forecast, not only poll vote shares.
+
+## 2026-06-10 - H1 final-snapshot report integration
+
+Task:
+
+- Integrate the curated H1 final-snapshot extension into the Dozentenbericht
+  and research specification so the additional resolved outcomes are visible
+  without overstating them as a broad many-markets proof.
+
+Files changed:
+
+- `operations/project/build_dozenten_report.py`
+- `tests/test_dozenten_report.py`
+- `docs/research/RESEARCH_SPEC.md`
+- `docs/project/dozentenbericht_ba_thesis.md`
+- `docs/project/dozentenbericht_ba_thesis.html`
+- `docs/project/dozentenbericht_ba_thesis_h1_forecast_quality.docx`
+- `docs/project/WORK_LOG.md`
+
+Checks:
+
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report --docx-output docs\project\dozentenbericht_ba_thesis_h1_forecast_quality.docx`
+  -> PASS, 13 report figures.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_final_snapshot_extension.py tests\test_h1_expansion_readiness.py tests\test_h1_forecast_quality.py tests\test_h1_evidence_scope.py tests\test_dozenten_report.py -q`
+  -> PASS, 12 passed.
+- `data/results/h1_final_snapshot.png` inspected; nonblank image size
+  2176x833, luma standard deviation 62.14.
+
+Key output:
+
+- H1 final-snapshot extension covers 3 resolved 2024 election outcomes.
+- Polymarket has lower Brier loss in 2 of 3 outcomes; FiveThirtyEight final
+  forecast has lower loss in 1 of 3 outcomes.
+- Mean Brier is 0.1393 for Polymarket and 0.1740 for FiveThirtyEight, with a
+  mean Polymarket loss advantage of 0.0347 Brier points.
+
+Decision:
+
+- Treat the final-snapshot extension as a small compatibility check that
+  strengthens the H1 forecast-quality direction, not as a daily time series,
+  raw-poll comparison, reaction-speed result, or broad many-markets proof.
+
+Next step:
+
+- Continue expanding H1 only through additional resolved markets with
+  compatible probability forecasts, or through a documented and tested
+  poll-share-to-probability transformation before raw poll shares enter Brier
+  scoring.
+
+## 2026-06-10 - H1 final-snapshot extension to eight cases
+
+Task:
+
+- Expand the H1 final-snapshot extension beyond the three national/control
+  outcomes by adding compatible 538 final forecast probabilities and
+  Polymarket final-time prices for five 2024 Senate state races.
+
+Files changed:
+
+- `operations/analysis/h1_final_snapshot_extension.py`
+- `tests/test_h1_final_snapshot_extension.py`
+- `operations/project/build_dozenten_report.py`
+- `tests/test_dozenten_report.py`
+- `docs/research/RESEARCH_SPEC.md`
+- `data/results/h1_final_snapshot_cases.csv`
+- `data/results/h1_final_snapshot_summary.csv`
+- `data/results/h1_final_snapshot_metadata.json`
+- `data/results/h1_final_snapshot.png`
+- `docs/project/dozentenbericht_ba_thesis.md`
+- `docs/project/dozentenbericht_ba_thesis.html`
+- `docs/project/dozentenbericht_ba_thesis_h1_forecast_quality.docx`
+- `docs/project/WORK_LOG.md`
+
+Checks:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_final_snapshot_extension.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_final_snapshot_extension --source live`
+  -> PASS, 8 cases generated from public Gamma/CLOB endpoints.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report --docx-output docs\project\dozentenbericht_ba_thesis_h1_forecast_quality.docx`
+  -> PASS, 13 report figures.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_final_snapshot_extension.py tests\test_h1_expansion_readiness.py tests\test_h1_forecast_quality.py tests\test_h1_evidence_scope.py tests\test_dozenten_report.py -q`
+  -> PASS, 12 passed.
+- `data/results/h1_final_snapshot.png` inspected; nonblank image size
+  2244x1054, luma standard deviation 53.83. Labels are horizontal and
+  readable for 8 cases.
+
+Key output:
+
+- H1 final-snapshot extension now covers 8 resolved 2024 election outcomes:
+  president, Senate control, House control, and Republican Senate wins in
+  Montana, Ohio, West Virginia, Florida, and Texas.
+- Polymarket has lower Brier loss in 5 of 8 outcomes; FiveThirtyEight final
+  forecast has lower loss in 3 of 8 outcomes.
+- Mean Brier is 0.0784 for Polymarket and 0.0933 for FiveThirtyEight, with a
+  mean Polymarket loss advantage of 0.0149 Brier points.
+
+Decision:
+
+- Treat the expanded final-snapshot extension as stronger H1 forecast-quality
+  evidence than the earlier 3-case check, but still not as a broad
+  many-markets proof because all cases share one 2024 election-day context and
+  are not a daily multi-market panel.
+
+Next step:
+
+- Continue searching for additional resolved markets with compatible
+  probability forecasts or implement a documented poll-share-to-probability
+  transformation before raw polls enter H1 Brier comparisons.
+
+## 2026-06-10 - External poly_data repository assessment
+
+Task:
+
+- Assess whether `warproxxx/poly_data` could improve this project's
+  Polymarket data analysis pipeline.
+
+Files changed:
+
+- `docs/project/WORK_LOG.md`
+
+Checks:
+
+- Inspected `GOAL.md` and confirmed one active goal:
+  `goal-swiss-referendum-efficiency-001`.
+- Reviewed the external repository in a temporary clone outside the project
+  workspace.
+- Compared its Gamma, Polygon RPC, and trade-processing stages with the local
+  read-only Gamma/CLOB/Data API collectors.
+
+Decision:
+
+- `poly_data` is potentially useful as a reference for a future on-chain
+  fill-level trade archive, but it should not be imported or run as part of the
+  active deterministic thesis pipeline without a local adapter, tests,
+  validation gates, bounded scope, and licence review.
+
+Next step:
+
+- If fill-level on-chain data becomes a goal, implement a small local
+  proof-of-concept adapter against one curated market and one bounded block
+  interval rather than vendoring the external pipeline.
+
+## 2026-06-10 - H1 state-poll snapshot extension
+
+Task:
+
+- Expand H1 forecast-quality evidence beyond the 8-case final-snapshot check
+  with additional resolved state-level 2024 presidential outcomes.
+
+Files changed:
+
+- `operations/analysis/h1_state_poll_snapshot_extension.py`
+- `tests/test_h1_state_poll_snapshot_extension.py`
+- `operations/project/build_dozenten_report.py`
+- `tests/test_dozenten_report.py`
+- `docs/research/RESEARCH_SPEC.md`
+- `data/results/h1_state_poll_snapshot_cases.csv`
+- `data/results/h1_state_poll_snapshot_summary.csv`
+- `data/results/h1_state_poll_snapshot_metadata.json`
+- `data/results/h1_state_poll_snapshot.png`
+- `docs/project/dozentenbericht_ba_thesis.md`
+- `docs/project/dozentenbericht_ba_thesis.html`
+- `docs/project/dozentenbericht_ba_thesis_h1_forecast_quality.docx`
+- `docs/project/WORK_LOG.md`
+
+Checks:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_snapshot_extension.py -q`
+  -> PASS, 5 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_state_poll_snapshot_extension --source live`
+  -> PASS, 13 state cases generated from public 538 GitHub raw data and public
+  Polymarket Gamma/CLOB endpoints.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_snapshot_extension.py tests\test_h1_final_snapshot_extension.py tests\test_h1_expansion_readiness.py tests\test_h1_forecast_quality.py tests\test_h1_evidence_scope.py tests\test_dozenten_report.py -q`
+  -> PASS, 17 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report --docx-output docs\project\dozentenbericht_ba_thesis_h1_forecast_quality.docx`
+  -> PASS, 14 report figures.
+- `data/results/h1_state_poll_snapshot.png` inspected; nonblank image size
+  2346x1190, luma standard deviation 52.97.
+
+Key output:
+
+- The state-poll snapshot extension covers 13 resolved 2024 presidential state
+  outcomes from the preserved 538 polling-average snapshot on 2024-09-12.
+- Poll margins are transformed to Republican-win probabilities with a
+  documented normal-error model using a 3.8 percentage-point expected absolute
+  poll error; raw poll shares are not used directly as probabilities.
+- Polymarket has lower Brier loss in 8 of 13 state outcomes; the poll-derived
+  probability has lower loss in 5 of 13.
+- Mean Brier is 0.1336 for Polymarket and 0.1764 for the transformed
+  poll-derived probabilities, with a mean Polymarket loss advantage of 0.0428
+  Brier points.
+- Together with the 8-case final-snapshot extension, the H1 supplementary
+  checks now cover 21 resolved outcomes, 13 with lower Polymarket loss. These
+  two supplementary checks remain methodologically separate.
+
+Decision:
+
+- Treat this as stronger H1 forecast-quality evidence and a concrete expansion
+  toward the requested many-case comparison, but not as final proof of broad
+  prediction-market superiority because the state cases share one election and
+  the poll-derived probabilities depend on a documented model assumption.
+
+Next step:
+
+- Search for additional compatible probability forecasts or additional
+  resolved non-US-election markets before making a broad scientific claim.
+
+## 2026-06-10 - External Polymarket pipeline review
+
+Goal context:
+
+- Active project goal remains `goal-swiss-referendum-efficiency-001`.
+- Reviewed `warproxxx/poly_data` as a possible read-only Polymarket data
+  source for the current deterministic Swiss referendum pipeline.
+
+Work performed:
+
+- Read `GOAL.md` and confirmed exactly one active goal.
+- Inspected the external GitHub repository README and cloned source in a
+  temporary directory for static review.
+- Checked the pipeline structure: Gamma market metadata collection, Polygon
+  `OrderFilled` log collection, and processing to labeled trade CSV rows.
+- Ran `python -m compileall -q .` in the temporary clone.
+
+Findings:
+
+- The repository is useful as a design reference for read-only on-chain fill
+  collection and market metadata joining.
+- It is not a drop-in replacement for the current Swiss referendum comparison,
+  because the current project needs bounded poll-window snapshots and outputs
+  without wallet addresses.
+- The external pipeline writes maker/taker addresses and trade-level rows, so
+  it would need an aggregation and validation adapter before any thesis-facing
+  artifact can use it.
+- The external repository has a license inconsistency: README/LICENSE indicate
+  GPL-3.0 while `pyproject.toml` declares MIT.
+
+Decision:
+
+- Do not vendor or invoke the external pipeline now.
+- If trade-flow evidence becomes necessary, implement a small local adapter
+  inspired by the architecture, with mocks, bounded windows, no raw wallet
+  outputs, and project-native validation.
+
+## 2026-06-10 - H1 poll-transform sensitivity surfaced in report
+
+Goal context:
+
+- Continued the H1 forecast-quality thread objective: improve the visual and
+  numerical evidence for whether Polymarket shows lower Brier loss than
+  traditional forecast or poll-derived benchmarks.
+- `GOAL.md` still contains exactly one active project goal; this H1 work is
+  an explicit thread-level continuation and does not activate agents, MCP, ML,
+  database writes, or trading paths.
+
+Work performed:
+
+- Integrated `data/results/h1_state_poll_snapshot_sensitivity.csv` into
+  `operations/project/build_dozenten_report.py`.
+- Added the sensitivity figure
+  `data/results/h1_state_poll_snapshot_sensitivity.png` to the report figure
+  list.
+- Updated `docs/research/RESEARCH_SPEC.md` so the H1 figure catalog and
+  narrative describe the MAE sensitivity grid.
+- Updated `tests/test_dozenten_report.py` to verify the rendered report
+  includes the sensitivity figure and key numeric ranges.
+- Regenerated the Dozentenbericht with
+  `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report --docx-output docs\project\dozentenbericht_ba_thesis_h1_forecast_quality.docx`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_snapshot_extension.py tests\test_dozenten_report.py -q`
+  -> PASS, 7 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_snapshot_extension.py tests\test_h1_final_snapshot_extension.py tests\test_h1_expansion_readiness.py tests\test_h1_forecast_quality.py tests\test_h1_evidence_scope.py tests\test_dozenten_report.py -q`
+  -> PASS, 18 passed.
+- Regenerated report has 15 figures and includes
+  `h1_state_poll_snapshot_sensitivity.png`.
+- Sensitivity PNG checked as nonblank: 2312x833 pixels, luma standard
+  deviation 51.85.
+
+Key output:
+
+- The State-Poll extension base row remains 13 resolved state outcomes, with
+  Polymarket lower loss in 8 of 13, mean Brier 0.1336 versus 0.1764 for the
+  transformed poll-derived probabilities.
+- The sensitivity grid spans MAE 2.0 to 10.0 percentage points across 12
+  parameter rows.
+- Polymarket keeps the lower mean Brier in every sensitivity row.
+- The Polymarket lower-loss count ranges from 7 to 12 of 13 state outcomes,
+  depending on the MAE assumption.
+
+Decision:
+
+- Treat this as stronger robustness evidence for the H1 state-poll extension,
+  not as additional independent markets. The broader H1 objective remains
+  active until additional compatible independent markets or forecast sources
+  make the many-cases claim scientifically stronger.
+
+## 2026-06-10 - H1 state-poll coverage audit added
+
+Goal context:
+
+- Continued the H1 forecast-quality objective by checking whether the
+  state-poll extension can be expanded beyond 13 cases with existing public
+  Polymarket markets and the preserved FiveThirtyEight polling-average
+  snapshot.
+
+Work performed:
+
+- Probed public Polymarket Gamma event slugs for 2024 presidential state-winner
+  markets.
+- Confirmed that 47 of 50 US states have a curated Polymarket Republican-wins
+  state market slug in the current audit set.
+- Confirmed that the preserved FiveThirtyEight 2024-09-12 polling-average
+  snapshot has REP/DEM rows for only the existing 13 states.
+- Added `data/results/h1_state_poll_snapshot_coverage.csv` and
+  `data/results/h1_state_poll_snapshot_coverage.png` to
+  `operations/analysis/h1_state_poll_snapshot_extension.py`.
+- Added coverage metadata fields to
+  `data/results/h1_state_poll_snapshot_metadata.json`.
+- Added the coverage figure and numeric coverage summary to the Dozentenbericht.
+- Updated `docs/research/RESEARCH_SPEC.md` and focused tests.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_snapshot_extension.py -q`
+  -> PASS, 8 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_state_poll_snapshot_extension --source live`
+  -> PASS, regenerated cases, sensitivity, coverage, figures, and metadata.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_snapshot_extension.py tests\test_dozenten_report.py -q`
+  -> PASS, 9 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report --docx-output docs\project\dozentenbericht_ba_thesis_h1_forecast_quality.docx`
+  -> PASS, 16 report figures.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_snapshot_extension.py tests\test_h1_final_snapshot_extension.py tests\test_h1_expansion_readiness.py tests\test_h1_forecast_quality.py tests\test_h1_evidence_scope.py tests\test_dozenten_report.py -q`
+  -> PASS, 20 passed.
+- `data/results/h1_state_poll_snapshot_coverage.png` inspected as nonblank:
+  2244x833 pixels, luma standard deviation 48.97.
+
+Key output:
+
+- State universe audited: 50 US states.
+- Curated Polymarket Republican-wins state markets: 47.
+- States with REP/DEM rows in the preserved 538 polling-average snapshot: 13.
+- Valid H1 state-poll Brier pairs: 13.
+- Excluded because 538 snapshot poll rows are missing: 34.
+- Excluded because both source classes are missing in the audit set: 3.
+
+Decision:
+
+- Do not expand the Brier case count to 47 without compatible poll-derived
+  probability inputs. The coverage audit improves scientific transparency but
+  does not complete the broader many-cases H1 objective.
+
+## 2026-06-10 - H1 Rieke 50-state forecast extension integrated
+
+Goal context:
+
+- Continued the active H1 forecast-quality objective by adding a broader
+  poll-based state forecast comparator and by correcting the state-poll coverage
+  audit after all 50 Polymarket state markets were identified.
+
+Work performed:
+
+- Added and regenerated the Rieke 50-state forecast extension outputs:
+  `data/results/h1_rieke_state_forecast_cases.csv`,
+  `data/results/h1_rieke_state_forecast_summary.csv`,
+  `data/results/h1_rieke_state_forecast.png`, and
+  `data/results/h1_rieke_state_forecast_metadata.json`.
+- Integrated the Rieke summary, figure, and limitation text into the
+  Dozentenbericht markdown, HTML, and DOCX generation.
+- Corrected the state-poll coverage interpretation from 47 Polymarket markets
+  and 34 missing-poll exclusions to 50 Polymarket markets and 37 missing-poll
+  exclusions.
+- Updated `docs/research/RESEARCH_SPEC.md` with the Rieke figure, source
+  artifacts, corrected coverage numbers, and the bounded interpretation.
+- Updated report tests to assert the Rieke figure and the corrected coverage
+  counts.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_rieke_state_forecast_extension.py tests\test_h1_state_poll_snapshot_extension.py tests\test_dozenten_report.py -q`
+  -> PASS, 13 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_rieke_state_forecast_extension.py tests\test_h1_state_poll_snapshot_extension.py tests\test_h1_final_snapshot_extension.py tests\test_h1_expansion_readiness.py tests\test_h1_forecast_quality.py tests\test_h1_evidence_scope.py tests\test_dozenten_report.py -q`
+  -> PASS, 24 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report --docx-output docs\project\dozentenbericht_ba_thesis_h1_forecast_quality.docx`
+  -> PASS, 17 report figures.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 385 passed in 30.02s.
+- `data/results/h1_rieke_state_forecast.png` inspected as nonblank and
+  correctly labelled: aggregate mean Brier panel plus head-to-head lower-loss
+  panel.
+
+Key output:
+
+- Rieke extension case count: 50 resolved 2024 presidential state outcomes.
+- Polymarket mean Brier: 0.0262.
+- Rieke mean Brier: 0.0296.
+- Polymarket lower individual Brier loss: 12 of 50 states.
+- Rieke lower individual Brier loss: 38 of 50 states.
+- Corrected state-poll coverage: 50 US states audited, 50 Polymarket state
+  markets, 13 valid 538 snapshot Brier pairs, and 37 exclusions due to missing
+  538 snapshot poll rows.
+
+Decision:
+
+- The H1 evidence is stronger on aggregate forecast quality, but the Rieke
+  extension does not prove that Polymarket is better in most state cases. The
+  objective remains active because the scientifically strongest final claim
+  still needs careful wording and, ideally, additional independent markets or
+  compatible forecast sources beyond one election context.
+
+## 2026-06-10 - External poly_data repository reviewed
+
+Goal context:
+
+- Reviewed `warproxxx/poly_data` as a possible read-only Polymarket data
+  source for the active Swiss referendum comparison and future monitor inputs.
+
+Work performed:
+
+- Inspected the GitHub repository, README, package metadata, license, and
+  Python source in a temporary clone outside the thesis workspace.
+- Compared its V2 on-chain OrderFilled/Gamma market pipeline with the current
+  local Swiss referendum Gamma snapshot and bounded CLOB price-history
+  collectors.
+- Checked that the external source compiles syntactically, while noting that it
+  has no test suite or thesis-specific validation.
+
+Decision:
+
+- The pipeline is useful as a reference for public, read-only, trade-fill
+  ingestion after Polymarket CLOB/CTF V2, especially for validating executed
+  trade activity and aggregate volume around poll releases.
+- It should not replace the current deterministic price/probability collectors.
+  Any future use should be reimplemented or isolated behind our own tested
+  validators, bounded windows, and wallet-address stripping before thesis-facing
+  outputs.
+
+## 2026-06-10 - H1 270toWin/JHK state forecast extension added
+
+Goal context:
+
+- Continued the active H1 forecast-quality objective by adding another
+  traditional forecast comparator for the 2024 presidential state outcomes.
+
+Work performed:
+
+- Added `operations/analysis/h1_270towin_state_forecast_extension.py`.
+- Added focused tests in
+  `tests/test_h1_270towin_state_forecast_extension.py`.
+- Generated deterministic local artifacts:
+  `data/results/h1_270towin_state_forecast_cases.csv`,
+  `data/results/h1_270towin_state_forecast_summary.csv`,
+  `data/results/h1_270towin_state_forecast.png`, and
+  `data/results/h1_270towin_state_forecast_metadata.json`.
+- Integrated the new summary and figure into the Dozentenbericht generator,
+  regenerated the markdown, HTML, and DOCX report, and updated the report test.
+- Updated `docs/research/RESEARCH_SPEC.md` with the new H1 figure and artifact
+  references.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_270towin_state_forecast_extension.py -q`
+  -> PASS, 5 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_270towin_state_forecast_extension.py tests\test_dozenten_report.py -q`
+  -> PASS, 6 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_270towin_state_forecast_extension.py tests\test_h1_rieke_state_forecast_extension.py tests\test_h1_state_poll_snapshot_extension.py tests\test_h1_final_snapshot_extension.py tests\test_h1_expansion_readiness.py tests\test_h1_forecast_quality.py tests\test_h1_evidence_scope.py tests\test_dozenten_report.py -q`
+  -> PASS, 29 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report --docx-output docs\project\dozentenbericht_ba_thesis_h1_forecast_quality.docx`
+  -> PASS, 18 report figures.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 390 passed in 31.68s.
+
+Key output:
+
+- 270toWin/JHK extension case count: 50 resolved 2024 presidential state
+  outcomes.
+- Exact 270toWin probability rows: 22.
+- Censored `>99.9%` boundary rows: 28.
+- Polymarket mean Brier: 0.0262.
+- 270toWin/JHK mean Brier: 0.0306.
+- Polymarket lower individual Brier loss: 9 of 50 states.
+- 270toWin/JHK lower individual Brier loss: 40 of 50 states.
+- One exact-probability state ties.
+
+Decision:
+
+- The 270toWin/JHK extension strengthens the aggregate H1 Brier evidence
+  because Polymarket again has lower mean Brier loss against a traditional
+  forecast source.
+- It still does not prove that Polymarket is better in most state cases. The
+  main defensible claim remains aggregate forecast-quality support, limited by
+  one election context, censored safe-state source probabilities, and the
+  missing exact 270toWin publication timestamp.
+
+## 2026-06-10 - H1 forecast-quality synthesis added
+
+Goal context:
+
+- Continued the active H1 forecast-quality objective by consolidating the
+  fragmented H1 evidence into one deterministic claim-audit table and figure.
+
+Work performed:
+
+- Added `operations/analysis/h1_forecast_quality_synthesis.py`.
+- Added focused tests in `tests/test_h1_forecast_quality_synthesis.py`.
+- Generated deterministic local artifacts:
+  `data/results/h1_forecast_quality_synthesis.csv`,
+  `data/results/h1_forecast_quality_synthesis.png`, and
+  `data/results/h1_forecast_quality_synthesis_metadata.json`.
+- Integrated the synthesis table and figure into the Dozentenbericht generator
+  and regenerated markdown, HTML, and DOCX outputs.
+- Updated `docs/research/RESEARCH_SPEC.md` so the Synthesis is the second H1
+  core figure and so later figure references remain consistent.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_forecast_quality_synthesis.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_forecast_quality_synthesis.py tests\test_dozenten_report.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_forecast_quality_synthesis.py tests\test_h1_270towin_state_forecast_extension.py tests\test_h1_rieke_state_forecast_extension.py tests\test_h1_state_poll_snapshot_extension.py tests\test_h1_final_snapshot_extension.py tests\test_h1_expansion_readiness.py tests\test_h1_forecast_quality.py tests\test_h1_evidence_scope.py tests\test_dozenten_report.py -q`
+  -> PASS, 32 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report --docx-output docs\project\dozentenbericht_ba_thesis_h1_forecast_quality.docx`
+  -> PASS, 19 report figures.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 393 passed in 36.28s.
+
+Key output:
+
+- Evidence rows synthesized: 6.
+- Rows with lower aggregate Polymarket mean Brier: 6 of 6.
+- Rows where Polymarket has a majority of lower individual losses: 3 of 6.
+- Rows supporting the broad many-cases completion claim: 0 of 6.
+
+Decision:
+
+- The improved visualization now states the H1 boundary directly: the current
+  evidence supports lower aggregate Polymarket Brier across all current
+  traditional-comparator rows, but it does not prove that Polymarket is better
+  in most individual cases across a scientifically broad set.
+- The user-requested completion condition remains unmet, so the H1 objective
+  should remain active.
+
+## 2026-06-10 - External `warproxxx/poly_data` repository reviewed
+
+Goal context:
+
+- User asked whether `https://github.com/warproxxx/poly_data` could improve
+  Polymarket data analysis for the project.
+- Active project goal remains the Swiss referendum efficiency comparison; no
+  external code was integrated.
+
+Work performed:
+
+- Reviewed the GitHub README and cloned the repository into a temporary
+  directory outside the thesis workspace for read-only inspection.
+- Inspected `update.py`, `update_utils/update_markets.py`,
+  `update_utils/update_chain.py`, `update_utils/process_live.py`,
+  `poly_utils/utils.py`, `pyproject.toml`, and `LICENSE`.
+- Compared the repository's full-market/on-chain trade backfill approach with
+  the local bounded Gamma snapshot, CLOB price-history, and public activity
+  collectors.
+
+Key findings:
+
+- The external pipeline fetches Gamma market metadata and decodes v2
+  `OrderFilled` events directly from Polygon JSON-RPC, then joins them into
+  labelled trade CSVs.
+- It could be useful later as a reference for historical on-chain trade
+  reconstruction, especially if the monitor or wallet-signal track needs
+  fuller maker/taker orderflow than the public Data API returns.
+- It is not a drop-in replacement for the active referendum pipeline, which
+  intentionally uses bounded public snapshots and bounded price-history
+  windows around curated poll releases.
+- Direct reuse is risky because the repo has no visible tests, performs broad
+  full-market backfills, exposes maker/taker wallet addresses in outputs, uses
+  OS-dependent `tail`, and has a license inconsistency: README/LICENSE indicate
+  GPL-3.0 while `pyproject.toml` declares MIT.
+
+Decision:
+
+- Do not vendor or import this pipeline now.
+- If needed later, borrow only the design idea in a clean-room, project-native,
+  tested, bounded collector that preserves the current read-only and
+  no-order-instruction guardrails.
+
+## 2026-06-10 - H1 calibration diagnostic added
+
+Goal context:
+
+- User asked to continue improving the H1 Polymarket forecast-quality baseline,
+  especially calibration visualisation, until any claim about Polymarket
+  outperforming polling sources is supported by numbers and correct figures.
+- The active repository goal file still lists the Swiss referendum track, but
+  this work followed the user's explicit H1 continuation request.
+
+Work performed:
+
+- Added `operations/analysis/h1_calibration_diagnostic.py`.
+- Generated deterministic local artifacts:
+  `data/results/h1_calibration_diagnostic_cases.csv`,
+  `data/results/h1_calibration_diagnostic_bins.csv`,
+  `data/results/h1_calibration_diagnostic_summary.csv`,
+  `data/results/h1_calibration_diagnostic_pairwise.csv`,
+  `data/results/h1_calibration_diagnostic.png`, and
+  `data/results/h1_calibration_diagnostic_metadata.json`.
+- Integrated the calibration diagnostic into the Dozentenbericht generator and
+  regenerated Markdown, HTML, and DOCX report outputs.
+- Updated `docs/research/RESEARCH_SPEC.md` so the calibration diagnostic is
+  documented as Figure 2b and so the one-outcome daily reliability curve is no
+  longer treated as the main calibration evidence.
+- Added focused tests in `tests/test_h1_calibration_diagnostic.py` and updated
+  `tests/test_dozenten_report.py`.
+
+Key output:
+
+- Forecast-case rows: 192.
+- Forecast sources: 7.
+- Nonempty fixed calibration bins: 26.
+- Pairwise Polymarket-vs-traditional rows: 5.
+- Rows with lower aggregate Polymarket mean Brier: 5 of 5.
+- Rows where Polymarket has a majority of lower individual losses: 2 of 5.
+- Rows supporting the broad many-cases completion claim: 0 of 5.
+- In the 50-state diagnostic, Polymarket mean Brier is 0.0262, Rieke is 0.0296,
+  and 270toWin/JHK is 0.0306. Fixed-bin ECE is 0.0838 for Polymarket, 0.0774
+  for Rieke, and 0.0802 for 270toWin/JHK.
+
+Decision:
+
+- The new visualization fixes the weak calibration presentation by using
+  resolved case artifacts instead of a repeated one-outcome daily reliability
+  curve.
+- The H1 evidence supports lower aggregate Polymarket Brier across the current
+  pairwise rows, but it does not support a clear calibration win or the broad
+  user-requested many-cases claim yet.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_calibration_diagnostic`
+  -> PASS, generated 192 forecast-case rows and 5 pairwise rows.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_calibration_diagnostic.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_calibration_diagnostic.py tests\test_dozenten_report.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_calibration_diagnostic.py tests\test_h1_forecast_quality_synthesis.py tests\test_h1_270towin_state_forecast_extension.py tests\test_h1_rieke_state_forecast_extension.py tests\test_h1_state_poll_snapshot_extension.py tests\test_h1_final_snapshot_extension.py tests\test_dozenten_report.py -q`
+  -> PASS, 27 passed.
+
+## 2026-06-10 - External Polymarket Pipeline Review
+
+Goal context: `goal-swiss-referendum-efficiency-001`.
+
+Reviewed `warproxxx/poly_data` at commit
+`bda27941c0c7e1bab05539b9fd195dc567e85edc` as a possible Polymarket data
+pipeline reference for the active thesis project.
+
+Findings:
+
+- The repository is a read-only Polymarket v2 data retriever using Gamma market
+  metadata and Polygon `eth_getLogs` for CTF Exchange V2 `OrderFilled` events.
+- It can be useful as a reference for future raw trade-tape collection, maker
+  side interpretation, incremental block cursors, and token-to-market joins.
+- It is not a drop-in replacement for the current bounded Swiss referendum
+  comparison because it backfills all v2 order events and outputs maker/taker
+  addresses and transaction hashes.
+- Direct code reuse should be avoided unless the license inconsistency is
+  resolved: `LICENSE` and README state GPL-3.0, while `pyproject.toml` states
+  MIT.
+- No code or data from the external repository was imported into this project.
+
+## 2026-06-10 - H1 State-Date Panel Temporal Diagnostic
+
+Goal context: user-requested continuation of H1 forecast-quality and
+calibration baseline work.
+
+Generated a temporal diagnostic for the H1 state-date poll panel so the large
+poll-derived comparison is no longer only reported as one aggregate result.
+
+Changed artifacts:
+
+- Added `operations/analysis/h1_state_poll_panel_temporal_diagnostic.py`.
+- Added `tests/test_h1_state_poll_panel_temporal_diagnostic.py`.
+- Generated:
+  - `data/results/h1_state_poll_panel_temporal_summary.csv`.
+  - `data/results/h1_state_poll_panel_temporal_state_month.csv`.
+  - `data/results/h1_state_poll_panel_temporal_claim_audit.csv`.
+  - `data/results/h1_state_poll_panel_temporal_diagnostic.png`.
+  - `data/results/h1_state_poll_panel_temporal_diagnostic_metadata.json`.
+- Updated the Dozentenbericht generator and regenerated Markdown, HTML, and
+  DOCX outputs.
+- Updated `docs/research/RESEARCH_SPEC.md` with Figure 6c and the temporal
+  interpretation.
+
+Key output:
+
+- Full panel remains negative for Polymarket: 360 of 1,720 rows lower loss for
+  Polymarket, 1,360 for the poll-derived transformation; mean Brier 0.1595 vs
+  0.1026.
+- The temporal diagnostic identifies 2 Polymarket-supporting months:
+  2024-08 and 2024-09.
+- In those months, 280 of 387 rows have lower Polymarket loss and 107 have
+  lower poll-derived loss; mean Brier is 0.1842 for Polymarket vs 0.2543 for
+  the poll-derived transformation.
+
+Decision:
+
+- The late-window result gives a defensible "Polymarket better in many rows"
+  subset, but it is conditioned on month-level diagnostics and does not prove
+  the broad many-independent-cases claim.
+- The H1 completion claim remains not proven because the full state-date panel
+  still contradicts the strong Polymarket-better assertion.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_state_poll_panel_temporal_diagnostic`
+  -> PASS, generated 7 monthly rows and 3 claim-audit rows.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_panel_temporal_diagnostic.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_panel_temporal_diagnostic.py tests\test_h1_state_poll_panel_extension.py tests\test_h1_forecast_quality_synthesis.py tests\test_dozenten_report.py -q`
+  -> PASS, 10 passed.
+
+## 2026-06-11 - External `warproxxx/poly_data` pipeline assessment
+
+Scope:
+
+- Inspected the external GitHub repository `warproxxx/poly_data` in a temporary
+  clone.
+- Compared its collector and processor shape with the active Swiss referendum
+  Polymarket-vs-polls goal.
+
+Findings:
+
+- The repository implements a read-only Polymarket v2 data pipeline using Gamma
+  market metadata, Polygon `OrderFilled` logs, and a trade-labeling join.
+- The pipeline writes broad raw artifacts including market metadata, raw order
+  fills, maker/taker wallet addresses, transaction hashes, prices, USD amounts,
+  and trade direction.
+- It is useful as a technical reference for on-chain trade reconstruction and
+  possible future aggregate wallet-flow research.
+- It should not be imported directly into the active Swiss referendum pipeline,
+  because the active goal only needs bounded public snapshot and price-history
+  artifacts and explicitly avoids raw wallet exposure, global chain backfills,
+  unbounded live ingestion, and unvalidated external schemas.
+
+Limitations:
+
+- The inspected repository has no visible test suite.
+- The README and code describe a long first-run backfill from the v2 genesis
+  block, which is disproportionate for the current single-market referendum
+  comparison.
+- Licensing metadata is inconsistent: `pyproject.toml` declares MIT while the
+  repository license file is GPL-3.0 text, so copying code into this project
+  would require a license decision first.
+
+Recommendation:
+
+- Do not adopt `poly_data` as a project dependency now.
+- Optionally create a later, isolated and tested adapter that reads only the
+  exact referendum market token, aggregates trades into bounded time buckets,
+  strips wallet addresses, validates output schemas, and writes deterministic
+  local artifacts before analysis.
+
+## 2026-06-11 - H1 poll decision matrix
+
+Scope:
+
+- Added a deterministic H1 poll-decision matrix that converts existing
+  poll-related forecast-quality artifacts into a thesis-facing claim boundary.
+- Integrated the new figure and summary into the Dozentenbericht and research
+  specification.
+
+Generated artifacts:
+
+- `operations/analysis/h1_poll_decision_matrix.py`
+- `tests/test_h1_poll_decision_matrix.py`
+- `data/results/h1_poll_decision_matrix.csv`
+- `data/results/h1_poll_decision_matrix_summary.csv`
+- `data/results/h1_poll_decision_matrix.png`
+- `data/results/h1_poll_decision_matrix_metadata.json`
+
+Key output:
+
+- Decision rows: 9.
+- Robust bounded-yes rows: 2.
+- Directional but not robust rows: 1.
+- Mean-loss-only rows: 3.
+- Counterexample rows: 2.
+- Largest robust scope: `lte_120_days_low_middle_distance`.
+- Largest robust scope Polymarket lower loss: 313 of 433 state-date rows
+  (72.3 percent).
+- Largest robust scope state-month support: 18 of 26 units, p=0.037759.
+- Strongest robust scope: `lte_90_days_low_middle_distance`, 262 of 285 rows,
+  p=0.0000076294.
+- Calibration context: 5 of 5 pairwise rows support Polymarket in mean Brier,
+  2 of 5 also support Polymarket by case majority.
+- Full-panel counterexample: poll-derived lower loss in 1360 of 1720
+  state-date rows.
+
+Interpretation:
+
+- The H1 poll evidence now has a clearer visual claim boundary. A bounded poll
+  claim is ready for late low/middle poll-distance scopes.
+- The broad many-cases or many-elections claim remains `not_proven` because
+  full-panel and direct-poll case/state-majority counterexamples remain.
+
+Figure:
+
+- `data/results/h1_poll_decision_matrix.png` shows decision checks, poll-scope
+  lower-loss counts, mean Brier support versus case support, and the final
+  bounded/not-proven status.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_poll_decision_matrix`
+  -> PASS, regenerated CSV, PNG, and metadata outputs.
+- `data/results/h1_poll_decision_matrix.png` inspected; figure is nonblank and
+  readable after layout adjustment.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_poll_decision_matrix.py tests\test_dozenten_report.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 41 figures.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, full suite 462 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_panel_temporal_diagnostic.py tests\test_h1_state_poll_panel_extension.py tests\test_h1_state_poll_snapshot_extension.py tests\test_h1_calibration_diagnostic.py tests\test_h1_forecast_quality_synthesis.py tests\test_dozenten_report.py -q`
+  -> PASS, 21 passed.
+
+## 2026-06-10 - H1 State-Date Panel Forecast-Horizon Diagnostic
+
+Goal context: user-requested continuation of H1 forecast-quality and
+calibration baseline work.
+
+Generated a forecast-horizon diagnostic for the H1 state-date poll panel. This
+keeps the negative full-panel result visible while testing whether Polymarket's
+advantage appears closer to election day.
+
+Changed artifacts:
+
+- Added `operations/analysis/h1_state_poll_panel_horizon_diagnostic.py`.
+- Added `tests/test_h1_state_poll_panel_horizon_diagnostic.py`.
+- Generated:
+  - `data/results/h1_state_poll_panel_horizon_summary.csv`.
+  - `data/results/h1_state_poll_panel_horizon_state_summary.csv`.
+  - `data/results/h1_state_poll_panel_horizon_claim_audit.csv`.
+  - `data/results/h1_state_poll_panel_horizon_diagnostic.png`.
+  - `data/results/h1_state_poll_panel_horizon_diagnostic_metadata.json`.
+- Updated the Dozentenbericht generator and regenerated Markdown, HTML, and
+  DOCX outputs.
+- Updated `docs/research/RESEARCH_SPEC.md` with Figure 6d and the horizon
+  interpretation.
+
+Key output:
+
+- Full panel remains negative for Polymarket: 360 of 1,720 rows lower loss for
+  Polymarket and 1,360 for the poll-derived transformation.
+- The <=90-day forecast-horizon window supports Polymarket: 262 of 357 rows
+  have lower Polymarket loss and 95 have lower poll-derived loss.
+- In the <=90-day window, mean Brier is 0.1799 for Polymarket versus 0.2520
+  for the poll-derived transformation.
+- More than 90 days before election day, Polymarket has lower loss in only
+  98 of 1,363 rows.
+
+Decision:
+
+- The horizon diagnostic makes the late-window Polymarket advantage more
+  methodically interpretable than a month-only split.
+- The H1 completion claim remains not proven because the full state-date panel
+  still contradicts the broad Polymarket-better assertion and all panel rows
+  repeat one election context.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_state_poll_panel_horizon_diagnostic`
+  -> PASS, generated 6 horizon rows and 3 claim-audit rows.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_panel_horizon_diagnostic.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_panel_horizon_diagnostic.py tests\test_h1_state_poll_panel_temporal_diagnostic.py tests\test_h1_state_poll_panel_extension.py tests\test_h1_forecast_quality_synthesis.py tests\test_dozenten_report.py -q`
+  -> PASS, 13 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_panel_horizon_diagnostic.py tests\test_h1_state_poll_panel_temporal_diagnostic.py tests\test_h1_state_poll_panel_extension.py tests\test_h1_state_poll_snapshot_extension.py tests\test_h1_calibration_diagnostic.py tests\test_h1_forecast_quality_synthesis.py tests\test_dozenten_report.py -q`
+  -> PASS, 24 passed.
+
+## 2026-06-10 - H1 <=90-Day State-Level Support Diagnostic
+
+Goal context: user-requested continuation of H1 forecast-quality and
+calibration baseline work.
+
+Generated a state-level support diagnostic for the <=90-day forecast-horizon
+window. This converts the repeated row-level Polymarket advantage into a
+state-level count while keeping the shared election-context limitation.
+
+Changed artifacts:
+
+- Added `operations/analysis/h1_state_poll_panel_horizon_state_diagnostic.py`.
+- Added `tests/test_h1_state_poll_panel_horizon_state_diagnostic.py`.
+- Generated:
+  - `data/results/h1_state_poll_panel_horizon_state_support.csv`.
+  - `data/results/h1_state_poll_panel_horizon_state_support_summary.csv`.
+  - `data/results/h1_state_poll_panel_horizon_state_support.png`.
+  - `data/results/h1_state_poll_panel_horizon_state_support_metadata.json`.
+- Updated the Dozentenbericht generator and regenerated Markdown, HTML, and
+  DOCX outputs.
+- Updated `docs/research/RESEARCH_SPEC.md` with Figure 6e and the state-level
+  support interpretation.
+
+Key output:
+
+- In the <=90-day window, Polymarket has lower loss in 262 of 357 state-date
+  rows and the poll-derived transformation in 95 rows.
+- Aggregated to states, Polymarket has lower mean Brier in 8 of 13 states.
+- Polymarket also has a majority of lower-loss rows in 8 of 13 states.
+- Five of 13 states do not support Polymarket in this <=90-day window.
+
+Decision:
+
+- This is the strongest current H1 support statement because it is not only a
+  repeated-row count; it also appears at the state aggregation level.
+- The H1 completion claim remains not proven because all 13 states are still
+  one election context and the full state-date panel remains negative for
+  Polymarket.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_state_poll_panel_horizon_state_diagnostic`
+  -> PASS, generated 13 state-support rows and 13 summary rows.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_panel_horizon_state_diagnostic.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_panel_horizon_state_diagnostic.py tests\test_h1_state_poll_panel_horizon_diagnostic.py tests\test_h1_state_poll_panel_temporal_diagnostic.py tests\test_dozenten_report.py -q`
+  -> PASS, 10 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_panel_horizon_state_diagnostic.py tests\test_h1_state_poll_panel_horizon_diagnostic.py tests\test_h1_state_poll_panel_temporal_diagnostic.py tests\test_h1_state_poll_panel_extension.py tests\test_h1_state_poll_snapshot_extension.py tests\test_h1_calibration_diagnostic.py tests\test_h1_forecast_quality_synthesis.py tests\test_dozenten_report.py -q`
+  -> PASS, 27 passed.
+
+## 2026-06-10 - External poly_data Repository Review
+
+Goal context: user-requested assessment of `warproxxx/poly_data` for possible
+use in the Polymarket data pipeline.
+
+Inspected the external repository at commit
+`bda27941c0c7e1bab05539b9fd195dc567e85edc` in a temporary directory outside
+the thesis workspace.
+
+Findings:
+
+- The repository collects Polymarket Gamma market metadata and Polygon
+  CTF Exchange V2 `OrderFilled` logs, then joins them into trade-level CSVs.
+- It is useful as a reference for future read-only on-chain trade-tape or
+  wallet-signal collection.
+- It is not a drop-in dependency for the active Swiss referendum comparison,
+  which currently needs bounded snapshot and price-history artifacts without
+  wallet-address exposure.
+- Direct reuse would require local wrappers, mocks, validators, bounded
+  windows, explicit raw-address handling, and license review before any code is
+  copied or vendored.
+
+Verification:
+
+- `git ls-remote https://github.com/warproxxx/poly_data.git HEAD`
+  -> `bda27941c0c7e1bab05539b9fd195dc567e85edc`.
+- `git clone --depth 1 https://github.com/warproxxx/poly_data.git ...`
+  -> PASS, repository inspected read-only from temp storage.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, status updated and project tests reported `408 passed`.
+
+## 2026-06-10 - H1 <=90-Day Score-Quality Diagnostic
+
+Goal context: user-requested continuation of H1 forecast-quality and
+calibration baseline work.
+
+Generated and integrated a score-quality diagnostic for the <=90-day
+state-date poll-panel window. This uses the existing deterministic panel cases
+and does not collect new external data.
+
+Changed artifacts:
+
+- Updated `operations/analysis/h1_state_poll_panel_near_window_quality.py`.
+- Added `tests/test_h1_state_poll_panel_near_window_quality.py`.
+- Generated:
+  - `data/results/h1_state_poll_panel_near_window_quality_rows.csv`.
+  - `data/results/h1_state_poll_panel_near_window_quality_bins.csv`.
+  - `data/results/h1_state_poll_panel_near_window_quality_summary.csv`.
+  - `data/results/h1_state_poll_panel_near_window_quality.png`.
+  - `data/results/h1_state_poll_panel_near_window_quality_metadata.json`.
+- Updated `operations/project/build_dozenten_report.py` and regenerated the
+  Markdown, HTML, and DOCX report outputs.
+- Updated `docs/research/RESEARCH_SPEC.md` with Figure 6f and the new
+  score-quality interpretation.
+
+Key output:
+
+- The diagnostic contains 714 long-form forecast rows from 357 state-date
+  cases and two forecast sources.
+- Polymarket mean Brier is 0.1799 versus 0.2520 for the poll-derived
+  transformation in the <=90-day window.
+- Polymarket fixed-bin ECE is 0.3797 versus 0.4391 for the poll-derived
+  transformation.
+- Polymarket probability separation is 0.4560 versus 0.4366 for the
+  poll-derived transformation.
+- Lower-loss rows remain 262 for Polymarket versus 95 for the poll-derived
+  transformation in the same <=90-day window.
+
+Decision:
+
+- This strengthens the late-window H1 forecast-quality statement because
+  Polymarket is better on mean Brier, fixed-bin ECE, probability separation,
+  lower-loss row counts, and 8 of 13 state aggregates.
+- The H1 completion claim remains not proven because the full state-date panel
+  is still negative for Polymarket and all rows share one election context.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_state_poll_panel_near_window_quality`
+  -> PASS, generated 714 forecast rows, 10 calibration-bin rows, and 2 summary
+  rows.
+- `data/results/h1_state_poll_panel_near_window_quality.png` inspected;
+  figure is nonblank and labels are readable after annotation cleanup.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_panel_near_window_quality.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_panel_near_window_quality.py tests\test_h1_state_poll_panel_horizon_state_diagnostic.py tests\test_dozenten_report.py -q`
+  -> PASS, 7 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_panel_near_window_quality.py tests\test_h1_state_poll_panel_horizon_state_diagnostic.py tests\test_h1_state_poll_panel_horizon_diagnostic.py tests\test_h1_state_poll_panel_temporal_diagnostic.py tests\test_h1_state_poll_panel_extension.py tests\test_h1_state_poll_snapshot_extension.py tests\test_h1_calibration_diagnostic.py tests\test_h1_forecast_quality_synthesis.py tests\test_dozenten_report.py -q`
+  -> PASS, 30 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, status updated and project tests reported `411 passed`.
+
+## 2026-06-10 - External `warproxxx/poly_data` repository review
+
+Context:
+
+- Reviewed `https://github.com/warproxxx/poly_data` as a possible source of
+  ideas for improving Polymarket data collection and analysis.
+- Confirmed the active local goal remains
+  `goal-swiss-referendum-efficiency-001`; the review was limited to
+  read-only data-collection relevance for that goal.
+- No external source code was copied into this repository.
+
+Inspection:
+
+- Temporarily cloned the external repository at commit
+  `bda27941c0c7e1bab05539b9fd195dc567e85edc` outside the project workspace.
+- Reviewed `README.md`, `update.py`, `update_utils/update_markets.py`,
+  `update_utils/update_chain.py`, `update_utils/process_live.py`,
+  `poly_utils/utils.py`, `pyproject.toml`, and `LICENSE`.
+- The external pipeline fetches Gamma market metadata, reads Polygon
+  `OrderFilled` events from the Polymarket CTF Exchange V2 contract, and writes
+  local CSV artifacts.
+
+Decision:
+
+- The repository is useful as a technical reference for a future bounded
+  read-only trade collector, especially for CTF Exchange V2 log decoding and
+  market-token joins.
+- It should not be adopted directly for the current Swiss referendum pipeline
+  because it collects global trades, emits maker/taker wallet addresses, lacks
+  local schema validation/tests, is not scoped to curated poll windows, and has
+  a GPL/MIT license metadata inconsistency.
+- Any reuse should be a clean-room, tested implementation limited to the exact
+  market token IDs and poll-release block/time windows, with wallet columns
+  dropped before project outputs.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, status updated and project tests reported `411 passed`.
+
+## 2026-06-10 - H1 claim-evidence audit
+
+Context:
+
+- Continued the active thread objective for H1 forecast quality and calibration:
+  make the Polymarket-vs-polls claim auditable with numbers and correctly
+  rendered visualizations.
+- Kept the implementation deterministic and limited to precomputed H1 Python
+  artifacts. No LLM, agent, MCP, ML, database write, RCP transformation, live
+  collection, or raw trade/wallet data was used.
+
+Changes:
+
+- Added `operations/analysis/h1_claim_evidence_audit.py`.
+- Added `tests/test_h1_claim_evidence_audit.py`.
+- Generated:
+  - `data/results/h1_claim_evidence_audit.csv`.
+  - `data/results/h1_claim_evidence_audit_summary.csv`.
+  - `data/results/h1_claim_evidence_audit.png`.
+  - `data/results/h1_claim_evidence_audit_metadata.json`.
+- Integrated the new audit summary and figure into
+  `operations/project/build_dozenten_report.py`,
+  `tests/test_dozenten_report.py`, and `docs/research/RESEARCH_SPEC.md`.
+- Regenerated the Dozentenbericht Markdown, HTML, and DOCX outputs.
+
+Key output:
+
+- The claim audit contains 12 audit rows and 23 columns.
+- 10 of 12 audit rows support a bounded Polymarket advantage.
+- 1 audit row contradicts the strong Polymarket advantage claim: the full
+  state-date poll panel has 360 Polymarket-lower-loss rows versus 1,360
+  poll-derived-lower-loss rows.
+- Among directly poll-related audit rows, 7 of 8 support bounded Polymarket
+  claims, while the full state-date poll panel remains the counterexample.
+- The <=90-day state-date window contains 357 rows; Polymarket has lower loss
+  in 262 rows versus 95 for the poll-derived transformation.
+- The broad user claim remains `not_proven` / `0` because the largest
+  poll-derived panel contradicts it and the supportive late-window evidence is
+  still repeated rows from one election context.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_claim_evidence_audit`
+  -> PASS, generated 12 audit rows, 13 summary rows, a PNG figure, and
+  metadata with `h1_goal_completion_status=not_proven`.
+- `data/results/h1_claim_evidence_audit.png` inspected; figure is nonblank and
+  labels are readable.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 26 figures.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_claim_evidence_audit.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_claim_evidence_audit.py tests\test_dozenten_report.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_claim_evidence_audit.py tests\test_h1_state_poll_panel_near_window_quality.py tests\test_h1_state_poll_panel_horizon_state_diagnostic.py tests\test_h1_state_poll_panel_horizon_diagnostic.py tests\test_h1_state_poll_panel_temporal_diagnostic.py tests\test_h1_state_poll_panel_extension.py tests\test_h1_state_poll_snapshot_extension.py tests\test_h1_calibration_diagnostic.py tests\test_h1_forecast_quality_synthesis.py tests\test_dozenten_report.py -q`
+  -> PASS, 33 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, status updated and project tests reported `414 passed`.
+
+## 2026-06-10 - H1 popular-vote counterexample extension
+
+Context:
+
+- Continued the H1 forecast-quality thread with a new resolved 2024 outcome:
+  the Polymarket market for Trump winning the national popular vote.
+- Kept the implementation deterministic, read-only, and bounded. The module
+  reads local FiveThirtyEight Trump/Harris poll shares, fetches public
+  Polymarket Gamma/CLOB history when run with `--source live`, applies an
+  explicit poll-margin probability transform in Python, and writes local CSV,
+  PNG, and metadata artifacts. No wallet, order, RCP, LLM, agent, MCP, ML, or
+  database write path was used.
+
+Changes:
+
+- Added `operations/analysis/h1_popular_vote_extension.py`.
+- Added `tests/test_h1_popular_vote_extension.py`.
+- Generated:
+  - `data/results/h1_popular_vote_cases.csv`.
+  - `data/results/h1_popular_vote_summary.csv`.
+  - `data/results/h1_popular_vote.png`.
+  - `data/results/h1_popular_vote_metadata.json`.
+- Integrated the popular-vote summary into:
+  - `operations/analysis/h1_forecast_quality_synthesis.py`.
+  - `operations/analysis/h1_claim_evidence_audit.py`.
+  - `operations/project/build_dozenten_report.py`.
+  - `docs/research/RESEARCH_SPEC.md`.
+  - `tests/test_h1_forecast_quality_synthesis.py`.
+  - `tests/test_h1_claim_evidence_audit.py`.
+  - `tests/test_dozenten_report.py`.
+- Regenerated the H1 synthesis, claim-audit, and Dozentenbericht artifacts.
+
+Key output:
+
+- The popular-vote extension contains 51 matched national daily rows and 1
+  resolved outcome.
+- Polymarket has lower Brier loss in 21 of 51 rows; the transformed
+  poll-derived probability has lower loss in 30 of 51 rows.
+- Mean Brier is 0.517859 for Polymarket versus 0.482440 for the transformed
+  poll-derived probability.
+- The H1 synthesis now has 8 evidence rows: 6 support Polymarket on aggregate
+  mean Brier, 3 support Polymarket by majority of individual cases, and 0
+  prove the broad many-cases claim.
+- The claim audit now has 13 rows: 10 bounded support rows, 2 rows
+  contradicting the strong claim, and `h1_goal_completion_status=not_proven`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_popular_vote_extension.py -q`
+  -> PASS, 5 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_popular_vote_extension --source live`
+  -> PASS, generated 51 rows and the PNG/metadata outputs.
+- `data/results/h1_popular_vote.png`, `data/results/h1_forecast_quality_synthesis.png`,
+  and `data/results/h1_claim_evidence_audit.png` inspected; figures are
+  nonblank and labels are readable.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_popular_vote_extension.py tests\test_h1_forecast_quality_synthesis.py tests\test_h1_claim_evidence_audit.py tests\test_dozenten_report.py -q`
+  -> PASS, 12 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 27 figures.
+
+## 2026-06-10 - External poly_data repository assessment
+
+Context:
+
+- Reviewed `warproxxx/poly_data` as a possible Polymarket data pipeline input
+  for the thesis project.
+- Kept the review outside the project workspace by cloning the repository into
+  a temporary inspection directory only.
+- Checked the active project goal before review; exactly one active goal remains
+  in `GOAL.md`.
+
+Assessment:
+
+- The external repository is useful as a reference for read-only Polymarket
+  market metadata collection and CTF Exchange V2 `OrderFilled` event decoding.
+- It is not a drop-in dependency for the current deterministic Swiss referendum
+  comparison or H1 forecast-quality work because it produces trade-level and
+  wallet-address data, depends on a Polygon RPC backfill, has no local tests,
+  and has a license mismatch between `LICENSE` and `pyproject.toml`.
+- No code from the external repository was copied into the thesis project.
+
+## 2026-06-10 - H1 margin-threshold readiness audit
+
+Context:
+
+- Continued the H1 forecast-quality objective by checking whether additional
+  Polymarket Trump state-margin threshold markets can responsibly expand the
+  poll-derived H1 comparison.
+- Kept the work deterministic and read-only. The module reads official
+  FiveThirtyEight preserved polling averages, public Gamma event metadata, and
+  public CLOB price-history windows. It does not compute new Brier scores,
+  does not write a database, and does not use wallet, order, LLM, agent, MCP,
+  ML, or RCP paths.
+
+Changes:
+
+- Added `operations/analysis/h1_margin_threshold_readiness.py`.
+- Added `tests/test_h1_margin_threshold_readiness.py`.
+- Generated:
+  - `data/results/h1_margin_threshold_readiness.csv`.
+  - `data/results/h1_margin_threshold_readiness.png`.
+  - `data/results/h1_margin_threshold_readiness_metadata.json`.
+- Integrated the figure and key numbers into:
+  - `operations/project/build_dozenten_report.py`.
+  - `tests/test_dozenten_report.py`.
+  - `docs/research/RESEARCH_SPEC.md`.
+- Regenerated the Dozentenbericht Markdown/HTML/DOCX artifacts.
+
+Key output:
+
+- 7 Polymarket Trump state-margin threshold markets were reviewed.
+- 4 markets have compatible preserved 538 state polling-average rows.
+- 0 markets have CLOB history inside the preserved official 538
+  polling-average window.
+- 0 markets are currently compatible for H1 Brier scoring.
+- 4 candidates are blocked by no temporal overlap; 3 are blocked by missing
+  preserved 538 state-poll rows.
+- The audit therefore adds 0 new H1 Brier rows and keeps the broad H1 claim
+  unproven.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_margin_threshold_readiness.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_margin_threshold_readiness --source live`
+  -> PASS, generated 7 readiness rows and the PNG/metadata outputs.
+- `data/results/h1_margin_threshold_readiness.png` inspected; figure is
+  nonblank and labels are readable.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_margin_threshold_readiness.py tests\test_dozenten_report.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 28 figures.
+
+## 2026-06-10 - H1 270toWin polling-average extension
+
+Context:
+
+- Continued the explicit H1 forecast-quality follow-up by adding another
+  direct poll-derived state comparison.
+- Kept the work deterministic and read-only. Live mode fetches only the public
+  270toWin 2024 polling-average JSON endpoint. Polymarket probabilities are
+  read from the existing local 50-state snapshot artifact; no Polymarket live
+  endpoint, wallet, order, LLM, agent, MCP, ML, database write, or RCP path is
+  used.
+- The polling averages are not used as probabilities directly. Republican
+  minus Democratic polling margins are transformed with the documented
+  normal-error model already used in the H1 state-poll extension.
+
+Changes:
+
+- Added `operations/analysis/h1_270towin_poll_average_extension.py`.
+- Added `tests/test_h1_270towin_poll_average_extension.py`.
+- Generated:
+  - `data/results/h1_270towin_poll_average_cases.csv`.
+  - `data/results/h1_270towin_poll_average_summary.csv`.
+  - `data/results/h1_270towin_poll_average.png`.
+  - `data/results/h1_270towin_poll_average_metadata.json`.
+- Integrated the new summary into:
+  - `operations/analysis/h1_forecast_quality_synthesis.py`.
+  - `operations/analysis/h1_claim_evidence_audit.py`.
+  - `operations/project/build_dozenten_report.py`.
+  - `docs/research/RESEARCH_SPEC.md`.
+  - The related focused tests.
+- Regenerated the H1 synthesis, H1 claim audit, and Dozentenbericht artifacts.
+
+Key output:
+
+- 270toWin endpoint rows inspected: 49.
+- 50-state polling-average rows retained: 43.
+- Matched state Brier cases: 43.
+- Missing 50-state polling-average rows: 7.
+- Polymarket lower individual Brier loss: 14 of 43 cases.
+- 270toWin poll-derived probability lower individual Brier loss: 29 of 43
+  cases.
+- Mean Brier Polymarket: 0.0304.
+- Mean Brier transformed 270toWin polling average: 0.0416.
+- Mean loss advantage: 0.0112 Brier points in Polymarket's favour.
+- Updated H1 synthesis: 7 of 9 evidence rows support Polymarket by aggregate
+  mean Brier, 3 of 9 support Polymarket by case majority, and 0 of 9 prove the
+  broad many-cases claim.
+- Updated H1 claim audit: 11 of 14 rows support bounded Polymarket evidence, 2
+  contradict the strong claim, and the broad user claim remains `not_proven`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_270towin_poll_average_extension.py`
+  -> PASS, 5 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_270towin_poll_average_extension --source live`
+  -> PASS, generated 43 matched state cases and the PNG/metadata outputs.
+- `data/results/h1_270towin_poll_average.png` inspected; figure is nonblank and
+  readable.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_270towin_poll_average_extension.py tests\test_h1_forecast_quality_synthesis.py tests\test_h1_claim_evidence_audit.py tests\test_dozenten_report.py`
+  -> PASS, 12 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 29 figures.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `427 passed in 39.77s`.
+
+## 2026-06-10 - External poly_data repository assessment
+
+Context:
+
+- Reviewed `warproxxx/poly_data` as a candidate Polymarket data pipeline for
+  this project after the user asked whether it could improve Polymarket data
+  analysis.
+- Kept the assessment read-only. The external repository was cloned only into a
+  temporary directory and no external code was imported into this repository.
+- Confirmed the active project context still has exactly one active goal in
+  `GOAL.md`.
+
+Findings:
+
+- The external repository is a compact v2 Polymarket trade-data pipeline:
+  Gamma keyset market metadata, direct Polygon JSON-RPC `OrderFilled` log
+  backfill, and a processor that joins raw order events to market metadata.
+- It appears to use public read-only data paths only. No authenticated trading,
+  order placement, cancellation, signature, or wallet-credential path was found
+  in the reviewed files.
+- It could be useful as a reference for future raw trade reconstruction,
+  maker/taker direction handling, token-to-market joins, and post-hoc
+  wallet/trade research once deterministic thesis outputs permit that scope.
+- It is not suitable to vendor or run as-is for the active Swiss referendum
+  track because it performs unbounded all-v2 trade backfills, writes raw
+  maker/taker addresses, lacks local tests, uses current-working-directory
+  relative paths, retries forever on rate limits, and has a license mismatch:
+  `LICENSE`/README indicate GPL-3.0 while `pyproject.toml` says MIT.
+- For current project use, the safer path is selective reimplementation of
+  small ideas behind our existing bounded, tested, read-only collector
+  interfaces rather than importing the package.
+
+Verification:
+
+- Inspected the upstream README and source files from a temporary clone.
+- Checked for tests, authenticated endpoints, order-placement/cancellation
+  paths, and license indicators.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `427 passed in 37.86s`.
+
+## 2026-06-10 - H1 state-source consensus diagnostic
+
+Context:
+
+- Continued the explicit H1 forecast-quality objective by improving the
+  state-level visualization and audit boundary for Polymarket versus
+  poll-derived or poll-model comparator sources.
+- The new diagnostic reads only existing deterministic H1 state-level case
+  artifacts and does not collect live data, query a database, use LLMs, agents,
+  MCP, ML, wallet fields, order fields, or raw poll shares.
+- The diagnostic is not counted as a new independent H1 evidence source because
+  it re-aggregates existing state artifacts from one 2024 presidential election
+  context.
+
+Changes:
+
+- Added `operations/analysis/h1_state_source_consensus.py`.
+- Added `tests/test_h1_state_source_consensus.py`.
+- Generated:
+  - `data/results/h1_state_source_consensus_cases.csv`.
+  - `data/results/h1_state_source_consensus_state_summary.csv`.
+  - `data/results/h1_state_source_consensus_summary.csv`.
+  - `data/results/h1_state_source_consensus.png`.
+  - `data/results/h1_state_source_consensus_metadata.json`.
+- Integrated the consensus summary into:
+  - `operations/analysis/h1_claim_evidence_audit.py`.
+  - `operations/project/build_dozenten_report.py`.
+  - `tests/test_h1_claim_evidence_audit.py`.
+  - `tests/test_dozenten_report.py`.
+  - `docs/research/RESEARCH_SPEC.md`.
+- Regenerated the H1 claim audit and Dozentenbericht artifacts.
+
+Key output:
+
+- Source-state comparisons: 156.
+- Comparator sources: 4.
+- Covered resolved state outcomes: 50.
+- Source-state lower-loss rows: Polymarket 43, comparators 112, ties 1.
+- Mean Brier across source-state rows: Polymarket 0.0363, comparators 0.0455.
+- All-source state consensus: Polymarket 9 states, comparators 37 states,
+  ties 4 states.
+- Direct poll-transform source-state rows: Polymarket 22, comparators 34.
+- States covered by both direct poll-transform sources: 13.
+- Two-direct-source state consensus: Polymarket 8 states, comparators 4
+  states, tie 1 state.
+- Updated H1 claim audit: 12 of 16 audit rows support bounded Polymarket
+  evidence, 3 contradict the strong claim, 9 of 11 direct poll-related rows
+  support bounded Polymarket evidence, and the broad many-cases claim remains
+  `not_proven`.
+
+Interpretation:
+
+- The new figure makes the current H1 boundary clearer. Polymarket has lower
+  mean Brier in the re-aggregated state-source rows, but the all-source
+  state-majority consensus favours traditional comparator sources in most
+  states.
+- The narrower two-direct-poll-transform subset still supports Polymarket in
+  8 of 13 states.
+- This is useful H1 evidence, but it does not prove the requested broad
+  many-cases claim because the all-source consensus and the larger state-date
+  poll panel remain counterexamples.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_source_consensus.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_state_source_consensus`
+  -> PASS, generated 156 source-state rows and the PNG/metadata outputs.
+- `data/results/h1_state_source_consensus.png` inspected; figure is nonblank
+  and readable.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_source_consensus.py tests\test_h1_claim_evidence_audit.py tests\test_dozenten_report.py -q`
+  -> PASS, 7 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 30 figures.
+- `data/results/h1_claim_evidence_audit.png` inspected; figure is nonblank and
+  readable.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `430 passed in 38.62s`.
+
+## 2026-06-11 - H1 competitive-state diagnostic
+
+Context:
+
+- Continued the explicit H1 forecast-quality objective by testing where the
+  state-source result is conditional on source competitiveness.
+- The diagnostic uses only existing deterministic H1 state-source artifacts.
+  It does not collect live data, query a database, use LLMs, agents, MCP, ML,
+  wallet fields, order fields, or raw poll shares.
+- Competitiveness tiers are derived from the observed comparator probability
+  distance to 0.5 with quantiles, not arbitrary thresholds.
+
+Changes:
+
+- Added `operations/analysis/h1_competitive_state_diagnostic.py`.
+- Added `tests/test_h1_competitive_state_diagnostic.py`.
+- Generated:
+  - `data/results/h1_competitive_state_diagnostic_cases.csv`.
+  - `data/results/h1_competitive_state_diagnostic_tiers.csv`.
+  - `data/results/h1_competitive_state_diagnostic_summary.csv`.
+  - `data/results/h1_competitive_state_diagnostic.png`.
+  - `data/results/h1_competitive_state_diagnostic_metadata.json`.
+- Integrated the diagnostic into:
+  - `operations/analysis/h1_claim_evidence_audit.py`.
+  - `operations/project/build_dozenten_report.py`.
+  - `tests/test_h1_claim_evidence_audit.py`.
+  - `tests/test_dozenten_report.py`.
+  - `docs/research/RESEARCH_SPEC.md`.
+- Regenerated the H1 claim audit and Dozentenbericht artifacts.
+
+Key output:
+
+- Input source-state comparisons: 156 across 50 states.
+- Lowest-distance all-source tercile: Polymarket lower loss in 35 of 52
+  source-state cases, comparators lower loss in 17 of 52, mean loss advantage
+  0.0284 Brier points.
+- Lowest-distance direct poll-transform tercile: Polymarket lower loss in 18
+  of 19 source-state cases, poll-derived comparators lower loss in 1 of 19,
+  mean loss advantage 0.0567 Brier points.
+- Highest-distance all-source tercile: Polymarket lower loss in 0 of 40
+  source-state cases, comparators lower loss in 40 of 40.
+- Updated H1 claim audit: 14 of 19 audit rows support bounded Polymarket
+  evidence, 4 contradict the strong claim, 10 of 12 direct poll-related rows
+  support bounded Polymarket evidence, and the broad many-cases claim remains
+  `not_proven`.
+
+Interpretation:
+
+- The new figure supports a bounded statement: Polymarket is better in the
+  most competitive lowest-distance state-source subset, especially among
+  direct poll-transform cases.
+- It does not prove the broad user claim. Safer/high-distance states remain a
+  strong counterexample, and all rows still come from one election context.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_competitive_state_diagnostic.py tests\test_h1_claim_evidence_audit.py tests\test_dozenten_report.py -q`
+  -> PASS, 7 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_competitive_state_diagnostic`
+  -> PASS, generated 156 diagnostic cases and the PNG/metadata outputs.
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_claim_evidence_audit`
+  -> PASS, regenerated 19 audit rows, the summary, figure, and metadata.
+- `data/results/h1_competitive_state_diagnostic.png` inspected; figure is
+  nonblank and readable.
+- `data/results/h1_claim_evidence_audit.png` inspected after layout update;
+  figure is nonblank and readable.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 31 figures.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `433 passed in 44.92s`.
+
+## 2026-06-11 - H1 state-date competitiveness x horizon diagnostic
+
+Context:
+
+- Continued the explicit H1 forecast-quality objective by improving the
+  largest poll-derived H1 panel visualization.
+- The new diagnostic uses only existing deterministic H1 state-date panel
+  rows. It does not collect live data, query a database, use LLMs, agents,
+  MCP, ML, wallet fields, order fields, or raw poll shares.
+- Competitiveness tiers are derived from the observed poll-derived probability
+  distance to 0.5 with quantiles, not arbitrary thresholds.
+
+Changes:
+
+- Added `operations/analysis/h1_state_poll_panel_competitiveness_diagnostic.py`.
+- Added `tests/test_h1_state_poll_panel_competitiveness_diagnostic.py`.
+- Generated:
+  - `data/results/h1_state_poll_panel_competitiveness_grid.csv`.
+  - `data/results/h1_state_poll_panel_competitiveness_state.csv`.
+  - `data/results/h1_state_poll_panel_competitiveness_summary.csv`.
+  - `data/results/h1_state_poll_panel_competitiveness.png`.
+  - `data/results/h1_state_poll_panel_competitiveness_metadata.json`.
+- Integrated the diagnostic into:
+  - `operations/analysis/h1_claim_evidence_audit.py`.
+  - `operations/project/build_dozenten_report.py`.
+  - `tests/test_h1_claim_evidence_audit.py`.
+  - `tests/test_dozenten_report.py`.
+  - `docs/research/RESEARCH_SPEC.md`.
+- Regenerated the H1 claim audit and Dozentenbericht artifacts.
+
+Key output:
+
+- Input panel rows: 1,720 state-date forecast rows across 15 states.
+- Late window: 357 rows in the <=90-day pre-election window.
+- Late low/middle poll-distance terciles: Polymarket lower loss in 262 of 285
+  state-date rows, poll-derived lower loss in 23 of 285, mean loss advantage
+  0.0933 Brier points.
+- Late low/middle poll-distance state support: Polymarket has a lower-loss
+  majority in 9 of 9 covered states.
+- Late high poll-distance tercile: Polymarket lower loss in 0 of 72
+  state-date rows, poll-derived lower loss in 72 of 72.
+- Updated H1 claim audit: 15 of 21 audit rows support bounded Polymarket
+  evidence, 5 contradict the strong claim, 11 of 14 direct poll-related rows
+  support bounded Polymarket evidence, and the broad many-cases claim remains
+  `not_proven`.
+
+Interpretation:
+
+- The new figure gives a stronger and cleaner bounded result: in late
+  competitive or semi-competitive poll-derived state-date rows, Polymarket is
+  lower-loss in most rows and all covered states.
+- It still does not complete the broad user claim. The full state-date panel,
+  late high-distance rows, and high-distance state-source cases remain
+  counterexamples, and the panel rows repeat one election context.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_panel_competitiveness_diagnostic.py tests\test_h1_claim_evidence_audit.py tests\test_dozenten_report.py -q`
+  -> PASS, 6 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_state_poll_panel_competitiveness_diagnostic`
+  -> PASS, generated 1,720 panel diagnostic rows and the PNG/metadata outputs.
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_claim_evidence_audit`
+  -> PASS, regenerated 21 audit rows, the summary, figure, and metadata.
+- `data/results/h1_state_poll_panel_competitiveness.png` inspected; figure is
+  nonblank and readable.
+- `data/results/h1_claim_evidence_audit.png` inspected after label update;
+  figure is nonblank and readable.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 32 figures.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `435 passed in 40.44s`.
+
+## 2026-06-11 - H1 state-level significance diagnostic
+
+Context:
+
+- Continued the explicit H1 forecast-quality objective by checking whether the
+  strong late low/middle poll-distance panel result also holds when each state
+  is treated as one diagnostic unit.
+- The new diagnostic reads only the existing deterministic
+  `h1_state_poll_panel_competitiveness_state.csv` artifact. It does not
+  collect live data, query a database, use LLMs, agents, MCP, ML, wallet
+  fields, order fields, or raw poll shares.
+- The exact binomial test is implemented in Python and interpreted only as a
+  bounded state-as-unit diagnostic because all states come from one election
+  context.
+
+Changes:
+
+- Added `operations/analysis/h1_state_poll_panel_state_significance.py`.
+- Added `tests/test_h1_state_poll_panel_state_significance.py`.
+- Generated:
+  - `data/results/h1_state_poll_panel_state_significance.csv`.
+  - `data/results/h1_state_poll_panel_state_significance_summary.csv`.
+  - `data/results/h1_state_poll_panel_state_significance.png`.
+  - `data/results/h1_state_poll_panel_state_significance_metadata.json`.
+- Integrated the diagnostic into:
+  - `operations/analysis/h1_claim_evidence_audit.py`.
+  - `operations/project/build_dozenten_report.py`.
+  - `tests/test_h1_claim_evidence_audit.py`.
+  - `tests/test_dozenten_report.py`.
+  - `docs/research/RESEARCH_SPEC.md`.
+- Regenerated the H1 claim audit and Dozentenbericht artifacts.
+
+Key output:
+
+- Late low/middle poll-distance state scope: Polymarket has lower-loss
+  majority support in 9 of 9 states.
+- Exact one-sided binomial p-value for Polymarket state-majority support:
+  0.001953125.
+- Exact 95 percent lower confidence bound for the Polymarket state-support
+  share: 0.7169.
+- Late high poll-distance state scope: poll-derived probabilities have
+  lower-loss majority support in 5 of 5 states; this remains a bounded
+  counterexample.
+- Updated H1 claim audit: 16 of 22 audit rows support bounded Polymarket
+  evidence, 5 contradict the strong claim, 12 of 15 direct poll-related rows
+  support bounded Polymarket evidence, and the broad many-cases claim remains
+  `not_proven`.
+
+Interpretation:
+
+- This materially strengthens the bounded late competitive-poll result:
+  Polymarket is not only lower-loss in 262 of 285 repeated rows, but also in
+  all 9 covered states when states are used as the diagnostic unit.
+- It still does not complete the broad user claim. The test is not a
+  many-independent-elections proof, and high-distance state scopes still
+  support poll-derived comparators.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_panel_state_significance.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_state_poll_panel_state_significance`
+  -> PASS, generated the exact sign-test CSV, summary, PNG, and metadata.
+- `data/results/h1_state_poll_panel_state_significance.png` inspected; figure
+  is nonblank and readable.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_state_poll_panel_state_significance.py tests\test_h1_claim_evidence_audit.py tests\test_dozenten_report.py -q`
+  -> PASS, 7 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_claim_evidence_audit`
+  -> PASS, regenerated 22 audit rows, the summary, figure, and metadata.
+- `data/results/h1_claim_evidence_audit.png` inspected; figure is nonblank
+  and readable with the new `<=90d sign` audit scope.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 33 figures.
+
+## 2026-06-11 - H1 direct poll outlier robustness diagnostic
+
+Context:
+
+- Continued the H1 forecast-quality objective by checking whether the positive
+  direct poll state-cluster mean is driven by one or a few exceptional states.
+- Kept the work deterministic: Python only, no live data collection, no
+  database writes, no LLM metrics, no agents/MCP, no ML, no wallet fields, and
+  no order endpoints.
+
+Changes:
+
+- Added `operations/analysis/h1_direct_poll_outlier_robustness.py`.
+- Generated:
+  - `data/results/h1_direct_poll_outlier_robustness_scenarios.csv`
+  - `data/results/h1_direct_poll_outlier_robustness_summary.csv`
+  - `data/results/h1_direct_poll_outlier_robustness.png`
+  - `data/results/h1_direct_poll_outlier_robustness_metadata.json`
+- Added `tests/test_h1_direct_poll_outlier_robustness.py`.
+- Integrated the result into `operations/project/build_dozenten_report.py`,
+  `tests/test_dozenten_report.py`, and `docs/research/RESEARCH_SPEC.md`.
+- Regenerated the Dozentenbericht artifacts.
+
+Key output:
+
+- Direct poll state clusters: 43.
+- Full equal-state mean loss advantage: 0.0122 Brier points.
+- Minimum leave-one-state-out mean: 0.0095 after removing Wisconsin.
+- All 43 leave-one-state-out means remain positive.
+- The mean remains positive after removing the top 6 positive state
+  contributions and first turns non-positive after removing 7, at -0.0001.
+- Largest positive state contribution: Wisconsin, 0.1248 Brier points.
+
+Interpretation:
+
+- The bounded direct poll mean-loss advantage is not created by a single state.
+- The advantage is still concentrated in the largest positive state
+  contributions, so this strengthens robustness of the mean-loss statement but
+  does not prove a state-majority, many-election, or broad many-cases claim.
+- The H1 objective remains incomplete because the user-requested broad claim
+  still needs stronger independent evidence or a narrower thesis claim.
+
+Figure:
+
+- `data/results/h1_direct_poll_outlier_robustness.png` shows leave-one-state-out
+  means, top-k positive-state exclusions, state-level contributions, and the
+  bounded interpretation.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_direct_poll_outlier_robustness`
+  -> PASS, regenerated CSV, PNG, and metadata outputs.
+- `data/results/h1_direct_poll_outlier_robustness.png` inspected; figure is
+  nonblank and readable.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_direct_poll_outlier_robustness.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 38 figures.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_direct_poll_outlier_robustness.py tests\test_h1_direct_poll_state_cluster_diagnostic.py tests\test_h1_direct_poll_loss_decomposition.py tests\test_dozenten_report.py -q`
+  -> PASS, 10 passed.
+
+## 2026-06-11 - H1 robust poll-scope unit quality diagnostic
+
+Context:
+
+- Continued the H1 forecast-quality objective by reducing dependence on
+  repeated state-date rows in the two robust late low/middle poll-distance
+  scopes.
+- Kept the work deterministic: Python only, no live data collection, no
+  database writes, no LLM metrics, no agents/MCP, no ML, no wallet fields, and
+  no order endpoints.
+
+Changes:
+
+- Added `operations/analysis/h1_robust_poll_scope_unit_quality.py`.
+- Generated `data/results/h1_robust_poll_scope_unit_quality_units.csv`,
+  `data/results/h1_robust_poll_scope_unit_quality_summary.csv`,
+  `data/results/h1_robust_poll_scope_unit_quality.png`, and
+  `data/results/h1_robust_poll_scope_unit_quality_metadata.json`.
+- Added `tests/test_h1_robust_poll_scope_unit_quality.py`.
+- Integrated the result into `operations/project/build_dozenten_report.py`,
+  `tests/test_dozenten_report.py`, and `docs/research/RESEARCH_SPEC.md`.
+- Regenerated the Dozentenbericht artifacts.
+
+Key output:
+
+- Unit rows: 116; summary rows: 8.
+- Largest robust scope (`<=120 days` plus low/middle poll distance):
+  Polymarket support in 10 of 11 states, 18 of 26 state-month units, and
+  20 of 26 state-horizon units. State-month exact one-sided p-value:
+  0.037759; median state-month Brier advantage: 0.048385.
+- Strongest robust scope (`<=90 days` plus low/middle poll distance):
+  Polymarket support in 9 of 9 states, 17 of 17 state-month units, and
+  17 of 17 state-horizon units. State-month exact one-sided p-value:
+  0.0000076294; median state-month Brier advantage: 0.072312.
+- Broad H1 claim status remains `not_proven`.
+
+Interpretation:
+
+- The robust late low/middle poll-distance H1 finding remains visible after
+  aggregation to less repeated units.
+- This strengthens the bounded statement that Polymarket is better in those
+  robust scoped cases, but it still does not prove a broad many-elections or
+  general many-cases claim.
+
+Figure:
+
+- `data/results/h1_robust_poll_scope_unit_quality.png` shows unit support,
+  state-month paired Brier scatter, unit advantage distribution, and bounded
+  interpretation.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_robust_poll_scope_unit_quality`
+  -> PASS, regenerated CSV, PNG, and metadata outputs.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_robust_poll_scope_unit_quality.py tests\test_h1_robust_poll_scope_quality.py tests\test_dozenten_report.py -q`
+  -> PASS, 7 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 43 figures.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 468 passed in 46.25s.
+
+## 2026-06-11 - H1 robust poll-scope quality diagnostic
+
+Context:
+
+- Continued the H1 forecast-quality objective by adding a score-quality view
+  for the robust late low/middle poll-distance scopes identified by the
+  poll-scope frontier and decision matrix.
+- Kept the work deterministic: Python only, no live data collection, no
+  database writes, no LLM metrics, no agents/MCP, no ML, no wallet fields, and
+  no order endpoints.
+
+Changes:
+
+- Added and regenerated `operations/analysis/h1_robust_poll_scope_quality.py`.
+- Generated `data/results/h1_robust_poll_scope_quality_rows.csv`,
+  `data/results/h1_robust_poll_scope_quality_bins.csv`,
+  `data/results/h1_robust_poll_scope_quality_summary.csv`,
+  `data/results/h1_robust_poll_scope_quality_pairwise.csv`,
+  `data/results/h1_robust_poll_scope_quality.png`, and
+  `data/results/h1_robust_poll_scope_quality_metadata.json`.
+- Added `tests/test_h1_robust_poll_scope_quality.py`.
+- Integrated the result into `operations/project/build_dozenten_report.py`,
+  `tests/test_dozenten_report.py`, and `docs/research/RESEARCH_SPEC.md`.
+- Regenerated the Dozentenbericht artifacts.
+
+Key output:
+
+- Robust scopes covered: 2.
+- Forecast rows: 1436, from 718 source-scope state-date cases.
+- Largest robust scope (`<=120 days` plus low/middle poll distance):
+  Polymarket lower loss in 313 of 433 rows, mean Brier 0.1982 vs
+  poll-derived 0.2555, fixed-bin ECE 0.3868 vs 0.4251, probability separation
+  0.2182 vs 0.1394.
+- Strongest robust scope (`<=90 days` plus low/middle poll distance):
+  Polymarket lower loss in 262 of 285 rows, mean Brier 0.2214 vs
+  poll-derived 0.3147, fixed-bin ECE 0.4523 vs 0.5362.
+- The strongest robust scope has only positive outcomes, so probability
+  separation is not defined there.
+
+Interpretation:
+
+- The robust bounded poll scopes now have direct forecast-quality evidence:
+  Polymarket has lower mean Brier and lower fixed-bin ECE in both selected
+  robust scopes, plus higher probability separation in the largest robust
+  scope where both outcome classes occur.
+- This strengthens the bounded statement that Polymarket is better in robust
+  late low/middle poll-distance scopes.
+- It still does not complete the broad user claim because the full panel and
+  high-distance subsets remain counterexamples, and the robust scopes reuse
+  state-date rows from one election context.
+
+Figure:
+
+- `data/results/h1_robust_poll_scope_quality.png` shows score bars,
+  calibration bins for the largest robust scope, lower-loss counts, and a
+  statement box with the bounded status.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_robust_poll_scope_quality`
+  -> PASS, regenerated CSV, PNG, and metadata outputs.
+- `data/results/h1_robust_poll_scope_quality.png` inspected; figure is
+  nonblank and readable after the reliability panel and footer were revised.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_robust_poll_scope_quality.py tests\test_dozenten_report.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 42 figures.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `465 passed in 45.98s`.
+
+## 2026-06-11 - External poly_data repository assessment
+
+Context:
+
+- Reviewed `warproxxx/poly_data` after the user asked whether its Polymarket
+  v2 data pipeline would be useful for the thesis project.
+- Kept the assessment read-only: no live data collection, no database writes,
+  no authenticated endpoints, no order placement/cancellation, no runtime
+  agents, no MCP use, no LLM metric calculation, and no raw table dumps.
+
+Findings:
+
+- The repository is useful as a design reference for direct Polygon
+  `OrderFilled` ingestion and Gamma market metadata joining.
+- It is not suitable for direct adoption into the active deterministic pipeline
+  without a local wrapper, fixtures, schema validation, bounded windows, and
+  aggregate-only outputs.
+- Key risks are raw maker/taker wallet-address columns, CSV-only persistence,
+  no local tests in the reviewed repository, long RPC backfills, a Windows
+  portability issue in the resume logic, and a license mismatch between the
+  GPL README/LICENSE and the MIT `pyproject.toml` metadata.
+
+Verification:
+
+- `GOAL.md` checked; exactly one project goal remains active.
+- External repository cloned to a temporary directory for inspection only.
+- `python -m compileall -q $env:TEMP\poly_data_review` -> PASS.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `462 passed in 47.97s`.
+
+## 2026-06-11 - H1 poll-scope frontier diagnostic
+
+Context:
+
+- Continued the H1 forecast-quality objective by testing how far the
+  Polymarket-supporting poll-comparison scope can be widened before
+  counterexamples dominate.
+- Kept the work deterministic: Python only, no live data collection, no
+  database writes, no LLM metrics, no agents/MCP, no ML, no wallet fields, and
+  no order endpoints.
+
+Changes:
+
+- Added `operations/analysis/h1_poll_scope_frontier.py`.
+- Generated `data/results/h1_poll_scope_frontier.csv`,
+  `data/results/h1_poll_scope_frontier_summary.csv`,
+  `data/results/h1_poll_scope_frontier.png`, and
+  `data/results/h1_poll_scope_frontier_metadata.json`.
+- Added `tests/test_h1_poll_scope_frontier.py`.
+- Integrated the result into `operations/project/build_dozenten_report.py`,
+  `tests/test_dozenten_report.py`, and `docs/research/RESEARCH_SPEC.md`.
+- Regenerated the Dozentenbericht artifacts.
+
+Key output:
+
+- Frontier rows: 30 horizon-by-poll-distance scopes.
+- Robust-support scopes: 8.
+- Largest robust scope: `lte_120_days_low_middle_distance`.
+- Largest robust scope row result: Polymarket lower loss in 313 of 433
+  state-date rows, poll-derived lower loss in 120 rows.
+- Largest robust scope unit result: 18 of 26 state-month units support
+  Polymarket, exact one-sided p-value 0.03775934875011444.
+- Strongest robust scope: `lte_90_days_low_middle_distance`, 285 rows, 17 of
+  17 state-month units, exact one-sided p-value 0.00000762939453125.
+- Boundary: `lte_90_days_all_distances` has Polymarket row support in 262 of
+  357 rows, but state-month p-value 0.07579481601715088.
+- Full panel remains a counterexample: Polymarket lower loss in 360 of 1720
+  rows, poll-derived lower loss in 1360 of 1720 rows.
+
+Interpretation:
+
+- The bounded poll-comparison statement can be widened from the strongest
+  <=90-day low/middle-distance scope to a largest robust <=120-day
+  low/middle-distance scope.
+- The high-distance and full-panel counterexamples remain visible, so the
+  broad many-cases or many-elections claim remains `not_proven`.
+- This supports more precise H1 thesis wording, not a general calibration win,
+  causal claim, tradeability claim, or independent many-election proof.
+
+Figure:
+
+- `data/results/h1_poll_scope_frontier.png` shows row-support and state-month
+  support heatmaps, robust scopes by coverage, and the bounded conclusion.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_poll_scope_frontier`
+  -> PASS, regenerated CSV, PNG, summary, and metadata outputs.
+- `data/results/h1_poll_scope_frontier.png` inspected; figure is nonblank,
+  readable, and shows the boundary conditions.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 40 figures.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_poll_scope_frontier.py tests\test_dozenten_report.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, updated `STATUS.md` and recorded `459 passed in 49.57s`.
+
+## 2026-06-11 - External review of warproxxx/poly_data
+
+Context:
+
+- Reviewed `https://github.com/warproxxx/poly_data` as a possible Polymarket
+  data-collection reference for the active Swiss referendum comparison goal.
+- No project code, deterministic outputs, database tables, or local data
+  artifacts were changed for this assessment, except this workflow log and the
+  required status refresh.
+- Kept the review within current project guardrails: no trading, no order
+  placement or cancellation, no authenticated channels, no LLM metric
+  calculation, no runtime agents/MCP, no ML, and no database writes.
+
+Assessment:
+
+- The repository is potentially useful as a reference for a future read-only
+  trade-level collector because it combines Gamma market metadata with Polygon
+  CTF Exchange V2 `OrderFilled` events and produces labeled trade CSVs.
+- It is not a drop-in fit for the current Swiss referendum track because our
+  active pipeline intentionally uses bounded Gamma/CLOB snapshots without
+  wallet addresses, whereas `poly_data` writes raw maker/taker wallet fields.
+- The highest-value reusable ideas are keyset market pagination, resumable
+  block cursors, event decoding, token-to-market joining, and bounded chunked
+  processing.
+- Any adoption should be by re-implementing a small, tested, thesis-scoped
+  collector behind our existing validators and metadata contracts, not by
+  vendoring or invoking the full upstream pipeline.
+
+Risks:
+
+- The repository has no test files in the reviewed checkout.
+- License metadata is inconsistent: the repository contains a GPL-3.0 license
+  file while `pyproject.toml` declares MIT.
+- Full-chain backfill is operationally heavy and RPC-dependent; the README
+  notes that initial chain backfill can take hours on public RPC.
+- Raw wallet-level outputs are outside the current referendum comparison output
+  contract unless explicitly scoped, minimized, validated, and documented.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `STATUS.md` updated, full pytest summary `456 passed in 46.69s`.
+- Cloned the external repository into a temporary directory only and inspected
+  README, `pyproject.toml`, `update.py`, `update_utils/update_markets.py`,
+  `update_utils/update_chain.py`, `update_utils/process_live.py`, and
+  `poly_utils/utils.py`.
+
+## 2026-06-11 - External poly_data usefulness reassessment
+
+Context:
+
+- Reassessed `https://github.com/warproxxx/poly_data` after the user asked
+  whether that pipeline would help this project analyse Polymarket data better.
+- Confirmed `GOAL.md` still has exactly one active goal:
+  `goal-swiss-referendum-efficiency-001`.
+- The external repository was cloned only into a temporary directory and no
+  external code was imported into this repository.
+
+Findings:
+
+- `poly_data` v2 collects Gamma market metadata, reads Polygon CTF Exchange V2
+  `OrderFilled` logs through JSON-RPC, and joins the result into labelled trade
+  CSVs.
+- This is useful as a reference for future fill-level trade reconstruction,
+  especially after the Polymarket v2 contract migration.
+- It is not a drop-in improvement for the active Swiss referendum comparison,
+  which needs bounded probability snapshots and bounded CLOB history around
+  curated poll releases rather than broad maker/taker wallet-level backfills.
+- Direct dependency or vendoring is unattractive because the repository has
+  GPL-3.0 licensing in `LICENSE` and README while `pyproject.toml` declares MIT.
+
+Recommendation:
+
+- Do not add `poly_data` as a dependency now.
+- Keep the active pipeline on the existing tested Gamma/CLOB collectors.
+- If future H3 or monitor work needs fill-level data, reimplement a small
+  internal read-only collector with bounded block windows, validation, metadata,
+  mocks, and explicit wallet-address scope.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `450 passed in 44.56s`.
+
+## 2026-06-11 - External poly_data repository assessment
+
+Context:
+
+- Reviewed `https://github.com/warproxxx/poly_data` as a possible source of
+  Polymarket data-pipeline ideas for the current deterministic Polymarket
+  analysis work.
+- The repository was cloned to a temporary directory outside this project and
+  was not imported, executed against live endpoints, or added as a dependency.
+
+Findings:
+
+- `poly_data` v2 fetches Gamma market metadata, reads CTF Exchange V2
+  `OrderFilled` events directly from Polygon JSON-RPC, and joins them into
+  labelled trade CSVs.
+- The useful gap for this thesis project is historical on-chain trade coverage
+  after Polymarket's 2026 v2 contract migration, especially if we later need
+  transaction-level trade reconstruction beyond the public Data API rows.
+- It is not a drop-in replacement for the existing collectors because our
+  active pipeline already validates bounded Gamma/CLOB snapshots, keeps
+  Swiss-referendum windows scoped to curated poll timestamps, and writes
+  metadata/validation reports.
+- The reviewed repo has no tests in the cloned source, writes broad CSVs
+  directly, uses unbounded retry loops for rate limits, depends on external RPC
+  availability, exposes wallet addresses in trade outputs, and has inconsistent
+  license metadata (`LICENSE`/README GPL-3.0, `pyproject.toml` MIT).
+
+Interpretation:
+
+- Treat `poly_data` as a reference implementation for a future, narrowly scoped
+  read-only on-chain trade collector, not as a pipeline to vendor or run inside
+  the thesis project.
+- Any adoption should reimplement only the deterministic primitives we need:
+  bounded block-window collection, explicit validation, provenance metadata,
+  mock fixtures, tests, no order endpoints, and no automated interpretation
+  layer.
+
+Verification:
+
+- `python -m compileall -q .` inside the temporary clone -> PASS.
+- No tests or test directories were found in the cloned repository.
+
+## 2026-06-11 - H1 direct poll loss decomposition
+
+Context:
+
+- Continued the persistent H1 forecast-quality objective by improving the
+  thesis-facing explanation of direct Polymarket-vs-poll comparisons.
+- The existing state-source consensus showed a mixed result: Polymarket has
+  lower aggregate mean Brier in direct poll-transform rows, but poll-derived
+  comparators win more individual source-state cases.
+- The change uses only existing deterministic H1 artifacts and does not collect
+  live data, query raw tables, use LLMs, agents, MCP, ML, wallet fields, order
+  endpoints, or database writes.
+
+Changes:
+
+- Added `operations/analysis/h1_direct_poll_loss_decomposition.py`.
+- Added `tests/test_h1_direct_poll_loss_decomposition.py`.
+- Generated:
+  - `data/results/h1_direct_poll_loss_decomposition_cases.csv`
+  - `data/results/h1_direct_poll_loss_decomposition_summary.csv`
+  - `data/results/h1_direct_poll_loss_decomposition.png`
+  - `data/results/h1_direct_poll_loss_decomposition_metadata.json`
+- Integrated the new result into `operations/project/build_dozenten_report.py`
+  and `tests/test_dozenten_report.py`.
+- Documented Figure 2f in `docs/research/RESEARCH_SPEC.md`.
+
+Key output:
+
+- Direct poll-transform source-state cases: 56.
+- Polymarket lower-loss cases: 22 of 56.
+- Poll-derived lower-loss cases: 34 of 56.
+- Mean Brier: Polymarket 0.0544 versus poll-derived 0.0729.
+- Polymarket-winning cases have mean Brier advantage 0.0498.
+- Poll-derived winning cases have mean absolute Brier advantage 0.0018.
+- Total Polymarket-winning margin is 18.2 times the total poll-derived winning
+  margin.
+- Bounded late poll-panel context remains: Polymarket 262 of 285 state-date
+  rows and 17 of 17 state-month units.
+
+Interpretation:
+
+- The new artifact explains the aggregate Brier advantage without hiding the
+  case-count boundary. Polymarket's direct poll-transform advantage comes from
+  fewer but much larger avoided poll losses.
+- This strengthens the forecast-quality visualization and result narrative, but
+  it does not complete the broad user objective. The direct case-majority claim
+  and broad many-elections claim remain `not_proven`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_direct_poll_loss_decomposition`
+  -> PASS, generated new CSV, PNG, and metadata artifacts.
+- `data/results/h1_direct_poll_loss_decomposition.png` inspected; figure is
+  nonblank and readable.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_direct_poll_loss_decomposition.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 36 figures.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_direct_poll_loss_decomposition.py tests\test_dozenten_report.py -q`
+  -> PASS, 4 passed.
+
+## 2026-06-11 - H1 direct poll state-cluster diagnostic
+
+Context:
+
+- Continued the persistent H1 forecast-quality objective by testing whether
+  the direct poll-transform aggregate loss advantage survives state-level
+  clustering.
+- The previous direct-poll decomposition showed a lower aggregate mean Brier
+  for Polymarket, but poll-derived comparators won more individual
+  source-state rows.
+- The change uses only existing deterministic H1 direct-poll artifacts and does
+  not collect live data, query raw tables, use LLMs, agents, MCP, ML, wallet
+  fields, order endpoints, or database writes.
+
+Changes:
+
+- Added `operations/analysis/h1_direct_poll_state_cluster_diagnostic.py`.
+- Added `tests/test_h1_direct_poll_state_cluster_diagnostic.py`.
+- Generated:
+  - `data/results/h1_direct_poll_state_cluster_diagnostic_states.csv`
+  - `data/results/h1_direct_poll_state_cluster_diagnostic_summary.csv`
+  - `data/results/h1_direct_poll_state_cluster_diagnostic.png`
+  - `data/results/h1_direct_poll_state_cluster_diagnostic_metadata.json`
+- Integrated the new state-cluster result into the Dozentenbericht and report
+  tests.
+- Documented Figure 2g in `docs/research/RESEARCH_SPEC.md`.
+
+Key output:
+
+- Input direct poll-transform source-state cases: 56.
+- State clusters: 43.
+- Equal-state mean loss advantage: 0.0122 Brier points for Polymarket.
+- Deterministic state-cluster bootstrap 95 percent interval: 0.0041 to 0.0217.
+- Deterministic sign-flip p-value for positive equal-state mean: 0.00455.
+- State mean lower-loss count: Polymarket 13 of 43 states, poll-derived 30 of
+  43 states.
+- Exact one-sided binomial p-value for poll-derived state-count support:
+  0.00686.
+
+Interpretation:
+
+- The direct poll-transform aggregate advantage remains visible after
+  equal-weight state clustering, so the mean-loss evidence is not only a raw
+  source-state-row artifact.
+- The state-count majority still favours poll-derived comparators. This keeps
+  the bounded claim honest: Polymarket has a positive mean-loss advantage in
+  this direct poll diagnostic, but a broad state-majority or many-elections
+  claim remains `not_proven`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_direct_poll_state_cluster_diagnostic`
+  -> PASS, generated state, summary, PNG, and metadata artifacts.
+- `data/results/h1_direct_poll_state_cluster_diagnostic.png` inspected; figure
+  is nonblank and readable.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_direct_poll_state_cluster_diagnostic.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 37 figures.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_direct_poll_state_cluster_diagnostic.py tests\test_h1_direct_poll_loss_decomposition.py tests\test_dozenten_report.py -q`
+  -> PASS, 7 passed.
+
+## 2026-06-11 - H1 poll-comparison result integrated into report
+
+Context:
+
+- Continued the explicit H1 forecast-quality objective by turning the focused
+  poll-comparison scorecard into a reportable thesis artifact.
+- The work uses only existing deterministic H1 artifacts. It does not collect
+  data, query a database, use LLMs, agents, MCP, ML, wallet fields, order
+  fields, or raw table dumps.
+
+Changes:
+
+- Polished `data/results/h1_poll_comparison_result.png` so the primary count
+  labels have more right-side plot space.
+- Updated `operations/project/build_dozenten_report.py` to read
+  `h1_poll_comparison_result_summary.csv` and expose the focused H1
+  poll-comparison result in Markdown, HTML, DOCX, appendix artifacts, and the
+  figure list.
+- Updated `tests/test_dozenten_report.py` to assert the new figure, headline,
+  primary count, state-level count, full-panel counterexample, and
+  `not_proven` status.
+- Updated `docs/research/RESEARCH_SPEC.md` with Figure 2d, artifact links,
+  evidence-to-cite entries, and a bounded result interpretation.
+
+Key output:
+
+- `h1_poll_comparison_result.csv` contains 6 result rows.
+- Primary bounded scope: Polymarket lower loss in 262 of 285 late low/middle
+  poll-distance state-date rows, versus poll-derived lower loss in 23.
+- State-as-unit confirmation: Polymarket support in 9 of 9 states, exact
+  one-sided binomial p-value 0.001953125, exact 95 percent lower bound 0.7169.
+- Direct poll audit ledger: 12 of 15 directly poll-related audit rows support
+  bounded Polymarket evidence.
+- Counterexamples remain explicit: the full state-date poll panel supports
+  poll-derived probabilities in 1360 of 1720 rows, and the late high-distance
+  subset supports poll-derived probabilities in 72 of 72 rows.
+
+Interpretation:
+
+- The report can now state a bounded H1 poll-comparison result: Polymarket is
+  better in the late low/middle poll-distance scope and in all 9 covered states
+  under that diagnostic.
+- The broad user objective is still not proven because the full panel and
+  high-distance subset contradict a general Polymarket-better claim.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_poll_comparison_result`
+  -> PASS, regenerated result CSV, summary CSV, PNG, and metadata.
+- `data/results/h1_poll_comparison_result.png` inspected; figure is nonblank
+  and readable with the bounded statement and counterexamples separated.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 34 figures.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_poll_comparison_result.py tests\test_dozenten_report.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `441 passed in 42.07s`.
+
+## 2026-06-11 - H1 poll-comparison unit robustness
+
+Context:
+
+- Continued the H1 forecast-quality objective by reducing dependence on
+  repeated state-date rows in the primary poll-comparison result.
+- The work reads only `h1_state_poll_panel_cases.csv` and reuses the existing
+  deterministic horizon bins plus quantile-derived poll-distance terciles.
+- It does not collect external data, query a database, use LLMs, agents, MCP,
+  ML, wallet fields, order fields, fixed competitiveness thresholds, or raw
+  table dumps.
+
+Changes:
+
+- Added `operations/analysis/h1_poll_comparison_unit_robustness.py`.
+- Added `tests/test_h1_poll_comparison_unit_robustness.py`.
+- Generated:
+  - `data/results/h1_poll_comparison_unit_robustness_units.csv`.
+  - `data/results/h1_poll_comparison_unit_robustness_summary.csv`.
+  - `data/results/h1_poll_comparison_unit_robustness.png`.
+  - `data/results/h1_poll_comparison_unit_robustness_metadata.json`.
+- Integrated the robustness summary and figure into
+  `operations/project/build_dozenten_report.py`.
+- Updated `tests/test_dozenten_report.py`.
+- Updated `docs/research/RESEARCH_SPEC.md` with Figure 2e, artifact links,
+  and the bounded interpretation.
+
+Key output:
+
+- The robustness table contains 255 unit rows.
+- In the primary late low/middle poll-distance scope, Polymarket is supported
+  in:
+  - 262 of 285 state-date rows,
+  - 9 of 9 states,
+  - 17 of 17 state-month units,
+  - 17 of 17 state-horizon units,
+  - 4 of 4 horizon-tier units.
+- Boundaries remain explicit:
+  - full-panel state-month units support poll-derived probabilities in 61 of
+    80 units,
+  - late high-distance state-month units support poll-derived probabilities in
+    8 of 8 units.
+
+Interpretation:
+
+- This strengthens the bounded H1 poll-comparison statement because the
+  primary Polymarket result survives aggregation beyond daily rows.
+- It still does not complete the broad user objective: all unit aggregations
+  remain within one election context, and the full panel plus high-distance
+  subset are counterexamples.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_poll_comparison_unit_robustness`
+  -> PASS, regenerated unit CSV, summary CSV, PNG, and metadata.
+- `data/results/h1_poll_comparison_unit_robustness.png` inspected; figure is
+  nonblank and separates primary support from boundary counterexamples.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 35 figures.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_poll_comparison_result.py tests\test_h1_poll_comparison_unit_robustness.py tests\test_dozenten_report.py -q`
+  -> PASS, 7 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `444 passed in 43.03s`.
+
+## 2026-06-11 - H1 unit-robustness exact sign tests
+
+Context:
+
+- Continued the H1 forecast-quality objective by adding exact sign-test
+  diagnostics to the unit-robustness artifact.
+- This keeps the robust 17/17 State-Month result from being only a count. It
+  now has deterministic p-values and exact lower confidence bounds in the same
+  style as the existing state-level H1 significance diagnostic.
+
+Changes:
+
+- Updated `operations/analysis/h1_poll_comparison_unit_robustness.py` to add
+  exact one-sided binomial p-values and exact 95 percent lower bounds for
+  primary unit-support counts, plus exact poll-derived p-values for the late
+  high-distance boundary scope.
+- Updated `tests/test_h1_poll_comparison_unit_robustness.py`.
+- Regenerated `data/results/h1_poll_comparison_unit_robustness.*`.
+- Updated `operations/project/build_dozenten_report.py` and
+  `tests/test_dozenten_report.py` so the Dozentenbericht reports the
+  State-Month p-value and confidence lower bound.
+- Updated `docs/research/RESEARCH_SPEC.md` with the new p-values and exact
+  lower bound.
+
+Key output:
+
+- Primary State-Month support remains Polymarket 17 of 17.
+- Exact one-sided State-Month binomial p-value: 0.0000076294.
+- Exact 95 percent lower confidence bound for the State-Month support share:
+  0.8384.
+- Late high-distance State-Month boundary remains poll-derived 8 of 8 with
+  exact one-sided p-value 0.00390625.
+
+Interpretation:
+
+- The bounded H1 poll-comparison statement is now supported by row counts,
+  coarser unit counts, and exact sign-test diagnostics on the State-Month
+  aggregation.
+- The broad user objective remains unproven because the units are still from
+  one election context and the full-panel/high-distance boundaries remain
+  counterexamples.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_poll_comparison_unit_robustness`
+  -> PASS, regenerated unit robustness artifacts.
+- `data/results/h1_poll_comparison_unit_robustness.png` inspected; figure is
+  nonblank and the p-value text fits inside the statement box.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 35 figures.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_poll_comparison_result.py tests\test_h1_poll_comparison_unit_robustness.py tests\test_dozenten_report.py -q`
+  -> PASS, 7 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `444 passed in 40.74s`.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `438 passed in 46.69s`.
+
+## 2026-06-11 - External poly_data pipeline usefulness review
+
+Context:
+
+- Evaluated `warproxxx/poly_data` as a possible Polymarket data-source
+  reference for the active deterministic analysis work.
+- Inspected the public GitHub repository and cloned the current `main` branch
+  into a temporary directory for read-only code review. No external pipeline
+  code was imported into this repository.
+- Confirmed that the repository implements a Polymarket v2 trade ingestion
+  flow, not a forecast-quality or poll-comparison pipeline.
+
+Inspected:
+
+- README and repository metadata.
+- `update.py`.
+- `update_utils/update_markets.py`.
+- `update_utils/update_chain.py`.
+- `update_utils/process_live.py`.
+- `poly_utils/utils.py`.
+- `pyproject.toml` and `LICENSE`.
+
+Assessment:
+
+- Useful as a technical reference for future read-only on-chain trade
+  ingestion, especially `OrderFilled` log decoding, market-token joins,
+  resumable cursors, and missing-token backfill.
+- Not suitable for direct adoption in the active Swiss referendum comparison
+  because the current goal needs bounded market snapshots and bounded
+  price-history windows, while `poly_data` performs broad on-chain trade
+  backfill and emits maker/taker wallet-address-level data.
+- Direct code reuse is also unattractive because the repository carries GPL-3.0
+  licensing in `LICENSE` and README while `pyproject.toml` declares MIT, so
+  any reuse would need license review and likely clean-room reimplementation of
+  only the relevant concepts.
+
+Recommendation:
+
+- Do not add `poly_data` as a dependency.
+- Keep the active Swiss referendum pipeline based on existing bounded
+  Gamma/CLOB collectors.
+- If later H3 or monitor work needs trade-level data, implement a small,
+  tested, read-only internal collector that borrows the idea of Polygon
+  `OrderFilled` log ingestion but writes validated bounded artifacts and keeps
+  wallet-address exposure explicitly scoped.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `438 passed in 49.52s`.
+
+## 2026-06-11 - H1 calibration figure readability revision
+
+Context:
+
+- Continued the explicit H1 forecast-quality objective by revising the
+  calibration visualization that previously drew sparse fixed-bin reliability
+  rows as connected curves.
+- The change keeps all statistical calculations in Python and uses only
+  existing deterministic H1 case artifacts. It does not collect new data, query
+  a database, use LLMs, agents, MCP, ML, wallet fields, order fields, or raw
+  table dumps.
+
+Changes:
+
+- Updated `operations/analysis/h1_calibration_diagnostic.py` so
+  `h1_calibration_diagnostic.png` is now a scorecard-plus-sparse-bin figure.
+- The figure now separates:
+  - aggregate Brier advantage by pairwise comparison,
+  - individual lower-loss counts,
+  - unconnected sparse reliability-bin points for sources with at least 30
+    cases,
+  - mean Brier and fixed-bin ECE.
+- Added visualization metadata for `sparse_reliability_points_not_connected`
+  and `reliability_panel_min_case_count`.
+- Updated `tests/test_h1_calibration_diagnostic.py`.
+- Updated `docs/research/RESEARCH_SPEC.md`.
+- Regenerated `data/results/h1_calibration_diagnostic.*` and the Dozentenbericht
+  artifacts.
+
+Key output:
+
+- H1 calibration diagnostic still contains 192 forecast-case rows across 7
+  forecast sources and 5 pairwise rows.
+- Polymarket has lower aggregate mean Brier in 5 of 5 pairwise rows.
+- Polymarket has majority lower individual loss in 2 of 5 pairwise rows.
+- Broad many-cases support remains 0 of 5 and `not_proven`.
+
+Interpretation:
+
+- The revised visualization makes the current H1 evidence easier to read and
+  avoids implying a continuous calibration curve from sparse bins.
+- It strengthens thesis-facing reporting quality but does not complete the
+  broad claim. More independent resolved markets or a stronger scoped claim are
+  still needed before saying Polymarket is generally better than poll-based
+  comparators.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_calibration_diagnostic`
+  -> PASS, regenerated calibration CSVs, PNG, and metadata.
+- `data/results/h1_calibration_diagnostic.png` inspected; figure is nonblank
+  and readable with the revised scorecard layout.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_calibration_diagnostic.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 33 figures.
+
+## 2026-06-11 - H1 direct poll outlier robustness diagnostic
+
+Context:
+
+- Continued the H1 forecast-quality objective by checking whether the positive
+  direct poll state-cluster mean is driven by one or a few exceptional states.
+- Kept the work deterministic: Python only, no live data collection, no
+  database writes, no LLM metrics, no agents/MCP, no ML, no wallet fields, and
+  no order endpoints.
+
+Changes:
+
+- Added `operations/analysis/h1_direct_poll_outlier_robustness.py`.
+- Generated `data/results/h1_direct_poll_outlier_robustness_scenarios.csv`,
+  `data/results/h1_direct_poll_outlier_robustness_summary.csv`,
+  `data/results/h1_direct_poll_outlier_robustness.png`, and
+  `data/results/h1_direct_poll_outlier_robustness_metadata.json`.
+- Added `tests/test_h1_direct_poll_outlier_robustness.py`.
+- Integrated the result into `operations/project/build_dozenten_report.py`,
+  `tests/test_dozenten_report.py`, and `docs/research/RESEARCH_SPEC.md`.
+- Regenerated the Dozentenbericht artifacts.
+
+Key output:
+
+- Direct poll state clusters: 43.
+- Full equal-state mean loss advantage: 0.0122 Brier points.
+- Minimum leave-one-state-out mean: 0.0095 after removing Wisconsin.
+- All 43 leave-one-state-out means remain positive.
+- The mean remains positive after removing the top 6 positive state
+  contributions and first turns non-positive after removing 7, at -0.0001.
+- Largest positive state contribution: Wisconsin, 0.1248 Brier points.
+
+Interpretation:
+
+- The bounded direct poll mean-loss advantage is not created by a single state.
+- The advantage is still concentrated in the largest positive state
+  contributions, so this strengthens robustness of the mean-loss statement but
+  does not prove a state-majority, many-election, or broad many-cases claim.
+- The H1 objective remains incomplete because the user-requested broad claim
+  still needs stronger independent evidence or a narrower thesis claim.
+
+Figure:
+
+- `data/results/h1_direct_poll_outlier_robustness.png` shows leave-one-state-out
+  means, top-k positive-state exclusions, state-level contributions, and the
+  bounded interpretation.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.h1_direct_poll_outlier_robustness`
+  -> PASS, regenerated CSV, PNG, and metadata outputs.
+- `data/results/h1_direct_poll_outlier_robustness.png` inspected; figure is
+  nonblank and readable.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_direct_poll_outlier_robustness.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown/HTML/DOCX with 38 figures.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_direct_poll_outlier_robustness.py tests\test_h1_direct_poll_state_cluster_diagnostic.py tests\test_h1_direct_poll_loss_decomposition.py tests\test_dozenten_report.py -q`
+  -> PASS, 10 passed.

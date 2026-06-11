@@ -1,0 +1,67 @@
+{
+  "case_ids": [
+    "us_2024_house_republican_control",
+    "us_2024_president_trump",
+    "us_2024_senate_florida_republican",
+    "us_2024_senate_montana_republican",
+    "us_2024_senate_ohio_republican",
+    "us_2024_senate_republican_control",
+    "us_2024_senate_texas_republican",
+    "us_2024_senate_west_virginia_republican"
+  ],
+  "generated_at_utc": "2026-06-10T15:14:03+00:00",
+  "limitations": {
+    "no_causal_or_tradeability_claim": true,
+    "not_daily_time_series": true,
+    "not_raw_poll_comparison": true,
+    "same_election_day_outcomes_not_many_markets": true,
+    "small_curated_final_snapshot_set": true
+  },
+  "method": {
+    "calculation_scope": "deterministic_python_from_curated_probability_forecasts",
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "forecast_timestamp_utc": "2024-11-05T11:00:00Z",
+    "name": "h1_final_snapshot_extension",
+    "raw_poll_average_probability_transform_used": false,
+    "rcp_included": false,
+    "read_only_public_endpoints": true,
+    "source": "live",
+    "traditional_source": "FiveThirtyEight final 2024 forecast article"
+  },
+  "outputs": {
+    "broad_many_cases_claim_supported_now": false,
+    "case_count": 8,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "independent_resolved_outcome_count": 8,
+    "mean_loss_advantage": 0.014901750000000005,
+    "mean_polymarket_brier": 0.07837715625000001,
+    "mean_traditional_brier": 0.09327890625000002,
+    "polymarket_better_share": 0.625,
+    "polymarket_lower_loss_count": 5,
+    "traditional_lower_loss_count": 3
+  },
+  "source_paths": {
+    "cases": "data\\results\\h1_final_snapshot_cases.csv",
+    "figure": "data\\results\\h1_final_snapshot.png",
+    "summary": "data\\results\\h1_final_snapshot_summary.csv"
+  },
+  "source_urls": {
+    "clob_prices_history": "https://clob.polymarket.com/prices-history",
+    "forecast_source": "https://abcnews.com/538/538s-final-forecasts-2024-election/story?id=115511051",
+    "gamma_events": "https://gamma-api.polymarket.com/events"
+  },
+  "traditional_probability_notes": {
+    "us_2024_house_republican_control": "538 final forecast reports Republicans at 49-in-100 for House control.",
+    "us_2024_president_trump": "538 final forecast reports Trump at 49.45 percent.",
+    "us_2024_senate_florida_republican": "538 final forecast reports Democrats at 16-in-100 in Florida Senate; Republican target probability is 84-in-100.",
+    "us_2024_senate_montana_republican": "538 final forecast reports Republicans at 93-in-100 in Montana Senate.",
+    "us_2024_senate_ohio_republican": "538 final forecast reports Democrat Sherrod Brown at 41-in-100; Republican target probability is 59-in-100.",
+    "us_2024_senate_republican_control": "538 final forecast reports Republicans at 92-in-100 for Senate control.",
+    "us_2024_senate_texas_republican": "538 final forecast reports Democrats at 16-in-100 in Texas Senate; Republican target probability is 84-in-100.",
+    "us_2024_senate_west_virginia_republican": "538 final forecast reports Democrat Glenn Elliott at 1-in-1,000; Republican target probability is 999-in-1,000."
+  }
+}

@@ -1,0 +1,14 @@
+summary_id,value,unit,description
+state_count,13.0,states,States represented in the <=90-day window.
+row_count,357.0,state-date rows,Repeated forecast rows in the <=90-day window.
+polymarket_lower_loss_count,262.0,state-date rows,Rows where Polymarket has lower Brier loss.
+poll_derived_lower_loss_count,95.0,state-date rows,Rows where the poll-derived probability has lower Brier loss.
+tie_count,0.0,state-date rows,Rows with equal Brier loss.
+polymarket_better_share,0.7338935574229691,share,Share of <=90-day rows where Polymarket has lower loss.
+mean_polymarket_brier,0.179920350140056,brier,Mean Polymarket Brier in the <=90-day window.
+mean_poll_derived_brier,0.2520477705719791,brier,Mean poll-derived Brier in the <=90-day window.
+mean_loss_advantage,0.07212742043192308,brier,Positive means lower Polymarket mean Brier.
+polymarket_mean_support_state_count,8.0,states,States where mean Brier is lower for Polymarket.
+polymarket_majority_support_state_count,8.0,states,States where Polymarket has a majority of lower-loss rows.
+poll_derived_or_no_polymarket_support_state_count,5.0,states,States where mean Brier is not lower for Polymarket.
+broad_many_cases_claim_supported,0.0,binary,Still one election context; broad claim is not proven.

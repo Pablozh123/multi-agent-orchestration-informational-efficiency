@@ -1,0 +1,61 @@
+{
+  "generated_at_utc": "2026-06-10T23:45:52+00:00",
+  "limitations": {
+    "bounded_statement_is_late_low_middle_poll_distance_only": true,
+    "full_state_date_panel_contradicts_broad_claim": true,
+    "late_high_distance_subset_contradicts_broad_claim": true,
+    "no_causal_or_tradeability_claim": true,
+    "not_independent_many_elections_proof": true,
+    "poll_probabilities_are_transformed_from_polling_margins": true,
+    "rows_repeat_states_from_one_election_context": true
+  },
+  "method": {
+    "calculation_scope": "deterministic_python_from_precomputed_h1_artifacts",
+    "does_not_collect_external_data": true,
+    "does_not_recompute_raw_brier_rows": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "name": "h1_poll_comparison_result_scorecard",
+    "rcp_included": false,
+    "uses_raw_poll_shares_directly": false
+  },
+  "outputs": {
+    "bounded_polymarket_statement_supported": true,
+    "broad_claim_proven": false,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "h1_goal_completion_status": "not_proven",
+    "result_row_count": 6
+  },
+  "source_paths": {
+    "claim_audit_input": "data\\results\\h1_claim_evidence_audit.csv",
+    "claim_audit_summary_input": "data\\results\\h1_claim_evidence_audit_summary.csv",
+    "figure_output": "data\\results\\h1_poll_comparison_result.png",
+    "panel_competitiveness_input": "data\\results\\h1_state_poll_panel_competitiveness_summary.csv",
+    "result_output": "data\\results\\h1_poll_comparison_result.csv",
+    "state_significance_input": "data\\results\\h1_state_poll_panel_state_significance_summary.csv",
+    "summary_output": "data\\results\\h1_poll_comparison_result_summary.csv"
+  },
+  "summary": {
+    "bounded_polymarket_statement_supported": 1,
+    "broad_claim_proven": 0,
+    "direct_poll_audit_row_count": 15,
+    "direct_poll_audit_support_count": 12,
+    "full_panel_poll_support_count": 1360,
+    "full_panel_polymarket_support_count": 360,
+    "h1_goal_completion_status": "not_proven",
+    "late_high_distance_poll_support_count": 72,
+    "primary_comparison_count": 285,
+    "primary_exact_95_ci_low": 0.7168711644368863,
+    "primary_exact_binomial_p_value": 0.001953125,
+    "primary_mean_loss_advantage": 0.0932715877516982,
+    "primary_poll_support_count": 23,
+    "primary_polymarket_state_count": 9,
+    "primary_polymarket_support_count": 262,
+    "primary_polymarket_support_share": 0.9192982456140351,
+    "primary_scope": "<=90_days_low_middle_poll_distance",
+    "primary_state_count": 9
+  }
+}

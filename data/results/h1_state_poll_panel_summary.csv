@@ -1,0 +1,16 @@
+summary_id,value,unit,description
+poll_panel_candidate_pair_count,1822.0,state-date rows,Valid 538 REP/DEM state-date pairs before price matching.
+matched_case_count,1720.0,state-date rows,State-date rows with a nearby Polymarket history point.
+matched_state_count,15.0,states,States represented in matched panel rows.
+matched_date_count,186.0,dates,Forecast dates represented in matched panel rows.
+independent_state_outcome_count,15.0,states,Resolved state outcomes represented; panel rows are repeated forecasts.
+polymarket_lower_loss_count,360.0,state-date rows,Rows where Polymarket has lower Brier loss.
+poll_derived_lower_loss_count,1360.0,state-date rows,Rows where transformed 538 polling average has lower Brier loss.
+tie_count,0.0,state-date rows,Rows with equal Brier loss.
+polymarket_better_share,0.20930232558139536,share,Share of matched panel rows where Polymarket has lower loss.
+mean_polymarket_brier,0.15947981976744185,brier,Mean Polymarket Brier loss across matched panel rows.
+mean_poll_derived_brier,0.10260026775705648,brier,Mean transformed 538 poll-derived Brier loss across matched panel rows.
+mean_loss_advantage,-0.05687955201038537,brier,Positive means Polymarket has lower mean Brier; negative means poll-derived has lower mean Brier.
+aggregate_mean_supports_polymarket,0.0,binary,Whether aggregate mean Brier is lower for Polymarket.
+majority_rows_support_polymarket,0.0,binary,Whether Polymarket has lower loss in a majority of matched rows.
+broad_many_cases_claim_supported,0.0,binary,Repeated state-date rows do not prove broad independent many-cases support.

@@ -1,0 +1,85 @@
+{
+  "generated_at_utc": "2026-06-10T18:27:09+00:00",
+  "limitations": {
+    "does_not_prove_broad_independent_many_cases_claim": true,
+    "no_causal_or_tradeability_claim": true,
+    "panel_rows_are_repeated_forecasts": true,
+    "within_90_days_is_horizon_diagnostic_subset": true
+  },
+  "method": {
+    "calculation_scope": "deterministic_python_from_state_date_poll_panel_cases",
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_write_database": true,
+    "election_date": "2024-11-05",
+    "horizon_bins": [
+      {
+        "horizon_bin": "181_plus_days",
+        "horizon_label": "181+ days",
+        "max_days_to_election": 10000,
+        "min_days_to_election": 181
+      },
+      {
+        "horizon_bin": "151_180_days",
+        "horizon_label": "151-180 days",
+        "max_days_to_election": 180,
+        "min_days_to_election": 151
+      },
+      {
+        "horizon_bin": "121_150_days",
+        "horizon_label": "121-150 days",
+        "max_days_to_election": 150,
+        "min_days_to_election": 121
+      },
+      {
+        "horizon_bin": "91_120_days",
+        "horizon_label": "91-120 days",
+        "max_days_to_election": 120,
+        "min_days_to_election": 91
+      },
+      {
+        "horizon_bin": "61_90_days",
+        "horizon_label": "61-90 days",
+        "max_days_to_election": 90,
+        "min_days_to_election": 61
+      },
+      {
+        "horizon_bin": "0_60_days",
+        "horizon_label": "0-60 days",
+        "max_days_to_election": 60,
+        "min_days_to_election": 0
+      }
+    ],
+    "name": "h1_state_poll_panel_horizon_diagnostic",
+    "near_horizon_max_days": 90,
+    "rcp_included": false,
+    "uses_raw_poll_shares_directly": false
+  },
+  "outputs": {
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "full_panel_mean_poll_derived_brier": 0.10260026775705645,
+    "full_panel_mean_polymarket_brier": 0.1594798197674418,
+    "full_panel_poll_derived_lower_loss_count": 1360,
+    "full_panel_polymarket_lower_loss_count": 360,
+    "h1_goal_completion_status": "not_proven",
+    "horizon_bin_count": 6,
+    "row_count": 1720,
+    "state_count": 15,
+    "within_90_mean_poll_derived_brier": 0.2520477705719791,
+    "within_90_mean_polymarket_brier": 0.179920350140056,
+    "within_90_poll_derived_lower_loss_count": 95,
+    "within_90_polymarket_lower_loss_count": 262,
+    "within_90_row_count": 357,
+    "within_90_state_count": 13
+  },
+  "source_paths": {
+    "case_input": "data\\results\\h1_state_poll_panel_cases.csv",
+    "claim_audit": "data\\results\\h1_state_poll_panel_horizon_claim_audit.csv",
+    "figure": "data\\results\\h1_state_poll_panel_horizon_diagnostic.png",
+    "horizon_summary": "data\\results\\h1_state_poll_panel_horizon_summary.csv",
+    "state_horizon": "data\\results\\h1_state_poll_panel_horizon_state_summary.csv"
+  }
+}

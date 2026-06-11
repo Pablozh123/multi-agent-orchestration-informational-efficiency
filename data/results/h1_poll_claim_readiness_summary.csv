@@ -1,0 +1,15 @@
+summary_id,value,unit,description
+claim_row_count,13,rows,Claim-readiness rows in the H1 poll synthesis.
+supported_bounded_scope_row_count,4,rows,Rows where the bounded primary poll-comparison scope is supported.
+mixed_mean_support_row_count,3,rows,Rows with mean-loss support but missing case/state majority support.
+counterexample_row_count,5,rows,Rows that contradict the strong broad Polymarket-better claim.
+primary_polymarket_support_count,262,state-date rows,Bounded primary state-date rows where Polymarket has lower Brier loss.
+primary_comparison_count,285,state-date rows,Bounded primary state-date comparison count.
+primary_polymarket_support_share,0.9192982456140351,share,Bounded primary state-date Polymarket support share.
+primary_state_month_polymarket_support_count,17,state_month units,Bounded primary state-month units supporting Polymarket.
+primary_state_month_unit_count,17,state_month units,Bounded primary state-month unit count.
+primary_state_month_exact_p_value,7.62939453125e-06,p_value,Exact one-sided state-month p-value for bounded Polymarket support.
+primary_state_month_exact_95_ci_low,0.83843388873926,share,Exact 95 percent lower confidence bound for state-month support.
+bounded_poll_claim_supported,1,binary,The bounded <=90-day low/middle poll-distance claim is supported.
+broad_claim_proven,0,binary,The broad many-cases or many-elections claim is not proven.
+h1_goal_completion_status,not_proven,status,"Current evidence supports a bounded poll claim, not the full broad objective."

@@ -459,6 +459,10 @@ Done criteria:
 - A curated manual review-status worksheet exists at
   `data/monitor_anomaly_review_status_updates.csv`; it can update queued cases
   with review status, reviewer, source URL, event URL, and review notes.
+- The current high-priority AOC-2028 review candidate has a first
+  `source_check_pending` entry with public Polymarket and FairVote context;
+  this records source-check progress only and does not create causal or
+  private-information evidence.
 - Future agent and MCP integration is documented as contract-only: bounded
   summaries, max 50 rows, no raw SQL, no wallet-address exposure by default,
   no order or trading paths, and later `llm_audit_log` logging.
@@ -493,8 +497,9 @@ Blockers:
   misconduct, private information, tradeability, or profitability.
 - The first non-none live candidates require human review before any
   thesis-facing alert wording or strategy hypothesis.
-- The current high-priority human-review candidate still needs manual source
-  checks and repeat-bucket confirmation before any thesis-facing use.
+- The current high-priority human-review candidate still needs repeat-bucket
+  confirmation, fuller event mapping, and human acceptance or exclusion before
+  any thesis-facing use.
 - Current strict candidates have small observed amounts versus the
   AdrianCronauer USD 103'248 reference trade, so materiality context must be
   shown before they are used as informed-flow examples.
@@ -502,9 +507,9 @@ Blockers:
   calibrated against broader Polymarket distributions and reference cases.
 - Wallet graph v1 is based on shared market and shared time-bucket activity;
   it is not an on-chain funding graph or identity cluster.
-- The next user-facing step is manual source-check fields for queued anomaly
-  cases, especially the current high-priority case, before any thesis-facing
-  use.
+- The next user-facing step is to source-check the remaining queued anomaly
+  cases and then define deterministic review-status transitions for accepted,
+  excluded, or false-context cases.
 
 ## Phase 11: Swiss Referendum Efficiency Comparison
 

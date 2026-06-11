@@ -1,4 +1,4 @@
 case_id,human_review_status,review_status_updated_at_utc,reviewer,review_source_url,event_source_url,review_note
-monitor_candidate_20260523_192500_c6370fa4e8c9,needs_human_review,,,,,
+monitor_candidate_20260523_192500_c6370fa4e8c9,source_check_pending,2026-06-11T18:24:42Z,codex_source_check,https://polymarket.com/event/democratic-presidential-nominee-2028/will-alexandria-ocasio-cortez-win-the-2028-democratic-presidential-nomination-653,https://fairvote.org/press/kamala-harris-gavin-newsom-ranked-choice-poll/,Source check opened; Polymarket market page verified; May 20 FairVote/Lake 2028 primary poll provides pre-candidate public context; no causal event mapping or private-information claim
 monitor_candidate_20260523_192500_71cd3b4e784b,needs_human_review,,,,,
 monitor_candidate_20260523_192500_2bb6f8fa6250,needs_human_review,,,,,

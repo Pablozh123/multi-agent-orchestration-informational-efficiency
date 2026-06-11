@@ -25,7 +25,7 @@
     ],
     "wallet_address_exposure_allowed_by_default": false
   },
-  "generated_at_utc": "2026-06-11T18:18:32+00:00",
+  "generated_at_utc": "2026-06-11T18:25:16+00:00",
   "inputs": {
     "alert_rows_path": "data\\results\\monitor_v2_polymarket_rolling_alert_rows.csv",
     "detection_cases_path": "data\\results\\monitor_detection_backtest_cases.csv",

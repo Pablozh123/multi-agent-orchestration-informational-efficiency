@@ -7545,3 +7545,56 @@ Verification:
   -> PASS, 20 passed.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 481 passed in 57.83s.
+
+## 2026-06-11 - Anomaly review source-check seed
+
+Context:
+
+- Continued the deterministic monitor anomaly-review queue by recording the
+  first manual source-check progress for the current high-priority review
+  candidate.
+- Kept the Swiss referendum track as running data collection and did not add a
+  new referendum interpretation decision.
+- Kept agents, MCP, LLM metric calculation, ML, database writes, trading
+  paths, and wallet-address prompt exposure out of scope.
+
+Changes:
+
+- Updated `data/monitor_anomaly_review_status_updates.csv` for
+  `monitor_candidate_20260523_192500_c6370fa4e8c9` from
+  `needs_human_review` to `source_check_pending`.
+- Recorded public Polymarket market context and FairVote/Lake 2028 primary
+  poll context as source-check follow-up fields.
+- Regenerated `data/results/monitor_anomaly_review_queue.csv`,
+  `data/results/monitor_anomaly_review_summary.csv`,
+  `data/results/monitor_anomaly_review_metadata.json`, and
+  `data/results/monitor_anomaly_review_dashboard.html`.
+- Updated `GOAL.md`, `ROADMAP.md`, and
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md` to reflect the new review
+  status without upgrading it to thesis-facing evidence.
+
+Key output:
+
+- Queue rows after merge: 3.
+- High-priority rows: 1.
+- Current human-review statuses: `needs_human_review=2`;
+  `source_check_pending=1`.
+- Metadata still records future MCP row cap 50, no wallet-address output, no
+  order instructions, and contract-only agent/MCP status.
+
+Interpretation:
+
+- The first source-check entry records that public market and public polling
+  context were identified for the high-priority case.
+- It remains a human-review cue only. It does not prove event causality,
+  private information, misconduct, tradeability, profitability, future
+  performance, or market inefficiency.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_anomaly_review_queue`
+  -> PASS, generated 3 queue rows and 1 high-priority row.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_monitor_anomaly_review_queue.py -q`
+  -> PASS, 8 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 481 passed in 53.64s.

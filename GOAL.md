@@ -27,6 +27,8 @@ deliverables:
 - Generate `data/results/monitor_anomaly_review_dashboard.html`.
 - Add `data/monitor_anomaly_review_status_updates.csv` as the curated manual
   review-status worksheet that can update queued cases deterministically.
+- Record the first manual source-check status for the current high-priority
+  anomaly-review case without upgrading it to thesis-facing evidence.
 - Include case fields for market slug, review priority, trigger family,
   market-move context, wallet-flow context, concentration context, event
   context, reference overlap, review label, missing evidence, reviewer,
@@ -63,14 +65,15 @@ acceptance_criteria:
 - The queue contains the planned review fields and a deterministic status
   update helper for human-review state changes.
 - The review-status worksheet is validated, rejects duplicate case IDs and
-  invalid statuses, and is merged into the generated queue.
+  invalid statuses, and is merged into the generated queue, including the
+  first `source_check_pending` case.
 - Future agent and MCP contracts remain metadata/documentation only and do not
   activate guarded runtime entry points.
 - Tests cover queue creation, summary counts, wallet-address rejection,
   future MCP/agent contract flags, and review-status updates.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add anomaly review status worksheet
+next_commit: data: source-check anomaly review candidate
 
 ## Running Side Goal
 

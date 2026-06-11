@@ -3855,7 +3855,13 @@ Current output shape:
 - 2 medium-priority cases.
 - 0 low-priority cases.
 - Future MCP default row cap recorded as 50 rows.
-- 3 current status worksheet rows, all still marked `needs_human_review`.
+- 3 current status worksheet rows.
+- Current human-review statuses: 2 `needs_human_review` and 1
+  `source_check_pending`.
+- The high-priority AOC-2028 candidate has public Polymarket market context
+  and FairVote/Lake 2028 primary poll context recorded for source-check
+  follow-up only; this does not establish event causality, private
+  information, misconduct, tradeability, or thesis-facing evidence.
 
 Agent and MCP boundary:
 

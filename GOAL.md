@@ -29,8 +29,12 @@ deliverables:
 - Generate `data/results/monitor_anomaly_case_review_packets.json`.
 - Generate `data/results/monitor_anomaly_review_status_transitions.csv`.
 - Generate `data/results/monitor_anomaly_review_status_transitions.json`.
+- Generate `data/results/monitor_anomaly_review_decision_readiness.csv`.
+- Generate `data/results/monitor_anomaly_review_decision_readiness.json`.
 - Add `data/monitor_anomaly_review_status_updates.csv` as the curated manual
   review-status worksheet that can update queued cases deterministically.
+- Add `data/monitor_anomaly_review_decisions.csv` as the curated manual final
+  review-decision worksheet.
 - Record manual source-check status for all current anomaly-review cases
   without upgrading them to thesis-facing evidence.
 - Include case fields for market slug, review priority, trigger family,
@@ -74,17 +78,20 @@ acceptance_criteria:
   `needs_human_review`, `source_check_pending`, `reviewed_keep_candidate`,
   `reviewed_false_context`, and `thesis_excluded` without automatically
   accepting or rejecting cases.
+- Review-decision readiness outputs validate manual target statuses against
+  transition gates and require limitations for `reviewed_keep_candidate`
+  without applying decisions automatically.
 - The review-status worksheet is validated, rejects duplicate case IDs and
   invalid statuses, and is merged into the generated queue, including
   `source_check_pending` entries for all current queued cases.
 - Future agent and MCP contracts remain metadata/documentation only and do not
   activate guarded runtime entry points.
 - Tests cover queue creation, summary counts, case-review packets,
-  review-status transitions, wallet-address rejection, future MCP/agent
-  contract flags, and review-status updates.
+  review-status transitions, review-decision readiness, wallet-address
+  rejection, future MCP/agent contract flags, and review-status updates.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add anomaly review status transitions
+next_commit: feat: add anomaly review decision readiness
 
 ## Running Side Goal
 

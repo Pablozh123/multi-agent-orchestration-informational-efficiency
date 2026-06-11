@@ -3834,10 +3834,13 @@ Generated artifacts:
 - `data/results/monitor_anomaly_case_review_packets.json`
 - `data/results/monitor_anomaly_review_status_transitions.csv`
 - `data/results/monitor_anomaly_review_status_transitions.json`
+- `data/results/monitor_anomaly_review_decision_readiness.csv`
+- `data/results/monitor_anomaly_review_decision_readiness.json`
 
 Curated manual input:
 
 - `data/monitor_anomaly_review_status_updates.csv`
+- `data/monitor_anomaly_review_decisions.csv`
 
 Input boundary:
 
@@ -3865,6 +3868,9 @@ Current output shape:
 - 3 deterministic status-transition rows define allowed next review states and
   thesis-use gates; all current rows remain blocked from thesis-facing use
   until a human reviewer marks `reviewed_keep_candidate` with limitations.
+- 3 decision-readiness rows validate the final decision worksheet; all current
+  rows are `no_decision_recorded`, so no case has been accepted, rejected, or
+  upgraded to thesis-facing evidence.
 - All current queue cases have public Polymarket market context and one public
   context URL recorded for source-check follow-up only; this does not
   establish event causality, private information, misconduct, tradeability, or
@@ -3873,7 +3879,8 @@ Current output shape:
 Agent and MCP boundary:
 
 - Future agents may only read the queue, summary, bounded case-review packets,
-  or status-transition rows after `llm_audit_log` integration exists.
+  status-transition rows, or decision-readiness rows after `llm_audit_log`
+  integration exists.
 - Future MCP tools are contract-only at this stage:
   `get_anomaly_review_summary`, `get_anomaly_case`,
   `list_monitor_artifacts`, and `get_method_limits`.

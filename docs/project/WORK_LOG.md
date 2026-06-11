@@ -7762,3 +7762,60 @@ Verification:
   -> PASS, generated 3 transition rows.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 483 passed in 51.35s.
+
+## 2026-06-11 - Anomaly review decision readiness
+
+Context:
+
+- Continued the deterministic monitor anomaly-review queue after adding
+  status-transition gates.
+- Added a curated final decision worksheet and validation output for manual
+  keep, false-context, or thesis-exclusion decisions.
+- Kept all current real cases without a final decision; no case was accepted,
+  rejected, upgraded, or made thesis-facing.
+- No MCP tool, runtime agent, LLM metric calculation, ML, database write,
+  order path, wallet-address exposure, or thesis-facing evidence claim was
+  introduced.
+
+Changes:
+
+- Added `data/monitor_anomaly_review_decisions.csv` with the three current
+  case IDs and blank target decisions.
+- Extended `operations/analysis/monitor_anomaly_review_queue.py` to validate
+  final review decisions against deterministic status-transition gates.
+- Added `data/results/monitor_anomaly_review_decision_readiness.csv`.
+- Added `data/results/monitor_anomaly_review_decision_readiness.json`.
+- Updated metadata to record decision worksheet path, decision row count,
+  readiness row count, wallet-address safety, and order-instruction safety.
+- Extended `tests/test_monitor_anomaly_review_queue.py` with valid and invalid
+  decision-readiness scenarios.
+- Updated `GOAL.md`, `ROADMAP.md`, `docs/project/TOOL_USAGE.md`, and
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+
+Key output:
+
+- Review decision worksheet rows: 3.
+- Decision-readiness rows: 3.
+- Current decision validation statuses: `no_decision_recorded=3`.
+- `reviewed_keep_candidate` is blocked unless limitations and thesis-use
+  scope are documented.
+- Metadata records `decision_readiness_contains_wallet_addresses=false` and
+  `decision_readiness_contains_order_instructions=false`.
+
+Interpretation:
+
+- Decision-readiness outputs validate whether a manual target status is
+  admissible; they do not apply decisions automatically.
+- The current cases remain human-review cues only and are not thesis-facing
+  evidence.
+- The outputs do not prove event causality, private information, misconduct,
+  tradeability, profitability, future performance, or market inefficiency.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_monitor_anomaly_review_queue.py -q`
+  -> PASS, 14 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_anomaly_review_queue`
+  -> PASS, generated 3 decision-readiness rows.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 487 passed in 49.26s.

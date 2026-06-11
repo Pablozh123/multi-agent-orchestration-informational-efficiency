@@ -191,6 +191,23 @@ data/results/monitor_anomaly_review_status_transitions.json
 Transition gates define allowed next manual statuses and thesis-use blocking
 rules. They do not automatically accept, reject, or upgrade any case.
 
+Final anomaly-review decisions are curated manually in:
+
+```text
+data/monitor_anomaly_review_decisions.csv
+```
+
+The generator validates this worksheet against the transition gates and writes
+readiness artifacts:
+
+```text
+data/results/monitor_anomaly_review_decision_readiness.csv
+data/results/monitor_anomaly_review_decision_readiness.json
+```
+
+`reviewed_keep_candidate` requires documented limitations and a thesis-use
+scope. Decision-readiness outputs do not apply decisions automatically.
+
 Open the reference similarity dashboard:
 
 ```text

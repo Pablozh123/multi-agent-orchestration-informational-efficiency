@@ -32,6 +32,7 @@ from operations.collectors.polymarket_rolling_history import ROLLING_ALERT_ROWS_
 
 
 REVIEW_UPDATES_INPUT = Path("data/monitor_anomaly_review_status_updates.csv")
+REVIEW_DECISIONS_INPUT = Path("data/monitor_anomaly_review_decisions.csv")
 QUEUE_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_queue.csv"
 SUMMARY_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_summary.csv"
 METADATA_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_metadata.json"
@@ -40,6 +41,8 @@ CASE_REVIEW_PACKETS_CSV_OUTPUT = RESULTS_DIR / "monitor_anomaly_case_review_pack
 CASE_REVIEW_PACKETS_JSON_OUTPUT = RESULTS_DIR / "monitor_anomaly_case_review_packets.json"
 STATUS_TRANSITIONS_CSV_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_status_transitions.csv"
 STATUS_TRANSITIONS_JSON_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_status_transitions.json"
+DECISION_READINESS_CSV_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_decision_readiness.csv"
+DECISION_READINESS_JSON_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_decision_readiness.json"
 
 MAX_MCP_ROWS = 50
 ALLOWED_REVIEW_STATUSES = {
@@ -85,6 +88,16 @@ REVIEW_UPDATE_COLUMNS: tuple[str, ...] = (
     "review_source_url",
     "event_source_url",
     "review_note",
+)
+
+REVIEW_DECISION_COLUMNS: tuple[str, ...] = (
+    "case_id",
+    "target_status",
+    "decision_updated_at_utc",
+    "reviewer",
+    "decision_note",
+    "limitations",
+    "thesis_use_scope",
 )
 
 SUMMARY_COLUMNS: tuple[str, ...] = (
@@ -137,6 +150,22 @@ STATUS_TRANSITION_COLUMNS: tuple[str, ...] = (
     "blocked_claims",
 )
 
+DECISION_READINESS_COLUMNS: tuple[str, ...] = (
+    "case_id",
+    "current_status",
+    "target_status",
+    "decision_validation_status",
+    "allowed_next_statuses",
+    "missing_decision_fields",
+    "thesis_use_allowed_after_decision",
+    "thesis_use_scope",
+    "reviewer_action_required",
+    "decision_note",
+    "limitations",
+    "source_decision_artifact",
+    "blocked_claims",
+)
+
 
 @dataclass(frozen=True)
 class MonitorAnomalyReviewQueueResult:
@@ -150,10 +179,13 @@ class MonitorAnomalyReviewQueueResult:
     case_packets_json_path: Path
     status_transitions_csv_path: Path
     status_transitions_json_path: Path
+    decision_readiness_csv_path: Path
+    decision_readiness_json_path: Path
     queue_row_count: int
     high_priority_count: int
     case_packet_row_count: int
     status_transition_row_count: int
+    decision_readiness_row_count: int
 
     def to_dict(self) -> dict[str, int | str]:
         """Return a JSON-friendly result summary."""
@@ -167,10 +199,13 @@ class MonitorAnomalyReviewQueueResult:
             "case_packets_json_path": str(self.case_packets_json_path),
             "status_transitions_csv_path": str(self.status_transitions_csv_path),
             "status_transitions_json_path": str(self.status_transitions_json_path),
+            "decision_readiness_csv_path": str(self.decision_readiness_csv_path),
+            "decision_readiness_json_path": str(self.decision_readiness_json_path),
             "queue_row_count": self.queue_row_count,
             "high_priority_count": self.high_priority_count,
             "case_packet_row_count": self.case_packet_row_count,
             "status_transition_row_count": self.status_transition_row_count,
+            "decision_readiness_row_count": self.decision_readiness_row_count,
         }
 
 
@@ -307,6 +342,37 @@ def build_anomaly_review_status_transitions(case_packets: pd.DataFrame) -> pd.Da
     return transitions
 
 
+def build_anomaly_review_decision_readiness(
+    *,
+    status_transitions: pd.DataFrame,
+    review_decisions: pd.DataFrame,
+) -> pd.DataFrame:
+    """Return validated manual decision readiness rows without applying decisions."""
+
+    _validate_status_transitions(status_transitions)
+    _validate_review_decisions(review_decisions)
+    transition_lookup = {
+        str(row["case_id"]): row for row in status_transitions.to_dict(orient="records")
+    }
+    unknown = sorted(set(review_decisions["case_id"].astype(str)) - set(transition_lookup))
+    if unknown:
+        raise ValueError(f"review decisions reference unknown case_id values: {unknown}")
+
+    decision_lookup = {
+        str(row["case_id"]): row for row in review_decisions.to_dict(orient="records")
+    }
+    rows = [
+        _decision_readiness_row(
+            transition=transition,
+            decision=decision_lookup.get(str(transition["case_id"]), {}),
+        )
+        for transition in status_transitions.to_dict(orient="records")
+    ]
+    readiness = pd.DataFrame(rows, columns=DECISION_READINESS_COLUMNS)
+    _reject_wallet_address_columns(readiness, "decision readiness")
+    return readiness
+
+
 def apply_review_status_updates(
     queue: pd.DataFrame,
     updates: pd.DataFrame,
@@ -348,6 +414,7 @@ def generate_monitor_anomaly_review_queue(
     materiality_context_path: Path = MATERIALITY_CONTEXT_OUTPUT,
     risk_summary_path: Path = RISK_SCORE_SUMMARY_OUTPUT,
     review_updates_path: Path = REVIEW_UPDATES_INPUT,
+    review_decisions_path: Path = REVIEW_DECISIONS_INPUT,
     queue_path: Path = QUEUE_OUTPUT,
     summary_path: Path = SUMMARY_OUTPUT,
     metadata_path: Path = METADATA_OUTPUT,
@@ -356,6 +423,8 @@ def generate_monitor_anomaly_review_queue(
     case_packets_json_path: Path = CASE_REVIEW_PACKETS_JSON_OUTPUT,
     status_transitions_csv_path: Path = STATUS_TRANSITIONS_CSV_OUTPUT,
     status_transitions_json_path: Path = STATUS_TRANSITIONS_JSON_OUTPUT,
+    decision_readiness_csv_path: Path = DECISION_READINESS_CSV_OUTPUT,
+    decision_readiness_json_path: Path = DECISION_READINESS_JSON_OUTPUT,
 ) -> MonitorAnomalyReviewQueueResult:
     """Write the anomaly review queue, compact summary, dashboard, and metadata."""
 
@@ -365,6 +434,7 @@ def generate_monitor_anomaly_review_queue(
     materiality_context = _read_optional_csv(materiality_context_path)
     risk_summary = _read_optional_csv(risk_summary_path)
     review_updates = read_review_status_updates(review_updates_path)
+    review_decisions = read_review_decisions(review_decisions_path)
 
     queue = build_anomaly_review_queue(
         review_report=review_report,
@@ -378,6 +448,10 @@ def generate_monitor_anomaly_review_queue(
     summary = build_anomaly_review_summary(queue)
     case_packets = build_anomaly_case_review_packets(queue)
     status_transitions = build_anomaly_review_status_transitions(case_packets)
+    decision_readiness = build_anomaly_review_decision_readiness(
+        status_transitions=status_transitions,
+        review_decisions=review_decisions,
+    )
 
     _write_csv(queue_path, queue)
     _write_csv(summary_path, summary)
@@ -385,6 +459,8 @@ def generate_monitor_anomaly_review_queue(
     _write_case_packets_json(case_packets_json_path, case_packets)
     _write_csv(status_transitions_csv_path, status_transitions)
     _write_status_transitions_json(status_transitions_json_path, status_transitions)
+    _write_csv(decision_readiness_csv_path, decision_readiness)
+    _write_decision_readiness_json(decision_readiness_json_path, decision_readiness)
     _write_dashboard(queue=queue, summary=summary, dashboard_path=dashboard_path)
     metadata = _metadata(
         queue=queue,
@@ -398,6 +474,8 @@ def generate_monitor_anomaly_review_queue(
         risk_summary_path=risk_summary_path,
         review_updates_path=review_updates_path,
         review_updates=review_updates,
+        review_decisions_path=review_decisions_path,
+        review_decisions=review_decisions,
         queue_path=queue_path,
         summary_path=summary_path,
         dashboard_path=dashboard_path,
@@ -405,6 +483,9 @@ def generate_monitor_anomaly_review_queue(
         case_packets_json_path=case_packets_json_path,
         status_transitions_csv_path=status_transitions_csv_path,
         status_transitions_json_path=status_transitions_json_path,
+        decision_readiness_csv_path=decision_readiness_csv_path,
+        decision_readiness_json_path=decision_readiness_json_path,
+        decision_readiness=decision_readiness,
     )
     metadata_path.parent.mkdir(parents=True, exist_ok=True)
     metadata_path.write_text(
@@ -420,10 +501,13 @@ def generate_monitor_anomaly_review_queue(
         case_packets_json_path=case_packets_json_path,
         status_transitions_csv_path=status_transitions_csv_path,
         status_transitions_json_path=status_transitions_json_path,
+        decision_readiness_csv_path=decision_readiness_csv_path,
+        decision_readiness_json_path=decision_readiness_json_path,
         queue_row_count=int(len(queue)),
         high_priority_count=_count(queue, "review_priority", "high"),
         case_packet_row_count=int(len(case_packets)),
         status_transition_row_count=int(len(status_transitions)),
+        decision_readiness_row_count=int(len(decision_readiness)),
     )
 
 
@@ -441,6 +525,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     parser.add_argument("--risk-summary", type=Path, default=RISK_SCORE_SUMMARY_OUTPUT)
     parser.add_argument("--review-updates", type=Path, default=REVIEW_UPDATES_INPUT)
+    parser.add_argument("--review-decisions", type=Path, default=REVIEW_DECISIONS_INPUT)
     parser.add_argument("--queue-output", type=Path, default=QUEUE_OUTPUT)
     parser.add_argument("--summary-output", type=Path, default=SUMMARY_OUTPUT)
     parser.add_argument("--metadata-output", type=Path, default=METADATA_OUTPUT)
@@ -465,6 +550,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         type=Path,
         default=STATUS_TRANSITIONS_JSON_OUTPUT,
     )
+    parser.add_argument(
+        "--decision-readiness-csv-output",
+        type=Path,
+        default=DECISION_READINESS_CSV_OUTPUT,
+    )
+    parser.add_argument(
+        "--decision-readiness-json-output",
+        type=Path,
+        default=DECISION_READINESS_JSON_OUTPUT,
+    )
     args = parser.parse_args(argv)
 
     try:
@@ -475,6 +570,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             materiality_context_path=args.materiality_context,
             risk_summary_path=args.risk_summary,
             review_updates_path=args.review_updates,
+            review_decisions_path=args.review_decisions,
             queue_path=args.queue_output,
             summary_path=args.summary_output,
             metadata_path=args.metadata_output,
@@ -483,6 +579,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             case_packets_json_path=args.case_packets_json_output,
             status_transitions_csv_path=args.status_transitions_csv_output,
             status_transitions_json_path=args.status_transitions_json_output,
+            decision_readiness_csv_path=args.decision_readiness_csv_output,
+            decision_readiness_json_path=args.decision_readiness_json_output,
         )
     except (FileNotFoundError, ValueError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
@@ -587,6 +685,88 @@ def _status_transition_row(item: Mapping[str, object]) -> dict[str, object]:
         "allowed_interpretation": _text(item.get("allowed_interpretation")),
         "blocked_claims": _text(item.get("blocked_claims")),
     }
+
+
+def _decision_readiness_row(
+    *,
+    transition: Mapping[str, object],
+    decision: Mapping[str, object],
+) -> dict[str, object]:
+    target_status = _text(decision.get("target_status"))
+    missing_fields = _missing_decision_fields(target_status, decision)
+    allowed_next = _split_statuses(transition.get("allowed_next_statuses"))
+    if not target_status:
+        validation_status = "no_decision_recorded"
+    elif target_status not in allowed_next:
+        raise ValueError(
+            "review decision target_status is not allowed for case_id "
+            f"{_text(transition.get('case_id'))}: {target_status}"
+        )
+    elif missing_fields:
+        raise ValueError(
+            "review decision missing required fields for case_id "
+            f"{_text(transition.get('case_id'))}: {missing_fields}"
+        )
+    else:
+        validation_status = "ready_to_apply"
+
+    return {
+        "case_id": _text(transition.get("case_id")),
+        "current_status": _text(transition.get("current_status")),
+        "target_status": target_status,
+        "decision_validation_status": validation_status,
+        "allowed_next_statuses": _text(transition.get("allowed_next_statuses")),
+        "missing_decision_fields": ";".join(missing_fields),
+        "thesis_use_allowed_after_decision": _thesis_use_after_decision(target_status),
+        "thesis_use_scope": _text(decision.get("thesis_use_scope")),
+        "reviewer_action_required": _decision_reviewer_action(
+            transition=transition,
+            target_status=target_status,
+            validation_status=validation_status,
+        ),
+        "decision_note": _text(decision.get("decision_note")),
+        "limitations": _text(decision.get("limitations")),
+        "source_decision_artifact": "monitor_anomaly_review_decisions.csv",
+        "blocked_claims": _text(transition.get("blocked_claims")),
+    }
+
+
+def _missing_decision_fields(
+    target_status: str,
+    decision: Mapping[str, object],
+) -> list[str]:
+    if not target_status:
+        return []
+    required = ["decision_updated_at_utc", "reviewer", "decision_note"]
+    if target_status == "reviewed_keep_candidate":
+        required.extend(["limitations", "thesis_use_scope"])
+    return [field for field in required if not _text(decision.get(field))]
+
+
+def _thesis_use_after_decision(target_status: str) -> str:
+    if target_status == "reviewed_keep_candidate":
+        return "method_appendix_only"
+    return "false"
+
+
+def _decision_reviewer_action(
+    *,
+    transition: Mapping[str, object],
+    target_status: str,
+    validation_status: str,
+) -> str:
+    if validation_status == "no_decision_recorded":
+        return _text(transition.get("reviewer_action_required"))
+    if validation_status == "ready_to_apply" and target_status == "reviewed_keep_candidate":
+        return (
+            "Apply only as bounded reviewed-case context with limitations; "
+            "do not state causality or private information."
+        )
+    if validation_status == "ready_to_apply" and target_status == "reviewed_false_context":
+        return "Apply as false-context decision and keep excluded from anomaly evidence."
+    if validation_status == "ready_to_apply" and target_status == "thesis_excluded":
+        return "Apply as thesis exclusion and keep out of thesis-facing outputs."
+    return "Resolve decision validation before applying any status update."
 
 
 def _transition_policy(
@@ -954,6 +1134,7 @@ def _metadata(
     summary: pd.DataFrame,
     case_packets: pd.DataFrame,
     status_transitions: pd.DataFrame,
+    decision_readiness: pd.DataFrame,
     review_report_path: Path,
     alert_rows_path: Path,
     detection_cases_path: Path,
@@ -961,6 +1142,8 @@ def _metadata(
     risk_summary_path: Path,
     review_updates_path: Path,
     review_updates: pd.DataFrame,
+    review_decisions_path: Path,
+    review_decisions: pd.DataFrame,
     queue_path: Path,
     summary_path: Path,
     dashboard_path: Path,
@@ -968,6 +1151,8 @@ def _metadata(
     case_packets_json_path: Path,
     status_transitions_csv_path: Path,
     status_transitions_json_path: Path,
+    decision_readiness_csv_path: Path,
+    decision_readiness_json_path: Path,
 ) -> dict[str, Any]:
     return {
         "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
@@ -992,6 +1177,7 @@ def _metadata(
             "materiality_context_path": str(materiality_context_path),
             "risk_summary_path": str(risk_summary_path),
             "review_updates_path": str(review_updates_path),
+            "review_decisions_path": str(review_decisions_path),
         },
         "outputs": {
             "queue_path": str(queue_path),
@@ -1001,11 +1187,15 @@ def _metadata(
             "case_packets_json_path": str(case_packets_json_path),
             "status_transitions_csv_path": str(status_transitions_csv_path),
             "status_transitions_json_path": str(status_transitions_json_path),
+            "decision_readiness_csv_path": str(decision_readiness_csv_path),
+            "decision_readiness_json_path": str(decision_readiness_json_path),
             "queue_row_count": int(len(queue)),
             "case_packet_row_count": int(len(case_packets)),
             "status_transition_row_count": int(len(status_transitions)),
+            "decision_readiness_row_count": int(len(decision_readiness)),
             "high_priority_count": _count(queue, "review_priority", "high"),
             "review_update_row_count": int(len(review_updates)),
+            "review_decision_row_count": int(len(review_decisions)),
             "contains_wallet_addresses": _contains_wallet_address_column(queue),
             "case_packets_contain_wallet_addresses": _contains_wallet_address_column(
                 case_packets
@@ -1013,9 +1203,13 @@ def _metadata(
             "status_transitions_contain_wallet_addresses": _contains_wallet_address_column(
                 status_transitions
             ),
+            "decision_readiness_contains_wallet_addresses": _contains_wallet_address_column(
+                decision_readiness
+            ),
             "contains_order_instructions": False,
             "case_packets_contain_order_instructions": False,
             "status_transitions_contain_order_instructions": False,
+            "decision_readiness_contains_order_instructions": False,
             "max_default_rows_for_future_tools": MAX_MCP_ROWS,
         },
         "future_agent_contract": {
@@ -1192,6 +1386,24 @@ def read_review_status_updates(path: Path = REVIEW_UPDATES_INPUT) -> pd.DataFram
     return updates.reset_index(drop=True)
 
 
+def read_review_decisions(path: Path = REVIEW_DECISIONS_INPUT) -> pd.DataFrame:
+    """Read optional curated final review decisions."""
+
+    if not path.exists():
+        return pd.DataFrame(columns=REVIEW_DECISION_COLUMNS)
+    frame = pd.read_csv(path, dtype=str, keep_default_na=False)
+    if frame.empty:
+        return pd.DataFrame(columns=REVIEW_DECISION_COLUMNS)
+    missing = [column for column in REVIEW_DECISION_COLUMNS if column not in frame.columns]
+    if missing:
+        raise ValueError(f"review decisions missing required columns: {missing}")
+    decisions = frame.loc[:, list(REVIEW_DECISION_COLUMNS)].copy()
+    for column in REVIEW_DECISION_COLUMNS:
+        decisions[column] = decisions[column].fillna("").astype(str).str.strip()
+    _validate_review_decisions(decisions)
+    return decisions.reset_index(drop=True)
+
+
 def _validate_review_report(frame: pd.DataFrame) -> None:
     _require_columns(
         frame,
@@ -1232,6 +1444,35 @@ def _validate_case_packets(frame: pd.DataFrame) -> None:
     invalid = sorted(set(frame["human_review_status"].astype(str)) - ALLOWED_REVIEW_STATUSES)
     if invalid:
         raise ValueError(f"case packets contain invalid human_review_status values: {invalid}")
+
+
+def _validate_status_transitions(frame: pd.DataFrame) -> None:
+    _require_columns(frame, STATUS_TRANSITION_COLUMNS, "status transitions")
+    _reject_wallet_address_columns(frame, "status transitions")
+    invalid = sorted(set(frame["current_status"].astype(str)) - ALLOWED_REVIEW_STATUSES)
+    if invalid:
+        raise ValueError(f"status transitions contain invalid current_status values: {invalid}")
+
+
+def _validate_review_decisions(frame: pd.DataFrame) -> None:
+    _require_columns(frame, REVIEW_DECISION_COLUMNS, "review decisions")
+    _reject_wallet_address_columns(frame, "review decisions")
+    target_values = {value for value in frame["target_status"].astype(str) if value}
+    allowed_targets = {
+        "reviewed_keep_candidate",
+        "reviewed_false_context",
+        "thesis_excluded",
+    }
+    invalid = sorted(target_values - allowed_targets)
+    if invalid:
+        raise ValueError(f"review decisions contain invalid target_status values: {invalid}")
+    empty_case = frame["case_id"].astype(str).str.strip().eq("")
+    if empty_case.any():
+        raise ValueError("review decisions require case_id for every row")
+    duplicated = frame["case_id"].duplicated()
+    if duplicated.any():
+        repeated = sorted(set(frame.loc[duplicated, "case_id"].astype(str)))
+        raise ValueError(f"review decisions contain duplicate case_id values: {repeated}")
 
 
 def _reject_wallet_address_columns(frame: pd.DataFrame, label: str) -> None:
@@ -1301,6 +1542,23 @@ def _write_status_transitions_json(path: Path, frame: pd.DataFrame) -> None:
     )
 
 
+def _write_decision_readiness_json(path: Path, frame: pd.DataFrame) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "artifact": "monitor_anomaly_review_decision_readiness",
+        "row_count": int(len(frame)),
+        "max_default_rows_for_future_tools": MAX_MCP_ROWS,
+        "contains_wallet_addresses": _contains_wallet_address_column(frame),
+        "contains_order_instructions": False,
+        "agent_and_mcp_status": "contract_only_not_implemented",
+        "decision_readiness": frame.to_dict(orient="records"),
+    }
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+
 def _count(frame: pd.DataFrame, column: str, value: str) -> int:
     if frame.empty or column not in frame.columns:
         return 0
@@ -1319,6 +1577,13 @@ def _split_csv(value: object) -> list[str]:
     if not text:
         return []
     return sorted({part.strip() for part in text.split(",") if part.strip()})
+
+
+def _split_statuses(value: object) -> list[str]:
+    text = _text(value)
+    if not text:
+        return []
+    return [part.strip() for part in text.split(";") if part.strip()]
 
 
 def _coalesce(*values: object) -> object:

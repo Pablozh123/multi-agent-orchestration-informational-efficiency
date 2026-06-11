@@ -9,15 +9,19 @@ import pytest
 from operations.analysis.monitor_anomaly_review_queue import (
     ALLOWED_REVIEW_STATUSES,
     CASE_REVIEW_PACKET_COLUMNS,
+    DECISION_READINESS_COLUMNS,
     QUEUE_COLUMNS,
+    REVIEW_DECISION_COLUMNS,
     REVIEW_UPDATE_COLUMNS,
     STATUS_TRANSITION_COLUMNS,
     apply_review_status_updates,
     build_anomaly_case_review_packets,
+    build_anomaly_review_decision_readiness,
     build_anomaly_review_queue,
     build_anomaly_review_summary,
     build_anomaly_review_status_transitions,
     generate_monitor_anomaly_review_queue,
+    read_review_decisions,
     read_review_status_updates,
 )
 from operations.analysis.monitor_reference_candidates import monitor_candidate_id
@@ -110,6 +114,64 @@ def test_build_anomaly_review_status_transitions_gate_thesis_use() -> None:
     assert "source_check_pending" in open_case["allowed_next_statuses"]
     assert "reviewed_keep_candidate" in open_case["blocked_next_statuses"]
     assert "wallet_address" not in transitions.columns
+
+
+def test_build_anomaly_review_decision_readiness_validates_terminal_decisions() -> None:
+    transitions = _status_transitions()
+
+    readiness = build_anomaly_review_decision_readiness(
+        status_transitions=transitions,
+        review_decisions=_review_decisions(),
+    )
+
+    keep = readiness[readiness["case_id"] == _candidate_id("market_b")].iloc[0]
+    empty = readiness[readiness["case_id"] == _candidate_id("market_a")].iloc[0]
+    assert tuple(readiness.columns) == DECISION_READINESS_COLUMNS
+    assert len(readiness) == 2
+    assert keep["decision_validation_status"] == "ready_to_apply"
+    assert keep["target_status"] == "reviewed_keep_candidate"
+    assert keep["thesis_use_allowed_after_decision"] == "method_appendix_only"
+    assert keep["missing_decision_fields"] == ""
+    assert "bounded reviewed-case context" in keep["reviewer_action_required"]
+    assert empty["decision_validation_status"] == "no_decision_recorded"
+    assert empty["thesis_use_allowed_after_decision"] == "false"
+    assert "wallet_address" not in readiness.columns
+
+
+def test_review_decisions_reject_disallowed_transition() -> None:
+    transitions = _status_transitions()
+    decisions = pd.DataFrame(
+        [
+            {
+                "case_id": _candidate_id("market_a"),
+                "target_status": "reviewed_keep_candidate",
+                "decision_updated_at_utc": "2026-06-11T12:00:00Z",
+                "reviewer": "manual_reviewer",
+                "decision_note": "attempt direct keep",
+                "limitations": "limitations documented",
+                "thesis_use_scope": "method_appendix_only",
+            }
+        ],
+        columns=REVIEW_DECISION_COLUMNS,
+    )
+
+    with pytest.raises(ValueError, match="target_status is not allowed"):
+        build_anomaly_review_decision_readiness(
+            status_transitions=transitions,
+            review_decisions=decisions,
+        )
+
+
+def test_review_decisions_reject_keep_without_limitations() -> None:
+    transitions = _status_transitions()
+    decisions = _review_decisions()
+    decisions.loc[decisions["case_id"] == _candidate_id("market_b"), "limitations"] = ""
+
+    with pytest.raises(ValueError, match="missing required fields"):
+        build_anomaly_review_decision_readiness(
+            status_transitions=transitions,
+            review_decisions=decisions,
+        )
 
 
 def test_apply_review_status_updates_changes_only_known_cases() -> None:
@@ -212,6 +274,17 @@ def test_read_review_status_updates_rejects_duplicate_cases(tmp_path: Path) -> N
         read_review_status_updates(path)
 
 
+def test_read_review_decisions_validates_curated_file(tmp_path: Path) -> None:
+    path = tmp_path / "decisions.csv"
+    _review_decisions().to_csv(path, index=False)
+
+    decisions = read_review_decisions(path)
+
+    assert tuple(decisions.columns) == REVIEW_DECISION_COLUMNS
+    assert len(decisions) == 2
+    assert decisions.loc[1, "target_status"] == "reviewed_keep_candidate"
+
+
 def test_generate_monitor_anomaly_review_queue_writes_outputs(tmp_path: Path) -> None:
     paths = _write_inputs(tmp_path)
 
@@ -222,6 +295,7 @@ def test_generate_monitor_anomaly_review_queue_writes_outputs(tmp_path: Path) ->
         materiality_context_path=paths["materiality_context"],
         risk_summary_path=paths["risk_summary"],
         review_updates_path=paths["review_updates"],
+        review_decisions_path=paths["review_decisions"],
         queue_path=tmp_path / "queue.csv",
         summary_path=tmp_path / "summary.csv",
         metadata_path=tmp_path / "metadata.json",
@@ -230,6 +304,8 @@ def test_generate_monitor_anomaly_review_queue_writes_outputs(tmp_path: Path) ->
         case_packets_json_path=tmp_path / "case_packets.json",
         status_transitions_csv_path=tmp_path / "status_transitions.csv",
         status_transitions_json_path=tmp_path / "status_transitions.json",
+        decision_readiness_csv_path=tmp_path / "decision_readiness.csv",
+        decision_readiness_json_path=tmp_path / "decision_readiness.json",
     )
 
     queue = pd.read_csv(result.queue_path)
@@ -242,13 +318,19 @@ def test_generate_monitor_anomaly_review_queue_writes_outputs(tmp_path: Path) ->
     status_transitions_json = json.loads(
         result.status_transitions_json_path.read_text(encoding="utf-8")
     )
+    decision_readiness = pd.read_csv(result.decision_readiness_csv_path)
+    decision_readiness_json = json.loads(
+        result.decision_readiness_json_path.read_text(encoding="utf-8")
+    )
     assert result.queue_row_count == 2
     assert result.high_priority_count == 1
     assert result.case_packet_row_count == 2
     assert result.status_transition_row_count == 2
+    assert result.decision_readiness_row_count == 2
     assert len(queue) == 2
     assert len(case_packets) == 2
     assert len(status_transitions) == 2
+    assert len(decision_readiness) == 2
     assert int(summary.loc[0, "queue_row_count"]) == 2
     assert metadata["outputs"]["contains_wallet_addresses"] is False
     assert metadata["outputs"]["case_packets_contain_wallet_addresses"] is False
@@ -256,8 +338,11 @@ def test_generate_monitor_anomaly_review_queue_writes_outputs(tmp_path: Path) ->
     assert metadata["outputs"]["case_packets_contain_order_instructions"] is False
     assert metadata["outputs"]["status_transitions_contain_wallet_addresses"] is False
     assert metadata["outputs"]["status_transitions_contain_order_instructions"] is False
+    assert metadata["outputs"]["decision_readiness_contains_wallet_addresses"] is False
+    assert metadata["outputs"]["decision_readiness_contains_order_instructions"] is False
     assert metadata["outputs"]["case_packet_row_count"] == 2
     assert metadata["outputs"]["status_transition_row_count"] == 2
+    assert metadata["outputs"]["decision_readiness_row_count"] == 2
     assert metadata["future_mcp_contract"]["max_rows"] == 50
     assert metadata["future_mcp_contract"]["raw_sql_allowed"] is False
     assert metadata["future_agent_contract"]["agent_metric_calculation_allowed"] is False
@@ -270,6 +355,19 @@ def test_generate_monitor_anomaly_review_queue_writes_outputs(tmp_path: Path) ->
     assert (
         status_transitions_json["agent_and_mcp_status"]
         == "contract_only_not_implemented"
+    )
+    assert decision_readiness_json["row_count"] == 2
+    assert decision_readiness_json["contains_wallet_addresses"] is False
+    assert (
+        decision_readiness_json["agent_and_mcp_status"]
+        == "contract_only_not_implemented"
+    )
+    assert (
+        decision_readiness.loc[
+            decision_readiness["case_id"] == _candidate_id("market_b"),
+            "decision_validation_status",
+        ].iloc[0]
+        == "ready_to_apply"
     )
     assert "Monitor Anomaly Review Queue" in dashboard
     assert "Future agents and MCP may read summaries only" in dashboard
@@ -284,6 +382,7 @@ def _write_inputs(root: Path) -> dict[str, Path]:
         "materiality_context": root / "materiality.csv",
         "risk_summary": root / "risk_summary.csv",
         "review_updates": root / "review_updates.csv",
+        "review_decisions": root / "review_decisions.csv",
     }
     _review_report().to_csv(paths["review_report"], index=False)
     _alert_rows().to_csv(paths["alert_rows"], index=False)
@@ -291,11 +390,22 @@ def _write_inputs(root: Path) -> dict[str, Path]:
     _materiality_context().to_csv(paths["materiality_context"], index=False)
     _risk_summary().to_csv(paths["risk_summary"], index=False)
     _review_updates().to_csv(paths["review_updates"], index=False)
+    _review_decisions().to_csv(paths["review_decisions"], index=False)
     return paths
 
 
 def _candidate_id(market_id: str) -> str:
     return monitor_candidate_id("2026-05-23T19:25:00Z", market_id)
+
+
+def _status_transitions() -> pd.DataFrame:
+    queue = build_anomaly_review_queue(
+        review_report=_review_report(),
+        detection_cases=_detection_cases(),
+    )
+    queue = apply_review_status_updates(queue, _review_updates())
+    packets = build_anomaly_case_review_packets(queue)
+    return build_anomaly_review_status_transitions(packets)
 
 
 def _review_report() -> pd.DataFrame:
@@ -471,4 +581,30 @@ def _review_updates() -> pd.DataFrame:
             }
         ],
         columns=REVIEW_UPDATE_COLUMNS,
+    )
+
+
+def _review_decisions() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "case_id": _candidate_id("market_a"),
+                "target_status": "",
+                "decision_updated_at_utc": "",
+                "reviewer": "",
+                "decision_note": "",
+                "limitations": "",
+                "thesis_use_scope": "",
+            },
+            {
+                "case_id": _candidate_id("market_b"),
+                "target_status": "reviewed_keep_candidate",
+                "decision_updated_at_utc": "2026-06-11T13:00:00Z",
+                "reviewer": "manual_reviewer",
+                "decision_note": "keep as bounded method appendix example",
+                "limitations": "toy fixture only; no causal or private-information claim",
+                "thesis_use_scope": "method_appendix_only",
+            },
+        ],
+        columns=REVIEW_DECISION_COLUMNS,
     )

@@ -3,43 +3,43 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-06-11 18:02
+Generated: 2026-06-11 18:51
 
-Current goal: `goal-swiss-referendum-efficiency-001` - Build Swiss 10-million referendum Polymarket-vs-polls comparison
+Current goal: `goal-monitor-anomaly-review-queue-001` - Build deterministic anomaly review queue for politics/geopolitics monitor
 
-Current roadmap phase: Phase 11: Swiss Referendum Efficiency Comparison
+Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `473 passed in 50.69s`
+Pytest summary: `479 passed in 51.18s`
 
 Git branch: `main`
 
-Latest commit: `945eee9`
+Latest commit: `bfd83f8`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
- M docs/research/SWISS_REFERENDUM_EFFICIENCY.md
- M operations/collectors/swiss_referendum_refresh.py
- M tests/test_swiss_referendum_refresh.py
-?? data/results/swiss_referendum_10mio_auto_refresh_log.csv
-?? data/results/swiss_referendum_10mio_auto_refresh_metadata.json
-?? operations/collectors/swiss_referendum_auto_refresh.py
-?? tests/test_swiss_referendum_auto_refresh.py
+ M docs/project/TOOL_USAGE.md
+ M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
+?? data/results/monitor_anomaly_review_dashboard.html
+?? data/results/monitor_anomaly_review_metadata.json
+?? data/results/monitor_anomaly_review_queue.csv
+?? data/results/monitor_anomaly_review_summary.csv
+?? operations/analysis/monitor_anomaly_review_queue.py
+?? tests/test_monitor_anomaly_review_queue.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                           | 16 ++++++++---
- ROADMAP.md                                        | 10 +++++--
- docs/research/SWISS_REFERENDUM_EFFICIENCY.md      | 33 +++++++++++++++++++++--
- operations/collectors/swiss_referendum_refresh.py | 21 ++++++++++-----
- tests/test_swiss_referendum_refresh.py            |  2 ++
- 5 files changed, 69 insertions(+), 13 deletions(-)
+ GOAL.md                                      | 227 +++++++--------------------
+ ROADMAP.md                                   |  23 ++-
+ docs/project/TOOL_USAGE.md                   |  11 ++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md |  65 ++++++++
+ 4 files changed, 151 insertions(+), 175 deletions(-)
 ```
 
 Blockers:
@@ -48,7 +48,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: add swiss referendum auto refresh scheduler
+- feat: add monitor anomaly review queue
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

@@ -7440,3 +7440,58 @@ Verification:
   task state `Ready`, `LastTaskResult = 0`.
 - `.\.venv\Scripts\python.exe -m pytest -q`
   -> PASS, 473 passed.
+## 2026-06-11 - Monitor anomaly review queue
+
+Context:
+
+- Switched the active implementation goal away from new Swiss referendum
+  interpretation work while that track continues collecting bounded snapshots
+  until the 14 June 2026 vote.
+- Implemented the first deterministic anomaly review queue over existing
+  politics/geopolitics monitor artifacts.
+- Kept agents and MCP as future contract-only access layers; no runtime agent,
+  MCP server, LLM metric calculation, ML, database write, authenticated
+  channel, or order path was activated.
+
+Changes:
+
+- Added `operations/analysis/monitor_anomaly_review_queue.py`.
+- Added `tests/test_monitor_anomaly_review_queue.py`.
+- Generated `data/results/monitor_anomaly_review_queue.csv`,
+  `data/results/monitor_anomaly_review_summary.csv`,
+  `data/results/monitor_anomaly_review_metadata.json`, and
+  `data/results/monitor_anomaly_review_dashboard.html`.
+- Updated `GOAL.md`, `ROADMAP.md`, `docs/project/TOOL_USAGE.md`, and
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+
+Key output:
+
+- Queue rows: 3.
+- High-priority rows: 1.
+- Medium-priority rows: 2.
+- Low-priority rows: 0.
+- Review label counts: `insider_risk_review_candidate=1`;
+  `insider_risk_watch_cue=2`.
+- Reference-overlap counts: `reference_hit=1`,
+  `partial_reference_overlap=1`, `no_reference_overlap=1`.
+
+Interpretation:
+
+- The queue is a deterministic human-review surface over bounded monitor
+  artifacts. It identifies review-worthy cases and missing evidence.
+- It does not prove private information, misconduct, causality, tradeability,
+  profitability, future performance, or market inefficiency.
+- Future agent and MCP integration is documented only as a bounded-summary
+  contract with max 50 rows, no raw SQL, no wallet-address exposure by default,
+  no order/trading paths, and later `llm_audit_log` logging.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_monitor_anomaly_review_queue.py -q`
+  -> PASS, 6 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_anomaly_review_queue`
+  -> PASS, generated 3 queue rows and 1 high-priority row.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_monitor_anomaly_review_queue.py tests\test_monitor_candidate_review_report.py tests\test_monitor_reference_candidates.py tests\test_monitor_detection_backtest.py tests\test_monitor_literature_risk_scores.py -q`
+  -> PASS, 28 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 479 passed in 51.18s.

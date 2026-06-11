@@ -3807,3 +3807,68 @@ Next validation direction:
   thesis-facing claims.
 - Later, add Dune or Polygonscan enrichment only after API-key handling,
   validation rules, and funding-link methodology are documented.
+
+## Deterministic Anomaly Review Queue
+
+Implementation status: complete for the first bounded queue layer.
+
+Purpose:
+
+- Create a single human-review surface over existing monitor artifacts before
+  any future agent or MCP access is activated.
+- Preserve the project boundary: anomaly rows are review cues, not proof of
+  private information, misconduct, causality, tradeability, profitability, or
+  market inefficiency.
+
+Implemented module:
+
+- `operations.analysis.monitor_anomaly_review_queue`
+
+Generated artifacts:
+
+- `data/results/monitor_anomaly_review_queue.csv`
+- `data/results/monitor_anomaly_review_summary.csv`
+- `data/results/monitor_anomaly_review_metadata.json`
+- `data/results/monitor_anomaly_review_dashboard.html`
+
+Input boundary:
+
+- The queue reads only bounded local artifacts from the monitor review layer,
+  detection-backtest context, materiality context, literature-prior risk
+  summaries, and aggregate alert rows.
+- It rejects wallet-address columns and does not collect external data, write
+  the database, call LLMs, activate agents, activate MCP, use ML, or access
+  order endpoints.
+- Review priorities use existing monitor severity and rolling percentile ranks;
+  no fixed USD whale threshold is introduced.
+
+Current output shape:
+
+- 3 queued anomaly-review cases.
+- 1 high-priority case.
+- 2 medium-priority cases.
+- 0 low-priority cases.
+- Future MCP default row cap recorded as 50 rows.
+
+Agent and MCP boundary:
+
+- Future agents may only read the queue or summary after `llm_audit_log`
+  integration exists.
+- Future MCP tools are contract-only at this stage:
+  `get_anomaly_review_summary`, `get_anomaly_case`,
+  `list_monitor_artifacts`, and `get_method_limits`.
+- Future tools must not expose raw SQL, wallet addresses by default, order or
+  trading paths, or more than 50 rows.
+
+Accepted wording:
+
+- `anomaly review queue`
+- `human-review cue`
+- `insider_risk_review_candidate` as an internal review label only
+- `bounded SignalSpec draft` as a later hypothesis object
+
+Blocked wording:
+
+- Do not describe queue rows as proof of insider activity, private
+  information, misconduct, causality, profitability, tradeability, or market
+  inefficiency.

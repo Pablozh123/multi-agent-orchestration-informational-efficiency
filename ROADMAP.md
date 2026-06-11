@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: paused after detection backtest and wallet graph dashboard work
+Status: active for deterministic anomaly review queue work
 
 Done criteria:
 
@@ -451,6 +451,14 @@ Done criteria:
   event, reference-case, or wallet-graph context.
 - The detection-backtest is a review-quality test, not a PnL or trading
   strategy backtest.
+- A deterministic anomaly review queue exists over bounded monitor artifacts.
+- The queue writes compact case rows, a one-row summary, metadata, and a local
+  dashboard under `data/results/monitor_anomaly_review_*`.
+- Queue rows expose review context, missing evidence, allowed interpretation,
+  blocked claims, and human-review status without wallet-address columns.
+- Future agent and MCP integration is documented as contract-only: bounded
+  summaries, max 50 rows, no raw SQL, no wallet-address exposure by default,
+  no order or trading paths, and later `llm_audit_log` logging.
 
 Blockers:
 
@@ -491,17 +499,20 @@ Blockers:
   calibrated against broader Polymarket distributions and reference cases.
 - Wallet graph v1 is based on shared market and shared time-bucket activity;
   it is not an on-chain funding graph or identity cluster.
-- The next user-facing step is either another bounded live bucket or manual
-  source-check fields for reviewed candidates.
+- The next user-facing step is manual source-check fields for queued anomaly
+  cases, especially the current high-priority case, before any thesis-facing
+  use.
 
 ## Phase 11: Swiss Referendum Efficiency Comparison
 
-Status: active for the 14 June 2026 10-million initiative comparison
+Status: running data collection until the 14 June 2026 vote; final analysis
+pending after the official result
 
 Done criteria:
 
-- The active goal is the Swiss referendum comparison, separate from the
-  politics/geo wallet anomaly monitor.
+- The Swiss referendum comparison is separate from the politics/geo wallet
+  anomaly monitor and remains in data-collection mode until the vote result is
+  available.
 - A curated poll catalog exists for the 10-million initiative and records
   source URLs, fieldwork windows, publication timestamps, timestamp precision,
   Yes/No/undecided shares, sample sizes, and uncertainty metadata.

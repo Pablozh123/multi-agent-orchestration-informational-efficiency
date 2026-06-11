@@ -151,6 +151,12 @@ Validate and score wallet reference cases:
 .\.venv\Scripts\python.exe -m operations.analysis.monitor_reference_candidates
 ```
 
+Generate the bounded anomaly review queue:
+
+```powershell
+.\.venv\Scripts\python.exe -m operations.analysis.monitor_anomaly_review_queue
+```
+
 Open the reference similarity dashboard:
 
 ```text
@@ -172,6 +178,11 @@ Interpretation rule:
 
 The monitor is descriptive. It must not be used for trading claims,
 misconduct claims, or profitability claims.
+
+The anomaly review queue is also descriptive. Future agents and MCP tools may
+read only bounded queue/summary artifacts after audit logging exists; they must
+not calculate metrics, expose wallet addresses by default, run raw SQL, or
+create trading instructions.
 
 ## ChatGPT And Claude Role
 

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Monitor Anomaly Review Queue</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 28px; color: #17202a; }
+    .metrics { display: grid; grid-template-columns: repeat(4, minmax(130px, 1fr)); gap: 12px; }
+    .metric { border: 1px solid #d7dde5; border-radius: 6px; padding: 12px; background: #f8fafc; }
+    .metric strong { display: block; font-size: 22px; margin-top: 4px; }
+    .case { border: 1px solid #cfd8e3; border-radius: 8px; padding: 16px; margin: 18px 0; background: #ffffff; }
+    .pill { display: inline-block; padding: 3px 8px; border-radius: 999px; background: #eef2f7; margin-right: 6px; font-size: 12px; }
+    .pill.high { background: #ffe7d6; }
+    .pill.medium { background: #fff7cc; }
+    .pill.low { background: #e9f7ef; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(240px, 1fr)); gap: 12px; }
+    .box { border: 1px solid #e1e7ef; border-radius: 6px; padding: 12px; background: #fbfcfe; }
+    .note { background: #fff7e6; border: 1px solid #f0d08a; padding: 12px; border-radius: 6px; }
+    code { background: #f1f5f9; padding: 2px 4px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Monitor Anomaly Review Queue</h1>
+  <p class="note">Deterministic review queue over bounded monitor artifacts. Future agents and MCP may read summaries only after audit logging exists; they do not calculate metrics here.</p>
+  <section class="metrics">
+    <div class="metric">Queued cases<strong>3</strong></div>
+    <div class="metric">High priority<strong>1</strong></div>
+    <div class="metric">Medium priority<strong>2</strong></div>
+    <div class="metric">Low priority<strong>0</strong></div>
+  </section>
+  <h2>Review Cases</h2>
+  
+  <article class="case">
+    <h3>Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?</h3>
+    <p>
+      <span class="pill high">priority: high</span>
+      <span class="pill">label: insider_risk_review_candidate</span>
+      <span class="pill">status: needs_human_review</span>
+    </p>
+    <section class="grid">
+      <div class="box"><strong>Market move</strong><p>no_market_move_anomaly_in_candidate; midpoint_range=0.0885-0.9115; metrics=active_wallets,hhi_concentration,log1p_total_observed_amount_usd,top_tier_share</p></div>
+      <div class="box"><strong>Wallet flow</strong><p>total_observed_amount_usd=64.2802; active_wallets=1.0000; trade_count=1.0000; amount_per_wallet_usd=64.2802; materiality=below_one_percent_of_reference</p></div>
+      <div class="box"><strong>Concentration</strong><p>concentration_context=present; coordination_label=single_wallet_single_trade; triggered_patterns=large_trade_flow,market_concentration</p></div>
+      <div class="box"><strong>Context checks</strong><p>Event: nearest_event_only<br>Reference: reference_hit</p></div>
+    </section>
+    <p><strong>Missing evidence:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; trade-size context against longer rolling volume; reviewed event candidate mapping</p>
+    <p><strong>Blocked claims:</strong> private_information_proof; misconduct_finding; causality; tradeability; profitability; future_performance; order_instruction; insider_risk_as_fact</p>
+    <p><strong>Case ID:</strong> <code>monitor_candidate_20260523_192500_c6370fa4e8c9</code></p>
+  </article>
+
+
+  <article class="case">
+    <h3>Will China invade Taiwan by end of 2026?</h3>
+    <p>
+      <span class="pill medium">priority: medium</span>
+      <span class="pill">label: insider_risk_watch_cue</span>
+      <span class="pill">status: needs_human_review</span>
+    </p>
+    <section class="grid">
+      <div class="box"><strong>Market move</strong><p>no_market_move_anomaly_in_candidate; midpoint_range=0.0675-0.9325; metrics=hhi_concentration,top_tier_share</p></div>
+      <div class="box"><strong>Wallet flow</strong><p>total_observed_amount_usd=9.5810; active_wallets=1.0000; trade_count=1.0000; amount_per_wallet_usd=9.5810; materiality=below_one_percent_of_reference</p></div>
+      <div class="box"><strong>Concentration</strong><p>concentration_context=present; coordination_label=single_wallet_single_trade; triggered_patterns=market_concentration</p></div>
+      <div class="box"><strong>Context checks</strong><p>Event: nearest_event_only<br>Reference: partial_reference_overlap</p></div>
+    </section>
+    <p><strong>Missing evidence:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
+    <p><strong>Blocked claims:</strong> private_information_proof; misconduct_finding; causality; tradeability; profitability; future_performance; order_instruction; insider_risk_as_fact</p>
+    <p><strong>Case ID:</strong> <code>monitor_candidate_20260523_192500_2bb6f8fa6250</code></p>
+  </article>
+
+
+  <article class="case">
+    <h3>Will the U.S. invade Iran before 2027?</h3>
+    <p>
+      <span class="pill medium">priority: medium</span>
+      <span class="pill">label: insider_risk_watch_cue</span>
+      <span class="pill">status: needs_human_review</span>
+    </p>
+    <section class="grid">
+      <div class="box"><strong>Market move</strong><p>no_market_move_anomaly_in_candidate; midpoint_range=0.205-0.795; metrics=active_wallets</p></div>
+      <div class="box"><strong>Wallet flow</strong><p>total_observed_amount_usd=69.4371; active_wallets=3.0000; trade_count=3.0000; amount_per_wallet_usd=23.1457; materiality=below_one_percent_of_reference</p></div>
+      <div class="box"><strong>Concentration</strong><p>concentration_context=not_triggered; coordination_label=few_wallet_or_trade_context; triggered_patterns=none</p></div>
+      <div class="box"><strong>Context checks</strong><p>Event: nearest_event_only<br>Reference: no_reference_overlap</p></div>
+    </section>
+    <p><strong>Missing evidence:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
+    <p><strong>Blocked claims:</strong> private_information_proof; misconduct_finding; causality; tradeability; profitability; future_performance; order_instruction; insider_risk_as_fact</p>
+    <p><strong>Case ID:</strong> <code>monitor_candidate_20260523_192500_71cd3b4e784b</code></p>
+  </article>
+
+  <h2>Method Limits</h2>
+  <p>The queue does not prove private information, misconduct, causality, tradeability, profitability, or future performance.</p>
+  <p>Future MCP default row cap: <code>50</code>. Raw SQL, wallet-address exposure by default, order paths, and agent-computed metrics are out of scope.</p>
+</body>
+</html>

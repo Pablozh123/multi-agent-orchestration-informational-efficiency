@@ -1,0 +1,70 @@
+{
+  "future_agent_contract": {
+    "agent_metric_calculation_allowed": false,
+    "allowed_input": "bounded anomaly review queue and summaries only",
+    "llm_audit_log_required": true,
+    "roles": [
+      "EventScoutAgent",
+      "CaseNarrativeAgent",
+      "SkepticReviewerAgent",
+      "Orchestrator"
+    ],
+    "status": "contract_only_not_implemented"
+  },
+  "future_mcp_contract": {
+    "llm_audit_log_required": true,
+    "max_rows": 50,
+    "order_or_trading_path_allowed": false,
+    "raw_sql_allowed": false,
+    "status": "contract_only_not_implemented",
+    "tools": [
+      "get_anomaly_review_summary",
+      "get_anomaly_case",
+      "list_monitor_artifacts",
+      "get_method_limits"
+    ],
+    "wallet_address_exposure_allowed_by_default": false
+  },
+  "generated_at_utc": "2026-06-11T16:47:59+00:00",
+  "inputs": {
+    "alert_rows_path": "data\\results\\monitor_v2_polymarket_rolling_alert_rows.csv",
+    "detection_cases_path": "data\\results\\monitor_detection_backtest_cases.csv",
+    "materiality_context_path": "data\\results\\monitor_candidate_materiality_context.csv",
+    "review_report_path": "data\\results\\monitor_candidate_human_review_report.csv",
+    "risk_summary_path": "data\\results\\monitor_literature_risk_score_summary.csv"
+  },
+  "limitations": {
+    "agents_and_mcp_not_activated": true,
+    "human_review_required": true,
+    "not_a_causal_test": true,
+    "not_a_misconduct_finding": true,
+    "not_a_probability_model": true,
+    "not_a_trade_or_profitability_signal": true,
+    "not_private_information_evidence": true,
+    "summary_row_count": 1
+  },
+  "method": {
+    "candidate_source": "bounded monitor candidate human-review report",
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_use_order_endpoints": true,
+    "does_not_write_database": true,
+    "fixed_usd_whale_threshold_used": false,
+    "name": "monitor_anomaly_review_queue",
+    "priority_uses_distribution_percentile_rank": true,
+    "priority_uses_existing_monitor_severity": true,
+    "uses_existing_files_only": true
+  },
+  "outputs": {
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "dashboard_path": "data\\results\\monitor_anomaly_review_dashboard.html",
+    "high_priority_count": 1,
+    "max_default_rows_for_future_tools": 50,
+    "queue_path": "data\\results\\monitor_anomaly_review_queue.csv",
+    "queue_row_count": 3,
+    "summary_path": "data\\results\\monitor_anomaly_review_summary.csv"
+  }
+}

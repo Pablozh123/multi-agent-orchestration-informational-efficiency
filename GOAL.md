@@ -25,10 +25,12 @@ deliverables:
 - Generate `data/results/monitor_anomaly_review_summary.csv`.
 - Generate `data/results/monitor_anomaly_review_metadata.json`.
 - Generate `data/results/monitor_anomaly_review_dashboard.html`.
+- Add `data/monitor_anomaly_review_status_updates.csv` as the curated manual
+  review-status worksheet that can update queued cases deterministically.
 - Include case fields for market slug, review priority, trigger family,
   market-move context, wallet-flow context, concentration context, event
-  context, reference overlap, review label, missing evidence, allowed
-  interpretation, and blocked claims.
+  context, reference overlap, review label, missing evidence, reviewer,
+  source URLs, review notes, allowed interpretation, and blocked claims.
 - Keep `insider_risk_review_candidate` as an internal human-review label only,
   never as proof, fact, causal evidence, misconduct finding, or trading signal.
 - Document future agent and MCP access as contract-only: bounded summaries,
@@ -37,6 +39,7 @@ deliverables:
 scope:
 - `operations/analysis/monitor_anomaly_review_queue.py`.
 - `tests/test_monitor_anomaly_review_queue.py`.
+- `data/monitor_anomaly_review_status_updates.csv`.
 - `data/results/monitor_anomaly_review_*`.
 - `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
 - `ROADMAP.md`.
@@ -59,13 +62,15 @@ acceptance_criteria:
   percentile ranks, not arbitrary whale thresholds.
 - The queue contains the planned review fields and a deterministic status
   update helper for human-review state changes.
+- The review-status worksheet is validated, rejects duplicate case IDs and
+  invalid statuses, and is merged into the generated queue.
 - Future agent and MCP contracts remain metadata/documentation only and do not
   activate guarded runtime entry points.
 - Tests cover queue creation, summary counts, wallet-address rejection,
   future MCP/agent contract flags, and review-status updates.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add monitor anomaly review queue
+next_commit: feat: add anomaly review status worksheet
 
 ## Running Side Goal
 

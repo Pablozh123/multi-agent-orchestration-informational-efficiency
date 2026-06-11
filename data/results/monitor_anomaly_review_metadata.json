@@ -25,12 +25,13 @@
     ],
     "wallet_address_exposure_allowed_by_default": false
   },
-  "generated_at_utc": "2026-06-11T16:47:59+00:00",
+  "generated_at_utc": "2026-06-11T18:18:32+00:00",
   "inputs": {
     "alert_rows_path": "data\\results\\monitor_v2_polymarket_rolling_alert_rows.csv",
     "detection_cases_path": "data\\results\\monitor_detection_backtest_cases.csv",
     "materiality_context_path": "data\\results\\monitor_candidate_materiality_context.csv",
     "review_report_path": "data\\results\\monitor_candidate_human_review_report.csv",
+    "review_updates_path": "data\\monitor_anomaly_review_status_updates.csv",
     "risk_summary_path": "data\\results\\monitor_literature_risk_score_summary.csv"
   },
   "limitations": {
@@ -65,6 +66,7 @@
     "max_default_rows_for_future_tools": 50,
     "queue_path": "data\\results\\monitor_anomaly_review_queue.csv",
     "queue_row_count": 3,
+    "review_update_row_count": 3,
     "summary_path": "data\\results\\monitor_anomaly_review_summary.csv"
   }
 }

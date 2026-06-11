@@ -157,6 +157,18 @@ Generate the bounded anomaly review queue:
 .\.venv\Scripts\python.exe -m operations.analysis.monitor_anomaly_review_queue
 ```
 
+Manual anomaly review statuses are curated in:
+
+```text
+data/monitor_anomaly_review_status_updates.csv
+```
+
+Allowed status values are `needs_human_review`, `source_check_pending`,
+`reviewed_false_context`, `reviewed_keep_candidate`, and `thesis_excluded`.
+The queue generator validates this worksheet and merges its status, reviewer,
+source URL, event URL, and review note fields into
+`data/results/monitor_anomaly_review_queue.csv`.
+
 Open the reference similarity dashboard:
 
 ```text

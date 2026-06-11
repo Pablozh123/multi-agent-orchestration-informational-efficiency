@@ -1,0 +1,4 @@
+case_id,human_review_status,review_status_updated_at_utc,reviewer,review_source_url,event_source_url,review_note
+monitor_candidate_20260523_192500_c6370fa4e8c9,needs_human_review,,,,,
+monitor_candidate_20260523_192500_71cd3b4e784b,needs_human_review,,,,,
+monitor_candidate_20260523_192500_2bb6f8fa6250,needs_human_review,,,,,

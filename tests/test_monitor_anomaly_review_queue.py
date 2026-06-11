@@ -9,10 +9,12 @@ import pytest
 from operations.analysis.monitor_anomaly_review_queue import (
     ALLOWED_REVIEW_STATUSES,
     QUEUE_COLUMNS,
+    REVIEW_UPDATE_COLUMNS,
     apply_review_status_updates,
     build_anomaly_review_queue,
     build_anomaly_review_summary,
     generate_monitor_anomaly_review_queue,
+    read_review_status_updates,
 )
 from operations.analysis.monitor_reference_candidates import monitor_candidate_id
 
@@ -65,6 +67,9 @@ def test_apply_review_status_updates_changes_only_known_cases() -> None:
                 "case_id": _candidate_id("market_b"),
                 "human_review_status": "source_check_pending",
                 "review_status_updated_at_utc": "2026-06-11T12:00:00Z",
+                "reviewer": "manual_reviewer",
+                "review_source_url": "https://example.com/source",
+                "event_source_url": "https://example.com/event",
                 "review_note": "manual source check opened",
             }
         ]
@@ -76,6 +81,9 @@ def test_apply_review_status_updates_changes_only_known_cases() -> None:
     assert high["human_review_status"] == "source_check_pending"
     assert high["review_status_updated_at_utc"] == "2026-06-11T12:00:00Z"
     assert high["review_note"] == "manual source check opened"
+    assert high["reviewer"] == "manual_reviewer"
+    assert high["review_source_url"] == "https://example.com/source"
+    assert high["event_source_url"] == "https://example.com/event"
     assert set(updated["human_review_status"]).issubset(ALLOWED_REVIEW_STATUSES)
 
 
@@ -97,6 +105,60 @@ def test_anomaly_review_queue_rejects_wallet_address_columns() -> None:
         build_anomaly_review_queue(review_report=report)
 
 
+def test_read_review_status_updates_validates_curated_file(tmp_path: Path) -> None:
+    path = tmp_path / "updates.csv"
+    pd.DataFrame(
+        [
+            {
+                "case_id": _candidate_id("market_b"),
+                "human_review_status": "source_check_pending",
+                "review_status_updated_at_utc": "2026-06-11T12:00:00Z",
+                "reviewer": "manual_reviewer",
+                "review_source_url": "https://example.com/source",
+                "event_source_url": "https://example.com/event",
+                "review_note": "opened source check",
+            }
+        ],
+        columns=REVIEW_UPDATE_COLUMNS,
+    ).to_csv(path, index=False)
+
+    updates = read_review_status_updates(path)
+
+    assert tuple(updates.columns) == REVIEW_UPDATE_COLUMNS
+    assert len(updates) == 1
+    assert updates.loc[0, "human_review_status"] == "source_check_pending"
+
+
+def test_read_review_status_updates_rejects_duplicate_cases(tmp_path: Path) -> None:
+    path = tmp_path / "updates.csv"
+    pd.DataFrame(
+        [
+            {
+                "case_id": _candidate_id("market_b"),
+                "human_review_status": "needs_human_review",
+                "review_status_updated_at_utc": "",
+                "reviewer": "",
+                "review_source_url": "",
+                "event_source_url": "",
+                "review_note": "",
+            },
+            {
+                "case_id": _candidate_id("market_b"),
+                "human_review_status": "source_check_pending",
+                "review_status_updated_at_utc": "",
+                "reviewer": "",
+                "review_source_url": "",
+                "event_source_url": "",
+                "review_note": "",
+            },
+        ],
+        columns=REVIEW_UPDATE_COLUMNS,
+    ).to_csv(path, index=False)
+
+    with pytest.raises(ValueError, match="duplicate case_id"):
+        read_review_status_updates(path)
+
+
 def test_generate_monitor_anomaly_review_queue_writes_outputs(tmp_path: Path) -> None:
     paths = _write_inputs(tmp_path)
 
@@ -106,6 +168,7 @@ def test_generate_monitor_anomaly_review_queue_writes_outputs(tmp_path: Path) ->
         detection_cases_path=paths["detection_cases"],
         materiality_context_path=paths["materiality_context"],
         risk_summary_path=paths["risk_summary"],
+        review_updates_path=paths["review_updates"],
         queue_path=tmp_path / "queue.csv",
         summary_path=tmp_path / "summary.csv",
         metadata_path=tmp_path / "metadata.json",
@@ -125,8 +188,10 @@ def test_generate_monitor_anomaly_review_queue_writes_outputs(tmp_path: Path) ->
     assert metadata["future_mcp_contract"]["max_rows"] == 50
     assert metadata["future_mcp_contract"]["raw_sql_allowed"] is False
     assert metadata["future_agent_contract"]["agent_metric_calculation_allowed"] is False
+    assert metadata["outputs"]["review_update_row_count"] == 1
     assert "Monitor Anomaly Review Queue" in dashboard
     assert "Future agents and MCP may read summaries only" in dashboard
+    assert queue.loc[queue["case_id"] == _candidate_id("market_b"), "reviewer"].iloc[0] == "manual_reviewer"
 
 
 def _write_inputs(root: Path) -> dict[str, Path]:
@@ -136,12 +201,14 @@ def _write_inputs(root: Path) -> dict[str, Path]:
         "detection_cases": root / "detection_cases.csv",
         "materiality_context": root / "materiality.csv",
         "risk_summary": root / "risk_summary.csv",
+        "review_updates": root / "review_updates.csv",
     }
     _review_report().to_csv(paths["review_report"], index=False)
     _alert_rows().to_csv(paths["alert_rows"], index=False)
     _detection_cases().to_csv(paths["detection_cases"], index=False)
     _materiality_context().to_csv(paths["materiality_context"], index=False)
     _risk_summary().to_csv(paths["risk_summary"], index=False)
+    _review_updates().to_csv(paths["review_updates"], index=False)
     return paths
 
 
@@ -305,4 +372,21 @@ def _risk_summary() -> pd.DataFrame:
                 "literature_market_risk_flag": "literature_prior_flag",
             }
         ]
+    )
+
+
+def _review_updates() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "case_id": _candidate_id("market_b"),
+                "human_review_status": "source_check_pending",
+                "review_status_updated_at_utc": "2026-06-11T12:00:00Z",
+                "reviewer": "manual_reviewer",
+                "review_source_url": "https://example.com/source",
+                "event_source_url": "https://example.com/event",
+                "review_note": "opened source check",
+            }
+        ],
+        columns=REVIEW_UPDATE_COLUMNS,
     )

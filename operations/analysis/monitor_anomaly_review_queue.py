@@ -31,6 +31,7 @@ from operations.analysis.run_h2_event_windows import RESULTS_DIR
 from operations.collectors.polymarket_rolling_history import ROLLING_ALERT_ROWS_OUTPUT
 
 
+REVIEW_UPDATES_INPUT = Path("data/monitor_anomaly_review_status_updates.csv")
 QUEUE_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_queue.csv"
 SUMMARY_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_summary.csv"
 METADATA_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_metadata.json"
@@ -64,9 +65,22 @@ QUEUE_COLUMNS: tuple[str, ...] = (
     "human_review_status",
     "review_status_updated_at_utc",
     "review_note",
+    "reviewer",
+    "review_source_url",
+    "event_source_url",
     "allowed_interpretation",
     "blocked_claims",
     "source_artifacts",
+)
+
+REVIEW_UPDATE_COLUMNS: tuple[str, ...] = (
+    "case_id",
+    "human_review_status",
+    "review_status_updated_at_utc",
+    "reviewer",
+    "review_source_url",
+    "event_source_url",
+    "review_note",
 )
 
 SUMMARY_COLUMNS: tuple[str, ...] = (
@@ -230,6 +244,12 @@ def apply_review_status_updates(
         )
         if "review_note" in item:
             updated.loc[mask, "review_note"] = str(item["review_note"])
+        if "reviewer" in item:
+            updated.loc[mask, "reviewer"] = str(item["reviewer"])
+        if "review_source_url" in item:
+            updated.loc[mask, "review_source_url"] = str(item["review_source_url"])
+        if "event_source_url" in item:
+            updated.loc[mask, "event_source_url"] = str(item["event_source_url"])
     return updated.loc[:, list(QUEUE_COLUMNS)]
 
 
@@ -240,6 +260,7 @@ def generate_monitor_anomaly_review_queue(
     detection_cases_path: Path = BACKTEST_CASES_OUTPUT,
     materiality_context_path: Path = MATERIALITY_CONTEXT_OUTPUT,
     risk_summary_path: Path = RISK_SCORE_SUMMARY_OUTPUT,
+    review_updates_path: Path = REVIEW_UPDATES_INPUT,
     queue_path: Path = QUEUE_OUTPUT,
     summary_path: Path = SUMMARY_OUTPUT,
     metadata_path: Path = METADATA_OUTPUT,
@@ -252,6 +273,7 @@ def generate_monitor_anomaly_review_queue(
     detection_cases = _read_optional_csv(detection_cases_path)
     materiality_context = _read_optional_csv(materiality_context_path)
     risk_summary = _read_optional_csv(risk_summary_path)
+    review_updates = read_review_status_updates(review_updates_path)
 
     queue = build_anomaly_review_queue(
         review_report=review_report,
@@ -260,6 +282,8 @@ def generate_monitor_anomaly_review_queue(
         materiality_context=materiality_context,
         risk_summary=risk_summary,
     )
+    if not review_updates.empty:
+        queue = apply_review_status_updates(queue, review_updates)
     summary = build_anomaly_review_summary(queue)
 
     _write_csv(queue_path, queue)
@@ -273,6 +297,8 @@ def generate_monitor_anomaly_review_queue(
         detection_cases_path=detection_cases_path,
         materiality_context_path=materiality_context_path,
         risk_summary_path=risk_summary_path,
+        review_updates_path=review_updates_path,
+        review_updates=review_updates,
         queue_path=queue_path,
         summary_path=summary_path,
         dashboard_path=dashboard_path,
@@ -305,6 +331,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         default=MATERIALITY_CONTEXT_OUTPUT,
     )
     parser.add_argument("--risk-summary", type=Path, default=RISK_SCORE_SUMMARY_OUTPUT)
+    parser.add_argument("--review-updates", type=Path, default=REVIEW_UPDATES_INPUT)
     parser.add_argument("--queue-output", type=Path, default=QUEUE_OUTPUT)
     parser.add_argument("--summary-output", type=Path, default=SUMMARY_OUTPUT)
     parser.add_argument("--metadata-output", type=Path, default=METADATA_OUTPUT)
@@ -318,6 +345,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             detection_cases_path=args.detection_cases,
             materiality_context_path=args.materiality_context,
             risk_summary_path=args.risk_summary,
+            review_updates_path=args.review_updates,
             queue_path=args.queue_output,
             summary_path=args.summary_output,
             metadata_path=args.metadata_output,
@@ -368,6 +396,9 @@ def _queue_row(
         "human_review_status": _review_status(item),
         "review_status_updated_at_utc": "",
         "review_note": "",
+        "reviewer": "",
+        "review_source_url": "",
+        "event_source_url": "",
         "allowed_interpretation": _allowed_interpretation(),
         "blocked_claims": _blocked_claims(),
         "source_artifacts": _source_artifacts(item, detection, risk),
@@ -578,6 +609,8 @@ def _metadata(
     detection_cases_path: Path,
     materiality_context_path: Path,
     risk_summary_path: Path,
+    review_updates_path: Path,
+    review_updates: pd.DataFrame,
     queue_path: Path,
     summary_path: Path,
     dashboard_path: Path,
@@ -604,6 +637,7 @@ def _metadata(
             "detection_cases_path": str(detection_cases_path),
             "materiality_context_path": str(materiality_context_path),
             "risk_summary_path": str(risk_summary_path),
+            "review_updates_path": str(review_updates_path),
         },
         "outputs": {
             "queue_path": str(queue_path),
@@ -611,6 +645,7 @@ def _metadata(
             "dashboard_path": str(dashboard_path),
             "queue_row_count": int(len(queue)),
             "high_priority_count": _count(queue, "review_priority", "high"),
+            "review_update_row_count": int(len(review_updates)),
             "contains_wallet_addresses": _contains_wallet_address_column(queue),
             "contains_order_instructions": False,
             "max_default_rows_for_future_tools": MAX_MCP_ROWS,
@@ -730,6 +765,7 @@ def _queue_cards(queue: pd.DataFrame) -> str:
       <div class="box"><strong>Context checks</strong><p>Event: {escape(str(item["event_context_status"]))}<br>Reference: {escape(str(item["reference_overlap_status"]))}</p></div>
     </section>
     <p><strong>Missing evidence:</strong> {escape(str(item["missing_evidence"]))}</p>
+    <p><strong>Manual review:</strong> reviewer {escape(str(item["reviewer"]) or "not assigned")}; source {escape(str(item["review_source_url"]) or "not recorded")}; note {escape(str(item["review_note"]) or "none")}</p>
     <p><strong>Blocked claims:</strong> {escape(str(item["blocked_claims"]))}</p>
     <p><strong>Case ID:</strong> <code>{escape(str(item["case_id"]))}</code></p>
   </article>
@@ -753,6 +789,36 @@ def _lookup_by_candidate(frame: pd.DataFrame) -> dict[str, dict[str, object]]:
     if frame.empty or "candidate_id" not in frame.columns:
         return {}
     return {str(row["candidate_id"]): row for row in frame.to_dict(orient="records")}
+
+
+def read_review_status_updates(path: Path = REVIEW_UPDATES_INPUT) -> pd.DataFrame:
+    """Read optional curated human-review status updates."""
+
+    if not path.exists():
+        return pd.DataFrame(columns=REVIEW_UPDATE_COLUMNS)
+    frame = pd.read_csv(path, dtype=str, keep_default_na=False)
+    if frame.empty:
+        return pd.DataFrame(columns=REVIEW_UPDATE_COLUMNS)
+    missing = [column for column in REVIEW_UPDATE_COLUMNS if column not in frame.columns]
+    if missing:
+        raise ValueError(f"review status updates missing required columns: {missing}")
+    updates = frame.loc[:, list(REVIEW_UPDATE_COLUMNS)].copy()
+    for column in REVIEW_UPDATE_COLUMNS:
+        updates[column] = updates[column].fillna("").astype(str).str.strip()
+    _reject_wallet_address_columns(updates, "review status updates")
+    invalid = sorted(
+        set(updates["human_review_status"].astype(str)) - ALLOWED_REVIEW_STATUSES
+    )
+    if invalid:
+        raise ValueError(f"invalid human_review_status values: {invalid}")
+    empty_case = updates["case_id"].astype(str).str.strip().eq("")
+    if empty_case.any():
+        raise ValueError("review status updates require case_id for every row")
+    duplicated = updates["case_id"].duplicated()
+    if duplicated.any():
+        repeated = sorted(set(updates.loc[duplicated, "case_id"].astype(str)))
+        raise ValueError(f"review status updates contain duplicate case_id values: {repeated}")
+    return updates.reset_index(drop=True)
 
 
 def _validate_review_report(frame: pd.DataFrame) -> None:

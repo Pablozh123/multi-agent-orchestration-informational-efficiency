@@ -456,6 +456,9 @@ Done criteria:
   dashboard under `data/results/monitor_anomaly_review_*`.
 - Queue rows expose review context, missing evidence, allowed interpretation,
   blocked claims, and human-review status without wallet-address columns.
+- A curated manual review-status worksheet exists at
+  `data/monitor_anomaly_review_status_updates.csv`; it can update queued cases
+  with review status, reviewer, source URL, event URL, and review notes.
 - Future agent and MCP integration is documented as contract-only: bounded
   summaries, max 50 rows, no raw SQL, no wallet-address exposure by default,
   no order or trading paths, and later `llm_audit_log` logging.

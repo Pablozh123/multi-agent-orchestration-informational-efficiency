@@ -3831,6 +3831,10 @@ Generated artifacts:
 - `data/results/monitor_anomaly_review_metadata.json`
 - `data/results/monitor_anomaly_review_dashboard.html`
 
+Curated manual input:
+
+- `data/monitor_anomaly_review_status_updates.csv`
+
 Input boundary:
 
 - The queue reads only bounded local artifacts from the monitor review layer,
@@ -3841,6 +3845,8 @@ Input boundary:
   order endpoints.
 - Review priorities use existing monitor severity and rolling percentile ranks;
   no fixed USD whale threshold is introduced.
+- The status worksheet validates allowed review states and merges reviewer,
+  source URL, event URL, and review note fields into the generated queue.
 
 Current output shape:
 
@@ -3849,6 +3855,7 @@ Current output shape:
 - 2 medium-priority cases.
 - 0 low-priority cases.
 - Future MCP default row cap recorded as 50 rows.
+- 3 current status worksheet rows, all still marked `needs_human_review`.
 
 Agent and MCP boundary:
 

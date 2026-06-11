@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-06-11 18:51
+Generated: 2026-06-11 20:19
 
 Current goal: `goal-monitor-anomaly-review-queue-001` - Build deterministic anomaly review queue for politics/geopolitics monitor
 
@@ -11,35 +11,66 @@ Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `479 passed in 51.18s`
+Pytest summary: `481 passed in 57.83s`
 
 Git branch: `main`
 
-Latest commit: `bfd83f8`
+Latest commit: `180ef72`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
+ M data/results/monitor_anomaly_review_dashboard.html
+ M data/results/monitor_anomaly_review_metadata.json
+ M data/results/monitor_anomaly_review_queue.csv
+ M data/results/swiss_referendum_10mio_auto_refresh_log.csv
+ M data/results/swiss_referendum_10mio_auto_refresh_metadata.json
+ M data/results/swiss_referendum_10mio_comparison.csv
+ M data/results/swiss_referendum_10mio_dashboard.html
+ M data/results/swiss_referendum_10mio_efficiency.png
+ M data/results/swiss_referendum_10mio_efficiency_metadata.json
+ M data/results/swiss_referendum_10mio_latest_source_comparison.csv
+ M data/results/swiss_referendum_10mio_latest_summary.md
+ M data/results/swiss_referendum_10mio_polymarket_price_history_metadata.json
+ M data/results/swiss_referendum_10mio_polymarket_snapshot_metadata.json
+ M data/results/swiss_referendum_10mio_polymarket_snapshots.csv
+ M data/results/swiss_referendum_10mio_refresh_metadata.json
+ M data/results/swiss_referendum_10mio_running_status.json
  M docs/project/TOOL_USAGE.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
-?? data/results/monitor_anomaly_review_dashboard.html
-?? data/results/monitor_anomaly_review_metadata.json
-?? data/results/monitor_anomaly_review_queue.csv
-?? data/results/monitor_anomaly_review_summary.csv
-?? operations/analysis/monitor_anomaly_review_queue.py
-?? tests/test_monitor_anomaly_review_queue.py
+ M operations/analysis/monitor_anomaly_review_queue.py
+ M tests/test_monitor_anomaly_review_queue.py
+?? data/monitor_anomaly_review_status_updates.csv
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                      | 227 +++++++--------------------
- ROADMAP.md                                   |  23 ++-
- docs/project/TOOL_USAGE.md                   |  11 ++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md |  65 ++++++++
- 4 files changed, 151 insertions(+), 175 deletions(-)
+ GOAL.md                                            |  11 ++-
+ ROADMAP.md                                         |   3 +
+ data/results/monitor_anomaly_review_dashboard.html |   3 +
+ data/results/monitor_anomaly_review_metadata.json  |   4 +-
+ data/results/monitor_anomaly_review_queue.csv      |   8 +-
+ .../swiss_referendum_10mio_auto_refresh_log.csv    |   2 +
+ ...iss_referendum_10mio_auto_refresh_metadata.json |  40 ++++++++--
+ data/results/swiss_referendum_10mio_comparison.csv |   2 +
+ data/results/swiss_referendum_10mio_dashboard.html |  23 +++---
+ data/results/swiss_referendum_10mio_efficiency.png | Bin 84509 -> 84658 bytes
+ ...swiss_referendum_10mio_efficiency_metadata.json |  12 +--
+ ...s_referendum_10mio_latest_source_comparison.csv |   6 +-
+ .../swiss_referendum_10mio_latest_summary.md       |  18 ++---
+ ...um_10mio_polymarket_price_history_metadata.json |   2 +-
+ ...erendum_10mio_polymarket_snapshot_metadata.json |  12 +--
+ ...swiss_referendum_10mio_polymarket_snapshots.csv |   2 +
+ .../swiss_referendum_10mio_refresh_metadata.json   |  33 ++++----
+ .../swiss_referendum_10mio_running_status.json     |  14 ++--
+ docs/project/TOOL_USAGE.md                         |  12 +++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md       |   7 ++
+ .../analysis/monitor_anomaly_review_queue.py       |  66 ++++++++++++++++
+ tests/test_monitor_anomaly_review_queue.py         |  84 +++++++++++++++++++++
+ 22 files changed, 291 insertions(+), 73 deletions(-)
 ```
 
 Blockers:
@@ -48,7 +79,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: add monitor anomaly review queue
+- feat: add anomaly review status worksheet
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

@@ -7495,3 +7495,53 @@ Verification:
   -> PASS, 28 passed.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 479 passed in 51.18s.
+
+## 2026-06-11 - Anomaly review status worksheet
+
+Context:
+
+- Continued the deterministic monitor anomaly-review goal after committing the
+  first queue layer.
+- Added a curated manual status worksheet so human source checks can be tracked
+  without activating runtime agents, MCP, LLM metric calculation, ML, database
+  writes, order paths, or raw wallet exposure.
+
+Changes:
+
+- Added `data/monitor_anomaly_review_status_updates.csv`.
+- Extended `operations/analysis/monitor_anomaly_review_queue.py` to read,
+  validate, and merge optional review updates.
+- Extended the queue output with reviewer, review source URL, event source URL,
+  and review note fields.
+- Updated `tests/test_monitor_anomaly_review_queue.py`,
+  `docs/project/TOOL_USAGE.md`, `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`,
+  `GOAL.md`, and `ROADMAP.md`.
+- Regenerated `data/results/monitor_anomaly_review_queue.csv`,
+  `data/results/monitor_anomaly_review_metadata.json`, and
+  `data/results/monitor_anomaly_review_dashboard.html`.
+
+Key output:
+
+- Review worksheet rows: 3.
+- Queue rows after merge: 3.
+- Current human-review statuses: `needs_human_review`.
+- High-priority rows remain 1; medium-priority rows remain 2.
+
+Interpretation:
+
+- The worksheet is a manual review-control surface, not an automated judgement.
+- Current rows deliberately do not invent source checks; they remain
+  `needs_human_review` until manually reviewed.
+- Future status values can mark source-check progress or exclusion while
+  keeping blocked claims explicit in the generated queue.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_monitor_anomaly_review_queue.py -q`
+  -> PASS, 8 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_anomaly_review_queue`
+  -> PASS, merged 3 review-update rows into 3 queue rows.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_monitor_anomaly_review_queue.py tests\test_monitor_candidate_review_report.py tests\test_monitor_reference_candidates.py -q`
+  -> PASS, 20 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 481 passed in 57.83s.

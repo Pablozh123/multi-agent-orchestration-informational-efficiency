@@ -169,6 +169,18 @@ The queue generator validates this worksheet and merges its status, reviewer,
 source URL, event URL, and review note fields into
 `data/results/monitor_anomaly_review_queue.csv`.
 
+The same generator also writes bounded case-review packets for later human
+review or future audited MCP/agent access:
+
+```text
+data/results/monitor_anomaly_case_review_packets.csv
+data/results/monitor_anomaly_case_review_packets.json
+```
+
+These packet artifacts are summaries only. They must not be treated as proof of
+private information, misconduct, causality, tradeability, profitability, or
+market inefficiency.
+
 Open the reference similarity dashboard:
 
 ```text

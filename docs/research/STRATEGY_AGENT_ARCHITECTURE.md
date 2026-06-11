@@ -3830,6 +3830,8 @@ Generated artifacts:
 - `data/results/monitor_anomaly_review_summary.csv`
 - `data/results/monitor_anomaly_review_metadata.json`
 - `data/results/monitor_anomaly_review_dashboard.html`
+- `data/results/monitor_anomaly_case_review_packets.csv`
+- `data/results/monitor_anomaly_case_review_packets.json`
 
 Curated manual input:
 
@@ -3857,6 +3859,7 @@ Current output shape:
 - Future MCP default row cap recorded as 50 rows.
 - 3 current status worksheet rows.
 - Current human-review statuses: 3 `source_check_pending`.
+- 3 bounded case-review packets exist for later human, MCP, or agent reading.
 - All current queue cases have public Polymarket market context and one public
   context URL recorded for source-check follow-up only; this does not
   establish event causality, private information, misconduct, tradeability, or
@@ -3864,8 +3867,8 @@ Current output shape:
 
 Agent and MCP boundary:
 
-- Future agents may only read the queue or summary after `llm_audit_log`
-  integration exists.
+- Future agents may only read the queue, summary, or bounded case-review
+  packets after `llm_audit_log` integration exists.
 - Future MCP tools are contract-only at this stage:
   `get_anomaly_review_summary`, `get_anomaly_case`,
   `list_monitor_artifacts`, and `get_method_limits`.

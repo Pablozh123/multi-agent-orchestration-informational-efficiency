@@ -36,6 +36,8 @@ QUEUE_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_queue.csv"
 SUMMARY_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_summary.csv"
 METADATA_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_metadata.json"
 DASHBOARD_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_dashboard.html"
+CASE_REVIEW_PACKETS_CSV_OUTPUT = RESULTS_DIR / "monitor_anomaly_case_review_packets.csv"
+CASE_REVIEW_PACKETS_JSON_OUTPUT = RESULTS_DIR / "monitor_anomaly_case_review_packets.json"
 
 MAX_MCP_ROWS = 50
 ALLOWED_REVIEW_STATUSES = {
@@ -99,6 +101,25 @@ SUMMARY_COLUMNS: tuple[str, ...] = (
     "limitation",
 )
 
+CASE_REVIEW_PACKET_COLUMNS: tuple[str, ...] = (
+    "case_id",
+    "packet_id",
+    "market_slug",
+    "question",
+    "review_priority",
+    "human_review_status",
+    "source_check_status",
+    "source_context",
+    "evidence_status",
+    "missing_evidence",
+    "next_review_step",
+    "allowed_interpretation",
+    "blocked_claims",
+    "future_mcp_access",
+    "future_agent_access",
+    "source_queue_artifact",
+)
+
 
 @dataclass(frozen=True)
 class MonitorAnomalyReviewQueueResult:
@@ -108,8 +129,11 @@ class MonitorAnomalyReviewQueueResult:
     summary_path: Path
     metadata_path: Path
     dashboard_path: Path
+    case_packets_csv_path: Path
+    case_packets_json_path: Path
     queue_row_count: int
     high_priority_count: int
+    case_packet_row_count: int
 
     def to_dict(self) -> dict[str, int | str]:
         """Return a JSON-friendly result summary."""
@@ -119,8 +143,11 @@ class MonitorAnomalyReviewQueueResult:
             "summary_path": str(self.summary_path),
             "metadata_path": str(self.metadata_path),
             "dashboard_path": str(self.dashboard_path),
+            "case_packets_csv_path": str(self.case_packets_csv_path),
+            "case_packets_json_path": str(self.case_packets_json_path),
             "queue_row_count": self.queue_row_count,
             "high_priority_count": self.high_priority_count,
+            "case_packet_row_count": self.case_packet_row_count,
         }
 
 
@@ -220,6 +247,25 @@ def build_anomaly_review_summary(queue: pd.DataFrame) -> pd.DataFrame:
     )
 
 
+def build_anomaly_case_review_packets(queue: pd.DataFrame) -> pd.DataFrame:
+    """Return bounded case-review packets for later human, MCP, or agent access."""
+
+    _validate_queue(queue)
+    if queue.empty:
+        return pd.DataFrame(columns=CASE_REVIEW_PACKET_COLUMNS)
+
+    rows: list[dict[str, object]] = []
+    priority_order = {"high": 0, "medium": 1, "low": 2}
+    ordered = queue.assign(
+        _priority_order=queue["review_priority"].map(priority_order).fillna(9)
+    ).sort_values(["_priority_order", "timestamp_utc", "case_id"])
+    for item in ordered.drop(columns=["_priority_order"]).to_dict(orient="records"):
+        rows.append(_case_review_packet(item))
+    packets = pd.DataFrame(rows, columns=CASE_REVIEW_PACKET_COLUMNS)
+    _reject_wallet_address_columns(packets, "case review packets")
+    return packets
+
+
 def apply_review_status_updates(
     queue: pd.DataFrame,
     updates: pd.DataFrame,
@@ -265,6 +311,8 @@ def generate_monitor_anomaly_review_queue(
     summary_path: Path = SUMMARY_OUTPUT,
     metadata_path: Path = METADATA_OUTPUT,
     dashboard_path: Path = DASHBOARD_OUTPUT,
+    case_packets_csv_path: Path = CASE_REVIEW_PACKETS_CSV_OUTPUT,
+    case_packets_json_path: Path = CASE_REVIEW_PACKETS_JSON_OUTPUT,
 ) -> MonitorAnomalyReviewQueueResult:
     """Write the anomaly review queue, compact summary, dashboard, and metadata."""
 
@@ -285,13 +333,17 @@ def generate_monitor_anomaly_review_queue(
     if not review_updates.empty:
         queue = apply_review_status_updates(queue, review_updates)
     summary = build_anomaly_review_summary(queue)
+    case_packets = build_anomaly_case_review_packets(queue)
 
     _write_csv(queue_path, queue)
     _write_csv(summary_path, summary)
+    _write_csv(case_packets_csv_path, case_packets)
+    _write_case_packets_json(case_packets_json_path, case_packets)
     _write_dashboard(queue=queue, summary=summary, dashboard_path=dashboard_path)
     metadata = _metadata(
         queue=queue,
         summary=summary,
+        case_packets=case_packets,
         review_report_path=review_report_path,
         alert_rows_path=alert_rows_path,
         detection_cases_path=detection_cases_path,
@@ -302,6 +354,8 @@ def generate_monitor_anomaly_review_queue(
         queue_path=queue_path,
         summary_path=summary_path,
         dashboard_path=dashboard_path,
+        case_packets_csv_path=case_packets_csv_path,
+        case_packets_json_path=case_packets_json_path,
     )
     metadata_path.parent.mkdir(parents=True, exist_ok=True)
     metadata_path.write_text(
@@ -313,8 +367,11 @@ def generate_monitor_anomaly_review_queue(
         summary_path=summary_path,
         metadata_path=metadata_path,
         dashboard_path=dashboard_path,
+        case_packets_csv_path=case_packets_csv_path,
+        case_packets_json_path=case_packets_json_path,
         queue_row_count=int(len(queue)),
         high_priority_count=_count(queue, "review_priority", "high"),
+        case_packet_row_count=int(len(case_packets)),
     )
 
 
@@ -336,6 +393,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--summary-output", type=Path, default=SUMMARY_OUTPUT)
     parser.add_argument("--metadata-output", type=Path, default=METADATA_OUTPUT)
     parser.add_argument("--dashboard-output", type=Path, default=DASHBOARD_OUTPUT)
+    parser.add_argument(
+        "--case-packets-csv-output",
+        type=Path,
+        default=CASE_REVIEW_PACKETS_CSV_OUTPUT,
+    )
+    parser.add_argument(
+        "--case-packets-json-output",
+        type=Path,
+        default=CASE_REVIEW_PACKETS_JSON_OUTPUT,
+    )
     args = parser.parse_args(argv)
 
     try:
@@ -350,6 +417,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             summary_path=args.summary_output,
             metadata_path=args.metadata_output,
             dashboard_path=args.dashboard_output,
+            case_packets_csv_path=args.case_packets_csv_output,
+            case_packets_json_path=args.case_packets_json_output,
         )
     except (FileNotFoundError, ValueError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
@@ -403,6 +472,113 @@ def _queue_row(
         "blocked_claims": _blocked_claims(),
         "source_artifacts": _source_artifacts(item, detection, risk),
     }
+
+
+def _case_review_packet(item: Mapping[str, object]) -> dict[str, object]:
+    case_id = _text(item.get("case_id"))
+    status = _text(item.get("human_review_status")) or "needs_human_review"
+    source_context = _source_context(item)
+    return {
+        "case_id": case_id,
+        "packet_id": f"case_review_packet_{case_id}",
+        "market_slug": _text(item.get("market_slug")),
+        "question": _text(item.get("question")),
+        "review_priority": _text(item.get("review_priority")),
+        "human_review_status": status,
+        "source_check_status": _source_check_status(item),
+        "source_context": source_context,
+        "evidence_status": _evidence_status(item),
+        "missing_evidence": _text(item.get("missing_evidence")),
+        "next_review_step": _next_review_step(item),
+        "allowed_interpretation": _text(item.get("allowed_interpretation")),
+        "blocked_claims": _text(item.get("blocked_claims")),
+        "future_mcp_access": (
+            "contract_only_bounded_case_summary; max_rows=50; no_raw_sql; "
+            "no_wallet_address_by_default; no_order_path"
+        ),
+        "future_agent_access": (
+            "contract_only_after_llm_audit_log; interpretation_only; "
+            "no_metric_calculation"
+        ),
+        "source_queue_artifact": "monitor_anomaly_review_queue.csv",
+    }
+
+
+def _source_context(item: Mapping[str, object]) -> str:
+    review_url = _text(item.get("review_source_url")) or "not_recorded"
+    event_url = _text(item.get("event_source_url")) or "not_recorded"
+    reviewer = _text(item.get("reviewer")) or "not_recorded"
+    updated_at = _text(item.get("review_status_updated_at_utc")) or "not_recorded"
+    note = _text(item.get("review_note")) or "not_recorded"
+    return (
+        f"review_source_url={review_url}; event_source_url={event_url}; "
+        f"reviewer={reviewer}; updated_at_utc={updated_at}; review_note={note}"
+    )
+
+
+def _source_check_status(item: Mapping[str, object]) -> str:
+    status = _text(item.get("human_review_status"))
+    review_url = _text(item.get("review_source_url"))
+    event_url = _text(item.get("event_source_url"))
+    if status == "source_check_pending" and review_url and event_url:
+        return "public_sources_recorded_pending_human_acceptance"
+    if status == "source_check_pending":
+        return "source_check_open_missing_public_source_url"
+    if status == "needs_human_review":
+        return "source_check_not_started"
+    if status == "reviewed_keep_candidate":
+        return "human_review_kept_candidate"
+    if status == "reviewed_false_context":
+        return "human_review_false_context"
+    if status == "thesis_excluded":
+        return "excluded_from_thesis_use"
+    return "unknown_review_status"
+
+
+def _evidence_status(item: Mapping[str, object]) -> str:
+    status = _text(item.get("human_review_status"))
+    event_context = _text(item.get("event_context_status"))
+    reference_context = _text(item.get("reference_overlap_status"))
+    missing = _text(item.get("missing_evidence"))
+    if status in {"reviewed_false_context", "thesis_excluded"}:
+        return "not_eligible_for_thesis_use"
+    if status == "reviewed_keep_candidate" and not missing:
+        return "human_reviewed_candidate_context_available"
+    if status == "source_check_pending":
+        return (
+            "public_sources_recorded_but_evidence_incomplete; "
+            f"event_context={event_context}; reference_context={reference_context}"
+        )
+    return (
+        "human_review_required; "
+        f"event_context={event_context or 'missing'}; "
+        f"reference_context={reference_context or 'missing'}"
+    )
+
+
+def _next_review_step(item: Mapping[str, object]) -> str:
+    status = _text(item.get("human_review_status"))
+    if status == "needs_human_review":
+        return (
+            "Open public market and event/context sources; record source URLs; "
+            "keep as review cue only."
+        )
+    if status == "source_check_pending":
+        return (
+            "Review source timestamps, repeat-bucket evidence, market mapping, "
+            "materiality, and missing evidence; then mark reviewed_keep_candidate, "
+            "reviewed_false_context, or thesis_excluded."
+        )
+    if status == "reviewed_keep_candidate":
+        return (
+            "Use only as bounded reviewed case context after method-limit review; "
+            "do not state causality or private information."
+        )
+    if status == "reviewed_false_context":
+        return "Keep as rejected review example; do not use as anomaly evidence."
+    if status == "thesis_excluded":
+        return "Keep excluded from thesis-facing outputs unless a new review decision is documented."
+    return "Resolve invalid or unknown review status before any further use."
 
 
 def _priority(
@@ -604,6 +780,7 @@ def _metadata(
     *,
     queue: pd.DataFrame,
     summary: pd.DataFrame,
+    case_packets: pd.DataFrame,
     review_report_path: Path,
     alert_rows_path: Path,
     detection_cases_path: Path,
@@ -614,6 +791,8 @@ def _metadata(
     queue_path: Path,
     summary_path: Path,
     dashboard_path: Path,
+    case_packets_csv_path: Path,
+    case_packets_json_path: Path,
 ) -> dict[str, Any]:
     return {
         "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
@@ -643,11 +822,18 @@ def _metadata(
             "queue_path": str(queue_path),
             "summary_path": str(summary_path),
             "dashboard_path": str(dashboard_path),
+            "case_packets_csv_path": str(case_packets_csv_path),
+            "case_packets_json_path": str(case_packets_json_path),
             "queue_row_count": int(len(queue)),
+            "case_packet_row_count": int(len(case_packets)),
             "high_priority_count": _count(queue, "review_priority", "high"),
             "review_update_row_count": int(len(review_updates)),
             "contains_wallet_addresses": _contains_wallet_address_column(queue),
+            "case_packets_contain_wallet_addresses": _contains_wallet_address_column(
+                case_packets
+            ),
             "contains_order_instructions": False,
+            "case_packets_contain_order_instructions": False,
             "max_default_rows_for_future_tools": MAX_MCP_ROWS,
         },
         "future_agent_contract": {
@@ -886,6 +1072,23 @@ def _read_optional_csv(path: Path) -> pd.DataFrame:
 def _write_csv(path: Path, frame: pd.DataFrame) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     frame.to_csv(path, index=False)
+
+
+def _write_case_packets_json(path: Path, frame: pd.DataFrame) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "artifact": "monitor_anomaly_case_review_packets",
+        "row_count": int(len(frame)),
+        "max_default_rows_for_future_tools": MAX_MCP_ROWS,
+        "contains_wallet_addresses": _contains_wallet_address_column(frame),
+        "contains_order_instructions": False,
+        "agent_and_mcp_status": "contract_only_not_implemented",
+        "case_packets": frame.to_dict(orient="records"),
+    }
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
 
 
 def _count(frame: pd.DataFrame, column: str, value: str) -> int:

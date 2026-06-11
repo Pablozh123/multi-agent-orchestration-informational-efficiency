@@ -452,10 +452,15 @@ Done criteria:
 - The detection-backtest is a review-quality test, not a PnL or trading
   strategy backtest.
 - A deterministic anomaly review queue exists over bounded monitor artifacts.
-- The queue writes compact case rows, a one-row summary, metadata, and a local
-  dashboard under `data/results/monitor_anomaly_review_*`.
+- The queue writes compact case rows, a one-row summary, metadata, a local
+  dashboard, and bounded case-review packets under `data/results/`.
 - Queue rows expose review context, missing evidence, allowed interpretation,
   blocked claims, and human-review status without wallet-address columns.
+- Case-review packets exist as
+  `data/results/monitor_anomaly_case_review_packets.csv` and
+  `data/results/monitor_anomaly_case_review_packets.json`; they provide a
+  bounded per-case review surface for later human, MCP, or agent reading
+  without activating MCP or agents.
 - A curated manual review-status worksheet exists at
   `data/monitor_anomaly_review_status_updates.csv`; it can update queued cases
   with review status, reviewer, source URL, event URL, and review notes.
@@ -508,8 +513,8 @@ Blockers:
 - Wallet graph v1 is based on shared market and shared time-bucket activity;
   it is not an on-chain funding graph or identity cluster.
 - The next user-facing step is to define deterministic review-status
-  transitions for accepted, excluded, or false-context cases and produce a
-  compact bounded case-review packet for human review.
+  transitions for accepted, excluded, or false-context cases and decide which
+  packet states are allowed in thesis-facing appendices.
 
 ## Phase 11: Swiss Referendum Efficiency Comparison
 

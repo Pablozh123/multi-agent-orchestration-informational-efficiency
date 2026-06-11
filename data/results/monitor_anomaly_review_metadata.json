@@ -25,7 +25,7 @@
     ],
     "wallet_address_exposure_allowed_by_default": false
   },
-  "generated_at_utc": "2026-06-11T18:31:52+00:00",
+  "generated_at_utc": "2026-06-11T18:39:03+00:00",
   "inputs": {
     "alert_rows_path": "data\\results\\monitor_v2_polymarket_rolling_alert_rows.csv",
     "detection_cases_path": "data\\results\\monitor_detection_backtest_cases.csv",
@@ -59,6 +59,11 @@
     "uses_existing_files_only": true
   },
   "outputs": {
+    "case_packet_row_count": 3,
+    "case_packets_contain_order_instructions": false,
+    "case_packets_contain_wallet_addresses": false,
+    "case_packets_csv_path": "data\\results\\monitor_anomaly_case_review_packets.csv",
+    "case_packets_json_path": "data\\results\\monitor_anomaly_case_review_packets.json",
     "contains_order_instructions": false,
     "contains_wallet_addresses": false,
     "dashboard_path": "data\\results\\monitor_anomaly_review_dashboard.html",

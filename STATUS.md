@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-06-11 20:33
+Generated: 2026-06-11 20:41
 
 Current goal: `goal-monitor-anomaly-review-queue-001` - Build deterministic anomaly review queue for politics/geopolitics monitor
 
@@ -11,22 +11,18 @@ Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `481 passed in 47.57s`
+Pytest summary: `482 passed in 67.36s (0:01:07)`
 
 Git branch: `main`
 
-Latest commit: `7418ac9`
+Latest commit: `d8b08f6`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
- M data/monitor_anomaly_review_status_updates.csv
- M data/results/monitor_anomaly_review_dashboard.html
  M data/results/monitor_anomaly_review_metadata.json
- M data/results/monitor_anomaly_review_queue.csv
- M data/results/monitor_anomaly_review_summary.csv
  M data/results/swiss_referendum_10mio_auto_refresh_log.csv
  M data/results/swiss_referendum_10mio_auto_refresh_metadata.json
  M data/results/swiss_referendum_10mio_comparison.csv
@@ -40,34 +36,38 @@ Git status:
  M data/results/swiss_referendum_10mio_polymarket_snapshots.csv
  M data/results/swiss_referendum_10mio_refresh_metadata.json
  M data/results/swiss_referendum_10mio_running_status.json
+ M docs/project/TOOL_USAGE.md
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
+ M operations/analysis/monitor_anomaly_review_queue.py
+ M tests/test_monitor_anomaly_review_queue.py
+?? data/results/monitor_anomaly_case_review_packets.csv
+?? data/results/monitor_anomaly_case_review_packets.json
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                            |  10 +++---
- ROADMAP.md                                         |  20 +++++------
- data/monitor_anomaly_review_status_updates.csv     |   4 +--
- data/results/monitor_anomaly_review_dashboard.html |   8 ++---
- data/results/monitor_anomaly_review_metadata.json  |   2 +-
- data/results/monitor_anomaly_review_queue.csv      |   4 +--
- data/results/monitor_anomaly_review_summary.csv    |   2 +-
- .../swiss_referendum_10mio_auto_refresh_log.csv    |   2 ++
- ...iss_referendum_10mio_auto_refresh_metadata.json |  40 ++++++++++++++++-----
- data/results/swiss_referendum_10mio_comparison.csv |   2 ++
- data/results/swiss_referendum_10mio_dashboard.html |  23 ++++++------
+ GOAL.md                                            |  11 +-
+ ROADMAP.md                                         |  13 +-
+ data/results/monitor_anomaly_review_metadata.json  |   7 +-
+ .../swiss_referendum_10mio_auto_refresh_log.csv    |   2 +
+ ...iss_referendum_10mio_auto_refresh_metadata.json |  40 +++-
+ data/results/swiss_referendum_10mio_comparison.csv |   2 +
+ data/results/swiss_referendum_10mio_dashboard.html |  23 +--
  data/results/swiss_referendum_10mio_efficiency.png | Bin 84509 -> 84658 bytes
- ...swiss_referendum_10mio_efficiency_metadata.json |  12 +++----
- ...s_referendum_10mio_latest_source_comparison.csv |   6 ++--
- .../swiss_referendum_10mio_latest_summary.md       |  18 +++++-----
+ ...swiss_referendum_10mio_efficiency_metadata.json |  12 +-
+ ...s_referendum_10mio_latest_source_comparison.csv |   6 +-
+ .../swiss_referendum_10mio_latest_summary.md       |  18 +-
  ...um_10mio_polymarket_price_history_metadata.json |   2 +-
- ...erendum_10mio_polymarket_snapshot_metadata.json |  12 +++----
- ...swiss_referendum_10mio_polymarket_snapshots.csv |   2 ++
- .../swiss_referendum_10mio_refresh_metadata.json   |  33 +++++++++--------
- .../swiss_referendum_10mio_running_status.json     |  14 ++++----
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md       |  11 +++---
- 21 files changed, 131 insertions(+), 96 deletions(-)
+ ...erendum_10mio_polymarket_snapshot_metadata.json |  12 +-
+ ...swiss_referendum_10mio_polymarket_snapshots.csv |   2 +
+ .../swiss_referendum_10mio_refresh_metadata.json   |  33 ++--
+ .../swiss_referendum_10mio_running_status.json     |  14 +-
+ docs/project/TOOL_USAGE.md                         |  12 ++
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md       |   7 +-
+ .../analysis/monitor_anomaly_review_queue.py       | 203 +++++++++++++++++++++
+ tests/test_monitor_anomaly_review_queue.py         |  37 ++++
+ 20 files changed, 381 insertions(+), 75 deletions(-)
 ```
 
 Blockers:
@@ -76,7 +76,7 @@ Blockers:
 
 Next recommended action:
 
-- data: source-check queued anomaly review cases
+- feat: add anomaly case review packets
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

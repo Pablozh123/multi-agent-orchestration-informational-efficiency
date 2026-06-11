@@ -8,9 +8,11 @@ import pytest
 
 from operations.analysis.monitor_anomaly_review_queue import (
     ALLOWED_REVIEW_STATUSES,
+    CASE_REVIEW_PACKET_COLUMNS,
     QUEUE_COLUMNS,
     REVIEW_UPDATE_COLUMNS,
     apply_review_status_updates,
+    build_anomaly_case_review_packets,
     build_anomaly_review_queue,
     build_anomaly_review_summary,
     generate_monitor_anomaly_review_queue,
@@ -57,6 +59,29 @@ def test_build_anomaly_review_summary_counts_queue_labels() -> None:
     assert "insider_risk_review_candidate=1" in row["review_label_counts"]
     assert bool(row["ready_for_future_agent_contract"]) is True
     assert bool(row["ready_for_future_mcp_contract"]) is True
+
+
+def test_build_anomaly_case_review_packets_are_bounded_summaries() -> None:
+    queue = build_anomaly_review_queue(
+        review_report=_review_report(),
+        detection_cases=_detection_cases(),
+    )
+    queue = apply_review_status_updates(queue, _review_updates())
+
+    packets = build_anomaly_case_review_packets(queue)
+
+    high = packets[packets["case_id"] == _candidate_id("market_b")].iloc[0]
+    assert tuple(packets.columns) == CASE_REVIEW_PACKET_COLUMNS
+    assert len(packets) == 2
+    assert high["packet_id"] == f"case_review_packet_{_candidate_id('market_b')}"
+    assert high["source_check_status"] == "public_sources_recorded_pending_human_acceptance"
+    assert "review_source_url=https://example.com/source" in high["source_context"]
+    assert "public_sources_recorded_but_evidence_incomplete" in high["evidence_status"]
+    assert "reviewed_keep_candidate" in high["next_review_step"]
+    assert "private_information_proof" in high["blocked_claims"]
+    assert "max_rows=50" in high["future_mcp_access"]
+    assert "no_metric_calculation" in high["future_agent_access"]
+    assert "wallet_address" not in packets.columns
 
 
 def test_apply_review_status_updates_changes_only_known_cases() -> None:
@@ -173,22 +198,34 @@ def test_generate_monitor_anomaly_review_queue_writes_outputs(tmp_path: Path) ->
         summary_path=tmp_path / "summary.csv",
         metadata_path=tmp_path / "metadata.json",
         dashboard_path=tmp_path / "dashboard.html",
+        case_packets_csv_path=tmp_path / "case_packets.csv",
+        case_packets_json_path=tmp_path / "case_packets.json",
     )
 
     queue = pd.read_csv(result.queue_path)
     summary = pd.read_csv(result.summary_path)
     metadata = json.loads(result.metadata_path.read_text(encoding="utf-8"))
     dashboard = result.dashboard_path.read_text(encoding="utf-8")
+    case_packets = pd.read_csv(result.case_packets_csv_path)
+    case_packets_json = json.loads(result.case_packets_json_path.read_text(encoding="utf-8"))
     assert result.queue_row_count == 2
     assert result.high_priority_count == 1
+    assert result.case_packet_row_count == 2
     assert len(queue) == 2
+    assert len(case_packets) == 2
     assert int(summary.loc[0, "queue_row_count"]) == 2
     assert metadata["outputs"]["contains_wallet_addresses"] is False
+    assert metadata["outputs"]["case_packets_contain_wallet_addresses"] is False
     assert metadata["outputs"]["contains_order_instructions"] is False
+    assert metadata["outputs"]["case_packets_contain_order_instructions"] is False
+    assert metadata["outputs"]["case_packet_row_count"] == 2
     assert metadata["future_mcp_contract"]["max_rows"] == 50
     assert metadata["future_mcp_contract"]["raw_sql_allowed"] is False
     assert metadata["future_agent_contract"]["agent_metric_calculation_allowed"] is False
     assert metadata["outputs"]["review_update_row_count"] == 1
+    assert case_packets_json["row_count"] == 2
+    assert case_packets_json["contains_wallet_addresses"] is False
+    assert case_packets_json["agent_and_mcp_status"] == "contract_only_not_implemented"
     assert "Monitor Anomaly Review Queue" in dashboard
     assert "Future agents and MCP may read summaries only" in dashboard
     assert queue.loc[queue["case_id"] == _candidate_id("market_b"), "reviewer"].iloc[0] == "manual_reviewer"

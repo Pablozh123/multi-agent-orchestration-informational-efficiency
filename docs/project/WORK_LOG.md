@@ -7651,3 +7651,57 @@ Verification:
   -> PASS, 8 passed.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 481 passed in 47.57s.
+
+## 2026-06-11 - Bounded anomaly case review packets
+
+Context:
+
+- Continued the deterministic monitor anomaly-review queue after all current
+  queued cases received `source_check_pending` status.
+- Added a bounded per-case review surface for later human review and future
+  audited MCP/agent reading.
+- Kept MCP tools, runtime agents, LLM metric calculation, ML, database writes,
+  order paths, wallet-address exposure, and thesis-facing evidence claims out
+  of scope.
+
+Changes:
+
+- Extended `operations/analysis/monitor_anomaly_review_queue.py` to build
+  case-review packets from the validated anomaly review queue.
+- Added `data/results/monitor_anomaly_case_review_packets.csv`.
+- Added `data/results/monitor_anomaly_case_review_packets.json`.
+- Updated metadata to record packet paths, packet row count, wallet-address
+  safety, order-instruction safety, and contract-only MCP/agent status.
+- Extended `tests/test_monitor_anomaly_review_queue.py` with packet-level
+  assertions.
+- Updated `GOAL.md`, `ROADMAP.md`, `docs/project/TOOL_USAGE.md`, and
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+
+Key output:
+
+- Case-review packet rows: 3.
+- Queue rows remain 3.
+- High-priority rows remain 1.
+- All packet rows are bounded summaries with source-check status, source
+  context, evidence status, missing evidence, next review step, allowed
+  interpretation, blocked claims, and future MCP/agent contract notes.
+- Metadata records `case_packets_contain_wallet_addresses=false` and
+  `case_packets_contain_order_instructions=false`.
+
+Interpretation:
+
+- The packet output is a controlled review interface over deterministic queue
+  artifacts.
+- It prepares a future read-only MCP/agent access contract but does not
+  activate MCP or agents.
+- Packets do not prove event causality, private information, misconduct,
+  tradeability, profitability, future performance, or market inefficiency.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_monitor_anomaly_review_queue.py -q`
+  -> PASS, 9 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_anomaly_review_queue`
+  -> PASS, generated 3 queue rows and 3 case-review packet rows.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 482 passed in 67.36s.

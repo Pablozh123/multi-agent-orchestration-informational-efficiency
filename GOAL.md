@@ -52,6 +52,9 @@ deliverables:
   running view is testable even when browser tooling is unavailable.
 - Add a bounded one-command refresh runner that collects one new snapshot and
   regenerates the local dashboard without running continuously.
+- Add a local scheduler-safe auto-refresh wrapper that can be invoked
+  periodically until the voting-day cutoff, collects at most one bounded
+  snapshot per invocation, and exits.
 - Add a deterministic running-status artifact that reports local output
   presence and snapshot recency for the current view.
 - Add an explicit source-boundary audit so BFS/admin.ch context sources cannot
@@ -65,6 +68,7 @@ scope:
 - `operations/collectors/swiss_referendum_polymarket.py`.
 - `operations/collectors/swiss_referendum_history.py`.
 - `operations/collectors/swiss_referendum_refresh.py`.
+- `operations/collectors/swiss_referendum_auto_refresh.py`.
 - `operations/analysis/swiss_referendum_efficiency.py`.
 - `data/results/swiss_referendum_10mio_*`.
 - `data/results/swiss_referendum_10mio_source_audit.csv`.
@@ -73,8 +77,8 @@ scope:
 out_of_scope:
 - Trading, order placement, order cancellation, authenticated user channels,
   trading credentials, PnL, profitability claims, strategy backtests, cloud
-  deployment, runtime agents, MCP demo layers, model routing, ML, and database
-  writes.
+  deployment, resident background daemons, runtime agents, MCP demo layers,
+  model routing, ML, and database writes.
 - Treating BFS as the source of voting-intention poll shares unless a future
   source-checked BFS poll table exists.
 - Claiming causality from a poll release to a Polymarket price movement.
@@ -101,6 +105,10 @@ acceptance_criteria:
   structure and nonblank figure.
 - The refresh runner can be called manually to collect exactly one bounded
   Polymarket snapshot and regenerate comparison outputs.
+- The auto-refresh wrapper can be called by a local scheduler until
+  2026-06-14T10:00:00Z, respects a minimum snapshot spacing and lock file,
+  collects at most one bounded snapshot per invocation, writes metadata/log
+  artifacts, and exits.
 - The running-status artifact reports latest snapshot age, local output
   presence, and whether the local view is fresh under a configured threshold.
 - Poll-impact rows are incomplete unless a local snapshot exists before and
@@ -121,7 +129,7 @@ acceptance_criteria:
   divergence labels, and output generation.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add swiss referendum information response view
+next_commit: feat: add swiss referendum auto refresh scheduler
 
 ## Decision Inputs For This Goal
 
@@ -160,6 +168,8 @@ next_commit: feat: add swiss referendum information response view
   bounded Polymarket snapshots.
 - One manual refresh command can update the local dashboard while preserving
   bounded snapshot history.
+- A local scheduler command can collect additional bounded snapshots until the
+  voting-day cutoff without changing methodology or running a resident daemon.
 - The latest comparison can state, descriptively, whether the Polymarket Yes
   probability is above, near, or below the latest poll Yes share.
 - The latest source-level comparison can state, descriptively, whether the

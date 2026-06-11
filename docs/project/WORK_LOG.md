@@ -7382,3 +7382,61 @@ Verification:
   -> PASS, regenerated Markdown/HTML/DOCX with 38 figures.
 - `.\.venv\Scripts\python.exe -m pytest tests\test_h1_direct_poll_outlier_robustness.py tests\test_h1_direct_poll_state_cluster_diagnostic.py tests\test_h1_direct_poll_loss_decomposition.py tests\test_dozenten_report.py -q`
   -> PASS, 10 passed.
+
+## 2026-06-11 - Swiss referendum auto-refresh scheduler
+
+Context:
+
+- Continued the active Swiss 10-million referendum comparison goal after the
+  user requested additional snapshots until the vote.
+- Kept the runtime boundary narrow: read-only public Polymarket refreshes,
+  file outputs only, no database writes, no LLM metrics, no agents/MCP, no ML,
+  no authenticated channels, and no order endpoints.
+
+Changes:
+
+- Added `operations/collectors/swiss_referendum_auto_refresh.py` as a
+  scheduler-safe one-shot wrapper around the bounded refresh runner.
+- Added `tests/test_swiss_referendum_auto_refresh.py` for successful refresh,
+  cutoff skip, minimum-spacing skip, lock skip, and CLI skip metadata.
+- Updated `GOAL.md`, `ROADMAP.md`, and
+  `docs/research/SWISS_REFERENDUM_EFFICIENCY.md` to document local scheduled
+  collection until 2026-06-14T10:00:00Z.
+- Updated Swiss referendum running-status metadata so the refresh command is
+  described as single-invocation and manual or scheduler-invoked, not manual
+  only.
+- Registered local Windows task
+  `BA-Thesis-Swiss-Referendum-Auto-Refresh` for hourly one-shot invocations
+  until 2026-06-14 12:00 Europe/Zurich.
+
+Key output:
+
+- The first manual auto-refresh probe, the scheduler-triggered verification
+  run, and the first scheduled hourly run all wrote `skipped_min_spacing`
+  because the latest local snapshot was still newer than the configured
+  55-minute spacing.
+- Auto-refresh log rows: 3.
+- Snapshot rows remained 19, with latest snapshot timestamp
+  2026-06-11T15:43:35Z.
+- Scheduled task verification returned `LastTaskResult = 0`.
+
+Interpretation:
+
+- Additional collection is now automated locally without creating a resident
+  daemon. Each scheduled invocation can collect at most one bounded snapshot
+  and otherwise writes explicit skip metadata.
+- Poll-release timing interpretation remains blocked until enough local
+  pre/post observations exist.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_auto_refresh.py -q`
+  -> PASS, 5 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_auto_refresh.py tests\test_swiss_referendum_refresh.py -q`
+  -> PASS, 9 passed.
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_auto_refresh --source live --until-utc 2026-06-14T10:00:00Z --min-spacing-minutes 55`
+  -> PASS, wrote `skipped_min_spacing` metadata.
+- Windows Scheduled Task controlled run and first scheduled hourly run -> PASS,
+  task state `Ready`, `LastTaskResult = 0`.
+- `.\.venv\Scripts\python.exe -m pytest -q`
+  -> PASS, 473 passed.

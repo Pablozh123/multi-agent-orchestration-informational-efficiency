@@ -1,0 +1,38 @@
+{
+  "generated_at_utc": "2026-06-11T16:04:15+00:00",
+  "limitations": {
+    "each_invocation_collects_at_most_one_snapshot": true,
+    "no_causal_claim_from_refresh": true,
+    "no_profitability_or_tradeability_claim": true,
+    "scheduled_collection_is_local_and_time_bounded": true
+  },
+  "method": {
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_use_ml": true,
+    "does_not_use_order_endpoints": true,
+    "does_not_write_database": true,
+    "min_spacing_minutes": 55,
+    "name": "swiss_referendum_10mio_auto_refresh_one_shot",
+    "not_a_background_daemon": true,
+    "read_only": true,
+    "scheduler_invokes_one_shot": true,
+    "source": "live",
+    "until_utc": "2026-06-14T10:00:00+00:00"
+  },
+  "outputs": {
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "log_path": "data\\results\\swiss_referendum_10mio_auto_refresh_log.csv",
+    "metadata_path": "data\\results\\swiss_referendum_10mio_auto_refresh_metadata.json"
+  },
+  "refresh_result": {},
+  "status": {
+    "latest_snapshot_at_utc": "2026-06-11T15:43:35Z",
+    "message": "Latest snapshot is newer than the configured spacing.",
+    "refreshed": false,
+    "snapshot_age_minutes": 20.667,
+    "snapshot_row_count": 19,
+    "status": "skipped_min_spacing"
+  }
+}

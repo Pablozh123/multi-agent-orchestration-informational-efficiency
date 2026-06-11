@@ -1,0 +1,4 @@
+generated_at_utc,status,source,until_utc,min_spacing_minutes,latest_snapshot_at_utc,snapshot_age_minutes,snapshot_row_count,comparison_row_count,latest_yes_probability,latest_raw_yes_gap,latest_decided_yes_gap,latest_divergence_label,message
+2026-06-11T15:58:44+00:00,skipped_min_spacing,live,2026-06-14T10:00:00+00:00,55,2026-06-11T15:43:35Z,15.15,19,,,,,,Latest snapshot is newer than the configured spacing.
+2026-06-11T15:59:30+00:00,skipped_min_spacing,live,2026-06-14T10:00:00+00:00,55,2026-06-11T15:43:35Z,15.917,19,,,,,,Latest snapshot is newer than the configured spacing.
+2026-06-11T16:04:15+00:00,skipped_min_spacing,live,2026-06-14T10:00:00+00:00,55,2026-06-11T15:43:35Z,20.667,19,,,,,,Latest snapshot is newer than the configured spacing.

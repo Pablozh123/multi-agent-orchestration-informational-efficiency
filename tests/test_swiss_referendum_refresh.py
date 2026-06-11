@@ -111,6 +111,8 @@ def test_build_running_status_reports_snapshot_recency(tmp_path: Path) -> None:
     assert status["status"]["snapshot_age_minutes"] == 60.0
     assert status["status"]["snapshot_recency_status"] == "fresh"
     assert status["status"]["ready_for_running_view"] is True
+    assert status["method"]["single_invocation_refresh_only"] is True
+    assert status["method"]["manual_or_scheduler_invoked_refresh"] is True
     assert status["method"]["does_not_use_order_endpoints"] is True
 
 

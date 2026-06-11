@@ -49,6 +49,15 @@ from operations.collectors.swiss_referendum_polymarket import (
 
 REFRESH_METADATA_OUTPUT = RESULTS_DIR / "swiss_referendum_10mio_refresh_metadata.json"
 RUNNING_STATUS_OUTPUT = RESULTS_DIR / "swiss_referendum_10mio_running_status.json"
+MANUAL_REFRESH_COMMAND = (
+    ".\\.venv\\Scripts\\python.exe -m "
+    "operations.collectors.swiss_referendum_refresh --source live"
+)
+AUTO_REFRESH_COMMAND = (
+    ".\\.venv\\Scripts\\python.exe -m "
+    "operations.collectors.swiss_referendum_auto_refresh --source live "
+    "--until-utc 2026-06-14T10:00:00Z --min-spacing-minutes 55"
+)
 
 
 @dataclass(frozen=True)
@@ -393,14 +402,13 @@ def build_running_status(
     ready = all_outputs_exist and snapshot_info["snapshot_recency_status"] == "fresh"
     return {
         "generated_at_utc": generated_at.isoformat(),
-        "manual_refresh_command": (
-            ".\\.venv\\Scripts\\python.exe -m "
-            "operations.collectors.swiss_referendum_refresh --source live"
-        ),
+        "manual_refresh_command": MANUAL_REFRESH_COMMAND,
+        "auto_refresh_command": AUTO_REFRESH_COMMAND,
         "method": {
             "name": "swiss_referendum_10mio_running_status",
             "fresh_snapshot_minutes": fresh_snapshot_minutes,
-            "manual_refresh_only": True,
+            "single_invocation_refresh_only": True,
+            "manual_or_scheduler_invoked_refresh": True,
             "read_only": True,
             "does_not_write_database": True,
             "does_not_use_llms": True,
@@ -495,7 +503,8 @@ def _build_metadata(
             "contains_order_instructions": False,
         },
         "limitations": {
-            "manual_refresh_only": True,
+            "single_invocation_refresh_only": True,
+            "manual_or_scheduler_invoked_refresh": True,
             "no_causal_claim_from_refresh": True,
             "no_profitability_or_tradeability_claim": True,
             "poll_release_impact_requires_pre_and_post_snapshots": True,

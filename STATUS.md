@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-06-11 17:45
+Generated: 2026-06-11 18:02
 
 Current goal: `goal-swiss-referendum-efficiency-001` - Build Swiss 10-million referendum Polymarket-vs-polls comparison
 
@@ -11,43 +11,35 @@ Current roadmap phase: Phase 11: Swiss Referendum Efficiency Comparison
 
 Test status: PASS
 
-Pytest summary: `468 passed in 52.45s`
+Pytest summary: `473 passed in 50.69s`
 
 Git branch: `main`
 
-Latest commit: `b91f9bf`
+Latest commit: `945eee9`
 
 Git status:
 
 ```text
- M data/results/swiss_referendum_10mio_comparison.csv
- M data/results/swiss_referendum_10mio_dashboard.html
- M data/results/swiss_referendum_10mio_efficiency.png
- M data/results/swiss_referendum_10mio_efficiency_metadata.json
- M data/results/swiss_referendum_10mio_latest_source_comparison.csv
- M data/results/swiss_referendum_10mio_latest_summary.md
- M data/results/swiss_referendum_10mio_polymarket_price_history_metadata.json
- M data/results/swiss_referendum_10mio_polymarket_snapshot_metadata.json
- M data/results/swiss_referendum_10mio_polymarket_snapshots.csv
- M data/results/swiss_referendum_10mio_refresh_metadata.json
- M data/results/swiss_referendum_10mio_running_status.json
+ M GOAL.md
+ M ROADMAP.md
+ M docs/research/SWISS_REFERENDUM_EFFICIENCY.md
+ M operations/collectors/swiss_referendum_refresh.py
+ M tests/test_swiss_referendum_refresh.py
+?? data/results/swiss_referendum_10mio_auto_refresh_log.csv
+?? data/results/swiss_referendum_10mio_auto_refresh_metadata.json
+?? operations/collectors/swiss_referendum_auto_refresh.py
+?? tests/test_swiss_referendum_auto_refresh.py
 ```
 
 Git diff stat:
 
 ```text
- data/results/swiss_referendum_10mio_comparison.csv  |   1 +
- data/results/swiss_referendum_10mio_dashboard.html  |   7 ++++---
- data/results/swiss_referendum_10mio_efficiency.png  | Bin 84869 -> 84509 bytes
- .../swiss_referendum_10mio_efficiency_metadata.json |   8 ++++----
- ...ss_referendum_10mio_latest_source_comparison.csv |   6 +++---
- .../swiss_referendum_10mio_latest_summary.md        |   6 +++---
- ...dum_10mio_polymarket_price_history_metadata.json |   2 +-
- ...ferendum_10mio_polymarket_snapshot_metadata.json |   8 ++++----
- .../swiss_referendum_10mio_polymarket_snapshots.csv |   1 +
- .../swiss_referendum_10mio_refresh_metadata.json    |  14 +++++++-------
- .../swiss_referendum_10mio_running_status.json      |   8 ++++----
- 11 files changed, 32 insertions(+), 29 deletions(-)
+ GOAL.md                                           | 16 ++++++++---
+ ROADMAP.md                                        | 10 +++++--
+ docs/research/SWISS_REFERENDUM_EFFICIENCY.md      | 33 +++++++++++++++++++++--
+ operations/collectors/swiss_referendum_refresh.py | 21 ++++++++++-----
+ tests/test_swiss_referendum_refresh.py            |  2 ++
+ 5 files changed, 69 insertions(+), 13 deletions(-)
 ```
 
 Blockers:
@@ -56,7 +48,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: add swiss referendum information response view
+- feat: add swiss referendum auto refresh scheduler
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

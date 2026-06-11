@@ -518,9 +518,12 @@ Done criteria:
   deterministic artifacts.
 - A bounded one-command refresh runner can collect one new Polymarket snapshot
   and regenerate the local comparison dashboard without running continuously.
+- A scheduler-safe one-shot auto-refresh wrapper can be called periodically
+  until the 2026-06-14 voting-day cutoff, respects minimum snapshot spacing and
+  a lock file, collects at most one bounded snapshot per invocation, and exits.
 - Tests cover poll validation, Polymarket snapshot extraction, comparison
-  matching, divergence labels, impact rows, refresh behavior, and output
-  generation.
+  matching, divergence labels, impact rows, refresh behavior, auto-refresh
+  schedule gates, and output generation.
 
 Blockers:
 
@@ -529,6 +532,9 @@ Blockers:
   official/source pages instead.
 - More bounded Polymarket snapshots are required before poll-release impact
   timing can be interpreted.
+- Scheduled local collection is allowed only as a time-bounded one-shot command
+  runner; it must not become a resident daemon, agent, trading surface,
+  authenticated collector, or database writer.
 - BFS/admin.ch is context evidence only unless a future source-checked BFS poll
   table exists.
 - No causal, profitability, tradeability, or mispricing proof may be claimed

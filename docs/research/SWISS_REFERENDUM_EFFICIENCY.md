@@ -18,6 +18,10 @@ popular vote on the initiative `Keine 10-Millionen-Schweiz`.
   `data/results/swiss_referendum_10mio_latest_summary.md`.
 - Running status:
   `data/results/swiss_referendum_10mio_running_status.json`.
+- Auto-refresh metadata:
+  `data/results/swiss_referendum_10mio_auto_refresh_metadata.json`.
+- Auto-refresh log:
+  `data/results/swiss_referendum_10mio_auto_refresh_log.csv`.
 - Tidy reaction-window rows:
   `data/results/swiss_referendum_10mio_poll_reaction_windows.csv`.
 - Latest poll-source comparison:
@@ -145,9 +149,9 @@ shows whether the sign of the Polymarket move is aligned with the sign of the
 new poll signal, and how quickly that alignment first appears in the locally
 observed windows.
 
-## Manual Refresh
+## Refresh And Scheduled Collection
 
-The local running view is refreshed with one explicit bounded command:
+The local running view can be refreshed with one explicit bounded command:
 
 ```powershell
 .\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_refresh --source live
@@ -157,6 +161,31 @@ This collects one public Polymarket snapshot, appends it to the local snapshot
 history, fetches bounded public CLOB price-history windows around the curated
 poll releases, and regenerates the comparison CSV, poll-impact CSV, figure,
 dashboard, source audit, and metadata. It is not a background daemon.
+
+For local scheduled collection until the vote, use the scheduler-safe
+one-shot wrapper:
+
+```powershell
+.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_auto_refresh --source live --until-utc 2026-06-14T10:00:00Z --min-spacing-minutes 55
+```
+
+This command is designed for Windows Task Scheduler or a manual invocation.
+Each invocation checks the cutoff, latest local snapshot age, and lock file. If
+collection is allowed, it runs exactly one bounded read-only refresh and exits.
+If the vote cutoff has passed, a recent snapshot already exists, or another
+invocation is locked, it writes skip metadata and exits without collecting.
+
+The default cutoff `2026-06-14T10:00:00Z` corresponds to 12:00 Europe/Zurich on
+voting day. Scheduled collection remains local and time-bounded; it is not a
+resident daemon and does not add agents, MCP tooling, ML, LLM interpretation,
+database writes, authenticated channels, or order endpoints.
+
+The local Windows task used for this collection is named
+`BA-Thesis-Swiss-Referendum-Auto-Refresh`. It can be removed with:
+
+```powershell
+Unregister-ScheduledTask -TaskName "BA-Thesis-Swiss-Referendum-Auto-Refresh" -Confirm:$false
+```
 
 ## Dashboard Verification
 

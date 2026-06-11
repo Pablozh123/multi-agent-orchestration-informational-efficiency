@@ -34,6 +34,38 @@ This document is the high-level consolidation layer for the bachelor thesis. It 
 | F3 | H3 Granger diagnostic p-values | data/results/thesis_h3_granger_pvalues.png | main_text | thesis_facing_ready |
 | F4 | Swiss referendum running poll-proxy comparison | data/results/swiss_referendum_10mio_efficiency.png | discussion_pending_final_result | descriptive_pending_result |
 
+## Citation Readiness
+
+This table is a source-control view, not a promotion of source status. Sources marked `skimmed` can guide draft structure, but final thesis citation wording still needs source-by-source review.
+
+| source_id | status | used_by_thesis_areas | final_citation_readiness | citation_risk |
+| --- | --- | --- | --- | --- |
+| lit_brier_001 | skimmed | H1; swiss_referendum | needs_full_source_review_before_final_citation | medium |
+| lit_dm_001 | skimmed | H1 | needs_full_source_review_before_final_citation | medium |
+| lit_emh_001 | skimmed | H1; H2 | needs_full_source_review_before_final_citation | medium |
+| lit_eventstudy_001 | skimmed | H2 | needs_full_source_review_before_final_citation | medium |
+| lit_granger_001 | skimmed | H3 | needs_full_source_review_before_final_citation | medium |
+| zotero_poly_001 | skimmed | H2; H3; monitor_prototype | needs_full_source_review_before_final_citation | medium |
+| zotero_poly_002 | skimmed | H1; swiss_referendum | needs_full_source_review_before_final_citation | medium |
+| zotero_poly_005 | skimmed | H3 | needs_full_source_review_before_final_citation | medium |
+| zotero_poly_006 | skimmed | future_agents; monitor_prototype | needs_full_source_review_before_final_citation | medium |
+| zotero_poly_007 | skimmed | H3 | needs_full_source_review_before_final_citation | medium |
+| zotero_poly_009 | skimmed | monitor_prototype | needs_full_source_review_before_final_citation | medium |
+| zotero_poly_010 | candidate | future_agents | not_allowed_for_thesis_facing_claims | high |
+
+## Chapter Plan
+
+| chapter_id | chapter_title | writing_status | recommended_tables | recommended_figures | next_action |
+| --- | --- | --- | --- | --- | --- |
+| ch_01_intro | Einleitung und Forschungsfrage | outline_ready | T1 |  | Write concise problem statement and delimit Polymarket/US-election focus. |
+| ch_02_theory_literature | Theorie und Literatur | source_review_needed | T1 |  | Promote key method and Polymarket sources from skimmed to reviewed or cited after full-paper checks. |
+| ch_03_data_method | Daten und Methodik | draft_ready | T1 |  | Turn evidence-map rows into short method paragraphs with artifact citations. |
+| ch_04_h1_results | H1: Prognosequalitaet | result_ready_with_limits | T2 | F1 | Write H1 result as bounded support plus explicit counterexample paragraph. |
+| ch_05_h2_results | H2: Ereignisfenster | result_ready_with_limits | T3 | F2 | Write event-by-event result table narrative and daily-resolution limitation. |
+| ch_06_h3_results | H3: Wallet-Timing | result_ready_with_limits | T4 | F3 | Write H3 as timing diagnostics, not causality or private-information evidence. |
+| ch_07_extensions | Erweiterungen: Monitor und Schweizer Abstimmung | appendix_or_discussion_ready | T5 | F4 | Keep both as bounded discussion or appendix until final gates change. |
+| ch_08_discussion_conclusion | Diskussion, Limitationen und Fazit | outline_ready |  |  | Write final answer around bounded evidence, limitations, and future agent-assisted workflow. |
+
 ## Interpretation Discipline
 
 - Deterministic artifacts come first.
@@ -52,11 +84,14 @@ Later agents can improve the workflow only after the thesis-ready deterministic 
 
 Recommended staged architecture:
 
-1. Evidence-reader agent over `thesis_evidence_map.csv` and curated summaries only.
-2. Citation-check assistant that flags missing source status without writing thesis claims.
-3. Interpretation-consistency assistant that compares draft prose against allowed and blocked wording.
-4. Human-review assistant for monitor packets after manual source checks exist.
-5. Only after audit logging exists: bounded MCP summary tools for read-only reviewed artifacts.
+| stage_id | stage_name | implementation_status | required_gate_before_activation |
+| --- | --- | --- | --- |
+| agent_stage_00_disabled_runtime | Keep runtime disabled | current_required_state | Deterministic thesis package committed and reviewed. |
+| agent_stage_01_evidence_reader | Evidence reader | future_documentation_only | Bounded prompt template and llm_audit_log write path reviewed. |
+| agent_stage_02_citation_checker | Citation readiness checker | future_documentation_only | Human-readable source-status rules and no-write default reviewed. |
+| agent_stage_03_wording_guard | Interpretation wording guard | future_documentation_only | Draft text input must be manually selected and logged. |
+| agent_stage_04_monitor_review_helper | Monitor review helper | future_documentation_only | Human review worksheet contains reviewed statuses and source URLs. |
+| agent_stage_05_bounded_mcp_summaries | Bounded MCP summary tools | future_deferred | Separate approved goal, tests, access contract, and llm_audit_log integration. |
 
 No runtime agent, MCP implementation, model routing, autonomous collector, or trading path is part of the current consolidation step.
 
@@ -64,5 +99,8 @@ No runtime agent, MCP implementation, model routing, autonomous collector, or tr
 
 - Evidence rows: 13
 - Core result rows: 6
+- Citation-readiness rows: 15
+- Chapter rows: 8
+- Agent-stage rows: 6
 - Core tables: 5
 - Core figures: 4

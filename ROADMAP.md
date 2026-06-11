@@ -615,12 +615,22 @@ Current implemented consolidation:
   review-queue boundary, and Swiss running-gap boundary.
 - `data/results/thesis_curated_result_package.csv` selects five core tables
   and four core figures for thesis drafting.
+- `data/results/thesis_citation_readiness.csv` maps every indexed source to
+  evidence usage, current source status, citation risk, and the next review
+  action before final thesis citation.
+- `data/results/thesis_chapter_plan.csv` maps the BA chapter structure to
+  curated tables, figures, evidence IDs, artifacts, limitations, and next
+  writing actions.
+- `data/results/thesis_agent_pipeline_roadmap.csv` defines documentation-only
+  future agent stages and their activation gates.
 - `data/results/thesis_consolidation_metadata.json` records guardrails:
   no LLM use, no agents or MCP, no database writes, no external API calls,
   no raw table dumps, max future tool rows of 50, no wallet-address exposure
   by default, and no order or trading paths.
 - `docs/research/THESIS_CONSOLIDATION.md` gives the high-level project view
   and a deferred agent-pipeline roadmap.
+- `docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md` documents the future
+  agent stages as inactive architecture only.
 
 Blockers:
 

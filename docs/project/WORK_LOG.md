@@ -8138,3 +8138,53 @@ Verification:
   -> PASS, 11 passed.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 492 passed in 51.23s.
+
+## 2026-06-12 - Thesis citation readiness, chapter plan, and deferred agent roadmap
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Expanded the consolidation layer beyond the first evidence map so it now
+  also controls final citation readiness, BA chapter planning, and a more
+  concrete future agent-pipeline roadmap.
+- Kept all new agent material documentation-only; no runtime agents, MCP
+  tools, model routing, LLM interpretation, live trading paths, or metric
+  calculations were activated.
+
+Changes:
+
+- Extended `operations/analysis/thesis_consolidation.py` to generate three
+  additional deterministic artifacts:
+  `data/results/thesis_citation_readiness.csv`,
+  `data/results/thesis_chapter_plan.csv`, and
+  `data/results/thesis_agent_pipeline_roadmap.csv`.
+- Added `docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md`.
+- Extended `docs/research/THESIS_CONSOLIDATION.md` with citation readiness,
+  chapter plan, and staged agent roadmap sections.
+- Updated `docs/research/LITERATURE_MAP.md` so the citation-readiness artifact
+  is documented as the current source-review queue.
+- Updated `ROADMAP.md` and `GOAL.md` to reflect the new next commit scope.
+- Extended `tests/test_thesis_consolidation.py` to cover citation-readiness
+  blocking rules, curated-package chapter references, and documentation-only
+  agent stages.
+
+Key output:
+
+- Citation-readiness rows: 15.
+- Citation-readiness counts: 11 sources need full source review before final
+  citation, 1 candidate source is not allowed for thesis-facing claims, and
+  3 indexed sources are not currently needed.
+- Chapter-plan rows: 8, covering introduction, theory/literature, data/method,
+  H1, H2, H3, extensions, and discussion/conclusion.
+- Agent roadmap stages: 6.
+- Agent roadmap statuses: 1 current required disabled state,
+  4 future documentation-only stages, and 1 future-deferred bounded MCP stage.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`
+  -> PASS, generated the expanded consolidation artifact set.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_consolidation.py tests\test_thesis_result_summaries.py tests\test_thesis_figures.py`
+  -> PASS, 14 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 495 passed in 48.91s.

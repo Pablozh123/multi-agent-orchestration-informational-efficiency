@@ -71,7 +71,11 @@ Current generated consolidation artifacts:
 - `data/results/thesis_evidence_map.md`
 - `data/results/thesis_core_results_table.csv`
 - `data/results/thesis_curated_result_package.csv`
+- `data/results/thesis_citation_readiness.csv`
+- `data/results/thesis_chapter_plan.csv`
+- `data/results/thesis_agent_pipeline_roadmap.csv`
 - `docs/research/THESIS_CONSOLIDATION.md`
+- `docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md`
 
 These artifacts are the current thesis-draft bridge from deterministic outputs
 to written argumentation. They do not replace final citation review. A row can
@@ -88,6 +92,10 @@ Current mapping rule:
   method or interpretation rows.
 - `skimmed` sources may support draft structure and source planning, but final
   thesis citation wording still requires review before submission.
+- `thesis_citation_readiness.csv` is the current source-review queue. It does
+  not promote sources automatically; it records whether a source is unused,
+  draft-only, blocked from thesis-facing claims, or ready only after full
+  review.
 - Monitor and Swiss rows must keep their status labels visible:
   prototype/appendix for monitor outputs and descriptive-pending-result for the
   Swiss referendum track.

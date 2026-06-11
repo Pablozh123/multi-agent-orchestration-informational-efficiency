@@ -26,8 +26,12 @@ GENERATED_ARTIFACTS: frozenset[str] = frozenset(
         "data/results/thesis_evidence_map.md",
         "data/results/thesis_core_results_table.csv",
         "data/results/thesis_curated_result_package.csv",
+        "data/results/thesis_citation_readiness.csv",
+        "data/results/thesis_chapter_plan.csv",
+        "data/results/thesis_agent_pipeline_roadmap.csv",
         "data/results/thesis_consolidation_metadata.json",
         "docs/research/THESIS_CONSOLIDATION.md",
+        "docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md",
     }
 )
 
@@ -35,8 +39,12 @@ EVIDENCE_MAP_OUTPUT = "thesis_evidence_map.csv"
 EVIDENCE_MAP_MD_OUTPUT = "thesis_evidence_map.md"
 CORE_RESULTS_OUTPUT = "thesis_core_results_table.csv"
 CURATED_PACKAGE_OUTPUT = "thesis_curated_result_package.csv"
+CITATION_READINESS_OUTPUT = "thesis_citation_readiness.csv"
+CHAPTER_PLAN_OUTPUT = "thesis_chapter_plan.csv"
+AGENT_PIPELINE_OUTPUT = "thesis_agent_pipeline_roadmap.csv"
 METADATA_OUTPUT = "thesis_consolidation_metadata.json"
 DOC_OUTPUT = "THESIS_CONSOLIDATION.md"
+AGENT_DOC_OUTPUT = "THESIS_AGENT_PIPELINE_ROADMAP.md"
 
 EVIDENCE_COLUMNS: tuple[str, ...] = (
     "evidence_id",
@@ -81,6 +89,45 @@ PACKAGE_COLUMNS: tuple[str, ...] = (
     "thesis_readiness",
 )
 
+CITATION_READINESS_COLUMNS: tuple[str, ...] = (
+    "source_id",
+    "title",
+    "status",
+    "used_by_evidence_ids",
+    "used_by_thesis_areas",
+    "used_by_item_types",
+    "draft_mapping_role",
+    "final_citation_readiness",
+    "required_next_action",
+    "citation_risk",
+)
+
+CHAPTER_PLAN_COLUMNS: tuple[str, ...] = (
+    "chapter_id",
+    "chapter_title",
+    "chapter_role",
+    "core_evidence_ids",
+    "recommended_tables",
+    "recommended_figures",
+    "primary_artifacts",
+    "writing_status",
+    "main_limitation_to_state",
+    "next_action",
+)
+
+AGENT_PIPELINE_COLUMNS: tuple[str, ...] = (
+    "stage_id",
+    "stage_name",
+    "agent_role",
+    "allowed_inputs",
+    "allowed_outputs",
+    "blocked_actions",
+    "required_gate_before_activation",
+    "audit_requirement",
+    "implementation_status",
+    "thesis_value",
+)
+
 
 @dataclass(frozen=True)
 class ThesisConsolidationResult:
@@ -90,11 +137,18 @@ class ThesisConsolidationResult:
     evidence_map_md_path: Path
     core_results_path: Path
     curated_package_path: Path
+    citation_readiness_path: Path
+    chapter_plan_path: Path
+    agent_pipeline_path: Path
     metadata_path: Path
     docs_path: Path
+    agent_docs_path: Path
     evidence_rows: int
     core_result_rows: int
     package_rows: int
+    citation_rows: int
+    chapter_rows: int
+    agent_stage_rows: int
 
     def to_dict(self) -> dict[str, str | int]:
         return {
@@ -102,11 +156,18 @@ class ThesisConsolidationResult:
             "evidence_map_md_path": str(self.evidence_map_md_path),
             "core_results_path": str(self.core_results_path),
             "curated_package_path": str(self.curated_package_path),
+            "citation_readiness_path": str(self.citation_readiness_path),
+            "chapter_plan_path": str(self.chapter_plan_path),
+            "agent_pipeline_path": str(self.agent_pipeline_path),
             "metadata_path": str(self.metadata_path),
             "docs_path": str(self.docs_path),
+            "agent_docs_path": str(self.agent_docs_path),
             "evidence_rows": self.evidence_rows,
             "core_result_rows": self.core_result_rows,
             "package_rows": self.package_rows,
+            "citation_rows": self.citation_rows,
+            "chapter_rows": self.chapter_rows,
+            "agent_stage_rows": self.agent_stage_rows,
         }
 
 
@@ -182,6 +243,15 @@ def generate_thesis_consolidation(
 
     curated_package = build_curated_result_package()
     _validate_curated_package(curated_package, evidence_map, repo_root=repo_root)
+    citation_readiness = build_citation_readiness(
+        evidence_map=evidence_map,
+        literature=literature,
+    )
+    _validate_citation_readiness(citation_readiness)
+    chapter_plan = build_chapter_plan(curated_package=curated_package)
+    _validate_chapter_plan(chapter_plan, curated_package)
+    agent_pipeline = build_agent_pipeline_roadmap()
+    _validate_agent_pipeline(agent_pipeline)
 
     results_dir.mkdir(parents=True, exist_ok=True)
     docs_dir.mkdir(parents=True, exist_ok=True)
@@ -189,12 +259,19 @@ def generate_thesis_consolidation(
     evidence_map_md_path = results_dir / EVIDENCE_MAP_MD_OUTPUT
     core_results_path = results_dir / CORE_RESULTS_OUTPUT
     curated_package_path = results_dir / CURATED_PACKAGE_OUTPUT
+    citation_readiness_path = results_dir / CITATION_READINESS_OUTPUT
+    chapter_plan_path = results_dir / CHAPTER_PLAN_OUTPUT
+    agent_pipeline_path = results_dir / AGENT_PIPELINE_OUTPUT
     metadata_path = results_dir / METADATA_OUTPUT
     docs_path = docs_dir / DOC_OUTPUT
+    agent_docs_path = docs_dir / AGENT_DOC_OUTPUT
 
     evidence_map.to_csv(evidence_map_path, index=False)
     core_results.to_csv(core_results_path, index=False)
     curated_package.to_csv(curated_package_path, index=False)
+    citation_readiness.to_csv(citation_readiness_path, index=False)
+    chapter_plan.to_csv(chapter_plan_path, index=False)
+    agent_pipeline.to_csv(agent_pipeline_path, index=False)
     evidence_map_md_path.write_text(
         _render_evidence_markdown(evidence_map),
         encoding="utf-8",
@@ -204,6 +281,9 @@ def generate_thesis_consolidation(
         evidence_map=evidence_map,
         core_results=core_results,
         curated_package=curated_package,
+        citation_readiness=citation_readiness,
+        chapter_plan=chapter_plan,
+        agent_pipeline=agent_pipeline,
     )
     metadata_path.write_text(json.dumps(metadata, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     docs_path.write_text(
@@ -211,8 +291,15 @@ def generate_thesis_consolidation(
             evidence_map=evidence_map,
             core_results=core_results,
             curated_package=curated_package,
+            citation_readiness=citation_readiness,
+            chapter_plan=chapter_plan,
+            agent_pipeline=agent_pipeline,
             metadata=metadata,
         ),
+        encoding="utf-8",
+    )
+    agent_docs_path.write_text(
+        _render_agent_pipeline_doc(agent_pipeline=agent_pipeline, metadata=metadata),
         encoding="utf-8",
     )
 
@@ -221,11 +308,18 @@ def generate_thesis_consolidation(
         evidence_map_md_path=evidence_map_md_path,
         core_results_path=core_results_path,
         curated_package_path=curated_package_path,
+        citation_readiness_path=citation_readiness_path,
+        chapter_plan_path=chapter_plan_path,
+        agent_pipeline_path=agent_pipeline_path,
         metadata_path=metadata_path,
         docs_path=docs_path,
+        agent_docs_path=agent_docs_path,
         evidence_rows=len(evidence_map),
         core_result_rows=len(core_results),
         package_rows=len(curated_package),
+        citation_rows=len(citation_readiness),
+        chapter_rows=len(chapter_plan),
+        agent_stage_rows=len(agent_pipeline),
     )
 
 
@@ -790,6 +884,312 @@ def build_curated_result_package() -> pd.DataFrame:
     return pd.DataFrame(rows, columns=PACKAGE_COLUMNS)
 
 
+def build_citation_readiness(
+    *,
+    evidence_map: pd.DataFrame,
+    literature: pd.DataFrame,
+) -> pd.DataFrame:
+    """Build source-by-source citation readiness from the evidence map."""
+
+    rows: list[dict[str, object]] = []
+    for source in literature.sort_values("source_id").to_dict(orient="records"):
+        source_id = str(source["source_id"])
+        usage = evidence_map[
+            evidence_map["literature_sources"].astype(str).map(
+                lambda value: source_id in _split_list(value)
+            )
+        ]
+        status = str(source["status"])
+        if usage.empty:
+            draft_role = "not_used_in_current_core_map"
+            readiness = "not_currently_needed"
+            required_action = "No immediate thesis action unless the source is added to a claim."
+            citation_risk = "low"
+        elif status in {"reviewed", "cited"}:
+            draft_role = "supports_current_mapped_claims"
+            readiness = "final_citation_ready" if status == "cited" else "reviewed_not_final_citation"
+            required_action = "Check citation formatting and page-specific notes before final submission."
+            citation_risk = "low"
+        elif status == "skimmed":
+            draft_role = "supports_draft_mapping_only"
+            readiness = "needs_full_source_review_before_final_citation"
+            required_action = (
+                "Read the source against the mapped evidence rows, extract page or section notes, "
+                "and then mark reviewed or cited only after claim wording is checked."
+            )
+            citation_risk = "medium"
+        elif status == "candidate":
+            draft_role = "question_or_future_work_only"
+            readiness = "not_allowed_for_thesis_facing_claims"
+            required_action = (
+                "Verify metadata and relevance before using beyond future-work or question framing."
+            )
+            citation_risk = "high"
+        elif status == "rejected":
+            draft_role = "blocked"
+            readiness = "do_not_cite"
+            required_action = "Do not cite unless the source is replaced or re-reviewed under a new source_id."
+            citation_risk = "blocked"
+        else:
+            draft_role = "unknown_status"
+            readiness = "needs_status_review"
+            required_action = "Assign a recognised literature status before thesis use."
+            citation_risk = "high"
+
+        rows.append(
+            {
+                "source_id": source_id,
+                "title": str(source["title"]),
+                "status": status,
+                "used_by_evidence_ids": "; ".join(usage["evidence_id"].tolist()),
+                "used_by_thesis_areas": "; ".join(sorted(set(usage["thesis_area"].tolist()))),
+                "used_by_item_types": "; ".join(sorted(set(usage["item_type"].tolist()))),
+                "draft_mapping_role": draft_role,
+                "final_citation_readiness": readiness,
+                "required_next_action": required_action,
+                "citation_risk": citation_risk,
+            }
+        )
+    return pd.DataFrame(rows, columns=CITATION_READINESS_COLUMNS)
+
+
+def build_chapter_plan(*, curated_package: pd.DataFrame) -> pd.DataFrame:
+    """Build a thesis chapter plan tied to the curated package."""
+
+    package_by_id = curated_package.set_index("package_id")
+
+    rows = [
+        _chapter_row(
+            chapter_id="ch_01_intro",
+            chapter_title="Einleitung und Forschungsfrage",
+            chapter_role="Motivate decentralized prediction markets, Polymarket, and the efficiency question.",
+            core_evidence_ids=[
+                "method_h1_brier_dm",
+                "method_h2_event_window",
+                "method_h3_wallet_tiers",
+            ],
+            recommended_tables=["T1"],
+            recommended_figures=[],
+            primary_artifacts=[
+                str(package_by_id.loc["T1", "primary_artifact"]),
+                "docs/research/RESEARCH_SPEC.md",
+            ],
+            writing_status="outline_ready",
+            main_limitation_to_state="Informational efficiency is operationalised through proxy tests, not observed directly.",
+            next_action="Write concise problem statement and delimit Polymarket/US-election focus.",
+        ),
+        _chapter_row(
+            chapter_id="ch_02_theory_literature",
+            chapter_title="Theorie und Literatur",
+            chapter_role="Explain EMH, prediction-market forecast quality, event studies, and wallet/on-chain caution.",
+            core_evidence_ids=[
+                "method_h1_brier_dm",
+                "method_h2_event_window",
+                "method_h3_granger_timing",
+            ],
+            recommended_tables=["T1"],
+            recommended_figures=[],
+            primary_artifacts=[
+                "data/results/thesis_citation_readiness.csv",
+                "data/literature/literature_index.csv",
+            ],
+            writing_status="source_review_needed",
+            main_limitation_to_state="Draft mapping is ready, but final citation wording still needs source-by-source review.",
+            next_action="Promote key method and Polymarket sources from skimmed to reviewed or cited after full-paper checks.",
+        ),
+        _chapter_row(
+            chapter_id="ch_03_data_method",
+            chapter_title="Daten und Methodik",
+            chapter_role="Document deterministic Python pipeline, artifact hierarchy, and method choices.",
+            core_evidence_ids=[
+                "method_h1_brier_dm",
+                "method_h2_event_window",
+                "method_h3_wallet_tiers",
+                "method_h3_granger_timing",
+            ],
+            recommended_tables=["T1"],
+            recommended_figures=[],
+            primary_artifacts=[
+                "data/results/thesis_evidence_map.csv",
+                "data/results/thesis_curated_result_package.csv",
+            ],
+            writing_status="draft_ready",
+            main_limitation_to_state="RCP remains excluded from probability metrics until transformation is documented.",
+            next_action="Turn evidence-map rows into short method paragraphs with artifact citations.",
+        ),
+        _chapter_row(
+            chapter_id="ch_04_h1_results",
+            chapter_title="H1: Prognosequalitaet",
+            chapter_role="Present bounded Brier and poll-comparison evidence.",
+            core_evidence_ids=[
+                "interpretation_h1_bounded_advantage",
+                "interpretation_h1_broad_claim_not_proven",
+            ],
+            recommended_tables=["T2"],
+            recommended_figures=["F1"],
+            primary_artifacts=[
+                str(package_by_id.loc["T2", "primary_artifact"]),
+                str(package_by_id.loc["F1", "primary_artifact"]),
+            ],
+            writing_status="result_ready_with_limits",
+            main_limitation_to_state="The broad Polymarket-superiority claim remains not proven.",
+            next_action="Write H1 result as bounded support plus explicit counterexample paragraph.",
+        ),
+        _chapter_row(
+            chapter_id="ch_05_h2_results",
+            chapter_title="H2: Ereignisfenster",
+            chapter_role="Present daily public-event response diagnostics.",
+            core_evidence_ids=["interpretation_h2_daily_response"],
+            recommended_tables=["T3"],
+            recommended_figures=["F2"],
+            primary_artifacts=[
+                str(package_by_id.loc["T3", "primary_artifact"]),
+                str(package_by_id.loc["F2", "primary_artifact"]),
+            ],
+            writing_status="result_ready_with_limits",
+            main_limitation_to_state="Daily event-window results do not identify intraday reaction speed.",
+            next_action="Write event-by-event result table narrative and daily-resolution limitation.",
+        ),
+        _chapter_row(
+            chapter_id="ch_06_h3_results",
+            chapter_title="H3: Wallet-Timing",
+            chapter_role="Present distribution-derived tiers and predictive timing diagnostics.",
+            core_evidence_ids=[
+                "method_h3_wallet_tiers",
+                "interpretation_h3_top_tier_signal",
+            ],
+            recommended_tables=["T4"],
+            recommended_figures=["F3"],
+            primary_artifacts=[
+                str(package_by_id.loc["T4", "primary_artifact"]),
+                str(package_by_id.loc["F3", "primary_artifact"]),
+            ],
+            writing_status="result_ready_with_limits",
+            main_limitation_to_state="BUY-only source data, daily alignment, and multiple testing limit claim strength.",
+            next_action="Write H3 as timing diagnostics, not causality or private-information evidence.",
+        ),
+        _chapter_row(
+            chapter_id="ch_07_extensions",
+            chapter_title="Erweiterungen: Monitor und Schweizer Abstimmung",
+            chapter_role="Place monitor prototype and Swiss side track outside the core proof.",
+            core_evidence_ids=[
+                "interpretation_monitor_review_queue",
+                "interpretation_swiss_gap_pending",
+            ],
+            recommended_tables=["T5"],
+            recommended_figures=["F4"],
+            primary_artifacts=[
+                str(package_by_id.loc["T5", "primary_artifact"]),
+                str(package_by_id.loc["F4", "primary_artifact"]),
+            ],
+            writing_status="appendix_or_discussion_ready",
+            main_limitation_to_state="Monitor cases need human review; Swiss interpretation needs official result.",
+            next_action="Keep both as bounded discussion or appendix until final gates change.",
+        ),
+        _chapter_row(
+            chapter_id="ch_08_discussion_conclusion",
+            chapter_title="Diskussion, Limitationen und Fazit",
+            chapter_role="Integrate H1-H3 evidence and state what remains unproven.",
+            core_evidence_ids=[
+                "interpretation_h1_broad_claim_not_proven",
+                "interpretation_h2_daily_response",
+                "interpretation_h3_top_tier_signal",
+                "future_agent_pipeline_guarded",
+            ],
+            recommended_tables=[],
+            recommended_figures=[],
+            primary_artifacts=[
+                "data/results/thesis_core_results_table.csv",
+                "docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md",
+            ],
+            writing_status="outline_ready",
+            main_limitation_to_state="The thesis supports bounded diagnostics, not universal market efficiency or strategy claims.",
+            next_action="Write final answer around bounded evidence, limitations, and future agent-assisted workflow.",
+        ),
+    ]
+    return pd.DataFrame(rows, columns=CHAPTER_PLAN_COLUMNS)
+
+
+def build_agent_pipeline_roadmap() -> pd.DataFrame:
+    """Build a documentation-only roadmap for later guarded agent support."""
+
+    rows = [
+        _agent_stage_row(
+            stage_id="agent_stage_00_disabled_runtime",
+            stage_name="Keep runtime disabled",
+            agent_role="No runtime thesis agent is active.",
+            allowed_inputs="None",
+            allowed_outputs="Static architecture notes only",
+            blocked_actions="agent execution; MCP implementation; model routing; metric calculation",
+            required_gate_before_activation="Deterministic thesis package committed and reviewed.",
+            audit_requirement="No LLM call before llm_audit_log integration exists.",
+            implementation_status="current_required_state",
+            thesis_value="Protects the deterministic thesis core.",
+        ),
+        _agent_stage_row(
+            stage_id="agent_stage_01_evidence_reader",
+            stage_name="Evidence reader",
+            agent_role="Summarise existing evidence-map rows for drafting.",
+            allowed_inputs="thesis_evidence_map.csv; thesis_core_results_table.csv; thesis_curated_result_package.csv",
+            allowed_outputs="short prose notes tied to evidence_id values",
+            blocked_actions="reading raw tables; computing metrics; changing evidence rows",
+            required_gate_before_activation="Bounded prompt template and llm_audit_log write path reviewed.",
+            audit_requirement="Log prompt hash, model, evidence ids, artifact versions, and output path.",
+            implementation_status="future_documentation_only",
+            thesis_value="Speeds drafting without weakening traceability.",
+        ),
+        _agent_stage_row(
+            stage_id="agent_stage_02_citation_checker",
+            stage_name="Citation readiness checker",
+            agent_role="Flag sources that need review before final citation wording.",
+            allowed_inputs="thesis_citation_readiness.csv; literature_index.csv",
+            allowed_outputs="review checklist; missing-source warnings",
+            blocked_actions="promoting source status automatically; inventing citations; citing candidate sources as evidence",
+            required_gate_before_activation="Human-readable source-status rules and no-write default reviewed.",
+            audit_requirement="Log source ids read and checklist output.",
+            implementation_status="future_documentation_only",
+            thesis_value="Keeps literature mapping honest before final writing.",
+        ),
+        _agent_stage_row(
+            stage_id="agent_stage_03_wording_guard",
+            stage_name="Interpretation wording guard",
+            agent_role="Compare draft paragraphs with allowed and blocked wording.",
+            allowed_inputs="draft paragraph; thesis_evidence_map.csv; thesis_chapter_plan.csv",
+            allowed_outputs="bounded wording warnings and suggested safer phrasing",
+            blocked_actions="adding new claims; relaxing blocked wording; replacing deterministic artifacts",
+            required_gate_before_activation="Draft text input must be manually selected and logged.",
+            audit_requirement="Log draft hash, evidence ids checked, and warnings.",
+            implementation_status="future_documentation_only",
+            thesis_value="Reduces overclaiming in H1-H3 discussion.",
+        ),
+        _agent_stage_row(
+            stage_id="agent_stage_04_monitor_review_helper",
+            stage_name="Monitor review helper",
+            agent_role="Summarise source-check notes for monitor review packets after human review exists.",
+            allowed_inputs="bounded monitor review packets; human status worksheets; source URLs",
+            allowed_outputs="review-note summary; unresolved evidence checklist",
+            blocked_actions="accessing wallet addresses by default; declaring misconduct; creating trading signals",
+            required_gate_before_activation="Human review worksheet contains reviewed statuses and source URLs.",
+            audit_requirement="Log case ids, artifact versions, and blocked-claim checks.",
+            implementation_status="future_documentation_only",
+            thesis_value="Could help appendix review without changing empirical results.",
+        ),
+        _agent_stage_row(
+            stage_id="agent_stage_05_bounded_mcp_summaries",
+            stage_name="Bounded MCP summary tools",
+            agent_role="Expose reviewed summary artifacts to future assistants.",
+            allowed_inputs="reviewed summary CSV/JSON files only; max 50 rows unless justified",
+            allowed_outputs="bounded read-only summaries",
+            blocked_actions="raw SQL; raw monitor rows; wallet-address exposure by default; order or trading paths",
+            required_gate_before_activation="Separate approved goal, tests, access contract, and llm_audit_log integration.",
+            audit_requirement="Log tool name, row count, artifact path, and user-visible output.",
+            implementation_status="future_deferred",
+            thesis_value="Creates a safe interface after the thesis core is stable.",
+        ),
+    ]
+    return pd.DataFrame(rows, columns=AGENT_PIPELINE_COLUMNS)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """CLI entry point."""
 
@@ -902,6 +1302,60 @@ def _package_row(
     }
 
 
+def _chapter_row(
+    *,
+    chapter_id: str,
+    chapter_title: str,
+    chapter_role: str,
+    core_evidence_ids: list[str],
+    recommended_tables: list[str],
+    recommended_figures: list[str],
+    primary_artifacts: list[str],
+    writing_status: str,
+    main_limitation_to_state: str,
+    next_action: str,
+) -> dict[str, object]:
+    return {
+        "chapter_id": chapter_id,
+        "chapter_title": chapter_title,
+        "chapter_role": chapter_role,
+        "core_evidence_ids": "; ".join(core_evidence_ids),
+        "recommended_tables": "; ".join(recommended_tables),
+        "recommended_figures": "; ".join(recommended_figures),
+        "primary_artifacts": "; ".join(primary_artifacts),
+        "writing_status": writing_status,
+        "main_limitation_to_state": main_limitation_to_state,
+        "next_action": next_action,
+    }
+
+
+def _agent_stage_row(
+    *,
+    stage_id: str,
+    stage_name: str,
+    agent_role: str,
+    allowed_inputs: str,
+    allowed_outputs: str,
+    blocked_actions: str,
+    required_gate_before_activation: str,
+    audit_requirement: str,
+    implementation_status: str,
+    thesis_value: str,
+) -> dict[str, object]:
+    return {
+        "stage_id": stage_id,
+        "stage_name": stage_name,
+        "agent_role": agent_role,
+        "allowed_inputs": allowed_inputs,
+        "allowed_outputs": allowed_outputs,
+        "blocked_actions": blocked_actions,
+        "required_gate_before_activation": required_gate_before_activation,
+        "audit_requirement": audit_requirement,
+        "implementation_status": implementation_status,
+        "thesis_value": thesis_value,
+    }
+
+
 def _read_csv(path: Path) -> pd.DataFrame:
     _required_file(path)
     return pd.read_csv(path)
@@ -1001,6 +1455,74 @@ def _validate_curated_package(
         raise ValueError("Core package has more than four figures.")
 
 
+def _validate_citation_readiness(frame: pd.DataFrame) -> None:
+    _require_columns(frame, CITATION_READINESS_COLUMNS, "citation readiness")
+    if frame["source_id"].duplicated().any():
+        raise ValueError("Citation readiness contains duplicate source_id values.")
+    thesis_used = frame[frame["used_by_evidence_ids"].astype(str).str.len() > 0]
+    invalid_ready = thesis_used[
+        thesis_used["final_citation_readiness"].isin(
+            {"final_citation_ready", "reviewed_not_final_citation"}
+        )
+        & thesis_used["status"].isin({"candidate", "rejected"})
+    ]
+    if not invalid_ready.empty:
+        raise ValueError("Candidate or rejected sources cannot be citation-ready.")
+    risky_used = thesis_used[thesis_used["status"].isin({"candidate", "rejected"})]
+    invalid_risky = risky_used[
+        ~risky_used["final_citation_readiness"].isin(
+            {"not_allowed_for_thesis_facing_claims", "do_not_cite"}
+        )
+    ]
+    if not invalid_risky.empty:
+        raise ValueError("Candidate or rejected sources must be blocked from thesis-facing citation.")
+    if thesis_used["required_next_action"].astype(str).str.len().eq(0).any():
+        raise ValueError("Used citation-readiness rows require next actions.")
+
+
+def _validate_chapter_plan(chapter_plan: pd.DataFrame, curated_package: pd.DataFrame) -> None:
+    _require_columns(chapter_plan, CHAPTER_PLAN_COLUMNS, "chapter plan")
+    if chapter_plan["chapter_id"].duplicated().any():
+        raise ValueError("Chapter plan contains duplicate chapter_id values.")
+    known_package_ids = set(curated_package["package_id"])
+    for row in chapter_plan.to_dict(orient="records"):
+        refs = _split_list(str(row["recommended_tables"])) + _split_list(
+            str(row["recommended_figures"])
+        )
+        missing = [ref for ref in refs if ref not in known_package_ids]
+        if missing:
+            raise ValueError(f"{row['chapter_id']} references unknown package ids: {missing}")
+        if not str(row["main_limitation_to_state"]).strip():
+            raise ValueError(f"{row['chapter_id']} is missing a limitation.")
+        if not str(row["next_action"]).strip():
+            raise ValueError(f"{row['chapter_id']} is missing next action.")
+
+
+def _validate_agent_pipeline(agent_pipeline: pd.DataFrame) -> None:
+    _require_columns(agent_pipeline, AGENT_PIPELINE_COLUMNS, "agent pipeline roadmap")
+    if agent_pipeline["stage_id"].duplicated().any():
+        raise ValueError("Agent pipeline roadmap contains duplicate stage_id values.")
+    joined = "\n".join(agent_pipeline.astype(str).agg(" ".join, axis=1).tolist()).lower()
+    required_terms = (
+        "llm_audit_log",
+        "metric calculation",
+        "raw table",
+        "wallet-address",
+        "order or trading paths",
+        "future_documentation_only",
+    )
+    missing_terms = [term for term in required_terms if term not in joined]
+    if missing_terms:
+        raise ValueError("Agent pipeline roadmap missing guardrail terms: " + ", ".join(missing_terms))
+    active_like = agent_pipeline[
+        ~agent_pipeline["implementation_status"].isin(
+            {"current_required_state", "future_documentation_only", "future_deferred"}
+        )
+    ]
+    if not active_like.empty:
+        raise ValueError("Agent pipeline contains an active implementation status.")
+
+
 def _validate_artifact_list(repo_root: Path, artifacts: Iterable[str]) -> None:
     for artifact in artifacts:
         if not artifact:
@@ -1015,6 +1537,9 @@ def _build_metadata(
     evidence_map: pd.DataFrame,
     core_results: pd.DataFrame,
     curated_package: pd.DataFrame,
+    citation_readiness: pd.DataFrame,
+    chapter_plan: pd.DataFrame,
+    agent_pipeline: pd.DataFrame,
 ) -> dict[str, object]:
     core = curated_package[curated_package["include_in_core_package"].astype(bool)]
     return {
@@ -1030,6 +1555,9 @@ def _build_metadata(
             "evidence_rows": int(len(evidence_map)),
             "core_result_rows": int(len(core_results)),
             "package_rows": int(len(curated_package)),
+            "citation_readiness_rows": int(len(citation_readiness)),
+            "chapter_rows": int(len(chapter_plan)),
+            "agent_stage_rows": int(len(agent_pipeline)),
             "core_table_count": int((core["package_type"] == "table").sum()),
             "core_figure_count": int((core["package_type"] == "figure").sum()),
             "max_core_tables": 5,
@@ -1039,8 +1567,28 @@ def _build_metadata(
             str(key): int(value)
             for key, value in evidence_map["thesis_readiness"].value_counts().sort_index().items()
         },
+        "citation_readiness_counts": {
+            str(key): int(value)
+            for key, value in citation_readiness["final_citation_readiness"]
+            .value_counts()
+            .sort_index()
+            .items()
+        },
+        "chapter_status_counts": {
+            str(key): int(value)
+            for key, value in chapter_plan["writing_status"].value_counts().sort_index().items()
+        },
+        "agent_stage_status_counts": {
+            str(key): int(value)
+            for key, value in agent_pipeline["implementation_status"]
+            .value_counts()
+            .sort_index()
+            .items()
+        },
         "guardrails": {
             "every_method_and_interpretation_has_artifact": True,
+            "citation_readiness_is_status_mapping_not_source_promotion": True,
+            "chapter_plan_uses_curated_package": True,
             "thesis_facing_rows_avoid_candidate_or_rejected_sources": True,
             "swiss_final_efficiency_interpretation_pending": True,
             "monitor_review_cases_not_thesis_evidence": True,
@@ -1080,12 +1628,26 @@ def _render_consolidation_doc(
     evidence_map: pd.DataFrame,
     core_results: pd.DataFrame,
     curated_package: pd.DataFrame,
+    citation_readiness: pd.DataFrame,
+    chapter_plan: pd.DataFrame,
+    agent_pipeline: pd.DataFrame,
     metadata: dict[str, object],
 ) -> str:
     core = curated_package[curated_package["include_in_core_package"].astype(bool)].copy()
     tables = core[core["package_type"] == "table"]
     figures = core[core["package_type"] == "figure"]
     agent_row = evidence_map[evidence_map["evidence_id"] == "future_agent_pipeline_guarded"].iloc[0]
+    citation_display = citation_readiness[
+        citation_readiness["used_by_evidence_ids"].astype(str).str.len() > 0
+    ][
+        [
+            "source_id",
+            "status",
+            "used_by_thesis_areas",
+            "final_citation_readiness",
+            "citation_risk",
+        ]
+    ]
 
     return (
         "# Thesis Consolidation\n\n"
@@ -1132,6 +1694,26 @@ def _render_consolidation_doc(
             ]
         )
         + "\n\n"
+        "## Citation Readiness\n\n"
+        "This table is a source-control view, not a promotion of source status. "
+        "Sources marked `skimmed` can guide draft structure, but final thesis citation "
+        "wording still needs source-by-source review.\n\n"
+        + _markdown_table(citation_display)
+        + "\n\n"
+        "## Chapter Plan\n\n"
+        + _markdown_table(
+            chapter_plan[
+                [
+                    "chapter_id",
+                    "chapter_title",
+                    "writing_status",
+                    "recommended_tables",
+                    "recommended_figures",
+                    "next_action",
+                ]
+            ]
+        )
+        + "\n\n"
         "## Interpretation Discipline\n\n"
         "- Deterministic artifacts come first.\n"
         "- Literature supports method framing and interpretation limits.\n"
@@ -1150,18 +1732,53 @@ def _render_consolidation_doc(
         "Every future LLM call must be logged in `llm_audit_log`, and future tool outputs "
         "must stay bounded to at most 50 rows unless a reviewed exception is documented.\n\n"
         "Recommended staged architecture:\n\n"
-        "1. Evidence-reader agent over `thesis_evidence_map.csv` and curated summaries only.\n"
-        "2. Citation-check assistant that flags missing source status without writing thesis claims.\n"
-        "3. Interpretation-consistency assistant that compares draft prose against allowed and blocked wording.\n"
-        "4. Human-review assistant for monitor packets after manual source checks exist.\n"
-        "5. Only after audit logging exists: bounded MCP summary tools for read-only reviewed artifacts.\n\n"
+        + _markdown_table(
+            agent_pipeline[
+                [
+                    "stage_id",
+                    "stage_name",
+                    "implementation_status",
+                    "required_gate_before_activation",
+                ]
+            ]
+        )
+        + "\n\n"
         "No runtime agent, MCP implementation, model routing, autonomous collector, or trading path "
         "is part of the current consolidation step.\n\n"
         "## Generated Artifact Counts\n\n"
         f"- Evidence rows: {metadata['outputs']['evidence_rows']}\n"
         f"- Core result rows: {metadata['outputs']['core_result_rows']}\n"
+        f"- Citation-readiness rows: {metadata['outputs']['citation_readiness_rows']}\n"
+        f"- Chapter rows: {metadata['outputs']['chapter_rows']}\n"
+        f"- Agent-stage rows: {metadata['outputs']['agent_stage_rows']}\n"
         f"- Core tables: {metadata['outputs']['core_table_count']}\n"
         f"- Core figures: {metadata['outputs']['core_figure_count']}\n"
+    )
+
+
+def _render_agent_pipeline_doc(
+    *,
+    agent_pipeline: pd.DataFrame,
+    metadata: dict[str, object],
+) -> str:
+    return (
+        "# Thesis Agent Pipeline Roadmap\n\n"
+        "This document is documentation-only. It does not implement, activate, or "
+        "invoke agents, MCP tools, model routing, autonomous collectors, or trading paths.\n\n"
+        "## Guardrails\n\n"
+        "- Deterministic Python remains responsible for all metrics.\n"
+        "- Future LLM calls require `llm_audit_log` logging before use.\n"
+        "- No raw table dumps enter prompts.\n"
+        "- Future tool outputs stay bounded to at most 50 rows unless explicitly reviewed.\n"
+        "- Wallet-address exposure is blocked by default.\n"
+        "- Order placement, order cancellation, authenticated trading channels, and trading credentials stay out of scope.\n\n"
+        "## Roadmap Stages\n\n"
+        + _markdown_table(agent_pipeline)
+        + "\n\n"
+        "## Status\n\n"
+        f"- Current required disabled stages: {metadata['agent_stage_status_counts'].get('current_required_state', 0)}\n"
+        f"- Future documentation-only stages: {metadata['agent_stage_status_counts'].get('future_documentation_only', 0)}\n"
+        f"- Future deferred stages: {metadata['agent_stage_status_counts'].get('future_deferred', 0)}\n"
     )
 
 

@@ -1,5 +1,24 @@
 {
+  "agent_stage_status_counts": {
+    "current_required_state": 1,
+    "future_deferred": 1,
+    "future_documentation_only": 4
+  },
+  "chapter_status_counts": {
+    "appendix_or_discussion_ready": 1,
+    "draft_ready": 1,
+    "outline_ready": 2,
+    "result_ready_with_limits": 3,
+    "source_review_needed": 1
+  },
+  "citation_readiness_counts": {
+    "needs_full_source_review_before_final_citation": 11,
+    "not_allowed_for_thesis_facing_claims": 1,
+    "not_currently_needed": 3
+  },
   "guardrails": {
+    "chapter_plan_uses_curated_package": true,
+    "citation_readiness_is_status_mapping_not_source_promotion": true,
     "every_method_and_interpretation_has_artifact": true,
     "future_agents_documentation_only": true,
     "llm_audit_log_required_before_future_llm_calls": true,
@@ -20,6 +39,9 @@
     "name": "thesis_consolidation_evidence_mapping"
   },
   "outputs": {
+    "agent_stage_rows": 6,
+    "chapter_rows": 8,
+    "citation_readiness_rows": 15,
     "core_figure_count": 4,
     "core_result_rows": 6,
     "core_table_count": 5,

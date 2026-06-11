@@ -7,6 +7,9 @@ import pandas as pd
 import pytest
 
 from operations.analysis.thesis_consolidation import (
+    AGENT_PIPELINE_COLUMNS,
+    CHAPTER_PLAN_COLUMNS,
+    CITATION_READINESS_COLUMNS,
     EVIDENCE_COLUMNS,
     generate_thesis_consolidation,
 )
@@ -20,18 +23,32 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     evidence = pd.read_csv(result.evidence_map_path)
     core = pd.read_csv(result.core_results_path)
     package = pd.read_csv(result.curated_package_path)
+    citations = pd.read_csv(result.citation_readiness_path)
+    chapters = pd.read_csv(result.chapter_plan_path)
+    agents = pd.read_csv(result.agent_pipeline_path)
     metadata = json.loads(result.metadata_path.read_text(encoding="utf-8"))
     doc = result.docs_path.read_text(encoding="utf-8")
+    agent_doc = result.agent_docs_path.read_text(encoding="utf-8")
 
     assert tuple(evidence.columns) == EVIDENCE_COLUMNS
+    assert tuple(citations.columns) == CITATION_READINESS_COLUMNS
+    assert tuple(chapters.columns) == CHAPTER_PLAN_COLUMNS
+    assert tuple(agents.columns) == AGENT_PIPELINE_COLUMNS
     assert result.evidence_rows == 13
     assert result.core_result_rows == 6
+    assert result.citation_rows == 12
+    assert result.chapter_rows == 8
+    assert result.agent_stage_rows == 6
     assert metadata["method"]["does_not_use_llms"] is True
     assert metadata["method"]["does_not_use_agents_or_mcp"] is True
+    assert metadata["guardrails"]["citation_readiness_is_status_mapping_not_source_promotion"] is True
+    assert metadata["guardrails"]["chapter_plan_uses_curated_package"] is True
     assert metadata["guardrails"]["future_agents_documentation_only"] is True
     assert metadata["outputs"]["core_table_count"] <= metadata["outputs"]["max_core_tables"]
     assert metadata["outputs"]["core_figure_count"] <= metadata["outputs"]["max_core_figures"]
     assert "Deferred Agent Pipeline Idea" in doc
+    assert "Citation Readiness" in doc
+    assert "Thesis Agent Pipeline Roadmap" in agent_doc
     assert core["bounded_interpretation"].str.len().gt(0).all()
     assert package["main_limitation"].str.len().gt(0).all()
 
@@ -68,6 +85,57 @@ def test_curated_package_keeps_agents_deferred(tmp_path: Path) -> None:
     assert future.iloc[0]["thesis_readiness"] == "future_work_deferred"
     assert metadata["guardrails"]["llm_audit_log_required_before_future_llm_calls"] is True
     assert metadata["guardrails"]["no_order_or_trading_paths"] is True
+
+
+def test_citation_readiness_blocks_candidate_sources_from_thesis_claims(
+    tmp_path: Path,
+) -> None:
+    _write_fixture(tmp_path)
+
+    result = generate_thesis_consolidation(repo_root=tmp_path)
+
+    citations = pd.read_csv(result.citation_readiness_path)
+    candidate = citations[citations["source_id"] == "zotero_poly_010"].iloc[0]
+    thesis_sources = citations[citations["used_by_thesis_areas"].fillna("").str.contains("H")]
+
+    assert candidate["final_citation_readiness"] == "not_allowed_for_thesis_facing_claims"
+    assert candidate["citation_risk"] == "high"
+    assert not thesis_sources["status"].isin({"candidate", "rejected"}).any()
+
+
+def test_chapter_plan_uses_curated_package_ids(tmp_path: Path) -> None:
+    _write_fixture(tmp_path)
+
+    result = generate_thesis_consolidation(repo_root=tmp_path)
+
+    package = pd.read_csv(result.curated_package_path)
+    chapters = pd.read_csv(result.chapter_plan_path)
+    known_package_ids = set(package["package_id"])
+    referenced_ids: set[str] = set()
+    for row in chapters.to_dict(orient="records"):
+        referenced_ids.update(_split_sources(row.get("recommended_tables", "")))
+        referenced_ids.update(_split_sources(row.get("recommended_figures", "")))
+
+    assert referenced_ids
+    assert referenced_ids.issubset(known_package_ids)
+    assert chapters["main_limitation_to_state"].str.len().gt(0).all()
+
+
+def test_agent_pipeline_is_documentation_only_and_audited(tmp_path: Path) -> None:
+    _write_fixture(tmp_path)
+
+    result = generate_thesis_consolidation(repo_root=tmp_path)
+
+    agents = pd.read_csv(result.agent_pipeline_path)
+    joined = "\n".join(agents.fillna("").astype(str).agg(" ".join, axis=1).tolist())
+
+    assert set(agents["implementation_status"]).issubset(
+        {"current_required_state", "future_documentation_only", "future_deferred"}
+    )
+    assert "llm_audit_log" in joined
+    assert "raw table" in joined
+    assert "wallet-address" in joined
+    assert "order or trading paths" in joined
 
 
 def test_missing_source_artifact_fails_clearly(tmp_path: Path) -> None:
@@ -262,5 +330,7 @@ def _write_binary(path: Path) -> None:
     path.write_bytes(b"not-empty")
 
 
-def _split_sources(value: str) -> list[str]:
-    return [item.strip() for item in value.split(";") if item.strip()]
+def _split_sources(value: object) -> list[str]:
+    if pd.isna(value):
+        return []
+    return [item.strip() for item in str(value).split(";") if item.strip()]

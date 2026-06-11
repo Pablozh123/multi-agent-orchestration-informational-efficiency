@@ -461,6 +461,11 @@ Done criteria:
   `data/results/monitor_anomaly_case_review_packets.json`; they provide a
   bounded per-case review surface for later human, MCP, or agent reading
   without activating MCP or agents.
+- Deterministic status-transition gates exist as
+  `data/results/monitor_anomaly_review_status_transitions.csv` and
+  `data/results/monitor_anomaly_review_status_transitions.json`; they specify
+  allowed next review states and thesis-use gates without automatically
+  accepting, excluding, or upgrading any case.
 - A curated manual review-status worksheet exists at
   `data/monitor_anomaly_review_status_updates.csv`; it can update queued cases
   with review status, reviewer, source URL, event URL, and review notes.
@@ -512,9 +517,9 @@ Blockers:
   calibrated against broader Polymarket distributions and reference cases.
 - Wallet graph v1 is based on shared market and shared time-bucket activity;
   it is not an on-chain funding graph or identity cluster.
-- The next user-facing step is to define deterministic review-status
-  transitions for accepted, excluded, or false-context cases and decide which
-  packet states are allowed in thesis-facing appendices.
+- The next user-facing step is to review the three `source_check_pending`
+  cases against the transition gates and document any manual keep,
+  false-context, or thesis-exclusion decision.
 
 ## Phase 11: Swiss Referendum Efficiency Comparison
 

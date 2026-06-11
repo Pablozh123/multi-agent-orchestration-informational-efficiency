@@ -7705,3 +7705,60 @@ Verification:
   -> PASS, generated 3 queue rows and 3 case-review packet rows.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 482 passed in 67.36s.
+
+## 2026-06-11 - Anomaly review status transitions
+
+Context:
+
+- Continued the deterministic monitor anomaly-review queue after adding
+  bounded case-review packets.
+- Added deterministic transition gates for manual review status changes.
+- Kept all current cases in `source_check_pending`; no case was automatically
+  accepted, rejected, upgraded, or made thesis-facing.
+- No MCP tool, runtime agent, LLM metric calculation, ML, database write,
+  order path, wallet-address exposure, or thesis-facing evidence claim was
+  introduced.
+
+Changes:
+
+- Extended `operations/analysis/monitor_anomaly_review_queue.py` to build
+  status-transition rows from bounded case-review packets.
+- Added `data/results/monitor_anomaly_review_status_transitions.csv`.
+- Added `data/results/monitor_anomaly_review_status_transitions.json`.
+- Updated metadata to record transition paths, transition row count,
+  wallet-address safety, order-instruction safety, and contract-only
+  MCP/agent status.
+- Extended `tests/test_monitor_anomaly_review_queue.py` with transition-gate
+  assertions.
+- Updated `GOAL.md`, `ROADMAP.md`, `docs/project/TOOL_USAGE.md`, and
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+
+Key output:
+
+- Status-transition rows: 3.
+- Current statuses: `source_check_pending=3`.
+- Allowed next statuses for current rows:
+  `reviewed_keep_candidate`, `reviewed_false_context`, or
+  `thesis_excluded`.
+- Thesis-use gate: blocked until a human reviewer marks
+  `reviewed_keep_candidate` and documents limitations.
+- Metadata records `status_transitions_contain_wallet_addresses=false` and
+  `status_transitions_contain_order_instructions=false`.
+
+Interpretation:
+
+- Transition rows formalise manual review gates; they do not make review
+  decisions.
+- The current cases remain human-review cues only and are not thesis-facing
+  evidence.
+- The outputs do not prove event causality, private information, misconduct,
+  tradeability, profitability, future performance, or market inefficiency.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_monitor_anomaly_review_queue.py -q`
+  -> PASS, 10 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_anomaly_review_queue`
+  -> PASS, generated 3 transition rows.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 483 passed in 51.35s.

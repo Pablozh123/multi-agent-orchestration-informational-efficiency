@@ -27,6 +27,8 @@ deliverables:
 - Generate `data/results/monitor_anomaly_review_dashboard.html`.
 - Generate `data/results/monitor_anomaly_case_review_packets.csv`.
 - Generate `data/results/monitor_anomaly_case_review_packets.json`.
+- Generate `data/results/monitor_anomaly_review_status_transitions.csv`.
+- Generate `data/results/monitor_anomaly_review_status_transitions.json`.
 - Add `data/monitor_anomaly_review_status_updates.csv` as the curated manual
   review-status worksheet that can update queued cases deterministically.
 - Record manual source-check status for all current anomaly-review cases
@@ -68,17 +70,21 @@ acceptance_criteria:
   update helper for human-review state changes.
 - Case-review packets expose bounded per-case review summaries for later
   human, MCP, or agent reading without activating MCP or agents.
+- Status-transition outputs define deterministic review gates for
+  `needs_human_review`, `source_check_pending`, `reviewed_keep_candidate`,
+  `reviewed_false_context`, and `thesis_excluded` without automatically
+  accepting or rejecting cases.
 - The review-status worksheet is validated, rejects duplicate case IDs and
   invalid statuses, and is merged into the generated queue, including
   `source_check_pending` entries for all current queued cases.
 - Future agent and MCP contracts remain metadata/documentation only and do not
   activate guarded runtime entry points.
 - Tests cover queue creation, summary counts, case-review packets,
-  wallet-address rejection, future MCP/agent contract flags, and review-status
-  updates.
+  review-status transitions, wallet-address rejection, future MCP/agent
+  contract flags, and review-status updates.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add anomaly case review packets
+next_commit: feat: add anomaly review status transitions
 
 ## Running Side Goal
 

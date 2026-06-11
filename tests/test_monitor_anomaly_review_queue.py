@@ -11,10 +11,12 @@ from operations.analysis.monitor_anomaly_review_queue import (
     CASE_REVIEW_PACKET_COLUMNS,
     QUEUE_COLUMNS,
     REVIEW_UPDATE_COLUMNS,
+    STATUS_TRANSITION_COLUMNS,
     apply_review_status_updates,
     build_anomaly_case_review_packets,
     build_anomaly_review_queue,
     build_anomaly_review_summary,
+    build_anomaly_review_status_transitions,
     generate_monitor_anomaly_review_queue,
     read_review_status_updates,
 )
@@ -82,6 +84,32 @@ def test_build_anomaly_case_review_packets_are_bounded_summaries() -> None:
     assert "max_rows=50" in high["future_mcp_access"]
     assert "no_metric_calculation" in high["future_agent_access"]
     assert "wallet_address" not in packets.columns
+
+
+def test_build_anomaly_review_status_transitions_gate_thesis_use() -> None:
+    queue = build_anomaly_review_queue(
+        review_report=_review_report(),
+        detection_cases=_detection_cases(),
+    )
+    queue = apply_review_status_updates(queue, _review_updates())
+    packets = build_anomaly_case_review_packets(queue)
+
+    transitions = build_anomaly_review_status_transitions(packets)
+
+    pending = transitions[transitions["case_id"] == _candidate_id("market_b")].iloc[0]
+    open_case = transitions[transitions["case_id"] == _candidate_id("market_a")].iloc[0]
+    assert tuple(transitions.columns) == STATUS_TRANSITION_COLUMNS
+    assert len(transitions) == 2
+    assert pending["current_status"] == "source_check_pending"
+    assert "reviewed_keep_candidate" in pending["allowed_next_statuses"]
+    assert "reviewed_false_context" in pending["allowed_next_statuses"]
+    assert pending["thesis_use_allowed"] == "false"
+    assert "human reviewer marks reviewed_keep_candidate" in pending["thesis_use_gate"]
+    assert "private_information_proof" in pending["blocked_claims"]
+    assert open_case["current_status"] == "needs_human_review"
+    assert "source_check_pending" in open_case["allowed_next_statuses"]
+    assert "reviewed_keep_candidate" in open_case["blocked_next_statuses"]
+    assert "wallet_address" not in transitions.columns
 
 
 def test_apply_review_status_updates_changes_only_known_cases() -> None:
@@ -200,6 +228,8 @@ def test_generate_monitor_anomaly_review_queue_writes_outputs(tmp_path: Path) ->
         dashboard_path=tmp_path / "dashboard.html",
         case_packets_csv_path=tmp_path / "case_packets.csv",
         case_packets_json_path=tmp_path / "case_packets.json",
+        status_transitions_csv_path=tmp_path / "status_transitions.csv",
+        status_transitions_json_path=tmp_path / "status_transitions.json",
     )
 
     queue = pd.read_csv(result.queue_path)
@@ -208,17 +238,26 @@ def test_generate_monitor_anomaly_review_queue_writes_outputs(tmp_path: Path) ->
     dashboard = result.dashboard_path.read_text(encoding="utf-8")
     case_packets = pd.read_csv(result.case_packets_csv_path)
     case_packets_json = json.loads(result.case_packets_json_path.read_text(encoding="utf-8"))
+    status_transitions = pd.read_csv(result.status_transitions_csv_path)
+    status_transitions_json = json.loads(
+        result.status_transitions_json_path.read_text(encoding="utf-8")
+    )
     assert result.queue_row_count == 2
     assert result.high_priority_count == 1
     assert result.case_packet_row_count == 2
+    assert result.status_transition_row_count == 2
     assert len(queue) == 2
     assert len(case_packets) == 2
+    assert len(status_transitions) == 2
     assert int(summary.loc[0, "queue_row_count"]) == 2
     assert metadata["outputs"]["contains_wallet_addresses"] is False
     assert metadata["outputs"]["case_packets_contain_wallet_addresses"] is False
     assert metadata["outputs"]["contains_order_instructions"] is False
     assert metadata["outputs"]["case_packets_contain_order_instructions"] is False
+    assert metadata["outputs"]["status_transitions_contain_wallet_addresses"] is False
+    assert metadata["outputs"]["status_transitions_contain_order_instructions"] is False
     assert metadata["outputs"]["case_packet_row_count"] == 2
+    assert metadata["outputs"]["status_transition_row_count"] == 2
     assert metadata["future_mcp_contract"]["max_rows"] == 50
     assert metadata["future_mcp_contract"]["raw_sql_allowed"] is False
     assert metadata["future_agent_contract"]["agent_metric_calculation_allowed"] is False
@@ -226,6 +265,12 @@ def test_generate_monitor_anomaly_review_queue_writes_outputs(tmp_path: Path) ->
     assert case_packets_json["row_count"] == 2
     assert case_packets_json["contains_wallet_addresses"] is False
     assert case_packets_json["agent_and_mcp_status"] == "contract_only_not_implemented"
+    assert status_transitions_json["row_count"] == 2
+    assert status_transitions_json["contains_wallet_addresses"] is False
+    assert (
+        status_transitions_json["agent_and_mcp_status"]
+        == "contract_only_not_implemented"
+    )
     assert "Monitor Anomaly Review Queue" in dashboard
     assert "Future agents and MCP may read summaries only" in dashboard
     assert queue.loc[queue["case_id"] == _candidate_id("market_b"), "reviewer"].iloc[0] == "manual_reviewer"

@@ -181,6 +181,16 @@ These packet artifacts are summaries only. They must not be treated as proof of
 private information, misconduct, causality, tradeability, profitability, or
 market inefficiency.
 
+The generator also writes deterministic review-status transition gates:
+
+```text
+data/results/monitor_anomaly_review_status_transitions.csv
+data/results/monitor_anomaly_review_status_transitions.json
+```
+
+Transition gates define allowed next manual statuses and thesis-use blocking
+rules. They do not automatically accept, reject, or upgrade any case.
+
 Open the reference similarity dashboard:
 
 ```text

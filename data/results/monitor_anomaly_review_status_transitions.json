@@ -1,0 +1,52 @@
+{
+  "agent_and_mcp_status": "contract_only_not_implemented",
+  "artifact": "monitor_anomaly_review_status_transitions",
+  "contains_order_instructions": false,
+  "contains_wallet_addresses": false,
+  "max_default_rows_for_future_tools": 50,
+  "row_count": 3,
+  "status_transitions": [
+    {
+      "allowed_interpretation": "Deterministic anomaly review cue for human source checking and later bounded SignalSpec drafting only; not a metric calculated by agents.",
+      "allowed_next_statuses": "reviewed_keep_candidate;reviewed_false_context;thesis_excluded",
+      "blocked_claims": "private_information_proof; misconduct_finding; causality; tradeability; profitability; future_performance; order_instruction; insider_risk_as_fact",
+      "blocked_next_statuses": "needs_human_review",
+      "case_id": "monitor_candidate_20260523_192500_c6370fa4e8c9",
+      "current_status": "source_check_pending",
+      "packet_id": "case_review_packet_monitor_candidate_20260523_192500_c6370fa4e8c9",
+      "reviewer_action_required": "Choose keep, false-context, or exclusion after evidence review.",
+      "source_packet_artifact": "monitor_anomaly_case_review_packets.csv",
+      "thesis_use_allowed": "false",
+      "thesis_use_gate": "Thesis-facing use remains blocked until a human reviewer marks reviewed_keep_candidate and documents remaining limitations.",
+      "transition_requirements": "Review source timestamps, market mapping, repeat-bucket evidence, materiality context, and missing-evidence fields before selecting a terminal review status."
+    },
+    {
+      "allowed_interpretation": "Deterministic anomaly review cue for human source checking and later bounded SignalSpec drafting only; not a metric calculated by agents.",
+      "allowed_next_statuses": "reviewed_keep_candidate;reviewed_false_context;thesis_excluded",
+      "blocked_claims": "private_information_proof; misconduct_finding; causality; tradeability; profitability; future_performance; order_instruction; insider_risk_as_fact",
+      "blocked_next_statuses": "needs_human_review",
+      "case_id": "monitor_candidate_20260523_192500_2bb6f8fa6250",
+      "current_status": "source_check_pending",
+      "packet_id": "case_review_packet_monitor_candidate_20260523_192500_2bb6f8fa6250",
+      "reviewer_action_required": "Choose keep, false-context, or exclusion after evidence review.",
+      "source_packet_artifact": "monitor_anomaly_case_review_packets.csv",
+      "thesis_use_allowed": "false",
+      "thesis_use_gate": "Thesis-facing use remains blocked until a human reviewer marks reviewed_keep_candidate and documents remaining limitations.",
+      "transition_requirements": "Review source timestamps, market mapping, repeat-bucket evidence, materiality context, and missing-evidence fields before selecting a terminal review status."
+    },
+    {
+      "allowed_interpretation": "Deterministic anomaly review cue for human source checking and later bounded SignalSpec drafting only; not a metric calculated by agents.",
+      "allowed_next_statuses": "reviewed_keep_candidate;reviewed_false_context;thesis_excluded",
+      "blocked_claims": "private_information_proof; misconduct_finding; causality; tradeability; profitability; future_performance; order_instruction; insider_risk_as_fact",
+      "blocked_next_statuses": "needs_human_review",
+      "case_id": "monitor_candidate_20260523_192500_71cd3b4e784b",
+      "current_status": "source_check_pending",
+      "packet_id": "case_review_packet_monitor_candidate_20260523_192500_71cd3b4e784b",
+      "reviewer_action_required": "Choose keep, false-context, or exclusion after evidence review.",
+      "source_packet_artifact": "monitor_anomaly_case_review_packets.csv",
+      "thesis_use_allowed": "false",
+      "thesis_use_gate": "Thesis-facing use remains blocked until a human reviewer marks reviewed_keep_candidate and documents remaining limitations.",
+      "transition_requirements": "Review source timestamps, market mapping, repeat-bucket evidence, materiality context, and missing-evidence fields before selecting a terminal review status."
+    }
+  ]
+}

@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-06-11 20:41
+Generated: 2026-06-11 20:49
 
 Current goal: `goal-monitor-anomaly-review-queue-001` - Build deterministic anomaly review queue for politics/geopolitics monitor
 
@@ -11,11 +11,11 @@ Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `482 passed in 67.36s (0:01:07)`
+Pytest summary: `483 passed in 51.35s`
 
 Git branch: `main`
 
-Latest commit: `d8b08f6`
+Latest commit: `2fbb157`
 
 Git status:
 
@@ -40,16 +40,16 @@ Git status:
  M docs/research/STRATEGY_AGENT_ARCHITECTURE.md
  M operations/analysis/monitor_anomaly_review_queue.py
  M tests/test_monitor_anomaly_review_queue.py
-?? data/results/monitor_anomaly_case_review_packets.csv
-?? data/results/monitor_anomaly_case_review_packets.json
+?? data/results/monitor_anomaly_review_status_transitions.csv
+?? data/results/monitor_anomaly_review_status_transitions.json
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                            |  11 +-
- ROADMAP.md                                         |  13 +-
- data/results/monitor_anomaly_review_metadata.json  |   7 +-
+ GOAL.md                                            |  12 +-
+ ROADMAP.md                                         |  11 +-
+ data/results/monitor_anomaly_review_metadata.json  |   9 +-
  .../swiss_referendum_10mio_auto_refresh_log.csv    |   2 +
  ...iss_referendum_10mio_auto_refresh_metadata.json |  40 +++-
  data/results/swiss_referendum_10mio_comparison.csv |   2 +
@@ -63,11 +63,11 @@ Git diff stat:
  ...swiss_referendum_10mio_polymarket_snapshots.csv |   2 +
  .../swiss_referendum_10mio_refresh_metadata.json   |  33 ++--
  .../swiss_referendum_10mio_running_status.json     |  14 +-
- docs/project/TOOL_USAGE.md                         |  12 ++
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md       |   7 +-
- .../analysis/monitor_anomaly_review_queue.py       | 203 +++++++++++++++++++++
- tests/test_monitor_anomaly_review_queue.py         |  37 ++++
- 20 files changed, 381 insertions(+), 75 deletions(-)
+ docs/project/TOOL_USAGE.md                         |  10 +
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md       |   9 +-
+ .../analysis/monitor_anomaly_review_queue.py       | 212 ++++++++++++++++++++-
+ tests/test_monitor_anomaly_review_queue.py         |  45 +++++
+ 20 files changed, 398 insertions(+), 76 deletions(-)
 ```
 
 Blockers:
@@ -76,7 +76,7 @@ Blockers:
 
 Next recommended action:
 
-- feat: add anomaly case review packets
+- feat: add anomaly review status transitions
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

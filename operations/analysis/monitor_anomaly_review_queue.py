@@ -38,6 +38,8 @@ METADATA_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_metadata.json"
 DASHBOARD_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_dashboard.html"
 CASE_REVIEW_PACKETS_CSV_OUTPUT = RESULTS_DIR / "monitor_anomaly_case_review_packets.csv"
 CASE_REVIEW_PACKETS_JSON_OUTPUT = RESULTS_DIR / "monitor_anomaly_case_review_packets.json"
+STATUS_TRANSITIONS_CSV_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_status_transitions.csv"
+STATUS_TRANSITIONS_JSON_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_status_transitions.json"
 
 MAX_MCP_ROWS = 50
 ALLOWED_REVIEW_STATUSES = {
@@ -120,6 +122,21 @@ CASE_REVIEW_PACKET_COLUMNS: tuple[str, ...] = (
     "source_queue_artifact",
 )
 
+STATUS_TRANSITION_COLUMNS: tuple[str, ...] = (
+    "case_id",
+    "packet_id",
+    "current_status",
+    "allowed_next_statuses",
+    "blocked_next_statuses",
+    "transition_requirements",
+    "thesis_use_allowed",
+    "thesis_use_gate",
+    "reviewer_action_required",
+    "source_packet_artifact",
+    "allowed_interpretation",
+    "blocked_claims",
+)
+
 
 @dataclass(frozen=True)
 class MonitorAnomalyReviewQueueResult:
@@ -131,9 +148,12 @@ class MonitorAnomalyReviewQueueResult:
     dashboard_path: Path
     case_packets_csv_path: Path
     case_packets_json_path: Path
+    status_transitions_csv_path: Path
+    status_transitions_json_path: Path
     queue_row_count: int
     high_priority_count: int
     case_packet_row_count: int
+    status_transition_row_count: int
 
     def to_dict(self) -> dict[str, int | str]:
         """Return a JSON-friendly result summary."""
@@ -145,9 +165,12 @@ class MonitorAnomalyReviewQueueResult:
             "dashboard_path": str(self.dashboard_path),
             "case_packets_csv_path": str(self.case_packets_csv_path),
             "case_packets_json_path": str(self.case_packets_json_path),
+            "status_transitions_csv_path": str(self.status_transitions_csv_path),
+            "status_transitions_json_path": str(self.status_transitions_json_path),
             "queue_row_count": self.queue_row_count,
             "high_priority_count": self.high_priority_count,
             "case_packet_row_count": self.case_packet_row_count,
+            "status_transition_row_count": self.status_transition_row_count,
         }
 
 
@@ -266,6 +289,24 @@ def build_anomaly_case_review_packets(queue: pd.DataFrame) -> pd.DataFrame:
     return packets
 
 
+def build_anomaly_review_status_transitions(case_packets: pd.DataFrame) -> pd.DataFrame:
+    """Return deterministic review-status transition gates for case packets."""
+
+    _validate_case_packets(case_packets)
+    if case_packets.empty:
+        return pd.DataFrame(columns=STATUS_TRANSITION_COLUMNS)
+
+    rows = [
+        _status_transition_row(item)
+        for item in case_packets.sort_values(["review_priority", "case_id"]).to_dict(
+            orient="records"
+        )
+    ]
+    transitions = pd.DataFrame(rows, columns=STATUS_TRANSITION_COLUMNS)
+    _reject_wallet_address_columns(transitions, "status transitions")
+    return transitions
+
+
 def apply_review_status_updates(
     queue: pd.DataFrame,
     updates: pd.DataFrame,
@@ -313,6 +354,8 @@ def generate_monitor_anomaly_review_queue(
     dashboard_path: Path = DASHBOARD_OUTPUT,
     case_packets_csv_path: Path = CASE_REVIEW_PACKETS_CSV_OUTPUT,
     case_packets_json_path: Path = CASE_REVIEW_PACKETS_JSON_OUTPUT,
+    status_transitions_csv_path: Path = STATUS_TRANSITIONS_CSV_OUTPUT,
+    status_transitions_json_path: Path = STATUS_TRANSITIONS_JSON_OUTPUT,
 ) -> MonitorAnomalyReviewQueueResult:
     """Write the anomaly review queue, compact summary, dashboard, and metadata."""
 
@@ -334,16 +377,20 @@ def generate_monitor_anomaly_review_queue(
         queue = apply_review_status_updates(queue, review_updates)
     summary = build_anomaly_review_summary(queue)
     case_packets = build_anomaly_case_review_packets(queue)
+    status_transitions = build_anomaly_review_status_transitions(case_packets)
 
     _write_csv(queue_path, queue)
     _write_csv(summary_path, summary)
     _write_csv(case_packets_csv_path, case_packets)
     _write_case_packets_json(case_packets_json_path, case_packets)
+    _write_csv(status_transitions_csv_path, status_transitions)
+    _write_status_transitions_json(status_transitions_json_path, status_transitions)
     _write_dashboard(queue=queue, summary=summary, dashboard_path=dashboard_path)
     metadata = _metadata(
         queue=queue,
         summary=summary,
         case_packets=case_packets,
+        status_transitions=status_transitions,
         review_report_path=review_report_path,
         alert_rows_path=alert_rows_path,
         detection_cases_path=detection_cases_path,
@@ -356,6 +403,8 @@ def generate_monitor_anomaly_review_queue(
         dashboard_path=dashboard_path,
         case_packets_csv_path=case_packets_csv_path,
         case_packets_json_path=case_packets_json_path,
+        status_transitions_csv_path=status_transitions_csv_path,
+        status_transitions_json_path=status_transitions_json_path,
     )
     metadata_path.parent.mkdir(parents=True, exist_ok=True)
     metadata_path.write_text(
@@ -369,9 +418,12 @@ def generate_monitor_anomaly_review_queue(
         dashboard_path=dashboard_path,
         case_packets_csv_path=case_packets_csv_path,
         case_packets_json_path=case_packets_json_path,
+        status_transitions_csv_path=status_transitions_csv_path,
+        status_transitions_json_path=status_transitions_json_path,
         queue_row_count=int(len(queue)),
         high_priority_count=_count(queue, "review_priority", "high"),
         case_packet_row_count=int(len(case_packets)),
+        status_transition_row_count=int(len(status_transitions)),
     )
 
 
@@ -403,6 +455,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         type=Path,
         default=CASE_REVIEW_PACKETS_JSON_OUTPUT,
     )
+    parser.add_argument(
+        "--status-transitions-csv-output",
+        type=Path,
+        default=STATUS_TRANSITIONS_CSV_OUTPUT,
+    )
+    parser.add_argument(
+        "--status-transitions-json-output",
+        type=Path,
+        default=STATUS_TRANSITIONS_JSON_OUTPUT,
+    )
     args = parser.parse_args(argv)
 
     try:
@@ -419,6 +481,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             dashboard_path=args.dashboard_output,
             case_packets_csv_path=args.case_packets_csv_output,
             case_packets_json_path=args.case_packets_json_output,
+            status_transitions_csv_path=args.status_transitions_csv_output,
+            status_transitions_json_path=args.status_transitions_json_output,
         )
     except (FileNotFoundError, ValueError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
@@ -502,6 +566,114 @@ def _case_review_packet(item: Mapping[str, object]) -> dict[str, object]:
         ),
         "source_queue_artifact": "monitor_anomaly_review_queue.csv",
     }
+
+
+def _status_transition_row(item: Mapping[str, object]) -> dict[str, object]:
+    current_status = _text(item.get("human_review_status")) or "needs_human_review"
+    allowed, blocked, requirements, thesis_allowed, thesis_gate, action = (
+        _transition_policy(current_status)
+    )
+    return {
+        "case_id": _text(item.get("case_id")),
+        "packet_id": _text(item.get("packet_id")),
+        "current_status": current_status,
+        "allowed_next_statuses": ";".join(allowed),
+        "blocked_next_statuses": ";".join(blocked),
+        "transition_requirements": requirements,
+        "thesis_use_allowed": thesis_allowed,
+        "thesis_use_gate": thesis_gate,
+        "reviewer_action_required": action,
+        "source_packet_artifact": "monitor_anomaly_case_review_packets.csv",
+        "allowed_interpretation": _text(item.get("allowed_interpretation")),
+        "blocked_claims": _text(item.get("blocked_claims")),
+    }
+
+
+def _transition_policy(
+    current_status: str,
+) -> tuple[list[str], list[str], str, str, str, str]:
+    if current_status == "needs_human_review":
+        return (
+            ["source_check_pending", "thesis_excluded"],
+            ["reviewed_keep_candidate", "reviewed_false_context"],
+            (
+                "Record public market source URL, public event/context source URL, "
+                "reviewer, timestamp, and review note before acceptance or "
+                "false-context decisions."
+            ),
+            "false",
+            "No thesis-facing use before source check and human review decision.",
+            "Open source check or explicitly exclude the case.",
+        )
+    if current_status == "source_check_pending":
+        return (
+            ["reviewed_keep_candidate", "reviewed_false_context", "thesis_excluded"],
+            ["needs_human_review"],
+            (
+                "Review source timestamps, market mapping, repeat-bucket evidence, "
+                "materiality context, and missing-evidence fields before selecting "
+                "a terminal review status."
+            ),
+            "false",
+            (
+                "Thesis-facing use remains blocked until a human reviewer marks "
+                "reviewed_keep_candidate and documents remaining limitations."
+            ),
+            "Choose keep, false-context, or exclusion after evidence review.",
+        )
+    if current_status == "reviewed_keep_candidate":
+        return (
+            ["thesis_excluded", "reviewed_false_context"],
+            ["needs_human_review", "source_check_pending"],
+            (
+                "Maintain source URLs, review note, method limits, and blocked "
+                "claims; downgrade if later review finds false context or thesis "
+                "exclusion criteria."
+            ),
+            "method_appendix_only",
+            (
+                "Allowed only as bounded reviewed-case context with explicit "
+                "limitations; not as causal or private-information evidence."
+            ),
+            "Keep limitations attached or downgrade if evidence weakens.",
+        )
+    if current_status == "reviewed_false_context":
+        return (
+            ["thesis_excluded"],
+            ["needs_human_review", "source_check_pending", "reviewed_keep_candidate"],
+            (
+                "Document why the case is false context and retain blocked claims; "
+                "do not reuse as positive anomaly evidence."
+            ),
+            "false",
+            "False-context cases are not thesis-facing anomaly evidence.",
+            "Keep as rejected review example or exclude from thesis outputs.",
+        )
+    if current_status == "thesis_excluded":
+        return (
+            [],
+            [
+                "needs_human_review",
+                "source_check_pending",
+                "reviewed_keep_candidate",
+                "reviewed_false_context",
+            ],
+            (
+                "Case is excluded from thesis-facing outputs unless a new manual "
+                "review decision is documented outside the automated transition."
+            ),
+            "false",
+            "Excluded cases are not thesis-facing evidence.",
+            "No further action unless a new documented review decision is made.",
+        )
+    return (
+        [],
+        sorted(ALLOWED_REVIEW_STATUSES),
+        "Resolve invalid review status before any further review transition.",
+        "false",
+        "Invalid review status blocks thesis-facing use.",
+        "Correct the curated status worksheet.",
+    )
 
 
 def _source_context(item: Mapping[str, object]) -> str:
@@ -781,6 +953,7 @@ def _metadata(
     queue: pd.DataFrame,
     summary: pd.DataFrame,
     case_packets: pd.DataFrame,
+    status_transitions: pd.DataFrame,
     review_report_path: Path,
     alert_rows_path: Path,
     detection_cases_path: Path,
@@ -793,6 +966,8 @@ def _metadata(
     dashboard_path: Path,
     case_packets_csv_path: Path,
     case_packets_json_path: Path,
+    status_transitions_csv_path: Path,
+    status_transitions_json_path: Path,
 ) -> dict[str, Any]:
     return {
         "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
@@ -824,16 +999,23 @@ def _metadata(
             "dashboard_path": str(dashboard_path),
             "case_packets_csv_path": str(case_packets_csv_path),
             "case_packets_json_path": str(case_packets_json_path),
+            "status_transitions_csv_path": str(status_transitions_csv_path),
+            "status_transitions_json_path": str(status_transitions_json_path),
             "queue_row_count": int(len(queue)),
             "case_packet_row_count": int(len(case_packets)),
+            "status_transition_row_count": int(len(status_transitions)),
             "high_priority_count": _count(queue, "review_priority", "high"),
             "review_update_row_count": int(len(review_updates)),
             "contains_wallet_addresses": _contains_wallet_address_column(queue),
             "case_packets_contain_wallet_addresses": _contains_wallet_address_column(
                 case_packets
             ),
+            "status_transitions_contain_wallet_addresses": _contains_wallet_address_column(
+                status_transitions
+            ),
             "contains_order_instructions": False,
             "case_packets_contain_order_instructions": False,
+            "status_transitions_contain_order_instructions": False,
             "max_default_rows_for_future_tools": MAX_MCP_ROWS,
         },
         "future_agent_contract": {
@@ -844,7 +1026,10 @@ def _metadata(
                 "SkepticReviewerAgent",
                 "Orchestrator",
             ],
-            "allowed_input": "bounded anomaly review queue and summaries only",
+            "allowed_input": (
+                "bounded anomaly review queue, summaries, case packets, and "
+                "status transitions only"
+            ),
             "agent_metric_calculation_allowed": False,
             "llm_audit_log_required": True,
         },
@@ -1041,6 +1226,14 @@ def _validate_queue(frame: pd.DataFrame) -> None:
         raise ValueError(f"queue contains invalid human_review_status values: {invalid}")
 
 
+def _validate_case_packets(frame: pd.DataFrame) -> None:
+    _require_columns(frame, CASE_REVIEW_PACKET_COLUMNS, "case review packets")
+    _reject_wallet_address_columns(frame, "case review packets")
+    invalid = sorted(set(frame["human_review_status"].astype(str)) - ALLOWED_REVIEW_STATUSES)
+    if invalid:
+        raise ValueError(f"case packets contain invalid human_review_status values: {invalid}")
+
+
 def _reject_wallet_address_columns(frame: pd.DataFrame, label: str) -> None:
     forbidden = [column for column in frame.columns if "wallet_address" in column.lower()]
     if forbidden:
@@ -1084,6 +1277,23 @@ def _write_case_packets_json(path: Path, frame: pd.DataFrame) -> None:
         "contains_order_instructions": False,
         "agent_and_mcp_status": "contract_only_not_implemented",
         "case_packets": frame.to_dict(orient="records"),
+    }
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+
+def _write_status_transitions_json(path: Path, frame: pd.DataFrame) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "artifact": "monitor_anomaly_review_status_transitions",
+        "row_count": int(len(frame)),
+        "max_default_rows_for_future_tools": MAX_MCP_ROWS,
+        "contains_wallet_addresses": _contains_wallet_address_column(frame),
+        "contains_order_instructions": False,
+        "agent_and_mcp_status": "contract_only_not_implemented",
+        "status_transitions": frame.to_dict(orient="records"),
     }
     path.write_text(
         json.dumps(payload, indent=2, sort_keys=True) + "\n",

@@ -2,3 +2,10 @@ generated_at_utc,status,source,until_utc,min_spacing_minutes,latest_snapshot_at_
 2026-06-11T15:58:44+00:00,skipped_min_spacing,live,2026-06-14T10:00:00+00:00,55,2026-06-11T15:43:35Z,15.15,19,,,,,,Latest snapshot is newer than the configured spacing.
 2026-06-11T15:59:30+00:00,skipped_min_spacing,live,2026-06-14T10:00:00+00:00,55,2026-06-11T15:43:35Z,15.917,19,,,,,,Latest snapshot is newer than the configured spacing.
 2026-06-11T16:04:15+00:00,skipped_min_spacing,live,2026-06-14T10:00:00+00:00,55,2026-06-11T15:43:35Z,20.667,19,,,,,,Latest snapshot is newer than the configured spacing.
+2026-06-11T17:04:17+00:00,refreshed,live,2026-06-14T10:00:00+00:00,55,2026-06-11T17:04:17Z,0.0,20,20,0.25,-0.2,-0.2139175257731959,polymarket_below_poll_yes_share,Collected one bounded read-only refresh and exited.
+2026-06-11T18:04:22+00:00,refreshed,live,2026-06-14T10:00:00+00:00,55,2026-06-11T18:04:22Z,0.0,21,21,0.235,-0.21500000000000002,-0.2289175257731959,polymarket_below_poll_yes_share,Collected one bounded read-only refresh and exited.
+2026-06-11T19:04:16+00:00,refreshed,live,2026-06-14T10:00:00+00:00,55,2026-06-11T19:04:16Z,0.0,22,22,0.22,-0.23,-0.2439175257731959,polymarket_below_poll_yes_share,Collected one bounded read-only refresh and exited.
+2026-06-11T20:04:17+00:00,refreshed,live,2026-06-14T10:00:00+00:00,55,2026-06-11T20:04:17Z,0.0,23,23,0.225,-0.225,-0.2389175257731959,polymarket_below_poll_yes_share,Collected one bounded read-only refresh and exited.
+2026-06-11T21:04:18+00:00,refreshed,live,2026-06-14T10:00:00+00:00,55,2026-06-11T21:04:18Z,0.0,24,24,0.215,-0.23500000000000001,-0.2489175257731959,polymarket_below_poll_yes_share,Collected one bounded read-only refresh and exited.
+2026-06-11T22:04:21+00:00,refreshed,live,2026-06-14T10:00:00+00:00,55,2026-06-11T22:04:21Z,0.0,25,25,0.215,-0.23500000000000001,-0.2489175257731959,polymarket_below_poll_yes_share,Collected one bounded read-only refresh and exited.
+2026-06-11T23:04:19+00:00,refreshed,live,2026-06-14T10:00:00+00:00,55,2026-06-11T23:04:19Z,0.0,26,26,0.22,-0.23,-0.2439175257731959,polymarket_below_poll_yes_share,Collected one bounded read-only refresh and exited.

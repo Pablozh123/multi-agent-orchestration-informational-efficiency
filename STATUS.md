@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-06-11 04:33
+Generated: 2026-06-11 17:45
 
 Current goal: `goal-swiss-referendum-efficiency-001` - Build Swiss 10-million referendum Polymarket-vs-polls comparison
 
@@ -11,240 +11,43 @@ Current roadmap phase: Phase 11: Swiss Referendum Efficiency Comparison
 
 Test status: PASS
 
-Pytest summary: `468 passed in 46.25s`
+Pytest summary: `468 passed in 52.45s`
 
 Git branch: `main`
 
-Latest commit: `75636ed`
+Latest commit: `b91f9bf`
 
 Git status:
 
 ```text
- M STATUS.md
- M docs/project/WORK_LOG.md
- M docs/research/RESEARCH_SPEC.md
- M requirements.txt
-?? data/results/h1_270towin_poll_average.png
-?? data/results/h1_270towin_poll_average_cases.csv
-?? data/results/h1_270towin_poll_average_metadata.json
-?? data/results/h1_270towin_poll_average_summary.csv
-?? data/results/h1_270towin_state_forecast.png
-?? data/results/h1_270towin_state_forecast_cases.csv
-?? data/results/h1_270towin_state_forecast_metadata.json
-?? data/results/h1_270towin_state_forecast_summary.csv
-?? data/results/h1_calibration_diagnostic.png
-?? data/results/h1_calibration_diagnostic_bins.csv
-?? data/results/h1_calibration_diagnostic_cases.csv
-?? data/results/h1_calibration_diagnostic_metadata.json
-?? data/results/h1_calibration_diagnostic_pairwise.csv
-?? data/results/h1_calibration_diagnostic_summary.csv
-?? data/results/h1_claim_evidence_audit.csv
-?? data/results/h1_claim_evidence_audit.png
-?? data/results/h1_claim_evidence_audit_metadata.json
-?? data/results/h1_claim_evidence_audit_summary.csv
-?? data/results/h1_competitive_state_diagnostic.png
-?? data/results/h1_competitive_state_diagnostic_cases.csv
-?? data/results/h1_competitive_state_diagnostic_metadata.json
-?? data/results/h1_competitive_state_diagnostic_summary.csv
-?? data/results/h1_competitive_state_diagnostic_tiers.csv
-?? data/results/h1_direct_poll_loss_decomposition.png
-?? data/results/h1_direct_poll_loss_decomposition_cases.csv
-?? data/results/h1_direct_poll_loss_decomposition_metadata.json
-?? data/results/h1_direct_poll_loss_decomposition_summary.csv
-?? data/results/h1_direct_poll_outlier_robustness.png
-?? data/results/h1_direct_poll_outlier_robustness_metadata.json
-?? data/results/h1_direct_poll_outlier_robustness_scenarios.csv
-?? data/results/h1_direct_poll_outlier_robustness_summary.csv
-?? data/results/h1_direct_poll_state_cluster_diagnostic.png
-?? data/results/h1_direct_poll_state_cluster_diagnostic_metadata.json
-?? data/results/h1_direct_poll_state_cluster_diagnostic_states.csv
-?? data/results/h1_direct_poll_state_cluster_diagnostic_summary.csv
-?? data/results/h1_evidence_scope.csv
-?? data/results/h1_evidence_scope.png
-?? data/results/h1_evidence_scope_metadata.json
-?? data/results/h1_expansion_readiness.csv
-?? data/results/h1_expansion_readiness.png
-?? data/results/h1_expansion_readiness_metadata.json
-?? data/results/h1_final_snapshot.png
-?? data/results/h1_final_snapshot_cases.csv
-?? data/results/h1_final_snapshot_metadata.json
-?? data/results/h1_final_snapshot_summary.csv
-?? data/results/h1_forecast_quality.png
-?? data/results/h1_forecast_quality_metadata.json
-?? data/results/h1_forecast_quality_pairwise.csv
-?? data/results/h1_forecast_quality_sources.csv
-?? data/results/h1_forecast_quality_synthesis.csv
-?? data/results/h1_forecast_quality_synthesis.png
-?? data/results/h1_forecast_quality_synthesis_metadata.json
-?? data/results/h1_margin_threshold_readiness.csv
-?? data/results/h1_margin_threshold_readiness.png
-?? data/results/h1_margin_threshold_readiness_metadata.json
-?? data/results/h1_poll_claim_readiness.csv
-?? data/results/h1_poll_claim_readiness.png
-?? data/results/h1_poll_claim_readiness_metadata.json
-?? data/results/h1_poll_claim_readiness_summary.csv
-?? data/results/h1_poll_comparison_result.csv
-?? data/results/h1_poll_comparison_result.png
-?? data/results/h1_poll_comparison_result_metadata.json
-?? data/results/h1_poll_comparison_result_summary.csv
-?? data/results/h1_poll_comparison_unit_robustness.png
-?? data/results/h1_poll_comparison_unit_robustness_metadata.json
-?? data/results/h1_poll_comparison_unit_robustness_summary.csv
-?? data/results/h1_poll_comparison_unit_robustness_units.csv
-?? data/results/h1_poll_decision_matrix.csv
-?? data/results/h1_poll_decision_matrix.png
-?? data/results/h1_poll_decision_matrix_metadata.json
-?? data/results/h1_poll_decision_matrix_summary.csv
-?? data/results/h1_poll_scope_frontier.csv
-?? data/results/h1_poll_scope_frontier.png
-?? data/results/h1_poll_scope_frontier_metadata.json
-?? data/results/h1_poll_scope_frontier_summary.csv
-?? data/results/h1_popular_vote.png
-?? data/results/h1_popular_vote_cases.csv
-?? data/results/h1_popular_vote_metadata.json
-?? data/results/h1_popular_vote_summary.csv
-?? data/results/h1_rieke_state_forecast.png
-?? data/results/h1_rieke_state_forecast_cases.csv
-?? data/results/h1_rieke_state_forecast_metadata.json
-?? data/results/h1_rieke_state_forecast_summary.csv
-?? data/results/h1_robust_poll_scope_quality.png
-?? data/results/h1_robust_poll_scope_quality_bins.csv
-?? data/results/h1_robust_poll_scope_quality_metadata.json
-?? data/results/h1_robust_poll_scope_quality_pairwise.csv
-?? data/results/h1_robust_poll_scope_quality_rows.csv
-?? data/results/h1_robust_poll_scope_quality_summary.csv
-?? data/results/h1_robust_poll_scope_unit_quality.png
-?? data/results/h1_robust_poll_scope_unit_quality_metadata.json
-?? data/results/h1_robust_poll_scope_unit_quality_summary.csv
-?? data/results/h1_robust_poll_scope_unit_quality_units.csv
-?? data/results/h1_state_poll_panel.png
-?? data/results/h1_state_poll_panel_cases.csv
-?? data/results/h1_state_poll_panel_competitiveness.png
-?? data/results/h1_state_poll_panel_competitiveness_grid.csv
-?? data/results/h1_state_poll_panel_competitiveness_metadata.json
-?? data/results/h1_state_poll_panel_competitiveness_state.csv
-?? data/results/h1_state_poll_panel_competitiveness_summary.csv
-?? data/results/h1_state_poll_panel_coverage.csv
-?? data/results/h1_state_poll_panel_horizon_claim_audit.csv
-?? data/results/h1_state_poll_panel_horizon_diagnostic.png
-?? data/results/h1_state_poll_panel_horizon_diagnostic_metadata.json
-?? data/results/h1_state_poll_panel_horizon_state_summary.csv
-?? data/results/h1_state_poll_panel_horizon_state_support.csv
-?? data/results/h1_state_poll_panel_horizon_state_support.png
-?? data/results/h1_state_poll_panel_horizon_state_support_metadata.json
-?? data/results/h1_state_poll_panel_horizon_state_support_summary.csv
-?? data/results/h1_state_poll_panel_horizon_summary.csv
-?? data/results/h1_state_poll_panel_metadata.json
-?? data/results/h1_state_poll_panel_near_window_quality.png
-?? data/results/h1_state_poll_panel_near_window_quality_bins.csv
-?? data/results/h1_state_poll_panel_near_window_quality_metadata.json
-?? data/results/h1_state_poll_panel_near_window_quality_rows.csv
-?? data/results/h1_state_poll_panel_near_window_quality_summary.csv
-?? data/results/h1_state_poll_panel_state_significance.csv
-?? data/results/h1_state_poll_panel_state_significance.png
-?? data/results/h1_state_poll_panel_state_significance_metadata.json
-?? data/results/h1_state_poll_panel_state_significance_summary.csv
-?? data/results/h1_state_poll_panel_state_summary.csv
-?? data/results/h1_state_poll_panel_summary.csv
-?? data/results/h1_state_poll_panel_temporal_claim_audit.csv
-?? data/results/h1_state_poll_panel_temporal_diagnostic.png
-?? data/results/h1_state_poll_panel_temporal_diagnostic_metadata.json
-?? data/results/h1_state_poll_panel_temporal_state_month.csv
-?? data/results/h1_state_poll_panel_temporal_summary.csv
-?? data/results/h1_state_poll_snapshot.png
-?? data/results/h1_state_poll_snapshot_cases.csv
-?? data/results/h1_state_poll_snapshot_coverage.csv
-?? data/results/h1_state_poll_snapshot_coverage.png
-?? data/results/h1_state_poll_snapshot_metadata.json
-?? data/results/h1_state_poll_snapshot_sensitivity.csv
-?? data/results/h1_state_poll_snapshot_sensitivity.png
-?? data/results/h1_state_poll_snapshot_summary.csv
-?? data/results/h1_state_source_consensus.png
-?? data/results/h1_state_source_consensus_cases.csv
-?? data/results/h1_state_source_consensus_metadata.json
-?? data/results/h1_state_source_consensus_state_summary.csv
-?? data/results/h1_state_source_consensus_summary.csv
-?? docs/project/dozentenbericht_assets/
-?? docs/project/dozentenbericht_ba_thesis.docx
-?? docs/project/dozentenbericht_ba_thesis.html
-?? docs/project/dozentenbericht_ba_thesis.md
-?? docs/project/dozentenbericht_ba_thesis_h1_forecast_quality.docx
-?? operations/analysis/h1_270towin_poll_average_extension.py
-?? operations/analysis/h1_270towin_state_forecast_extension.py
-?? operations/analysis/h1_calibration_diagnostic.py
-?? operations/analysis/h1_claim_evidence_audit.py
-?? operations/analysis/h1_competitive_state_diagnostic.py
-?? operations/analysis/h1_direct_poll_loss_decomposition.py
-?? operations/analysis/h1_direct_poll_outlier_robustness.py
-?? operations/analysis/h1_direct_poll_state_cluster_diagnostic.py
-?? operations/analysis/h1_evidence_scope.py
-?? operations/analysis/h1_expansion_readiness.py
-?? operations/analysis/h1_final_snapshot_extension.py
-?? operations/analysis/h1_forecast_quality.py
-?? operations/analysis/h1_forecast_quality_synthesis.py
-?? operations/analysis/h1_margin_threshold_readiness.py
-?? operations/analysis/h1_poll_claim_readiness.py
-?? operations/analysis/h1_poll_comparison_result.py
-?? operations/analysis/h1_poll_comparison_unit_robustness.py
-?? operations/analysis/h1_poll_decision_matrix.py
-?? operations/analysis/h1_poll_scope_frontier.py
-?? operations/analysis/h1_popular_vote_extension.py
-?? operations/analysis/h1_rieke_state_forecast_extension.py
-?? operations/analysis/h1_robust_poll_scope_quality.py
-?? operations/analysis/h1_robust_poll_scope_unit_quality.py
-?? operations/analysis/h1_state_poll_panel_competitiveness_diagnostic.py
-?? operations/analysis/h1_state_poll_panel_extension.py
-?? operations/analysis/h1_state_poll_panel_horizon_diagnostic.py
-?? operations/analysis/h1_state_poll_panel_horizon_state_diagnostic.py
-?? operations/analysis/h1_state_poll_panel_near_window_quality.py
-?? operations/analysis/h1_state_poll_panel_state_significance.py
-?? operations/analysis/h1_state_poll_panel_temporal_diagnostic.py
-?? operations/analysis/h1_state_poll_snapshot_extension.py
-?? operations/analysis/h1_state_source_consensus.py
-?? operations/project/build_dozenten_report.py
-?? tests/test_dozenten_report.py
-?? tests/test_h1_270towin_poll_average_extension.py
-?? tests/test_h1_270towin_state_forecast_extension.py
-?? tests/test_h1_calibration_diagnostic.py
-?? tests/test_h1_claim_evidence_audit.py
-?? tests/test_h1_competitive_state_diagnostic.py
-?? tests/test_h1_direct_poll_loss_decomposition.py
-?? tests/test_h1_direct_poll_outlier_robustness.py
-?? tests/test_h1_direct_poll_state_cluster_diagnostic.py
-?? tests/test_h1_evidence_scope.py
-?? tests/test_h1_expansion_readiness.py
-?? tests/test_h1_final_snapshot_extension.py
-?? tests/test_h1_forecast_quality.py
-?? tests/test_h1_forecast_quality_synthesis.py
-?? tests/test_h1_margin_threshold_readiness.py
-?? tests/test_h1_poll_claim_readiness.py
-?? tests/test_h1_poll_comparison_result.py
-?? tests/test_h1_poll_comparison_unit_robustness.py
-?? tests/test_h1_poll_decision_matrix.py
-?? tests/test_h1_poll_scope_frontier.py
-?? tests/test_h1_popular_vote_extension.py
-?? tests/test_h1_rieke_state_forecast_extension.py
-?? tests/test_h1_robust_poll_scope_quality.py
-?? tests/test_h1_robust_poll_scope_unit_quality.py
-?? tests/test_h1_state_poll_panel_competitiveness_diagnostic.py
-?? tests/test_h1_state_poll_panel_extension.py
-?? tests/test_h1_state_poll_panel_horizon_diagnostic.py
-?? tests/test_h1_state_poll_panel_horizon_state_diagnostic.py
-?? tests/test_h1_state_poll_panel_near_window_quality.py
-?? tests/test_h1_state_poll_panel_state_significance.py
-?? tests/test_h1_state_poll_panel_temporal_diagnostic.py
-?? tests/test_h1_state_poll_snapshot_extension.py
-?? tests/test_h1_state_source_consensus.py
+ M data/results/swiss_referendum_10mio_comparison.csv
+ M data/results/swiss_referendum_10mio_dashboard.html
+ M data/results/swiss_referendum_10mio_efficiency.png
+ M data/results/swiss_referendum_10mio_efficiency_metadata.json
+ M data/results/swiss_referendum_10mio_latest_source_comparison.csv
+ M data/results/swiss_referendum_10mio_latest_summary.md
+ M data/results/swiss_referendum_10mio_polymarket_price_history_metadata.json
+ M data/results/swiss_referendum_10mio_polymarket_snapshot_metadata.json
+ M data/results/swiss_referendum_10mio_polymarket_snapshots.csv
+ M data/results/swiss_referendum_10mio_refresh_metadata.json
+ M data/results/swiss_referendum_10mio_running_status.json
 ```
 
 Git diff stat:
 
 ```text
- STATUS.md                      |  286 +++-
- docs/project/WORK_LOG.md       | 2865 ++++++++++++++++++++++++++++++++++++++++
- docs/research/RESEARCH_SPEC.md | 1333 ++++++++++++++++++-
- requirements.txt               |    3 +
- 4 files changed, 4393 insertions(+), 94 deletions(-)
+ data/results/swiss_referendum_10mio_comparison.csv  |   1 +
+ data/results/swiss_referendum_10mio_dashboard.html  |   7 ++++---
+ data/results/swiss_referendum_10mio_efficiency.png  | Bin 84869 -> 84509 bytes
+ .../swiss_referendum_10mio_efficiency_metadata.json |   8 ++++----
+ ...ss_referendum_10mio_latest_source_comparison.csv |   6 +++---
+ .../swiss_referendum_10mio_latest_summary.md        |   6 +++---
+ ...dum_10mio_polymarket_price_history_metadata.json |   2 +-
+ ...ferendum_10mio_polymarket_snapshot_metadata.json |   8 ++++----
+ .../swiss_referendum_10mio_polymarket_snapshots.csv |   1 +
+ .../swiss_referendum_10mio_refresh_metadata.json    |  14 +++++++-------
+ .../swiss_referendum_10mio_running_status.json      |   8 ++++----
+ 11 files changed, 32 insertions(+), 29 deletions(-)
 ```
 
 Blockers:

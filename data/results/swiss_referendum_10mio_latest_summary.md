@@ -2,8 +2,8 @@
 
 ## Generated Or Inspected
 
-- Comparison rows: 18.
-- Polymarket snapshot rows: 18.
+- Comparison rows: 19.
+- Polymarket snapshot rows: 19.
 - Bounded price-history rows: 504.
 - Curated poll rows: 7 from SRG/gfs.bern, Tamedia/20 Minuten/LeeWas, YouGov Schweiz.
 - Poll-impact rows: 7 (observed_pre_post: 7).
@@ -42,7 +42,7 @@
 
 ## Key Numerical Result
 
-- Latest snapshot: 2026-06-08T17:00:19Z.
+- Latest snapshot: 2026-06-11T15:43:35Z.
 - Latest matched poll: srg_gfs_bern_2026_w2 (SRG/gfs.bern).
 - Polymarket Yes probability: 23.0%.
 - Latest poll Yes share: 45.0%.

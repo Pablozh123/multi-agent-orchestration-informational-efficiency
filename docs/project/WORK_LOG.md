@@ -6557,6 +6557,69 @@ Verification:
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 468 passed in 46.25s.
 
+## 2026-06-11 - Swiss referendum bounded live refresh after H1 commit
+
+Context:
+
+- Committed the completed H1 forecast-quality diagnostic block as
+  `b91f9bf feat: add h1 forecast quality diagnostics`.
+- Moved to the active Phase 11 Swiss referendum comparison after H1 intensive
+  work.
+- Ran one manual bounded read-only Polymarket refresh. No background daemon,
+  authenticated endpoint, order path, trading credential, LLM, agent, MCP, ML,
+  database write, causal claim, tradeability claim, profitability claim, or
+  mispricing proof was used.
+
+Generated or updated:
+
+- `data/results/swiss_referendum_10mio_polymarket_snapshots.csv`
+- `data/results/swiss_referendum_10mio_comparison.csv`
+- `data/results/swiss_referendum_10mio_latest_source_comparison.csv`
+- `data/results/swiss_referendum_10mio_poll_impacts.csv`
+- `data/results/swiss_referendum_10mio_information_response.csv`
+- `data/results/swiss_referendum_10mio_efficiency.png`
+- `data/results/swiss_referendum_10mio_dashboard.html`
+- `data/results/swiss_referendum_10mio_latest_summary.md`
+- `data/results/swiss_referendum_10mio_refresh_metadata.json`
+- `data/results/swiss_referendum_10mio_running_status.json`
+
+Key output:
+
+- Snapshot rows: 19.
+- Comparison rows: 19.
+- Bounded price-history rows: 504.
+- Poll-impact rows: 7, all `observed_pre_post`.
+- Information-response rows: 7.
+- Latest local Polymarket Yes probability: 0.23.
+- Latest matched poll: `srg_gfs_bern_2026_w2`.
+- Latest poll Yes share: 0.45.
+- Raw Yes gap: -0.22.
+- Decided-voter Yes gap: -0.2339175258.
+- Latest divergence label: `polymarket_below_poll_yes_share`.
+- Running status: all outputs exist; snapshot recency status `fresh`.
+
+Interpretation:
+
+- The latest local Polymarket probability is below the latest curated poll Yes
+  share and below the decided-voter normalization.
+- This is a descriptive poll-proxy comparison only. It does not prove
+  undervaluation, overvaluation, inefficiency, causality, tradeability, or
+  profitability.
+
+Figure:
+
+- `data/results/swiss_referendum_10mio_efficiency.png` shows the latest
+  Polymarket probability against curated poll shares from the local artifacts.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.collectors.swiss_referendum_refresh --source live`
+  -> PASS, generated one bounded live snapshot and regenerated local outputs.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py -q`
+  -> PASS, 27 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 468 passed in 52.45s.
+
 ## 2026-06-11 - H1 robust poll-scope quality diagnostic
 
 Context:

@@ -7913,3 +7913,153 @@ Verification:
 
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 488 passed in 46.16s.
+
+## 2026-06-11 - Dozentenbericht BA thesis structure update
+
+Context:
+
+- Reworked the supervisor-facing report into a Bachelorarbeit-style interim
+  document while preserving deterministic result sourcing.
+- Used only local result artifacts, the local literature index, and existing
+  project documentation.
+- Did not calculate statistical metrics with an LLM and did not activate
+  agents, MCP tools, live trading paths, model routing, ML, or database writes.
+
+Changes:
+
+- Extended `operations/project/build_dozenten_report.py` with front-matter
+  sections for research question, BA-style structure, scientific source
+  framing, method design, data basis, and guardrails.
+- Added a bounded literature table from `data/literature/literature_index.csv`
+  covering Fama, Polymarket transaction/context work, prediction-market vs
+  polling framing, information-advantage/prediction-market conceptual context, Kalshi
+  microstructure, and Polymarket convergence/volatility context.
+- Added current anomaly-review queue counts to the Monitor section:
+  3 cases, 1 high priority, 2 medium priority, 0 low priority, all
+  `source_check_pending`.
+- Regenerated `docs/project/dozentenbericht_ba_thesis.md`,
+  `docs/project/dozentenbericht_ba_thesis.html`, and
+  `docs/project/dozentenbericht_ba_thesis.docx`.
+- Tightened DOCX table geometry so generated rows carry explicit table cell
+  widths.
+
+Key output:
+
+- The report now starts with a BA-like arc: Kurzfazit, Aufbau,
+  Forschungsfrage/Hypothesen, wissenschaftlicher Quellenrahmen, methodisches
+  Design, project structure, H1/H2/H3 results, monitor, Swiss referendum,
+  visualisations, presentation plan, and artifact appendix.
+- Current generated report includes 43 embedded figures.
+- Current generated Swiss side-track values in the report: 7 curated polls,
+  22 Polymarket snapshots, latest Polymarket Yes 22.0 percent, latest matched
+  poll Yes 45.0 percent, raw gap -23.0 percentage points, decided-voter gap
+  -24.4 percentage points.
+
+Interpretation:
+
+- The report is now more suitable as a written advisor update because it
+  connects thesis framing, sources, deterministic methods, outputs, limits,
+  and next steps.
+- Literature rows remain a source frame. Detail claims still need full source
+  review before final thesis citation status.
+- The anomaly-review queue remains a human-review cue and not thesis-facing
+  evidence of private information, misconduct, causality, tradeability,
+  profitability, or future performance.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, generated Markdown, HTML, DOCX, and 43 figures.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_dozenten_report.py`
+  -> PASS, 1 passed.
+- DOCX structural audit -> PASS, 13 headings, 20 tables, 43 inline shapes,
+  43 media files, 0 missing table width fields.
+- DOCX PNG render QA -> BLOCKED because LibreOffice/`soffice` is not installed
+  or available in PATH on this machine.
+- `.\.venv\Scripts\python.exe -m pytest`
+  -> PASS, 488 passed in 48.50s.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 488 passed in 49.02s.
+
+## 2026-06-12 - Expanded advisor report with interpretation synthesis
+
+Goal context:
+
+- Active user goal: make the advisor update strong enough for written handoff
+  by adding Erkenntnisse, Begruendungen, Interpretationen, and scientific
+  context from the available thesis artifacts and source index.
+- Worked only on the written report and its deterministic source framing.
+- Did not calculate metrics with an LLM and did not activate runtime agents,
+  MCP demo layers, model routing, trading paths, or database writes.
+
+Changes:
+
+- Added four method references to `data/literature/literature_index.csv`:
+  Brier forecast verification, Diebold-Mariano predictive-accuracy comparison,
+  Granger temporal predictability framing, and event-study methodology.
+- Extended `operations/project/build_dozenten_report.py` with deterministic
+  synthesis helpers for central findings, method decisions, source roles, and
+  bounded interpretation notes.
+- Added report sections for central findings, method justification, and
+  Gesamtinterpretation across Markdown, HTML, and DOCX outputs.
+- Regenerated `docs/project/dozentenbericht_ba_thesis.md`,
+  `docs/project/dozentenbericht_ba_thesis.html`, and
+  `docs/project/dozentenbericht_ba_thesis.docx`.
+
+Key output:
+
+- Literature index now contains 15 rows; the advisor report uses 10 selected
+  core sources as the explicit scientific frame.
+- H1 interpretation now states that a broad superiority claim is not proven,
+  while deterministic artifacts show a bounded Polymarket advantage in selected
+  late and competitive windows: primary Brier 0.2303 versus 0.3324; aggregate
+  synthesis support in 7 of 9 cases and fallmehrheit support in 3 of 9 cases.
+- H2 interpretation now highlights the largest primary event-window movement:
+  `07_13_trump_shooting`, plus 7.2 percentage points. This remains a daily
+  event-window result, not an intraday speed claim.
+- H3 interpretation now reports the strongest deterministic wallet timing
+  pattern as `tier_1_top_1pct` at lag 1 with correlation 0.1858 and minimum
+  Granger p-value 0.0012 over 1216 panel rows, without causal wording.
+- Monitor interpretation now reports 3 current review cases, 1 high and
+  2 medium, all `source_check_pending`; the queue is framed as a methodology
+  guardrail, not evidence of causes, rule violations, tradeability,
+  profitability, or future outcomes.
+- Swiss side-track interpretation now uses 25 snapshots, latest Polymarket Yes
+  21.5 percent, latest poll Yes 45.0 percent, and a raw gap of -23.5 percentage
+  points, with no final efficiency interpretation before the official result.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, generated Markdown, HTML, DOCX, and 43 figures.
+- DOCX structural audit -> PASS, 14 headings, 23 tables, 43 inline shapes,
+  43 media files, 0 missing table width fields.
+- DOCX PNG render QA -> BLOCKED because LibreOffice/`soffice` is not installed
+  or available in PATH on this machine.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_dozenten_report.py`
+  -> PASS, 1 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_result_summaries.py tests\test_monitor_anomaly_review_queue.py`
+  -> PASS, 20 passed.
+- `.\.venv\Scripts\python.exe -m pytest`
+  -> PASS, 488 passed in 51.38s.
+
+## 2026-06-12 - Commit cleanup for advisor report handoff
+
+Goal context:
+
+- User requested committing the completed advisor-report update and keeping the
+  worktree clean.
+- Confirmed `GOAL.md` still has exactly one active goal and that the Swiss
+  referendum track remains a running side goal.
+
+Changes:
+
+- Removed the untracked Word temporary lock file for the advisor report.
+- Prepared the report/literature/builder updates and the Swiss running
+  artifacts for separate commits so the written handoff and live side-track
+  refresh remain reviewable as distinct changes.
+
+Verification plan:
+
+- Re-run project status automation, review checks, and commit planning before
+  creating the final commits.

@@ -1,6 +1,6 @@
 # Dozentenbericht zur Bachelorarbeit
 
-Erstellt: 2026-06-11T02:32:38+00:00
+Erstellt: 2026-06-11T22:50:11+00:00
 
 **Arbeitstitel:** Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen.
 
@@ -11,16 +11,85 @@ Das Projekt hat eine deterministische Analysegrundlage aufgebaut. Statistische K
 - H1 ist ein Forecast-Qualitaetsvergleich.
 - H2 ist eine taegliche Event-Window-Analyse.
 - H3 ist eine Wallet-Tier-Timing-Diagnostik.
-- Der Monitor ist ein pausierter read-only Forschungsprototyp.
-- Die aktuelle Phase vergleicht das Schweizer 10-Millionen-Referendum auf Polymarket mit kuratierten Umfragen.
+- Der Monitor ist ein read-only Forschungsprototyp mit deterministischer Anomaly-Review-Queue.
+- Der Schweizer 10-Millionen-Referendumsvergleich laeuft als separater Datensammlungs-Track.
+
+## Aufbau wie in der Bachelorarbeit
+
+Dieser Dozentenbericht ist als Zwischenstand im Stil einer Bachelorarbeit aufgebaut:
+
+- Einleitung und Forschungsfrage: Warum Prediction Markets als Informationsmaerkte relevant sind.
+- Theorie und Literatur: Effizienz, Prediction Markets, Polling-Vergleiche, Wallet- und Mikrostrukturgrenzen.
+- Methodik: deterministische Python-Pipeline, validierte Artefakte, keine LLM-Metriken.
+- Empirie: H1 Forecast-Qualitaet, H2 Event-Window-Reaktion, H3 Wallet-Tier-Timing.
+- Erweiterung: read-only Monitor und Schweizer Referendumsvergleich als laufender Track.
+- Diskussion: Grenzen, belastbare Formulierungen und naechste Arbeitsschritte.
+
+## Forschungsfrage und Hypothesen
+
+Die Leitfrage lautet, inwiefern Polymarket-Preise Informationen waehrend politischer Ereignisse abbilden, schneller oder anders als traditionelle Prognosequellen reagieren und ob aggregierte Wallet-Aktivitaet als frueher Timing-Indikator sichtbar wird.
+
+- H1: Polymarket wird als Probability-Forecast gegen traditionelle Forecast- oder Poll-derived Vergleichsquellen getestet.
+- H2: Vorab kuratierte Ereignisse werden in taeglichen Event-Windows ausgewertet.
+- H3: Wallet-Aktivitaet wird ueber verteilungsbasierte Tiers als Timing-Diagnostik analysiert.
+
+## Wissenschaftlicher Quellenrahmen
+
+Der lokale Literaturindex umfasst 15 Quellen; fuer diesen Bericht werden 10 wissenschaftlich relevante Kernquellen als Rahmen verwendet. Statusverteilung: candidate: 2, rejected: 1, skimmed: 12.
+
+| Quelle | Rolle in der Arbeit | Beitrag zur Interpretation | Status |
+| --- | --- | --- | --- |
+| `lit_emh_001` - Eugene F. Fama (1970): Efficient Capital Markets: A Review of Theory and Empirical Work | Theorie: informationelle Effizienz und EMH-Proxy-Logik. | Preise als Informationsaggregate motivieren die Proxy-Tests, beweisen aber keine Effizienz. | skimmed |
+| `lit_brier_001` - Glenn W. Brier (1950): Verification of Forecasts Expressed in Terms of Probability | H1-Methode: Probability-Forecast-Verifikation mit Brier-Verlust. | Begruendet H1 als Verlustvergleich von Wahrscheinlichkeitsprognosen. | skimmed |
+| `lit_dm_001` - Francis X. Diebold; Roberto S. Mariano (1995): Comparing Predictive Accuracy | H1-Methode: Vergleich konkurrierender Forecast-Loss-Serien. | Begruendet den Test auf Unterschiede in vorliegenden Forecast-Verlustreihen. | skimmed |
+| `lit_eventstudy_001` - A. Craig MacKinlay (1997): Event Studies in Economics and Finance | H2-Methode: Event-Window-Design und Grenzen von Ereignisstudien. | Begruendet H2 als Ereignisfenster-Design statt freier News-Interpretation. | skimmed |
+| `lit_granger_001` - C. W. J. Granger (1969): Investigating Causal Relations by Econometric Models and Cross-Spectral Methods | H3-Methode: Lead-Lag-Diagnostik mit vorsichtiger Kausalitaetsabgrenzung. | Begruendet H3 als Vorhersage-/Timingdiagnostik, nicht als starker Ursachenbeweis. | skimmed |
+| `zotero_poly_001` - Kwok Ping Tsang; Zichao Yang (2026): The Anatomy of a Blockchain Prediction Market: Polymarket in the 2024 U.S. Presidential Election | Polymarket-Kontext: Transaktionslogik, Wallet- und Volumen-Caveats. | Stuetzt Vorsicht bei on-chain Volumen, Wallet-Flows und Austausch-Equivalenten. | skimmed |
+| `zotero_poly_002` - Laurie E. Cutting; Sarah S. Hughes-Berheim; Paul M. Johnson; Hiba Baroud; Brett Goldstein (2025): Are Betting Markets Better than Polling in Predicting Political Elections? | H1-Kontext: Prediction Markets versus Polling/Forecasting. | Stuetzt die Vergleichsfrage Polymarket versus Polling, ersetzt aber keine lokale Transformation. | skimmed |
+| `zotero_poly_005` - Robin Hanson (2007): Insider Trading and Prediction Markets | H3-Kontext: Abgrenzung von Information, Informationsvorsprung- und Ethikfragen. | Hilft bei der ethischen Abgrenzung von Informationsvorsprung und Marktpreisen. | skimmed |
+| `zotero_poly_006` - Constantin Buergi; Wanying Deng; Karl Whelan (2025): Makers and Takers: The Economics of the Kalshi Prediction Market | Marktmikrostruktur: Maker/Taker, Bias- und Risikocaveats. | Stuetzt Mikrostruktur- und Bias-Caveats fuer spaetere Monitor-/Strategieformulierungen. | skimmed |
+| `zotero_poly_007` - Pavel Rezabek (2024): Analysis of Prediction Markets in Crypto: Investigating Convergence in Time Volatility and Biases in Polymarket | Polymarket-Forschungskontext: Konvergenz, Volatilitaet und Biases. | Positioniert Polymarket-Forschung mit Konvergenz-, Volatilitaets- und Bias-Grenzen. | skimmed |
+
+Die Quellen sind als lokaler Literaturrahmen hinterlegt. Thesis-facing Detailclaims duerfen erst nach Vollreview als reviewed oder cited verwendet werden; candidate/rejected Quellen tragen keine Ergebnisbehauptungen.
+
+## Methodisches Design und Begruendung
+
+Die Arbeit operationalisiert informationelle Effizienz nicht als direkt beobachtbare Eigenschaft, sondern ueber drei Proxies. Forecast-Qualitaet wird mit Brier-Verlusten und Vergleichstests gemessen; Ereignisreaktionen werden nur fuer vorab kuratierte Events ausgewertet; Wallet-Signale bleiben aggregierte Timing-Diagnostik. Damit sind die Resultate reproduzierbar und methodisch begrenzt.
+
+- Alle Kennzahlen stammen aus Python-Artefakten unter `data/results`.
+- RCP bleibt ausgeschlossen, solange keine dokumentierte Probability-Transformation existiert.
+- Granger-Outputs werden nicht kausal interpretiert.
+- Monitor- und Live-Daten bleiben read-only und schreiben bounded Artefakte.
+
+## Zentrale Erkenntnisse, Begruendung und Interpretation
+
+Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Interpretation und Grenze. Dadurch kann der Dozent sehen, was bereits empirisch tragfaehig ist und welche Aussagen bewusst nicht gemacht werden.
+
+| Bereich | Erkenntnis | Evidenz | Interpretation | Grenze |
+| --- | --- | --- | --- | --- |
+| H1 Forecast-Qualitaet | Polymarket ist in den aktuellen Resultaten nicht pauschal ueberlegen, zeigt aber einen klaren Vorteil in bestimmten spaeten und kompetitiven Vergleichsfenstern. | Primary Brier: 0.2303 vs 0.3324; H1-Synthesis 7 von 9 Zeilen mit niedrigerem mittleren Polymarket-Brier, aber nur 3 von 9 mit Fallmehrheit. | Die belastbare Aussage ist ein bounded Forecast-Quality-Vorteil, besonders im <=90-Tage Low/Middle-Poll-Distanz-Scope. | Der breite Viele-Faelle-Claim bleibt not_proven; das State-Date-Vollpanel stuetzt poll-derived in 1360 von 1720 Zeilen. |
+| H2 Event-Windows | Polymarket bewegt sich um mehrere kuratierte politische Ereignisse sichtbar in der Tagesauflosung. | 7 kuratierte Ereignisse; groesstes Primaerfenster nach Betrag: 07_13_trump_shooting +7.2 Prozentpunkte. | Das stuetzt eine These, dass oeffentliche Ereignisse in den Marktpreisen sichtbar werden koennen. | Taegliche Daten zeigen Reaktionsrichtung und Groessenordnung, aber keine intraday Reaktionsgeschwindigkeit. |
+| H3 Wallet-Timing | Top-Wallet-Tier-Aktivitaet zeigt eine messbare, aber vorsichtig zu formulierende Timing-Struktur. | 1216 alignierte Modellzeilen; staerkste Korrelation tier_1_top_1pct lag 1 = 0.1858; kleinster Granger-p-Wert 0.0012. | Das ist als Vorhersage-/Timingdiagnostik verwendbar und motiviert weitere Sensitivitaetschecks. | BUY-only Quelle, Tagesaggregation und Multiple-Testing-Risiko begrenzen die Aussage. |
+| Monitor und Review-Queue | Der Monitor hat die richtige Rolle als Kontroll- und Review-Infrastruktur, nicht als Ergebnisgenerator fuer starke Claims. | 3 aktuelle Review-Cases, davon 1 high und 2 medium; Status source_check_pending=3. | Die Review-Queue ist methodisch wichtig, weil sie auffaellige Faelle von thesis-faehiger Evidenz trennt. | Die Queue ist kein Nachweis fuer Ursachen, Regelverstoss, Handelbarkeit, Profitabilitaet oder zukuenftige Entwicklung. |
+| Swiss-Referendum Side-Track | Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen. | 7 Umfragen, 25 Polymarket-Snapshots; latest Polymarket Yes 21.5%, latest poll Yes 45.0%, raw gap -23.5 pp. | Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen. | Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung. |
+
+## Warum dieses Vorgehen methodisch sinnvoll ist
+
+| Entscheidung | Begruendung | Konsequenz |
+| --- | --- | --- |
+| Brier Score und DM-Test | H1 vergleicht Probability-Forecasts, deshalb braucht es einen Verlustscore und einen Test auf Verlustserien. | Die Aussage bleibt Forecast-Qualitaet, nicht Reaktionsgeschwindigkeit oder Mechanismus. |
+| Vorab kuratierte Events | H2 soll nicht Ereignisse nach sichtbaren Kursbewegungen auswaehlen. | Die Event-Auswahl ist dadurch strenger, aber weniger flexibel. |
+| Verteilungsbasierte Wallet-Tiers | H3 vermeidet willkuerliche Whale-Schwellen und leitet Tiers aus der beobachteten Verteilung ab. | Die Quelle bleibt BUY-only und kann nicht alle Marktaktivitaet abbilden. |
+| Review-Queue statt Agentenclaim | Auffaellige Monitor-Faelle brauchen menschliche Quellenpruefung vor Interpretation. | Aktuelle Cases bleiben Review-Cues und werden nicht automatisch thesis-faehig. |
+| Swiss-Referendum als Side-Track | Ein aktueller, zeitlich begrenzter Markt zeigt die Methode in einem laufenden politischen Kontext. | Die Analyse bleibt bis zum Ergebnis des 14. Juni 2026 beschreibend. |
 
 ## Projektstruktur
 
 - SQLite-Datenbank: 9 Tabellen.
-- Ergebnisartefakte: 295 Dateien unter `data/results`.
-- Analyse-Module: 74 Dateien.
-- Collector-Module: 9 Dateien.
-- Tests: 92 Testdateien; letzter Status: 465 passed in 45.98s.
+- Ergebnisartefakte: 308 Dateien unter `data/results`.
+- Analyse-Module: 75 Dateien.
+- Collector-Module: 10 Dateien.
+- Tests: 94 Testdateien; letzter Status: 488 passed in 51.95s.
 
 ## H1 - Forecast-Qualitaet
 
@@ -92,16 +161,18 @@ Das Projekt hat eine deterministische Analysegrundlage aufgebaut. Statistische K
 - Severity counts: none: 2813, info: 334, watch: 169, high: 78, critical: 0.
 - Latest live dashboard markets: 12; alert rows: 7.
 - Wallet graph: 238 nodes, 7966 edges.
+- Anomaly review queue: 3 Cases (1 high, 2 medium, 0 low); Status source_check_pending=3.
+- Review limitation: Die Queue ist kein Nachweis fuer Ursachen, Regelverstoss, Handelbarkeit, Profitabilitaet oder zukuenftige Entwicklung.
 
 ## Schweizer Referendum
 
 - Kuratierte Umfragen: 7.
-- Polymarket snapshots: 18.
+- Polymarket snapshots: 25.
 - Bounded price-history rows: 504.
-- Latest Polymarket Yes: 23.0 Prozent.
+- Latest Polymarket Yes: 21.5 Prozent.
 - Latest matched poll Yes: 45.0 Prozent.
-- Raw gap: -22.0 Prozentpunkte.
-- Decided-voter gap: -23.4 Prozentpunkte.
+- Raw gap: -23.5 Prozentpunkte.
+- Decided-voter gap: -24.9 Prozentpunkte.
 
 ## Abbildungen
 

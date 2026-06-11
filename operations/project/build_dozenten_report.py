@@ -196,6 +196,9 @@ def collect_report_data() -> dict[str, Any]:
     h2_summary = _read_csv("data/results/thesis_h2_summary.csv")
     h3_summary = _read_csv("data/results/thesis_h3_summary.csv")
     monitor_summary = _read_csv("data/results/monitor_v2_bounded_summary.csv")
+    monitor_anomaly_review_summary = _read_csv(
+        "data/results/monitor_anomaly_review_summary.csv"
+    )
     swiss_comparison = _read_csv("data/results/swiss_referendum_10mio_comparison.csv")
     swiss_latest_source = _read_csv(
         "data/results/swiss_referendum_10mio_latest_source_comparison.csv"
@@ -258,13 +261,14 @@ def collect_report_data() -> dict[str, Any]:
         ),
         "h2": _h2_data(h2_summary, event_seed),
         "h3": _h3_data(h3_summary),
-        "monitor": _monitor_data(monitor_summary),
+        "monitor": _monitor_data(monitor_summary, monitor_anomaly_review_summary),
         "swiss": _swiss_data(
             swiss_comparison,
             swiss_latest_source,
             swiss_information,
             swiss_polls,
         ),
+        "literature": _literature_data(literature),
         "source_counts": {
             "curated_events": len(event_seed),
             "literature_rows": len(literature),
@@ -282,8 +286,41 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
     h3 = data["h3"]
     monitor = data["monitor"]
     swiss = data["swiss"]
+    literature = data["literature"]
     db = data["project"]["database"]
     folders = data["project"]["folder_inventory"]
+    insight_rows = [
+        "| Bereich | Erkenntnis | Evidenz | Interpretation | Grenze |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+    for row in _interpretation_rows(data):
+        insight_rows.append(
+            "| {bereich} | {erkenntnis} | {evidenz} | {interpretation} | {grenze} |".format(
+                **{key: str(value).replace("|", ",") for key, value in row.items()}
+            )
+        )
+    method_rows = [
+        "| Entscheidung | Begruendung | Konsequenz |",
+        "| --- | --- | --- |",
+    ]
+    for decision, reason, consequence in _method_decision_rows():
+        method_rows.append(
+            f"| {decision.replace('|', ',')} | {reason.replace('|', ',')} | {consequence.replace('|', ',')} |"
+        )
+    literature_rows = [
+        "| Quelle | Rolle in der Arbeit | Beitrag zur Interpretation | Status |",
+        "| --- | --- | --- | --- |",
+    ]
+    for source in literature["sources"]:
+        citation = (
+            f"{source['authors']} ({source['year']}): "
+            f"{source['title']}"
+        ).replace("|", ",")
+        role = str(source["role"]).replace("|", ",")
+        note = str(source["research_note"]).replace("|", ",")
+        literature_rows.append(
+            f"| `{source['source_id']}` - {citation} | {role} | {note} | {source['status']} |"
+        )
 
     lines = [
         "# Dozentenbericht zur Bachelorarbeit",
@@ -303,8 +340,78 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
         "- H1 ist ein Forecast-Qualitaetsvergleich.",
         "- H2 ist eine taegliche Event-Window-Analyse.",
         "- H3 ist eine Wallet-Tier-Timing-Diagnostik.",
-        "- Der Monitor ist ein pausierter read-only Forschungsprototyp.",
-        "- Die aktuelle Phase vergleicht das Schweizer 10-Millionen-Referendum auf Polymarket mit kuratierten Umfragen.",
+        "- Der Monitor ist ein read-only Forschungsprototyp mit deterministischer Anomaly-Review-Queue.",
+        "- Der Schweizer 10-Millionen-Referendumsvergleich laeuft als separater Datensammlungs-Track.",
+        "",
+        "## Aufbau wie in der Bachelorarbeit",
+        "",
+        "Dieser Dozentenbericht ist als Zwischenstand im Stil einer Bachelorarbeit aufgebaut:",
+        "",
+        "- Einleitung und Forschungsfrage: Warum Prediction Markets als Informationsmaerkte relevant sind.",
+        "- Theorie und Literatur: Effizienz, Prediction Markets, Polling-Vergleiche, Wallet- und Mikrostrukturgrenzen.",
+        "- Methodik: deterministische Python-Pipeline, validierte Artefakte, keine LLM-Metriken.",
+        "- Empirie: H1 Forecast-Qualitaet, H2 Event-Window-Reaktion, H3 Wallet-Tier-Timing.",
+        "- Erweiterung: read-only Monitor und Schweizer Referendumsvergleich als laufender Track.",
+        "- Diskussion: Grenzen, belastbare Formulierungen und naechste Arbeitsschritte.",
+        "",
+        "## Forschungsfrage und Hypothesen",
+        "",
+        (
+            "Die Leitfrage lautet, inwiefern Polymarket-Preise Informationen "
+            "waehrend politischer Ereignisse abbilden, schneller oder anders "
+            "als traditionelle Prognosequellen reagieren und ob aggregierte "
+            "Wallet-Aktivitaet als frueher Timing-Indikator sichtbar wird."
+        ),
+        "",
+        "- H1: Polymarket wird als Probability-Forecast gegen traditionelle Forecast- oder Poll-derived Vergleichsquellen getestet.",
+        "- H2: Vorab kuratierte Ereignisse werden in taeglichen Event-Windows ausgewertet.",
+        "- H3: Wallet-Aktivitaet wird ueber verteilungsbasierte Tiers als Timing-Diagnostik analysiert.",
+        "",
+        "## Wissenschaftlicher Quellenrahmen",
+        "",
+        (
+            f"Der lokale Literaturindex umfasst {literature['source_count']} "
+            f"Quellen; fuer diesen Bericht werden "
+            f"{literature['selected_source_count']} wissenschaftlich relevante "
+            f"Kernquellen als Rahmen verwendet. Statusverteilung: "
+            f"{literature['status_counts_text']}."
+        ),
+        "",
+        *literature_rows,
+        "",
+        literature["citation_boundary"],
+        "",
+        "## Methodisches Design und Begruendung",
+        "",
+        (
+            "Die Arbeit operationalisiert informationelle Effizienz nicht als "
+            "direkt beobachtbare Eigenschaft, sondern ueber drei Proxies. "
+            "Forecast-Qualitaet wird mit Brier-Verlusten und Vergleichstests "
+            "gemessen; Ereignisreaktionen werden nur fuer vorab kuratierte "
+            "Events ausgewertet; Wallet-Signale bleiben aggregierte "
+            "Timing-Diagnostik. Damit sind die Resultate reproduzierbar und "
+            "methodisch begrenzt."
+        ),
+        "",
+        "- Alle Kennzahlen stammen aus Python-Artefakten unter `data/results`.",
+        "- RCP bleibt ausgeschlossen, solange keine dokumentierte Probability-Transformation existiert.",
+        "- Granger-Outputs werden nicht kausal interpretiert.",
+        "- Monitor- und Live-Daten bleiben read-only und schreiben bounded Artefakte.",
+        "",
+        "## Zentrale Erkenntnisse, Begruendung und Interpretation",
+        "",
+        (
+            "Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen "
+            "Ergebnis, Interpretation und Grenze. Dadurch kann der Dozent sehen, "
+            "was bereits empirisch tragfaehig ist und welche Aussagen bewusst "
+            "nicht gemacht werden."
+        ),
+        "",
+        *insight_rows,
+        "",
+        "## Warum dieses Vorgehen methodisch sinnvoll ist",
+        "",
+        *method_rows,
         "",
         "## Projektstruktur",
         "",
@@ -850,6 +957,14 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
         f"- Severity counts: {monitor['severity_counts_text']}.",
         f"- Latest live dashboard markets: {monitor['live_market_count']}; alert rows: {monitor['live_alert_count']}.",
         f"- Wallet graph: {monitor['wallet_graph_nodes']} nodes, {monitor['wallet_graph_edges']} edges.",
+        (
+            f"- Anomaly review queue: {monitor['anomaly_queue_rows']} Cases "
+            f"({monitor['anomaly_high_priority_count']} high, "
+            f"{monitor['anomaly_medium_priority_count']} medium, "
+            f"{monitor['anomaly_low_priority_count']} low); Status "
+            f"{monitor['anomaly_review_status_counts']}."
+        ),
+        f"- Review limitation: {monitor['anomaly_limitation']}",
         "",
         "## Schweizer Referendum",
         "",
@@ -887,9 +1002,39 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
     h3 = data["h3"]
     monitor = data["monitor"]
     swiss = data["swiss"]
+    literature = data["literature"]
     figures = "\n".join(
         _figure_html(figure, html_output=html_output)
         for figure in data["figures"]
+    )
+    literature_rows = "\n".join(
+        "<tr>"
+        f"<td><code>{escape(source['source_id'])}</code><br>"
+        f"{escape(source['authors'])} ({escape(source['year'])}): "
+        f"{escape(source['title'])}</td>"
+        f"<td>{escape(source['role'])}</td>"
+        f"<td>{escape(source['research_note'])}</td>"
+        f"<td>{escape(source['status'])}</td>"
+        "</tr>"
+        for source in literature["sources"]
+    )
+    insight_rows = "\n".join(
+        "<tr>"
+        f"<td>{escape(row['bereich'])}</td>"
+        f"<td>{escape(row['erkenntnis'])}</td>"
+        f"<td>{escape(row['evidenz'])}</td>"
+        f"<td>{escape(row['interpretation'])}</td>"
+        f"<td>{escape(row['grenze'])}</td>"
+        "</tr>"
+        for row in _interpretation_rows(data)
+    )
+    method_decision_rows = "\n".join(
+        "<tr>"
+        f"<td>{escape(decision)}</td>"
+        f"<td>{escape(reason)}</td>"
+        f"<td>{escape(consequence)}</td>"
+        "</tr>"
+        for decision, reason, consequence in _method_decision_rows()
     )
     h2_rows = "\n".join(
         f"<tr><td>{escape(row['event'])}</td><td>{row['change_pp']:+.1f} pp</td></tr>"
@@ -932,7 +1077,32 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
   <h1>Dozentenbericht zur Bachelorarbeit</h1>
   <p class="subtitle">{escape(data['project']['working_title'])}</p>
   <p class="small">Erstellt aus lokalen deterministischen Artefakten: {escape(data['generated_at_utc'])}</p>
-  <div class="callout"><strong>Kurzfazit.</strong> Das Projekt prueft informationelle Effizienz ueber drei reproduzierbare Analyseebenen: H1 Forecast-Qualitaet, H2 taegliche Event-Window-Reaktion und H3 Wallet-Tier-Timing. Der Monitor ist ein read-only Forschungsprototyp; die aktive Phase ist der Swiss-Referendum-Vergleich.</div>
+  <div class="callout"><strong>Kurzfazit.</strong> Das Projekt prueft informationelle Effizienz ueber drei reproduzierbare Analyseebenen: H1 Forecast-Qualitaet, H2 taegliche Event-Window-Reaktion und H3 Wallet-Tier-Timing. Der Monitor ist ein read-only Forschungsprototyp mit deterministischer Anomaly-Review-Queue; der Swiss-Referendum-Vergleich laeuft als separater Datensammlungs-Track.</div>
+
+  <h2>Aufbau wie in der Bachelorarbeit</h2>
+  <p>Der Bericht folgt der Logik einer Bachelorarbeit: Forschungsfrage, Theorie- und Literaturrahmen, Methodik, Datenbasis, empirische Ergebnisse, Diskussion der Grenzen und naechste Arbeitsschritte.</p>
+  <ul>
+    <li>H1 prueft Forecast-Qualitaet von Polymarket gegen traditionelle Probability-Forecasts und poll-derived Vergleichswerte.</li>
+    <li>H2 prueft taegliche Reaktionen auf vorab kuratierte politische Ereignisse.</li>
+    <li>H3 prueft aggregierte Wallet-Tier-Aktivitaet als Timing-Diagnostik.</li>
+    <li>Monitor und Swiss-Referendum-Track bleiben read-only Forschungs- und Vergleichserweiterungen.</li>
+  </ul>
+
+  <h2>Forschungsfrage und Design</h2>
+  <p>Die Leitfrage lautet, inwiefern Polymarket-Preise Informationen waehrend politischer Ereignisse abbilden, anders als traditionelle Prognosequellen reagieren und ob aggregierte Wallet-Aktivitaet fruehe Timing-Signale zeigt. Informationelle Effizienz wird deshalb nicht direkt behauptet, sondern ueber reproduzierbare Proxies operationalisiert.</p>
+  <p>Alle Kennzahlen stammen aus Python-Artefakten unter <code>data/results</code>. RCP bleibt ausgeschlossen, solange keine dokumentierte Probability-Transformation existiert; Granger-Outputs werden nicht kausal interpretiert; Monitor- und Live-Daten bleiben read-only und bounded.</p>
+
+  <h2>Wissenschaftlicher Quellenrahmen</h2>
+  <p>Der lokale Literaturindex umfasst {literature['source_count']} Quellen; fuer diesen Bericht werden {literature['selected_source_count']} wissenschaftlich relevante Kernquellen als Rahmen verwendet. Statusverteilung: {escape(literature['status_counts_text'])}.</p>
+  <table><tr><th>Quelle</th><th>Rolle in der Arbeit</th><th>Beitrag zur Interpretation</th><th>Status</th></tr>{literature_rows}</table>
+  <p class="small">{escape(literature['citation_boundary'])}</p>
+
+  <h2>Zentrale Erkenntnisse, Begruendung und Interpretation</h2>
+  <p>Die Resultate werden nicht als Rohzahlen stehen gelassen. Jede zentrale Erkenntnis wird mit Evidenz, vorsichtiger Interpretation und Grenze ausgewiesen.</p>
+  <table><tr><th>Bereich</th><th>Erkenntnis</th><th>Evidenz</th><th>Interpretation</th><th>Grenze</th></tr>{insight_rows}</table>
+
+  <h2>Warum dieses Vorgehen methodisch sinnvoll ist</h2>
+  <table><tr><th>Entscheidung</th><th>Begruendung</th><th>Konsequenz</th></tr>{method_decision_rows}</table>
 
   <h2>Projektstruktur</h2>
   <div class="grid">
@@ -997,6 +1167,8 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
 
   <h2>Monitor-Prototyp</h2>
   <p>Recorded replay rows: {monitor['snapshot_count']}. Severity counts: {escape(monitor['severity_counts_text'])}. Latest live dashboard: {monitor['live_market_count']} Maerkte, {monitor['live_alert_count']} Alert-Zeilen. Wallet graph: {monitor['wallet_graph_nodes']} Nodes und {monitor['wallet_graph_edges']} Edges.</p>
+  <p>Anomaly review queue: {monitor['anomaly_queue_rows']} Cases ({monitor['anomaly_high_priority_count']} high, {monitor['anomaly_medium_priority_count']} medium, {monitor['anomaly_low_priority_count']} low). Status: {escape(monitor['anomaly_review_status_counts'])}. Labels: {escape(monitor['anomaly_review_labels'])}.</p>
+  <p>{escape(monitor['anomaly_allowed_interpretation'])}</p>
   <p>Der Monitor bleibt read-only und ist keine Trading- oder Profitabilitaetskomponente.</p>
 
   <h2>Schweizer Referendum</h2>
@@ -1028,6 +1200,10 @@ def write_docx(data: dict[str, Any], output_path: Path) -> None:
     _setup_document(doc)
     _add_cover(doc, data)
     _add_toc_note(doc)
+    _add_research_design_section(doc, data)
+    _add_literature_section(doc, data["literature"])
+    _add_methodology_section(doc, data)
+    _add_interpretation_section(doc, data)
     _add_project_overview(doc, data)
     _add_h1_section(doc, data["h1"])
     _add_h2_section(doc, data["h2"])
@@ -1094,6 +1270,159 @@ def _relative_path(path: Path, base: Path) -> str:
     return os.path.relpath(path, base)
 
 
+def _interpretation_rows(data: dict[str, Any]) -> list[dict[str, str]]:
+    """Create thesis-facing insight rows from deterministic report data."""
+
+    h1 = data["h1"]
+    h2 = data["h2"]
+    h3 = data["h3"]
+    monitor = data["monitor"]
+    swiss = data["swiss"]
+    largest_h2 = max(h2["primary_examples"], key=lambda row: abs(row["change_pp"]))
+    return [
+        {
+            "bereich": "H1 Forecast-Qualitaet",
+            "erkenntnis": (
+                "Polymarket ist in den aktuellen Resultaten nicht pauschal "
+                "ueberlegen, zeigt aber einen klaren Vorteil in bestimmten "
+                "spaeten und kompetitiven Vergleichsfenstern."
+            ),
+            "evidenz": (
+                f"Primary Brier: {h1['brier_polymarket']:.4f} vs "
+                f"{h1['brier_fivethirtyeight']:.4f}; H1-Synthesis "
+                f"{h1['synthesis_aggregate_support_count']} von "
+                f"{h1['synthesis_evidence_row_count']} Zeilen mit niedrigerem "
+                f"mittleren Polymarket-Brier, aber nur "
+                f"{h1['synthesis_majority_support_count']} von "
+                f"{h1['synthesis_evidence_row_count']} mit Fallmehrheit."
+            ),
+            "interpretation": (
+                "Die belastbare Aussage ist ein bounded Forecast-Quality-"
+                "Vorteil, besonders im <=90-Tage Low/Middle-Poll-Distanz-Scope."
+            ),
+            "grenze": (
+                f"Der breite Viele-Faelle-Claim bleibt "
+                f"{h1['poll_result_goal_status']}; das State-Date-Vollpanel "
+                f"stuetzt poll-derived in {h1['state_poll_panel_poll_lower_loss_count']} "
+                f"von {h1['state_poll_panel_case_count']} Zeilen."
+            ),
+        },
+        {
+            "bereich": "H2 Event-Windows",
+            "erkenntnis": (
+                "Polymarket bewegt sich um mehrere kuratierte politische "
+                "Ereignisse sichtbar in der Tagesauflosung."
+            ),
+            "evidenz": (
+                f"{h2['event_count']} kuratierte Ereignisse; groesstes "
+                f"Primaerfenster nach Betrag: {largest_h2['event']} "
+                f"{largest_h2['change_pp']:+.1f} Prozentpunkte."
+            ),
+            "interpretation": (
+                "Das stuetzt eine These, dass oeffentliche Ereignisse in "
+                "den Marktpreisen sichtbar werden koennen."
+            ),
+            "grenze": (
+                "Taegliche Daten zeigen Reaktionsrichtung und Groessenordnung, "
+                "aber keine intraday Reaktionsgeschwindigkeit."
+            ),
+        },
+        {
+            "bereich": "H3 Wallet-Timing",
+            "erkenntnis": (
+                "Top-Wallet-Tier-Aktivitaet zeigt eine messbare, aber vorsichtig "
+                "zu formulierende Timing-Struktur."
+            ),
+            "evidenz": (
+                f"{h3['model_rows']} alignierte Modellzeilen; staerkste "
+                f"Korrelation {h3['top_correlation_label']} = "
+                f"{h3['top_correlation']:.4f}; kleinster Granger-p-Wert "
+                f"{h3['min_granger_p']:.4f}."
+            ),
+            "interpretation": (
+                "Das ist als Vorhersage-/Timingdiagnostik verwendbar und "
+                "motiviert weitere Sensitivitaetschecks."
+            ),
+            "grenze": (
+                "BUY-only Quelle, Tagesaggregation und Multiple-Testing-Risiko "
+                "begrenzen die Aussage."
+            ),
+        },
+        {
+            "bereich": "Monitor und Review-Queue",
+            "erkenntnis": (
+                "Der Monitor hat die richtige Rolle als Kontroll- und Review-"
+                "Infrastruktur, nicht als Ergebnisgenerator fuer starke Claims."
+            ),
+            "evidenz": (
+                f"{monitor['anomaly_queue_rows']} aktuelle Review-Cases, "
+                f"davon {monitor['anomaly_high_priority_count']} high und "
+                f"{monitor['anomaly_medium_priority_count']} medium; Status "
+                f"{monitor['anomaly_review_status_counts']}."
+            ),
+            "interpretation": (
+                "Die Review-Queue ist methodisch wichtig, weil sie auffaellige "
+                "Faelle von thesis-faehiger Evidenz trennt."
+            ),
+            "grenze": monitor["anomaly_limitation"],
+        },
+        {
+            "bereich": "Swiss-Referendum Side-Track",
+            "erkenntnis": (
+                "Der laufende Referendumsvergleich zeigt aktuell eine grosse "
+                "Divergenz zwischen Marktpreis und Umfrageanteilen."
+            ),
+            "evidenz": (
+                f"{swiss['poll_count']} Umfragen, {swiss['snapshot_count']} "
+                f"Polymarket-Snapshots; latest Polymarket Yes "
+                f"{swiss['latest_poly_yes_pct']:.1f}%, latest poll Yes "
+                f"{swiss['latest_poll_yes_pct']:.1f}%, raw gap "
+                f"{swiss['latest_raw_gap_pp']:+.1f} pp."
+            ),
+            "interpretation": (
+                "Das ist ein anschauliches aktuelles Beispiel fuer die "
+                "Trennung von Marktpreisen und traditionellen Umfragesignalen."
+            ),
+            "grenze": (
+                "Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem "
+                "Abstimmungsergebnis gibt es keine finale Effizienzbewertung."
+            ),
+        },
+    ]
+
+
+def _method_decision_rows() -> list[tuple[str, str, str]]:
+    """Explain why the chosen empirical steps fit the research question."""
+
+    return [
+        (
+            "Brier Score und DM-Test",
+            "H1 vergleicht Probability-Forecasts, deshalb braucht es einen Verlustscore und einen Test auf Verlustserien.",
+            "Die Aussage bleibt Forecast-Qualitaet, nicht Reaktionsgeschwindigkeit oder Mechanismus.",
+        ),
+        (
+            "Vorab kuratierte Events",
+            "H2 soll nicht Ereignisse nach sichtbaren Kursbewegungen auswaehlen.",
+            "Die Event-Auswahl ist dadurch strenger, aber weniger flexibel.",
+        ),
+        (
+            "Verteilungsbasierte Wallet-Tiers",
+            "H3 vermeidet willkuerliche Whale-Schwellen und leitet Tiers aus der beobachteten Verteilung ab.",
+            "Die Quelle bleibt BUY-only und kann nicht alle Marktaktivitaet abbilden.",
+        ),
+        (
+            "Review-Queue statt Agentenclaim",
+            "Auffaellige Monitor-Faelle brauchen menschliche Quellenpruefung vor Interpretation.",
+            "Aktuelle Cases bleiben Review-Cues und werden nicht automatisch thesis-faehig.",
+        ),
+        (
+            "Swiss-Referendum als Side-Track",
+            "Ein aktueller, zeitlich begrenzter Markt zeigt die Methode in einem laufenden politischen Kontext.",
+            "Die Analyse bleibt bis zum Ergebnis des 14. Juni 2026 beschreibend.",
+        ),
+    ]
+
+
 def _setup_document(doc: Document) -> None:
     section = doc.sections[0]
     section.page_width = Inches(8.5)
@@ -1157,7 +1486,10 @@ def _add_cover(doc: Document, data: dict[str, Any]) -> None:
 
     metadata = [
         ("Stand", data["generated_at_utc"]),
-        ("Aktive Projektphase", "Phase 11: Swiss Referendum Efficiency Comparison"),
+        (
+            "Aktive Projektphase",
+            "Phase 10: Politics/Geo Anomaly Monitor Prototype; Swiss-Referendum als laufender Side-Track",
+        ),
         ("Teststatus", data["project"]["test_summary"]),
         ("Berichtsquelle", "Lokaler Worktree und deterministische Artefakte"),
     ]
@@ -1169,8 +1501,9 @@ def _add_cover(doc: Document, data: dict[str, Any]) -> None:
         (
             "Das Projekt ist methodisch so aufgebaut, dass die deterministische "
             "Analyse vor jeder Interpretation steht. H1-H3 bilden die empirische "
-            "Basis; der Monitor ist ein read-only Forschungsprototyp; die aktuelle "
-            "Swiss-Referendum-Spur ist eine separate, aktuelle Vergleichsanalyse."
+            "Basis; der Monitor ist ein read-only Forschungsprototyp mit "
+            "deterministischer Anomaly-Review-Queue; die Swiss-Referendum-Spur "
+            "ist eine separate, aktuelle Vergleichsanalyse."
         ),
     )
 
@@ -1180,17 +1513,173 @@ def _add_toc_note(doc: Document) -> None:
     _add_bullets(
         doc,
         [
-            "Abschnitt 1 erklaert, welche Ordner und Artefakte wofuer stehen.",
-            "Abschnitte 2 bis 4 erklaeren H1, H2 und H3: Warum, Methode, Ergebnis, Grenze.",
-            "Abschnitt 5 ordnet den Monitor-Prototyp ein.",
-            "Abschnitt 6 beschreibt die aktive Schweizer Referendumsanalyse.",
-            "Abschnitt 7 enthaelt Visualisierungen und einen kurzen Praesentationsplan.",
+            "Abschnitt 1 formuliert Forschungsfrage, Hypothesen und BA-Aufbau.",
+            "Abschnitt 2 ordnet die hinterlegten wissenschaftlichen Quellen ein.",
+            "Abschnitt 3 begruendet Datenbasis, Methodik und Guardrails.",
+            "Abschnitt 4 fasst Erkenntnisse, Evidenz, Interpretation und Grenzen zusammen.",
+            "Abschnitte 6 bis 8 erklaeren H1, H2 und H3: Warum, Methode, Ergebnis, Grenze.",
+            "Abschnitte 9 bis 10 ordnen Monitor-Prototyp und Schweizer Referendumsvergleich ein.",
+            "Abschnitt 11 enthaelt Visualisierungen und einen kurzen Praesentationsplan.",
         ],
     )
 
 
+def _add_research_design_section(doc: Document, data: dict[str, Any]) -> None:
+    doc.add_heading("1. Forschungsfrage und Aufbau der Bachelorarbeit", level=1)
+    doc.add_paragraph(
+        "Die Arbeit untersucht, ob und wie Polymarket als dezentraler "
+        "Prognosemarkt Informationen in politischen Maerkten verarbeitet. "
+        "Informationelle Effizienz wird dabei nicht direkt behauptet, sondern "
+        "ueber beobachtbare, reproduzierbare Proxies geprueft: Forecast-"
+        "Qualitaet, Event-Reaktion und Wallet-Timing."
+    )
+    rows = [
+        (
+            "Leitfrage",
+            "Inwiefern bilden Polymarket-Preise Informationen waehrend politischer Ereignisse ab, wie schneiden sie gegen traditionelle Prognosequellen ab, und ob aggregierte Wallet-Aktivitaet fruehe Timing-Signale zeigt?",
+        ),
+        (
+            "H1",
+            "Forecast-Qualitaet: Brier-Verluste und Vergleichstests zwischen Polymarket, FiveThirtyEight, 270toWin/Rieke und dokumentierten poll-derived Probability-Transformationen.",
+        ),
+        (
+            "H2",
+            "Event-Window-Reaktion: taegliche Preisbewegungen um vorab kuratierte politische Ereignisse.",
+        ),
+        (
+            "H3",
+            "Wallet-Tier-Timing: verteilungsbasierte Wallet-Tiers, Lead-Lag-Korrelationen und Granger-Diagnostik.",
+        ),
+        (
+            "Erweiterung",
+            "Read-only Politics/Geo Monitor mit deterministischer Review-Queue sowie separater Swiss-Referendum-Vergleich als aktueller Datensammlungs-Track.",
+        ),
+    ]
+    table = _add_table(doc, rows, ["Baustein", "Inhalt"], [1700, 7660])
+    _shade_table_header(table)
+    _add_callout(
+        doc,
+        "Aufbau wie in einer BA",
+        (
+            "Der Bericht ist deshalb nicht nur ein Projektlog, sondern folgt "
+            "der spaeteren Thesis-Logik: Einleitung, Theorie, Methodik, "
+            "Datenbasis, empirische Ergebnisse, Diskussion und Ausblick."
+        ),
+    )
+
+
+def _add_literature_section(doc: Document, literature: dict[str, Any]) -> None:
+    doc.add_heading("2. Wissenschaftlicher Quellenrahmen", level=1)
+    doc.add_paragraph(
+        f"Der lokale Literaturindex umfasst {literature['source_count']} Quellen. "
+        f"Fuer diesen Dozentenbericht werden {literature['selected_source_count']} "
+        "wissenschaftlich relevante Kernquellen als Rahmen verwendet. "
+        f"Statusverteilung: {literature['status_counts_text']}."
+    )
+    rows = [
+        (
+            f"{source['source_id']}: {source['authors']} ({source['year']})",
+            source["title"],
+            f"{source['role']} {source['research_note']}",
+            source["status"],
+        )
+        for source in literature["sources"]
+    ]
+    table = _add_table(
+        doc,
+        rows,
+        ["Quelle", "Titel", "Rolle und Beitrag", "Status"],
+        [1700, 2800, 3560, 1300],
+    )
+    _shade_table_header(table)
+    _add_callout(doc, "Zitationsgrenze", literature["citation_boundary"])
+
+
+def _add_methodology_section(doc: Document, data: dict[str, Any]) -> None:
+    doc.add_heading("3. Methodisches Design und Datenbasis", level=1)
+    doc.add_paragraph(
+        "Die empirische Logik ist bewusst konservativ. Alle statistischen "
+        "Kennzahlen werden in Python berechnet und als CSV-, JSON-, PNG- oder "
+        "HTML-Artefakte abgelegt. LLMs oder Agenten duerfen die Metriken nicht "
+        "berechnen; sie duerfen spaeter nur vorab berechnete, bounded Outputs "
+        "interpretieren und muessen auditiert werden."
+    )
+    rows = [
+        (
+            "Datenquellen",
+            f"SQLite-Datenbank mit {data['project']['database']['table_count']} Tabellen, kuratierte Event-CSV, Polymarket-Preise, traditionelle Forecast-/Polling-Quellen und {data['source_counts']['literature_rows']} Literaturindex-Zeilen.",
+        ),
+        (
+            "Validierung",
+            "Schema- und Output-Tests, Projekt-Guardrails, max. 50 Zeilen fuer spaetere Tool-Abfragen, keine Raw-Table-Prompts.",
+        ),
+        (
+            "H1-Metriken",
+            "Brier Score, Lower-Loss-Zaehler, Diebold-Mariano-Vergleiche, Kalibrierungsdiagnostik und Scope-/Claim-Audits.",
+        ),
+        (
+            "H2-Metriken",
+            "Vorab festgelegte Daily-Event-Windows; keine Intraday-Speed-Claims ohne Intraday-Daten.",
+        ),
+        (
+            "H3-Metriken",
+            "Wallet-Tiers aus beobachteter Verteilung, Lead-Lag-Korrelationen und Granger-Diagnostik ohne Kausalclaim.",
+        ),
+        (
+            "Live-/Monitor-Regeln",
+            "Read-only, public data only, filebasierte bounded Outputs, keine Orders, keine Credentials, keine Profit- oder Tradingbehauptung.",
+        ),
+    ]
+    table = _add_table(doc, rows, ["Teil", "Begruendung"], [1700, 7660])
+    _shade_table_header(table)
+
+
+def _add_interpretation_section(doc: Document, data: dict[str, Any]) -> None:
+    doc.add_heading("4. Zentrale Erkenntnisse, Begruendung und Interpretation", level=1)
+    doc.add_paragraph(
+        "Dieser Abschnitt ist die eigentliche Ergebnissynthese fuer den "
+        "Dozentenbericht. Er trennt Rohbefund, Interpretation und Grenze, "
+        "damit die Arbeit wissenschaftlich argumentiert und nicht nur Outputs "
+        "auflistet."
+    )
+    rows = [
+        (
+            row["bereich"],
+            f"{row['erkenntnis']} Evidenz: {row['evidenz']}",
+            f"{row['interpretation']} Grenze: {row['grenze']}",
+        )
+        for row in _interpretation_rows(data)
+    ]
+    table = _add_table(
+        doc,
+        rows,
+        ["Bereich", "Erkenntnis und Evidenz", "Interpretation und Grenze"],
+        [1600, 3860, 3900],
+    )
+    _shade_table_header(table)
+    method_rows = list(_method_decision_rows())
+    table = _add_table(
+        doc,
+        method_rows,
+        ["Methodische Entscheidung", "Begruendung", "Konsequenz"],
+        [2100, 3860, 3400],
+    )
+    _shade_table_header(table)
+    _add_callout(
+        doc,
+        "Gesamtinterpretation",
+        (
+            "Der aktuelle Stand ist keine einfache Ja/Nein-Antwort auf "
+            "informationelle Effizienz. Die Arbeit zeigt vielmehr, in welchen "
+            "Scopes Polymarket stark ist, wo traditionelle Vergleichssignale "
+            "besser bleiben, und warum Wallet- und Monitorbefunde als "
+            "diagnostische Review-Ebene formuliert werden muessen."
+        ),
+    )
+
+
 def _add_project_overview(doc: Document, data: dict[str, Any]) -> None:
-    doc.add_heading("1. Projektlandkarte", level=1)
+    doc.add_heading("5. Projektlandkarte und Stand der Umsetzung", level=1)
     doc.add_paragraph(
         "Die Repository-Struktur trennt Forschungssteuerung, Daten, deterministische "
         "Analyse, Collector-Code, Tests, Dokumentation und geparkte Legacy-Agenten. "
@@ -1217,7 +1706,7 @@ def _add_project_overview(doc: Document, data: dict[str, Any]) -> None:
 
 
 def _add_h1_section(doc: Document, h1: dict[str, Any]) -> None:
-    doc.add_heading("2. H1 - Forecast-Qualitaet", level=1)
+    doc.add_heading("6. H1 - Forecast-Qualitaet", level=1)
     doc.add_paragraph(
         "H1 beantwortet die Frage, ob Polymarket im untersuchten Ueberlappungsfenster "
         "eine niedrigere Prognoseabweichung zeigt als vergleichbare traditionelle "
@@ -1427,7 +1916,7 @@ def _add_h1_section(doc: Document, h1: dict[str, Any]) -> None:
 
 
 def _add_h2_section(doc: Document, h2: dict[str, Any]) -> None:
-    doc.add_heading("3. H2 - Taegliche Event-Window-Reaktion", level=1)
+    doc.add_heading("7. H2 - Taegliche Event-Window-Reaktion", level=1)
     doc.add_paragraph(
         "H2 prueft, ob Polymarket-Wahrscheinlichkeiten um vorab kuratierte "
         "politische Ereignisse in plausibler Weise reagieren. Die Ereignisse "
@@ -1452,7 +1941,7 @@ def _add_h2_section(doc: Document, h2: dict[str, Any]) -> None:
 
 
 def _add_h3_section(doc: Document, h3: dict[str, Any]) -> None:
-    doc.add_heading("4. H3 - Wallet-Tier-Timing-Diagnostik", level=1)
+    doc.add_heading("8. H3 - Wallet-Tier-Timing-Diagnostik", level=1)
     doc.add_paragraph(
         "H3 untersucht, ob aggregierte Wallet-Aktivitaet zeitliche Muster vor "
         "oder um Polymarket-Preisbewegungen zeigt. Die Wallet-Tiers sind "
@@ -1479,7 +1968,7 @@ def _add_h3_section(doc: Document, h3: dict[str, Any]) -> None:
 
 
 def _add_monitor_section(doc: Document, monitor: dict[str, Any]) -> None:
-    doc.add_heading("5. Politics/Geo Monitor-Prototyp", level=1)
+    doc.add_heading("9. Politics/Geo Monitor-Prototyp", level=1)
     doc.add_paragraph(
         "Der Monitor ist eine Forschungs-Erweiterung, nicht der deterministische "
         "Kern der Thesis. Er soll spaeter auffaellige Kombinationen aus Marktbewegung, "
@@ -1493,14 +1982,26 @@ def _add_monitor_section(doc: Document, monitor: dict[str, Any]) -> None:
         ("Recorded Replay", f"{monitor['snapshot_count']} Snapshot/Alert-Zeilen; Severity: {monitor['severity_counts_text']}."),
         ("Live Dashboard", f"{monitor['live_market_count']} Maerkte, {monitor['live_alert_count']} Alert-Zeilen, {monitor['live_scoring_rows']} Scoring-Zeilen."),
         ("Wallet Graph", f"{monitor['wallet_graph_nodes']} Nodes und {monitor['wallet_graph_edges']} Co-Activity-Edges als lokaler Review-Layer."),
+        (
+            "Anomaly Review Queue",
+            f"{monitor['anomaly_queue_rows']} Cases: {monitor['anomaly_high_priority_count']} high, {monitor['anomaly_medium_priority_count']} medium, {monitor['anomaly_low_priority_count']} low; Status {monitor['anomaly_review_status_counts']}; Labels {monitor['anomaly_review_labels']}.",
+        ),
         ("Grenze", "Keine PnL-Backtests, keine autonome Ausfuehrung, keine kausalen oder tradingbezogenen Schlussfolgerungen."),
     ]
     table = _add_table(doc, rows, ["Aspekt", "Stand"], [1900, 7460])
     _shade_table_header(table)
+    _add_callout(
+        doc,
+        "Interpretationsgrenze",
+        (
+            f"{monitor['anomaly_allowed_interpretation']} "
+            f"{monitor['anomaly_limitation']}"
+        ),
+    )
 
 
 def _add_swiss_section(doc: Document, swiss: dict[str, Any]) -> None:
-    doc.add_heading("6. Aktive Phase - Schweizer 10-Millionen-Referendum", level=1)
+    doc.add_heading("10. Laufender Side-Track - Schweizer 10-Millionen-Referendum", level=1)
     doc.add_paragraph(
         "Die aktuelle Phase ist ein eigener, aktueller Vergleich: Polymarket-"
         "Wahrscheinlichkeit fuer die Annahme der Initiative gegen kuratierte "
@@ -1526,7 +2027,7 @@ def _add_swiss_section(doc: Document, swiss: dict[str, Any]) -> None:
 
 
 def _add_figures_section(doc: Document, figures: list[FigureSpec]) -> None:
-    doc.add_heading("7. Visualisierungen", level=1)
+    doc.add_heading("11. Visualisierungen", level=1)
     doc.add_paragraph(
         "Die folgenden Abbildungen sind bestehende oder lokal generierte Artefakte. "
         "Sie fuehren keine neuen statistischen Metriken ein, sondern visualisieren "
@@ -1551,27 +2052,28 @@ def _add_figures_section(doc: Document, figures: list[FigureSpec]) -> None:
 
 
 def _add_presentation_section(doc: Document) -> None:
-    doc.add_heading("8. Vorschlag fuer die Dozentenpraesentation", level=1)
+    doc.add_heading("12. Vorschlag fuer die Dozentenpraesentation", level=1)
     rows = [
         ("1", "Problem", "Prediction Markets koennen Informationen aggregieren; die Arbeit prueft beobachtbare Effizienz-Proxies."),
         ("2", "Methodische Regel", "Alle Metriken werden deterministisch in Python berechnet; keine LLM-Rohdateninterpretation."),
         ("3", "H1-H3", "Forecast-Qualitaet, taegliche Event-Reaktionen, Wallet-Timing-Diagnostik."),
         ("4", "Ergebnisse", "Polymarket zeigt tiefere H1-Brier-Verluste; H2 findet Event-Bewegungen; H3 findet Timing-Diagnostik mit klaren Grenzen."),
-        ("5", "Aktueller Zusatz", "Swiss-Referendum-Track zeigt Polymarket deutlich unter den neuesten Umfrage-Yes-Anteilen."),
-        ("6", "Naechster Schritt", "Finale Thesis-Integration, Sensitivitaetschecks und vorsichtige Interpretation."),
+        ("5", "Aktueller Zusatz", "Anomaly-Review-Queue bleibt human-review only; Swiss-Referendum-Track sammelt bis zum Abstimmungsergebnis weiter Daten."),
+        ("6", "Naechster Schritt", "Quellen voll reviewen, Thesis-Kapitel aus den Artefakten schreiben und Sensitivitaets-/Limitationsabschnitte finalisieren."),
     ]
     table = _add_table(doc, rows, ["#", "Teil", "Kernaussage"], [700, 1900, 6760])
     _shade_table_header(table)
 
 
 def _add_appendix(doc: Document, data: dict[str, Any]) -> None:
-    doc.add_heading("9. Wichtige Artefakte fuer Rueckfragen", level=1)
+    doc.add_heading("13. Wichtige Artefakte fuer Rueckfragen", level=1)
     rows = [
         ("Steuerung", "GOAL.md, ROADMAP.md, STATUS.md, docs/project/WORK_LOG.md"),
+        ("Literatur", "data/literature/literature_index.csv, docs/research/LITERATURE_MAP.md"),
         ("H1", "data/results/thesis_h1_summary.csv, h1_brier_scores.csv, h1_diebold_mariano.json, h1_forecast_quality_pairwise.csv, h1_forecast_quality_synthesis.csv, h1_claim_evidence_audit.csv, h1_claim_evidence_audit_summary.csv, h1_poll_comparison_result.csv, h1_poll_comparison_result_summary.csv, h1_poll_comparison_result.png, h1_poll_comparison_result_metadata.json, h1_poll_claim_readiness.csv, h1_poll_claim_readiness_summary.csv, h1_poll_claim_readiness.png, h1_poll_claim_readiness_metadata.json, h1_poll_scope_frontier.csv, h1_poll_scope_frontier_summary.csv, h1_poll_scope_frontier.png, h1_poll_scope_frontier_metadata.json, h1_poll_decision_matrix.csv, h1_poll_decision_matrix_summary.csv, h1_poll_decision_matrix.png, h1_poll_decision_matrix_metadata.json, h1_robust_poll_scope_quality_rows.csv, h1_robust_poll_scope_quality_bins.csv, h1_robust_poll_scope_quality_summary.csv, h1_robust_poll_scope_quality_pairwise.csv, h1_robust_poll_scope_quality.png, h1_robust_poll_scope_quality_metadata.json, h1_robust_poll_scope_unit_quality_units.csv, h1_robust_poll_scope_unit_quality_summary.csv, h1_robust_poll_scope_unit_quality.png, h1_robust_poll_scope_unit_quality_metadata.json, h1_poll_comparison_unit_robustness_units.csv, h1_poll_comparison_unit_robustness_summary.csv, h1_poll_comparison_unit_robustness.png, h1_poll_comparison_unit_robustness_metadata.json, h1_direct_poll_loss_decomposition_cases.csv, h1_direct_poll_loss_decomposition_summary.csv, h1_direct_poll_loss_decomposition.png, h1_direct_poll_loss_decomposition_metadata.json, h1_direct_poll_state_cluster_diagnostic_states.csv, h1_direct_poll_state_cluster_diagnostic_summary.csv, h1_direct_poll_state_cluster_diagnostic.png, h1_direct_poll_state_cluster_diagnostic_metadata.json, h1_direct_poll_outlier_robustness_scenarios.csv, h1_direct_poll_outlier_robustness_summary.csv, h1_direct_poll_outlier_robustness.png, h1_direct_poll_outlier_robustness_metadata.json, h1_calibration_diagnostic_summary.csv, h1_calibration_diagnostic_pairwise.csv, h1_evidence_scope.csv, h1_expansion_readiness.csv, h1_final_snapshot_cases.csv, h1_final_snapshot_summary.csv, h1_state_poll_snapshot_cases.csv, h1_state_poll_snapshot_summary.csv, h1_270towin_poll_average_cases.csv, h1_270towin_poll_average_summary.csv, h1_270towin_poll_average.png, h1_popular_vote_cases.csv, h1_popular_vote_summary.csv, h1_state_poll_panel_cases.csv, h1_state_poll_panel_summary.csv, h1_state_poll_panel_state_summary.csv, h1_state_poll_panel_temporal_summary.csv, h1_state_poll_panel_temporal_claim_audit.csv, h1_state_poll_panel_horizon_summary.csv, h1_state_poll_panel_horizon_claim_audit.csv, h1_state_poll_panel_horizon_state_support.csv, h1_state_poll_panel_horizon_state_support_summary.csv, h1_state_poll_panel_near_window_quality_summary.csv, h1_state_poll_panel_near_window_quality_bins.csv, h1_state_poll_panel_near_window_quality_rows.csv, h1_state_poll_panel_competitiveness_grid.csv, h1_state_poll_panel_competitiveness_summary.csv, h1_state_poll_panel_competitiveness.png, h1_state_poll_panel_state_significance.csv, h1_state_poll_panel_state_significance_summary.csv, h1_state_poll_panel_state_significance.png, h1_state_poll_snapshot_sensitivity.csv, h1_state_poll_snapshot_coverage.csv, h1_rieke_state_forecast_cases.csv, h1_rieke_state_forecast_summary.csv, h1_270towin_state_forecast_cases.csv, h1_270towin_state_forecast_summary.csv, h1_state_source_consensus_cases.csv, h1_state_source_consensus_summary.csv, h1_competitive_state_diagnostic_cases.csv, h1_competitive_state_diagnostic_summary.csv"),
         ("H2", "data/events_timeline_seed.csv, h2_event_window_summary.csv, thesis_h2_event_window_car.png"),
         ("H3", "h3_wallet_distribution_inventory.json, h3_granger_results.csv, thesis_h3_summary.csv"),
-        ("Monitor", "monitor_v2_bounded_summary.csv, monitor_v2_polymarket_dashboard.html, wallet_graph_dashboard.html"),
+        ("Monitor", "monitor_v2_bounded_summary.csv, monitor_v2_polymarket_dashboard.html, wallet_graph_dashboard.html, monitor_anomaly_review_queue.csv, monitor_anomaly_review_summary.csv, monitor_anomaly_case_review_packets.csv, monitor_anomaly_review_decision_readiness.csv"),
         ("Swiss", "data/swiss_referendum_10mio_polls.csv, swiss_referendum_10mio_latest_summary.md, dashboard HTML"),
         ("Tests", "tests/ und operations/project/review_check.py"),
     ]
@@ -3040,7 +3542,87 @@ def _h3_data(summary: pd.DataFrame) -> dict[str, Any]:
     }
 
 
-def _monitor_data(summary: pd.DataFrame) -> dict[str, Any]:
+def _literature_data(literature: pd.DataFrame) -> dict[str, Any]:
+    """Return the bounded literature frame used for the supervisor report."""
+
+    selected_ids = [
+        "lit_emh_001",
+        "lit_brier_001",
+        "lit_dm_001",
+        "lit_eventstudy_001",
+        "lit_granger_001",
+        "zotero_poly_001",
+        "zotero_poly_002",
+        "zotero_poly_005",
+        "zotero_poly_006",
+        "zotero_poly_007",
+    ]
+    role_by_id = {
+        "lit_emh_001": "Theorie: informationelle Effizienz und EMH-Proxy-Logik.",
+        "lit_brier_001": "H1-Methode: Probability-Forecast-Verifikation mit Brier-Verlust.",
+        "lit_dm_001": "H1-Methode: Vergleich konkurrierender Forecast-Loss-Serien.",
+        "lit_eventstudy_001": "H2-Methode: Event-Window-Design und Grenzen von Ereignisstudien.",
+        "lit_granger_001": "H3-Methode: Lead-Lag-Diagnostik mit vorsichtiger Kausalitaetsabgrenzung.",
+        "zotero_poly_001": "Polymarket-Kontext: Transaktionslogik, Wallet- und Volumen-Caveats.",
+        "zotero_poly_002": "H1-Kontext: Prediction Markets versus Polling/Forecasting.",
+        "zotero_poly_005": "H3-Kontext: Abgrenzung von Information, Informationsvorsprung- und Ethikfragen.",
+        "zotero_poly_006": "Marktmikrostruktur: Maker/Taker, Bias- und Risikocaveats.",
+        "zotero_poly_007": "Polymarket-Forschungskontext: Konvergenz, Volatilitaet und Biases.",
+    }
+    research_note_by_id = {
+        "lit_emh_001": "Preise als Informationsaggregate motivieren die Proxy-Tests, beweisen aber keine Effizienz.",
+        "lit_brier_001": "Begruendet H1 als Verlustvergleich von Wahrscheinlichkeitsprognosen.",
+        "lit_dm_001": "Begruendet den Test auf Unterschiede in vorliegenden Forecast-Verlustreihen.",
+        "lit_eventstudy_001": "Begruendet H2 als Ereignisfenster-Design statt freier News-Interpretation.",
+        "lit_granger_001": "Begruendet H3 als Vorhersage-/Timingdiagnostik, nicht als starker Ursachenbeweis.",
+        "zotero_poly_001": "Stuetzt Vorsicht bei on-chain Volumen, Wallet-Flows und Austausch-Equivalenten.",
+        "zotero_poly_002": "Stuetzt die Vergleichsfrage Polymarket versus Polling, ersetzt aber keine lokale Transformation.",
+        "zotero_poly_005": "Hilft bei der ethischen Abgrenzung von Informationsvorsprung und Marktpreisen.",
+        "zotero_poly_006": "Stuetzt Mikrostruktur- und Bias-Caveats fuer spaetere Monitor-/Strategieformulierungen.",
+        "zotero_poly_007": "Positioniert Polymarket-Forschung mit Konvergenz-, Volatilitaets- und Bias-Grenzen.",
+    }
+    sources = []
+    indexed = literature.set_index("source_id")
+    for source_id in selected_ids:
+        if source_id not in indexed.index:
+            continue
+        row = indexed.loc[source_id]
+        sources.append(
+            {
+                "source_id": source_id,
+                "title": str(row["title"]),
+                "authors": str(row["authors"]),
+                "year": str(row["year"]),
+                "venue": str(row["venue"]),
+                "url": str(row["url"]),
+                "topic": str(row["topic"]),
+                "hypothesis": str(row["hypothesis"]),
+                "status": str(row["status"]),
+                "role": role_by_id[source_id],
+                "research_note": research_note_by_id[source_id],
+            }
+        )
+    status_counts = literature["status"].value_counts().sort_index()
+    return {
+        "source_count": int(len(literature)),
+        "selected_source_count": len(sources),
+        "status_counts_text": ", ".join(
+            f"{status}: {int(count)}" for status, count in status_counts.items()
+        ),
+        "sources": sources,
+        "citation_boundary": (
+            "Die Quellen sind als lokaler Literaturrahmen hinterlegt. "
+            "Thesis-facing Detailclaims duerfen erst nach Vollreview als "
+            "reviewed oder cited verwendet werden; candidate/rejected Quellen "
+            "tragen keine Ergebnisbehauptungen."
+        ),
+    }
+
+
+def _monitor_data(
+    summary: pd.DataFrame,
+    anomaly_review_summary: pd.DataFrame,
+) -> dict[str, Any]:
     severity = {
         str(row["label"]): int(float(row["value"]))
         for _, row in summary[summary["summary_type"] == "direct_severity_count"].iterrows()
@@ -3049,6 +3631,7 @@ def _monitor_data(summary: pd.DataFrame) -> dict[str, Any]:
     graph_meta = _read_json("data/results/wallet_graph_metadata.json")
     outputs = dashboard_meta.get("outputs", {})
     graph_outputs = graph_meta.get("outputs", {})
+    anomaly = anomaly_review_summary.iloc[0].to_dict()
     return {
         "snapshot_count": int(
             _summary_value(summary, "monitor_v2_snapshot_count", default=0)
@@ -3060,6 +3643,21 @@ def _monitor_data(summary: pd.DataFrame) -> dict[str, Any]:
         "live_scoring_rows": int(outputs.get("scoring_row_count", 0)),
         "wallet_graph_nodes": int(graph_outputs.get("node_count", 0)),
         "wallet_graph_edges": int(graph_outputs.get("edge_count", 0)),
+        "anomaly_queue_rows": int(anomaly.get("queue_row_count", 0)),
+        "anomaly_high_priority_count": int(anomaly.get("high_priority_count", 0)),
+        "anomaly_medium_priority_count": int(anomaly.get("medium_priority_count", 0)),
+        "anomaly_low_priority_count": int(anomaly.get("low_priority_count", 0)),
+        "anomaly_review_labels": str(anomaly.get("review_label_counts", "")),
+        "anomaly_review_status_counts": str(
+            anomaly.get("human_review_status_counts", "")
+        ),
+        "anomaly_allowed_interpretation": str(
+            anomaly.get("allowed_interpretation", "")
+        ),
+        "anomaly_limitation": (
+            "Die Queue ist kein Nachweis fuer Ursachen, Regelverstoss, "
+            "Handelbarkeit, Profitabilitaet oder zukuenftige Entwicklung."
+        ),
     }
 
 
@@ -3457,6 +4055,7 @@ def _add_table(
             cells[idx].vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
             cells[idx].text = str(value)
             _set_cell_font(cells[idx])
+    _set_table_width(table, widths)
     return table
 
 

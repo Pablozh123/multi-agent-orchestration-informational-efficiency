@@ -208,6 +208,15 @@ data/results/monitor_anomaly_review_decision_readiness.json
 `reviewed_keep_candidate` requires documented limitations and a thesis-use
 scope. Decision-readiness outputs do not apply decisions automatically.
 
+The generator also writes a static future-access contract:
+
+```text
+data/results/monitor_anomaly_review_access_contract.json
+```
+
+This contract lists bounded artifacts and future tool names only. It does not
+implement MCP, agents, raw SQL, wallet-address access, or order/trading paths.
+
 Open the reference similarity dashboard:
 
 ```text

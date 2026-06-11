@@ -3836,6 +3836,7 @@ Generated artifacts:
 - `data/results/monitor_anomaly_review_status_transitions.json`
 - `data/results/monitor_anomaly_review_decision_readiness.csv`
 - `data/results/monitor_anomaly_review_decision_readiness.json`
+- `data/results/monitor_anomaly_review_access_contract.json`
 
 Curated manual input:
 
@@ -3871,6 +3872,9 @@ Current output shape:
 - 3 decision-readiness rows validate the final decision worksheet; all current
   rows are `no_decision_recorded`, so no case has been accepted, rejected, or
   upgraded to thesis-facing evidence.
+- A static access contract lists the bounded artifacts future MCP/agent
+  surfaces may read and records that runtime MCP and agents are not
+  implemented.
 - All current queue cases have public Polymarket market context and one public
   context URL recorded for source-check follow-up only; this does not
   establish event causality, private information, misconduct, tradeability, or
@@ -3879,8 +3883,8 @@ Current output shape:
 Agent and MCP boundary:
 
 - Future agents may only read the queue, summary, bounded case-review packets,
-  status-transition rows, or decision-readiness rows after `llm_audit_log`
-  integration exists.
+  status-transition rows, decision-readiness rows, or the static access
+  contract after `llm_audit_log` integration exists.
 - Future MCP tools are contract-only at this stage:
   `get_anomaly_review_summary`, `get_anomaly_case`,
   `list_monitor_artifacts`, and `get_method_limits`.

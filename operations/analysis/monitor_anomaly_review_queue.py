@@ -43,6 +43,7 @@ STATUS_TRANSITIONS_CSV_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_status_tra
 STATUS_TRANSITIONS_JSON_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_status_transitions.json"
 DECISION_READINESS_CSV_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_decision_readiness.csv"
 DECISION_READINESS_JSON_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_decision_readiness.json"
+ACCESS_CONTRACT_OUTPUT = RESULTS_DIR / "monitor_anomaly_review_access_contract.json"
 
 MAX_MCP_ROWS = 50
 ALLOWED_REVIEW_STATUSES = {
@@ -181,6 +182,7 @@ class MonitorAnomalyReviewQueueResult:
     status_transitions_json_path: Path
     decision_readiness_csv_path: Path
     decision_readiness_json_path: Path
+    access_contract_path: Path
     queue_row_count: int
     high_priority_count: int
     case_packet_row_count: int
@@ -201,6 +203,7 @@ class MonitorAnomalyReviewQueueResult:
             "status_transitions_json_path": str(self.status_transitions_json_path),
             "decision_readiness_csv_path": str(self.decision_readiness_csv_path),
             "decision_readiness_json_path": str(self.decision_readiness_json_path),
+            "access_contract_path": str(self.access_contract_path),
             "queue_row_count": self.queue_row_count,
             "high_priority_count": self.high_priority_count,
             "case_packet_row_count": self.case_packet_row_count,
@@ -373,6 +376,158 @@ def build_anomaly_review_decision_readiness(
     return readiness
 
 
+def build_anomaly_review_access_contract(
+    *,
+    queue_path: Path,
+    summary_path: Path,
+    metadata_path: Path,
+    dashboard_path: Path,
+    case_packets_csv_path: Path,
+    case_packets_json_path: Path,
+    status_transitions_csv_path: Path,
+    status_transitions_json_path: Path,
+    decision_readiness_csv_path: Path,
+    decision_readiness_json_path: Path,
+    queue_row_count: int,
+    case_packet_row_count: int,
+    status_transition_row_count: int,
+    decision_readiness_row_count: int,
+) -> dict[str, Any]:
+    """Return a static read-only access contract without implementing tools."""
+
+    return {
+        "artifact": "monitor_anomaly_review_access_contract",
+        "implementation_status": "contract_only_not_implemented",
+        "max_default_rows": MAX_MCP_ROWS,
+        "allowed_artifacts": [
+            {
+                "artifact_id": "anomaly_review_summary",
+                "path": str(summary_path),
+                "row_count": 1,
+                "default_access": "allowed",
+            },
+            {
+                "artifact_id": "anomaly_review_queue",
+                "path": str(queue_path),
+                "row_count": queue_row_count,
+                "default_access": "allowed_bounded",
+            },
+            {
+                "artifact_id": "anomaly_case_review_packets_csv",
+                "path": str(case_packets_csv_path),
+                "row_count": case_packet_row_count,
+                "default_access": "allowed_bounded",
+            },
+            {
+                "artifact_id": "anomaly_case_review_packets_json",
+                "path": str(case_packets_json_path),
+                "row_count": case_packet_row_count,
+                "default_access": "allowed_bounded",
+            },
+            {
+                "artifact_id": "anomaly_review_status_transitions_csv",
+                "path": str(status_transitions_csv_path),
+                "row_count": status_transition_row_count,
+                "default_access": "allowed_bounded",
+            },
+            {
+                "artifact_id": "anomaly_review_status_transitions_json",
+                "path": str(status_transitions_json_path),
+                "row_count": status_transition_row_count,
+                "default_access": "allowed_bounded",
+            },
+            {
+                "artifact_id": "anomaly_review_decision_readiness_csv",
+                "path": str(decision_readiness_csv_path),
+                "row_count": decision_readiness_row_count,
+                "default_access": "allowed_bounded",
+            },
+            {
+                "artifact_id": "anomaly_review_decision_readiness_json",
+                "path": str(decision_readiness_json_path),
+                "row_count": decision_readiness_row_count,
+                "default_access": "allowed_bounded",
+            },
+            {
+                "artifact_id": "anomaly_review_metadata",
+                "path": str(metadata_path),
+                "row_count": 1,
+                "default_access": "allowed_limits_only",
+            },
+            {
+                "artifact_id": "anomaly_review_dashboard",
+                "path": str(dashboard_path),
+                "row_count": 1,
+                "default_access": "manual_browser_review_only",
+            },
+        ],
+        "blocked_by_default": [
+            "raw_monitor_alert_rows",
+            "raw_wallet_rows",
+            "wallet_address_fields",
+            "direct_database_queries",
+            "unrestricted_sql",
+            "order_or_trading_paths",
+            "credentials_or_authenticated_channels",
+        ],
+        "future_tool_contracts": [
+            {
+                "tool_name": "get_anomaly_review_summary",
+                "status": "contract_only_not_implemented",
+                "allowed_artifact_ids": ["anomaly_review_summary"],
+                "max_rows": 1,
+            },
+            {
+                "tool_name": "get_anomaly_case",
+                "status": "contract_only_not_implemented",
+                "required_arguments": ["case_id"],
+                "allowed_artifact_ids": [
+                    "anomaly_review_queue",
+                    "anomaly_case_review_packets_csv",
+                    "anomaly_review_status_transitions_csv",
+                    "anomaly_review_decision_readiness_csv",
+                ],
+                "max_rows": 4,
+            },
+            {
+                "tool_name": "list_monitor_artifacts",
+                "status": "contract_only_not_implemented",
+                "allowed_artifact_ids": [
+                    "anomaly_review_summary",
+                    "anomaly_review_queue",
+                    "anomaly_case_review_packets_csv",
+                    "anomaly_review_status_transitions_csv",
+                    "anomaly_review_decision_readiness_csv",
+                ],
+                "max_rows": MAX_MCP_ROWS,
+            },
+            {
+                "tool_name": "get_method_limits",
+                "status": "contract_only_not_implemented",
+                "allowed_artifact_ids": ["anomaly_review_metadata"],
+                "max_rows": 1,
+            },
+        ],
+        "guards": {
+            "llm_audit_log_required_before_runtime_access": True,
+            "raw_sql_allowed": False,
+            "wallet_address_exposure_allowed_by_default": False,
+            "order_or_trading_path_allowed": False,
+            "agent_metric_calculation_allowed": False,
+            "runtime_mcp_server_implemented": False,
+            "runtime_agents_implemented": False,
+        },
+        "allowed_interpretation": (
+            "Future access may read bounded anomaly-review summaries for human "
+            "review support only."
+        ),
+        "blocked_claims": (
+            "private_information_proof; misconduct_finding; causality; "
+            "tradeability; profitability; future_performance; order_instruction"
+        ),
+    }
+
+
 def apply_review_status_updates(
     queue: pd.DataFrame,
     updates: pd.DataFrame,
@@ -425,6 +580,7 @@ def generate_monitor_anomaly_review_queue(
     status_transitions_json_path: Path = STATUS_TRANSITIONS_JSON_OUTPUT,
     decision_readiness_csv_path: Path = DECISION_READINESS_CSV_OUTPUT,
     decision_readiness_json_path: Path = DECISION_READINESS_JSON_OUTPUT,
+    access_contract_path: Path = ACCESS_CONTRACT_OUTPUT,
 ) -> MonitorAnomalyReviewQueueResult:
     """Write the anomaly review queue, compact summary, dashboard, and metadata."""
 
@@ -461,6 +617,23 @@ def generate_monitor_anomaly_review_queue(
     _write_status_transitions_json(status_transitions_json_path, status_transitions)
     _write_csv(decision_readiness_csv_path, decision_readiness)
     _write_decision_readiness_json(decision_readiness_json_path, decision_readiness)
+    access_contract = build_anomaly_review_access_contract(
+        queue_path=queue_path,
+        summary_path=summary_path,
+        metadata_path=metadata_path,
+        dashboard_path=dashboard_path,
+        case_packets_csv_path=case_packets_csv_path,
+        case_packets_json_path=case_packets_json_path,
+        status_transitions_csv_path=status_transitions_csv_path,
+        status_transitions_json_path=status_transitions_json_path,
+        decision_readiness_csv_path=decision_readiness_csv_path,
+        decision_readiness_json_path=decision_readiness_json_path,
+        queue_row_count=int(len(queue)),
+        case_packet_row_count=int(len(case_packets)),
+        status_transition_row_count=int(len(status_transitions)),
+        decision_readiness_row_count=int(len(decision_readiness)),
+    )
+    _write_json(access_contract_path, access_contract)
     _write_dashboard(queue=queue, summary=summary, dashboard_path=dashboard_path)
     metadata = _metadata(
         queue=queue,
@@ -486,6 +659,7 @@ def generate_monitor_anomaly_review_queue(
         decision_readiness_csv_path=decision_readiness_csv_path,
         decision_readiness_json_path=decision_readiness_json_path,
         decision_readiness=decision_readiness,
+        access_contract_path=access_contract_path,
     )
     metadata_path.parent.mkdir(parents=True, exist_ok=True)
     metadata_path.write_text(
@@ -503,6 +677,7 @@ def generate_monitor_anomaly_review_queue(
         status_transitions_json_path=status_transitions_json_path,
         decision_readiness_csv_path=decision_readiness_csv_path,
         decision_readiness_json_path=decision_readiness_json_path,
+        access_contract_path=access_contract_path,
         queue_row_count=int(len(queue)),
         high_priority_count=_count(queue, "review_priority", "high"),
         case_packet_row_count=int(len(case_packets)),
@@ -560,6 +735,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         type=Path,
         default=DECISION_READINESS_JSON_OUTPUT,
     )
+    parser.add_argument("--access-contract-output", type=Path, default=ACCESS_CONTRACT_OUTPUT)
     args = parser.parse_args(argv)
 
     try:
@@ -581,6 +757,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             status_transitions_json_path=args.status_transitions_json_output,
             decision_readiness_csv_path=args.decision_readiness_csv_output,
             decision_readiness_json_path=args.decision_readiness_json_output,
+            access_contract_path=args.access_contract_output,
         )
     except (FileNotFoundError, ValueError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
@@ -1153,6 +1330,7 @@ def _metadata(
     status_transitions_json_path: Path,
     decision_readiness_csv_path: Path,
     decision_readiness_json_path: Path,
+    access_contract_path: Path,
 ) -> dict[str, Any]:
     return {
         "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
@@ -1189,6 +1367,7 @@ def _metadata(
             "status_transitions_json_path": str(status_transitions_json_path),
             "decision_readiness_csv_path": str(decision_readiness_csv_path),
             "decision_readiness_json_path": str(decision_readiness_json_path),
+            "access_contract_path": str(access_contract_path),
             "queue_row_count": int(len(queue)),
             "case_packet_row_count": int(len(case_packets)),
             "status_transition_row_count": int(len(status_transitions)),
@@ -1221,8 +1400,8 @@ def _metadata(
                 "Orchestrator",
             ],
             "allowed_input": (
-                "bounded anomaly review queue, summaries, case packets, and "
-                "status transitions only"
+                "bounded anomaly review queue, summaries, case packets, status "
+                "transitions, decision readiness, and access contract only"
             ),
             "agent_metric_calculation_allowed": False,
             "llm_audit_log_required": True,
@@ -1506,6 +1685,14 @@ def _read_optional_csv(path: Path) -> pd.DataFrame:
 def _write_csv(path: Path, frame: pd.DataFrame) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     frame.to_csv(path, index=False)
+
+
+def _write_json(path: Path, payload: Mapping[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
 
 
 def _write_case_packets_json(path: Path, frame: pd.DataFrame) -> None:

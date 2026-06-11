@@ -7819,3 +7819,54 @@ Verification:
   -> PASS, generated 3 decision-readiness rows.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 487 passed in 49.26s.
+
+## 2026-06-11 - Anomaly review access contract
+
+Context:
+
+- Continued the deterministic monitor anomaly-review queue after adding
+  decision-readiness outputs.
+- Added a static future-access contract for later audited MCP/agent reading of
+  bounded anomaly-review artifacts.
+- Did not implement or activate any MCP server, runtime agent, model routing,
+  LLM metric calculation, ML, database write, order path, wallet-address
+  exposure, or thesis-facing evidence claim.
+
+Changes:
+
+- Extended `operations/analysis/monitor_anomaly_review_queue.py` to write
+  `data/results/monitor_anomaly_review_access_contract.json`.
+- The access contract lists allowed bounded artifacts, future tool names,
+  max-row limits, blocked-by-default artifact classes, and runtime guards.
+- Updated metadata to include the access-contract path.
+- Extended `tests/test_monitor_anomaly_review_queue.py` with static access
+  contract assertions.
+- Updated `GOAL.md`, `ROADMAP.md`, `docs/project/TOOL_USAGE.md`, and
+  `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+
+Key output:
+
+- Access-contract rows are JSON-only metadata, not runtime tools.
+- Future tool names remain contract-only:
+  `get_anomaly_review_summary`, `get_anomaly_case`,
+  `list_monitor_artifacts`, and `get_method_limits`.
+- The contract records max default rows 50, raw SQL blocked, wallet-address
+  exposure blocked by default, order/trading paths blocked, runtime MCP server
+  not implemented, and runtime agents not implemented.
+
+Interpretation:
+
+- The contract is a read-only design artifact for future audited access.
+- It does not activate MCP or agents and does not change any empirical result
+  or case decision.
+- The current cases remain human-review cues only and are not thesis-facing
+  evidence.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_monitor_anomaly_review_queue.py -q`
+  -> PASS, 15 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.monitor_anomaly_review_queue`
+  -> PASS, generated the access-contract artifact.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 488 passed in 50.55s.

@@ -472,6 +472,10 @@ Done criteria:
   `data/results/monitor_anomaly_review_decision_readiness.json`.
 - Current decision readiness rows are all `no_decision_recorded`, so all
   current cases remain blocked from thesis-facing use.
+- A static future-access contract exists at
+  `data/results/monitor_anomaly_review_access_contract.json`; it lists allowed
+  bounded artifacts and future tool names but does not implement MCP, agents,
+  raw SQL, wallet-address exposure, or order/trading paths.
 - A curated manual review-status worksheet exists at
   `data/monitor_anomaly_review_status_updates.csv`; it can update queued cases
   with review status, reviewer, source URL, event URL, and review notes.
@@ -523,10 +527,9 @@ Blockers:
   calibrated against broader Polymarket distributions and reference cases.
 - Wallet graph v1 is based on shared market and shared time-bucket activity;
   it is not an on-chain funding graph or identity cluster.
-- The next user-facing step is to manually review the three
-  `source_check_pending` cases and fill `target_status`, reviewer, decision
-  note, and limitations where a keep, false-context, or thesis-exclusion
-  decision is justified.
+- The next user-facing step is still manual review of the three
+  `source_check_pending` cases; no further runtime MCP or agent work should
+  start before final human decisions or a separate approved goal.
 
 ## Phase 11: Swiss Referendum Efficiency Comparison
 

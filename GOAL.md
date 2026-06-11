@@ -31,6 +31,7 @@ deliverables:
 - Generate `data/results/monitor_anomaly_review_status_transitions.json`.
 - Generate `data/results/monitor_anomaly_review_decision_readiness.csv`.
 - Generate `data/results/monitor_anomaly_review_decision_readiness.json`.
+- Generate `data/results/monitor_anomaly_review_access_contract.json`.
 - Add `data/monitor_anomaly_review_status_updates.csv` as the curated manual
   review-status worksheet that can update queued cases deterministically.
 - Add `data/monitor_anomaly_review_decisions.csv` as the curated manual final
@@ -81,17 +82,20 @@ acceptance_criteria:
 - Review-decision readiness outputs validate manual target statuses against
   transition gates and require limitations for `reviewed_keep_candidate`
   without applying decisions automatically.
+- The access-contract output records future read-only MCP/agent artifact
+  access as static metadata only, with no runtime implementation.
 - The review-status worksheet is validated, rejects duplicate case IDs and
   invalid statuses, and is merged into the generated queue, including
   `source_check_pending` entries for all current queued cases.
 - Future agent and MCP contracts remain metadata/documentation only and do not
   activate guarded runtime entry points.
 - Tests cover queue creation, summary counts, case-review packets,
-  review-status transitions, review-decision readiness, wallet-address
-  rejection, future MCP/agent contract flags, and review-status updates.
+  review-status transitions, review-decision readiness, static access
+  contract, wallet-address rejection, future MCP/agent contract flags, and
+  review-status updates.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: feat: add anomaly review decision readiness
+next_commit: docs: add anomaly review access contract
 
 ## Running Side Goal
 

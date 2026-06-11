@@ -16,6 +16,7 @@ from operations.analysis.monitor_anomaly_review_queue import (
     STATUS_TRANSITION_COLUMNS,
     apply_review_status_updates,
     build_anomaly_case_review_packets,
+    build_anomaly_review_access_contract,
     build_anomaly_review_decision_readiness,
     build_anomaly_review_queue,
     build_anomaly_review_summary,
@@ -136,6 +137,41 @@ def test_build_anomaly_review_decision_readiness_validates_terminal_decisions() 
     assert empty["decision_validation_status"] == "no_decision_recorded"
     assert empty["thesis_use_allowed_after_decision"] == "false"
     assert "wallet_address" not in readiness.columns
+
+
+def test_build_anomaly_review_access_contract_is_static_and_bounded() -> None:
+    contract = build_anomaly_review_access_contract(
+        queue_path=Path("queue.csv"),
+        summary_path=Path("summary.csv"),
+        metadata_path=Path("metadata.json"),
+        dashboard_path=Path("dashboard.html"),
+        case_packets_csv_path=Path("case_packets.csv"),
+        case_packets_json_path=Path("case_packets.json"),
+        status_transitions_csv_path=Path("status_transitions.csv"),
+        status_transitions_json_path=Path("status_transitions.json"),
+        decision_readiness_csv_path=Path("decision_readiness.csv"),
+        decision_readiness_json_path=Path("decision_readiness.json"),
+        queue_row_count=2,
+        case_packet_row_count=2,
+        status_transition_row_count=2,
+        decision_readiness_row_count=2,
+    )
+
+    tool_names = {
+        item["tool_name"] for item in contract["future_tool_contracts"]
+    }
+    assert contract["implementation_status"] == "contract_only_not_implemented"
+    assert contract["max_default_rows"] == 50
+    assert contract["guards"]["runtime_mcp_server_implemented"] is False
+    assert contract["guards"]["runtime_agents_implemented"] is False
+    assert contract["guards"]["raw_sql_allowed"] is False
+    assert contract["guards"]["wallet_address_exposure_allowed_by_default"] is False
+    assert contract["guards"]["order_or_trading_path_allowed"] is False
+    assert "wallet_address_fields" in contract["blocked_by_default"]
+    assert "get_anomaly_review_summary" in tool_names
+    assert "get_anomaly_case" in tool_names
+    assert "list_monitor_artifacts" in tool_names
+    assert "get_method_limits" in tool_names
 
 
 def test_review_decisions_reject_disallowed_transition() -> None:
@@ -306,6 +342,7 @@ def test_generate_monitor_anomaly_review_queue_writes_outputs(tmp_path: Path) ->
         status_transitions_json_path=tmp_path / "status_transitions.json",
         decision_readiness_csv_path=tmp_path / "decision_readiness.csv",
         decision_readiness_json_path=tmp_path / "decision_readiness.json",
+        access_contract_path=tmp_path / "access_contract.json",
     )
 
     queue = pd.read_csv(result.queue_path)
@@ -322,6 +359,7 @@ def test_generate_monitor_anomaly_review_queue_writes_outputs(tmp_path: Path) ->
     decision_readiness_json = json.loads(
         result.decision_readiness_json_path.read_text(encoding="utf-8")
     )
+    access_contract = json.loads(result.access_contract_path.read_text(encoding="utf-8"))
     assert result.queue_row_count == 2
     assert result.high_priority_count == 1
     assert result.case_packet_row_count == 2
@@ -343,6 +381,7 @@ def test_generate_monitor_anomaly_review_queue_writes_outputs(tmp_path: Path) ->
     assert metadata["outputs"]["case_packet_row_count"] == 2
     assert metadata["outputs"]["status_transition_row_count"] == 2
     assert metadata["outputs"]["decision_readiness_row_count"] == 2
+    assert metadata["outputs"]["access_contract_path"] == str(tmp_path / "access_contract.json")
     assert metadata["future_mcp_contract"]["max_rows"] == 50
     assert metadata["future_mcp_contract"]["raw_sql_allowed"] is False
     assert metadata["future_agent_contract"]["agent_metric_calculation_allowed"] is False
@@ -362,6 +401,10 @@ def test_generate_monitor_anomaly_review_queue_writes_outputs(tmp_path: Path) ->
         decision_readiness_json["agent_and_mcp_status"]
         == "contract_only_not_implemented"
     )
+    assert access_contract["implementation_status"] == "contract_only_not_implemented"
+    assert access_contract["max_default_rows"] == 50
+    assert access_contract["guards"]["runtime_mcp_server_implemented"] is False
+    assert access_contract["guards"]["agent_metric_calculation_allowed"] is False
     assert (
         decision_readiness.loc[
             decision_readiness["case_id"] == _candidate_id("market_b"),

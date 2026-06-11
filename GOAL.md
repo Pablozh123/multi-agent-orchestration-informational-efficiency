@@ -2,109 +2,98 @@
 
 ## Active Goal
 
-goal_id: goal-monitor-anomaly-review-queue-001
-title: Build deterministic anomaly review queue for politics/geopolitics monitor
+goal_id: goal-thesis-consolidation-001
+title: Consolidate thesis-ready evidence, results, and future agent design
 status: active
-phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
+phase: Phase 12: Thesis Consolidation And Evidence Mapping
 why:
-- H1-H3 deterministic baseline outputs and thesis-facing summaries exist.
-- The read-only Polymarket monitor has bounded local artifacts for market
-  moves, aggregate wallet-tier activity, concentration diagnostics, reference
-  similarity, materiality context, and detection-backtest context.
-- The Swiss referendum track is running as bounded data collection until the
-  14 June 2026 vote and should not receive a new analysis decision before the
-  final result is available.
-- The next thesis-relevant infrastructure step is a deterministic human-review
-  queue that can identify review-worthy anomaly cases without activating
-  runtime agents, MCP tools, model routing, ML, database writes, or trading
-  paths.
+- H1-H3 deterministic baseline outputs exist and pass project tests.
+- The advisor report is now strong enough as a written update, but the thesis
+  still needs a cleaner high-level consolidation layer.
+- Methods, claims, interpretations, tables, and figures must map explicitly to
+  deterministic artifacts and scientific sources.
+- The result presentation should become thesis-ready: a small number of strong
+  tables and figures instead of many raw artifacts.
+- Future agent improvements may be planned only at a high level while runtime
+  agents, MCP tools, model routing, autonomous execution, and unlogged LLM
+  interpretation remain deferred.
 deliverables:
-- Add a deterministic anomaly review queue over existing bounded monitor
-  artifacts.
-- Generate `data/results/monitor_anomaly_review_queue.csv`.
-- Generate `data/results/monitor_anomaly_review_summary.csv`.
-- Generate `data/results/monitor_anomaly_review_metadata.json`.
-- Generate `data/results/monitor_anomaly_review_dashboard.html`.
-- Generate `data/results/monitor_anomaly_case_review_packets.csv`.
-- Generate `data/results/monitor_anomaly_case_review_packets.json`.
-- Generate `data/results/monitor_anomaly_review_status_transitions.csv`.
-- Generate `data/results/monitor_anomaly_review_status_transitions.json`.
-- Generate `data/results/monitor_anomaly_review_decision_readiness.csv`.
-- Generate `data/results/monitor_anomaly_review_decision_readiness.json`.
-- Generate `data/results/monitor_anomaly_review_access_contract.json`.
-- Add `data/monitor_anomaly_review_status_updates.csv` as the curated manual
-  review-status worksheet that can update queued cases deterministically.
-- Add `data/monitor_anomaly_review_decisions.csv` as the curated manual final
-  review-decision worksheet.
-- Record manual source-check status for all current anomaly-review cases
-  without upgrading them to thesis-facing evidence.
-- Include case fields for market slug, review priority, trigger family,
-  market-move context, wallet-flow context, concentration context, event
-  context, reference overlap, review label, missing evidence, reviewer,
-  source URLs, review notes, allowed interpretation, and blocked claims.
-- Keep `insider_risk_review_candidate` as an internal human-review label only,
-  never as proof, fact, causal evidence, misconduct finding, or trading signal.
-- Document future agent and MCP access as contract-only: bounded summaries,
-  max 50 rows, no raw SQL, no wallet-address exposure by default, no order or
-  trading paths, and later `llm_audit_log` logging.
+- Create a deterministic thesis evidence map that links each central method,
+  result, interpretation, limitation, and thesis claim to source artifacts and,
+  where needed, literature sources.
+- Create a compact thesis-ready result package with a deliberately small set
+  of selected tables and figures for H1, H2, H3, the monitor prototype, and the
+  Swiss referendum side track.
+- Mark which outputs are thesis-facing now, descriptive only, blocked, or
+  pending later source/result review.
+- Document a high-level agent improvement roadmap that respects the project
+  guardrails: deterministic Python metrics first, bounded summaries only,
+  `llm_audit_log` for later LLM calls, no raw table dumps, max 50 rows, no
+  wallet-address exposure by default, no order/trading paths, and no active
+  runtime agent implementation.
+- Keep the Swiss referendum track in data-collection mode until the 14 June
+  2026 vote result is available; do not add a final efficiency interpretation
+  before the official result.
+- Keep monitor anomaly review outputs as prototype/appendix material unless
+  human review and thesis-use gates later approve them.
 scope:
-- `operations/analysis/monitor_anomaly_review_queue.py`.
-- `tests/test_monitor_anomaly_review_queue.py`.
-- `data/monitor_anomaly_review_status_updates.csv`.
-- `data/results/monitor_anomaly_review_*`.
-- `docs/research/STRATEGY_AGENT_ARCHITECTURE.md`.
+- `operations/analysis/thesis_result_summaries.py`.
+- `operations/analysis/thesis_figures.py`.
+- New or updated deterministic thesis-consolidation scripts under
+  `operations/analysis/`.
+- `data/literature/literature_index.csv`.
+- `data/results/thesis_*`.
+- `docs/research/`.
 - `ROADMAP.md`.
 - Project workflow docs/status/log updates required before stopping.
 out_of_scope:
+- Multi-agent orchestration.
+- MCP demo implementation.
+- Claude Desktop integration.
+- Model routing.
+- Self-consistency runs.
+- Cloud deployment.
 - Trading, order placement, order cancellation, authenticated user channels,
-  trading credentials, PnL, profitability claims, strategy backtests, cloud
-  deployment, resident background daemons, active runtime agents, active MCP
-  demo layers, model routing, ML, and database writes.
+  trading credentials, strategy PnL, profitability claims, or autonomous
+  execution.
 - Calculating metrics with LLMs or agents.
-- Exposing raw monitor rows, wallet addresses, unrestricted SQL, or more than
-  50 rows through any future default tool surface.
-- Claiming causality, market inefficiency, private information, misconduct, or
-  insider activity from anomaly labels.
+- Exposing raw monitor rows, raw wallet addresses, unrestricted SQL, or more
+  than 50 rows through any future default tool surface.
+- Claiming causality, private information, misconduct, tradeability,
+  profitability, or market inefficiency from monitor labels or Granger tests.
 acceptance_criteria:
 - Exactly one active goal remains in this file.
-- The queue is generated only from existing bounded deterministic artifacts.
-- Outputs contain no wallet-address columns and no order instructions.
-- Review priorities use existing monitor severity and distribution-based
-  percentile ranks, not arbitrary whale thresholds.
-- The queue contains the planned review fields and a deterministic status
-  update helper for human-review state changes.
-- Case-review packets expose bounded per-case review summaries for later
-  human, MCP, or agent reading without activating MCP or agents.
-- Status-transition outputs define deterministic review gates for
-  `needs_human_review`, `source_check_pending`, `reviewed_keep_candidate`,
-  `reviewed_false_context`, and `thesis_excluded` without automatically
-  accepting or rejecting cases.
-- Review-decision readiness outputs validate manual target statuses against
-  transition gates and require limitations for `reviewed_keep_candidate`
-  without applying decisions automatically.
-- The access-contract output records future read-only MCP/agent artifact
-  access as static metadata only, with no runtime implementation.
-- The review-status worksheet is validated, rejects duplicate case IDs and
-  invalid statuses, and is merged into the generated queue, including
-  `source_check_pending` entries for all current queued cases.
-- Future agent and MCP contracts remain metadata/documentation only and do not
-  activate guarded runtime entry points.
-- Tests cover queue creation, summary counts, case-review packets,
-  review-status transitions, review-decision readiness, static access
-  contract, wallet-address rejection, future MCP/agent contract flags, and
-  review-status updates.
+- Each thesis-facing method has a deterministic implementation artifact and at
+  least one suitable source or methodology reference where needed.
+- Each thesis-facing interpretation names the deterministic artifact that
+  supports it and its main limitation.
+- The curated result package contains a small explicit set of recommended
+  tables and figures, not a raw dump of every generated artifact.
+- H1/H2/H3 interpretations remain bounded to the deterministic outputs and do
+  not rely on LLM-calculated metrics.
+- Swiss referendum outputs remain descriptive until the official result is
+  available.
+- Monitor and agent content is framed as prototype, appendix, or future work
+  unless deterministic thesis-use gates approve it.
+- Future agent pipeline design remains documentation-only and does not activate
+  runtime agents, MCP tools, model routing, or unlogged LLM interpretation.
+- Tests cover the generated evidence map and curated result package where
+  reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add anomaly review access contract
+next_commit: docs: consolidate thesis evidence map
 
 ## Running Side Goal
 
 - `goal-swiss-referendum-efficiency-001` remains a running data-collection
-  track until the 14 June 2026 vote. Do not add new referendum interpretation
-  decisions before the final result is available.
+  track until the 14 June 2026 vote. Do not add final referendum efficiency
+  interpretation before the official result is available.
 
 ## Paused Previous Goal
 
+- `goal-monitor-anomaly-review-queue-001` remains paused. Its deterministic
+  queue and static access contract exist, but further review-access work is
+  intentionally deferred while the thesis is consolidated.
+
 - `goal-monitor-detection-backtest-wallet-graph-001` remains paused as a broad
-  monitor expansion goal. The current active goal builds a bounded review queue
-  on top of its existing deterministic outputs.
+  monitor expansion goal.

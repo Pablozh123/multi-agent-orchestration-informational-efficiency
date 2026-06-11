@@ -63,6 +63,36 @@ these limits:
 This gives the project a local RAG-ready source map without activating the
 deferred agent and MCP layers.
 
+## Current Thesis Consolidation Map
+
+Current generated consolidation artifacts:
+
+- `data/results/thesis_evidence_map.csv`
+- `data/results/thesis_evidence_map.md`
+- `data/results/thesis_core_results_table.csv`
+- `data/results/thesis_curated_result_package.csv`
+- `docs/research/THESIS_CONSOLIDATION.md`
+
+These artifacts are the current thesis-draft bridge from deterministic outputs
+to written argumentation. They do not replace final citation review. A row can
+be draft-ready for thesis structure because it maps to deterministic artifacts
+and non-rejected literature sources, while still requiring source-by-source
+review before final submission citations are marked `reviewed` or `cited`.
+
+Current mapping rule:
+
+- Methods and interpretations must list at least one deterministic artifact.
+- Methods and interpretations must list source IDs where literature framing is
+  needed.
+- `candidate` and `rejected` sources must not support thesis-facing H1-H2-H3
+  method or interpretation rows.
+- `skimmed` sources may support draft structure and source planning, but final
+  thesis citation wording still requires review before submission.
+- Monitor and Swiss rows must keep their status labels visible:
+  prototype/appendix for monitor outputs and descriptive-pending-result for the
+  Swiss referendum track.
+- Agent-related rows remain future-work architecture only.
+
 ## Initial Literature Synthesis
 
 Review date: 2026-05-19
@@ -119,6 +149,17 @@ Canonical theory source:
   the research question and proxy-test logic, not to assume that Polymarket is
   efficient. The empirical evidence remains the deterministic H1-H2-H3 output
   package.
+
+Core method sources added for the consolidation layer:
+
+- `lit_brier_001`: Method reference for probability forecast verification and
+  Brier Score interpretation in H1.
+- `lit_dm_001`: Method reference for predictive-accuracy comparison of
+  precomputed loss series in H1.
+- `lit_eventstudy_001`: Method reference for H2 event-window design and the
+  discipline of pre-specified event samples.
+- `lit_granger_001`: Method reference for H3 lead-lag diagnostics. It must be
+  used with the project rule that Granger output is not causal proof.
 
 Remaining PDF review:
 

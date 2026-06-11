@@ -191,7 +191,7 @@ Blockers:
 
 ## Phase 10: Politics/Geo Anomaly Monitor Prototype
 
-Status: active for deterministic anomaly review queue work
+Status: paused after deterministic anomaly review queue and static access contract
 
 Done criteria:
 
@@ -578,3 +578,57 @@ Blockers:
   table exists.
 - No causal, profitability, tradeability, or mispricing proof may be claimed
   from the current descriptive divergence labels.
+
+## Phase 12: Thesis Consolidation And Evidence Mapping
+
+Status: active
+
+Done criteria:
+
+- The active goal is thesis consolidation, not additional review-access work.
+- Every central thesis-facing method maps to deterministic source artifacts and
+  suitable literature references.
+- Every central thesis-facing interpretation maps to deterministic artifacts,
+  accepted wording, blocked wording, and a main limitation.
+- A deliberately small thesis-ready package exists instead of a raw artifact
+  dump: at most five core tables and at most four core figures.
+- H1, H2, and H3 remain the empirical core.
+- Monitor outputs are labelled as prototype or appendix material unless human
+  review gates later approve them for thesis-facing use.
+- The Swiss referendum side track remains descriptive until the official
+  14 June 2026 vote result is available.
+- Future agent improvements are documented only as a guarded architecture over
+  bounded deterministic summaries; no runtime agents, MCP tools, model
+  routing, autonomous collectors, trading paths, or unlogged LLM interpretation
+  are activated.
+
+Current implemented consolidation:
+
+- `operations/analysis/thesis_consolidation.py` generates the consolidation
+  layer from existing local artifacts.
+- `data/results/thesis_evidence_map.csv` links methods, interpretations,
+  limitations, artifacts, source references, allowed wording, and blocked
+  wording.
+- `data/results/thesis_core_results_table.csv` reduces the current empirical
+  story to six central rows: bounded H1 support, H1 broad-claim boundary, H2
+  largest daily event-window response, H3 top-tier timing diagnostic, monitor
+  review-queue boundary, and Swiss running-gap boundary.
+- `data/results/thesis_curated_result_package.csv` selects five core tables
+  and four core figures for thesis drafting.
+- `data/results/thesis_consolidation_metadata.json` records guardrails:
+  no LLM use, no agents or MCP, no database writes, no external API calls,
+  no raw table dumps, max future tool rows of 50, no wallet-address exposure
+  by default, and no order or trading paths.
+- `docs/research/THESIS_CONSOLIDATION.md` gives the high-level project view
+  and a deferred agent-pipeline roadmap.
+
+Blockers:
+
+- Some literature entries remain `skimmed` or `candidate`; final thesis
+  citation status still needs source-by-source review before submission.
+- Swiss referendum efficiency cannot be interpreted finally before the
+  official result is available and mapped to the collected snapshots.
+- The monitor review queue remains blocked from thesis-facing use while cases
+  are only `source_check_pending`.
+- Future agent support requires a separate approved goal, bounded prompt
+  design, and `llm_audit_log` integration before implementation.

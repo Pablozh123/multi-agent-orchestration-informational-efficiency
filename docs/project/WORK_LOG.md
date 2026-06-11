@@ -8063,3 +8063,78 @@ Verification plan:
 
 - Re-run project status automation, review checks, and commit planning before
   creating the final commits.
+
+## 2026-06-12 - Thesis consolidation evidence map and curated result package
+
+Goal context:
+
+- User paused further review-access work and requested a high-level thesis
+  consolidation: literature should be mapped cleanly, every method and
+  interpretation should have a source or deterministic artifact, results should
+  become thesis-ready through a few strong tables/figures, and future agent
+  improvements should be planned only after the deterministic package is
+  stable.
+- Updated `GOAL.md` to `goal-thesis-consolidation-001` and made Phase 12 the
+  active roadmap phase.
+- Kept agents, MCP tools, model routing, live trading, autonomous execution,
+  and LLM-calculated metrics out of scope.
+
+Changes:
+
+- Added `operations/analysis/thesis_consolidation.py`.
+- Generated `data/results/thesis_evidence_map.csv` and
+  `data/results/thesis_evidence_map.md`.
+- Generated `data/results/thesis_core_results_table.csv`.
+- Generated `data/results/thesis_curated_result_package.csv`.
+- Generated `data/results/thesis_consolidation_metadata.json`.
+- Added `docs/research/THESIS_CONSOLIDATION.md`.
+- Updated `docs/research/LITERATURE_MAP.md` with the current consolidation
+  map, method-source mapping, and the distinction between draft-ready mapping
+  and final citation review.
+- Updated `ROADMAP.md`: Phase 10 is paused after the deterministic review queue
+  and static access contract; Phase 12 is active for thesis consolidation.
+- Added `tests/test_thesis_consolidation.py`.
+
+Key output:
+
+- Evidence map rows: 13.
+- Method rows: 6.
+- Interpretation rows: 6.
+- Core result rows: 6.
+- Curated package rows: 10.
+- Core thesis package: 5 tables and 4 figures.
+- Current core result values:
+  - H1 bounded poll-comparison scope: 262 of 285 state-date rows, 91.9 percent,
+    lower Brier loss for Polymarket.
+  - H1 broad claim boundary: 7 of 9 aggregate rows support Polymarket, 3 of 9
+    majority-case rows support Polymarket, 0 of 9 prove the broad claim, and
+    5 audit rows contradict the strong claim.
+  - H2 largest primary daily event-window move:
+    `evt_2024_07_13_trump_shooting`, plus 7.2 percentage points.
+  - H3 top-tier timing diagnostic: `tier_1_top_1pct` lag 1 correlation 0.1858,
+    Granger p-value 0.0012, and 1216 aligned rows.
+  - Monitor boundary: 3 review cases, 1 high, 2 medium,
+    `source_check_pending=3`; appendix/prototype only.
+  - Swiss boundary: 26 snapshots, latest SRG/gfs.bern comparison shows
+    Polymarket Yes 22.0 percent, poll Yes 45.0 percent, raw gap -23.0
+    percentage points; descriptive pending final result.
+
+Agent pipeline note:
+
+- `docs/research/THESIS_CONSOLIDATION.md` documents only a deferred agent
+  roadmap: evidence-reader, citation-check, interpretation-consistency, human
+  review, and later bounded MCP summary tools.
+- It explicitly keeps metric calculation in Python, requires future
+  `llm_audit_log` logging, blocks raw table dumps, keeps future tool outputs
+  bounded to 50 rows by default, blocks wallet-address exposure by default, and
+  blocks order/trading paths.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`
+  -> PASS, generated evidence map, core table, curated package, metadata, and
+  consolidation documentation.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_consolidation.py tests\test_thesis_result_summaries.py tests\test_thesis_figures.py`
+  -> PASS, 11 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 492 passed in 51.23s.

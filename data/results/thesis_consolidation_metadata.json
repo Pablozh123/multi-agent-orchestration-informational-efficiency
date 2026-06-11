@@ -1,0 +1,37 @@
+{
+  "guardrails": {
+    "every_method_and_interpretation_has_artifact": true,
+    "future_agents_documentation_only": true,
+    "llm_audit_log_required_before_future_llm_calls": true,
+    "max_future_tool_rows": 50,
+    "monitor_review_cases_not_thesis_evidence": true,
+    "no_order_or_trading_paths": true,
+    "no_raw_table_dumps": true,
+    "no_wallet_address_exposure_by_default": true,
+    "swiss_final_efficiency_interpretation_pending": true,
+    "thesis_facing_rows_avoid_candidate_or_rejected_sources": true
+  },
+  "method": {
+    "calculation_scope": "selection_and_mapping_of_existing_deterministic_artifacts",
+    "does_not_call_external_api": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "does_not_write_database": true,
+    "name": "thesis_consolidation_evidence_mapping"
+  },
+  "outputs": {
+    "core_figure_count": 4,
+    "core_result_rows": 6,
+    "core_table_count": 5,
+    "evidence_rows": 13,
+    "max_core_figures": 4,
+    "max_core_tables": 5,
+    "package_rows": 10
+  },
+  "readiness_counts": {
+    "appendix_prototype_only": 2,
+    "descriptive_pending_result": 2,
+    "future_work_deferred": 1,
+    "thesis_facing_ready": 8
+  }
+}

@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-06-11 20:27
+Generated: 2026-06-11 20:33
 
 Current goal: `goal-monitor-anomaly-review-queue-001` - Build deterministic anomaly review queue for politics/geopolitics monitor
 
@@ -11,11 +11,11 @@ Current roadmap phase: Phase 10: Politics/Geo Anomaly Monitor Prototype
 
 Test status: PASS
 
-Pytest summary: `481 passed in 53.64s`
+Pytest summary: `481 passed in 47.57s`
 
 Git branch: `main`
 
-Latest commit: `761b1b3`
+Latest commit: `7418ac9`
 
 Git status:
 
@@ -46,12 +46,12 @@ Git status:
 Git diff stat:
 
 ```text
- GOAL.md                                            |   7 ++--
- ROADMAP.md                                         |  15 +++++---
- data/monitor_anomaly_review_status_updates.csv     |   2 +-
- data/results/monitor_anomaly_review_dashboard.html |   4 +--
+ GOAL.md                                            |  10 +++---
+ ROADMAP.md                                         |  20 +++++------
+ data/monitor_anomaly_review_status_updates.csv     |   4 +--
+ data/results/monitor_anomaly_review_dashboard.html |   8 ++---
  data/results/monitor_anomaly_review_metadata.json  |   2 +-
- data/results/monitor_anomaly_review_queue.csv      |   2 +-
+ data/results/monitor_anomaly_review_queue.csv      |   4 +--
  data/results/monitor_anomaly_review_summary.csv    |   2 +-
  .../swiss_referendum_10mio_auto_refresh_log.csv    |   2 ++
  ...iss_referendum_10mio_auto_refresh_metadata.json |  40 ++++++++++++++++-----
@@ -66,8 +66,8 @@ Git diff stat:
  ...swiss_referendum_10mio_polymarket_snapshots.csv |   2 ++
  .../swiss_referendum_10mio_refresh_metadata.json   |  33 +++++++++--------
  .../swiss_referendum_10mio_running_status.json     |  14 ++++----
- docs/research/STRATEGY_AGENT_ARCHITECTURE.md       |   8 ++++-
- 21 files changed, 129 insertions(+), 79 deletions(-)
+ docs/research/STRATEGY_AGENT_ARCHITECTURE.md       |  11 +++---
+ 21 files changed, 131 insertions(+), 96 deletions(-)
 ```
 
 Blockers:
@@ -76,7 +76,7 @@ Blockers:
 
 Next recommended action:
 
-- data: source-check anomaly review candidate
+- data: source-check queued anomaly review cases
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

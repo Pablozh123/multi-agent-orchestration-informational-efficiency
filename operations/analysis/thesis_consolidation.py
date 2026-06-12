@@ -33,6 +33,7 @@ GENERATED_ARTIFACTS: frozenset[str] = frozenset(
         "docs/research/THESIS_CONSOLIDATION.md",
         "docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md",
         "docs/research/THESIS_WRITING_BLUEPRINT.md",
+        "docs/research/THESIS_CHAPTER_DRAFT.md",
     }
 )
 
@@ -47,6 +48,7 @@ METADATA_OUTPUT = "thesis_consolidation_metadata.json"
 DOC_OUTPUT = "THESIS_CONSOLIDATION.md"
 AGENT_DOC_OUTPUT = "THESIS_AGENT_PIPELINE_ROADMAP.md"
 WRITING_BLUEPRINT_OUTPUT = "THESIS_WRITING_BLUEPRINT.md"
+CHAPTER_DRAFT_OUTPUT = "THESIS_CHAPTER_DRAFT.md"
 
 EVIDENCE_COLUMNS: tuple[str, ...] = (
     "evidence_id",
@@ -146,6 +148,7 @@ class ThesisConsolidationResult:
     docs_path: Path
     agent_docs_path: Path
     writing_blueprint_path: Path
+    chapter_draft_path: Path
     evidence_rows: int
     core_result_rows: int
     package_rows: int
@@ -166,6 +169,7 @@ class ThesisConsolidationResult:
             "docs_path": str(self.docs_path),
             "agent_docs_path": str(self.agent_docs_path),
             "writing_blueprint_path": str(self.writing_blueprint_path),
+            "chapter_draft_path": str(self.chapter_draft_path),
             "evidence_rows": self.evidence_rows,
             "core_result_rows": self.core_result_rows,
             "package_rows": self.package_rows,
@@ -270,6 +274,7 @@ def generate_thesis_consolidation(
     docs_path = docs_dir / DOC_OUTPUT
     agent_docs_path = docs_dir / AGENT_DOC_OUTPUT
     writing_blueprint_path = docs_dir / WRITING_BLUEPRINT_OUTPUT
+    chapter_draft_path = docs_dir / CHAPTER_DRAFT_OUTPUT
 
     evidence_map.to_csv(evidence_map_path, index=False)
     core_results.to_csv(core_results_path, index=False)
@@ -316,6 +321,16 @@ def generate_thesis_consolidation(
         ),
         encoding="utf-8",
     )
+    chapter_draft_path.write_text(
+        _render_chapter_draft(
+            evidence_map=evidence_map,
+            core_results=core_results,
+            curated_package=curated_package,
+            citation_readiness=citation_readiness,
+            chapter_plan=chapter_plan,
+        ),
+        encoding="utf-8",
+    )
 
     return ThesisConsolidationResult(
         evidence_map_path=evidence_map_path,
@@ -329,6 +344,7 @@ def generate_thesis_consolidation(
         docs_path=docs_path,
         agent_docs_path=agent_docs_path,
         writing_blueprint_path=writing_blueprint_path,
+        chapter_draft_path=chapter_draft_path,
         evidence_rows=len(evidence_map),
         core_result_rows=len(core_results),
         package_rows=len(curated_package),
@@ -1574,6 +1590,7 @@ def _build_metadata(
             "chapter_rows": int(len(chapter_plan)),
             "agent_stage_rows": int(len(agent_pipeline)),
             "writing_blueprint_generated": True,
+            "chapter_draft_generated": True,
             "core_table_count": int((core["package_type"] == "table").sum()),
             "core_figure_count": int((core["package_type"] == "figure").sum()),
             "max_core_tables": 5,
@@ -1887,6 +1904,209 @@ def _render_writing_blueprint(
     return "\n".join(sections)
 
 
+def _render_chapter_draft(
+    *,
+    evidence_map: pd.DataFrame,
+    core_results: pd.DataFrame,
+    curated_package: pd.DataFrame,
+    citation_readiness: pd.DataFrame,
+    chapter_plan: pd.DataFrame,
+) -> str:
+    evidence = evidence_map.set_index("evidence_id").to_dict(orient="index")
+    package = curated_package.set_index("package_id").to_dict(orient="index")
+    core = core_results.set_index("result_id").to_dict(orient="index")
+    citation_counts = citation_readiness["final_citation_readiness"].value_counts().to_dict()
+
+    h1_bounded = core["core_h1_bounded_poll_scope"]
+    h1_boundary = core["core_h1_broad_claim_boundary"]
+    h2_result = core["core_h2_largest_daily_event_window"]
+    h3_result = core["core_h3_top_tier_timing"]
+    monitor_result = core["core_monitor_review_queue_boundary"]
+    swiss_result = core["core_swiss_running_gap_pending"]
+
+    return "\n".join(
+        [
+            "# Thesis Chapter Draft\n",
+            "Arbeitsfassung fuer die Bachelorarbeit. Dieser Text ist eine "
+            "strukturierte Draft-Prosa aus der deterministischen "
+            "Konsolidierungspipeline. Er ersetzt keine finale Quellenpruefung "
+            "und fuehrt keine neuen Kennzahlen ein.\n",
+            "## 1. Einleitung und Forschungsfrage\n",
+            "Dezentrale Prognosemaerkte wie Polymarket verdichten Erwartungen "
+            "vieler Marktteilnehmer zu handelbaren Wahrscheinlichkeiten. Die "
+            "Bachelorarbeit untersucht, ob und in welchem Umfang solche Preise "
+            "Informationen effizienter abbilden als traditionelle Prognose- und "
+            "Umfragequellen. Informationelle Effizienz wird dabei nicht als "
+            "direkt beobachtbare Eigenschaft behandelt, sondern ueber drei "
+            "deterministische Proxy-Ebenen operationalisiert: Prognosequalitaet "
+            "(H1), Ereignisfenster-Reaktionen (H2) und walletbasierte "
+            "Timing-Diagnostik (H3). Die methodische Grundregel lautet, dass "
+            "statistische Kennzahlen ausschliesslich in Python berechnet werden "
+            "und jede Interpretation auf ein Artefakt oder eine Evidence-ID "
+            "zurueckgefuehrt werden muss. Zentrale Einstiegsartefakte sind "
+            f"`{package['T1']['primary_artifact']}` und "
+            "`data/results/thesis_core_results_table.csv`.\n",
+            "Die leitende Forschungsfrage lautet: In welchem Ausmass zeigen "
+            "Polymarket-Preise im US-Wahlkontext 2024 eine hoehere "
+            "Prognosequalitaet, eine sichtbare Reaktion auf oeffentliche "
+            "Ereignisse und fruehe walletbasierte Signalstrukturen im Vergleich "
+            "zu traditionellen Prognosequellen? Die Antwort wird bewusst "
+            "begrenzt formuliert: Die Arbeit kann Evidenz fuer bestimmte "
+            "diagnostische Muster liefern, aber keine universelle Aussage ueber "
+            "alle Prognosemaerkte, keine Intraday-Geschwindigkeitsbehauptung "
+            "und keine Aussage ueber handelbare Gewinne.\n",
+            "## 2. Theorie und Literatur\n",
+            "Der theoretische Rahmen stuetzt sich auf die Idee informationeller "
+            "Markteffizienz und auf Literatur zu Prognosemaerkten, "
+            "Vorhersageguete, Ereignisstudien und walletbasierter "
+            "Marktbeobachtung. Die aktuelle Quellensteuerung liegt in "
+            "`data/results/thesis_citation_readiness.csv`. Diese Datei zeigt, "
+            f"dass {int(citation_counts.get('needs_full_source_review_before_final_citation', 0))} "
+            "Quellen vor finaler Zitation noch vollstaendig geprueft werden "
+            "muessen, waehrend eine Candidate-Quelle nicht fuer "
+            "thesis-facing Claims verwendet werden darf. Fuer H1 sind "
+            "`lit_brier_001`, `lit_dm_001` und `zotero_poly_002` die "
+            "wesentlichen Quellenanker. Fuer H2 wird die Event-Study-Logik "
+            "ueber `lit_eventstudy_001` gestuetzt. Fuer H3 dienen "
+            "`lit_granger_001`, `zotero_poly_001` und `zotero_poly_005` als "
+            "Rahmen fuer Timingdiagnostik und die vorsichtige Interpretation "
+            "von Walletdaten.\n",
+            "Wichtig ist die Trennung zwischen Literaturrahmen und empirischem "
+            "Befund. Literatur motiviert die Methode und begrenzt die Sprache, "
+            "ersetzt aber keine lokalen Ergebnisartefakte. Deshalb sind "
+            "Quellen mit Status `skimmed` fuer die Draft-Struktur nutzbar, "
+            "aber vor finaler Abgabe noch nicht automatisch zitierfertig. Die "
+            "Literaturmap und die Evidence-Map verhindern, dass spaeter "
+            "unbelegte Theorieaussagen oder nicht gepruefte Quellen in die "
+            "Thesis uebernommen werden.\n",
+            "## 3. Daten und Methodik\n",
+            "Die empirische Pipeline folgt dem Prinzip: Datenvalidierung, "
+            "deterministische Analyse, danach erst Interpretation. H1 bewertet "
+            "Prognosequalitaet ueber Brier-Verlust und den "
+            "Diebold-Mariano-Vergleich vorberechneter Verlustreihen. "
+            f"Primaere Artefakte sind `{evidence['method_h1_brier_dm']['primary_artifact']}` "
+            "sowie `data/results/h1_brier_scores.csv` und "
+            "`data/results/h1_diebold_mariano.json`. RCP wird nicht als native "
+            "Wahrscheinlichkeitsprognose genutzt, solange keine dokumentierte "
+            "Transformation vorliegt.\n",
+            "H2 nutzt vorab kuratierte Ereignisse und feste Tagesfenster. "
+            f"Die Methode ist in `{evidence['method_h2_event_window']['primary_artifact']}` "
+            "und `data/events_timeline_seed.csv` abgebildet. Ereignisse werden "
+            "nicht nach Sichtung der Marktreaktion hinzugefuegt oder entfernt. "
+            "Die H2-Aussagen bleiben auf Tagesdaten beschraenkt.\n",
+            "H3 bildet Walletgruppen nicht ueber fixe USD-Schwellen, sondern "
+            "ueber dataset-relative Tiers. Die zugehoerigen Artefakte sind "
+            "`data/results/h3_wallet_distribution_inventory.json`, "
+            "`data/results/h3_wallet_tiers.csv`, "
+            "`data/results/h3_lead_lag_correlations.csv` und "
+            "`data/results/h3_granger_results.csv`. Die Granger-Ausgaben "
+            "werden als predictive timing diagnostics gelesen, nicht als "
+            "Kausalitaetsbeweis. Die wichtigste methodische Limitation bleibt "
+            "die BUY-only-Quelle und die taegliche Aggregation.\n",
+            "## 4. H1: Prognosequalitaet\n",
+            "Das zentrale H1-Ergebnis lautet: Im begrenzten "
+            "Poll-Vergleichsscope unterstuetzen die Artefakte eine "
+            "Polymarket-Staerke. "
+            f"Der aktuelle Kernwert ist {_de_key_value(h1_bounded['key_value'])}. Die Aussage "
+            f"stuetzt sich auf `{h1_bounded['primary_artifact']}` und die "
+            "Evidence-ID `interpretation_h1_bounded_advantage`. Damit ist eine "
+            "begrenzte, scope-spezifische Polymarket-Staerke sichtbar.\n",
+            "Gleichzeitig ist die breite Ueberlegenheitsbehauptung nicht "
+            "gedeckt. Der zugehoerige Kernwert lautet: "
+            f"{_de_key_value(h1_boundary['key_value'])}. Diese Grenze ist fuer die Thesis "
+            "zentral, weil sie verhindert, dass ein einzelner unterstuetzter "
+            "Scope zu einer allgemeinen Ueberlegenheitsbehauptung ausgedehnt "
+            "wird. Die korrekte H1-Interpretation ist deshalb: Polymarket zeigt "
+            "in definierten spaeten und kompatiblen Vergleichsfenstern bessere "
+            "Brier-Verluste, aber die Gesamtevidenz bleibt gemischt und "
+            "kontextabhaengig.\n",
+            f"Empfohlene Darstellung: Tabelle `{package['T2']['primary_artifact']}` "
+            f"und Abbildung `{package['F1']['primary_artifact']}`. Die "
+            "Limitation ist explizit zu nennen: unterschiedliche "
+            "Vergleichseinheiten, transformierte Poll-Signale und wiederholte "
+            "Tageszeilen sind keine unabhaengigen Wahlen.\n",
+            "## 5. H2: Ereignisfenster\n",
+            "Fuer H2 zeigt die aktuelle Kernzeile: Die groesste primaere "
+            "Tagesfensterbewegung liegt im Trump-Shooting-Fenster. "
+            f"Der Wert ist {_de_key_value(h2_result['key_value'])}. Quelle ist "
+            f"`{h2_result['primary_artifact']}`, gestuetzt durch "
+            "`interpretation_h2_daily_response`. Das Ergebnis zeigt, dass "
+            "Polymarket-Preise um kuratierte oeffentliche Ereignisse sichtbare "
+            "Tagesbewegungen aufweisen.\n",
+            "Die Interpretation bleibt jedoch eine Tagesfensterdiagnostik. Aus "
+            "diesen Artefakten darf nicht abgeleitet werden, dass Polymarket "
+            "innerhalb von Minuten oder Stunden schneller reagiert als andere "
+            "Quellen. Fuer eine solche Aussage waeren validierte Intraday- oder "
+            "Orderbuchdaten noetig. In der Thesis sollte H2 daher als Evidenz "
+            "fuer beobachtbare Tagesreaktionen geschrieben werden, nicht als "
+            "Beweis fuer unmittelbare Informationsverarbeitung.\n",
+            f"Empfohlene Darstellung: Tabelle `{package['T3']['primary_artifact']}` "
+            f"und Abbildung `{package['F2']['primary_artifact']}`.\n",
+            "## 6. H3: Wallet-Timing\n",
+            "Das zentrale H3-Ergebnis lautet: Das oberste Wallet-Tier zeigt "
+            "die klarste aktuelle Timingdiagnostik. "
+            f"Der aktuelle Kernwert ist {_de_key_value(h3_result['key_value'])}. Die Aussage "
+            f"stuetzt sich auf `{h3_result['primary_artifact']}`, "
+            "`data/results/h3_granger_results.csv` und "
+            "`data/results/h3_lead_lag_correlations.csv`. H3 zeigt damit eine "
+            "auffaellige top-tier Timingdiagnostik, aber keinen "
+            "Kausalitaetsnachweis und keine Aussage ueber private Informationen "
+            "oder Profitabilitaet.\n",
+            "Fuer die Thesis ist die Formulierung entscheidend. Erlaubt ist: "
+            "dataset-relative Wallet-Tiers zeigen unter taeglicher Aggregation "
+            "Timingmuster, die als predictive diagnostics gelesen werden "
+            "koennen. Nicht erlaubt ist: identifizierte Wallets belegen "
+            "Fehlverhalten, private Informationsnutzung oder eine handelbare "
+            "Strategie. Die Limitationen BUY-only, taegliche Frequenz, "
+            "Mehrfachtests und moegliche Upstream-Filter gehoeren direkt in den "
+            "Ergebnistext.\n",
+            f"Empfohlene Darstellung: Tabelle `{package['T4']['primary_artifact']}` "
+            f"und Abbildung `{package['F3']['primary_artifact']}`.\n",
+            "## 7. Erweiterungen: Monitor und Schweizer Abstimmung\n",
+            "Der Monitor-Prototyp ist nuetzlich als Workflow- und "
+            "Appendix-Material, aber nicht als empirischer Beweis. "
+            f"Kernwert: {_de_key_value(monitor_result['key_value'])}. Die zugehoerigen "
+            "Artefakte bleiben reviewgebunden und sind keine thesis-facing "
+            "Evidenz fuer Ursachen, Regelverstoesse, Marktineffizienz, "
+            "Handelbarkeit oder Gewinne.\n",
+            "Der Schweizer Abstimmungstrack bleibt bis zum offiziellen "
+            "Resultat beschreibend. "
+            f"Kernwert: {_de_key_value(swiss_result['key_value'])}. Die aktuelle Figur "
+            f"`{package['F4']['primary_artifact']}` darf als laufender "
+            "Poll-Proxy-Vergleich genutzt werden, aber nicht als finaler "
+            "Effizienzbefund. Poll-Anteile sind keine echten "
+            "Modellwahrscheinlichkeiten.\n",
+            "## 8. Diskussion und Fazit\n",
+            "Die bisherigen Ergebnisse sprechen fuer eine differenzierte "
+            "Antwort. H1 liefert in einem abgegrenzten Vergleichsscope starke "
+            "Unterstuetzung fuer Polymarket, waehrend eine breite "
+            "Ueberlegenheitsbehauptung nicht bewiesen ist. H2 zeigt sichtbare "
+            "Tagesbewegungen um kuratierte Ereignisse, ohne Intraday-Aussagen "
+            "zu erlauben. H3 zeigt eine top-tier Wallet-Timingdiagnostik, die "
+            "als fruehes Signal interpretiert werden kann, aber keine "
+            "Kausalitaet, keine private Informationsnutzung und keine "
+            "Profitabilitaet belegt.\n",
+            "Das Fazit sollte deshalb nicht lauten, dass Polymarket generell "
+            "effizienter ist als traditionelle Prognosequellen. Praeziser ist: "
+            "Die Arbeit findet in klar definierten Ausschnitten Hinweise auf "
+            "bessere Prognosequalitaet, sichtbare Ereignisreaktionen und "
+            "walletbasierte Timingmuster. Gleichzeitig bleiben "
+            "Datenfrequenz, Quellenstatus, Poll-Transformation, BUY-only "
+            "Walletdaten und fehlende finale Swiss-Auswertung zentrale "
+            "Limitationen.\n",
+            "## 9. Agenten-Pipeline als Ausblick\n",
+            "Die Agenten-Pipeline ist ein spaeterer Arbeitsausblick, nicht Teil "
+            "des aktiven empirischen Kerns. Sinnvolle Agentenrollen waeren "
+            "Evidence Reader, Citation Checker, Wording Guard und "
+            "Monitor-Review-Helfer. Alle Rollen duerfen nur bounded summaries "
+            "lesen, muessen in `llm_audit_log` protokolliert werden und duerfen "
+            "keine Kennzahlen berechnen. MCP-Zugriff waere erst nach separatem "
+            "Ziel, Tests, Access Contract und Audit-Logging vertretbar. "
+            "Order- oder Tradingpfade bleiben ausgeschlossen.\n",
+        ]
+    )
+
+
 def _areas_for_evidence_ids(evidence_ids: list[str]) -> list[str]:
     areas: list[str] = []
     for evidence_id in evidence_ids:
@@ -1901,6 +2121,31 @@ def _areas_for_evidence_ids(evidence_ids: list[str]) -> list[str]:
         elif "swiss" in evidence_id:
             areas.append("swiss_referendum")
     return sorted(set(areas))
+
+
+def _de_key_value(value: object) -> str:
+    text = str(value)
+    replacements = {
+        "state-date rows": "State-Date-Zeilen",
+        "lower Brier loss for Polymarket": "mit niedrigerem Brier-Verlust fuer Polymarket",
+        "aggregate rows support Polymarket": "Aggregate-Zeilen unterstuetzen Polymarket",
+        "majority-case rows support Polymarket": "Majority-Case-Zeilen unterstuetzen Polymarket",
+        "broad rows prove the claim": "Broad-Claim-Zeilen beweisen die breite Aussage",
+        "audit rows contradict the strong claim": "Audit-Zeilen widersprechen der starken Aussage",
+        "correlation": "Korrelation",
+        "aligned rows": "alignierte Zeilen",
+        "review cases": "Review-Faelle",
+        "high": "hoch",
+        "medium": "mittel",
+        "snapshots": "Snapshots",
+        "latest": "aktuell",
+        "Polymarket Yes": "Polymarket-Yes",
+        "poll Yes": "Poll-Yes",
+        "raw gap": "Raw-Gap",
+    }
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+    return text
 
 
 def _require_columns(frame: pd.DataFrame, columns: Sequence[str], name: str) -> None:

@@ -8226,3 +8226,46 @@ Verification:
   -> PASS, 15 passed.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 496 passed in 47.23s.
+
+## 2026-06-12 - Thesis chapter draft prose
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Converted the deterministic consolidation package into a first German/Swiss
+  spelling thesis-prose draft with artifact references, Evidence IDs, bounded
+  wording, and limitations.
+- A running Swiss referendum refresh updated the latest side-track artifacts
+  during this work; those data changes remain separate from new thesis-draft
+  code but the thesis core table now reflects the latest snapshot count.
+
+Changes:
+
+- Extended `operations/analysis/thesis_consolidation.py` with generated
+  `docs/research/THESIS_CHAPTER_DRAFT.md`.
+- Added German draft sections for introduction, theory/literature,
+  data/methodology, H1, H2, H3, monitor/Swiss extensions, discussion/fazit,
+  and agent-pipeline outlook.
+- The draft uses deterministic core result values only and keeps source
+  review, RCP, H2 daily resolution, H3 BUY-only/daily alignment, monitor
+  review status, Swiss pending-result status, and agent deferral visible.
+- Extended tests to assert draft generation, traceability to Evidence IDs and
+  artifacts, no German sharp-s, no English H1 method placeholder, and
+  continued `llm_audit_log` agent guardrail wording.
+- Updated `GOAL.md` and `ROADMAP.md` for the chapter-draft slice.
+
+Key output:
+
+- New document: `docs/research/THESIS_CHAPTER_DRAFT.md`.
+- Latest Swiss side-track count reflected in the thesis core table and draft:
+  27 snapshots, Polymarket Yes 22.0 percent, SRG/gfs.bern poll Yes 45.0
+  percent, raw gap -23.0 percentage points.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`
+  -> PASS, generated the chapter draft.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_consolidation.py tests\test_thesis_result_summaries.py tests\test_thesis_figures.py`
+  -> PASS, 16 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 497 passed in 48.49s.

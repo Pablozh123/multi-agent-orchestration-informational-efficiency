@@ -40,6 +40,7 @@
   },
   "outputs": {
     "agent_stage_rows": 6,
+    "chapter_draft_generated": true,
     "chapter_rows": 8,
     "citation_readiness_rows": 15,
     "core_figure_count": 4,

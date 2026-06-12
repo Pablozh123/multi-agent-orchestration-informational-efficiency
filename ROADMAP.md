@@ -634,6 +634,10 @@ Current implemented consolidation:
 - `docs/research/THESIS_WRITING_BLUEPRINT.md` translates the consolidation
   package into a chapter-by-chapter writing plan with source-review counts,
   package placements, result statements, limitations, and next writing actions.
+- `docs/research/THESIS_CHAPTER_DRAFT.md` provides a first thesis-prose draft
+  in German/Swiss spelling from the deterministic consolidation artifacts,
+  including artifact references, Evidence IDs, bounded result wording,
+  limitations, and a documentation-only agent outlook.
 
 Blockers:
 

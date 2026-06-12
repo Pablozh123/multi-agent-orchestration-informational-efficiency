@@ -238,6 +238,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Alle Eintraege bleiben pending, bis der Dozent Feedback gegeben hat.",
         ),
         _index_row(
+            artifact_id="index_19_advisor_feedback_integration",
+            artifact_type="advisor_feedback_integration",
+            path="docs/project/DOZENTEN_FEEDBACK_INTEGRATION_CHECKLIST.md; data/results/thesis_advisor_feedback_integration_checklist.csv",
+            purpose_de="Uebersetzt spaeteres Dozentenfeedback in kleine Folgecommits mit Quellen-, Artefakt-, Tabellen/Figuren- und Agent-Gates.",
+            use_now_de="Nach ausgefuelltem Feedback-Log je Feedbackpunkt genau einen passenden Integrations-Scope waehlen.",
+            gate_or_limit_de="Pending bis Feedback vorliegt; keine neuen Claims, keine Runtime-Agenten und keine Rohartefakt-Dumps.",
+        ),
+        _index_row(
             artifact_id="index_20_submission_readiness",
             artifact_type="submission_readiness",
             path="docs/project/THESIS_SUBMISSION_READINESS_BOARD.md; data/results/thesis_submission_readiness_board.csv",
@@ -450,8 +458,9 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Dieser Index zeigt, welche Artefakte fuer den aktuellen Highlevel-"
         "Projektstand, den Dozentenbericht, Source Review, Wording Guard, "
         "Advisor Handoff Package, Advisor Handoff Note, Advisor Feedback Log, "
-        "Submission Readiness Board, Drafting Sequence, Execution Checklist, "
-        "Chapter Source Bindings, Source Review Execution, Source Access "
+        "Advisor Feedback Integration Checklist, Submission Readiness Board, "
+        "Drafting Sequence, Execution Checklist, Chapter Source Bindings, "
+        "Source Review Execution, Source Access "
         "Audit, Source Structure Inventory, Source Review Decision Packets, "
         "H1-H2-H3 Source Review Notes, Source Review Progress Ledger, "
         "Source Review Progress Protocol, Source Review Chapter Handoff, "
@@ -468,8 +477,10 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Nutze zuerst den Dozentenbericht und die Absprache-Checklist fuer die "
         "Betreuung. Nutze das Advisor Handoff Package als Abgabe- und "
         "Gespraechsreihenfolge. Nutze den Uebergabetext als kurze Mail- oder "
-        "Chat-Vorlage. Nutze das Feedback-Log nach der Betreuung. Nutze das "
-        "Submission Readiness Board fuer die "
+        "Chat-Vorlage. Nutze das Feedback-Log nach der Betreuung und die "
+        "Feedback-Integration-Checklist, um daraus kleine Folgecommits mit "
+        "Quellen-, Artefakt-, Tabellen/Figuren- und Agent-Gates abzuleiten. "
+        "Nutze das Submission Readiness Board fuer die "
         "finalen Gates. Nutze die Drafting Sequence fuer die naechste "
         "Schreibreihenfolge. Nutze das Source Access Audit und Source Structure "
         "Inventory sowie Source Review Decision Packets vor der manuellen "

@@ -743,6 +743,12 @@ Current implemented consolidation:
 - `data/results/thesis_advisor_feedback_log_template.csv` and
   `docs/project/DOZENTEN_FEEDBACK_LOG.md` provide a pending feedback log for
   advisor answers, resulting actions, and small follow-up commit scopes.
+- `data/results/thesis_advisor_feedback_integration_checklist.csv` and
+  `docs/project/DOZENTEN_FEEDBACK_INTEGRATION_CHECKLIST.md` map those pending
+  feedback rows to eight small integration scopes. Each row requires source or
+  deterministic-artifact checks for the affected method/interpretation,
+  preserves the compact table/figure package, keeps Swiss and final QA gates
+  visible, and leaves future agents at 0 active runtime rows.
 - `data/results/thesis_submission_readiness_board.csv` and
   `docs/project/THESIS_SUBMISSION_READINESS_BOARD.md` provide a nine-gate
   submission-readiness board: advisor handoff, chapter/source mapping, source

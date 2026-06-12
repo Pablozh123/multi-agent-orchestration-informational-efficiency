@@ -101,6 +101,10 @@ acceptance_criteria:
   scope boundaries.
 - A pending advisor feedback log exists so later feedback can be translated
   into small scoped follow-up commits.
+- An advisor feedback integration checklist exists so later feedback is mapped
+  to one small commit scope with required source/artifact checks, compact
+  table/figure boundaries, Swiss/result gates, final QA, and inactive
+  future-agent limits.
 - The advisor handoff package is updated so the Word report, handoff note,
   readiness board, drafting sequence, feedback log, source review, and index
   appear in one consistent order.
@@ -169,7 +173,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: prepare advisor feedback integration checklist
+next_commit: docs: verify method interpretation source coverage against literature index
 
 ## Running Side Goal
 

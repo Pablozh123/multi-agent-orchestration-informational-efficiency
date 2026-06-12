@@ -10402,3 +10402,51 @@ Verification:
   LibreOffice/`soffice` is not available in PATH on this machine.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 562 passed in 52.17s.
+
+## 2026-06-12 - Advisor feedback integration checklist
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Prepared the next step after the Dozentenbericht: translating later advisor
+  feedback into small scoped follow-up commits.
+- Kept Review-Access paused and did not inspect source contents.
+- Did not promote source status, activate agents, call MCP tools, route
+  models, calculate LLM metrics, expose wallet addresses, or create trading
+  paths.
+
+Changes:
+
+- Added `operations/project/build_advisor_feedback_integration_checklist.py`.
+- Generated `data/results/thesis_advisor_feedback_integration_checklist.csv`.
+- Generated `docs/project/DOZENTEN_FEEDBACK_INTEGRATION_CHECKLIST.md`.
+- Added `tests/test_advisor_feedback_integration_checklist.py`.
+- Updated `operations/project/build_thesis_consolidation_index.py`,
+  `data/results/thesis_consolidation_index.csv`, and
+  `docs/project/THESIS_CONSOLIDATION_INDEX.md` so the new artifact is indexed.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Advisor feedback integration rows: 8.
+- Feedback status: pending_advisor_feedback.
+- Active runtime agents: 0.
+- Each row maps one advisor question to a small commit scope, affected
+  artifacts, required source/artifact check, final gate, and guardrail.
+- The checklist requires every method and interpretation to keep a reviewed
+  source or deterministic artifact, a limitation, and a Source Review gate.
+- The checklist preserves the few-good-tables/figures package and blocks raw
+  artifact dumps.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_advisor_feedback_integration_checklist.py operations/project/build_thesis_consolidation_index.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_advisor_feedback_integration_checklist.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_advisor_feedback_integration_checklist`
+  -> PASS, generated 8 integration rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 38 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 564 passed in 52.87s.

@@ -11107,3 +11107,49 @@ Verification:
 
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `574 passed in 59.12s`, clean before the status refresh.
+
+## 2026-06-12 - Advisor handoff aligned with source-gated report
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Kept Review-Access paused and treated the Dozentenbericht as the written
+  high-level handoff, not as a new empirical artifact.
+
+Changes:
+
+- Updated the advisor handoff package and handoff note so both point to the
+  refreshed Word report and its `Source-Gated H1-H2-H3 Drafting Sequence`.
+- Updated the thesis project highlevel view so the next path is: Dozentenbericht
+  and Dozentenpaket, feedback log, Source Review, H1-H3 writing, table/figure
+  integration, Swiss gate, and final QA.
+- Added tests that assert the source-gated sequence remains visible in the
+  handoff note, handoff package, and highlevel view.
+- Updated `GOAL.md` and `ROADMAP.md` to record the handoff/highlevel state and
+  the next recommended commit.
+
+Key output:
+
+- Handoff note rows: 6.
+- Handoff package rows: 11.
+- Highlevel view rows: 10.
+- Source-Gated H1-H2-H3 Drafting Sequence in handoff: 15 paragraph steps,
+  23 linked Manual Source Review rows, 23 pending rows, 0 final-ready rows.
+- Latest content commit:
+  `dd82887 docs: update advisor handoff after source-gated report refresh`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_advisor_handoff_note.py operations\project\build_advisor_handoff_package.py operations\analysis\thesis_consolidation.py tests\test_advisor_handoff_note.py tests\test_advisor_handoff_package.py tests\test_thesis_consolidation.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_advisor_handoff_note.py tests\test_advisor_handoff_package.py tests\test_thesis_consolidation.py -q`
+  -> PASS, 20 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`
+  -> PASS; unrelated Swiss refresh diffs from this regeneration were not kept.
+- `.\.venv\Scripts\python.exe -m operations.project.build_advisor_handoff_package`
+  -> PASS, regenerated package.
+- `.\.venv\Scripts\python.exe -m operations.project.build_advisor_handoff_note`
+  -> PASS, regenerated handoff text.
+- `git diff --check` -> PASS.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `574 passed in 64.75s`, clean after the content commit.

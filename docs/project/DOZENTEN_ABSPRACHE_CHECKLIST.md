@@ -6,6 +6,14 @@ Diese Checkliste uebersetzt den Highlevel-Projektstand in konkrete Fragen fuer d
 
 - Advisor questions: 8
 
+## Empfohlene Gespraechsreihenfolge
+
+1. Erst H1-H2-H3 Scope bestaetigen: bounded H1, H2 Tagesfenster, H3 Timingdiagnostik.
+2. Danach Source Review Tiefe festlegen: Priority-1-Quellen und Seiten-/Abschnittsnotizen.
+3. Dann Tabellen/Figuren und Kapitelintegration entscheiden.
+4. Monitor und Swiss nur als Appendix, Diskussion oder Side-Track abgrenzen; Review-Access bleibt pausiert.
+5. Agenten nur als Future Work bestaetigen und finale QA-Gates festlegen.
+
 ## Questions
 
 | question_id | topic | advisor_question_de | current_project_position_de | decision_needed_de | guardrail |

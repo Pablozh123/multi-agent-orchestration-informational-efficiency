@@ -98,11 +98,13 @@ acceptance_criteria:
 - The high-level project view explicitly answers the path forward without
   Review-Access: advisor feedback, source review, H1-H3 writing,
   table/figure integration, Swiss result gate, and final QA.
+- The advisor checklist contains a recommended discussion order for the next
+  Betreuung so the high-level path can be discussed quickly.
 - Tests cover the generated evidence map and curated result package where
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: clarify project high-level path
+next_commit: docs: add advisor discussion order
 
 ## Running Side Goal
 

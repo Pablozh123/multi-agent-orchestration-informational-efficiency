@@ -9424,6 +9424,39 @@ Verification:
 - `rg -n "sharp-s|\\u00df" operations/analysis/thesis_consolidation.py tests/test_thesis_consolidation.py docs/research/THESIS_PROJECT_HIGHLEVEL_VIEW.md docs/research/THESIS_CONSOLIDATION.md docs/research/THESIS_CHAPTER_DRAFT.md docs/research/THESIS_WRITING_BLUEPRINT.md docs/project/dozentenbericht_ba_thesis.md docs/project/dozentenbericht_ba_thesis.html`
   -> PASS, no matches.
 
+## 2026-06-12 - Advisor discussion order
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Kept Review-Access paused and translated the high-level path into a faster
+  advisor discussion order.
+
+Changes:
+
+- Updated `operations/project/build_advisor_alignment_checklist.py` so
+  `DOZENTEN_ABSPRACHE_CHECKLIST.md` starts with an ordered discussion sequence.
+- Regenerated `docs/project/DOZENTEN_ABSPRACHE_CHECKLIST.md`.
+- Updated `tests/test_advisor_alignment_checklist.py`.
+- Updated `GOAL.md` and `ROADMAP.md` to reflect the discussion-order slice.
+
+Key output:
+
+- Advisor questions remain: 8.
+- New recommended order: H1-H2-H3 scope, Source Review depth, tables/figures,
+  Monitor and Swiss boundaries, agent outlook and final QA.
+- Review-Access remains paused; no access, agent, MCP, model-routing, or
+  trading implementation was added.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_advisor_alignment_checklist.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_advisor_alignment_checklist.py -q`
+  -> PASS, 2 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_advisor_alignment_checklist`
+  -> PASS, regenerated 8 advisor questions.
+
 ## 2026-06-12 - Advisor feedback log
 
 Goal context:

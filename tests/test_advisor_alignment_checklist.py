@@ -23,6 +23,8 @@ def test_generate_advisor_alignment_checklist_writes_questions(tmp_path: Path) -
     assert checklist["question_id"].tolist()[0] == "advisor_q01_h1_wording"
     assert "Dozenten-Absprache-Checklist" in doc
     assert "Advisor questions: 8" in doc
+    assert "Empfohlene Gespraechsreihenfolge" in doc
+    assert "Erst H1-H2-H3 Scope bestaetigen" in doc
     assert "Review-Access bleibt pausiert" in doc
     assert "llm_audit_log" in doc
 

@@ -711,7 +711,8 @@ Current implemented consolidation:
   `docs/project/DOZENTEN_ABSPRACHE_CHECKLIST.md` translate the high-level
   status into eight concrete advisor questions covering H1 wording, source
   review depth, H2/H3 scope, table/figure package, monitor appendix, Swiss
-  placement, agent outlook, and final QA.
+  placement, agent outlook, and final QA. The Markdown checklist now also
+  starts with a recommended discussion order for the next Betreuung.
 - `data/results/thesis_advisor_handoff_package.csv` and
   `docs/project/THESIS_ADVISOR_HANDOFF_PACKAGE.md` define the 11-file advisor
   handoff order: handoff note, Word report, advisor questions, submission

@@ -9220,3 +9220,50 @@ Verification:
   -> PASS, 525 passed in 49.45s.
 - `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
   -> PASS, recommends reviewing one coherent docs/data/automation slice.
+
+## 2026-06-12 - Advisor report high-level gates
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Updated the Word/HTML/Markdown advisor report so the high-level next steps
+  are visible without opening separate gate files first.
+
+Changes:
+
+- Updated `operations/project/build_dozenten_report.py`.
+- Regenerated `docs/project/dozentenbericht_ba_thesis.md`.
+- Regenerated `docs/project/dozentenbericht_ba_thesis.html`.
+- Regenerated `docs/project/dozentenbericht_ba_thesis.docx`.
+- Updated `tests/test_dozenten_report.py`.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Added `Submission Readiness und finale Gates` to the Dozentenbericht.
+- Added `Schreibsequenz fuer den naechsten Entwurf` to the Dozentenbericht.
+- The report now shows 9 readiness gates, 4 draft-ready gates, 2 final blockers,
+  10 drafting steps, 4 bounded write-now steps, and 1 future-work-only step.
+- Review-Access remains paused; Source Review, Swiss result mapping, and
+  DOCX render QA remain final gates.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_dozenten_report.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_dozenten_report.py -q`
+  -> PASS, 1 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, generated MD/HTML/DOCX with 43 report figures.
+- `.\.venv\Scripts\python.exe C:\Users\chole\.codex\plugins\cache\openai-primary-runtime\documents\26.601.10930\skills\documents\render_docx.py docs\project\dozentenbericht_ba_thesis.docx --output_dir docs\project\dozentenbericht_render_qa`
+  -> FAIL, local LibreOffice/soffice is missing (`FileNotFoundError: [WinError 2]`).
+- `git diff --check`
+  -> PASS, no whitespace errors; CRLF warnings only.
+- `rg -n "sharp-s|\\u00df" GOAL.md ROADMAP.md docs/project/dozentenbericht_ba_thesis.md docs/project/dozentenbericht_ba_thesis.html operations/project/build_dozenten_report.py tests/test_dozenten_report.py`
+  -> PASS, no matches.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 525 passed in 51.69s.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> PASS, 525 passed in 49.60s.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+  -> PASS, recommends reviewing one coherent docs/report/automation slice.

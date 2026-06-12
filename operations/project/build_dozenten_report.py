@@ -216,6 +216,10 @@ def collect_report_data() -> dict[str, Any]:
     thesis_source_worksheet = _read_csv("data/results/thesis_source_review_worksheet.csv")
     thesis_execution_checklist = _read_csv("data/results/thesis_execution_checklist.csv")
     thesis_advisor_handoff = _read_csv("data/results/thesis_advisor_handoff_package.csv")
+    thesis_submission_readiness = _read_csv(
+        "data/results/thesis_submission_readiness_board.csv"
+    )
+    thesis_drafting_sequence = _read_csv("data/results/thesis_drafting_sequence.csv")
 
     return {
         "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
@@ -282,6 +286,10 @@ def collect_report_data() -> dict[str, Any]:
         "next_work": _next_work_report_data(thesis_next_work),
         "execution_checklist": _execution_checklist_report_data(thesis_execution_checklist),
         "advisor_handoff": _advisor_handoff_report_data(thesis_advisor_handoff),
+        "submission_readiness": _submission_readiness_report_data(
+            thesis_submission_readiness
+        ),
+        "drafting_sequence": _drafting_sequence_report_data(thesis_drafting_sequence),
         "source_counts": {
             "curated_events": len(event_seed),
             "literature_rows": len(literature),
@@ -306,6 +314,8 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
     next_work = data["next_work"]
     execution_checklist = data["execution_checklist"]
     advisor_handoff = data["advisor_handoff"]
+    submission_readiness = data["submission_readiness"]
+    drafting_sequence = data["drafting_sequence"]
     db = data["project"]["database"]
     folders = data["project"]["folder_inventory"]
     insight_rows = [
@@ -378,6 +388,26 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
     for row in project_highlevel["rows"]:
         project_highlevel_rows.append(
             "| {project_layer} | {status_de} | {current_decision_de} | {next_gate_de} |".format(
+                **{key: str(value).replace("|", ",") for key, value in row.items()}
+            )
+        )
+    readiness_rows = [
+        "| Gate | Status | Naechste Aktion | Grenze | Thesis-Nutzung |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+    for row in submission_readiness["rows"]:
+        readiness_rows.append(
+            "| {gate_area} | {current_status} | {next_action_de} | {blocker_or_limit_de} | {thesis_use_de} |".format(
+                **{key: str(value).replace("|", ",") for key, value in row.items()}
+            )
+        )
+    drafting_rows = [
+        "| Prioritaet | Thesis-Abschnitt | Erlaubnis | Schreibaktion | Nicht behaupten |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+    for row in drafting_sequence["rows"]:
+        drafting_rows.append(
+            "| {priority_order} | {thesis_section} | {draft_permission} | {writing_action_de} | {must_not_claim_de} |".format(
                 **{key: str(value).replace("|", ",") for key, value in row.items()}
             )
         )
@@ -469,6 +499,34 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
         ),
         "",
         *project_highlevel_rows,
+        "",
+        "## Submission Readiness und finale Gates",
+        "",
+        (
+            f"Das Submission Readiness Board trennt {submission_readiness['row_count']} "
+            f"Gates in Draft-Arbeit, finale Blocker und Future Work. "
+            f"Draft-ready Gates: {submission_readiness['draft_ready_count']}; "
+            f"final blockierte Gates: {submission_readiness['final_blocked_count']}. "
+            f"Source Review steht auf `{submission_readiness['source_review_status']}`, "
+            f"Swiss steht auf `{submission_readiness['swiss_status']}`, Agenten "
+            f"stehen auf `{submission_readiness['agent_status']}`."
+        ),
+        "",
+        *readiness_rows,
+        "",
+        "## Schreibsequenz fuer den naechsten Entwurf",
+        "",
+        (
+            f"Die Drafting Sequence ordnet {drafting_sequence['row_count']} "
+            f"Schritte vom Quellenreview bis zur finalen QA. Erste Sequenz ist "
+            f"`{drafting_sequence['first_step']}`, letzte Sequenz ist "
+            f"`{drafting_sequence['final_step']}`. Bounded write-now: "
+            f"{drafting_sequence['bounded_write_now_count']}; final blockiert: "
+            f"{drafting_sequence['final_blocked_count']}; Future-work-only: "
+            f"{drafting_sequence['future_work_only_count']}."
+        ),
+        "",
+        *drafting_rows,
         "",
         "## Naechste Arbeitsschritte",
         "",
@@ -1159,6 +1217,8 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
     next_work = data["next_work"]
     execution_checklist = data["execution_checklist"]
     advisor_handoff = data["advisor_handoff"]
+    submission_readiness = data["submission_readiness"]
+    drafting_sequence = data["drafting_sequence"]
     figures = "\n".join(
         _figure_html(figure, html_output=html_output)
         for figure in data["figures"]
@@ -1238,6 +1298,26 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
         "</tr>"
         for row in project_highlevel["rows"]
     )
+    readiness_rows = "\n".join(
+        "<tr>"
+        f"<td>{escape(row['gate_area'])}</td>"
+        f"<td>{escape(row['current_status'])}</td>"
+        f"<td>{escape(row['next_action_de'])}</td>"
+        f"<td>{escape(row['blocker_or_limit_de'])}</td>"
+        f"<td>{escape(row['thesis_use_de'])}</td>"
+        "</tr>"
+        for row in submission_readiness["rows"]
+    )
+    drafting_rows = "\n".join(
+        "<tr>"
+        f"<td>{row['priority_order']}</td>"
+        f"<td>{escape(row['thesis_section'])}</td>"
+        f"<td>{escape(row['draft_permission'])}</td>"
+        f"<td>{escape(row['writing_action_de'])}</td>"
+        f"<td>{escape(row['must_not_claim_de'])}</td>"
+        "</tr>"
+        for row in drafting_sequence["rows"]
+    )
     h2_rows = "\n".join(
         f"<tr><td>{escape(row['event'])}</td><td>{row['change_pp']:+.1f} pp</td></tr>"
         for row in h2["primary_examples"]
@@ -1308,6 +1388,14 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
   <h2>Projektmatrix fuer die naechste Abstimmung</h2>
   <p>Die Projektmatrix fasst {project_highlevel['row_count']} Ebenen als Status-, Entscheidungs- und Gate-Sicht zusammen. Sie zeigt explizit, dass Review-Access pausiert bleibt und Agenten nur dokumentierter Ausblick sind.</p>
   <table><tr><th>Projektteil</th><th>Status</th><th>Entscheidung</th><th>Naechstes Gate</th></tr>{project_highlevel_rows}</table>
+
+  <h2>Submission Readiness und finale Gates</h2>
+  <p>Das Submission Readiness Board trennt {submission_readiness['row_count']} Gates in Draft-Arbeit, finale Blocker und Future Work. Draft-ready Gates: {submission_readiness['draft_ready_count']}; final blockierte Gates: {submission_readiness['final_blocked_count']}. Source Review steht auf <code>{escape(submission_readiness['source_review_status'])}</code>, Swiss steht auf <code>{escape(submission_readiness['swiss_status'])}</code>, Agenten stehen auf <code>{escape(submission_readiness['agent_status'])}</code>.</p>
+  <table><tr><th>Gate</th><th>Status</th><th>Naechste Aktion</th><th>Grenze</th><th>Thesis-Nutzung</th></tr>{readiness_rows}</table>
+
+  <h2>Schreibsequenz fuer den naechsten Entwurf</h2>
+  <p>Die Drafting Sequence ordnet {drafting_sequence['row_count']} Schritte vom Quellenreview bis zur finalen QA. Erste Sequenz ist <code>{escape(drafting_sequence['first_step'])}</code>, letzte Sequenz ist <code>{escape(drafting_sequence['final_step'])}</code>. Bounded write-now: {drafting_sequence['bounded_write_now_count']}; final blockiert: {drafting_sequence['final_blocked_count']}; Future-work-only: {drafting_sequence['future_work_only_count']}.</p>
+  <table><tr><th>Prioritaet</th><th>Thesis-Abschnitt</th><th>Erlaubnis</th><th>Schreibaktion</th><th>Nicht behaupten</th></tr>{drafting_rows}</table>
 
   <h2>Naechste Arbeitsschritte</h2>
   <p>Der Next-Work-Plan ordnet {next_work['row_count']} Workstreams. Erste Prioritaet ist <code>{escape(next_work['first_workstream'])}</code>, letzte QA-Prioritaet ist <code>{escape(next_work['final_workstream'])}</code>.</p>
@@ -1433,6 +1521,8 @@ def write_docx(data: dict[str, Any], output_path: Path) -> None:
     _add_highlevel_status_section(doc, data["thesis_highlevel"])
     _add_advisor_handoff_package_section(doc, data["advisor_handoff"])
     _add_project_highlevel_matrix_section(doc, data["project_highlevel"])
+    _add_submission_readiness_section(doc, data["submission_readiness"])
+    _add_drafting_sequence_section(doc, data["drafting_sequence"])
     _add_next_work_section(doc, data["next_work"])
     _add_execution_checklist_section(doc, data["execution_checklist"])
     _add_research_design_section(doc, data)
@@ -1777,6 +1867,107 @@ def _advisor_handoff_report_data(advisor_handoff: pd.DataFrame) -> dict[str, Any
         "final_deliverable": rows[-1]["deliverable_id"] if rows else "",
         "rows": rows,
     }
+
+
+def _submission_readiness_report_data(readiness: pd.DataFrame) -> dict[str, Any]:
+    """Translate submission-readiness gates into advisor-facing rows."""
+
+    required_columns = {
+        "gate_id",
+        "gate_area",
+        "current_status",
+        "next_action_de",
+        "blocker_or_limit_de",
+        "thesis_use_de",
+    }
+    missing = sorted(required_columns.difference(readiness.columns))
+    if missing:
+        raise ValueError(f"submission readiness board missing required columns: {missing}")
+
+    ordered = readiness.sort_values("gate_id")
+    rows = [
+        {
+            "gate_area": str(row["gate_area"]),
+            "current_status": str(row["current_status"]),
+            "next_action_de": str(row["next_action_de"]),
+            "blocker_or_limit_de": str(row["blocker_or_limit_de"]),
+            "thesis_use_de": str(row["thesis_use_de"]),
+        }
+        for row in ordered.to_dict(orient="records")
+    ]
+    final_blocked = [
+        row for row in rows if row["current_status"].startswith("final_blocked")
+    ]
+    draft_ready = [
+        row
+        for row in rows
+        if row["current_status"].startswith("ready_for")
+        or row["current_status"] == "advisor_discussion_now"
+    ]
+    return {
+        "row_count": len(rows),
+        "draft_ready_count": len(draft_ready),
+        "final_blocked_count": len(final_blocked),
+        "source_review_status": _status_for_gate(rows, "source_review"),
+        "swiss_status": _status_for_gate(rows, "swiss_result_gate"),
+        "agent_status": _status_for_gate(rows, "agent_future_work"),
+        "rows": rows,
+    }
+
+
+def _drafting_sequence_report_data(sequence: pd.DataFrame) -> dict[str, Any]:
+    """Translate the ordered drafting sequence into advisor-facing rows."""
+
+    required_columns = {
+        "sequence_id",
+        "priority_order",
+        "thesis_section",
+        "draft_permission",
+        "current_status",
+        "writing_action_de",
+        "blocker_or_gate_de",
+        "must_not_claim_de",
+    }
+    missing = sorted(required_columns.difference(sequence.columns))
+    if missing:
+        raise ValueError(f"drafting sequence missing required columns: {missing}")
+
+    ordered = sequence.sort_values("priority_order")
+    rows = [
+        {
+            "sequence_id": str(row["sequence_id"]),
+            "priority_order": int(row["priority_order"]),
+            "thesis_section": str(row["thesis_section"]),
+            "draft_permission": str(row["draft_permission"]),
+            "current_status": str(row["current_status"]),
+            "writing_action_de": str(row["writing_action_de"]),
+            "blocker_or_gate_de": str(row["blocker_or_gate_de"]),
+            "must_not_claim_de": str(row["must_not_claim_de"]),
+        }
+        for row in ordered.to_dict(orient="records")
+    ]
+    return {
+        "row_count": len(rows),
+        "first_step": rows[0]["sequence_id"] if rows else "",
+        "final_step": rows[-1]["sequence_id"] if rows else "",
+        "bounded_write_now_count": sum(
+            row["draft_permission"] == "write_now_bounded" for row in rows
+        ),
+        "final_blocked_count": sum(
+            "final_blocked" in row["draft_permission"] for row in rows
+        ),
+        "future_work_only_count": sum(
+            row["draft_permission"] == "future_work_only" for row in rows
+        ),
+        "rows": rows,
+    }
+
+
+def _status_for_gate(rows: Sequence[dict[str, Any]], gate_area: str) -> str:
+    for row in rows:
+        if row["gate_area"] == gate_area:
+            return str(row["current_status"])
+    raise ValueError(f"readiness gate missing in report data: {gate_area}")
 
 
 def _interpretation_rows(data: dict[str, Any]) -> list[dict[str, str]]:
@@ -2158,6 +2349,96 @@ def _add_project_highlevel_matrix_section(
             "Fuer die naechste Abstimmung reicht diese Matrix als Leitlinie: "
             "H1-H3 schreiben, Quellen reviewen, Monitor und Swiss begrenzen, "
             "Agenten erst nach separatem Goal aktivieren."
+        ),
+    )
+
+
+def _add_submission_readiness_section(
+    doc: Document,
+    submission_readiness: dict[str, Any],
+) -> None:
+    doc.add_heading("Submission Readiness und finale Gates", level=1)
+    doc.add_paragraph(
+        f"Das Submission Readiness Board trennt {submission_readiness['row_count']} "
+        "Gates in Draft-Arbeit, finale Blocker und Future Work. Draft-ready "
+        f"Gates: {submission_readiness['draft_ready_count']}; final "
+        f"blockierte Gates: {submission_readiness['final_blocked_count']}. "
+        f"Source Review steht auf `{submission_readiness['source_review_status']}`, "
+        f"Swiss steht auf `{submission_readiness['swiss_status']}`, Agenten "
+        f"stehen auf `{submission_readiness['agent_status']}`."
+    )
+    rows = [
+        (
+            row["gate_area"],
+            row["current_status"],
+            row["next_action_de"],
+            row["blocker_or_limit_de"],
+        )
+        for row in submission_readiness["rows"]
+    ]
+    table = _add_table(
+        doc,
+        rows,
+        ["Gate", "Status", "Naechste Aktion", "Grenze"],
+        [1800, 1900, 3100, 2560],
+    )
+    _shade_table_header(table)
+    _add_callout(
+        doc,
+        "Finale Gate-Logik",
+        (
+            "Der Entwurf darf weitergeschrieben werden. Finale Abgabe bleibt "
+            "aber blockiert, solange Source Review, Swiss-Resultatzuordnung "
+            "oder DOCX-Render-QA offen sind."
+        ),
+    )
+
+
+def _add_drafting_sequence_section(
+    doc: Document,
+    drafting_sequence: dict[str, Any],
+) -> None:
+    doc.add_heading("Schreibsequenz fuer den naechsten Entwurf", level=1)
+    doc.add_paragraph(
+        f"Die Drafting Sequence ordnet {drafting_sequence['row_count']} "
+        "Schritte vom Quellenreview bis zur finalen QA. Erste Sequenz ist "
+        f"`{drafting_sequence['first_step']}`, letzte Sequenz ist "
+        f"`{drafting_sequence['final_step']}`. Bounded write-now: "
+        f"{drafting_sequence['bounded_write_now_count']}; final blockiert: "
+        f"{drafting_sequence['final_blocked_count']}; Future-work-only: "
+        f"{drafting_sequence['future_work_only_count']}."
+    )
+    rows = [
+        (
+            row["priority_order"],
+            row["thesis_section"],
+            row["draft_permission"],
+            row["writing_action_de"],
+            row["must_not_claim_de"],
+        )
+        for row in drafting_sequence["rows"]
+    ]
+    table = _add_table(
+        doc,
+        rows,
+        [
+            "Prioritaet",
+            "Thesis-Abschnitt",
+            "Erlaubnis",
+            "Schreibaktion",
+            "Nicht behaupten",
+        ],
+        [760, 1650, 1650, 3100, 2200],
+    )
+    _shade_table_header(table)
+    _add_callout(
+        doc,
+        "Naechste Schreibentscheidung",
+        (
+            "Praktisch heisst das: zuerst Quellenreview und Kapitel 1-3, dann "
+            "H1-H2-H3-Ergebnisse mit kompakten Tabellen/Figuren, danach Monitor "
+            "nur als Appendix, Swiss nur beschreibend und Agenten nur als "
+            "Future-Work-Ausblick."
         ),
     )
 

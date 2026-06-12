@@ -25,7 +25,7 @@
 <body>
   <h1>Dozentenbericht zur Bachelorarbeit</h1>
   <p class="subtitle">Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen</p>
-  <p class="small">Erstellt aus lokalen deterministischen Artefakten: 2026-06-12T02:52:21+00:00</p>
+  <p class="small">Erstellt aus lokalen deterministischen Artefakten: 2026-06-12T03:26:44+00:00</p>
   <div class="callout"><strong>Kurzfazit.</strong> Das Projekt prueft informationelle Effizienz ueber drei reproduzierbare Analyseebenen: H1 Forecast-Qualitaet, H2 taegliche Event-Window-Reaktion und H3 Wallet-Tier-Timing. Der Monitor ist ein read-only Forschungsprototyp mit deterministischer Anomaly-Review-Queue; der Swiss-Referendum-Vergleich laeuft als separater Datensammlungs-Track.</div>
 
   <h2>Aufbau wie in der Bachelorarbeit</h2>
@@ -74,6 +74,31 @@
 <tr><td>Swiss Referendum</td><td>Beschreibend bis Resultat</td><td>Bis zum offiziellen Ergebnis nur beschreibend verwenden.</td><td>Nach offiziellem 14. Juni 2026 Resultat Artefakte neu generieren.</td></tr>
 <tr><td>Agenten-Ausblick</td><td>Nur Ausblick</td><td>Agenten bleiben Dokumentationsausblick, keine Runtime-Implementierung.</td><td>Separates Goal, Tests und llm_audit_log vor Aktivierung.</td></tr>
 <tr><td>Dozentenabstimmung</td><td>Advisor-Abstimmung</td><td>Dozent soll H1-Wording, Quellenreview-Tiefe, Swiss und Appendix-Scope absegnen.</td><td>Feedback loggen und in kleinen Commit-Plan uebersetzen.</td></tr></table>
+
+  <h2>Submission Readiness und finale Gates</h2>
+  <p>Das Submission Readiness Board trennt 9 Gates in Draft-Arbeit, finale Blocker und Future Work. Draft-ready Gates: 4; final blockierte Gates: 2. Source Review steht auf <code>final_blocked_source_review</code>, Swiss steht auf <code>final_blocked_official_result</code>, Agenten stehen auf <code>deferred_future_work_only</code>.</p>
+  <table><tr><th>Gate</th><th>Status</th><th>Naechste Aktion</th><th>Grenze</th><th>Thesis-Nutzung</th></tr><tr><td>advisor_handoff</td><td>ready_for_advisor_discussion</td><td>Dozentenbericht und Absprache-Checklist zuerst verwenden.</td><td>DOCX-Render-QA bleibt lokal blockiert, wenn LibreOffice/soffice fehlt.</td><td>Projektstand schriftlich uebergeben und Scope-Feedback einholen.</td></tr>
+<tr><td>chapter_source_mapping</td><td>ready_for_draft</td><td>Kapitel entlang Evidence IDs, Quellen, Tabellen/Figuren und Gates schreiben.</td><td>Finale Claims erst nach Human Review, Artefaktverweis, Limitation und Wording Guard.</td><td>Schreibstruktur fuer alle BA-Kapitel.</td></tr>
+<tr><td>source_review</td><td>final_blocked_source_review</td><td>Priority-1-Quellen mit Seiten- oder Abschnittsnotizen reviewen.</td><td>11 Priority-1-Quellen und 1 blocked/future-only Quelle bleiben Gate.</td><td>Draft-Struktur ja; finale Zitation erst nach Human Review.</td></tr>
+<tr><td>h1_h2_h3_results</td><td>ready_for_bounded_result_draft</td><td>H1 bounded, H2 daily event-window, H3 timing diagnostics schreiben.</td><td>Keine universelle Effizienz-, Intraday-, Kausalitaets- oder Profitabilitaetsclaims.</td><td>Empirischer Kern der BA-Arbeit.</td></tr>
+<tr><td>table_figure_package</td><td>ready_for_draft_integration</td><td>5 Kern-Tabellen und 4 Kern-Figuren mit Captions integrieren.</td><td>Keine Rohartefakt-Dumps in den Haupttext aufnehmen.</td><td>Kompakte Ergebnisdarstellung.</td></tr>
+<tr><td>monitor_appendix</td><td>appendix_only_pending_human_review</td><td>Monitor nur als read-only Prototyp und Review-Workflow erwaehnen.</td><td>Keine Wallet-Adress-Exposition, keine Order-/Trading-Pfade, keine Kausalclaims.</td><td>Appendix oder Diskussion, nicht empirischer Kern.</td></tr>
+<tr><td>swiss_result_gate</td><td>final_blocked_official_result</td><td>Bis zum offiziellen 14. Juni 2026 Resultat beschreibend bleiben.</td><td>Poll-Anteile sind keine Gewinnwahrscheinlichkeiten und tragen keine finale Effizienzaussage.</td><td>Diskussion oder Side-Track nach Resultat-Gate.</td></tr>
+<tr><td>agent_future_work</td><td>deferred_future_work_only</td><td>Nur als Future-Work-Ausblick verwenden.</td><td>Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade.</td><td>Ausblick auf spaetere Pipeline-Verbesserung.</td></tr>
+<tr><td>final_qa</td><td>pending_after_draft</td><td>Nach Draft: Tests, review_check, citation review, spelling scan und DOCX render gate wiederholen.</td><td>Repository nicht als final abgabebereit markieren, solange Source Review oder Render-QA offen sind.</td><td>Abgabe-Checkliste nach fertigem Entwurf.</td></tr></table>
+
+  <h2>Schreibsequenz fuer den naechsten Entwurf</h2>
+  <p>Die Drafting Sequence ordnet 10 Schritte vom Quellenreview bis zur finalen QA. Erste Sequenz ist <code>draft_01_01_source_review</code>, letzte Sequenz ist <code>draft_10_10_final_qa</code>. Bounded write-now: 4; final blockiert: 2; Future-work-only: 1.</p>
+  <table><tr><th>Prioritaet</th><th>Thesis-Abschnitt</th><th>Erlaubnis</th><th>Schreibaktion</th><th>Nicht behaupten</th></tr><tr><td>1</td><td>theory_literature_and_methods</td><td>review_now_final_blocked</td><td>Review the 11 priority-1 method-foundation sources and record page or section notes. Gate-Aktion: Priority-1-Quellen mit Seiten- oder Abschnittsnotizen reviewen.</td><td>Quellenstatus nicht automatisch hochstufen und keine finale Zitation ohne Human Review.</td></tr>
+<tr><td>2</td><td>chapters_01_to_03</td><td>write_now_bounded</td><td>Use the 8 chapter-plan rows to draft the front matter and methods chapters. Gate-Aktion: Kapitel entlang Evidence IDs, Quellen, Tabellen/Figuren und Gates schreiben.</td><td>Keine Methodenbehauptung ohne deterministisches Artefakt, reviewte Quelle oder sichtbaren Pending-Status.</td></tr>
+<tr><td>3</td><td>h1_results</td><td>write_now_bounded</td><td>Write H1 as bounded Polymarket support plus explicit broad-claim boundary. Gate-Aktion: H1 bounded, H2 daily event-window, H3 timing diagnostics schreiben.</td><td>Keine universelle Polymarket-Ueberlegenheit und keine RCP-Wahrscheinlichkeitsclaims.</td></tr>
+<tr><td>4</td><td>h2_h3_results</td><td>write_now_bounded</td><td>Draft H2 as daily event-window response and H3 as wallet-tier timing diagnostics. Gate-Aktion: H1 bounded, H2 daily event-window, H3 timing diagnostics schreiben.</td><td>Keine Intraday-Speed-, Granger-Kausalitaets-, Private-Information- oder Profitabilitaetsclaims.</td></tr>
+<tr><td>5</td><td>results_and_appendix</td><td>write_now_bounded</td><td>Use 5 core tables and 4 core figures with the generated captions and limitation notes. Gate-Aktion: 5 Kern-Tabellen und 4 Kern-Figuren mit Captions integrieren.</td><td>Keine Rohartefakt-Dumps und keine neuen Tabellen/Figuren ohne Evidence-Map-Update.</td></tr>
+<tr><td>6</td><td>appendix_or_discussion</td><td>appendix_only_pending_review</td><td>Mention monitor only as read-only prototype and review workflow. Gate-Aktion: Monitor nur als read-only Prototyp und Review-Workflow erwaehnen.</td><td>Review-Access bleibt pausiert; keine Wallet-Adress-Exposition, keine Order-/Trading-Pfade und keine thesis-facing Alert-Evidenz.</td></tr>
+<tr><td>7</td><td>discussion_pending_final_result</td><td>descriptive_only_final_blocked</td><td>Keep the Swiss comparison descriptive until the official vote result is available and mapped. Gate-Aktion: Bis zum offiziellen 14. Juni 2026 Resultat beschreibend bleiben.</td><td>Keine finale Effizienzinterpretation vor offizieller Resultatzuordnung vom 14. Juni 2026.</td></tr>
+<tr><td>8</td><td>future_work</td><td>future_work_only</td><td>Use the 7 protocol rows only as a future-work design section. Gate-Aktion: Nur als Future-Work-Ausblick verwenden.</td><td>Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade.</td></tr>
+<tr><td>9</td><td>project_management</td><td>advisor_discussion_now</td><td>Ask the advisor to approve the bounded H1 wording, source-review depth, Swiss placement, and appendix scope. Gate-Aktion: Dozentenbericht und Absprache-Checklist zuerst verwenden.</td><td>Keinen Scope-Ausbau starten, bevor der H1-H2-H3-Kern geschrieben und abgestimmt ist.</td></tr>
+<tr><td>10</td><td>whole_thesis</td><td>qa_after_draft</td><td>Run full tests, review checks, citation checks, table/figure checks, and Swiss spelling scan before export. Gate-Aktion: Nach Draft: Tests, review_check, citation review, spelling scan und DOCX render gate wiederholen.</td><td>Keine finale Abgabebereitschaft behaupten, solange Source Review, Swiss-Gate oder DOCX-Render-QA offen sind.</td></tr></table>
 
   <h2>Naechste Arbeitsschritte</h2>
   <p>Der Next-Work-Plan ordnet 10 Workstreams. Erste Prioritaet ist <code>work_01_source_review</code>, letzte QA-Prioritaet ist <code>work_10_final_qa</code>.</p>
@@ -124,7 +149,7 @@
 <tr><td>H2 Event-Windows</td><td>Polymarket bewegt sich um mehrere kuratierte politische Ereignisse sichtbar in der Tagesauflosung.</td><td>7 kuratierte Ereignisse; groesstes Primaerfenster nach Betrag: 07_13_trump_shooting +7.2 Prozentpunkte.</td><td>Das stuetzt eine These, dass oeffentliche Ereignisse in den Marktpreisen sichtbar werden koennen.</td><td>Taegliche Daten zeigen Reaktionsrichtung und Groessenordnung, aber keine intraday Reaktionsgeschwindigkeit.</td></tr>
 <tr><td>H3 Wallet-Timing</td><td>Top-Wallet-Tier-Aktivitaet zeigt eine messbare, aber vorsichtig zu formulierende Timing-Struktur.</td><td>1216 alignierte Modellzeilen; staerkste Korrelation tier_1_top_1pct lag 1 = 0.1858; kleinster Granger-p-Wert 0.0012.</td><td>Das ist als Vorhersage-/Timingdiagnostik verwendbar und motiviert weitere Sensitivitaetschecks.</td><td>BUY-only Quelle, Tagesaggregation und Multiple-Testing-Risiko begrenzen die Aussage.</td></tr>
 <tr><td>Monitor und Review-Queue</td><td>Der Monitor hat die richtige Rolle als Kontroll- und Review-Infrastruktur, nicht als Ergebnisgenerator fuer starke Claims.</td><td>3 aktuelle Review-Cases, davon 1 high und 2 medium; Status source_check_pending=3.</td><td>Die Review-Queue ist methodisch wichtig, weil sie auffaellige Faelle von thesis-faehiger Evidenz trennt.</td><td>Die Queue ist kein Nachweis fuer Ursachen, Regelverstoss, Handelbarkeit, Profitabilitaet oder zukuenftige Entwicklung.</td></tr>
-<tr><td>Swiss-Referendum Side-Track</td><td>Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen.</td><td>7 Umfragen, 29 Polymarket-Snapshots; latest Polymarket Yes 22.0%, latest poll Yes 45.0%, raw gap -23.0 pp.</td><td>Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen.</td><td>Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung.</td></tr></table>
+<tr><td>Swiss-Referendum Side-Track</td><td>Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen.</td><td>7 Umfragen, 30 Polymarket-Snapshots; latest Polymarket Yes 21.5%, latest poll Yes 45.0%, raw gap -23.5 pp.</td><td>Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen.</td><td>Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung.</td></tr></table>
 
   <h2>Warum dieses Vorgehen methodisch sinnvoll ist</h2>
   <table><tr><th>Entscheidung</th><th>Begruendung</th><th>Konsequenz</th></tr><tr><td>Brier Score und DM-Test</td><td>H1 vergleicht Probability-Forecasts, deshalb braucht es einen Verlustscore und einen Test auf Verlustserien.</td><td>Die Aussage bleibt Forecast-Qualitaet, nicht Reaktionsgeschwindigkeit oder Mechanismus.</td></tr>
@@ -136,11 +161,11 @@
   <h2>Projektstruktur</h2>
   <div class="grid">
     <div class="metric"><strong>9</strong>Datenbanktabellen</div>
-    <div class="metric"><strong>331</strong>Result-Artefakte</div>
+    <div class="metric"><strong>333</strong>Result-Artefakte</div>
     <div class="metric"><strong>78</strong>Analyse-Module</div>
-    <div class="metric"><strong>104</strong>Testdateien</div>
+    <div class="metric"><strong>106</strong>Testdateien</div>
   </div>
-  <p>Letzter Teststatus: <code>521 passed in 48.69s</code>.</p>
+  <p>Letzter Teststatus: <code>525 passed in 53.37s</code>.</p>
 
   <h2>H1 - Forecast-Qualitaet</h2>
   <table><tr><th>Aspekt</th><th>Wert</th></tr>
@@ -207,11 +232,11 @@
   <p>Der Monitor bleibt read-only und ist keine Trading- oder Profitabilitaetskomponente.</p>
 
   <h2>Schweizer Referendum</h2>
-  <p>7 Umfragen, 29 Polymarket-Snapshots und 504 bounded price-history rows.</p>
-  <table><tr><th>Quelle</th><th>Neuester Poll</th><th>Poll Yes</th><th>Raw Gap</th></tr><tr><td>SRG/gfs.bern</td><td>srg_gfs_bern_2026_w2</td><td>45.0%</td><td>-23.0 pp</td></tr>
-<tr><td>Tamedia/20 Minuten/LeeWas</td><td>tamedia_leewas_2026_w2</td><td>47.0%</td><td>-25.0 pp</td></tr>
-<tr><td>YouGov Schweiz</td><td>yougov_2026_w2_final</td><td>38.0%</td><td>-16.0 pp</td></tr></table>
-  <p>Latest result: Polymarket Yes 22.0%, latest matched poll Yes 45.0%, raw gap -23.0 pp, decided-voter gap -24.4 pp.</p>
+  <p>7 Umfragen, 30 Polymarket-Snapshots und 504 bounded price-history rows.</p>
+  <table><tr><th>Quelle</th><th>Neuester Poll</th><th>Poll Yes</th><th>Raw Gap</th></tr><tr><td>SRG/gfs.bern</td><td>srg_gfs_bern_2026_w2</td><td>45.0%</td><td>-23.5 pp</td></tr>
+<tr><td>Tamedia/20 Minuten/LeeWas</td><td>tamedia_leewas_2026_w2</td><td>47.0%</td><td>-25.5 pp</td></tr>
+<tr><td>YouGov Schweiz</td><td>yougov_2026_w2_final</td><td>38.0%</td><td>-16.5 pp</td></tr></table>
+  <p>Latest result: Polymarket Yes 21.5%, latest matched poll Yes 45.0%, raw gap -23.5 pp, decided-voter gap -24.9 pp.</p>
 
   <h2>Visualisierungen</h2>
   <figure><img src="dozentenbericht_assets/project_pipeline_overview.png" alt="Projektlogik: deterministische Analyse vor Interpretation."><figcaption><strong>Projektlogik: deterministische Analyse vor Interpretation.</strong><br>Die Abbildung zeigt die einfache Lesart fuer die Praesentation: Daten werden validiert, in Python analysiert und erst danach als Bericht, Dashboard oder spaeter als bounded Interpretation verwendet.</figcaption></figure>

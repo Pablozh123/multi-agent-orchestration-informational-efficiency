@@ -86,11 +86,13 @@ acceptance_criteria:
   continue.
 - The next writing sequence is explicit, artifact-linked, and separates
   bounded draft work, final blockers, appendix-only content, and future work.
+- The advisor report contains the current submission-readiness and drafting
+  sequence view so the high-level next steps are visible in the Word update.
 - Tests cover the generated evidence map and curated result package where
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add thesis drafting sequence
+next_commit: docs: update advisor report high-level gates
 
 ## Running Side Goal
 

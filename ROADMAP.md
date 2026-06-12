@@ -697,6 +697,10 @@ Current implemented consolidation:
   high-level project view for the advisor: review access paused, H1-H3 as
   empirical core, five core tables, four core figures, citation-review gates,
   Monitor/Swiss boundaries, and agents as inactive future work.
+- The same Dozentenbericht now includes `Submission Readiness und finale
+  Gates` plus `Schreibsequenz fuer den naechsten Entwurf`, so the advisor can
+  see draft-ready steps, final blockers, and the next ordered BA writing
+  sequence directly in the Word update.
 - The Dozentenbericht now includes a `Projektmatrix fuer die naechste
   Abstimmung` section generated from `thesis_project_highlevel_view.csv`, so
   the advisor can see status, decision, and next gate for each project layer.

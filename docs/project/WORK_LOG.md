@@ -10200,3 +10200,55 @@ Verification:
   -> PASS, generated 34 indexed artifacts.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 554 passed in 52.38s.
+
+## 2026-06-12 - H1-H2-H3 drafting checklist
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Converted Core Sections, Chapter Handoff, Source-Review-Checklist, and
+  Caption Registry into concrete H1-H2-H3 drafting steps.
+- Did not inspect source contents, promote source status, activate agents,
+  call MCP tools, route models, calculate LLM metrics, expose wallet
+  addresses, or create trading paths.
+
+Changes:
+
+- Added `operations/project/build_h1_h2_h3_drafting_checklist.py`.
+- Generated `data/results/thesis_h1_h2_h3_drafting_checklist.csv`.
+- Generated `docs/project/THESIS_H1_H2_H3_DRAFTING_CHECKLIST.md`.
+- Added `tests/test_h1_h2_h3_drafting_checklist.py`.
+- Updated the goal-completion audit and consolidation index to include the
+  drafting checklist.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Drafting checklist rows: 18.
+- H1 rows: 6.
+- H2 rows: 6.
+- H3 rows: 6.
+- Draft steps per chapter: method setup, result statement, interpretation
+  boundary, table/figure integration, Source Review citation gate, and
+  future-agent boundary.
+- Bounded draft ready rows: 18.
+- Final submission ready rows: 0.
+- Final blocked source-review rows: 3.
+- The checklist keeps Evidence IDs, literature IDs, deterministic artifacts,
+  curated table/figure labels, limitations, blocked wording, Source Review
+  gates, and future-agent boundaries visible while writing.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_h1_h2_h3_drafting_checklist.py operations/project/build_thesis_goal_completion_audit.py operations/project/build_thesis_consolidation_index.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_h1_h2_h3_drafting_checklist.py tests/test_thesis_goal_completion_audit.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 6 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_h1_h2_h3_drafting_checklist`
+  -> PASS, generated 18 drafting rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
+  -> PASS, generated 10 audit rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 35 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 556 passed in 51.42s.

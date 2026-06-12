@@ -145,6 +145,10 @@ acceptance_criteria:
   checked against coverage, literature review, result-package integration,
   limitations, blocked wording, final citation gates, and future-agent
   boundaries before final submission.
+- A H1-H2-H3 drafting checklist exists so each empirical core chapter can be
+  drafted in a fixed order: method setup, result statement, interpretation
+  boundary, table/figure integration, Source Review citation gate, and
+  future-agent boundary.
 - A future agent-pipeline upgrade plan exists so later source-review,
   evidence-drafting, wording, table/figure, advisor, monitor, and bounded MCP
   improvements are documented without activating runtime agents.
@@ -152,7 +156,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add h1 h2 h3 drafting checklist
+next_commit: docs: add thesis final gate board
 
 ## Running Side Goal
 

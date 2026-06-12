@@ -262,7 +262,15 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine Inhaltsinterpretation, keine Quellenstatus-Hochstufung und keine thesis-facing Claims.",
         ),
         _index_row(
-            artifact_id="index_24_traceability_audit",
+            artifact_id="index_24_source_review_decision_packets",
+            artifact_type="source_review_decision_packets",
+            path="docs/project/THESIS_SOURCE_REVIEW_DECISION_PACKETS.md; data/results/thesis_source_review_decision_packets.csv",
+            purpose_de="Manuelle Entscheidungspakete fuer Evidence-Source-Zeilen vor finaler Zitation.",
+            use_now_de="Fuehrt Page-/Section-Note, Claim-Support-Entscheid und Blocked-Wording-Check je Paket.",
+            gate_or_limit_de="Alle Zeilen bleiben pending; keine finale Zitation und keine Quellenstatus-Hochstufung.",
+        ),
+        _index_row(
+            artifact_id="index_25_traceability_audit",
             artifact_type="traceability_audit",
             path="docs/project/THESIS_TRACEABILITY_AUDIT.md; data/results/thesis_method_interpretation_traceability.csv; data/results/thesis_result_package_traceability.csv",
             purpose_de="Draft-Kontrolle fuer Methoden, Interpretationen, Tabellen und Figuren.",
@@ -270,7 +278,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine finalen Zitationen ohne manuelle Quellenreview und keine neuen Kennzahlen.",
         ),
         _index_row(
-            artifact_id="index_25_goal_completion_audit",
+            artifact_id="index_26_goal_completion_audit",
             artifact_type="goal_completion_audit",
             path="docs/project/THESIS_GOAL_COMPLETION_AUDIT.md; data/results/thesis_goal_completion_audit.csv",
             purpose_de="Belegbarer Audit des aktiven Goals mit erreichten Punkten und offenen Gates.",
@@ -278,7 +286,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Kein Zielabschluss, solange Source Review, Swiss Resultat-Gate oder DOCX-Render-QA offen sind.",
         ),
         _index_row(
-            artifact_id="index_26_status_and_log",
+            artifact_id="index_27_status_and_log",
             artifact_type="project_control",
             path="STATUS.md; docs/project/WORK_LOG.md",
             purpose_de="Automatisierter Projektstatus und append-only Arbeitslog.",
@@ -364,7 +372,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Advisor Handoff Package, Advisor Handoff Note, Advisor Feedback Log, "
         "Submission Readiness Board, Drafting Sequence, Execution Checklist, "
         "Chapter Source Bindings, Source Review Execution, Source Access "
-        "Audit, Source Structure Inventory, Traceability Audit, Goal Completion Audit, Agent Future-Work Handoff, Agent Pipeline Control Audit, Tabellen/Figuren und "
+        "Audit, Source Structure Inventory, Source Review Decision Packets, Traceability Audit, Goal Completion Audit, Agent Future-Work Handoff, Agent Pipeline Control Audit, Tabellen/Figuren und "
         "Future-Work-Agenten relevant sind.\n\n"
         "## Counts\n\n"
         f"- Indexed artifacts: {len(index)}\n\n"
@@ -379,8 +387,9 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Submission Readiness Board fuer die "
         "finalen Gates. Nutze die Drafting Sequence fuer die naechste "
         "Schreibreihenfolge. Nutze das Source Access Audit und Source Structure "
-        "Inventory vor der manuellen Quellenpruefung. Nutze den Traceability "
-        "Audit als BA-Schreibkontrolle. Nutze das Goal Completion Audit als Stop- und "
+        "Inventory sowie Source Review Decision Packets vor der manuellen "
+        "Quellenpruefung. Nutze den Traceability Audit als BA-Schreibkontrolle. "
+        "Nutze das Goal Completion Audit als Stop- und "
         "Weiterarbeitskontrolle. Nutze danach Execution Checklist, Source "
         "Worksheet, Chapter Source Bindings, Source Review Execution, Agent "
         "Future-Work Handoff, Agent Pipeline Control Audit, Wording Guard und Next Work Plan fuer das "

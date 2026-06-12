@@ -755,6 +755,12 @@ Current implemented consolidation:
   `docs/project/THESIS_SOURCE_STRUCTURE_INVENTORY.md` inventory local PDF/HTML
   structure for manual Source Review without extracting support claims,
   promoting source status, or making thesis-facing source claims.
+- `data/results/thesis_source_review_decision_packets.csv` and
+  `docs/project/THESIS_SOURCE_REVIEW_DECISION_PACKETS.md` convert the 33
+  citation-review packets into manual decision rows: 32 full-source-review
+  rows, 1 metadata/future-work row, and 33 pending reviewer decisions. These
+  rows require Page-/Section-Notes, claim-support decisions, and
+  blocked-wording checks before final citation.
 - `data/results/thesis_method_interpretation_traceability.csv`,
   `data/results/thesis_result_package_traceability.csv`, and
   `docs/project/THESIS_TRACEABILITY_AUDIT.md` audit the draft traceability of
@@ -766,11 +772,11 @@ Current implemented consolidation:
   consolidation deliverables so the Dozentenbericht, advisor checklist,
   highlevel view, work plan, execution checklist, source worksheet, source
   advisor handoff package, review execution guide, source access audit, source
-  structure inventory, traceability audit, chapter source bindings, agent
-  future-work handoff, advisor handoff note, advisor feedback log, submission
-  readiness board, drafting sequence, wording guard, table/figure captions,
-  chapter draft, source review plan, agent protocol, status, and work log are
-  easy to navigate.
+  structure inventory, source review decision packets, traceability audit,
+  chapter source bindings, agent future-work handoff, advisor handoff note,
+  advisor feedback log, submission readiness board, drafting sequence, wording
+  guard, table/figure captions, chapter draft, source review plan, agent
+  protocol, status, and work log are easy to navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,

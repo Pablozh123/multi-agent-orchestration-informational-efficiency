@@ -64,6 +64,7 @@ def generate_goal_completion_audit(
     drafting = _read_csv(results_dir / "thesis_drafting_sequence.csv")
     source_access = _read_csv(results_dir / "thesis_source_access_audit.csv")
     source_structure = _read_csv(results_dir / "thesis_source_structure_inventory.csv")
+    source_decisions = _read_csv(results_dir / "thesis_source_review_decision_packets.csv")
     method_traceability = _read_csv(results_dir / "thesis_method_interpretation_traceability.csv")
     result_package_traceability = _read_csv(results_dir / "thesis_result_package_traceability.csv")
     agent_control = _read_csv(results_dir / "thesis_agent_pipeline_control_audit.csv")
@@ -78,6 +79,7 @@ def generate_goal_completion_audit(
         drafting=drafting,
         source_access=source_access,
         source_structure=source_structure,
+        source_decisions=source_decisions,
         method_traceability=method_traceability,
         result_package_traceability=result_package_traceability,
         agent_control=agent_control,
@@ -109,6 +111,7 @@ def build_goal_completion_audit(
     drafting: pd.DataFrame,
     source_access: pd.DataFrame,
     source_structure: pd.DataFrame,
+    source_decisions: pd.DataFrame,
     method_traceability: pd.DataFrame,
     result_package_traceability: pd.DataFrame,
     agent_control: pd.DataFrame,
@@ -139,6 +142,11 @@ def build_goal_completion_audit(
         source_structure,
         ("source_id", "structure_inventory_status"),
         "source structure inventory",
+    )
+    _require_columns(
+        source_decisions,
+        ("decision_packet_id", "final_citation_gate", "reviewer_decision"),
+        "source review decision packets",
     )
     _require_columns(
         method_traceability,
@@ -191,6 +199,14 @@ def build_goal_completion_audit(
     external_only_structures = int(
         (source_structure["structure_inventory_status"] == "external_only").sum()
     )
+    decision_packets = int(len(source_decisions))
+    full_review_decisions = int(
+        (source_decisions["final_citation_gate"] == "full_source_review_required_before_final_citation").sum()
+    )
+    metadata_only_decisions = int(
+        (source_decisions["final_citation_gate"] == "metadata_and_relevance_review_before_future_work_use").sum()
+    )
+    pending_decisions = int((source_decisions["reviewer_decision"] == "pending").sum())
     traceable_thesis_facing = method_traceability[
         method_traceability["thesis_readiness"] == "thesis_facing_ready"
     ]
@@ -230,7 +246,7 @@ def build_goal_completion_audit(
             audit_id="goal_audit_02_evidence_map",
             goal_requirement_de="Methoden und Interpretationen sind auf Artefakte und Quellen gemappt.",
             current_status="draft_ready_final_source_review_pending",
-            evidence_artifacts="data/results/thesis_evidence_map.csv; data/results/thesis_citation_readiness.csv; data/results/thesis_source_access_audit.csv; data/results/thesis_source_structure_inventory.csv; data/results/thesis_method_interpretation_traceability.csv",
+            evidence_artifacts="data/results/thesis_evidence_map.csv; data/results/thesis_citation_readiness.csv; data/results/thesis_source_access_audit.csv; data/results/thesis_source_structure_inventory.csv; data/results/thesis_source_review_decision_packets.csv; data/results/thesis_method_interpretation_traceability.csv",
             key_evidence_de=(
                 f"Thesis-facing Evidence: {len(thesis_facing)} Zeilen; "
                 f"Methoden: {method_rows}; Interpretationen: {interpretation_rows}; "
@@ -239,6 +255,8 @@ def build_goal_completion_audit(
                 f"lokal verfuegbar: {local_access}; extern zu pruefen: {external_access}. "
                 f"Source Structure: {local_pdf_structures} PDF, {local_html_structures} HTML, "
                 f"{external_only_structures} external-only Zeilen. "
+                f"Source Decisions: {decision_packets} Pakete; Full Review: {full_review_decisions}; "
+                f"Metadata-only: {metadata_only_decisions}; pending: {pending_decisions}. "
                 f"Traceability: {traceable_methods} Methoden, {traceable_interpretations} Interpretationen, "
                 f"{traceability_gap_count} Gaps."
             ),

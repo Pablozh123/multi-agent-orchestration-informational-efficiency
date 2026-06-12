@@ -9775,3 +9775,47 @@ Verification:
   -> PASS, generated 26 indexed artifacts.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 539 passed in 52.92s.
+
+## 2026-06-12 - Source review decision packets
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Converted citation-review packets into manual decision rows so each
+  Evidence-Source packet has a pending Page-/Section-Note, claim-support
+  decision, blocked-wording check, and final citation gate.
+
+Changes:
+
+- Added `operations/project/build_source_review_decision_packets.py`.
+- Generated `data/results/thesis_source_review_decision_packets.csv`.
+- Added `docs/project/THESIS_SOURCE_REVIEW_DECISION_PACKETS.md`.
+- Added `tests/test_source_review_decision_packets.py`.
+- Updated the goal-completion audit and consolidation index to include the
+  decision packets.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Decision packets: 33.
+- Full source review rows: 32.
+- Metadata-only future-work rows: 1.
+- Pending reviewer decisions: 33.
+- All final thesis use remains blocked until manual review decisions are
+  recorded. The builder does not inspect source contents, create page notes,
+  approve claims, or promote source status.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_source_review_decision_packets.py operations/project/build_thesis_goal_completion_audit.py operations/project/build_thesis_consolidation_index.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_source_review_decision_packets.py tests/test_thesis_goal_completion_audit.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 6 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_source_review_decision_packets`
+  -> PASS, generated 33 decision packets.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
+  -> PASS, generated 10 audit rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 27 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 541 passed in 52.85s.

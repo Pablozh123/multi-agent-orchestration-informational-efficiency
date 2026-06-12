@@ -25,6 +25,7 @@ def test_generate_goal_completion_audit_writes_remaining_gates(tmp_path: Path) -
     assert "keine finale Zielerreichung" in doc
     assert "thesis_source_access_audit.csv" in doc
     assert "thesis_source_structure_inventory.csv" in doc
+    assert "thesis_source_review_decision_packets.csv" in doc
     assert "thesis_method_interpretation_traceability.csv" in doc
     assert "thesis_result_package_traceability.csv" in doc
     assert "thesis_agent_pipeline_control_audit.csv" in doc
@@ -50,6 +51,7 @@ def test_goal_completion_audit_keeps_open_gates_visible(tmp_path: Path) -> None:
     assert "runtime-agenten" in joined
     assert "llm_audit_log" in joined
     assert "source structure: 1 pdf, 1 html, 1 external-only zeilen" in joined
+    assert "source decisions: 2 pakete; full review: 1; metadata-only: 1; pending: 2" in joined
     assert "traceability: 1 methoden, 1 interpretationen, 0 gaps" in joined
     assert "traceability-kernpaket: 5 tabellen, 4 figuren, 0 gaps" in joined
     assert "agent control: 2 rollen; documentation-only: 1; deferred: 1; aktiv: 0" in joined
@@ -121,6 +123,20 @@ def _write_fixture(root: Path) -> None:
             {"source_id": "source_2", "structure_inventory_status": "external_only"},
         ]
     ).to_csv(results / "thesis_source_structure_inventory.csv", index=False)
+    pd.DataFrame(
+        [
+            {
+                "decision_packet_id": "decision_01",
+                "final_citation_gate": "full_source_review_required_before_final_citation",
+                "reviewer_decision": "pending",
+            },
+            {
+                "decision_packet_id": "decision_02",
+                "final_citation_gate": "metadata_and_relevance_review_before_future_work_use",
+                "reviewer_decision": "pending",
+            },
+        ]
+    ).to_csv(results / "thesis_source_review_decision_packets.csv", index=False)
     pd.DataFrame(
         [
             {

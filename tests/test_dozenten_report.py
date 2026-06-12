@@ -73,6 +73,10 @@ def test_build_dozenten_report_outputs_readable_artifacts(tmp_path):
     assert "Manual Source Review: 23 Rows verlinkt, 23 pending, 0 final-ready" in html_text
     assert "Methode und Resultat setzen" in html_text
     assert "Finalgate und Future-Agent-Grenze sichtbar lassen" in html_text
+    assert "Manual Source Review Follow-up Overview-/Ledger-Abgleich" in html_text
+    assert "Review-Access bleibt pausiert; auf Projektebene geht es jetzt ueber Advisor-Feedback" in html_text
+    assert "Swiss-Result-Gate" in html_text
+    assert "keine finale Zitation und keine Quellenstatus-Hochstufung" in html_text
     assert "source_gated_thesis_draft_ready_final_source_review_pending" in html_text
     assert "Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use" in html_text
     assert "Dozentenpaket und Uebergabereihenfolge" in html_text
@@ -310,3 +314,6 @@ def test_build_dozenten_report_outputs_readable_artifacts(tmp_path):
     assert "Source-Gated H1-H2-H3 Drafting Sequence" in document_xml
     assert "15 paragraphenweise Schreibschritte" in document_xml
     assert "Manual Source Review" in document_xml
+    assert "Manual Source Review Follow-up Overview-/Ledger-Abgleich" in document_xml
+    assert "Review-Access bleibt pausiert" in document_xml
+    assert "Swiss-Result-Gate" in document_xml

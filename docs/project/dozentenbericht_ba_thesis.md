@@ -1,6 +1,6 @@
 # Dozentenbericht zur Bachelorarbeit
 
-Erstellt: 2026-06-12T16:57:28+00:00
+Erstellt: 2026-06-12T19:15:21+00:00
 
 **Arbeitstitel:** Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen.
 
@@ -45,21 +45,22 @@ Der Review-Access bleibt pausiert. Der aktuelle Fortschritt liegt in der Thesis-
 
 ## Dozentenpaket und Uebergabereihenfolge
 
-Das Advisor-Handoff-Paket ordnet 11 Dateien fuer die naechste Betreuung. Zuerst kommt der `advisor_handoff_note`, danach folgen Word-Bericht, Absprache-Checklist, Submission Readiness Board, Drafting Sequence, Feedback-Log und die Arbeitsdateien fuer Kapitel und Source Review.
+Das Advisor-Handoff-Paket ordnet 12 Dateien fuer die naechste Betreuung. Zuerst kommt der `advisor_handoff_note`, danach folgen Word-Bericht, Absprache-Checklist, Submission Readiness Board, Drafting Sequence, Feedback-Log und die Arbeitsdateien fuer Kapitel und Source Review.
 
 | Reihenfolge | Datei | Verwendung | Entscheidung | Grenze |
 | --- | --- | --- | --- | --- |
 | 1 | `docs/project/DOZENTEN_UEBERGABE_TEXT.md` | Als kurze Mail- oder Chat-Vorlage fuer die Uebergabe nutzen. | Keine Entscheidung; eroeffnet die Betreuung mit klarer Datei- und Fragenordnung. | Zwischenstand, kein finales Abgabe- oder Quellenreview-Signal. |
-| 2 | `docs/project/dozentenbericht_ba_thesis.docx` | Als schriftliches Word-Update an den Dozenten geben. | Projektstand, Aufbau, H1-H3-Kern, Grenzen und naechste Schritte abstimmen. | DOCX-Render-QA bleibt lokal blockiert, wenn LibreOffice/soffice fehlt. |
+| 2 | `docs/project/dozentenbericht_ba_thesis.docx` | Als schriftliches Word-Update mit Source-Gated H1-H2-H3 Drafting Sequence an den Dozenten geben: 15 Absatzschritte, 23 Manual Source Review Zeilen verlinkt. | Projektstand, Aufbau, H1-H3-Kern, Source-Review-Gates, Grenzen und naechste Schritte abstimmen. | Source-Gated Sequence bleibt bounded-draft-ready und nicht final-submission-ready (0 final-ready Source-Review-Zeilen); DOCX-Render-QA bleibt lokal blockiert, wenn LibreOffice/soffice fehlt. |
 | 3 | `docs/project/DOZENTEN_ABSPRACHE_CHECKLIST.md` | Als Gespraechsagenda fuer die naechste Betreuung nutzen. | H1-Wording, Source-Review-Tiefe, H2/H3-Scope, Swiss und Appendix-Scope klaeren. | Fragen klaeren Scope; sie aktivieren keine Empirie-Erweiterung. |
 | 4 | `docs/project/THESIS_SUBMISSION_READINESS_BOARD.md` | Als Gate-Uebersicht fuer draft-ready, final-blocked und deferred Schritte nutzen. | Klaeren, welche finalen Gates vor Abgabe zwingend geloest werden muessen. | Source Review, Swiss-Gate und DOCX-Render-QA bleiben final blockiert. |
 | 5 | `docs/project/THESIS_DRAFTING_SEQUENCE.md` | Als naechste Schreibreihenfolge fuer den BA-Entwurf nutzen. | Bestaetigen, ob diese Reihenfolge fuer den naechsten Entwurf sinnvoll ist. | Trennt bounded Draft-Arbeit von finalen Blockern und Future Work. |
 | 6 | `docs/project/THESIS_EXECUTION_CHECKLIST.md` | Nach Feedback als Kapitel- und Abnahme-Checkliste nutzen. | Reihenfolge und Done-Kriterien fuer die BA-Kapitel bestaetigen. | Review-Access bleibt pausiert; keine Runtime-Agenten oder Rohartefakt-Dumps. |
 | 7 | `docs/project/THESIS_CHAPTER_SOURCE_BINDINGS.md` | Beim Schreiben je Kapitel Quellen, Artefakte und Gates pruefen. | Klaeren, ob diese Kapitel-zu-Quelle-Bindung fuer die Abgabe reicht. | Keine thesis-facing Claims ohne Human Review, Artefaktverweis, Limitation und Wording Guard. |
 | 8 | `docs/project/THESIS_SOURCE_REVIEW_EXECUTION.md` | Als manuelle Reihenfolge fuer die Quellenpruefung nutzen. | Prioritaet der 11 Priority-1-Quellen und blocked/future-only Quellen bestaetigen. | Quellenstatus nicht automatisch hochstufen. |
-| 9 | `docs/project/THESIS_AGENT_FUTURE_WORK_HANDOFF.md` | Nur als Future-Work-Ausblick fuer spaetere Pipeline-Verbesserungen nutzen. | Bestaetigen, dass Agenten nicht Teil des empirischen Kerns werden. | Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade. |
-| 10 | `docs/project/DOZENTEN_FEEDBACK_LOG.md` | Nach der Betreuung Feedback und Folgeaktionen eintragen. | Keine Entscheidung im Voraus; dient als pending Feedback-Log. | Alle Eintraege bleiben pending, bis der Dozent Feedback gegeben hat. |
-| 11 | `docs/project/THESIS_CONSOLIDATION_INDEX.md` | Als Navigationsindex fuer alle aktuellen Projektartefakte nutzen. | Keine Entscheidung; dient Orientierung und Nachvollziehbarkeit. | Nicht als neues empirisches Resultat verwenden. |
+| 9 | `docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md` | Als kompakte H1-H2-H3 Source-Review-Steuerung nutzen: 23 offene Review-Zeilen, 3 Slices, 23 pending, 0 final-ready. | Klaeren, ob H1, H2 und H3 in dieser Reihenfolge source-by-source reviewed werden sollen. | Alle Zitationen bleiben final blockiert; keine Quellenstatus-Hochstufung, keine Kausalclaims, keine Runtime-Agenten und keine Rohartefakt-Dumps. |
+| 10 | `docs/project/THESIS_AGENT_FUTURE_WORK_HANDOFF.md` | Nur als Future-Work-Ausblick fuer spaetere Pipeline-Verbesserungen nutzen. | Bestaetigen, dass Agenten nicht Teil des empirischen Kerns werden. | Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade. |
+| 11 | `docs/project/DOZENTEN_FEEDBACK_LOG.md` | Nach der Betreuung Feedback und Folgeaktionen eintragen. | Keine Entscheidung im Voraus; dient als pending Feedback-Log. | Alle Eintraege bleiben pending, bis der Dozent Feedback gegeben hat. |
+| 12 | `docs/project/THESIS_CONSOLIDATION_INDEX.md` | Als Navigationsindex fuer alle aktuellen Projektartefakte nutzen. | Keine Entscheidung; dient Orientierung und Nachvollziehbarkeit. | Nicht als neues empirisches Resultat verwenden. |
 
 ## Projektmatrix fuer die naechste Abstimmung
 
@@ -118,9 +119,9 @@ Der Dozent sieht damit direkt, dass jede empirische Methode und jede Interpretat
 
 | Kapitel | Methoden | Interpretationen | Literatur/Artefakte | Tabelle/Figur | Gate |
 | --- | --- | --- | --- | --- | --- |
-| H1 | `method_h1_brier_dm` | `interpretation_h1_bounded_advantage; interpretation_h1_broad_claim_not_proven` | Literatur `lit_brier_001; lit_dm_001; lit_emh_001; zotero_poly_002`; Artefakte `data/results/thesis_h1_summary.csv; data/results/h1_poll_claim_readiness_summary.csv; plus 7 weitere`. | T2 / F1 | H1: 10 Source-Review-Zeilen im Ledger; 10 pending; 0 final-ready. |
-| H2 | `method_h2_event_window` | `interpretation_h2_daily_response` | Literatur `lit_eventstudy_001; lit_emh_001; zotero_poly_001`; Artefakte `data/results/h2_event_window_summary.csv; data/events_timeline_seed.csv; plus 3 weitere`. | T3 / F2 | H2: 5 Source-Review-Zeilen im Ledger; 5 pending; 0 final-ready. |
-| H3 | `method_h3_wallet_tiers; method_h3_granger_timing` | `interpretation_h3_top_tier_signal` | Literatur `zotero_poly_001; zotero_poly_005; zotero_poly_007; lit_granger_001`; Artefakte `data/results/h3_wallet_distribution_inventory.json; data/results/h3_granger_results.csv; plus 5 weitere`. | T4 / F3 | H3: 8 Source-Review-Zeilen im Ledger; 8 pending; 0 final-ready. |
+| H1 | `method_h1_brier_dm` | `interpretation_h1_bounded_advantage; interpretation_h1_broad_claim_not_proven` | Literatur `lit_brier_001; lit_dm_001; lit_emh_001; zotero_poly_002`; Artefakte `data/results/thesis_h1_summary.csv; data/results/h1_poll_claim_readiness_summary.csv; plus 7 weitere`. | T2 / F1 | H1: 10 Source-Review-Zeilen im Ledger und in der Manual Source Review Follow-up Overview; 10 pending; 0 final-ready. |
+| H2 | `method_h2_event_window` | `interpretation_h2_daily_response` | Literatur `lit_eventstudy_001; lit_emh_001; zotero_poly_001`; Artefakte `data/results/h2_event_window_summary.csv; data/events_timeline_seed.csv; plus 3 weitere`. | T3 / F2 | H2: 5 Source-Review-Zeilen im Ledger und in der Manual Source Review Follow-up Overview; 5 pending; 0 final-ready. |
+| H3 | `method_h3_wallet_tiers; method_h3_granger_timing` | `interpretation_h3_top_tier_signal` | Literatur `zotero_poly_001; zotero_poly_005; zotero_poly_007; lit_granger_001`; Artefakte `data/results/h3_wallet_distribution_inventory.json; data/results/h3_granger_results.csv; plus 5 weitere`. | T4 / F3 | H3: 8 Source-Review-Zeilen im Ledger und in der Manual Source Review Follow-up Overview; 8 pending; 0 final-ready. |
 
 Diese Sektion ist eine Schreibvorlage, kein finaler Zitations- oder Abgabeclaim. Keine neuen Kennzahlen, keine Rohartefakt-Dumps, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.
 
@@ -128,30 +129,31 @@ Diese Sektion ist eine Schreibvorlage, kein finaler Zitations- oder Abgabeclaim.
 
 Der source-gated Thesis-Drafting-Pass bringt den H1-H2-H3-Kern in 15 paragraphenweise Schreibschritte: 5 je Kapitel. Bounded-draft-ready: 15; final-submission-ready: 0. Manual Source Review: 23 Rows verlinkt, 23 pending, 0 final-ready.
 Fuer den Dozenten ist das die konkrete Schreibreihenfolge nach dem Bounded Chapter Draft: Methode/Resultat setzen, Interpretation und Limitation setzen, Tabelle/Figur einbauen, Manual Source Review ausfuehren, Finalgate und Future-Agent-Grenze sichtbar lassen.
+Review-Access bleibt pausiert; auf Projektebene geht es jetzt ueber Advisor-Feedback, Manual Source Review Follow-up Overview-/Ledger-Abgleich, H1-H3-Prosa, kompakte Tabellen/Figuren, Swiss-Result-Gate und finale DOCX-Render-QA weiter. Kontrollpunkt: 23 offene H1-H2-H3 Review-Rows, 23 pending, 0 final-ready; keine finale Zitation und keine Quellenstatus-Hochstufung vor abgeschlossenem Overview-/Ledger-Abgleich.
 
 | Kapitel | Schritte | Manual Source Review | Tabelle/Figur | Status |
 | --- | --- | --- | --- | --- |
-| H1 | 5: Methode und Resultat setzen -> Interpretation und Limitation setzen -> Tabelle und Figur einbauen -> Manual Source Review ausfuehren -> Finalgate und Future-Agent-Grenze setzen | 10 rows; 10 pending; 0 final-ready | T2 / F1 | source_gated_thesis_draft_ready_final_source_review_pending |
-| H2 | 5: Methode und Resultat setzen -> Interpretation und Limitation setzen -> Tabelle und Figur einbauen -> Manual Source Review ausfuehren -> Finalgate und Future-Agent-Grenze setzen | 5 rows; 5 pending; 0 final-ready | T3 / F2 | source_gated_thesis_draft_ready_final_source_review_pending |
-| H3 | 5: Methode und Resultat setzen -> Interpretation und Limitation setzen -> Tabelle und Figur einbauen -> Manual Source Review ausfuehren -> Finalgate und Future-Agent-Grenze setzen | 8 rows; 8 pending; 0 final-ready | T4 / F3 | source_gated_thesis_draft_ready_final_source_review_pending |
+| H1 | 5: Methode und Resultat setzen -> Interpretation und Limitation setzen -> Tabelle und Figur einbauen -> Manual Source Review ausfuehren -> Finalgate und Future-Agent-Grenze setzen | 10 rows; 10 pending; 0 final-ready; Manual Source Review Follow-up Overview-/Ledger-Abgleich offen | T2 / F1 | source_gated_thesis_draft_ready_final_source_review_pending |
+| H2 | 5: Methode und Resultat setzen -> Interpretation und Limitation setzen -> Tabelle und Figur einbauen -> Manual Source Review ausfuehren -> Finalgate und Future-Agent-Grenze setzen | 5 rows; 5 pending; 0 final-ready; Manual Source Review Follow-up Overview-/Ledger-Abgleich offen | T3 / F2 | source_gated_thesis_draft_ready_final_source_review_pending |
+| H3 | 5: Methode und Resultat setzen -> Interpretation und Limitation setzen -> Tabelle und Figur einbauen -> Manual Source Review ausfuehren -> Finalgate und Future-Agent-Grenze setzen | 8 rows; 8 pending; 0 final-ready; Manual Source Review Follow-up Overview-/Ledger-Abgleich offen | T4 / F3 | source_gated_thesis_draft_ready_final_source_review_pending |
 
 | Ordnung | Kapitel | Schreibschritt | Writer Action | Finalgate |
 | --- | --- | --- | --- | --- |
-| 1 | H1 | Methode und Resultat setzen | H1: Methoden- und Resultatabsatz aus dem Source-Gated Writing Pass in den BA-Entwurf uebernehmen; Evidence IDs sichtbar halten. | H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
-| 2 | H1 | Interpretation und Limitation setzen | H1: Interpretation nur bounded formulieren und Limitation direkt nach dem Resultat platzieren. | H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
-| 3 | H1 | Tabelle und Figur einbauen | H1: Nur Tabelle T2 und Abbildung F1 einbauen; keine Rohartefakt-Dumps. | H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
-| 4 | H1 | Manual Source Review ausfuehren | H1: Manual Source Review Execution Pass abarbeiten und Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen. | H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
-| 5 | H1 | Finalgate und Future-Agent-Grenze setzen | H1: Finalgate sichtbar lassen und Agenten nur als Future-Work-Grenze mit llm_audit_log-Vorbedingung erwaehnen. | H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
-| 6 | H2 | Methode und Resultat setzen | H2: Methoden- und Resultatabsatz aus dem Source-Gated Writing Pass in den BA-Entwurf uebernehmen; Evidence IDs sichtbar halten. | H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
-| 7 | H2 | Interpretation und Limitation setzen | H2: Interpretation nur bounded formulieren und Limitation direkt nach dem Resultat platzieren. | H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
-| 8 | H2 | Tabelle und Figur einbauen | H2: Nur Tabelle T3 und Abbildung F2 einbauen; keine Rohartefakt-Dumps. | H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
-| 9 | H2 | Manual Source Review ausfuehren | H2: Manual Source Review Execution Pass abarbeiten und Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen. | H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
-| 10 | H2 | Finalgate und Future-Agent-Grenze setzen | H2: Finalgate sichtbar lassen und Agenten nur als Future-Work-Grenze mit llm_audit_log-Vorbedingung erwaehnen. | H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
-| 11 | H3 | Methode und Resultat setzen | H3: Methoden- und Resultatabsatz aus dem Source-Gated Writing Pass in den BA-Entwurf uebernehmen; Evidence IDs sichtbar halten. | H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
-| 12 | H3 | Interpretation und Limitation setzen | H3: Interpretation nur bounded formulieren und Limitation direkt nach dem Resultat platzieren. | H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
-| 13 | H3 | Tabelle und Figur einbauen | H3: Nur Tabelle T4 und Abbildung F3 einbauen; keine Rohartefakt-Dumps. | H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
-| 14 | H3 | Manual Source Review ausfuehren | H3: Manual Source Review Execution Pass abarbeiten und Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen. | H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
-| 15 | H3 | Finalgate und Future-Agent-Grenze setzen | H3: Finalgate sichtbar lassen und Agenten nur als Future-Work-Grenze mit llm_audit_log-Vorbedingung erwaehnen. | H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
+| 1 | H1 | Methode und Resultat setzen | H1: Methoden- und Resultatabsatz aus dem Source-Gated Writing Pass in den BA-Entwurf uebernehmen; Evidence IDs sichtbar halten. | H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. |
+| 2 | H1 | Interpretation und Limitation setzen | H1: Interpretation nur bounded formulieren und Limitation direkt nach dem Resultat platzieren. | H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. |
+| 3 | H1 | Tabelle und Figur einbauen | H1: Nur Tabelle T2 und Abbildung F1 einbauen; keine Rohartefakt-Dumps. | H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. |
+| 4 | H1 | Manual Source Review ausfuehren | H1: Manual Source Review Execution Pass abarbeiten und Manual Source Review Follow-up Overview-/Ledger-Abgleich, Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen. | H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. |
+| 5 | H1 | Finalgate und Future-Agent-Grenze setzen | H1: Finalgate sichtbar lassen und Agenten nur als Future-Work-Grenze mit llm_audit_log-Vorbedingung erwaehnen. | H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. |
+| 6 | H2 | Methode und Resultat setzen | H2: Methoden- und Resultatabsatz aus dem Source-Gated Writing Pass in den BA-Entwurf uebernehmen; Evidence IDs sichtbar halten. | H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. |
+| 7 | H2 | Interpretation und Limitation setzen | H2: Interpretation nur bounded formulieren und Limitation direkt nach dem Resultat platzieren. | H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. |
+| 8 | H2 | Tabelle und Figur einbauen | H2: Nur Tabelle T3 und Abbildung F2 einbauen; keine Rohartefakt-Dumps. | H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. |
+| 9 | H2 | Manual Source Review ausfuehren | H2: Manual Source Review Execution Pass abarbeiten und Manual Source Review Follow-up Overview-/Ledger-Abgleich, Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen. | H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. |
+| 10 | H2 | Finalgate und Future-Agent-Grenze setzen | H2: Finalgate sichtbar lassen und Agenten nur als Future-Work-Grenze mit llm_audit_log-Vorbedingung erwaehnen. | H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. |
+| 11 | H3 | Methode und Resultat setzen | H3: Methoden- und Resultatabsatz aus dem Source-Gated Writing Pass in den BA-Entwurf uebernehmen; Evidence IDs sichtbar halten. | H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. |
+| 12 | H3 | Interpretation und Limitation setzen | H3: Interpretation nur bounded formulieren und Limitation direkt nach dem Resultat platzieren. | H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. |
+| 13 | H3 | Tabelle und Figur einbauen | H3: Nur Tabelle T4 und Abbildung F3 einbauen; keine Rohartefakt-Dumps. | H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. |
+| 14 | H3 | Manual Source Review ausfuehren | H3: Manual Source Review Execution Pass abarbeiten und Manual Source Review Follow-up Overview-/Ledger-Abgleich, Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen. | H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. |
+| 15 | H3 | Finalgate und Future-Agent-Grenze setzen | H3: Finalgate sichtbar lassen und Agenten nur als Future-Work-Grenze mit llm_audit_log-Vorbedingung erwaehnen. | H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. |
 
 Auch diese Sequenz ist kein finaler Zitations- oder Abgabeclaim: Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use bleiben manuelle Gates; Agenten bleiben documentation-only Future Work.
 
@@ -236,7 +238,7 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 | H2 Event-Windows | Polymarket bewegt sich um mehrere kuratierte politische Ereignisse sichtbar in der Tagesauflosung. | 7 kuratierte Ereignisse; groesstes Primaerfenster nach Betrag: 07_13_trump_shooting +7.2 Prozentpunkte. | Das stuetzt eine These, dass oeffentliche Ereignisse in den Marktpreisen sichtbar werden koennen. | Taegliche Daten zeigen Reaktionsrichtung und Groessenordnung, aber keine intraday Reaktionsgeschwindigkeit. |
 | H3 Wallet-Timing | Top-Wallet-Tier-Aktivitaet zeigt eine messbare, aber vorsichtig zu formulierende Timing-Struktur. | 1216 alignierte Modellzeilen; staerkste Korrelation tier_1_top_1pct lag 1 = 0.1858; kleinster Granger-p-Wert 0.0012. | Das ist als Vorhersage-/Timingdiagnostik verwendbar und motiviert weitere Sensitivitaetschecks. | BUY-only Quelle, Tagesaggregation und Multiple-Testing-Risiko begrenzen die Aussage. |
 | Monitor und Review-Queue | Der Monitor hat die richtige Rolle als Kontroll- und Review-Infrastruktur, nicht als Ergebnisgenerator fuer starke Claims. | 3 aktuelle Review-Cases, davon 1 high und 2 medium; Status source_check_pending=3. | Die Review-Queue ist methodisch wichtig, weil sie auffaellige Faelle von thesis-faehiger Evidenz trennt. | Die Queue ist kein Nachweis fuer Ursachen, Regelverstoss, Handelbarkeit, Profitabilitaet oder zukuenftige Entwicklung. |
-| Swiss-Referendum Side-Track | Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen. | 7 Umfragen, 43 Polymarket-Snapshots; latest Polymarket Yes 21.5%, latest poll Yes 45.0%, raw gap -23.5 pp. | Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen. | Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung. |
+| Swiss-Referendum Side-Track | Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen. | 7 Umfragen, 45 Polymarket-Snapshots; latest Polymarket Yes 26.5%, latest poll Yes 45.0%, raw gap -18.5 pp. | Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen. | Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung. |
 
 ## Warum dieses Vorgehen methodisch sinnvoll ist
 
@@ -251,10 +253,10 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Projektstruktur
 
 - SQLite-Datenbank: 9 Tabellen.
-- Ergebnisartefakte: 357 Dateien unter `data/results`.
+- Ergebnisartefakte: 362 Dateien unter `data/results`.
 - Analyse-Module: 78 Dateien.
 - Collector-Module: 10 Dateien.
-- Tests: 128 Testdateien; letzter Status: 574 passed in 58.67s.
+- Tests: 133 Testdateien; letzter Status: 584 passed in 61.47s (0:01:01).
 
 ## H1 - Forecast-Qualitaet
 
@@ -332,12 +334,12 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Schweizer Referendum
 
 - Kuratierte Umfragen: 7.
-- Polymarket snapshots: 43.
+- Polymarket snapshots: 45.
 - Bounded price-history rows: 504.
-- Latest Polymarket Yes: 21.5 Prozent.
+- Latest Polymarket Yes: 26.5 Prozent.
 - Latest matched poll Yes: 45.0 Prozent.
-- Raw gap: -23.5 Prozentpunkte.
-- Decided-voter gap: -24.9 Prozentpunkte.
+- Raw gap: -18.5 Prozentpunkte.
+- Decided-voter gap: -19.9 Prozentpunkte.
 
 ## Abbildungen
 

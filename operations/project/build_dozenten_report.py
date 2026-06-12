@@ -616,6 +616,7 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
             "Limitation setzen, Tabelle/Figur einbauen, Manual Source Review "
             "ausfuehren, Finalgate und Future-Agent-Grenze sichtbar lassen."
         ),
+        source_gated_drafting["review_control_de"],
         "",
         *source_gated_chapter_rows,
         "",
@@ -1538,6 +1539,7 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
   <h2>Source-Gated H1-H2-H3 Drafting Sequence</h2>
   <p>Der source-gated Thesis-Drafting-Pass bringt den H1-H2-H3-Kern in {source_gated_drafting['row_count']} paragraphenweise Schreibschritte: {source_gated_drafting['rows_per_chapter']} je Kapitel. Bounded-draft-ready: {source_gated_drafting['bounded_ready_count']}; final-submission-ready: {source_gated_drafting['final_ready_count']}. Manual Source Review: {source_gated_drafting['manual_rows_linked']} Rows verlinkt, {source_gated_drafting['manual_pending_rows']} pending, {source_gated_drafting['manual_final_ready_rows']} final-ready.</p>
   <p>Fuer den Dozenten ist das die konkrete Schreibreihenfolge nach dem Bounded Chapter Draft: Methode/Resultat setzen, Interpretation und Limitation setzen, Tabelle/Figur einbauen, Manual Source Review ausfuehren, Finalgate und Future-Agent-Grenze sichtbar lassen.</p>
+  <p>{escape(source_gated_drafting['review_control_de'])}</p>
   <table><tr><th>Kapitel</th><th>Schritte</th><th>Manual Source Review</th><th>Tabelle/Figur</th><th>Status</th></tr>{source_gated_chapter_rows}</table>
   <table><tr><th>Ordnung</th><th>Kapitel</th><th>Schreibschritt</th><th>Writer Action</th><th>Finalgate</th></tr>{source_gated_step_rows}</table>
   <p class="small">Auch diese Sequenz ist kein finaler Zitations- oder Abgabeclaim: Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use bleiben manuelle Gates; Agenten bleiben documentation-only Future Work.</p>
@@ -2185,6 +2187,7 @@ def _source_gated_drafting_report_data(drafting: pd.DataFrame) -> dict[str, Any]
         "manual_execution_pending_rows",
         "manual_execution_final_ready_rows",
         "writer_action_de",
+        "source_review_action_de",
         "final_gate_de",
         "ready_for_bounded_draft",
         "ready_for_final_submission",
@@ -2217,7 +2220,8 @@ def _source_gated_drafting_report_data(drafting: pd.DataFrame) -> dict[str, Any]
                 "manual_review_summary_de": (
                     f"{int(first['manual_execution_rows'])} rows; "
                     f"{int(first['manual_execution_pending_rows'])} pending; "
-                    f"{int(first['manual_execution_final_ready_rows'])} final-ready"
+                    f"{int(first['manual_execution_final_ready_rows'])} final-ready; "
+                    "Manual Source Review Follow-up Overview-/Ledger-Abgleich offen"
                 ),
                 "table_figure_de": f"{first['selected_tables']} / {first['selected_figures']}",
                 "status_de": str(first["draft_status"]),
@@ -2230,7 +2234,7 @@ def _source_gated_drafting_report_data(drafting: pd.DataFrame) -> dict[str, Any]
             "thesis_area": str(row["thesis_area"]),
             "draft_section_de": str(row["draft_section_de"]),
             "writer_action_de": str(row["writer_action_de"]),
-            "final_gate_short_de": _first_sentence(str(row["final_gate_de"])),
+            "final_gate_short_de": _source_gate_short_text(str(row["final_gate_de"])),
         }
         for row in rows
     ]
@@ -2247,6 +2251,16 @@ def _source_gated_drafting_report_data(drafting: pd.DataFrame) -> dict[str, Any]
     manual_final_ready_rows = sum(
         int(row["manual_execution_final_ready_rows"]) for row in chapter_first_rows
     )
+    review_control_de = (
+        "Review-Access bleibt pausiert; auf Projektebene geht es jetzt ueber "
+        "Advisor-Feedback, Manual Source Review Follow-up Overview-/Ledger-Abgleich, "
+        "H1-H3-Prosa, kompakte Tabellen/Figuren, Swiss-Result-Gate und finale "
+        "DOCX-Render-QA weiter. Kontrollpunkt: "
+        f"{manual_rows_linked} offene H1-H2-H3 Review-Rows, "
+        f"{manual_pending_rows} pending, {manual_final_ready_rows} final-ready; "
+        "keine finale Zitation und keine Quellenstatus-Hochstufung vor "
+        "abgeschlossenem Overview-/Ledger-Abgleich."
+    )
 
     return {
         "row_count": len(rows),
@@ -2260,6 +2274,7 @@ def _source_gated_drafting_report_data(drafting: pd.DataFrame) -> dict[str, Any]
         "manual_rows_linked": manual_rows_linked,
         "manual_pending_rows": manual_pending_rows,
         "manual_final_ready_rows": manual_final_ready_rows,
+        "review_control_de": review_control_de,
         "chapter_rows": chapter_rows,
         "step_rows": step_rows,
     }
@@ -2278,6 +2293,16 @@ def _first_sentence(value: str) -> str:
     if sentence:
         return sentence + "."
     return value.strip()
+
+
+def _source_gate_short_text(value: str) -> str:
+    short_text = _first_sentence(value)
+    overview_gate = "Manual Source Review Follow-up Overview-/Ledger-Abgleich"
+    if overview_gate in value and overview_gate not in short_text:
+        return (
+            f"{short_text} {overview_gate} vor Citation Gate sichtbar halten."
+        )
+    return short_text
 
 
 def _bool_text(value: object) -> bool:
@@ -2835,6 +2860,7 @@ def _add_source_gated_drafting_section(
         "Limitation setzen, Tabelle/Figur einbauen, Manual Source Review "
         "ausfuehren, Finalgate und Future-Agent-Grenze sichtbar lassen."
     )
+    doc.add_paragraph(source_gated_drafting["review_control_de"])
     chapter_rows = [
         (
             row["thesis_area"],

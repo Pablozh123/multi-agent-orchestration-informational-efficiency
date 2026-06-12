@@ -167,6 +167,12 @@ acceptance_criteria:
   13 external locator rows, 10 local PDF rows, 23 pending queue rows, 0
   final-ready rows, 0 source-status change rows, T2/F1, T3/F2, T4/F3 bindings,
   and inactive future-agent boundaries.
+- A H1-H2-H3 decision queue ledger alignment exists so the operative
+  Decision-Queue overview, the three detail queues, and the Source Review
+  Progress Ledger are structurally reconciled before manual Ledger updates:
+  3 alignment rows, 23 queue rows, 23 ledger rows, 23 matched rows,
+  0 missing rows, 0 field-mismatch rows, 0 final-ready rows,
+  0 source-status change rows, and inactive future-agent boundaries.
 - A consolidated H1-H2-H3 manual source-review follow-up overview exists so
   the 23 open empirical-core review rows are visible in one compact control
   artifact with 9 unique sources, method/interpretation counts, access-route

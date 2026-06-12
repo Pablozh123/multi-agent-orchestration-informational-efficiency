@@ -326,6 +326,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Alle 23 Decision Rows bleiben final blockiert; 0 final-ready rows, 0 Quellenstatus-Aenderungen, keine Runtime-Agenten, max 50 rows und llm_audit_log fuer spaetere Agentenhilfe.",
         ),
         _index_row(
+            artifact_id="index_19_h1_h2_h3_decision_queue_ledger_alignment",
+            artifact_type="h1_h2_h3_decision_queue_ledger_alignment",
+            path="docs/project/THESIS_H1_H2_H3_DECISION_QUEUE_LEDGER_ALIGNMENT.md; data/results/thesis_h1_h2_h3_decision_queue_ledger_alignment.csv",
+            purpose_de="Gleicht die H1/H2/H3 Detail-Decision-Queues, die 3-Zeilen-Overview und das Source Review Progress Ledger strukturell ab.",
+            use_now_de="Vor Ledger-Updates pruefen, ob alle 23 Decision Rows exakt im Ledger vorhanden sind und keine Feldabweichungen bestehen.",
+            gate_or_limit_de="23 Matches, 0 Missing Rows, 0 Feldabweichungen, 0 final-ready rows, 0 Quellenstatus-Aenderungen; keine finale Zitation und keine Runtime-Agenten.",
+        ),
+        _index_row(
             artifact_id="index_19_manual_source_review_followup_overview",
             artifact_type="manual_source_review_followup_overview",
             path="docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md; data/results/thesis_manual_source_review_followup_overview.csv",
@@ -574,7 +582,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Follow-up, H1 Manual Source Review Follow-up, H1 Source Review Decision Queue, "
         "H2 Manual Source Review Follow-up, H2 Source Review Decision Queue, "
         "H3 Manual Source Review Follow-up, H3 Source Review Decision Queue, "
-        "H1-H2-H3 Decision Queue Overview, "
+        "H1-H2-H3 Decision Queue Overview, H1-H2-H3 Decision Queue Ledger Alignment, "
         "Manual Source Review Follow-up Overview, Submission Readiness Board, "
         "Drafting Sequence, Execution Checklist, Chapter Source Bindings, "
         "Source Review Execution, Source Access "
@@ -617,6 +625,10 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Nutze die H1-H2-H3 Decision Queue Overview als operative "
         "Kontrollsicht ueber 23 Decision Rows, T2/F1, T3/F2, T4/F3, "
         "0 final-ready rows und 0 Quellenstatus-Aenderungen. "
+        "Nutze die H1-H2-H3 Decision Queue Ledger Alignment als "
+        "Abgleich zwischen Detail-Queues, Overview und Ledger: 23 Matches, "
+        "0 Missing Rows und 0 Feldabweichungen muessen stehen, bevor "
+        "Ledger-Updates oder bounded BA-Prosa folgen. "
         "Nutze die Manual Source Review Follow-up Overview als kompakte "
         "H1-H2-H3 Steuerungsuebersicht fuer die 23 offenen Review-Zeilen. "
         "Nutze das Submission Readiness Board fuer die "

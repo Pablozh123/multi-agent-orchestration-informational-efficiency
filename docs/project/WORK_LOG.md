@@ -11153,3 +11153,49 @@ Verification:
 - `git diff --check` -> PASS.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `574 passed in 64.75s`, clean after the content commit.
+
+## 2026-06-12 - Advisor source-review follow-up prepared
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Prepared the next post-handoff step without activating Review-Access,
+  runtime agents, MCP, model routing, LLM metrics, or trading paths.
+
+Changes:
+
+- Added `operations/project/build_advisor_source_review_followup.py`.
+- Generated `data/results/thesis_advisor_source_review_followup.csv` and
+  `docs/project/THESIS_ADVISOR_SOURCE_REVIEW_FOLLOWUP.md`.
+- Added tests for the follow-up plan and updated the consolidation index to
+  include the new artifact.
+- Updated `GOAL.md` and `ROADMAP.md` so the next recommended content step is
+  the H1 manual source-review follow-up.
+
+Key output:
+
+- Follow-up rows: 8.
+- Manual Source Review rows: 23.
+- Pending Manual Source Review rows: 23.
+- Final-ready Manual Source Review rows: 0.
+- H1/H2/H3 manual review split: 10 / 5 / 8 rows.
+- Result package remains compact: 5 tables and 4 figures.
+- Agent upgrade rows remain inactive/deferred: 7 rows, 0 active.
+- Latest content commit:
+  `9bc098d docs: prepare advisor feedback and source review follow-up`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_advisor_source_review_followup.py operations\project\build_thesis_consolidation_index.py tests\test_advisor_source_review_followup.py tests\test_thesis_consolidation_index.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_advisor_feedback_integration_checklist.py tests\test_advisor_source_review_followup.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 6 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_advisor_source_review_followup`
+  -> PASS, generated follow-up CSV/Markdown.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, index rows now 43.
+- `git diff --check` -> PASS.
+- `rg -n "ß" docs\project\THESIS_ADVISOR_SOURCE_REVIEW_FOLLOWUP.md data\results\thesis_advisor_source_review_followup.csv operations\project\build_advisor_source_review_followup.py tests\test_advisor_source_review_followup.py`
+  -> PASS, no Swiss sharp-s found.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `576 passed in 61.37s`, clean after the content commit.

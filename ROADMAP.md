@@ -793,7 +793,10 @@ Current implemented consolidation:
   `docs/project/THESIS_GOAL_COMPLETION_AUDIT.md` audit the active goal against
   current evidence, achieved control artifacts, and remaining final gates
   without claiming final completion while Source Review, Swiss result mapping,
-  or DOCX render QA remain open.
+  or DOCX render QA remain open. The audit now also cites the future-agent
+  safety case, so the agent boundary is checked against 7 safety rows,
+  0 active safety rows, max 50 rows, bounded inputs, `llm_audit_log`, and no
+  runtime activation.
 - `data/results/thesis_source_access_audit.csv` and
   `docs/project/THESIS_SOURCE_ACCESS_AUDIT.md` audit source-review access
   routes before manual Source Review: local PDFs/HTML files, external

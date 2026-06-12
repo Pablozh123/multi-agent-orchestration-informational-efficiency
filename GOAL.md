@@ -152,7 +152,10 @@ acceptance_criteria:
 - The advisor checklist contains a recommended discussion order for the next
   Betreuung so the high-level path can be discussed quickly.
 - A goal-completion audit exists so achieved evidence and remaining final
-  gates are separated before any completion claim.
+  gates are separated before any completion claim. It now includes the
+  future-agent safety case as proof that later agent ideas remain
+  documentation-only/deferred with 7 safety rows, 0 active safety rows, max 50
+  rows, bounded inputs, `llm_audit_log`, and no runtime activation.
 - A source-access audit exists so local PDF/HTML sources and external
   locator-review sources are separated before manual Source Review.
 - A source-structure inventory exists so local source files can be prepared
@@ -274,7 +277,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add agent pipeline safety case
+next_commit: docs: refresh goal completion audit after safety case
 
 ## Running Side Goal
 

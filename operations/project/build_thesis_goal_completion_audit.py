@@ -89,6 +89,7 @@ def generate_goal_completion_audit(
     core_sections = _read_csv(results_dir / "thesis_h1_h2_h3_core_sections.csv")
     agent_control = _read_csv(results_dir / "thesis_agent_pipeline_control_audit.csv")
     agent_upgrade = _read_csv(results_dir / "thesis_agent_pipeline_upgrade_plan.csv")
+    agent_safety = _read_csv(results_dir / "thesis_agent_pipeline_safety_case.csv")
     final_gate_board = _read_csv(results_dir / "thesis_final_gate_board.csv")
     handoff_package = _read_csv(results_dir / "thesis_advisor_handoff_package.csv")
     handoff_note = _read_csv(results_dir / "thesis_advisor_handoff_note.csv")
@@ -118,6 +119,7 @@ def generate_goal_completion_audit(
         core_sections=core_sections,
         agent_control=agent_control,
         agent_upgrade=agent_upgrade,
+        agent_safety=agent_safety,
         final_gate_board=final_gate_board,
         handoff_package=handoff_package,
         handoff_note=handoff_note,
@@ -164,6 +166,7 @@ def build_goal_completion_audit(
     core_sections: pd.DataFrame,
     agent_control: pd.DataFrame,
     agent_upgrade: pd.DataFrame,
+    agent_safety: pd.DataFrame,
     final_gate_board: pd.DataFrame,
     handoff_package: pd.DataFrame,
     handoff_note: pd.DataFrame,
@@ -229,6 +232,11 @@ def build_goal_completion_audit(
             "ready_for_bounded_draft",
         ),
         "manual source review execution pass",
+    )
+    _require_columns(
+        agent_safety,
+        ("safety_case_id", "future_agent_scope", "current_status"),
+        "agent pipeline safety case",
     )
     _require_columns(
         source_progress_protocol,
@@ -576,6 +584,9 @@ def build_goal_completion_audit(
     agent_active = int(agent_control["current_activation_state"].astype(str).str.contains("active").sum())
     agent_upgrade_rows = int(len(agent_upgrade))
     agent_upgrade_active = int(agent_upgrade["current_status"].astype(str).str.contains("active").sum())
+    agent_safety_rows = int(len(agent_safety))
+    agent_safety_deferred = int((agent_safety["current_status"].astype(str) == "future_deferred").sum())
+    agent_safety_active = int(agent_safety["current_status"].astype(str).str.contains("active").sum())
     final_gate_rows = int(len(final_gate_board))
     final_gate_draft_allowed = int(final_gate_board["draft_use_allowed"].astype(bool).sum())
     final_gate_ready = int(final_gate_board["final_submission_ready"].astype(bool).sum())
@@ -731,12 +742,14 @@ def build_goal_completion_audit(
             audit_id="goal_audit_08_future_agents",
             goal_requirement_de="Agentenpipeline ist nur Highlevel-Future-Work.",
             current_status="deferred_future_work_only",
-            evidence_artifacts="data/results/thesis_agent_assistance_protocol.csv; docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md; data/results/thesis_agent_pipeline_control_audit.csv; docs/project/THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md; data/results/thesis_agent_pipeline_upgrade_plan.csv; docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md",
+            evidence_artifacts="data/results/thesis_agent_assistance_protocol.csv; docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md; data/results/thesis_agent_pipeline_control_audit.csv; docs/project/THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md; data/results/thesis_agent_pipeline_upgrade_plan.csv; docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md; data/results/thesis_agent_pipeline_safety_case.csv; docs/project/THESIS_AGENT_PIPELINE_SAFETY_CASE.md",
             key_evidence_de=(
                 f"Agent Control: {agent_control_rows} Rollen; "
                 f"documentation-only: {agent_documentation_only}; deferred: {agent_deferred}; "
                 f"aktiv: {agent_active}. Agent Upgrade Plan: {agent_upgrade_rows} Reihen; "
-                f"aktive Upgrade-Reihen: {agent_upgrade_active}. Human-Owner, Proof-Artifact, "
+                f"aktive Upgrade-Reihen: {agent_upgrade_active}. Agent Safety Case: "
+                f"{agent_safety_rows} Reihen; deferred: {agent_safety_deferred}; "
+                f"aktive Safety-Reihen: {agent_safety_active}. Human-Owner, Proof-Artifact, "
                 "Failure-Mode, llm_audit_log, bounded prompts, max 50 rows und Tests "
                 "bleiben Vorbedingungen."
             ),

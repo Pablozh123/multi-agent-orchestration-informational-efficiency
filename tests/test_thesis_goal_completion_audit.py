@@ -57,6 +57,8 @@ def test_generate_goal_completion_audit_writes_remaining_gates(tmp_path: Path) -
     assert "THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md" in doc
     assert "thesis_agent_pipeline_upgrade_plan.csv" in doc
     assert "THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md" in doc
+    assert "thesis_agent_pipeline_safety_case.csv" in doc
+    assert "THESIS_AGENT_PIPELINE_SAFETY_CASE.md" in doc
     assert "thesis_final_gate_board.csv" in doc
     assert "THESIS_FINAL_GATE_BOARD.md" in doc
     assert "Source Review" in doc
@@ -104,6 +106,7 @@ def test_goal_completion_audit_keeps_open_gates_visible(tmp_path: Path) -> None:
     assert "h1-h3 kapitel gegen source review, wording guard" in joined
     assert "agent control: 2 rollen; documentation-only: 1; deferred: 1; aktiv: 0" in joined
     assert "agent upgrade plan: 2 reihen; aktive upgrade-reihen: 0" in joined
+    assert "agent safety case: 2 reihen; deferred: 1; aktive safety-reihen: 0" in joined
     assert "human-owner, proof-artifact, failure-mode" in joined
     assert "max 50 rows" in joined
     assert "final gate board: 8 gates; draft-allowed 8; final-ready 1" in joined
@@ -344,6 +347,20 @@ def _write_fixture(root: Path) -> None:
     ).to_csv(results / "thesis_agent_pipeline_upgrade_plan.csv", index=False)
     pd.DataFrame(
         [
+            {
+                "safety_case_id": "agent_safety_01",
+                "future_agent_scope": "Evidence and source lock",
+                "current_status": "future_documentation_only",
+            },
+            {
+                "safety_case_id": "agent_safety_02",
+                "future_agent_scope": "Bounded access contract",
+                "current_status": "future_deferred",
+            },
+        ]
+    ).to_csv(results / "thesis_agent_pipeline_safety_case.csv", index=False)
+    pd.DataFrame(
+        [
             _final_gate("final_gate_01_source_review", True, False, 3),
             _final_gate("final_gate_02_h1_h2_h3_drafting", True, False, 3),
             _final_gate("final_gate_03_result_package", True, False, 1),
@@ -403,6 +420,7 @@ def _write_fixture(root: Path) -> None:
         "docs/research/THESIS_H1_H2_H3_SOURCE_GATED_WRITING_PASS.md",
         "docs/research/THESIS_H1_H2_H3_SOURCE_GATED_THESIS_DRAFTING_PASS.md",
         "docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md",
+        "docs/project/THESIS_AGENT_PIPELINE_SAFETY_CASE.md",
         "docs/project/THESIS_FINAL_GATE_BOARD.md",
     ]:
         path = root / relative

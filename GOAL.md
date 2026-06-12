@@ -96,6 +96,10 @@ acceptance_criteria:
   literature/source gates, deterministic artifacts, compact table/figure
   package, limitations, and final blockers without claiming Source Review
   completion.
+- The advisor report includes the source-gated H1-H2-H3 drafting sequence so
+  the Word update shows 15 paragraph-level writing steps, 23 linked Manual
+  Source Review rows, 0 final-ready rows, compact table/figure actions,
+  final blockers, and inactive future-agent boundaries.
 - A short advisor handoff note exists so the Word update can be sent with a
   clear subject, attachment order, discussion-order pointer, questions, and
   scope boundaries.
@@ -208,7 +212,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: refresh advisor report with source-gated drafting sequence
+next_commit: docs: update advisor handoff after source-gated report refresh
 
 ## Running Side Goal
 

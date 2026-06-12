@@ -1,6 +1,6 @@
 # Dozentenbericht zur Bachelorarbeit
 
-Erstellt: 2026-06-12T07:58:40+00:00
+Erstellt: 2026-06-12T16:57:28+00:00
 
 **Arbeitstitel:** Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen.
 
@@ -124,6 +124,37 @@ Der Dozent sieht damit direkt, dass jede empirische Methode und jede Interpretat
 
 Diese Sektion ist eine Schreibvorlage, kein finaler Zitations- oder Abgabeclaim. Keine neuen Kennzahlen, keine Rohartefakt-Dumps, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.
 
+## Source-Gated H1-H2-H3 Drafting Sequence
+
+Der source-gated Thesis-Drafting-Pass bringt den H1-H2-H3-Kern in 15 paragraphenweise Schreibschritte: 5 je Kapitel. Bounded-draft-ready: 15; final-submission-ready: 0. Manual Source Review: 23 Rows verlinkt, 23 pending, 0 final-ready.
+Fuer den Dozenten ist das die konkrete Schreibreihenfolge nach dem Bounded Chapter Draft: Methode/Resultat setzen, Interpretation und Limitation setzen, Tabelle/Figur einbauen, Manual Source Review ausfuehren, Finalgate und Future-Agent-Grenze sichtbar lassen.
+
+| Kapitel | Schritte | Manual Source Review | Tabelle/Figur | Status |
+| --- | --- | --- | --- | --- |
+| H1 | 5: Methode und Resultat setzen -> Interpretation und Limitation setzen -> Tabelle und Figur einbauen -> Manual Source Review ausfuehren -> Finalgate und Future-Agent-Grenze setzen | 10 rows; 10 pending; 0 final-ready | T2 / F1 | source_gated_thesis_draft_ready_final_source_review_pending |
+| H2 | 5: Methode und Resultat setzen -> Interpretation und Limitation setzen -> Tabelle und Figur einbauen -> Manual Source Review ausfuehren -> Finalgate und Future-Agent-Grenze setzen | 5 rows; 5 pending; 0 final-ready | T3 / F2 | source_gated_thesis_draft_ready_final_source_review_pending |
+| H3 | 5: Methode und Resultat setzen -> Interpretation und Limitation setzen -> Tabelle und Figur einbauen -> Manual Source Review ausfuehren -> Finalgate und Future-Agent-Grenze setzen | 8 rows; 8 pending; 0 final-ready | T4 / F3 | source_gated_thesis_draft_ready_final_source_review_pending |
+
+| Ordnung | Kapitel | Schreibschritt | Writer Action | Finalgate |
+| --- | --- | --- | --- | --- |
+| 1 | H1 | Methode und Resultat setzen | H1: Methoden- und Resultatabsatz aus dem Source-Gated Writing Pass in den BA-Entwurf uebernehmen; Evidence IDs sichtbar halten. | H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
+| 2 | H1 | Interpretation und Limitation setzen | H1: Interpretation nur bounded formulieren und Limitation direkt nach dem Resultat platzieren. | H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
+| 3 | H1 | Tabelle und Figur einbauen | H1: Nur Tabelle T2 und Abbildung F1 einbauen; keine Rohartefakt-Dumps. | H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
+| 4 | H1 | Manual Source Review ausfuehren | H1: Manual Source Review Execution Pass abarbeiten und Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen. | H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
+| 5 | H1 | Finalgate und Future-Agent-Grenze setzen | H1: Finalgate sichtbar lassen und Agenten nur als Future-Work-Grenze mit llm_audit_log-Vorbedingung erwaehnen. | H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
+| 6 | H2 | Methode und Resultat setzen | H2: Methoden- und Resultatabsatz aus dem Source-Gated Writing Pass in den BA-Entwurf uebernehmen; Evidence IDs sichtbar halten. | H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
+| 7 | H2 | Interpretation und Limitation setzen | H2: Interpretation nur bounded formulieren und Limitation direkt nach dem Resultat platzieren. | H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
+| 8 | H2 | Tabelle und Figur einbauen | H2: Nur Tabelle T3 und Abbildung F2 einbauen; keine Rohartefakt-Dumps. | H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
+| 9 | H2 | Manual Source Review ausfuehren | H2: Manual Source Review Execution Pass abarbeiten und Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen. | H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
+| 10 | H2 | Finalgate und Future-Agent-Grenze setzen | H2: Finalgate sichtbar lassen und Agenten nur als Future-Work-Grenze mit llm_audit_log-Vorbedingung erwaehnen. | H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
+| 11 | H3 | Methode und Resultat setzen | H3: Methoden- und Resultatabsatz aus dem Source-Gated Writing Pass in den BA-Entwurf uebernehmen; Evidence IDs sichtbar halten. | H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
+| 12 | H3 | Interpretation und Limitation setzen | H3: Interpretation nur bounded formulieren und Limitation direkt nach dem Resultat platzieren. | H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
+| 13 | H3 | Tabelle und Figur einbauen | H3: Nur Tabelle T4 und Abbildung F3 einbauen; keine Rohartefakt-Dumps. | H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
+| 14 | H3 | Manual Source Review ausfuehren | H3: Manual Source Review Execution Pass abarbeiten und Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen. | H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
+| 15 | H3 | Finalgate und Future-Agent-Grenze setzen | H3: Finalgate sichtbar lassen und Agenten nur als Future-Work-Grenze mit llm_audit_log-Vorbedingung erwaehnen. | H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. |
+
+Auch diese Sequenz ist kein finaler Zitations- oder Abgabeclaim: Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use bleiben manuelle Gates; Agenten bleiben documentation-only Future Work.
+
 ## Naechste Arbeitsschritte
 
 Der Next-Work-Plan ordnet 10 Workstreams. Erste Prioritaet ist `work_01_source_review`, letzte QA-Prioritaet ist `work_10_final_qa`.
@@ -205,7 +236,7 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 | H2 Event-Windows | Polymarket bewegt sich um mehrere kuratierte politische Ereignisse sichtbar in der Tagesauflosung. | 7 kuratierte Ereignisse; groesstes Primaerfenster nach Betrag: 07_13_trump_shooting +7.2 Prozentpunkte. | Das stuetzt eine These, dass oeffentliche Ereignisse in den Marktpreisen sichtbar werden koennen. | Taegliche Daten zeigen Reaktionsrichtung und Groessenordnung, aber keine intraday Reaktionsgeschwindigkeit. |
 | H3 Wallet-Timing | Top-Wallet-Tier-Aktivitaet zeigt eine messbare, aber vorsichtig zu formulierende Timing-Struktur. | 1216 alignierte Modellzeilen; staerkste Korrelation tier_1_top_1pct lag 1 = 0.1858; kleinster Granger-p-Wert 0.0012. | Das ist als Vorhersage-/Timingdiagnostik verwendbar und motiviert weitere Sensitivitaetschecks. | BUY-only Quelle, Tagesaggregation und Multiple-Testing-Risiko begrenzen die Aussage. |
 | Monitor und Review-Queue | Der Monitor hat die richtige Rolle als Kontroll- und Review-Infrastruktur, nicht als Ergebnisgenerator fuer starke Claims. | 3 aktuelle Review-Cases, davon 1 high und 2 medium; Status source_check_pending=3. | Die Review-Queue ist methodisch wichtig, weil sie auffaellige Faelle von thesis-faehiger Evidenz trennt. | Die Queue ist kein Nachweis fuer Ursachen, Regelverstoss, Handelbarkeit, Profitabilitaet oder zukuenftige Entwicklung. |
-| Swiss-Referendum Side-Track | Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen. | 7 Umfragen, 34 Polymarket-Snapshots; latest Polymarket Yes 22.0%, latest poll Yes 45.0%, raw gap -23.0 pp. | Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen. | Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung. |
+| Swiss-Referendum Side-Track | Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen. | 7 Umfragen, 43 Polymarket-Snapshots; latest Polymarket Yes 21.5%, latest poll Yes 45.0%, raw gap -23.5 pp. | Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen. | Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung. |
 
 ## Warum dieses Vorgehen methodisch sinnvoll ist
 
@@ -220,10 +251,10 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Projektstruktur
 
 - SQLite-Datenbank: 9 Tabellen.
-- Ergebnisartefakte: 352 Dateien unter `data/results`.
+- Ergebnisartefakte: 357 Dateien unter `data/results`.
 - Analyse-Module: 78 Dateien.
 - Collector-Module: 10 Dateien.
-- Tests: 123 Testdateien; letzter Status: 562 passed in 51.69s.
+- Tests: 128 Testdateien; letzter Status: 574 passed in 58.67s.
 
 ## H1 - Forecast-Qualitaet
 
@@ -301,12 +332,12 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Schweizer Referendum
 
 - Kuratierte Umfragen: 7.
-- Polymarket snapshots: 34.
+- Polymarket snapshots: 43.
 - Bounded price-history rows: 504.
-- Latest Polymarket Yes: 22.0 Prozent.
+- Latest Polymarket Yes: 21.5 Prozent.
 - Latest matched poll Yes: 45.0 Prozent.
-- Raw gap: -23.0 Prozentpunkte.
-- Decided-voter gap: -24.4 Prozentpunkte.
+- Raw gap: -23.5 Prozentpunkte.
+- Decided-voter gap: -24.9 Prozentpunkte.
 
 ## Abbildungen
 

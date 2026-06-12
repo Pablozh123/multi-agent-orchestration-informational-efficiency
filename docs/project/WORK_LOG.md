@@ -11039,3 +11039,46 @@ Verification:
 
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `574 passed in 58.67s`, clean before the status refresh.
+
+## 2026-06-12 - Advisor report source-gated drafting refresh
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Refreshed the Dozentenbericht after the main thesis chapter draft gained
+  `Source-Gated Drafting Sequence` blocks.
+- Kept Review-Access paused and used only deterministic local artifacts.
+
+Changes:
+
+- Updated `operations/project/build_dozenten_report.py` to read
+  `data/results/thesis_h1_h2_h3_source_gated_thesis_drafting_pass.csv`.
+- Added a `Source-Gated H1-H2-H3 Drafting Sequence` section to Markdown,
+  HTML, and DOCX report output.
+- Regenerated `docs/project/dozentenbericht_ba_thesis.md`,
+  `docs/project/dozentenbericht_ba_thesis.html`, and
+  `docs/project/dozentenbericht_ba_thesis.docx`.
+- Updated `GOAL.md` and `ROADMAP.md` so the advisor report refresh is visible.
+
+Key output:
+
+- Advisor report now shows 15 paragraph-level H1-H2-H3 writing steps.
+- Manual Source Review rows linked in the report: 23.
+- Manual Source Review pending rows: 23.
+- Final-ready manual rows: 0.
+- DOCX structural QA: zip ok, 230 paragraphs, 44 tables, 43 media files, no
+  Swiss sharp-s, new source-gated heading and tables present.
+- Visual DOCX render QA could not run because LibreOffice/`soffice` is not
+  installed in this environment.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_dozenten_report.py tests\test_dozenten_report.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_dozenten_report.py -q`
+  -> PASS, 1 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown, HTML, DOCX and 43 report figures.
+- `.\.venv\Scripts\python.exe ...\documents\render_docx.py docs\project\dozentenbericht_ba_thesis.docx`
+  -> FAIL, `WinError 2` because LibreOffice/`soffice` is unavailable; structural
+  DOCX fallback QA passed.

@@ -223,6 +223,9 @@ def collect_report_data() -> dict[str, Any]:
     thesis_h1_h2_h3_bounded_chapter_draft = _read_csv(
         "data/results/thesis_h1_h2_h3_bounded_chapter_draft.csv"
     )
+    thesis_h1_h2_h3_source_gated_drafting = _read_csv(
+        "data/results/thesis_h1_h2_h3_source_gated_thesis_drafting_pass.csv"
+    )
 
     return {
         "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
@@ -296,6 +299,9 @@ def collect_report_data() -> dict[str, Any]:
         "bounded_chapter_draft": _bounded_chapter_draft_report_data(
             thesis_h1_h2_h3_bounded_chapter_draft
         ),
+        "source_gated_drafting": _source_gated_drafting_report_data(
+            thesis_h1_h2_h3_source_gated_drafting
+        ),
         "source_counts": {
             "curated_events": len(event_seed),
             "literature_rows": len(literature),
@@ -323,7 +329,7 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
     submission_readiness = data["submission_readiness"]
     drafting_sequence = data["drafting_sequence"]
     bounded_chapter_draft = data["bounded_chapter_draft"]
-    bounded_chapter_draft = data["bounded_chapter_draft"]
+    source_gated_drafting = data["source_gated_drafting"]
     db = data["project"]["database"]
     folders = data["project"]["folder_inventory"]
     insight_rows = [
@@ -426,6 +432,26 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
     for row in bounded_chapter_draft["chapter_rows"]:
         bounded_chapter_rows.append(
             "| {thesis_area} | `{method_evidence_ids}` | `{interpretation_evidence_ids}` | {literature_artifact_summary_de} | {table_figure_de} | {source_review_gate_summary_de} |".format(
+                **{key: str(value).replace("|", ",") for key, value in row.items()}
+            )
+        )
+    source_gated_chapter_rows = [
+        "| Kapitel | Schritte | Manual Source Review | Tabelle/Figur | Status |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+    for row in source_gated_drafting["chapter_rows"]:
+        source_gated_chapter_rows.append(
+            "| {thesis_area} | {step_count}: {step_summary_de} | {manual_review_summary_de} | {table_figure_de} | {status_de} |".format(
+                **{key: str(value).replace("|", ",") for key, value in row.items()}
+            )
+        )
+    source_gated_step_rows = [
+        "| Ordnung | Kapitel | Schreibschritt | Writer Action | Finalgate |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+    for row in source_gated_drafting["step_rows"]:
+        source_gated_step_rows.append(
+            "| {draft_sequence_order} | {thesis_area} | {draft_section_de} | {writer_action_de} | {final_gate_short_de} |".format(
                 **{key: str(value).replace("|", ",") for key, value in row.items()}
             )
         )
@@ -569,6 +595,36 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
             "Diese Sektion ist eine Schreibvorlage, kein finaler Zitations- "
             "oder Abgabeclaim. Keine neuen Kennzahlen, keine Rohartefakt-Dumps, "
             "keine Quellenstatus-Hochstufung und keine Runtime-Agenten."
+        ),
+        "",
+        "## Source-Gated H1-H2-H3 Drafting Sequence",
+        "",
+        (
+            f"Der source-gated Thesis-Drafting-Pass bringt den H1-H2-H3-Kern "
+            f"in {source_gated_drafting['row_count']} paragraphenweise "
+            f"Schreibschritte: {source_gated_drafting['rows_per_chapter']} je "
+            "Kapitel. Bounded-draft-ready: "
+            f"{source_gated_drafting['bounded_ready_count']}; "
+            f"final-submission-ready: {source_gated_drafting['final_ready_count']}. "
+            f"Manual Source Review: {source_gated_drafting['manual_rows_linked']} "
+            f"Rows verlinkt, {source_gated_drafting['manual_pending_rows']} pending, "
+            f"{source_gated_drafting['manual_final_ready_rows']} final-ready."
+        ),
+        (
+            "Fuer den Dozenten ist das die konkrete Schreibreihenfolge nach dem "
+            "Bounded Chapter Draft: Methode/Resultat setzen, Interpretation und "
+            "Limitation setzen, Tabelle/Figur einbauen, Manual Source Review "
+            "ausfuehren, Finalgate und Future-Agent-Grenze sichtbar lassen."
+        ),
+        "",
+        *source_gated_chapter_rows,
+        "",
+        *source_gated_step_rows,
+        "",
+        (
+            "Auch diese Sequenz ist kein finaler Zitations- oder Abgabeclaim: "
+            "Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use "
+            "bleiben manuelle Gates; Agenten bleiben documentation-only Future Work."
         ),
         "",
         "## Naechste Arbeitsschritte",
@@ -1263,6 +1319,7 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
     submission_readiness = data["submission_readiness"]
     drafting_sequence = data["drafting_sequence"]
     bounded_chapter_draft = data["bounded_chapter_draft"]
+    source_gated_drafting = data["source_gated_drafting"]
     figures = "\n".join(
         _figure_html(figure, html_output=html_output)
         for figure in data["figures"]
@@ -1373,6 +1430,26 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
         "</tr>"
         for row in bounded_chapter_draft["chapter_rows"]
     )
+    source_gated_chapter_rows = "\n".join(
+        "<tr>"
+        f"<td>{escape(row['thesis_area'])}</td>"
+        f"<td>{row['step_count']}: {escape(row['step_summary_de'])}</td>"
+        f"<td>{escape(row['manual_review_summary_de'])}</td>"
+        f"<td>{escape(row['table_figure_de'])}</td>"
+        f"<td>{escape(row['status_de'])}</td>"
+        "</tr>"
+        for row in source_gated_drafting["chapter_rows"]
+    )
+    source_gated_step_rows = "\n".join(
+        "<tr>"
+        f"<td>{row['draft_sequence_order']}</td>"
+        f"<td>{escape(row['thesis_area'])}</td>"
+        f"<td>{escape(row['draft_section_de'])}</td>"
+        f"<td>{escape(row['writer_action_de'])}</td>"
+        f"<td>{escape(row['final_gate_short_de'])}</td>"
+        "</tr>"
+        for row in source_gated_drafting["step_rows"]
+    )
     h2_rows = "\n".join(
         f"<tr><td>{escape(row['event'])}</td><td>{row['change_pp']:+.1f} pp</td></tr>"
         for row in h2["primary_examples"]
@@ -1457,6 +1534,13 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
   <p>Jede empirische Methode und jede Interpretation bleibt an Evidence-IDs, Literatur-IDs, deterministische Artefakte, kuratierte Tabellen/Figuren, Limitationen und Source-Review-Gates gebunden.</p>
   <table><tr><th>Kapitel</th><th>Methoden</th><th>Interpretationen</th><th>Literatur/Artefakte</th><th>Tabelle/Figur</th><th>Gate</th></tr>{bounded_chapter_rows}</table>
   <p class="small">Schreibvorlage, kein finaler Zitations- oder Abgabeclaim: keine neuen Kennzahlen, keine Rohartefakt-Dumps, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.</p>
+
+  <h2>Source-Gated H1-H2-H3 Drafting Sequence</h2>
+  <p>Der source-gated Thesis-Drafting-Pass bringt den H1-H2-H3-Kern in {source_gated_drafting['row_count']} paragraphenweise Schreibschritte: {source_gated_drafting['rows_per_chapter']} je Kapitel. Bounded-draft-ready: {source_gated_drafting['bounded_ready_count']}; final-submission-ready: {source_gated_drafting['final_ready_count']}. Manual Source Review: {source_gated_drafting['manual_rows_linked']} Rows verlinkt, {source_gated_drafting['manual_pending_rows']} pending, {source_gated_drafting['manual_final_ready_rows']} final-ready.</p>
+  <p>Fuer den Dozenten ist das die konkrete Schreibreihenfolge nach dem Bounded Chapter Draft: Methode/Resultat setzen, Interpretation und Limitation setzen, Tabelle/Figur einbauen, Manual Source Review ausfuehren, Finalgate und Future-Agent-Grenze sichtbar lassen.</p>
+  <table><tr><th>Kapitel</th><th>Schritte</th><th>Manual Source Review</th><th>Tabelle/Figur</th><th>Status</th></tr>{source_gated_chapter_rows}</table>
+  <table><tr><th>Ordnung</th><th>Kapitel</th><th>Schreibschritt</th><th>Writer Action</th><th>Finalgate</th></tr>{source_gated_step_rows}</table>
+  <p class="small">Auch diese Sequenz ist kein finaler Zitations- oder Abgabeclaim: Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use bleiben manuelle Gates; Agenten bleiben documentation-only Future Work.</p>
 
   <h2>Naechste Arbeitsschritte</h2>
   <p>Der Next-Work-Plan ordnet {next_work['row_count']} Workstreams. Erste Prioritaet ist <code>{escape(next_work['first_workstream'])}</code>, letzte QA-Prioritaet ist <code>{escape(next_work['final_workstream'])}</code>.</p>
@@ -1585,6 +1669,7 @@ def write_docx(data: dict[str, Any], output_path: Path) -> None:
     _add_submission_readiness_section(doc, data["submission_readiness"])
     _add_drafting_sequence_section(doc, data["drafting_sequence"])
     _add_bounded_chapter_draft_section(doc, data["bounded_chapter_draft"])
+    _add_source_gated_drafting_section(doc, data["source_gated_drafting"])
     _add_next_work_section(doc, data["next_work"])
     _add_execution_checklist_section(doc, data["execution_checklist"])
     _add_research_design_section(doc, data)
@@ -2082,6 +2167,101 @@ def _bounded_chapter_draft_report_data(draft: pd.DataFrame) -> dict[str, Any]:
         "bounded_ready_count": ready_for_bounded,
         "final_ready_count": ready_for_final,
         "chapter_rows": chapter_rows,
+    }
+
+
+def _source_gated_drafting_report_data(drafting: pd.DataFrame) -> dict[str, Any]:
+    """Translate paragraph-level source-gated drafting rows for the advisor report."""
+
+    required_columns = {
+        "thesis_area",
+        "draft_sequence_order",
+        "draft_section_de",
+        "method_evidence_ids",
+        "interpretation_evidence_ids",
+        "selected_tables",
+        "selected_figures",
+        "manual_execution_rows",
+        "manual_execution_pending_rows",
+        "manual_execution_final_ready_rows",
+        "writer_action_de",
+        "final_gate_de",
+        "ready_for_bounded_draft",
+        "ready_for_final_submission",
+        "draft_status",
+    }
+    missing = sorted(required_columns.difference(drafting.columns))
+    if missing:
+        raise ValueError(f"source-gated thesis drafting pass missing columns: {missing}")
+
+    ordered = drafting.sort_values(["draft_sequence_order"])
+    rows = ordered.to_dict(orient="records")
+    if len(rows) != 15:
+        raise ValueError("source-gated thesis drafting pass must have 15 rows for the report")
+
+    chapter_rows: list[dict[str, Any]] = []
+    for area in ("H1", "H2", "H3"):
+        area_rows = [row for row in rows if str(row["thesis_area"]) == area]
+        if len(area_rows) != 5:
+            raise ValueError(f"source-gated thesis drafting pass missing five rows for {area}")
+        first = area_rows[0]
+        chapter_rows.append(
+            {
+                "thesis_area": area,
+                "step_count": len(area_rows),
+                "step_summary_de": " -> ".join(
+                    str(row["draft_section_de"]) for row in area_rows
+                ),
+                "method_evidence_ids": str(first["method_evidence_ids"]),
+                "interpretation_evidence_ids": str(first["interpretation_evidence_ids"]),
+                "manual_review_summary_de": (
+                    f"{int(first['manual_execution_rows'])} rows; "
+                    f"{int(first['manual_execution_pending_rows'])} pending; "
+                    f"{int(first['manual_execution_final_ready_rows'])} final-ready"
+                ),
+                "table_figure_de": f"{first['selected_tables']} / {first['selected_figures']}",
+                "status_de": str(first["draft_status"]),
+            }
+        )
+
+    step_rows = [
+        {
+            "draft_sequence_order": int(row["draft_sequence_order"]),
+            "thesis_area": str(row["thesis_area"]),
+            "draft_section_de": str(row["draft_section_de"]),
+            "writer_action_de": str(row["writer_action_de"]),
+            "final_gate_short_de": _first_sentence(str(row["final_gate_de"])),
+        }
+        for row in rows
+    ]
+
+    chapter_first_rows = (
+        ordered.drop_duplicates(subset=["thesis_area"])
+        .sort_values("thesis_area")
+        .to_dict(orient="records")
+    )
+    manual_rows_linked = sum(int(row["manual_execution_rows"]) for row in chapter_first_rows)
+    manual_pending_rows = sum(
+        int(row["manual_execution_pending_rows"]) for row in chapter_first_rows
+    )
+    manual_final_ready_rows = sum(
+        int(row["manual_execution_final_ready_rows"]) for row in chapter_first_rows
+    )
+
+    return {
+        "row_count": len(rows),
+        "rows_per_chapter": int(len(rows) / 3) if rows else 0,
+        "bounded_ready_count": sum(
+            _bool_text(row["ready_for_bounded_draft"]) for row in rows
+        ),
+        "final_ready_count": sum(
+            _bool_text(row["ready_for_final_submission"]) for row in rows
+        ),
+        "manual_rows_linked": manual_rows_linked,
+        "manual_pending_rows": manual_pending_rows,
+        "manual_final_ready_rows": manual_final_ready_rows,
+        "chapter_rows": chapter_rows,
+        "step_rows": step_rows,
     }
 
 
@@ -2630,6 +2810,72 @@ def _add_bounded_chapter_draft_section(
             "Die Bausteine duerfen direkt in den empirischen BA-Kern "
             "ueberfuehrt werden. Sie ersetzen keine finale Zitation, "
             "keine Quellenpruefung und keine DOCX-Render-QA."
+        ),
+    )
+
+
+def _add_source_gated_drafting_section(
+    doc: Document,
+    source_gated_drafting: dict[str, Any],
+) -> None:
+    doc.add_heading("Source-Gated H1-H2-H3 Drafting Sequence", level=1)
+    doc.add_paragraph(
+        "Der source-gated Thesis-Drafting-Pass bringt den H1-H2-H3-Kern in "
+        f"{source_gated_drafting['row_count']} paragraphenweise Schreibschritte: "
+        f"{source_gated_drafting['rows_per_chapter']} je Kapitel. "
+        f"Bounded-draft-ready: {source_gated_drafting['bounded_ready_count']}; "
+        f"final-submission-ready: {source_gated_drafting['final_ready_count']}. "
+        f"Manual Source Review: {source_gated_drafting['manual_rows_linked']} "
+        f"Rows verlinkt, {source_gated_drafting['manual_pending_rows']} pending, "
+        f"{source_gated_drafting['manual_final_ready_rows']} final-ready."
+    )
+    doc.add_paragraph(
+        "Fuer den Dozenten ist das die konkrete Schreibreihenfolge nach dem "
+        "Bounded Chapter Draft: Methode/Resultat setzen, Interpretation und "
+        "Limitation setzen, Tabelle/Figur einbauen, Manual Source Review "
+        "ausfuehren, Finalgate und Future-Agent-Grenze sichtbar lassen."
+    )
+    chapter_rows = [
+        (
+            row["thesis_area"],
+            f"{row['step_count']}: {row['step_summary_de']}",
+            row["manual_review_summary_de"],
+            row["table_figure_de"],
+            row["status_de"],
+        )
+        for row in source_gated_drafting["chapter_rows"]
+    ]
+    chapter_table = _add_table(
+        doc,
+        chapter_rows,
+        ["Kapitel", "Schritte", "Manual Source Review", "Tabelle/Figur", "Status"],
+        [650, 3150, 1800, 1200, 2560],
+    )
+    _shade_table_header(chapter_table)
+    step_rows = [
+        (
+            row["draft_sequence_order"],
+            row["thesis_area"],
+            row["draft_section_de"],
+            row["writer_action_de"],
+            row["final_gate_short_de"],
+        )
+        for row in source_gated_drafting["step_rows"]
+    ]
+    step_table = _add_table(
+        doc,
+        step_rows,
+        ["Ordnung", "Kapitel", "Schreibschritt", "Writer Action", "Finalgate"],
+        [650, 600, 1650, 3700, 2760],
+    )
+    _shade_table_header(step_table)
+    _add_callout(
+        doc,
+        "Gating fuer den Dozenten",
+        (
+            "Auch diese Sequenz ist kein finaler Zitations- oder Abgabeclaim: "
+            "Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use "
+            "bleiben manuelle Gates; Agenten bleiben documentation-only Future Work."
         ),
     )
 

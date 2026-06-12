@@ -25,7 +25,7 @@
 <body>
   <h1>Dozentenbericht zur Bachelorarbeit</h1>
   <p class="subtitle">Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen</p>
-  <p class="small">Erstellt aus lokalen deterministischen Artefakten: 2026-06-12T07:58:40+00:00</p>
+  <p class="small">Erstellt aus lokalen deterministischen Artefakten: 2026-06-12T16:57:28+00:00</p>
   <div class="callout"><strong>Kurzfazit.</strong> Das Projekt prueft informationelle Effizienz ueber drei reproduzierbare Analyseebenen: H1 Forecast-Qualitaet, H2 taegliche Event-Window-Reaktion und H3 Wallet-Tier-Timing. Der Monitor ist ein read-only Forschungsprototyp mit deterministischer Anomaly-Review-Queue; der Swiss-Referendum-Vergleich laeuft als separater Datensammlungs-Track.</div>
 
   <h2>Aufbau wie in der Bachelorarbeit</h2>
@@ -112,6 +112,29 @@
 <tr><td>H3</td><td><code>method_h3_wallet_tiers; method_h3_granger_timing</code></td><td><code>interpretation_h3_top_tier_signal</code></td><td>Literatur `zotero_poly_001; zotero_poly_005; zotero_poly_007; lit_granger_001`; Artefakte `data/results/h3_wallet_distribution_inventory.json; data/results/h3_granger_results.csv; plus 5 weitere`.</td><td>T4 / F3</td><td>H3: 8 Source-Review-Zeilen im Ledger; 8 pending; 0 final-ready.</td></tr></table>
   <p class="small">Schreibvorlage, kein finaler Zitations- oder Abgabeclaim: keine neuen Kennzahlen, keine Rohartefakt-Dumps, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.</p>
 
+  <h2>Source-Gated H1-H2-H3 Drafting Sequence</h2>
+  <p>Der source-gated Thesis-Drafting-Pass bringt den H1-H2-H3-Kern in 15 paragraphenweise Schreibschritte: 5 je Kapitel. Bounded-draft-ready: 15; final-submission-ready: 0. Manual Source Review: 23 Rows verlinkt, 23 pending, 0 final-ready.</p>
+  <p>Fuer den Dozenten ist das die konkrete Schreibreihenfolge nach dem Bounded Chapter Draft: Methode/Resultat setzen, Interpretation und Limitation setzen, Tabelle/Figur einbauen, Manual Source Review ausfuehren, Finalgate und Future-Agent-Grenze sichtbar lassen.</p>
+  <table><tr><th>Kapitel</th><th>Schritte</th><th>Manual Source Review</th><th>Tabelle/Figur</th><th>Status</th></tr><tr><td>H1</td><td>5: Methode und Resultat setzen -&gt; Interpretation und Limitation setzen -&gt; Tabelle und Figur einbauen -&gt; Manual Source Review ausfuehren -&gt; Finalgate und Future-Agent-Grenze setzen</td><td>10 rows; 10 pending; 0 final-ready</td><td>T2 / F1</td><td>source_gated_thesis_draft_ready_final_source_review_pending</td></tr>
+<tr><td>H2</td><td>5: Methode und Resultat setzen -&gt; Interpretation und Limitation setzen -&gt; Tabelle und Figur einbauen -&gt; Manual Source Review ausfuehren -&gt; Finalgate und Future-Agent-Grenze setzen</td><td>5 rows; 5 pending; 0 final-ready</td><td>T3 / F2</td><td>source_gated_thesis_draft_ready_final_source_review_pending</td></tr>
+<tr><td>H3</td><td>5: Methode und Resultat setzen -&gt; Interpretation und Limitation setzen -&gt; Tabelle und Figur einbauen -&gt; Manual Source Review ausfuehren -&gt; Finalgate und Future-Agent-Grenze setzen</td><td>8 rows; 8 pending; 0 final-ready</td><td>T4 / F3</td><td>source_gated_thesis_draft_ready_final_source_review_pending</td></tr></table>
+  <table><tr><th>Ordnung</th><th>Kapitel</th><th>Schreibschritt</th><th>Writer Action</th><th>Finalgate</th></tr><tr><td>1</td><td>H1</td><td>Methode und Resultat setzen</td><td>H1: Methoden- und Resultatabsatz aus dem Source-Gated Writing Pass in den BA-Entwurf uebernehmen; Evidence IDs sichtbar halten.</td><td>H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0.</td></tr>
+<tr><td>2</td><td>H1</td><td>Interpretation und Limitation setzen</td><td>H1: Interpretation nur bounded formulieren und Limitation direkt nach dem Resultat platzieren.</td><td>H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0.</td></tr>
+<tr><td>3</td><td>H1</td><td>Tabelle und Figur einbauen</td><td>H1: Nur Tabelle T2 und Abbildung F1 einbauen; keine Rohartefakt-Dumps.</td><td>H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0.</td></tr>
+<tr><td>4</td><td>H1</td><td>Manual Source Review ausfuehren</td><td>H1: Manual Source Review Execution Pass abarbeiten und Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen.</td><td>H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0.</td></tr>
+<tr><td>5</td><td>H1</td><td>Finalgate und Future-Agent-Grenze setzen</td><td>H1: Finalgate sichtbar lassen und Agenten nur als Future-Work-Grenze mit llm_audit_log-Vorbedingung erwaehnen.</td><td>H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0.</td></tr>
+<tr><td>6</td><td>H2</td><td>Methode und Resultat setzen</td><td>H2: Methoden- und Resultatabsatz aus dem Source-Gated Writing Pass in den BA-Entwurf uebernehmen; Evidence IDs sichtbar halten.</td><td>H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0.</td></tr>
+<tr><td>7</td><td>H2</td><td>Interpretation und Limitation setzen</td><td>H2: Interpretation nur bounded formulieren und Limitation direkt nach dem Resultat platzieren.</td><td>H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0.</td></tr>
+<tr><td>8</td><td>H2</td><td>Tabelle und Figur einbauen</td><td>H2: Nur Tabelle T3 und Abbildung F2 einbauen; keine Rohartefakt-Dumps.</td><td>H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0.</td></tr>
+<tr><td>9</td><td>H2</td><td>Manual Source Review ausfuehren</td><td>H2: Manual Source Review Execution Pass abarbeiten und Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen.</td><td>H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0.</td></tr>
+<tr><td>10</td><td>H2</td><td>Finalgate und Future-Agent-Grenze setzen</td><td>H2: Finalgate sichtbar lassen und Agenten nur als Future-Work-Grenze mit llm_audit_log-Vorbedingung erwaehnen.</td><td>H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0.</td></tr>
+<tr><td>11</td><td>H3</td><td>Methode und Resultat setzen</td><td>H3: Methoden- und Resultatabsatz aus dem Source-Gated Writing Pass in den BA-Entwurf uebernehmen; Evidence IDs sichtbar halten.</td><td>H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0.</td></tr>
+<tr><td>12</td><td>H3</td><td>Interpretation und Limitation setzen</td><td>H3: Interpretation nur bounded formulieren und Limitation direkt nach dem Resultat platzieren.</td><td>H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0.</td></tr>
+<tr><td>13</td><td>H3</td><td>Tabelle und Figur einbauen</td><td>H3: Nur Tabelle T4 und Abbildung F3 einbauen; keine Rohartefakt-Dumps.</td><td>H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0.</td></tr>
+<tr><td>14</td><td>H3</td><td>Manual Source Review ausfuehren</td><td>H3: Manual Source Review Execution Pass abarbeiten und Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen.</td><td>H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0.</td></tr>
+<tr><td>15</td><td>H3</td><td>Finalgate und Future-Agent-Grenze setzen</td><td>H3: Finalgate sichtbar lassen und Agenten nur als Future-Work-Grenze mit llm_audit_log-Vorbedingung erwaehnen.</td><td>H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0.</td></tr></table>
+  <p class="small">Auch diese Sequenz ist kein finaler Zitations- oder Abgabeclaim: Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use bleiben manuelle Gates; Agenten bleiben documentation-only Future Work.</p>
+
   <h2>Naechste Arbeitsschritte</h2>
   <p>Der Next-Work-Plan ordnet 10 Workstreams. Erste Prioritaet ist <code>work_01_source_review</code>, letzte QA-Prioritaet ist <code>work_10_final_qa</code>.</p>
   <table><tr><th>Prioritaet</th><th>Workstream</th><th>Naechste Aktion</th><th>Guardrail</th></tr><tr><td>1</td><td>Quellenreview Kernquellen</td><td>Die 11 Priority-1-Quellen mit Seiten- oder Abschnittsnotizen pruefen.</td><td>Quellenstatus nicht automatisch hochstufen.</td></tr>
@@ -161,7 +184,7 @@
 <tr><td>H2 Event-Windows</td><td>Polymarket bewegt sich um mehrere kuratierte politische Ereignisse sichtbar in der Tagesauflosung.</td><td>7 kuratierte Ereignisse; groesstes Primaerfenster nach Betrag: 07_13_trump_shooting +7.2 Prozentpunkte.</td><td>Das stuetzt eine These, dass oeffentliche Ereignisse in den Marktpreisen sichtbar werden koennen.</td><td>Taegliche Daten zeigen Reaktionsrichtung und Groessenordnung, aber keine intraday Reaktionsgeschwindigkeit.</td></tr>
 <tr><td>H3 Wallet-Timing</td><td>Top-Wallet-Tier-Aktivitaet zeigt eine messbare, aber vorsichtig zu formulierende Timing-Struktur.</td><td>1216 alignierte Modellzeilen; staerkste Korrelation tier_1_top_1pct lag 1 = 0.1858; kleinster Granger-p-Wert 0.0012.</td><td>Das ist als Vorhersage-/Timingdiagnostik verwendbar und motiviert weitere Sensitivitaetschecks.</td><td>BUY-only Quelle, Tagesaggregation und Multiple-Testing-Risiko begrenzen die Aussage.</td></tr>
 <tr><td>Monitor und Review-Queue</td><td>Der Monitor hat die richtige Rolle als Kontroll- und Review-Infrastruktur, nicht als Ergebnisgenerator fuer starke Claims.</td><td>3 aktuelle Review-Cases, davon 1 high und 2 medium; Status source_check_pending=3.</td><td>Die Review-Queue ist methodisch wichtig, weil sie auffaellige Faelle von thesis-faehiger Evidenz trennt.</td><td>Die Queue ist kein Nachweis fuer Ursachen, Regelverstoss, Handelbarkeit, Profitabilitaet oder zukuenftige Entwicklung.</td></tr>
-<tr><td>Swiss-Referendum Side-Track</td><td>Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen.</td><td>7 Umfragen, 34 Polymarket-Snapshots; latest Polymarket Yes 22.0%, latest poll Yes 45.0%, raw gap -23.0 pp.</td><td>Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen.</td><td>Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung.</td></tr></table>
+<tr><td>Swiss-Referendum Side-Track</td><td>Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen.</td><td>7 Umfragen, 43 Polymarket-Snapshots; latest Polymarket Yes 21.5%, latest poll Yes 45.0%, raw gap -23.5 pp.</td><td>Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen.</td><td>Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung.</td></tr></table>
 
   <h2>Warum dieses Vorgehen methodisch sinnvoll ist</h2>
   <table><tr><th>Entscheidung</th><th>Begruendung</th><th>Konsequenz</th></tr><tr><td>Brier Score und DM-Test</td><td>H1 vergleicht Probability-Forecasts, deshalb braucht es einen Verlustscore und einen Test auf Verlustserien.</td><td>Die Aussage bleibt Forecast-Qualitaet, nicht Reaktionsgeschwindigkeit oder Mechanismus.</td></tr>
@@ -173,11 +196,11 @@
   <h2>Projektstruktur</h2>
   <div class="grid">
     <div class="metric"><strong>9</strong>Datenbanktabellen</div>
-    <div class="metric"><strong>352</strong>Result-Artefakte</div>
+    <div class="metric"><strong>357</strong>Result-Artefakte</div>
     <div class="metric"><strong>78</strong>Analyse-Module</div>
-    <div class="metric"><strong>123</strong>Testdateien</div>
+    <div class="metric"><strong>128</strong>Testdateien</div>
   </div>
-  <p>Letzter Teststatus: <code>562 passed in 51.69s</code>.</p>
+  <p>Letzter Teststatus: <code>574 passed in 58.67s</code>.</p>
 
   <h2>H1 - Forecast-Qualitaet</h2>
   <table><tr><th>Aspekt</th><th>Wert</th></tr>
@@ -244,11 +267,11 @@
   <p>Der Monitor bleibt read-only und ist keine Trading- oder Profitabilitaetskomponente.</p>
 
   <h2>Schweizer Referendum</h2>
-  <p>7 Umfragen, 34 Polymarket-Snapshots und 504 bounded price-history rows.</p>
-  <table><tr><th>Quelle</th><th>Neuester Poll</th><th>Poll Yes</th><th>Raw Gap</th></tr><tr><td>SRG/gfs.bern</td><td>srg_gfs_bern_2026_w2</td><td>45.0%</td><td>-23.0 pp</td></tr>
-<tr><td>Tamedia/20 Minuten/LeeWas</td><td>tamedia_leewas_2026_w2</td><td>47.0%</td><td>-25.0 pp</td></tr>
-<tr><td>YouGov Schweiz</td><td>yougov_2026_w2_final</td><td>38.0%</td><td>-16.0 pp</td></tr></table>
-  <p>Latest result: Polymarket Yes 22.0%, latest matched poll Yes 45.0%, raw gap -23.0 pp, decided-voter gap -24.4 pp.</p>
+  <p>7 Umfragen, 43 Polymarket-Snapshots und 504 bounded price-history rows.</p>
+  <table><tr><th>Quelle</th><th>Neuester Poll</th><th>Poll Yes</th><th>Raw Gap</th></tr><tr><td>SRG/gfs.bern</td><td>srg_gfs_bern_2026_w2</td><td>45.0%</td><td>-23.5 pp</td></tr>
+<tr><td>Tamedia/20 Minuten/LeeWas</td><td>tamedia_leewas_2026_w2</td><td>47.0%</td><td>-25.5 pp</td></tr>
+<tr><td>YouGov Schweiz</td><td>yougov_2026_w2_final</td><td>38.0%</td><td>-16.5 pp</td></tr></table>
+  <p>Latest result: Polymarket Yes 21.5%, latest matched poll Yes 45.0%, raw gap -23.5 pp, decided-voter gap -24.9 pp.</p>
 
   <h2>Visualisierungen</h2>
   <figure><img src="dozentenbericht_assets/project_pipeline_overview.png" alt="Projektlogik: deterministische Analyse vor Interpretation."><figcaption><strong>Projektlogik: deterministische Analyse vor Interpretation.</strong><br>Die Abbildung zeigt die einfache Lesart fuer die Praesentation: Daten werden validiert, in Python analysiert und erst danach als Bericht, Dashboard oder spaeter als bounded Interpretation verwendet.</figcaption></figure>

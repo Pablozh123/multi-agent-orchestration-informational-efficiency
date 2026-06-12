@@ -717,6 +717,11 @@ Current implemented consolidation:
   H3; 18 bounded-draft-ready rows; 0 final-submission-ready rows; linked
   method/interpretation IDs, literature IDs, deterministic artifacts, selected
   table/figure IDs, limitations, blocked wording, and Source Review gates.
+- The Dozentenbericht now includes `Source-Gated H1-H2-H3 Drafting Sequence`,
+  a compact Word/HTML/Markdown view over 15 paragraph-level writing steps:
+  five each for H1, H2, and H3; 23 linked Manual Source Review rows; 23
+  pending rows; 0 final-ready rows; T2/F1, T3/F2, and T4/F3 table/figure
+  actions; final citation blockers; and inactive future-agent boundaries.
 - The Dozentenbericht now includes a `Projektmatrix fuer die naechste
   Abstimmung` section generated from `thesis_project_highlevel_view.csv`, so
   the advisor can see status, decision, and next gate for each project layer.

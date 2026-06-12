@@ -408,6 +408,7 @@ def test_chapter_draft_is_traceable_and_uses_swiss_spelling(tmp_path: Path) -> N
 def test_chapter_draft_integrates_source_gated_h1_h2_h3_pass(tmp_path: Path) -> None:
     _write_fixture(tmp_path)
     _write_source_gated_writing_pass_fixture(tmp_path)
+    _write_source_gated_thesis_drafting_pass_fixture(tmp_path)
 
     result = generate_thesis_consolidation(repo_root=tmp_path)
 
@@ -426,6 +427,15 @@ def test_chapter_draft_integrates_source_gated_h1_h2_h3_pass(tmp_path: Path) -> 
     assert "nicht final-submission-ready" in draft
     assert "max 50 rows" in draft
     assert "keine Runtime-Agenten" in draft
+    assert "Source-Gated Drafting Sequence fuer H1" in draft
+    assert "Source-Gated Drafting Sequence fuer H2" in draft
+    assert "Source-Gated Drafting Sequence fuer H3" in draft
+    assert "Paragraphenweiser Drafting-Pass: 5 Schreibschritte" in draft
+    assert "Manual Source Review: 10 rows, 10 pending, 0 final-ready" in draft
+    assert "Schritt 4: Manual Source Review ausfuehren" in draft
+    assert "Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use" in draft
+    assert "nur `T2` und `F1`" in draft
+    assert "bounded-draft-ready, aber nicht final-submission-ready" in draft
     assert chr(223) not in draft
 
 
@@ -669,6 +679,115 @@ def _write_source_gated_writing_pass_fixture(root: Path) -> None:
         )
     pd.DataFrame(rows).to_csv(
         results / "thesis_h1_h2_h3_source_gated_writing_pass.csv",
+        index=False,
+    )
+
+
+def _write_source_gated_thesis_drafting_pass_fixture(root: Path) -> None:
+    results = root / "data/results"
+    rows = []
+    order = 1
+    area_specs = [
+        (
+            "H1",
+            "H1: Prognosequalitaet",
+            "method_h1_brier_dm",
+            "interpretation_h1_bounded_advantage",
+            "lit_brier_001; lit_dm_001; zotero_poly_002",
+            "data/results/thesis_h1_summary.csv; data/results/h1_brier_scores.csv",
+            "T2",
+            "F1",
+            10,
+        ),
+        (
+            "H2",
+            "H2: Tagesbasierte Ereignisfenster",
+            "method_h2_event_window",
+            "interpretation_h2_daily_response",
+            "lit_eventstudy_001; lit_emh_001",
+            "data/results/h2_event_window_summary.csv; data/events_timeline_seed.csv",
+            "T3",
+            "F2",
+            5,
+        ),
+        (
+            "H3",
+            "H3: Wallet-Timing-Diagnostik",
+            "method_h3_wallet_tiers; method_h3_granger_timing",
+            "interpretation_h3_top_tier_signal",
+            "lit_granger_001; zotero_poly_001; zotero_poly_005",
+            "data/results/thesis_h3_summary.csv; data/results/h3_granger_results.csv",
+            "T4",
+            "F3",
+            8,
+        ),
+    ]
+    section_names = [
+        "Methode und Resultat setzen",
+        "Interpretation und Limitation setzen",
+        "Tabelle und Figur einbauen",
+        "Manual Source Review ausfuehren",
+        "Finalgate und Future-Agent-Grenze setzen",
+    ]
+    for area, title, methods, interpretations, literature, artifacts, table, figure, manual_rows in area_specs:
+        for section_name in section_names:
+            rows.append(
+                {
+                    "drafting_pass_id": f"thesis_draft_{area.lower()}_{order:02d}",
+                    "thesis_area": area,
+                    "chapter_title_de": title,
+                    "draft_sequence_order": order,
+                    "draft_section_de": section_name,
+                    "source_gated_writing_pass_id": f"writing_pass_{area.lower()}_source_gated",
+                    "method_evidence_ids": methods,
+                    "interpretation_evidence_ids": interpretations,
+                    "literature_source_ids": literature,
+                    "deterministic_artifacts": artifacts,
+                    "selected_tables": table,
+                    "selected_figures": figure,
+                    "manual_execution_rows": manual_rows,
+                    "manual_execution_pending_rows": manual_rows,
+                    "manual_execution_final_ready_rows": 0,
+                    "manual_execution_source_ids": literature,
+                    "manual_execution_evidence_ids": f"{methods}; {interpretations}",
+                    "paragraph_seed_de": (
+                        f"{area} bleibt source-gated und nicht final-submission-ready. "
+                        "Der Absatz nutzt wenige gute Tabellen/Figuren und keine neuen "
+                        "Kennzahlen."
+                    ),
+                    "writer_action_de": (
+                        f"{area}: {section_name} im BA-Entwurf setzen und Evidence IDs "
+                        "sichtbar halten."
+                    ),
+                    "source_review_action_de": (
+                        f"{area}: Manual Source Review mit Page-/Section-Note, "
+                        "Claim-Support, Blocked-Wording und Citation-Use abarbeiten; "
+                        "keine finale Zitation."
+                    ),
+                    "table_figure_action_de": (
+                        f"{area}: nur {table}/{figure} nutzen; wenige gute Tabellen/Figuren "
+                        "statt Rohartefakt-Dumps."
+                    ),
+                    "final_gate_de": (
+                        f"{area}: final-ready Manual-Execution rows 0; keine "
+                        "Runtime-Agenten, kein MCP, kein Model Routing, keine "
+                        "LLM-Metriken; spaeter nur bounded inputs, max 50 rows und "
+                        "llm_audit_log."
+                    ),
+                    "blocked_wording_de": (
+                        "keine finale Zitation | keine Runtime-Agenten | keine "
+                        "Rohartefakt-Dumps"
+                    ),
+                    "ready_for_bounded_draft": True,
+                    "ready_for_final_submission": False,
+                    "draft_status": (
+                        "source_gated_thesis_draft_ready_final_source_review_pending"
+                    ),
+                }
+            )
+            order += 1
+    pd.DataFrame(rows).to_csv(
+        results / "thesis_h1_h2_h3_source_gated_thesis_drafting_pass.csv",
         index=False,
     )
 

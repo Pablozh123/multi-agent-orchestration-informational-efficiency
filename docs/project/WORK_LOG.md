@@ -10965,3 +10965,52 @@ Verification:
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `574 passed in 58.20s`, latest commit `a64a118`, clean before the
   status refresh.
+
+## 2026-06-12 - Source-gated drafting sequence in thesis chapter draft
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Implemented the next content commit
+  `docs: integrate source-gated drafting into thesis chapter draft`.
+- Kept Review-Access paused and used only deterministic CSV/Markdown artifacts.
+
+Changes:
+
+- Extended `operations/analysis/thesis_consolidation.py` to read and validate
+  `data/results/thesis_h1_h2_h3_source_gated_thesis_drafting_pass.csv`.
+- Added `Source-Gated Drafting Sequence` rendering for H1, H2, and H3 in
+  `docs/research/THESIS_CHAPTER_DRAFT.md`.
+- The chapter draft now carries 15 paragraph-level writing steps, Manual Source
+  Review counts, Page-/Section-Note, Claim-Support, Blocked-Wording,
+  Citation-Use, selected table/figure actions, final blockers, and inactive
+  future-agent boundaries.
+- Updated `GOAL.md`, `ROADMAP.md`, and the Goal Completion Audit to recognise
+  the new chapter-draft integration.
+- Regenerated thesis consolidation outputs from the current deterministic
+  artifacts; the Swiss side track remains descriptive and pending the official
+  result gate.
+
+Key output:
+
+- Source-Gated Drafting Sequence blocks in main chapter draft: 3.
+- Paragraph-level drafting steps rendered: 15.
+- Manual Source Review rows linked: 23.
+- Final-ready manual rows: 0.
+- Runtime-agent, MCP, model-routing, LLM-metric, raw-artifact, and trading
+  paths remain inactive.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations\analysis\thesis_consolidation.py tests\test_thesis_consolidation.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_consolidation.py -q`
+  -> PASS, 16 passed.
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_thesis_goal_completion_audit.py tests\test_thesis_goal_completion_audit.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_goal_completion_audit.py -q`
+  -> PASS, 2 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`
+  -> PASS, regenerated thesis consolidation outputs.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
+  -> PASS, generated 10 audit rows.

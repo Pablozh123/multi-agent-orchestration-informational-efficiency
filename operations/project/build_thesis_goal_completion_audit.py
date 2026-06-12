@@ -682,7 +682,8 @@ def build_goal_completion_audit(
                 f"manual pending: {source_gated_thesis_drafting_manual_pending}; "
                 f"manual final-ready: {source_gated_thesis_drafting_manual_final_ready}. "
                 "Main Chapter Draft: Source-Gated Integration fuer H1, H2 und H3 "
-                "ist im BA-Draft sichtbar."
+                "ist im BA-Draft sichtbar; Source-Gated Drafting Sequence fuer H1, "
+                "H2 und H3 ist ebenfalls sichtbar."
             ),
             remaining_gap_de="Finale Nummerierung, Layout und finale Zitation folgen erst nach Source Review.",
             next_action_de="H1-H3 Kapitel gegen Source Review, Wording Guard und finale Tabellen-/Figurenplatzierung pruefen.",

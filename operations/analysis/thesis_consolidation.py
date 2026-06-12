@@ -63,6 +63,9 @@ AGENT_ASSISTANCE_PROTOCOL_OUTPUT = "thesis_agent_assistance_protocol.csv"
 NEXT_WORK_PLAN_OUTPUT = "thesis_next_work_plan.csv"
 PROJECT_HIGHLEVEL_VIEW_OUTPUT = "thesis_project_highlevel_view.csv"
 SOURCE_GATED_WRITING_PASS_INPUT = "thesis_h1_h2_h3_source_gated_writing_pass.csv"
+SOURCE_GATED_THESIS_DRAFTING_PASS_INPUT = (
+    "thesis_h1_h2_h3_source_gated_thesis_drafting_pass.csv"
+)
 METADATA_OUTPUT = "thesis_consolidation_metadata.json"
 DOC_OUTPUT = "THESIS_CONSOLIDATION.md"
 AGENT_DOC_OUTPUT = "THESIS_AGENT_PIPELINE_ROADMAP.md"
@@ -277,6 +280,35 @@ SOURCE_GATED_WRITING_PASS_COLUMNS: tuple[str, ...] = (
     "ready_for_final_submission",
 )
 
+SOURCE_GATED_THESIS_DRAFTING_PASS_COLUMNS: tuple[str, ...] = (
+    "drafting_pass_id",
+    "thesis_area",
+    "chapter_title_de",
+    "draft_sequence_order",
+    "draft_section_de",
+    "source_gated_writing_pass_id",
+    "method_evidence_ids",
+    "interpretation_evidence_ids",
+    "literature_source_ids",
+    "deterministic_artifacts",
+    "selected_tables",
+    "selected_figures",
+    "manual_execution_rows",
+    "manual_execution_pending_rows",
+    "manual_execution_final_ready_rows",
+    "manual_execution_source_ids",
+    "manual_execution_evidence_ids",
+    "paragraph_seed_de",
+    "writer_action_de",
+    "source_review_action_de",
+    "table_figure_action_de",
+    "final_gate_de",
+    "blocked_wording_de",
+    "ready_for_bounded_draft",
+    "ready_for_final_submission",
+    "draft_status",
+)
+
 
 @dataclass(frozen=True)
 class ThesisConsolidationResult:
@@ -478,6 +510,11 @@ def generate_thesis_consolidation(
         results_dir / SOURCE_GATED_WRITING_PASS_INPUT,
         repo_root=repo_root,
     )
+    source_gated_thesis_drafting_pass = _read_optional_source_gated_thesis_drafting_pass(
+        results_dir / SOURCE_GATED_THESIS_DRAFTING_PASS_INPUT,
+        repo_root=repo_root,
+        source_gated_writing_pass=source_gated_writing_pass,
+    )
 
     results_dir.mkdir(parents=True, exist_ok=True)
     docs_dir.mkdir(parents=True, exist_ok=True)
@@ -572,6 +609,7 @@ def generate_thesis_consolidation(
             citation_readiness=citation_readiness,
             chapter_plan=chapter_plan,
             source_gated_writing_pass=source_gated_writing_pass,
+            source_gated_thesis_drafting_pass=source_gated_thesis_drafting_pass,
         ),
         encoding="utf-8",
     )
@@ -3550,6 +3588,7 @@ def _render_chapter_draft(
     citation_readiness: pd.DataFrame,
     chapter_plan: pd.DataFrame,
     source_gated_writing_pass: pd.DataFrame | None,
+    source_gated_thesis_drafting_pass: pd.DataFrame | None,
 ) -> str:
     evidence = evidence_map.set_index("evidence_id").to_dict(orient="index")
     package = curated_package.set_index("package_id").to_dict(orient="index")
@@ -3580,6 +3619,18 @@ def _render_chapter_draft(
     h1_source_gated = _source_gated_chapter_insert("H1", source_gated_writing_pass)
     h2_source_gated = _source_gated_chapter_insert("H2", source_gated_writing_pass)
     h3_source_gated = _source_gated_chapter_insert("H3", source_gated_writing_pass)
+    h1_source_gated_drafting = _source_gated_drafting_chapter_insert(
+        "H1",
+        source_gated_thesis_drafting_pass,
+    )
+    h2_source_gated_drafting = _source_gated_drafting_chapter_insert(
+        "H2",
+        source_gated_thesis_drafting_pass,
+    )
+    h3_source_gated_drafting = _source_gated_drafting_chapter_insert(
+        "H3",
+        source_gated_thesis_drafting_pass,
+    )
 
     return "\n".join(
         [
@@ -3679,6 +3730,7 @@ def _render_chapter_draft(
             "kontextabhaengig.\n",
             h1_core_mapping,
             h1_source_gated,
+            h1_source_gated_drafting,
             f"Empfohlene Darstellung: Tabelle `{package['T2']['primary_artifact']}` "
             f"und Abbildung `{package['F1']['primary_artifact']}`. Die "
             "Limitation ist explizit zu nennen: unterschiedliche "
@@ -3701,6 +3753,7 @@ def _render_chapter_draft(
             "Beweis fuer unmittelbare Informationsverarbeitung.\n",
             h2_core_mapping,
             h2_source_gated,
+            h2_source_gated_drafting,
             f"Empfohlene Darstellung: Tabelle `{package['T3']['primary_artifact']}` "
             f"und Abbildung `{package['F2']['primary_artifact']}`.\n",
             "## 6. H3: Wallet-Timing\n",
@@ -3723,6 +3776,7 @@ def _render_chapter_draft(
             "Ergebnistext.\n",
             h3_core_mapping,
             h3_source_gated,
+            h3_source_gated_drafting,
             f"Empfohlene Darstellung: Tabelle `{package['T4']['primary_artifact']}` "
             f"und Abbildung `{package['F3']['primary_artifact']}`.\n",
             "## 7. Erweiterungen: Monitor und Schweizer Abstimmung\n",
@@ -3814,6 +3868,86 @@ def _read_optional_source_gated_writing_pass(
     return source_gated
 
 
+def _read_optional_source_gated_thesis_drafting_pass(
+    path: Path,
+    *,
+    repo_root: Path,
+    source_gated_writing_pass: pd.DataFrame | None,
+) -> pd.DataFrame | None:
+    if not path.exists():
+        return None
+    if source_gated_writing_pass is None:
+        raise ValueError(
+            "Source-gated thesis drafting pass requires the source-gated writing pass."
+        )
+    drafting = _read_csv(path)
+    _require_columns(
+        drafting,
+        SOURCE_GATED_THESIS_DRAFTING_PASS_COLUMNS,
+        str(path),
+    )
+    if len(drafting) != 15:
+        raise ValueError("Source-gated thesis drafting pass must contain exactly 15 rows.")
+    if set(drafting["thesis_area"].astype(str)) != {"H1", "H2", "H3"}:
+        raise ValueError("Source-gated thesis drafting pass must cover H1, H2, and H3.")
+    area_counts = drafting["thesis_area"].astype(str).value_counts().to_dict()
+    if area_counts != {"H1": 5, "H2": 5, "H3": 5}:
+        raise ValueError("Source-gated thesis drafting pass must contain five rows per H1-H2-H3.")
+    sequence = drafting["draft_sequence_order"].astype(int).tolist()
+    if sorted(sequence) != list(range(1, 16)):
+        raise ValueError("Source-gated thesis drafting pass must use draft_sequence_order 1..15.")
+    if drafting["drafting_pass_id"].duplicated().any():
+        raise ValueError("Source-gated thesis drafting pass contains duplicate drafting_pass_id values.")
+    if not _bool_series(drafting["ready_for_bounded_draft"]).all():
+        raise ValueError("Source-gated thesis drafting pass must be bounded-draft-ready.")
+    if _bool_series(drafting["ready_for_final_submission"]).any():
+        raise ValueError("Source-gated thesis drafting pass must remain final-submission blocked.")
+    if (drafting["manual_execution_rows"].astype(int) <= 0).any():
+        raise ValueError("Source-gated thesis drafting pass must link manual execution rows.")
+    if (drafting["manual_execution_final_ready_rows"].astype(int) != 0).any():
+        raise ValueError("Source-gated thesis drafting pass must preserve zero final-ready rows.")
+    chapter_manual_rows = (
+        drafting.sort_values("draft_sequence_order")
+        .drop_duplicates(subset=["thesis_area"])["manual_execution_rows"]
+        .astype(int)
+    )
+    if int(chapter_manual_rows.sum()) != 23:
+        raise ValueError("Source-gated thesis drafting pass must link 23 manual Source Review rows.")
+    known_writing_pass_ids = set(source_gated_writing_pass["writing_pass_id"].astype(str))
+    linked_writing_pass_ids = set(drafting["source_gated_writing_pass_id"].astype(str))
+    missing_writing_pass_ids = sorted(linked_writing_pass_ids.difference(known_writing_pass_ids))
+    if missing_writing_pass_ids:
+        raise ValueError(
+            "Source-gated thesis drafting pass references unknown writing_pass_id values: "
+            + ", ".join(missing_writing_pass_ids)
+        )
+    for artifacts in drafting["deterministic_artifacts"].astype(str):
+        _validate_artifact_list(repo_root, _split_list(artifacts))
+    joined = "\n".join(drafting.fillna("").astype(str).agg(" ".join, axis=1).tolist())
+    if chr(223) in joined:
+        raise ValueError("Source-gated thesis drafting pass must use Swiss spelling without sharp-s.")
+    lower_joined = joined.lower()
+    required_terms = (
+        "source-gated",
+        "manual source review",
+        "page-/section-note",
+        "claim-support",
+        "blocked-wording",
+        "citation-use",
+        "wenige gute tabellen",
+        "keine finale zitation",
+        "keine runtime-agenten",
+        "llm_audit_log",
+        "nicht final-submission-ready",
+    )
+    missing = [term for term in required_terms if term not in lower_joined]
+    if missing:
+        raise ValueError(
+            "Source-gated thesis drafting pass missing required terms: " + ", ".join(missing)
+        )
+    return drafting
+
+
 def _source_gated_chapter_insert(
     hypothesis: str,
     source_gated_writing_pass: pd.DataFrame | None,
@@ -3872,6 +4006,71 @@ def _source_gated_chapter_insert(
             f"Nicht schreiben: {record['blocked_wording_de']}\n",
         ]
     )
+
+
+def _source_gated_drafting_chapter_insert(
+    hypothesis: str,
+    source_gated_thesis_drafting_pass: pd.DataFrame | None,
+) -> str:
+    if source_gated_thesis_drafting_pass is None:
+        return (
+            f"**Source-Gated Drafting Sequence fuer {hypothesis}:** Noch kein "
+            "paragraphenweiser Drafting-Pass im Konsolidierungslauf gefunden. "
+            "Der Abschnitt bleibt am Source-Gated Writing Pass, dem Manual "
+            "Source Review Gate und dem kuratierten Tabellen-/Figurenpaket "
+            "gebunden.\n"
+        )
+    chapter_rows = source_gated_thesis_drafting_pass[
+        source_gated_thesis_drafting_pass["thesis_area"].astype(str) == hypothesis
+    ].copy()
+    if len(chapter_rows) != 5:
+        raise ValueError(f"Source-gated thesis drafting pass missing five rows for {hypothesis}.")
+    chapter_rows = chapter_rows.sort_values("draft_sequence_order")
+    first = chapter_rows.iloc[0].to_dict()
+    lines = [
+        f"**Source-Gated Drafting Sequence fuer {hypothesis}:**",
+        (
+            "Paragraphenweiser Drafting-Pass: "
+            f"{len(chapter_rows)} Schreibschritte fuer `{first['chapter_title_de']}`; "
+            f"Methoden `{first['method_evidence_ids']}`; "
+            f"Interpretationen `{first['interpretation_evidence_ids']}`; "
+            f"Literatur `{first['literature_source_ids']}`."
+        ),
+        (
+            f"Manual Source Review: {int(first['manual_execution_rows'])} rows, "
+            f"{int(first['manual_execution_pending_rows'])} pending, "
+            f"{int(first['manual_execution_final_ready_rows'])} final-ready. "
+            "Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use "
+            "bleiben manuelle Gates."
+        ),
+        (
+            f"Tabellen/Figuren: nur `{first['selected_tables']}` und "
+            f"`{first['selected_figures']}`; wenige gute Tabellen/Figuren statt "
+            "Rohartefakt-Dumps."
+        ),
+    ]
+    for row in chapter_rows.to_dict(orient="records"):
+        lines.extend(
+            [
+                (
+                    f"- Schritt {int(row['draft_sequence_order'])}: "
+                    f"{row['draft_section_de']}. Absatz-Seed: {row['paragraph_seed_de']}"
+                ),
+                f"  Writer action: {row['writer_action_de']}",
+                f"  Source Review action: {row['source_review_action_de']}",
+                f"  Table/Figure action: {row['table_figure_action_de']}",
+                f"  Finalgate: {row['final_gate_de']}",
+            ]
+        )
+    lines.append(f"Nicht schreiben: {first['blocked_wording_de']}")
+    lines.append(
+        "Status: bounded-draft-ready, aber nicht final-submission-ready; "
+        "keine finale Zitation, keine Quellenstatus-Hochstufung, keine "
+        "Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken, "
+        "bounded inputs mit max 50 rows und `llm_audit_log` erst fuer spaetere "
+        "documentation-only Agentenarbeit.\n"
+    )
+    return "\n".join(lines)
 
 
 def _chapter_core_mapping_block(

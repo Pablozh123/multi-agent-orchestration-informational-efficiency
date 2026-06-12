@@ -100,6 +100,7 @@ def test_goal_completion_audit_keeps_open_gates_visible(tmp_path: Path) -> None:
     assert "source-gated thesis drafting pass: 15 absatz-/arbeitszeilen; h1: 5; h2: 5; h3: 5" in joined
     assert "manual execution rows linked: 3; manual pending: 3; manual final-ready: 0" in joined
     assert "main chapter draft: source-gated integration fuer h1, h2 und h3" in joined
+    assert "source-gated drafting sequence fuer h1, h2 und h3 ist ebenfalls sichtbar" in joined
     assert "h1-h3 kapitel gegen source review, wording guard" in joined
     assert "agent control: 2 rollen; documentation-only: 1; deferred: 1; aktiv: 0" in joined
     assert "agent upgrade plan: 2 reihen; aktive upgrade-reihen: 0" in joined
@@ -118,7 +119,8 @@ def _write_fixture(root: Path) -> None:
     docs_research.mkdir(parents=True)
 
     (docs_research / "THESIS_CHAPTER_DRAFT.md").write_text(
-        "Source-Gated Integration fuer H1, H2 und H3\n",
+        "Source-Gated Integration fuer H1, H2 und H3\n"
+        "Source-Gated Drafting Sequence fuer H1, H2 und H3\n",
         encoding="utf-8",
     )
 

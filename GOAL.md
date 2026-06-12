@@ -188,6 +188,11 @@ acceptance_criteria:
   interpretation binding, literature IDs, deterministic artifacts, source
   coverage counts, selected table/figure IDs, final citation blockers, and
   inactive future-agent boundaries in the BA prose draft.
+- The main thesis chapter draft also contains Source-Gated Drafting Sequence
+  blocks for H1, H2, and H3, so the 15 paragraph-level steps, Manual Source
+  Review counts, Page-/Section-Note, Claim-Support, Blocked-Wording,
+  Citation-Use, compact table/figure integration, final blockers, and inactive
+  future-agent boundaries are visible in the BA prose draft.
 - A future agent-pipeline upgrade plan exists so later source-review,
   evidence-drafting, wording, table/figure, advisor, monitor, and bounded MCP
   improvements are documented without activating runtime agents.
@@ -203,7 +208,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: integrate source-gated drafting into thesis chapter draft
+next_commit: docs: refresh advisor report with source-gated drafting sequence
 
 ## Running Side Goal
 

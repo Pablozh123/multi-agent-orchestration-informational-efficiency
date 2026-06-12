@@ -855,6 +855,12 @@ Current implemented consolidation:
   binding, literature IDs, deterministic artifacts, source coverage counts,
   selected table/figure IDs, final citation blockers, and documentation-only
   future-agent boundaries.
+- The same chapter draft now also shows `Source-Gated Drafting Sequence`
+  blocks for H1, H2, and H3. These blocks carry the 15 paragraph-level writing
+  steps, Manual Source Review counts, Page-/Section-Note, Claim-Support,
+  Blocked-Wording, Citation-Use, selected table/figure actions, final blockers,
+  and documentation-only future-agent boundaries directly into the BA prose
+  draft.
 - `data/results/thesis_final_gate_board.csv` and
   `docs/project/THESIS_FINAL_GATE_BOARD.md` provide the current highlevel
   Stop-/Go view over the project: 8 gates, 8 draft-allowed rows,

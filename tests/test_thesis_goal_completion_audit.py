@@ -95,6 +95,8 @@ def test_goal_completion_audit_keeps_open_gates_visible(tmp_path: Path) -> None:
     assert "h1-h3 kapitel gegen source review, wording guard" in joined
     assert "agent control: 2 rollen; documentation-only: 1; deferred: 1; aktiv: 0" in joined
     assert "agent upgrade plan: 2 reihen; aktive upgrade-reihen: 0" in joined
+    assert "human-owner, proof-artifact, failure-mode" in joined
+    assert "max 50 rows" in joined
     assert "final gate board: 8 gates; draft-allowed 8; final-ready 1" in joined
     assert "final-not-ready 7; blocking-count 10" in joined
 

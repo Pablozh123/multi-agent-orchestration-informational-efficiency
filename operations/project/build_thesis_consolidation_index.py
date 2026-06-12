@@ -377,9 +377,9 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             artifact_id="index_34_agent_pipeline_upgrade_plan",
             artifact_type="future_agent_upgrade_plan",
             path="docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md; data/results/thesis_agent_pipeline_upgrade_plan.csv",
-            purpose_de="Dokumentations-only Plan, wie spaetere Agenten Source Review, Drafting, Wording und Tabellen/Figuren pruefen koennten.",
-            use_now_de="Nur als Future-Work-Gedanke nach dem H1-H2-H3-Schreibkern nutzen.",
-            gate_or_limit_de="Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken, bounded inputs und llm_audit_log vor jeder Aktivierung.",
+            purpose_de="Dokumentations-only Plan, wie spaetere Agenten Source Review, Drafting, Wording, Tabellen/Figuren, Advisor-Updates und Monitor-Appendix pruefen koennten.",
+            use_now_de="Nur als Future-Work-Gedanke nach dem source-gated H1-H2-H3-Schreibkern nutzen; Human-Owner, Proof-Artifact und Failure-Mode beachten.",
+            gate_or_limit_de="Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken, bounded inputs, max 50 rows und llm_audit_log vor jeder Aktivierung.",
         ),
         _index_row(
             artifact_id="index_35_goal_completion_audit",

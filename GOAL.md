@@ -181,6 +181,10 @@ acceptance_criteria:
 - A future agent-pipeline upgrade plan exists so later source-review,
   evidence-drafting, wording, table/figure, advisor, monitor, and bounded MCP
   improvements are documented without activating runtime agents.
+- The future agent-pipeline upgrade plan remains documentation-only but now
+  names the post-source-gated sequence, Human-Owner, safe value,
+  Proof-Artifact, Failure-Mode, bounded input/output limits, max 50 rows,
+  `llm_audit_log`, and blocked actions for every future assistance role.
 - A thesis final gate board exists so bounded draft permission, final
   submission readiness, evidence counts, blockers, Source Review, Swiss
   official result, DOCX render QA, project checks, and future-agent boundaries
@@ -189,7 +193,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: refine documentation-only agent pipeline improvement plan
+next_commit: docs: prepare manual source review execution pass
 
 ## Running Side Goal
 

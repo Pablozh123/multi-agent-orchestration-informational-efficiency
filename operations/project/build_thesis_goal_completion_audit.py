@@ -618,7 +618,9 @@ def build_goal_completion_audit(
                 f"Agent Control: {agent_control_rows} Rollen; "
                 f"documentation-only: {agent_documentation_only}; deferred: {agent_deferred}; "
                 f"aktiv: {agent_active}. Agent Upgrade Plan: {agent_upgrade_rows} Reihen; "
-                f"aktive Upgrade-Reihen: {agent_upgrade_active}. llm_audit_log, bounded prompts und Tests bleiben Vorbedingungen."
+                f"aktive Upgrade-Reihen: {agent_upgrade_active}. Human-Owner, Proof-Artifact, "
+                "Failure-Mode, llm_audit_log, bounded prompts, max 50 rows und Tests "
+                "bleiben Vorbedingungen."
             ),
             remaining_gap_de="Keine Aktivierung im aktuellen Goal erlaubt.",
             next_action_de="Nur Future-Work-Abschnitt schreiben, keine Runtime-Agenten implementieren.",

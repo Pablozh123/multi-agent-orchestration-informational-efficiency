@@ -78,10 +78,15 @@ def test_agent_upgrade_plan_stays_documentation_only(tmp_path: Path) -> None:
     assert "core_section_h1; core_section_h2; core_section_h3" in joined
     assert "llm_audit_log" in joined
     assert "bounded" in joined
+    assert "source-gated h1-h2-h3 draft" in joined
+    assert "human-owner" in joined
+    assert "proof-artifact" in joined
+    assert "failure-mode" in joined
     assert "keine runtime-agenten" in joined
     assert "keine llm-metriken" in joined
     assert "keine trading-pfade" in joined
     assert "keine rohartefakt-dumps" in joined
+    assert "fehlendes artefakt oder ungemappte literatur-id erzeugt nur blocker" in joined
 
 
 def _write_fixture(root: Path) -> None:

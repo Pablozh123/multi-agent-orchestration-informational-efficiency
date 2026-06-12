@@ -867,9 +867,13 @@ Current implemented consolidation:
   `docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md` document seven
   future pipeline-improvement rows for source review, evidence drafting,
   wording review, table/figure checks, advisor updates, monitor appendix
-  review, and bounded MCP summaries. All rows remain documentation-only or
-  deferred; no runtime agents, MCP, model routing, LLM metrics, raw artifact
-  dumps, wallet-address exposure, or trading paths are activated.
+  review, and bounded MCP summaries. The plan is now sequenced after the
+  source-gated H1-H2-H3 draft and names Human-Owner, safe value,
+  Proof-Artifact, Failure-Mode, bounded input/output limits, max 50 rows,
+  `llm_audit_log`, and blocked actions for every future role. All rows remain
+  documentation-only or deferred; no runtime agents, MCP, model routing, LLM
+  metrics, raw artifact dumps, wallet-address exposure, or trading paths are
+  activated.
 - `data/results/thesis_consolidation_index.csv` and
   `docs/project/THESIS_CONSOLIDATION_INDEX.md` index the current
   consolidation deliverables so the Dozentenbericht, advisor checklist,

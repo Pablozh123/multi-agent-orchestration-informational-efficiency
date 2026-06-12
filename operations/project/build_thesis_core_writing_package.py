@@ -43,13 +43,18 @@ CORE_SECTION_COLUMNS: tuple[str, ...] = (
 AGENT_UPGRADE_COLUMNS: tuple[str, ...] = (
     "upgrade_id",
     "future_assistance_role",
+    "pipeline_position_de",
     "sequence_after_core_de",
     "uses_current_core_sections",
+    "human_owner_de",
+    "safe_value_de",
     "allowed_input_boundary",
     "allowed_output_boundary",
     "mandatory_audit_gate",
     "blocked_actions_de",
     "required_preconditions_de",
+    "proof_artifact_de",
+    "failure_mode_de",
     "current_status",
     "next_safe_step_de",
 )
@@ -303,17 +308,24 @@ def build_agent_upgrade_plan(
             {
                 "upgrade_id": f"agent_upgrade_{index:02d}",
                 "future_assistance_role": role,
+                "pipeline_position_de": _agent_pipeline_position(index=index, role=role),
                 "sequence_after_core_de": _agent_sequence_text(role),
                 "uses_current_core_sections": (
                     "Ja, nur als bounded context: "
                     + "; ".join(core_sections["section_id"].astype(str).tolist())
                     + ". Keine Rohartefakt-Dumps."
                 ),
+                "human_owner_de": _agent_human_owner(role),
+                "safe_value_de": _agent_safe_value(role),
                 "allowed_input_boundary": str(row["allowed_input_boundary"]),
                 "allowed_output_boundary": str(row["allowed_output_boundary"]),
                 "mandatory_audit_gate": str(row["mandatory_audit_gate"]),
-                "blocked_actions_de": str(row["blocked_actions_de"]),
-                "required_preconditions_de": str(row["required_preconditions_de"]),
+                "blocked_actions_de": _compact_blocked_actions(str(row["blocked_actions_de"])),
+                "required_preconditions_de": _compact_required_preconditions(
+                    str(row["required_preconditions_de"])
+                ),
+                "proof_artifact_de": _agent_proof_artifact(role),
+                "failure_mode_de": _agent_failure_mode(role),
                 "current_status": str(row["current_activation_state"]),
                 "next_safe_step_de": str(row["next_safe_step_de"]),
             }
@@ -425,6 +437,10 @@ def _validate_agent_upgrade_plan(agent_upgrade: pd.DataFrame) -> None:
         "keine llm-metriken",
         "keine trading-pfade",
         "keine rohartefakt-dumps",
+        "human-owner",
+        "proof-artifact",
+        "failure-mode",
+        "source-gated",
     )
     missing = [term for term in required_terms if term not in lower_joined]
     if missing:
@@ -489,6 +505,9 @@ def _render_agent_upgrade_doc(agent_upgrade: pd.DataFrame) -> str:
         [
             "upgrade_id",
             "future_assistance_role",
+            "pipeline_position_de",
+            "human_owner_de",
+            "safe_value_de",
             "sequence_after_core_de",
             "current_status",
             "next_safe_step_de",
@@ -512,11 +531,12 @@ def _render_agent_upgrade_doc(agent_upgrade: pd.DataFrame) -> str:
         + "\n\n"
         "## Use Rule\n\n"
         "Nutze diesen Plan erst nach dem H1-H2-H3-Draft als Future-Work-"
-        "Gedanken. Vor Aktivierung braucht jede Rolle ein separates "
-        "genehmigtes Goal, Tests, bounded inputs, Output-Limits und "
-        "`llm_audit_log`. Bis dahin bleiben Runtime-Agenten, MCP, Model "
-        "Routing, LLM-Metriken, Rohartefakt-Dumps, Wallet-Adress-Exposition by "
-        "default und Trading-Pfade deaktiviert.\n"
+        "Gedanken. Jede Zeile nennt Human-Owner, Proof-Artifact und "
+        "Failure-Mode, damit spaetere Agentenhilfe kontrollierbar bleibt. Vor "
+        "Aktivierung braucht jede Rolle ein separates genehmigtes Goal, Tests, "
+        "bounded inputs, Output-Limits und `llm_audit_log`. Bis dahin bleiben "
+        "Runtime-Agenten, MCP, Model Routing, LLM-Metriken, Rohartefakt-Dumps, "
+        "Wallet-Adress-Exposition by default und Trading-Pfade deaktiviert.\n"
     )
 
 
@@ -641,6 +661,84 @@ def _blocked_wording(evidence: pd.DataFrame) -> str:
     )
 
 
+def _agent_pipeline_position(*, index: int, role: str) -> str:
+    return (
+        f"Agenten-Gedanke {index} nach dem source-gated H1-H2-H3 Draft. "
+        f"Rolle `{role}` bleibt documentation-only und wird erst nach manueller "
+        "Auswahl der bounded Inputs spezifiziert."
+    )
+
+
+def _agent_human_owner(role: str) -> str:
+    role_lower = role.lower()
+    if "advisor" in role_lower or "dozent" in role_lower:
+        return "Human-Owner: Student bereitet vor; Dozent validiert fachliche Entscheidung."
+    if "source" in role_lower:
+        return "Human-Owner: Student prueft Quelle; Dozent kann strittige Claim-Support-Fragen validieren."
+    if "monitor" in role_lower:
+        return "Human-Owner: Student entscheidet Appendix-Nutzung nach Human Review der Monitor-Cases."
+    if "mcp" in role_lower:
+        return "Human-Owner: Student und Betreuer genehmigen separates Access-Goal vor jeder Spezifikation."
+    return "Human-Owner: Student bleibt verantwortlich fuer Claim, Zitation und Kapiteltext."
+
+
+def _agent_safe_value(role: str) -> str:
+    role_lower = role.lower()
+    if "source" in role_lower:
+        return "Sicherer Nutzen: fehlende Page-/Section-Notes und Claim-Support-Luecken sichtbar machen."
+    if "draft" in role_lower or "evidence" in role_lower:
+        return "Sicherer Nutzen: Evidence-IDs in kurze, pruefbare Draft-Notizen uebersetzen."
+    if "wording" in role_lower or "claim" in role_lower:
+        return "Sicherer Nutzen: Overclaims gegen Wording Guard markieren, ohne Claims zu erweitern."
+    if "table" in role_lower or "figure" in role_lower:
+        return "Sicherer Nutzen: Caption, Artefaktpfad, Limitation und Package-ID abgleichen."
+    if "advisor" in role_lower or "dozent" in role_lower:
+        return "Sicherer Nutzen: Dozentenfeedback in offene Entscheidungen und kleine Folgecommits ordnen."
+    if "monitor" in role_lower:
+        return "Sicherer Nutzen: Appendix-Status und ungelöste Review-Fragen sichtbar halten.".replace("ö", "oe")
+    if "mcp" in role_lower:
+        return "Sicherer Nutzen: spaeter nur read-only Summary-Zugriff mit getesteten Limits spezifizieren."
+    return "Sicherer Nutzen: nur Review-Hinweise erzeugen, keine Interpretation oder Metrik."
+
+
+def _agent_proof_artifact(role: str) -> str:
+    role_lower = role.lower()
+    if "source" in role_lower:
+        return "Proof-Artifact: Source-Review-Ledger-Zeile plus llm_audit_log-Eintrag; keine Quellenstatus-Aenderung."
+    if "draft" in role_lower or "evidence" in role_lower:
+        return "Proof-Artifact: Evidence-ID Draft-Note mit Artefaktpfad, Prompt-Hash und llm_audit_log."
+    if "wording" in role_lower or "claim" in role_lower:
+        return "Proof-Artifact: Wording-Warning-Liste mit Absatz-Hash und geblocktem Begriff."
+    if "table" in role_lower or "figure" in role_lower:
+        return "Proof-Artifact: Caption-Checkliste mit Package-ID, Artefaktpfad und Limitation."
+    if "advisor" in role_lower or "dozent" in role_lower:
+        return "Proof-Artifact: Advisor-Feedback-Log-Zeile mit Folgecommit-Scope."
+    if "monitor" in role_lower:
+        return "Proof-Artifact: Appendix-Review-Summary mit Case-IDs, Human-Review-Status und llm_audit_log."
+    if "mcp" in role_lower:
+        return "Proof-Artifact: Access-Contract-Testbericht mit max 50 rows, no SELECT star und read-only Status."
+    return "Proof-Artifact: Auditierte Markdown-/CSV-Zeile mit llm_audit_log."
+
+
+def _agent_failure_mode(role: str) -> str:
+    role_lower = role.lower()
+    if "source" in role_lower:
+        return "Failure-Mode: fehlende Page Note, Candidate-Quelle oder Claim-Support-Luecke erzeugt nur Blocker, keine Zitation."
+    if "draft" in role_lower or "evidence" in role_lower:
+        return "Failure-Mode: fehlendes Artefakt oder ungemappte Literatur-ID erzeugt nur Blocker, keinen Drafttext."
+    if "wording" in role_lower or "claim" in role_lower:
+        return "Failure-Mode: Kausalitaets-, Private-Information-, Profitabilitaets- oder Tradeability-Claim wird blockiert."
+    if "table" in role_lower or "figure" in role_lower:
+        return "Failure-Mode: zusaetzliche Tabelle/Figur ohne kuratiertes Package erzeugt nur Blocker."
+    if "advisor" in role_lower or "dozent" in role_lower:
+        return "Failure-Mode: offenes Source-, Swiss- oder DOCX-Gate darf nicht weggekuerzt werden."
+    if "monitor" in role_lower:
+        return "Failure-Mode: fehlender Human Review oder Wallet-Adress-Exposition blockiert Appendix-Nutzung."
+    if "mcp" in role_lower:
+        return "Failure-Mode: Rohdatenzugriff, SELECT star, Schreibzugriff oder Trading-Pfad blockiert Aktivierung."
+    return "Failure-Mode: jede unklare Eingabe erzeugt nur Review-Blocker, keine Ausgabe mit Thesis-Claim."
+
+
 def _agent_sequence_text(role: str) -> str:
     role_lower = role.lower()
     if "source" in role_lower:
@@ -658,6 +756,21 @@ def _agent_sequence_text(role: str) -> str:
     if "mcp" in role_lower:
         return "Erst nach separatem Access-Goal: read-only Summary Interface spezifizieren."
     return "Nur nach separatem Goal und Audit-Logging als Future-Work pruefen."
+
+
+def _compact_blocked_actions(value: str) -> str:
+    base = value.split(" Zusaetzlich ", maxsplit=1)[0].strip().rstrip(".")
+    return (
+        f"{base}. Zusaetzlich keine Runtime-Agenten, kein MCP, kein Model Routing, "
+        "keine LLM-Metriken, keine Rohartefakt-Dumps, keine Rohdaten-Prompts, "
+        "keine Wallet-Adress-Exposition by default und keine Trading-Pfade."
+    )
+
+
+def _compact_required_preconditions(value: str) -> str:
+    text = value.replace("Vor Aktivierung: Vor Aktivierung:", "Vor Aktivierung:")
+    text = text.replace("  ", " ").strip()
+    return text
 
 
 def _collect_artifacts(

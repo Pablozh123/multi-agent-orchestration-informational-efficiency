@@ -10652,3 +10652,56 @@ Verification:
   -> PASS, only CRLF normalization warnings.
 - Sharp-s scan over changed thesis-facing files
   -> PASS, no matches.
+
+## 2026-06-12 - Documentation-only agent pipeline improvement plan
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Refined the future agent-pipeline upgrade plan after the source-gated
+  H1-H2-H3 chapter draft.
+- Kept the work documentation-only: no runtime agents, no MCP activation, no
+  model routing, no LLM metric calculation, no raw table prompts, no
+  wallet-address exposure by default, and no trading paths.
+
+Changes:
+
+- Updated `operations/project/build_thesis_core_writing_package.py` so
+  `thesis_agent_pipeline_upgrade_plan.csv` now carries pipeline position,
+  Human-Owner, safe value, Proof-Artifact, and Failure-Mode per future role.
+- Regenerated `data/results/thesis_agent_pipeline_upgrade_plan.csv`.
+- Regenerated `docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md`.
+- Updated `operations/project/build_thesis_consolidation_index.py` and
+  `operations/project/build_thesis_goal_completion_audit.py` so the project
+  index and active-goal audit mention the strengthened documentation-only
+  gates.
+- Updated `tests/test_thesis_core_writing_package.py` and
+  `tests/test_thesis_goal_completion_audit.py`.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Agent upgrade rows: 7.
+- Documentation-only rows: 6.
+- Deferred rows: 1.
+- Active runtime-agent rows: 0.
+- Each future role now has Human-Owner, safe value, Proof-Artifact,
+  Failure-Mode, bounded input/output boundaries, max 50 rows, `llm_audit_log`,
+  and blocked actions.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_thesis_core_writing_package.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_thesis_core_writing_package.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_core_writing_package`
+  -> PASS, regenerated 3 core sections and 7 agent upgrade rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 40 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
+  -> PASS, generated 10 audit rows.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_thesis_core_writing_package.py tests/test_thesis_consolidation_index.py tests/test_thesis_goal_completion_audit.py -q`
+  -> PASS, 7 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 570 passed in 53.53s.

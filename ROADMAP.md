@@ -749,16 +749,22 @@ Current implemented consolidation:
   `docs/project/THESIS_SOURCE_STRUCTURE_INVENTORY.md` inventory local PDF/HTML
   structure for manual Source Review without extracting support claims,
   promoting source status, or making thesis-facing source claims.
+- `data/results/thesis_method_interpretation_traceability.csv`,
+  `data/results/thesis_result_package_traceability.csv`, and
+  `docs/project/THESIS_TRACEABILITY_AUDIT.md` audit the draft traceability of
+  methods, interpretations, tables, and figures: 4 thesis-facing methods,
+  4 thesis-facing interpretations, 5 core tables, and 4 core figures, all
+  still gated by manual Source Review before final citation.
 - `data/results/thesis_consolidation_index.csv` and
   `docs/project/THESIS_CONSOLIDATION_INDEX.md` index the current
   consolidation deliverables so the Dozentenbericht, advisor checklist,
   highlevel view, work plan, execution checklist, source worksheet, source
   advisor handoff package, review execution guide, source access audit, source
-  structure inventory, chapter source bindings, agent future-work handoff,
-  advisor handoff note, advisor feedback log, submission readiness board,
-  drafting sequence, wording guard, table/figure captions, chapter draft,
-  source review plan, agent protocol, status, and work log are easy to
-  navigate.
+  structure inventory, traceability audit, chapter source bindings, agent
+  future-work handoff, advisor handoff note, advisor feedback log, submission
+  readiness board, drafting sequence, wording guard, table/figure captions,
+  chapter draft, source review plan, agent protocol, status, and work log are
+  easy to navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,

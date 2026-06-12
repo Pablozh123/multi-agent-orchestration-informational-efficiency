@@ -25,6 +25,8 @@ def test_generate_goal_completion_audit_writes_remaining_gates(tmp_path: Path) -
     assert "keine finale Zielerreichung" in doc
     assert "thesis_source_access_audit.csv" in doc
     assert "thesis_source_structure_inventory.csv" in doc
+    assert "thesis_method_interpretation_traceability.csv" in doc
+    assert "thesis_result_package_traceability.csv" in doc
     assert "Source Review" in doc
     assert chr(223) not in doc
 
@@ -46,6 +48,8 @@ def test_goal_completion_audit_keeps_open_gates_visible(tmp_path: Path) -> None:
     assert "runtime-agenten" in joined
     assert "llm_audit_log" in joined
     assert "source structure: 1 pdf, 1 html, 1 external-only zeilen" in joined
+    assert "traceability: 1 methoden, 1 interpretationen, 0 gaps" in joined
+    assert "traceability-kernpaket: 5 tabellen, 4 figuren, 0 gaps" in joined
 
 
 def _write_fixture(root: Path) -> None:
@@ -114,6 +118,38 @@ def _write_fixture(root: Path) -> None:
             {"source_id": "source_2", "structure_inventory_status": "external_only"},
         ]
     ).to_csv(results / "thesis_source_structure_inventory.csv", index=False)
+    pd.DataFrame(
+        [
+            {
+                "item_type": "method",
+                "thesis_readiness": "thesis_facing_ready",
+                "traceability_status": "draft_traceable_final_source_review_pending",
+            },
+            {
+                "item_type": "interpretation",
+                "thesis_readiness": "thesis_facing_ready",
+                "traceability_status": "draft_traceable_final_source_review_pending",
+            },
+        ]
+    ).to_csv(results / "thesis_method_interpretation_traceability.csv", index=False)
+    pd.DataFrame(
+        [
+            {
+                "package_type": "table",
+                "include_in_core_package": True,
+                "package_traceability_status": "core_package_ready_for_draft",
+            }
+            for _ in range(5)
+        ]
+        + [
+            {
+                "package_type": "figure",
+                "include_in_core_package": True,
+                "package_traceability_status": "core_package_ready_for_draft",
+            }
+            for _ in range(4)
+        ]
+    ).to_csv(results / "thesis_result_package_traceability.csv", index=False)
 
     pd.DataFrame(
         [

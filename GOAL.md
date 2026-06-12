@@ -108,11 +108,14 @@ acceptance_criteria:
 - A source-structure inventory exists so local source files can be prepared
   for manual Source Review without content interpretation, source-status
   promotion, or thesis-facing claims.
+- A traceability audit exists so thesis-facing methods, interpretations,
+  tables, and figures are checked against deterministic artifacts, literature
+  IDs, limitations, captions, and final source-review gates before BA writing.
 - Tests cover the generated evidence map and curated result package where
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add source structure inventory
+next_commit: docs: add traceability audit
 
 ## Running Side Goal
 

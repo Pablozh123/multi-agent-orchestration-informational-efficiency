@@ -114,7 +114,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert "review access remains paused" in project_highlevel_doc
     assert "Review-Access bleibt pausiert" in project_highlevel_doc
     assert "Dozentenpaket senden" in project_highlevel_doc
-    assert "Source Structure Inventory nur als Vorbereitung" in project_highlevel_doc
+    assert "Source Structure Inventory und Traceability Audit nur" in project_highlevel_doc
     assert core["bounded_interpretation"].str.len().gt(0).all()
     assert package["main_limitation"].str.len().gt(0).all()
 

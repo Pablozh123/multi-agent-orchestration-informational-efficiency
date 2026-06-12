@@ -19,9 +19,9 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     doc = result.docs_path.read_text(encoding="utf-8")
 
     assert tuple(index.columns) == INDEX_COLUMNS
-    assert result.index_rows == 24
+    assert result.index_rows == 25
     assert "Thesis Consolidation Index" in doc
-    assert "Indexed artifacts: 24" in doc
+    assert "Indexed artifacts: 25" in doc
     assert "dozentenbericht_ba_thesis.docx" in doc
     assert "THESIS_ADVISOR_HANDOFF_PACKAGE.md" in doc
     assert "DOZENTEN_UEBERGABE_TEXT.md" in doc
@@ -30,6 +30,7 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     assert "THESIS_DRAFTING_SEQUENCE.md" in doc
     assert "THESIS_SOURCE_ACCESS_AUDIT.md" in doc
     assert "THESIS_SOURCE_STRUCTURE_INVENTORY.md" in doc
+    assert "THESIS_TRACEABILITY_AUDIT.md" in doc
     assert "THESIS_GOAL_COMPLETION_AUDIT.md" in doc
     assert "THESIS_EXECUTION_CHECKLIST.md" in doc
     assert "THESIS_CHAPTER_SOURCE_BINDINGS.md" in doc
@@ -54,6 +55,7 @@ def test_thesis_consolidation_index_keeps_deferred_boundaries(tmp_path: Path) ->
     assert "trading-pfade" in joined
     assert "source_access_audit" in joined
     assert "source_structure_inventory" in joined
+    assert "traceability_audit" in joined
     assert "goal_completion_audit" in joined
 
 
@@ -92,6 +94,9 @@ def _write_fixture(root: Path) -> None:
         "data/results/thesis_source_access_audit.csv",
         "docs/project/THESIS_SOURCE_STRUCTURE_INVENTORY.md",
         "data/results/thesis_source_structure_inventory.csv",
+        "docs/project/THESIS_TRACEABILITY_AUDIT.md",
+        "data/results/thesis_method_interpretation_traceability.csv",
+        "data/results/thesis_result_package_traceability.csv",
         "docs/project/THESIS_GOAL_COMPLETION_AUDIT.md",
         "data/results/thesis_goal_completion_audit.csv",
         "STATUS.md",

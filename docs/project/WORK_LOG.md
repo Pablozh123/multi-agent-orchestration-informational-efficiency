@@ -9677,3 +9677,56 @@ Verification:
   -> PASS, 529 passed in 51.98s.
 - `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
   -> PASS, recommends reviewing one coherent docs/data/automation slice.
+
+## 2026-06-12 - Thesis traceability audit
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Added a deterministic audit proving that thesis-facing methods,
+  interpretations, tables, and figures are mapped to artifacts, source IDs,
+  limitations, captions, and remaining source-review gates.
+
+Changes:
+
+- Added `operations/project/build_thesis_traceability_audit.py`.
+- Generated `data/results/thesis_method_interpretation_traceability.csv`.
+- Generated `data/results/thesis_result_package_traceability.csv`.
+- Added `docs/project/THESIS_TRACEABILITY_AUDIT.md`.
+- Added `tests/test_thesis_traceability_audit.py`.
+- Updated the goal-completion audit and consolidation index to include the
+  traceability audit.
+- Updated the high-level view so Access Audit, Source Structure Inventory, and
+  Traceability Audit are preparation-only controls while Review-Access remains
+  paused.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Method/interpretation traceability rows: 12.
+- Thesis-facing method rows: 4.
+- Thesis-facing interpretation rows: 4.
+- Core table rows: 5.
+- Core figure rows: 4.
+- Traceability gaps: 0 for thesis-facing method/interpretation rows and 0 for
+  the core result package.
+- The audit creates no new metrics, does not interpret source contents, and
+  keeps final citation gated by manual Source Review with Page-/Section-Notes.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_thesis_traceability_audit.py operations/project/build_thesis_goal_completion_audit.py operations/project/build_thesis_consolidation_index.py operations/analysis/thesis_consolidation.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_thesis_traceability_audit.py tests/test_thesis_goal_completion_audit.py tests/test_thesis_consolidation_index.py tests/test_thesis_consolidation.py -q`
+  -> PASS, 21 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_traceability_audit`
+  -> PASS, generated 12 method/interpretation rows, 5 core tables, and 4 core
+  figures.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
+  -> PASS, generated 10 audit rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 25 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`
+  -> PASS, regenerated 10 high-level project rows.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 537 passed in 51.97s.

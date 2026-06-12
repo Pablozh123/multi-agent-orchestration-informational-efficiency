@@ -64,6 +64,8 @@ def generate_goal_completion_audit(
     drafting = _read_csv(results_dir / "thesis_drafting_sequence.csv")
     source_access = _read_csv(results_dir / "thesis_source_access_audit.csv")
     source_structure = _read_csv(results_dir / "thesis_source_structure_inventory.csv")
+    method_traceability = _read_csv(results_dir / "thesis_method_interpretation_traceability.csv")
+    result_package_traceability = _read_csv(results_dir / "thesis_result_package_traceability.csv")
     handoff_package = _read_csv(results_dir / "thesis_advisor_handoff_package.csv")
     handoff_note = _read_csv(results_dir / "thesis_advisor_handoff_note.csv")
     feedback_log = _read_csv(results_dir / "thesis_advisor_feedback_log_template.csv")
@@ -75,6 +77,8 @@ def generate_goal_completion_audit(
         drafting=drafting,
         source_access=source_access,
         source_structure=source_structure,
+        method_traceability=method_traceability,
+        result_package_traceability=result_package_traceability,
         handoff_package=handoff_package,
         handoff_note=handoff_note,
         feedback_log=feedback_log,
@@ -103,6 +107,8 @@ def build_goal_completion_audit(
     drafting: pd.DataFrame,
     source_access: pd.DataFrame,
     source_structure: pd.DataFrame,
+    method_traceability: pd.DataFrame,
+    result_package_traceability: pd.DataFrame,
     handoff_package: pd.DataFrame,
     handoff_note: pd.DataFrame,
     feedback_log: pd.DataFrame,
@@ -130,6 +136,16 @@ def build_goal_completion_audit(
         source_structure,
         ("source_id", "structure_inventory_status"),
         "source structure inventory",
+    )
+    _require_columns(
+        method_traceability,
+        ("item_type", "thesis_readiness", "traceability_status"),
+        "method interpretation traceability",
+    )
+    _require_columns(
+        result_package_traceability,
+        ("package_type", "include_in_core_package", "package_traceability_status"),
+        "result package traceability",
     )
     _require_columns(handoff_package, ("deliverable_id", "path"), "handoff package")
     _require_columns(handoff_note, ("section_id",), "handoff note")
@@ -167,6 +183,24 @@ def build_goal_completion_audit(
     external_only_structures = int(
         (source_structure["structure_inventory_status"] == "external_only").sum()
     )
+    traceable_thesis_facing = method_traceability[
+        method_traceability["thesis_readiness"] == "thesis_facing_ready"
+    ]
+    traceable_methods = int((traceable_thesis_facing["item_type"] == "method").sum())
+    traceable_interpretations = int(
+        (traceable_thesis_facing["item_type"] == "interpretation").sum()
+    )
+    traceability_gap_count = int(
+        (method_traceability["traceability_status"] == "traceability_gap").sum()
+    )
+    package_gap_count = int(
+        (result_package_traceability["package_traceability_status"] == "package_traceability_gap").sum()
+    )
+    traceable_core_package = result_package_traceability[
+        result_package_traceability["include_in_core_package"].astype(bool)
+    ]
+    traceable_core_tables = int((traceable_core_package["package_type"] == "table").sum())
+    traceable_core_figures = int((traceable_core_package["package_type"] == "figure").sum())
 
     rows = [
         _audit_row(
@@ -182,7 +216,7 @@ def build_goal_completion_audit(
             audit_id="goal_audit_02_evidence_map",
             goal_requirement_de="Methoden und Interpretationen sind auf Artefakte und Quellen gemappt.",
             current_status="draft_ready_final_source_review_pending",
-            evidence_artifacts="data/results/thesis_evidence_map.csv; data/results/thesis_citation_readiness.csv; data/results/thesis_source_access_audit.csv; data/results/thesis_source_structure_inventory.csv",
+            evidence_artifacts="data/results/thesis_evidence_map.csv; data/results/thesis_citation_readiness.csv; data/results/thesis_source_access_audit.csv; data/results/thesis_source_structure_inventory.csv; data/results/thesis_method_interpretation_traceability.csv",
             key_evidence_de=(
                 f"Thesis-facing Evidence: {len(thesis_facing)} Zeilen; "
                 f"Methoden: {method_rows}; Interpretationen: {interpretation_rows}; "
@@ -190,7 +224,9 @@ def build_goal_completion_audit(
                 f"Priority-1 Source Access: {len(priority_1_access)} Quellen; "
                 f"lokal verfuegbar: {local_access}; extern zu pruefen: {external_access}. "
                 f"Source Structure: {local_pdf_structures} PDF, {local_html_structures} HTML, "
-                f"{external_only_structures} external-only Zeilen."
+                f"{external_only_structures} external-only Zeilen. "
+                f"Traceability: {traceable_methods} Methoden, {traceable_interpretations} Interpretationen, "
+                f"{traceability_gap_count} Gaps."
             ),
             remaining_gap_de="Finale Zitationsreife bleibt vom manuellen Source Review abhaengig.",
             next_action_de="Priority-1-Quellen mit Seiten- oder Abschnittsnotizen pruefen.",
@@ -199,8 +235,12 @@ def build_goal_completion_audit(
             audit_id="goal_audit_03_curated_package",
             goal_requirement_de="Ergebnisdarstellung nutzt wenige starke Tabellen und Figuren.",
             current_status="proved_current_artifact",
-            evidence_artifacts="data/results/thesis_curated_result_package.csv; data/results/thesis_table_figure_captions.csv",
-            key_evidence_de=f"Kernpaket: {core_tables} Tabellen und {core_figures} Figuren.",
+            evidence_artifacts="data/results/thesis_curated_result_package.csv; data/results/thesis_table_figure_captions.csv; data/results/thesis_result_package_traceability.csv",
+            key_evidence_de=(
+                f"Kernpaket: {core_tables} Tabellen und {core_figures} Figuren. "
+                f"Traceability-Kernpaket: {traceable_core_tables} Tabellen, "
+                f"{traceable_core_figures} Figuren, {package_gap_count} Gaps."
+            ),
             remaining_gap_de="Finale Nummerierung und Layout folgen erst im Thesis-Dokument.",
             next_action_de="Tabellen/Figuren in H1-H3 Kapitel integrieren.",
         ),

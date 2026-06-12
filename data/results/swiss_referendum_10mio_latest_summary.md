@@ -2,8 +2,8 @@
 
 ## Generated Or Inspected
 
-- Comparison rows: 48.
-- Polymarket snapshot rows: 48.
+- Comparison rows: 49.
+- Polymarket snapshot rows: 49.
 - Bounded price-history rows: 504.
 - Curated poll rows: 7 from SRG/gfs.bern, Tamedia/20 Minuten/LeeWas, YouGov Schweiz.
 - Poll-impact rows: 7 (observed_pre_post: 7).
@@ -25,9 +25,9 @@
 
 ## Latest Poll-Source Comparison
 
-- SRG/gfs.bern: srg_gfs_bern_2026_w2 published 2026-06-03T03:55:00Z; poll Yes 45.0%, decided Yes 46.4%, raw gap -19.0 pp, decided gap -20.4 pp; below_poll_proxy.
-- Tamedia/20 Minuten/LeeWas: tamedia_leewas_2026_w2 published 2026-06-03T00:00:00Z; poll Yes 47.0%, decided Yes 47.5%, raw gap -21.0 pp, decided gap -21.5 pp; below_poll_proxy.
-- YouGov Schweiz: yougov_2026_w2_final published 2026-06-02T00:00:00Z; poll Yes 38.0%, decided Yes 40.9%, raw gap -12.0 pp, decided gap -14.9 pp; below_poll_proxy.
+- SRG/gfs.bern: srg_gfs_bern_2026_w2 published 2026-06-03T03:55:00Z; poll Yes 45.0%, decided Yes 46.4%, raw gap -18.0 pp, decided gap -19.4 pp; below_poll_proxy.
+- Tamedia/20 Minuten/LeeWas: tamedia_leewas_2026_w2 published 2026-06-03T00:00:00Z; poll Yes 47.0%, decided Yes 47.5%, raw gap -20.0 pp, decided gap -20.5 pp; below_poll_proxy.
+- YouGov Schweiz: yougov_2026_w2_final published 2026-06-02T00:00:00Z; poll Yes 38.0%, decided Yes 40.9%, raw gap -11.0 pp, decided gap -13.9 pp; below_poll_proxy.
 
 ## Information Response Summary
 
@@ -42,13 +42,13 @@
 
 ## Key Numerical Result
 
-- Latest snapshot: 2026-06-12T22:04:18Z.
+- Latest snapshot: 2026-06-12T23:04:17Z.
 - Latest matched poll: srg_gfs_bern_2026_w2 (SRG/gfs.bern).
-- Polymarket Yes probability: 26.0%.
+- Polymarket Yes probability: 27.0%.
 - Latest poll Yes share: 45.0%.
 - Latest poll decided Yes share: 46.4%.
-- Raw Yes gap: -19.0 pp.
-- Decided Yes gap: -20.4 pp.
+- Raw Yes gap: -18.0 pp.
+- Decided Yes gap: -19.4 pp.
 - Poll-proxy relation: below_poll_proxy.
 
 ## Bounded Interpretation

@@ -11082,3 +11082,28 @@ Verification:
 - `.\.venv\Scripts\python.exe ...\documents\render_docx.py docs\project\dozentenbericht_ba_thesis.docx`
   -> FAIL, `WinError 2` because LibreOffice/`soffice` is unavailable; structural
   DOCX fallback QA passed.
+
+## 2026-06-12 - Project control after advisor report source-gated refresh
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Refreshed project control after committing
+  `e164bcb docs: refresh advisor report with source-gated drafting sequence`.
+
+Changes:
+
+- Updated `STATUS.md` with the latest automation snapshot.
+- Added this append-only Work Log entry.
+
+Key output:
+
+- Latest content commit: `e164bcb`.
+- Test snapshot: 574 passed.
+- Next recommended content action:
+  `docs: update advisor handoff after source-gated report refresh`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `574 passed in 59.12s`, clean before the status refresh.

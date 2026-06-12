@@ -173,6 +173,13 @@ acceptance_criteria:
   3 alignment rows, 23 queue rows, 23 ledger rows, 23 matched rows,
   0 missing rows, 0 field-mismatch rows, 0 final-ready rows,
   0 source-status change rows, and inactive future-agent boundaries.
+- A ledger citation-gate summary exists so H1, H2, H3, and TOTAL final
+  citation status are visible before any citation release: 4 summary rows,
+  23 ledger rows, 9 unique sources, 12 method rows, 11 interpretation rows,
+  23 deterministic-artifact rows, 23 citation-blocked rows, 23 missing
+  Page-/Section-Notes, 23 pending Claim-Support rows, 23 pending
+  Blocked-Wording rows, 23 pending Citation-Use rows, 0 final-ready rows,
+  0 source-status change rows, and inactive future-agent boundaries.
 - A consolidated H1-H2-H3 manual source-review follow-up overview exists so
   the 23 open empirical-core review rows are visible in one compact control
   artifact with 9 unique sources, method/interpretation counts, access-route

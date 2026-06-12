@@ -334,6 +334,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="23 Matches, 0 Missing Rows, 0 Feldabweichungen, 0 final-ready rows, 0 Quellenstatus-Aenderungen; keine finale Zitation und keine Runtime-Agenten.",
         ),
         _index_row(
+            artifact_id="index_19_ledger_citation_gate_summary",
+            artifact_type="ledger_citation_gate_summary",
+            path="docs/project/THESIS_LEDGER_CITATION_GATE_SUMMARY.md; data/results/thesis_ledger_citation_gate_summary.csv",
+            purpose_de="Verdichtet das Source Review Progress Ledger zu H1/H2/H3/TOTAL Citation-Gates mit finaler Zitierblockade.",
+            use_now_de="Vor jeder Zitationsfreigabe pruefen, ob Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use im Ledger abgeschlossen sind.",
+            gate_or_limit_de="23 citation-blocked rows, 0 final-ready rows, 0 Quellenstatus-Aenderungen, keine finale Zitation, max 50 rows und llm_audit_log fuer spaetere Agentenhilfe.",
+        ),
+        _index_row(
             artifact_id="index_19_manual_source_review_followup_overview",
             artifact_type="manual_source_review_followup_overview",
             path="docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md; data/results/thesis_manual_source_review_followup_overview.csv",
@@ -583,6 +591,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "H2 Manual Source Review Follow-up, H2 Source Review Decision Queue, "
         "H3 Manual Source Review Follow-up, H3 Source Review Decision Queue, "
         "H1-H2-H3 Decision Queue Overview, H1-H2-H3 Decision Queue Ledger Alignment, "
+        "Ledger Citation Gate Summary, "
         "Manual Source Review Follow-up Overview, Submission Readiness Board, "
         "Drafting Sequence, Execution Checklist, Chapter Source Bindings, "
         "Source Review Execution, Source Access "
@@ -629,6 +638,10 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Abgleich zwischen Detail-Queues, Overview und Ledger: 23 Matches, "
         "0 Missing Rows und 0 Feldabweichungen muessen stehen, bevor "
         "Ledger-Updates oder bounded BA-Prosa folgen. "
+        "Nutze die Ledger Citation Gate Summary als kompakte H1/H2/H3/TOTAL "
+        "Kontrolle vor jeder Zitationsfreigabe: 23 citation-blocked rows, "
+        "0 final-ready rows und 0 Quellenstatus-Aenderungen muessen sichtbar "
+        "bleiben, bis manuelle Ledger-Felder gesetzt sind. "
         "Nutze die Manual Source Review Follow-up Overview als kompakte "
         "H1-H2-H3 Steuerungsuebersicht fuer die 23 offenen Review-Zeilen. "
         "Nutze das Submission Readiness Board fuer die "

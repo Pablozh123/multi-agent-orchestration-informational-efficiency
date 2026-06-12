@@ -814,6 +814,14 @@ Current implemented consolidation:
   Progress Ledger before manual Ledger updates: 3 alignment rows, 23 queue
   rows, 23 ledger rows, 23 matches, 0 missing rows, 0 field-mismatch rows,
   0 final-ready rows, and 0 source-status change rows.
+- `data/results/thesis_ledger_citation_gate_summary.csv` and
+  `docs/project/THESIS_LEDGER_CITATION_GATE_SUMMARY.md` turn the Source Review
+  Progress Ledger into H1/H2/H3/TOTAL citation gates before any citation
+  release: 4 summary rows, 23 ledger rows, 9 unique sources, 12 method rows,
+  11 interpretation rows, 23 citation-blocked rows, 23 missing Page-/Section-
+  Notes, 23 pending Claim-Support rows, 23 pending Blocked-Wording rows,
+  23 pending Citation-Use rows, 0 final-ready rows, and 0 source-status change
+  rows.
 - `data/results/thesis_submission_readiness_board.csv` and
   `docs/project/THESIS_SUBMISSION_READINESS_BOARD.md` provide a nine-gate
   submission-readiness board: advisor handoff, chapter/source mapping, source
@@ -1005,6 +1013,12 @@ Current implemented consolidation:
   rows, 23 ledger rows, 23 matched rows, 0 missing rows, 0 field-mismatch
   rows, 0 final-ready rows, and 0 source-status change rows before any
   manual Ledger update or final citation.
+- `data/results/thesis_ledger_citation_gate_summary.csv` and
+  `docs/project/THESIS_LEDGER_CITATION_GATE_SUMMARY.md` summarize the final
+  citation gate from the Ledger: H1/H2/H3/TOTAL, 23 ledger rows,
+  23 citation-blocked rows, 23 missing Page-/Section-Notes, 23 pending
+  Claim-Support rows, 23 pending Blocked-Wording rows, 23 pending
+  Citation-Use rows, 0 final-ready rows, and 0 source-status change rows.
 - `data/results/thesis_h1_h2_h3_core_sections.csv` and
   `docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md` translate the H1-H2-H3
   empirical core into three thesis-ready section rows: each row binds

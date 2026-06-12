@@ -772,6 +772,12 @@ Current implemented consolidation:
   across H1 (10), H2 (5), and H3 (8), each linked to Evidence ID, selected
   table, selected figure, deterministic artifact, locator task,
   Claim-Support decision, Blocked-Wording check, and Source Review gate.
+- `data/results/thesis_source_review_progress_ledger.csv` and
+  `docs/project/THESIS_SOURCE_REVIEW_PROGRESS_LEDGER.md` keep the H1-H2-H3
+  Source Review in a highlevel project view: 23 ledger rows, all initially
+  pending, with manual fields preserved by `note_id` across regenerations.
+  The ledger allows no automatic Quellenstatus-Hochstufung, no final citation
+  claim, no Review-Access expansion, and no runtime-agent interpretation.
 - `data/results/thesis_method_interpretation_traceability.csv`,
   `data/results/thesis_result_package_traceability.csv`, and
   `docs/project/THESIS_TRACEABILITY_AUDIT.md` audit the draft traceability of
@@ -796,11 +802,12 @@ Current implemented consolidation:
   consolidation deliverables so the Dozentenbericht, advisor checklist,
   highlevel view, work plan, execution checklist, source worksheet, source
   advisor handoff package, review execution guide, source access audit, source
-  structure inventory, source review decision packets, traceability audit,
-  chapter source bindings, agent future-work handoff, advisor handoff note,
-  advisor feedback log, submission readiness board, drafting sequence, wording
-  guard, table/figure captions, chapter draft, source review plan, agent
-  protocol, status, and work log are easy to navigate.
+  structure inventory, source review decision packets, source review progress
+  ledger, traceability audit, chapter source bindings, agent future-work
+  handoff, advisor handoff note, advisor feedback log, submission readiness
+  board, drafting sequence, wording guard, table/figure captions, chapter
+  draft, source review plan, agent protocol, status, and work log are easy to
+  navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,

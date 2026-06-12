@@ -10002,3 +10002,52 @@ Verification:
   -> PASS, generated 30 indexed artifacts.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 546 passed in 56.60s.
+
+## 2026-06-12 - Source review progress ledger
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Kept Review-Access paused and moved the project forward through a highlevel
+  Source Review progress surface for H1, H2, and H3.
+- Did not inspect source contents, promote source status, activate agents,
+  call MCP tools, route models, calculate LLM metrics, expose wallet
+  addresses, or create trading paths.
+
+Changes:
+
+- Added `operations/project/build_source_review_progress_ledger.py`.
+- Generated `data/results/thesis_source_review_progress_ledger.csv`.
+- Generated `docs/project/THESIS_SOURCE_REVIEW_PROGRESS_LEDGER.md`.
+- Added `tests/test_source_review_progress_ledger.py`.
+- Updated the goal-completion audit and consolidation index to include the
+  ledger.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Ledger rows: 23.
+- H1 rows: 10.
+- H2 rows: 5.
+- H3 rows: 8.
+- Pending manual-review rows: 23.
+- Preserved manual rows: 0.
+- Final citation ready rows: 0.
+- Source-status changes allowed: 0.
+- The ledger preserves manual fields by `note_id` across regenerations and
+  remains a progress tracker, not a final citation or source-status gate.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_source_review_progress_ledger.py operations/project/build_thesis_goal_completion_audit.py operations/project/build_thesis_consolidation_index.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_source_review_progress_ledger.py tests/test_thesis_goal_completion_audit.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 6 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_source_review_progress_ledger`
+  -> PASS, generated 23 ledger rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
+  -> PASS, generated 10 audit rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 31 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 548 passed in 50.73s.

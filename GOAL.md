@@ -130,6 +130,9 @@ acceptance_criteria:
   reviewed source-by-source with Page-/Section-Notes, Claim-Support decisions,
   Blocked-Wording checks, selected table/figure context, and no automatic
   source-status promotion.
+- A source-review progress ledger exists so H1-H2-H3 manual review decisions
+  can be preserved across regenerations without automatic source-status
+  promotion or final citation claims.
 - A future agent-pipeline upgrade plan exists so later source-review,
   evidence-drafting, wording, table/figure, advisor, monitor, and bounded MCP
   improvements are documented without activating runtime agents.
@@ -137,7 +140,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add source review progress ledger
+next_commit: docs: draft source review progress protocol
 
 ## Running Side Goal
 

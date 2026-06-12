@@ -689,6 +689,12 @@ Current implemented consolidation:
   status into eight concrete advisor questions covering H1 wording, source
   review depth, H2/H3 scope, table/figure package, monitor appendix, Swiss
   placement, agent outlook, and final QA.
+- `data/results/thesis_consolidation_index.csv` and
+  `docs/project/THESIS_CONSOLIDATION_INDEX.md` index the current
+  consolidation deliverables so the Dozentenbericht, advisor checklist,
+  highlevel view, work plan, source worksheet, wording guard, table/figure
+  captions, chapter draft, source review plan, agent protocol, status, and
+  work log are easy to navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - `data/results/thesis_citation_review_packets.csv` and

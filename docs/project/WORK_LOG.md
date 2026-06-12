@@ -8774,3 +8774,44 @@ Verification:
   -> PASS, generated 8 advisor questions.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 509 passed in 49.86s.
+
+## 2026-06-12 - Thesis consolidation index
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Added a compact navigation index over the current advisor, thesis drafting,
+  source review, wording, table/figure, agent-outlook, status, and work-log
+  artifacts.
+
+Changes:
+
+- Added `operations/project/build_thesis_consolidation_index.py`.
+- Generated `data/results/thesis_consolidation_index.csv`.
+- Added `docs/project/THESIS_CONSOLIDATION_INDEX.md`.
+- Added `tests/test_thesis_consolidation_index.py`.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Indexed artifacts: 12.
+- The index points first to the Dozentenbericht and Absprache-Checklist, then
+  to highlevel view, next work plan, source worksheet, wording guard,
+  table/figure captions, chapter draft, source review plan, agent protocol,
+  status, and work log.
+- It keeps Review-Access paused, runtime agents/MCP/model routing disabled,
+  source-status promotion manual, and raw artifact dumps out of the core
+  thesis text.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_consolidation_index.py tests\test_advisor_alignment_checklist.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 12 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 511 passed in 52.18s.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> PASS, 511 passed in 50.66s.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+  -> PASS, recommends reviewing one coherent docs/data/automation slice.

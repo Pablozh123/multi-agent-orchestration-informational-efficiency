@@ -120,6 +120,11 @@ acceptance_criteria:
   Dozenten-Handoff is explicit: capture feedback, confirm Source Review depth,
   manually review H1/H2/H3 source rows, update the bounded chapter draft,
   recheck final gates, and keep agents future-work-only.
+- A H1 manual source-review follow-up exists so the first empirical-core
+  review slice is startable with 10 H1 source rows, 4 H1 sources, method and
+  interpretation Evidence IDs, deterministic artifacts, Page-/Section-Note,
+  Claim-Support, Blocked-Wording, Citation-Use, and no automatic source-status
+  promotion.
 - The high-level project view explicitly answers the path forward without
   Review-Access: advisor feedback, source review, H1-H3 writing,
   table/figure integration, Swiss result gate, and final QA.
@@ -220,7 +225,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: start h1 manual source review follow-up
+next_commit: docs: start h2 manual source review follow-up
 
 ## Running Side Goal
 

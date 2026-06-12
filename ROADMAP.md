@@ -769,6 +769,11 @@ Current implemented consolidation:
   bounded chapter draft with five tables and four figures, recheck Final Gates,
   and keep agents future-work-only. The plan records 23 pending Manual Source
   Review rows and 0 final-ready rows.
+- `data/results/thesis_h1_manual_source_review_followup.csv` and
+  `docs/project/THESIS_H1_MANUAL_SOURCE_REVIEW_FOLLOWUP.md` start the first
+  concrete H1 review slice: 10 H1 rows, 4 H1 sources, 4 method rows, 6
+  interpretation rows, 7 external locator rows, 3 local PDF rows, 10 pending
+  Page-/Section-Note rows, and 0 final-ready rows.
 - `data/results/thesis_submission_readiness_board.csv` and
   `docs/project/THESIS_SUBMISSION_READINESS_BOARD.md` provide a nine-gate
   submission-readiness board: advisor handoff, chapter/source mapping, source
@@ -926,9 +931,9 @@ Current implemented consolidation:
   chapter source review checklist, H1-H2-H3 drafting checklist, H1-H2-H3
   bounded chapter draft, thesis final gate board, traceability audit, chapter
   source bindings, agent future-work handoff, advisor handoff note, advisor
-  feedback log, advisor source-review follow-up, submission readiness board,
-  drafting sequence, wording guard, table/figure captions, chapter draft,
-  source review plan, agent protocol,
+  feedback log, advisor source-review follow-up, H1 manual source-review
+  follow-up, submission readiness board, drafting sequence, wording guard,
+  table/figure captions, chapter draft, source review plan, agent protocol,
   status, and work log are easy to navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.

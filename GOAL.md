@@ -136,6 +136,10 @@ acceptance_criteria:
   artifacts, Page-/Section-Note, Claim-Support, Blocked-Wording,
   Citation-Use, Granger-Grenze, Wallet-Grenze, and no automatic source-status
   promotion.
+- A consolidated H1-H2-H3 manual source-review follow-up overview exists so
+  the 23 open empirical-core review rows are visible in one compact control
+  artifact with 9 unique sources, method/interpretation counts, access-route
+  counts, final citation blockers, and inactive future-agent boundaries.
 - The high-level project view explicitly answers the path forward without
   Review-Access: advisor feedback, source review, H1-H3 writing,
   table/figure integration, Swiss result gate, and final QA.
@@ -236,7 +240,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: consolidate h1 h2 h3 manual source review follow-ups
+next_commit: docs: update advisor handoff package with source review overview
 
 ## Running Side Goal
 

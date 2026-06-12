@@ -294,6 +294,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine finale Zitation, keine Kausalclaims, keine willkuerlichen Whale-Schwellen, keine Wallet-Adressen, keine Trading-Claims und keine Runtime-Agenten.",
         ),
         _index_row(
+            artifact_id="index_19_manual_source_review_followup_overview",
+            artifact_type="manual_source_review_followup_overview",
+            path="docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md; data/results/thesis_manual_source_review_followup_overview.csv",
+            purpose_de="Kompakte H1-H2-H3 Uebersicht ueber 23 manuelle Source-Review-Zeilen, Quellen, Methodik-/Interpretationszeilen und offene Finalgates.",
+            use_now_de="Als Steuerungsuebersicht nutzen, bevor H1, H2 und H3 source-by-source im Ledger entschieden werden.",
+            gate_or_limit_de="Alle 23 Zitationen bleiben final blockiert; keine Quellenstatus-Hochstufung, keine Kausalclaims, keine Runtime-Agenten und keine Rohartefakt-Dumps.",
+        ),
+        _index_row(
             artifact_id="index_20_submission_readiness",
             artifact_type="submission_readiness",
             path="docs/project/THESIS_SUBMISSION_READINESS_BOARD.md; data/results/thesis_submission_readiness_board.csv",
@@ -523,7 +531,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Projektstand, den Dozentenbericht, Source Review, Wording Guard, "
         "Advisor Handoff Package, Advisor Handoff Note, Advisor Feedback Log, "
         "Advisor Feedback Integration Checklist, Advisor Source Review "
-        "Follow-up, H1 Manual Source Review Follow-up, H2 Manual Source Review Follow-up, H3 Manual Source Review Follow-up, Submission Readiness Board, "
+        "Follow-up, H1 Manual Source Review Follow-up, H2 Manual Source Review Follow-up, H3 Manual Source Review Follow-up, Manual Source Review Follow-up Overview, Submission Readiness Board, "
         "Drafting Sequence, Execution Checklist, Chapter Source Bindings, "
         "Source Review Execution, Source Access "
         "Audit, Source Structure Inventory, Source Review Decision Packets, "
@@ -559,6 +567,8 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Nutze das H3 Manual Source Review Follow-up als naechsten konkreten "
         "H3-Review-Slice fuer Page-/Section-Note, Claim-Support, "
         "Blocked-Wording, Citation-Use, Granger-Grenze und Wallet-Grenze. "
+        "Nutze die Manual Source Review Follow-up Overview als kompakte "
+        "H1-H2-H3 Steuerungsuebersicht fuer die 23 offenen Review-Zeilen. "
         "Nutze das Submission Readiness Board fuer die "
         "finalen Gates. Nutze die Drafting Sequence fuer die naechste "
         "Schreibreihenfolge. Nutze das Source Access Audit und Source Structure "

@@ -920,6 +920,12 @@ Current implemented consolidation:
   Granger-Grenze, Wallet-Grenze, no arbitrary Whale thresholds, no
   Wallet-address exposure, and no trading/profitability claims visible before
   any final H3 citation.
+- `data/results/thesis_manual_source_review_followup_overview.csv` and
+  `docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md` consolidate
+  the H1-H2-H3 follow-up slices into 3 overview rows over 23 manual review
+  rows, 9 unique sources, 12 method rows, 11 interpretation rows,
+  13 external locator rows, 10 local PDF rows, 23 pending rows, and
+  0 final-citation-ready rows.
 - `data/results/thesis_h1_h2_h3_core_sections.csv` and
   `docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md` translate the H1-H2-H3
   empirical core into three thesis-ready section rows: each row binds
@@ -949,9 +955,10 @@ Current implemented consolidation:
   source bindings, agent future-work handoff, advisor handoff note, advisor
   feedback log, advisor source-review follow-up, H1 manual source-review
   follow-up, H2 manual source-review follow-up, H3 manual source-review
-  follow-up, submission readiness board, drafting sequence, wording guard,
-  table/figure captions, chapter draft, source review plan, agent protocol,
-  status, and work log are easy to navigate.
+  follow-up, manual source-review follow-up overview, submission readiness
+  board, drafting sequence, wording guard, table/figure captions, chapter
+  draft, source review plan, agent protocol, status, and work log are easy to
+  navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,

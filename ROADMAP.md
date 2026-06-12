@@ -762,6 +762,13 @@ Current implemented consolidation:
   deterministic-artifact checks for the affected method/interpretation,
   preserves the compact table/figure package, keeps Swiss and final QA gates
   visible, and leaves future agents at 0 active runtime rows.
+- `data/results/thesis_advisor_source_review_followup.csv` and
+  `docs/project/THESIS_ADVISOR_SOURCE_REVIEW_FOLLOWUP.md` now give the
+  concrete post-handoff follow-up order: capture feedback, confirm Source
+  Review depth, run H1/H2/H3 Manual Source Review (10/5/8 rows), update the
+  bounded chapter draft with five tables and four figures, recheck Final Gates,
+  and keep agents future-work-only. The plan records 23 pending Manual Source
+  Review rows and 0 final-ready rows.
 - `data/results/thesis_submission_readiness_board.csv` and
   `docs/project/THESIS_SUBMISSION_READINESS_BOARD.md` provide a nine-gate
   submission-readiness board: advisor handoff, chapter/source mapping, source
@@ -919,8 +926,9 @@ Current implemented consolidation:
   chapter source review checklist, H1-H2-H3 drafting checklist, H1-H2-H3
   bounded chapter draft, thesis final gate board, traceability audit, chapter
   source bindings, agent future-work handoff, advisor handoff note, advisor
-  feedback log, submission readiness board, drafting sequence, wording guard,
-  table/figure captions, chapter draft, source review plan, agent protocol,
+  feedback log, advisor source-review follow-up, submission readiness board,
+  drafting sequence, wording guard, table/figure captions, chapter draft,
+  source review plan, agent protocol,
   status, and work log are easy to navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.

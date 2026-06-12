@@ -262,6 +262,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Pending bis Feedback vorliegt; keine neuen Claims, keine Runtime-Agenten und keine Rohartefakt-Dumps.",
         ),
         _index_row(
+            artifact_id="index_19_advisor_source_review_followup",
+            artifact_type="advisor_source_review_followup",
+            path="docs/project/THESIS_ADVISOR_SOURCE_REVIEW_FOLLOWUP.md; data/results/thesis_advisor_source_review_followup.csv",
+            purpose_de="Ordnet Dozentenfeedback, Source-Review-Tiefe, H1-H2-H3 Manual Source Review, bounded Draft, Final-Gates und Agent-Future-Work in eine naechste Reihenfolge.",
+            use_now_de="Nach dem Dozenten-Handoff als konkrete Follow-up-Reihenfolge nutzen.",
+            gate_or_limit_de="Keine finale Zitation, keine Quellenstatus-Hochstufung, kein Review-Access und keine Runtime-Agenten.",
+        ),
+        _index_row(
             artifact_id="index_20_submission_readiness",
             artifact_type="submission_readiness",
             path="docs/project/THESIS_SUBMISSION_READINESS_BOARD.md; data/results/thesis_submission_readiness_board.csv",
@@ -490,7 +498,8 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Dieser Index zeigt, welche Artefakte fuer den aktuellen Highlevel-"
         "Projektstand, den Dozentenbericht, Source Review, Wording Guard, "
         "Advisor Handoff Package, Advisor Handoff Note, Advisor Feedback Log, "
-        "Advisor Feedback Integration Checklist, Submission Readiness Board, "
+        "Advisor Feedback Integration Checklist, Advisor Source Review "
+        "Follow-up, Submission Readiness Board, "
         "Drafting Sequence, Execution Checklist, Chapter Source Bindings, "
         "Source Review Execution, Source Access "
         "Audit, Source Structure Inventory, Source Review Decision Packets, "
@@ -514,6 +523,9 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Chat-Vorlage. Nutze das Feedback-Log nach der Betreuung und die "
         "Feedback-Integration-Checklist, um daraus kleine Folgecommits mit "
         "Quellen-, Artefakt-, Tabellen/Figuren- und Agent-Gates abzuleiten. "
+        "Nutze das Advisor Source Review Follow-up als direkte Reihenfolge "
+        "fuer Feedback-Erfassung, Source-Review-Tiefe, H1-H2-H3 Manual Source "
+        "Review, bounded Draft, Final-Gates und Agent-Future-Work-Grenze. "
         "Nutze das Submission Readiness Board fuer die "
         "finalen Gates. Nutze die Drafting Sequence fuer die naechste "
         "Schreibreihenfolge. Nutze das Source Access Audit und Source Structure "

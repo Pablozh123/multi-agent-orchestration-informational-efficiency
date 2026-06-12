@@ -116,6 +116,10 @@ acceptance_criteria:
   with Source-Gated H1-H2-H3 Drafting Sequence, 15 paragraph-level writing
   steps, 23 linked Manual Source Review rows, 23 pending rows, 0 final-ready
   rows, and the boundary that Review-Access remains paused.
+- An advisor/source-review follow-up plan exists so the path after
+  Dozenten-Handoff is explicit: capture feedback, confirm Source Review depth,
+  manually review H1/H2/H3 source rows, update the bounded chapter draft,
+  recheck final gates, and keep agents future-work-only.
 - The high-level project view explicitly answers the path forward without
   Review-Access: advisor feedback, source review, H1-H3 writing,
   table/figure integration, Swiss result gate, and final QA.
@@ -216,7 +220,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: prepare advisor feedback and source review follow-up
+next_commit: docs: start h1 manual source review follow-up
 
 ## Running Side Goal
 

@@ -134,14 +134,17 @@ def build_advisor_handoff_note(
                 "und Agenten sind klar abgegrenzt."
             ),
             source_artifacts="docs/project/dozentenbericht_ba_thesis.docx; data/results/thesis_project_highlevel_view.csv",
-            do_not_imply_de="Keine neuen empirischen Resultate oder Runtime-Agenten ankündigen.",
+            do_not_imply_de="Keine neuen empirischen Resultate oder Runtime-Agenten ankuendigen.",
         ),
         _note_row(
             section_id="handoff_03_attachments",
             section_title_de="Anhaenge",
             content_de=(
                 "Als Einstieg reichen der Word-Bericht und die Absprache-"
-                "Checklist. Fuer die eigentliche Weiterarbeit liegen ausserdem "
+                "Checklist. Die Checklist startet mit einer empfohlenen "
+                "Gespraechsreihenfolge: H1-H2-H3 Scope, Source Review Tiefe, "
+                "Tabellen/Figuren, Monitor/Swiss Grenzen, Agenten-Future-Work "
+                "und finale QA. Fuer die eigentliche Weiterarbeit liegen ausserdem "
                 f"Submission Readiness Board und Drafting Sequence bereit. "
                 f"Empfohlene Dateien: {', '.join(attachment_paths)}."
             ),

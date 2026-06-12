@@ -721,8 +721,9 @@ Current implemented consolidation:
   and consolidation index.
 - `data/results/thesis_advisor_handoff_note.csv` and
   `docs/project/DOZENTEN_UEBERGABE_TEXT.md` provide a short mail/chat handoff
-  text for the advisor with subject, attachment order, key questions, gate
-  status, and non-goals.
+  text for the advisor with subject, attachment order, a pointer to the
+  recommended checklist discussion order, key questions, gate status, and
+  non-goals.
 - `data/results/thesis_advisor_feedback_log_template.csv` and
   `docs/project/DOZENTEN_FEEDBACK_LOG.md` provide a pending feedback log for
   advisor answers, resulting actions, and small follow-up commit scopes.

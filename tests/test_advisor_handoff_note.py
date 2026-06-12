@@ -24,6 +24,8 @@ def test_generate_advisor_handoff_note_writes_mail_template(tmp_path: Path) -> N
     assert "Betreff:" in doc
     assert "Hallo [Name des Dozenten]" in doc
     assert "docs/project/dozentenbericht_ba_thesis.docx" in doc
+    assert "Gespraechsreihenfolge" in doc
+    assert "H1-H2-H3 Scope" in doc
     assert chr(223) not in doc
 
 

@@ -9457,6 +9457,40 @@ Verification:
 - `.\.venv\Scripts\python.exe -m operations.project.build_advisor_alignment_checklist`
   -> PASS, regenerated 8 advisor questions.
 
+## 2026-06-12 - Advisor handoff note discussion-order pointer
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Linked the short Dozenten-Uebergabetext to the new discussion order in the
+  advisor checklist.
+
+Changes:
+
+- Updated `operations/project/build_advisor_handoff_note.py`.
+- Regenerated `data/results/thesis_advisor_handoff_note.csv`.
+- Regenerated `docs/project/DOZENTEN_UEBERGABE_TEXT.md`.
+- Updated `tests/test_advisor_handoff_note.py`.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Handoff note sections remain: 6.
+- The attachment paragraph now tells the advisor that the checklist starts with
+  the recommended order: H1-H2-H3 scope, Source Review depth, tables/figures,
+  Monitor/Swiss boundaries, agent future work, and final QA.
+- Review-Access remains paused; no runtime agent, MCP, model-routing, or
+  trading path was added.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_advisor_handoff_note.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_advisor_handoff_note.py -q`
+  -> PASS, 2 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_advisor_handoff_note`
+  -> PASS, regenerated 6 handoff-note sections.
+
 ## 2026-06-12 - Advisor feedback log
 
 Goal context:

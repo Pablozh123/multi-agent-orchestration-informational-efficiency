@@ -8,7 +8,7 @@ Hallo [Name des Dozenten]
 
 Ich habe den aktuellen Stand der Bachelorarbeit schriftlich aufbereitet. Der empirische Kern besteht aus H1 Forecast-Qualitaet, H2 taeglicher Event-Window-Analyse und H3 Wallet-Tier-Timing. Review-Access bleibt pausiert; Monitor, Swiss und Agenten sind klar abgegrenzt.
 
-Als Einstieg reichen der Word-Bericht und die Absprache-Checklist. Fuer die eigentliche Weiterarbeit liegen ausserdem Submission Readiness Board und Drafting Sequence bereit. Empfohlene Dateien: docs/project/dozentenbericht_ba_thesis.docx, docs/project/DOZENTEN_ABSPRACHE_CHECKLIST.md, docs/project/THESIS_SUBMISSION_READINESS_BOARD.md, docs/project/THESIS_DRAFTING_SEQUENCE.md.
+Als Einstieg reichen der Word-Bericht und die Absprache-Checklist. Die Checklist startet mit einer empfohlenen Gespraechsreihenfolge: H1-H2-H3 Scope, Source Review Tiefe, Tabellen/Figuren, Monitor/Swiss Grenzen, Agenten-Future-Work und finale QA. Fuer die eigentliche Weiterarbeit liegen ausserdem Submission Readiness Board und Drafting Sequence bereit. Empfohlene Dateien: docs/project/dozentenbericht_ba_thesis.docx, docs/project/DOZENTEN_ABSPRACHE_CHECKLIST.md, docs/project/THESIS_SUBMISSION_READINESS_BOARD.md, docs/project/THESIS_DRAFTING_SEQUENCE.md.
 
 Readiness: 4 draft-ready Gates und 2 final blockierte Gates. Source Review: final_blocked_source_review; Swiss: final_blocked_official_result; Agenten: deferred_future_work_only. Drafting Sequence: 4 bounded write-now Schritte und 1 future-work-only Schritt.
 

@@ -89,7 +89,8 @@ acceptance_criteria:
 - The advisor report contains the current submission-readiness and drafting
   sequence view so the high-level next steps are visible in the Word update.
 - A short advisor handoff note exists so the Word update can be sent with a
-  clear subject, attachment order, questions, and scope boundaries.
+  clear subject, attachment order, discussion-order pointer, questions, and
+  scope boundaries.
 - A pending advisor feedback log exists so later feedback can be translated
   into small scoped follow-up commits.
 - The advisor handoff package is updated so the Word report, handoff note,
@@ -104,7 +105,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add advisor discussion order
+next_commit: docs: update advisor handoff note order
 
 ## Running Side Goal
 

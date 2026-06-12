@@ -822,6 +822,10 @@ Current implemented consolidation:
   gate, and future-agent boundary for H1, H2, and H3. Every block carries
   Evidence IDs, literature IDs, deterministic artifacts, selected table/figure
   IDs, limitations, blocked wording, and 0 final-submission-ready rows.
+  The same draft now carries Source-Coverage counts in every H1-H2-H3 block:
+  H1 has 10 source links and 4 unique source IDs, H2 has 5 and 3, H3 has
+  8 and 4, and all three chapters have 0 coverage gaps while final citation
+  remains blocked by Source Review.
 - `data/results/thesis_final_gate_board.csv` and
   `docs/project/THESIS_FINAL_GATE_BOARD.md` provide the current highlevel
   Stop-/Go view over the project: 8 gates, 8 draft-allowed rows,

@@ -10498,3 +10498,47 @@ Verification:
   -> PASS, generated 10 audit rows.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 566 passed in 52.26s.
+
+## 2026-06-12 - H1-H2-H3 source coverage gates in writing pass
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Integrated the method/interpretation source coverage audit into the bounded
+  H1-H2-H3 chapter draft.
+- Kept the work deterministic and source-gated: no new metrics, no raw
+  artifact dumps, no source-status promotion, no final citation claims, no
+  runtime agents, no MCP, no LLM metrics, and no trading paths.
+
+Changes:
+
+- Updated `operations/project/build_h1_h2_h3_bounded_chapter_draft.py` to read
+  `thesis_method_interpretation_source_coverage.csv`.
+- Added source coverage columns to
+  `data/results/thesis_h1_h2_h3_bounded_chapter_draft.csv`.
+- Regenerated `docs/research/THESIS_H1_H2_H3_BOUNDED_CHAPTER_DRAFT.md`.
+- Updated `tests/test_h1_h2_h3_bounded_chapter_draft.py`.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Draft rows: 18.
+- Bounded draft ready rows: 18.
+- Final submission ready rows: 0.
+- H1 coverage carried into every H1 block: 10 source links, 4 unique source
+  IDs, 0 coverage gaps.
+- H2 coverage carried into every H2 block: 5 source links, 3 unique source
+  IDs, 0 coverage gaps.
+- H3 coverage carried into every H3 block: 8 source links, 4 unique source
+  IDs, 0 coverage gaps.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_h1_h2_h3_bounded_chapter_draft.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_h1_h2_h3_bounded_chapter_draft.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_h1_h2_h3_bounded_chapter_draft`
+  -> PASS, generated 18 bounded draft rows.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 566 passed in 53.96s.

@@ -35,6 +35,9 @@ DRAFT_COLUMNS: tuple[str, ...] = (
     "selected_figures",
     "selected_result_package_items",
     "source_review_gate_de",
+    "source_coverage_links",
+    "source_coverage_unique_sources",
+    "source_coverage_gap_rows",
     "chapter_paragraph_de",
     "mandatory_limitation_de",
     "blocked_wording_de",
@@ -90,12 +93,14 @@ def generate_h1_h2_h3_bounded_chapter_draft(
     drafting = _read_csv(results_dir / "thesis_h1_h2_h3_drafting_checklist.csv")
     chapter_handoff = _read_csv(results_dir / "thesis_source_review_chapter_handoff.csv")
     captions = _read_csv(results_dir / "thesis_table_figure_captions.csv")
+    source_coverage = _read_csv(results_dir / "thesis_method_interpretation_source_coverage.csv")
 
     draft = build_h1_h2_h3_bounded_chapter_draft(
         core_sections=core_sections,
         drafting=drafting,
         chapter_handoff=chapter_handoff,
         captions=captions,
+        source_coverage=source_coverage,
     )
     _validate_draft(draft, repo_root=repo_root)
 
@@ -121,6 +126,7 @@ def build_h1_h2_h3_bounded_chapter_draft(
     drafting: pd.DataFrame,
     chapter_handoff: pd.DataFrame,
     captions: pd.DataFrame,
+    source_coverage: pd.DataFrame,
 ) -> pd.DataFrame:
     """Return ordered H1-H2-H3 chapter paragraphs from deterministic inputs."""
 
@@ -186,10 +192,16 @@ def build_h1_h2_h3_bounded_chapter_draft(
         ("package_id", "thesis_label", "caption_de", "primary_artifact", "limitation_note_de"),
         "table figure captions",
     )
+    _require_columns(
+        source_coverage,
+        ("thesis_area", "thesis_readiness", "source_id", "coverage_status"),
+        "method interpretation source coverage",
+    )
 
     core_by_area = core_sections.set_index("hypothesis").to_dict(orient="index")
     handoff_by_area = chapter_handoff.set_index("thesis_area").to_dict(orient="index")
     caption_by_id = captions.set_index("package_id").to_dict(orient="index")
+    source_coverage_by_area = _source_coverage_summary_by_area(source_coverage)
     ordered = drafting.sort_values(["thesis_area", "draft_order"]).reset_index(drop=True)
     rows: list[dict[str, object]] = []
 
@@ -201,12 +213,16 @@ def build_h1_h2_h3_bounded_chapter_draft(
             raise ValueError(f"Drafting row references missing chapter handoff area: {area}")
         core = core_by_area[area]
         handoff = handoff_by_area[area]
+        coverage = source_coverage_by_area.get(area)
+        if coverage is None:
+            raise ValueError(f"Drafting row references missing source coverage area: {area}")
         package_items = _package_item_summary(str(draft_row["result_package_items"]), caption_by_id)
         paragraph = _paragraph_for_step(
             draft_row=draft_row,
             core=core,
             handoff=handoff,
             package_items=package_items,
+            source_coverage=coverage,
         )
         rows.append(
             {
@@ -225,6 +241,9 @@ def build_h1_h2_h3_bounded_chapter_draft(
                 "selected_figures": str(core["selected_figures"]),
                 "selected_result_package_items": package_items,
                 "source_review_gate_de": str(draft_row["source_review_gate"]),
+                "source_coverage_links": int(coverage["source_coverage_links"]),
+                "source_coverage_unique_sources": int(coverage["source_coverage_unique_sources"]),
+                "source_coverage_gap_rows": int(coverage["source_coverage_gap_rows"]),
                 "chapter_paragraph_de": paragraph,
                 "mandatory_limitation_de": str(draft_row["mandatory_limitation_de"]),
                 "blocked_wording_de": str(draft_row["blocked_wording_de"]),
@@ -266,6 +285,7 @@ def _paragraph_for_step(
     core: dict[str, object],
     handoff: dict[str, object],
     package_items: str,
+    source_coverage: dict[str, int],
 ) -> str:
     step = str(draft_row["draft_step"])
     area = str(draft_row["thesis_area"])
@@ -316,6 +336,10 @@ def _paragraph_for_step(
             f"Im Handoff stehen {int(handoff['source_review_rows'])} "
             f"Source-Review-Zeilen, davon {int(handoff['pending_review_rows'])} "
             f"pending und {int(handoff['final_citation_ready_rows'])} final-ready. "
+            f"Der Source-Coverage-Audit weist {int(source_coverage['source_coverage_links'])} "
+            f"Quellenlinks, {int(source_coverage['source_coverage_unique_sources'])} "
+            f"eindeutige Source-IDs und {int(source_coverage['source_coverage_gap_rows'])} "
+            "Coverage-Gaps fuer dieses Kapitel aus. "
             "Keine finale Zitation und keine Quellenstatus-Hochstufung erfolgen "
             "aus diesem Draft."
         )
@@ -356,6 +380,8 @@ def _validate_draft(draft: pd.DataFrame, *, repo_root: Path) -> None:
         raise ValueError("All H1-H2-H3 draft rows must be bounded-draft-ready.")
     if draft["ready_for_final_submission"].map(_bool_value).any():
         raise ValueError("H1-H2-H3 draft rows must not be final-submission-ready.")
+    if (draft["source_coverage_gap_rows"].astype(int) != 0).any():
+        raise ValueError("H1-H2-H3 draft rows must have zero source coverage gaps.")
     for artifact_list in draft["deterministic_artifacts"].astype(str):
         for artifact in _split_semicolon(artifact_list):
             if not (repo_root / artifact).exists():
@@ -375,6 +401,8 @@ def _validate_draft(draft: pd.DataFrame, *, repo_root: Path) -> None:
         "keine runtime-agenten",
         "llm_audit_log",
         "wenige gute tabellen",
+        "source-coverage",
+        "coverage-gaps",
     )
     missing = [term for term in required_terms if term not in lower_joined]
     if "source review" not in lower_joined and "source-review" not in lower_joined:
@@ -411,6 +439,12 @@ def _render_draft_doc(draft: pd.DataFrame) -> str:
                 f"Literatur: `{first['literature_source_ids']}`\n",
                 f"Deterministische Artefakte: `{first['deterministic_artifacts']}`\n",
                 f"Ausgewaehlte Tabelle/Figur: `{first['selected_tables']}` / `{first['selected_figures']}`\n",
+                (
+                    "Source-Coverage: "
+                    f"{int(first['source_coverage_links'])} Links; "
+                    f"{int(first['source_coverage_unique_sources'])} eindeutige Source-IDs; "
+                    f"Coverage-Gaps: {int(first['source_coverage_gap_rows'])}\n"
+                ),
             ]
         )
         for record in area_rows.to_dict(orient="records"):
@@ -452,6 +486,20 @@ def _package_item_summary(value: str, captions_by_id: dict[str, dict[str, object
             f"-> {caption['primary_artifact']}; Limitation: {caption['limitation_note_de']}"
         )
     return " | ".join(summaries)
+
+
+def _source_coverage_summary_by_area(source_coverage: pd.DataFrame) -> dict[str, dict[str, int]]:
+    thesis_facing = source_coverage[
+        source_coverage["thesis_readiness"].astype(str) == "thesis_facing_ready"
+    ]
+    summaries: dict[str, dict[str, int]] = {}
+    for area, group in thesis_facing.groupby("thesis_area"):
+        summaries[str(area)] = {
+            "source_coverage_links": int(len(group)),
+            "source_coverage_unique_sources": int(group["source_id"].nunique()),
+            "source_coverage_gap_rows": int((group["coverage_status"] == "coverage_gap").sum()),
+        }
+    return summaries
 
 
 def _compact_artifacts(value: str, *, limit: int = 4) -> str:

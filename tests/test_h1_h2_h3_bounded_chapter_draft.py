@@ -31,6 +31,8 @@ def test_generate_h1_h2_h3_bounded_chapter_draft_writes_ordered_rows(tmp_path: P
     assert "interpretation_h1_bounded_advantage" in doc
     assert "lit_brier_001" in doc
     assert "data/results/thesis_h1_summary.csv" in doc
+    assert "Source-Coverage: 10 Links" in doc
+    assert "Coverage-Gaps: 0" in doc
     assert "wenige gute Tabellen" in doc
     assert "Keine finale Zitation" in doc
     assert "keine Runtime-Agenten" in doc
@@ -59,6 +61,8 @@ def test_h1_h2_h3_bounded_chapter_draft_keeps_mapping_columns_complete(tmp_path:
     assert "keine runtime-agenten" in joined
     assert "method_h3_granger_timing" in joined
     assert "interpretation_h3_top_tier_signal" in joined
+    assert "source-coverage" in joined
+    assert draft["source_coverage_gap_rows"].astype(int).eq(0).all()
 
 
 def test_h1_h2_h3_bounded_chapter_draft_fails_on_missing_artifact(tmp_path: Path) -> None:
@@ -189,6 +193,13 @@ def _write_fixture(root: Path) -> None:
             _caption("F3", "fig:f3", "H3 figure", "data/results/thesis_h3_granger_pvalues.png"),
         ]
     ).to_csv(results / "thesis_table_figure_captions.csv", index=False)
+    pd.DataFrame(
+        [
+            *[_source_coverage("H1", f"h1_source_{idx}") for idx in range(10)],
+            *[_source_coverage("H2", f"h2_source_{idx}") for idx in range(5)],
+            *[_source_coverage("H3", f"h3_source_{idx}") for idx in range(8)],
+        ]
+    ).to_csv(results / "thesis_method_interpretation_source_coverage.csv", index=False)
 
     for relative in [
         "data/results/thesis_h1_summary.csv",
@@ -300,4 +311,26 @@ def _caption(package_id: str, label: str, caption: str, artifact: str) -> dict[s
         "caption_de": caption,
         "primary_artifact": artifact,
         "limitation_note_de": "Fixture limitation.",
+    }
+
+
+def _source_coverage(area: str, source_id: str) -> dict[str, object]:
+    return {
+        "coverage_id": f"coverage_{area.lower()}_{source_id}",
+        "evidence_id": f"method_{area.lower()}",
+        "thesis_area": area,
+        "item_type": "method",
+        "thesis_readiness": "thesis_facing_ready",
+        "source_id": source_id,
+        "source_known_in_literature_index": True,
+        "source_status": "skimmed",
+        "source_relevance": "high",
+        "final_citation_readiness": "needs_full_source_review_before_final_citation",
+        "primary_artifact": "data/results/thesis_core_results_table.csv",
+        "primary_artifact_exists": True,
+        "supporting_artifact_count": 1,
+        "supporting_artifact_exists_count": 1,
+        "limitation_present": True,
+        "coverage_status": "source_mapped_final_review_pending",
+        "thesis_use_gate_de": "Draft nutzbar; keine finale Zitation ohne manuelle Source Review.",
     }

@@ -26,6 +26,8 @@ Deterministische Artefakte: `data/results/thesis_h1_summary.csv; data/results/h1
 
 Ausgewaehlte Tabelle/Figur: `T2` / `F1`
 
+Source-Coverage: 10 Links; 4 eindeutige Source-IDs; Coverage-Gaps: 0
+
 ### 1. Methodischer Ansatz
 
 Im Abschnitt `H1: Prognosequalitaet` wird H1 ueber die Methode `method_h1_brier_dm` aufgebaut. Die Methode ist an die Literatur-IDs `lit_brier_001; lit_dm_001; lit_emh_001; zotero_poly_002` und an deterministische Artefakte gebunden: `data/results/thesis_h1_summary.csv`; `data/results/h1_poll_claim_readiness_summary.csv`; `data/results/h1_forecast_quality_synthesis.csv`; `data/results/h1_brier_scores.csv`; plus 5 weitere gemappte Artefakte. Die Interpretation wird noch nicht erweitert; sie bleibt an die Evidence-IDs `interpretation_h1_bounded_advantage; interpretation_h1_broad_claim_not_proven` und an das Source-Review-Gate gebunden.
@@ -44,7 +46,7 @@ Die Ergebnisdarstellung fuer H1 nutzt nur die kuratierten Package-Items T2 (tab:
 
 ### 5. Source-Review- und Zitationsgate
 
-Das Zitationsgate fuer H1 bleibt sichtbar: H1: 10 Source-Review-Zeilen im Ledger; 10 pending; 0 final-ready. Keine finale Zitation ohne abgeschlossene manuelle Review. Vor finaler Zitation Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use je Quelle dokumentieren. Im Handoff stehen 10 Source-Review-Zeilen, davon 10 pending und 0 final-ready. Keine finale Zitation und keine Quellenstatus-Hochstufung erfolgen aus diesem Draft.
+Das Zitationsgate fuer H1 bleibt sichtbar: H1: 10 Source-Review-Zeilen im Ledger; 10 pending; 0 final-ready. Keine finale Zitation ohne abgeschlossene manuelle Review. Vor finaler Zitation Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use je Quelle dokumentieren. Im Handoff stehen 10 Source-Review-Zeilen, davon 10 pending und 0 final-ready. Der Source-Coverage-Audit weist 10 Quellenlinks, 4 eindeutige Source-IDs und 0 Coverage-Gaps fuer dieses Kapitel aus. Keine finale Zitation und keine Quellenstatus-Hochstufung erfolgen aus diesem Draft.
 
 ### 6. Future-Agent-Grenze
 
@@ -66,6 +68,8 @@ Deterministische Artefakte: `data/results/h2_event_window_summary.csv; data/even
 
 Ausgewaehlte Tabelle/Figur: `T3` / `F2`
 
+Source-Coverage: 5 Links; 3 eindeutige Source-IDs; Coverage-Gaps: 0
+
 ### 1. Methodischer Ansatz
 
 Im Abschnitt `H2: Tagesbasierte Ereignisfenster` wird H2 ueber die Methode `method_h2_event_window` aufgebaut. Die Methode ist an die Literatur-IDs `lit_eventstudy_001; lit_emh_001; zotero_poly_001` und an deterministische Artefakte gebunden: `data/results/h2_event_window_summary.csv`; `data/events_timeline_seed.csv`; `data/results/h2_event_window_rows.csv`; `data/results/thesis_h2_summary.csv`; plus 1 weiteres gemapptes Artefakt. Die Interpretation wird noch nicht erweitert; sie bleibt an die Evidence-IDs `interpretation_h2_daily_response` und an das Source-Review-Gate gebunden.
@@ -84,7 +88,7 @@ Die Ergebnisdarstellung fuer H2 nutzt nur die kuratierten Package-Items T3 (tab:
 
 ### 5. Source-Review- und Zitationsgate
 
-Das Zitationsgate fuer H2 bleibt sichtbar: H2: 5 Source-Review-Zeilen im Ledger; 5 pending; 0 final-ready. Keine finale Zitation ohne abgeschlossene manuelle Review. Vor finaler Zitation Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use je Quelle dokumentieren. Im Handoff stehen 5 Source-Review-Zeilen, davon 5 pending und 0 final-ready. Keine finale Zitation und keine Quellenstatus-Hochstufung erfolgen aus diesem Draft.
+Das Zitationsgate fuer H2 bleibt sichtbar: H2: 5 Source-Review-Zeilen im Ledger; 5 pending; 0 final-ready. Keine finale Zitation ohne abgeschlossene manuelle Review. Vor finaler Zitation Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use je Quelle dokumentieren. Im Handoff stehen 5 Source-Review-Zeilen, davon 5 pending und 0 final-ready. Der Source-Coverage-Audit weist 5 Quellenlinks, 3 eindeutige Source-IDs und 0 Coverage-Gaps fuer dieses Kapitel aus. Keine finale Zitation und keine Quellenstatus-Hochstufung erfolgen aus diesem Draft.
 
 ### 6. Future-Agent-Grenze
 
@@ -106,6 +110,8 @@ Deterministische Artefakte: `data/results/h3_wallet_distribution_inventory.json;
 
 Ausgewaehlte Tabelle/Figur: `T4` / `F3`
 
+Source-Coverage: 8 Links; 4 eindeutige Source-IDs; Coverage-Gaps: 0
+
 ### 1. Methodischer Ansatz
 
 Im Abschnitt `H3: Wallet-Timing-Diagnostik` wird H3 ueber die Methode `method_h3_wallet_tiers; method_h3_granger_timing` aufgebaut. Die Methode ist an die Literatur-IDs `zotero_poly_001; zotero_poly_005; zotero_poly_007; lit_granger_001` und an deterministische Artefakte gebunden: `data/results/h3_wallet_distribution_inventory.json`; `data/results/h3_granger_results.csv`; `data/results/thesis_h3_summary.csv`; `data/results/h3_wallet_tiers.csv`; plus 3 weitere gemappte Artefakte. Die Interpretation wird noch nicht erweitert; sie bleibt an die Evidence-IDs `interpretation_h3_top_tier_signal` und an das Source-Review-Gate gebunden.
@@ -124,7 +130,7 @@ Die Ergebnisdarstellung fuer H3 nutzt nur die kuratierten Package-Items T4 (tab:
 
 ### 5. Source-Review- und Zitationsgate
 
-Das Zitationsgate fuer H3 bleibt sichtbar: H3: 8 Source-Review-Zeilen im Ledger; 8 pending; 0 final-ready. Keine finale Zitation ohne abgeschlossene manuelle Review. Vor finaler Zitation Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use je Quelle dokumentieren. Im Handoff stehen 8 Source-Review-Zeilen, davon 8 pending und 0 final-ready. Keine finale Zitation und keine Quellenstatus-Hochstufung erfolgen aus diesem Draft.
+Das Zitationsgate fuer H3 bleibt sichtbar: H3: 8 Source-Review-Zeilen im Ledger; 8 pending; 0 final-ready. Keine finale Zitation ohne abgeschlossene manuelle Review. Vor finaler Zitation Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use je Quelle dokumentieren. Im Handoff stehen 8 Source-Review-Zeilen, davon 8 pending und 0 final-ready. Der Source-Coverage-Audit weist 8 Quellenlinks, 4 eindeutige Source-IDs und 0 Coverage-Gaps fuer dieses Kapitel aus. Keine finale Zitation und keine Quellenstatus-Hochstufung erfolgen aus diesem Draft.
 
 ### 6. Future-Agent-Grenze
 

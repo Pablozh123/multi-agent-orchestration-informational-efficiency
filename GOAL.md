@@ -166,6 +166,9 @@ acceptance_criteria:
   prose blocks for method setup, result statement, interpretation boundary,
   table/figure integration, Source Review citation gate, and future-agent
   boundary without new metrics, raw artifact dumps, or final citation claims.
+- The H1-H2-H3 bounded chapter draft carries source-coverage counts per
+  chapter so each writing pass sees source links, unique source IDs, zero
+  coverage gaps, and final Source Review blockers before prose is expanded.
 - A future agent-pipeline upgrade plan exists so later source-review,
   evidence-drafting, wording, table/figure, advisor, monitor, and bounded MCP
   improvements are documented without activating runtime agents.
@@ -177,7 +180,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: integrate source coverage gates into h1 h2 h3 writing pass
+next_commit: docs: start h1 h2 h3 source-gated writing pass
 
 ## Running Side Goal
 

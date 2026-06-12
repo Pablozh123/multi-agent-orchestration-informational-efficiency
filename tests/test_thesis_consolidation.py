@@ -117,6 +117,10 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert "Source-Gated H1-H2-H3 Drafting Sequence" in project_highlevel_doc
     assert "refreshed Dozentenbericht" in project_highlevel_doc
     assert "Source Structure Inventory und Traceability Audit nur" in project_highlevel_doc
+    assert "Agent protocol rows: 7" in project_highlevel_doc
+    assert "Deferred protocol rows: 1" in project_highlevel_doc
+    assert "Runtime-agent rows: 0" in project_highlevel_doc
+    assert "refreshed safety case" in project_highlevel_doc
     assert core["bounded_interpretation"].str.len().gt(0).all()
     assert package["main_limitation"].str.len().gt(0).all()
 
@@ -355,7 +359,10 @@ def test_project_highlevel_view_keeps_paused_and_deferred_boundaries(tmp_path: P
     assert swiss["status"] == "descriptive_pending_result"
     assert "official 14 june 2026 vote result" in swiss["current_decision"].lower()
     assert agents["status"] == "documentation_only_deferred"
+    assert "7 assistance protocol rows" in agents["current_decision"]
+    assert "1 deferred" in agents["current_decision"]
     assert "llm_audit_log" in agents["next_gate"]
+    assert "refreshed safety case" in agents["next_gate"]
     assert "no runtime agents" in agents["guardrail"].lower()
     advisor = view[view["view_id"] == "project_09_advisor_iteration"].iloc[0]
     assert "source-gated h1-h2-h3 drafting sequence" in advisor["current_decision"].lower()
@@ -370,6 +377,14 @@ def test_project_highlevel_view_keeps_paused_and_deferred_boundaries(tmp_path: P
             "documentation_only_deferred",
         }
     )
+    evidence_ids = set(pd.read_csv(result.evidence_map_path)["evidence_id"])
+    workstream_ids = set(pd.read_csv(result.next_work_plan_path)["workstream_id"])
+    references = {
+        reference
+        for value in view["evidence_or_workstream_ids"].astype(str)
+        for reference in _split_sources(value)
+    }
+    assert references.issubset(evidence_ids | workstream_ids)
 
 
 def test_writing_blueprint_keeps_front_matter_method_focused(tmp_path: Path) -> None:

@@ -179,7 +179,7 @@ Empfohlene Darstellung: Tabelle `data/results/thesis_h3_summary.csv` und Abbildu
 
 Der Monitor-Prototyp ist nuetzlich als Workflow- und Appendix-Material, aber nicht als empirischer Beweis. Kernwert: 3 Review-Faelle; 1 hoch; 2 mittel; source_check_pending=3. Die zugehoerigen Artefakte bleiben reviewgebunden und sind keine thesis-facing Evidenz fuer Ursachen, Regelverstoesse, Marktineffizienz, Handelbarkeit oder Gewinne.
 
-Der Schweizer Abstimmungstrack bleibt bis zum offiziellen Resultat beschreibend. Kernwert: 43 Snapshots; aktuell SRG/gfs.bern Polymarket-Yes 21.5%, Poll-Yes 45.0%, Raw-Gap -23.5 pp. Die aktuelle Figur `data/results/swiss_referendum_10mio_efficiency.png` darf als laufender Poll-Proxy-Vergleich genutzt werden, aber nicht als finaler Effizienzbefund. Poll-Anteile sind keine echten Modellwahrscheinlichkeiten.
+Der Schweizer Abstimmungstrack bleibt bis zum offiziellen Resultat beschreibend. Kernwert: 48 Snapshots; aktuell SRG/gfs.bern Polymarket-Yes 26.0%, Poll-Yes 45.0%, Raw-Gap -19.0 pp. Die aktuelle Figur `data/results/swiss_referendum_10mio_efficiency.png` darf als laufender Poll-Proxy-Vergleich genutzt werden, aber nicht als finaler Effizienzbefund. Poll-Anteile sind keine echten Modellwahrscheinlichkeiten.
 
 ## 8. Diskussion und Fazit
 

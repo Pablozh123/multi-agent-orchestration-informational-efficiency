@@ -277,7 +277,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: refresh goal completion audit after safety case
+next_commit: docs: refresh highlevel evidence mapping after swiss update
 
 ## Running Side Goal
 

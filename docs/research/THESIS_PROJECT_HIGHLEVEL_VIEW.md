@@ -18,6 +18,14 @@ This generated status matrix gives the project-level answer to what happens next
 - Paused appendix rows: 1
 - Documentation-only rows: 1
 
+## Future Agent Boundary
+
+- Agent protocol rows: 7
+- Documentation-only protocol rows: 6
+- Deferred protocol rows: 1
+- Runtime-agent rows: 0
+- Activation remains blocked until a separate approved goal, bounded inputs, tests, llm_audit_log integration, and a refreshed safety case exist.
+
 ## Project Matrix
 
 | view_id | project_layer | status | role_in_thesis | current_decision | next_gate | guardrail | thesis_use |
@@ -30,7 +38,7 @@ This generated status matrix gives the project-level answer to what happens next
 | project_05_table_figure_package | Compact tables and figures | thesis_facing_package | Keeps the thesis readable by selecting a small number of strong tables and figures. | Use 5 core tables and 4 core figures, with generated captions and limitation notes. | Integrate the selected package into draft chapters and appendix placement. | Do not add raw result artifacts to the core package without updating evidence map and chapter plan. | main_text_and_appendix |
 | project_06_monitor_review_access | Monitor prototype and review access | paused_appendix_only | Shows a read-only prototype and review workflow only if kept in appendix or discussion. | Review access remains paused; continue with advisor feedback, source review, and draft writing instead of access work. | Human source review of monitor cases and a separate approved goal before any renewed access work. | No wallet-address exposure by default, no raw monitor rows, no order or trading paths, and no causal claims. | appendix_or_discussion_only |
 | project_07_swiss_referendum | Swiss referendum side track | descriptive_pending_result | Provides a bounded side comparison until the official vote outcome can be mapped. | Keep the Swiss material descriptive until the official 14 June 2026 vote result is available. | Regenerate Swiss artifacts after official result mapping. | Poll shares are not win probabilities and cannot support final efficiency claims before result mapping. | discussion_pending_final_result |
-| project_08_future_agents | Future agent-assisted pipeline | documentation_only_deferred | Outlook on how bounded assistants could support source review and wording checks later. | Keep 6 roadmap stages and 6 documentation-only assistance rows inactive. | Separate approved goal with bounded prompts, tests, and llm_audit_log integration. | No runtime agents, no MCP tools, no model routing, no raw table access, and no LLM metric calculation now. | future_work_only |
+| project_08_future_agents | Future agent-assisted pipeline | documentation_only_deferred | Outlook on how bounded assistants could support source review and wording checks later. | Keep 6 roadmap stages and 7 assistance protocol rows inactive (6 documentation-only, 1 deferred). Treat later upgrade and safety-case artifacts only as Future-Work controls. | Separate approved goal with bounded prompts, tests, llm_audit_log integration, and a refreshed safety case. | No runtime agents, no MCP tools, no model routing, no raw table access, and no LLM metric calculation now. | future_work_only |
 | project_09_advisor_iteration | Advisor communication | project_management_ready | Gives the advisor a concise written project view and decision points. | Use the Dozentenbericht with the Source-Gated H1-H2-H3 Drafting Sequence to align on bounded H1 wording, source-review depth, Swiss placement, and appendix scope. | Advisor feedback is received, logged in DOZENTEN_FEEDBACK_LOG, and translated into the next small commit plan. | Do not expand empirical scope or reactivate review access before the current deterministic thesis core is written. | advisor_update |
 
 ## Use Rule

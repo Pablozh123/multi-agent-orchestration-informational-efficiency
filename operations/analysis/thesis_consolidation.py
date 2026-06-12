@@ -505,7 +505,12 @@ def generate_thesis_consolidation(
         agent_assistance_protocol=agent_assistance_protocol,
         next_work_plan=next_work_plan,
     )
-    _validate_project_highlevel_view(project_highlevel_view, repo_root=repo_root)
+    _validate_project_highlevel_view(
+        project_highlevel_view,
+        repo_root=repo_root,
+        evidence_map=evidence_map,
+        next_work_plan=next_work_plan,
+    )
     source_gated_writing_pass = _read_optional_source_gated_writing_pass(
         results_dir / SOURCE_GATED_WRITING_PASS_INPUT,
         repo_root=repo_root,
@@ -1832,6 +1837,10 @@ def build_project_highlevel_view(
     agent_documentation_rows = int(
         (agent_assistance_protocol["activation_status"] == "future_documentation_only").sum()
     )
+    agent_deferred_rows = int(
+        (agent_assistance_protocol["activation_status"] == "future_deferred").sum()
+    )
+    agent_protocol_rows = int(len(agent_assistance_protocol))
     agent_stage_rows = int(len(agent_pipeline))
 
     return pd.DataFrame(
@@ -1870,7 +1879,7 @@ def build_project_highlevel_view(
                 ],
                 evidence_or_workstream_ids=[
                     "interpretation_h1_bounded_advantage",
-                    "interpretation_h1_broad_claim_boundary",
+                    "interpretation_h1_broad_claim_not_proven",
                     "work_03_h1_results",
                 ],
                 current_decision="Write H1 as bounded support in compatible poll-comparison scopes, not as universal Polymarket superiority.",
@@ -1910,7 +1919,8 @@ def build_project_highlevel_view(
                 ],
                 evidence_or_workstream_ids=[
                     "method_h3_wallet_tiers",
-                    "interpretation_h3_predictive_diagnostic",
+                    "method_h3_granger_timing",
+                    "interpretation_h3_top_tier_signal",
                     "work_04_h2_h3_results",
                 ],
                 current_decision="Use top-tier timing diagnostics as predictive pattern evidence, not causal or misconduct evidence.",
@@ -1975,7 +1985,7 @@ def build_project_highlevel_view(
                     "data/results/swiss_referendum_10mio_efficiency.png",
                 ],
                 evidence_or_workstream_ids=[
-                    "interpretation_swiss_descriptive_pending_result",
+                    "interpretation_swiss_gap_pending",
                     "work_07_swiss_result_gate",
                 ],
                 current_decision="Keep the Swiss material descriptive until the official 14 June 2026 vote result is available.",
@@ -1996,8 +2006,13 @@ def build_project_highlevel_view(
                     "future_agent_pipeline_guarded",
                     "work_08_agent_outlook",
                 ],
-                current_decision=f"Keep {agent_stage_rows} roadmap stages and {agent_documentation_rows} documentation-only assistance rows inactive.",
-                next_gate="Separate approved goal with bounded prompts, tests, and llm_audit_log integration.",
+                current_decision=(
+                    f"Keep {agent_stage_rows} roadmap stages and {agent_protocol_rows} "
+                    f"assistance protocol rows inactive ({agent_documentation_rows} "
+                    f"documentation-only, {agent_deferred_rows} deferred). Treat later "
+                    "upgrade and safety-case artifacts only as Future-Work controls."
+                ),
+                next_gate="Separate approved goal with bounded prompts, tests, llm_audit_log integration, and a refreshed safety case.",
                 guardrail="No runtime agents, no MCP tools, no model routing, no raw table access, and no LLM metric calculation now.",
                 thesis_use="future_work_only",
             ),
@@ -2708,7 +2723,13 @@ def _validate_next_work_plan(plan: pd.DataFrame) -> None:
         raise ValueError("Next work plan missing guardrail terms: " + ", ".join(missing_terms))
 
 
-def _validate_project_highlevel_view(frame: pd.DataFrame, *, repo_root: Path) -> None:
+def _validate_project_highlevel_view(
+    frame: pd.DataFrame,
+    *,
+    repo_root: Path,
+    evidence_map: pd.DataFrame,
+    next_work_plan: pd.DataFrame,
+) -> None:
     _require_columns(frame, PROJECT_HIGHLEVEL_VIEW_COLUMNS, "project highlevel view")
     if frame["view_id"].duplicated().any():
         raise ValueError("Project highlevel view contains duplicate view_id values.")
@@ -2752,6 +2773,18 @@ def _validate_project_highlevel_view(frame: pd.DataFrame, *, repo_root: Path) ->
     missing_ids = sorted(required_ids.difference(ids))
     if missing_ids:
         raise ValueError(f"Project highlevel view missing required rows: {missing_ids}")
+    known_evidence_ids = set(evidence_map["evidence_id"].astype(str))
+    known_workstream_ids = set(next_work_plan["workstream_id"].astype(str))
+    unknown_references: list[str] = []
+    for row in frame.to_dict(orient="records"):
+        for reference in _split_list(str(row["evidence_or_workstream_ids"])):
+            if reference not in known_evidence_ids and reference not in known_workstream_ids:
+                unknown_references.append(f"{row['view_id']}:{reference}")
+    if unknown_references:
+        raise ValueError(
+            "Project highlevel view references unknown evidence/workstream ids: "
+            + ", ".join(sorted(unknown_references))
+        )
     joined = "\n".join(frame.astype(str).agg(" ".join, axis=1).tolist()).lower()
     required_terms = (
         "review access remains paused",
@@ -3457,6 +3490,8 @@ def _render_project_highlevel_view_doc(
         ]
     ]
     counts = metadata["project_highlevel_view_counts"]
+    outputs = metadata["outputs"]
+    agent_counts = metadata["agent_assistance_protocol_counts"]
     return (
         "# Thesis Project Highlevel View\n\n"
         "This generated status matrix gives the project-level answer to what "
@@ -3482,6 +3517,14 @@ def _render_project_highlevel_view_doc(
         f"- Thesis-facing empirical rows: {counts['thesis_facing_rows']}\n"
         f"- Paused appendix rows: {counts['paused_rows']}\n"
         f"- Documentation-only rows: {counts['documentation_only_rows']}\n\n"
+        "## Future Agent Boundary\n\n"
+        f"- Agent protocol rows: {outputs['agent_assistance_protocol_rows']}\n"
+        f"- Documentation-only protocol rows: {agent_counts.get('future_documentation_only', 0)}\n"
+        f"- Deferred protocol rows: {agent_counts.get('future_deferred', 0)}\n"
+        "- Runtime-agent rows: 0\n"
+        "- Activation remains blocked until a separate approved goal, bounded "
+        "inputs, tests, llm_audit_log integration, and a refreshed safety case "
+        "exist.\n\n"
         "## Project Matrix\n\n"
         + _markdown_table(display)
         + "\n\n"

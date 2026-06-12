@@ -982,7 +982,7 @@ Current implemented consolidation:
   methods, 4 thesis-facing interpretations, 23 H1-H2-H3 Source-Links, 31
   total method/interpretation Source-Links including Monitor/Swiss, 23 open
   Manual Source Review rows, 5 core tables, 4 core figures, the refreshed
-  Swiss gate with 45 running snapshot rows, DOCX-QA, bounded read-only access,
+  Swiss gate with 48 running snapshot rows, DOCX-QA, bounded read-only access,
   max 50 rows, `llm_audit_log`, and 0 active runtime rows.
 - `data/results/thesis_consolidation_index.csv` and
   `docs/project/THESIS_CONSOLIDATION_INDEX.md` index the current

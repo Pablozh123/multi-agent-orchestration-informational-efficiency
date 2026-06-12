@@ -66,6 +66,7 @@ def generate_goal_completion_audit(
     source_structure = _read_csv(results_dir / "thesis_source_structure_inventory.csv")
     method_traceability = _read_csv(results_dir / "thesis_method_interpretation_traceability.csv")
     result_package_traceability = _read_csv(results_dir / "thesis_result_package_traceability.csv")
+    agent_control = _read_csv(results_dir / "thesis_agent_pipeline_control_audit.csv")
     handoff_package = _read_csv(results_dir / "thesis_advisor_handoff_package.csv")
     handoff_note = _read_csv(results_dir / "thesis_advisor_handoff_note.csv")
     feedback_log = _read_csv(results_dir / "thesis_advisor_feedback_log_template.csv")
@@ -79,6 +80,7 @@ def generate_goal_completion_audit(
         source_structure=source_structure,
         method_traceability=method_traceability,
         result_package_traceability=result_package_traceability,
+        agent_control=agent_control,
         handoff_package=handoff_package,
         handoff_note=handoff_note,
         feedback_log=feedback_log,
@@ -109,6 +111,7 @@ def build_goal_completion_audit(
     source_structure: pd.DataFrame,
     method_traceability: pd.DataFrame,
     result_package_traceability: pd.DataFrame,
+    agent_control: pd.DataFrame,
     handoff_package: pd.DataFrame,
     handoff_note: pd.DataFrame,
     feedback_log: pd.DataFrame,
@@ -146,6 +149,11 @@ def build_goal_completion_audit(
         result_package_traceability,
         ("package_type", "include_in_core_package", "package_traceability_status"),
         "result package traceability",
+    )
+    _require_columns(
+        agent_control,
+        ("control_id", "current_activation_state"),
+        "agent pipeline control audit",
     )
     _require_columns(handoff_package, ("deliverable_id", "path"), "handoff package")
     _require_columns(handoff_note, ("section_id",), "handoff note")
@@ -201,6 +209,12 @@ def build_goal_completion_audit(
     ]
     traceable_core_tables = int((traceable_core_package["package_type"] == "table").sum())
     traceable_core_figures = int((traceable_core_package["package_type"] == "figure").sum())
+    agent_control_rows = int(len(agent_control))
+    agent_documentation_only = int(
+        (agent_control["current_activation_state"] == "future_documentation_only").sum()
+    )
+    agent_deferred = int((agent_control["current_activation_state"] == "future_deferred").sum())
+    agent_active = int(agent_control["current_activation_state"].astype(str).str.contains("active").sum())
 
     rows = [
         _audit_row(
@@ -287,8 +301,12 @@ def build_goal_completion_audit(
             audit_id="goal_audit_08_future_agents",
             goal_requirement_de="Agentenpipeline ist nur Highlevel-Future-Work.",
             current_status="deferred_future_work_only",
-            evidence_artifacts="data/results/thesis_agent_assistance_protocol.csv; docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md",
-            key_evidence_de="Agenten sind documentation-only; llm_audit_log, bounded prompts und Tests bleiben Vorbedingungen.",
+            evidence_artifacts="data/results/thesis_agent_assistance_protocol.csv; docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md; data/results/thesis_agent_pipeline_control_audit.csv; docs/project/THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md",
+            key_evidence_de=(
+                f"Agent Control: {agent_control_rows} Rollen; "
+                f"documentation-only: {agent_documentation_only}; deferred: {agent_deferred}; "
+                f"aktiv: {agent_active}. llm_audit_log, bounded prompts und Tests bleiben Vorbedingungen."
+            ),
             remaining_gap_de="Keine Aktivierung im aktuellen Goal erlaubt.",
             next_action_de="Nur Future-Work-Abschnitt schreiben, keine Runtime-Agenten implementieren.",
         ),

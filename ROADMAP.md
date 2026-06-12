@@ -661,6 +661,12 @@ Current implemented consolidation:
   into seven future-work handoff rows: six documentation-only assistance ideas
   and one deferred bounded MCP interface, all blocked until a separate goal,
   tests, bounded inputs, and `llm_audit_log` exist.
+- `data/results/thesis_agent_pipeline_control_audit.csv` and
+  `docs/project/THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md` turn the future-agent
+  ideas into seven activation-control rows: six documentation-only roles, one
+  deferred interface, and zero active runtime rows. Each row keeps max 50 rows
+  by default, `llm_audit_log`, bounded inputs, blocked actions, no MCP/runtime
+  activation, no LLM metrics, and no trading paths explicit.
 - `data/results/thesis_next_work_plan.csv` and
   `docs/research/THESIS_NEXT_WORK_PLAN.md` order the remaining thesis work into
   ten guardrail-bound workstreams: source review, front-matter/method chapters,

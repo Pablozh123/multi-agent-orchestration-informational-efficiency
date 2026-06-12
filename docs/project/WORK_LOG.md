@@ -9730,3 +9730,48 @@ Verification:
   -> PASS, regenerated 10 high-level project rows.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 537 passed in 51.97s.
+
+## 2026-06-12 - Agent pipeline control audit
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Turned the future agent ideas into a guarded control audit without
+  implementing, activating, or invoking runtime agents, MCP tools, model
+  routing, or LLM interpretation.
+
+Changes:
+
+- Added `operations/project/build_agent_pipeline_control_audit.py`.
+- Generated `data/results/thesis_agent_pipeline_control_audit.csv`.
+- Added `docs/project/THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md`.
+- Added `tests/test_agent_pipeline_control_audit.py`.
+- Updated the goal-completion audit and consolidation index to include the
+  agent pipeline control audit.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Agent control rows: 7.
+- Documentation-only rows: 6.
+- Deferred rows: 1.
+- Active rows: 0.
+- Every future role keeps bounded inputs/outputs, max 50 rows by default,
+  `llm_audit_log`, separate approved goal, blocked actions, no runtime agents,
+  no MCP activation, no model routing, no LLM metrics, no raw-data prompt, no
+  wallet-address exposure by default, and no trading paths explicit.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_agent_pipeline_control_audit.py operations/project/build_thesis_goal_completion_audit.py operations/project/build_thesis_consolidation_index.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_agent_pipeline_control_audit.py tests/test_thesis_goal_completion_audit.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 6 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_agent_pipeline_control_audit`
+  -> PASS, generated 7 control rows and 0 active rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
+  -> PASS, generated 10 audit rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 26 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 539 passed in 52.92s.

@@ -27,6 +27,8 @@ def test_generate_goal_completion_audit_writes_remaining_gates(tmp_path: Path) -
     assert "thesis_source_structure_inventory.csv" in doc
     assert "thesis_method_interpretation_traceability.csv" in doc
     assert "thesis_result_package_traceability.csv" in doc
+    assert "thesis_agent_pipeline_control_audit.csv" in doc
+    assert "THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md" in doc
     assert "Source Review" in doc
     assert chr(223) not in doc
 
@@ -50,6 +52,7 @@ def test_goal_completion_audit_keeps_open_gates_visible(tmp_path: Path) -> None:
     assert "source structure: 1 pdf, 1 html, 1 external-only zeilen" in joined
     assert "traceability: 1 methoden, 1 interpretationen, 0 gaps" in joined
     assert "traceability-kernpaket: 5 tabellen, 4 figuren, 0 gaps" in joined
+    assert "agent control: 2 rollen; documentation-only: 1; deferred: 1; aktiv: 0" in joined
 
 
 def _write_fixture(root: Path) -> None:
@@ -150,6 +153,18 @@ def _write_fixture(root: Path) -> None:
             for _ in range(4)
         ]
     ).to_csv(results / "thesis_result_package_traceability.csv", index=False)
+    pd.DataFrame(
+        [
+            {
+                "control_id": "agent_control_01",
+                "current_activation_state": "future_documentation_only",
+            },
+            {
+                "control_id": "agent_control_02",
+                "current_activation_state": "future_deferred",
+            },
+        ]
+    ).to_csv(results / "thesis_agent_pipeline_control_audit.csv", index=False)
 
     pd.DataFrame(
         [
@@ -185,6 +200,7 @@ def _write_fixture(root: Path) -> None:
         "data/results/monitor_anomaly_review_summary.csv",
         "data/results/thesis_project_highlevel_view.csv",
         "data/results/thesis_agent_assistance_protocol.csv",
+        "docs/project/THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md",
     ]:
         path = root / relative
         path.parent.mkdir(parents=True, exist_ok=True)

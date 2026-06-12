@@ -198,7 +198,15 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine Aktivierung ohne separates Goal, Tests, bounded inputs und llm_audit_log.",
         ),
         _index_row(
-            artifact_id="index_16_advisor_handoff_package",
+            artifact_id="index_16_agent_pipeline_control",
+            artifact_type="agent_pipeline_control",
+            path="docs/project/THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md; data/results/thesis_agent_pipeline_control_audit.csv",
+            purpose_de="Kontrollaudit fuer spaetere Agentenrollen ohne Runtime-Aktivierung.",
+            use_now_de="Zeigt, wie Agenten spaeter Source Review, Drafting und Wording pruefen koennten.",
+            gate_or_limit_de="0 aktive Zeilen; keine Runtime-Agenten, kein MCP, kein Model Routing und keine LLM-Metriken.",
+        ),
+        _index_row(
+            artifact_id="index_17_advisor_handoff_package",
             artifact_type="advisor_handoff",
             path="docs/project/THESIS_ADVISOR_HANDOFF_PACKAGE.md; data/results/thesis_advisor_handoff_package.csv",
             purpose_de="Geordnete Liste der Dateien fuer Dozentenabgabe und Abstimmung.",
@@ -206,7 +214,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Handoff-Uebersicht, kein neues empirisches Resultat.",
         ),
         _index_row(
-            artifact_id="index_17_advisor_handoff_note",
+            artifact_id="index_18_advisor_handoff_note",
             artifact_type="advisor_handoff_note",
             path="docs/project/DOZENTEN_UEBERGABE_TEXT.md; data/results/thesis_advisor_handoff_note.csv",
             purpose_de="Kurzer Mail- oder Chat-Text fuer die Dozentenuebergabe.",
@@ -214,7 +222,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Zwischenstand, kein finales Abgabe- oder Quellenreview-Signal.",
         ),
         _index_row(
-            artifact_id="index_18_advisor_feedback_log",
+            artifact_id="index_19_advisor_feedback_log",
             artifact_type="advisor_feedback_log",
             path="docs/project/DOZENTEN_FEEDBACK_LOG.md; data/results/thesis_advisor_feedback_log_template.csv",
             purpose_de="Pending-Log fuer Dozentenfeedback, Entscheidungen und Folgecommits.",
@@ -222,7 +230,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Alle Eintraege bleiben pending, bis der Dozent Feedback gegeben hat.",
         ),
         _index_row(
-            artifact_id="index_19_submission_readiness",
+            artifact_id="index_20_submission_readiness",
             artifact_type="submission_readiness",
             path="docs/project/THESIS_SUBMISSION_READINESS_BOARD.md; data/results/thesis_submission_readiness_board.csv",
             purpose_de="Gate-Board fuer draft-ready, final-blocked und deferred Thesis-Schritte.",
@@ -230,7 +238,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Finale Abgabe bleibt blockiert, solange Source Review, Swiss-Gate oder Render-QA offen sind.",
         ),
         _index_row(
-            artifact_id="index_20_drafting_sequence",
+            artifact_id="index_21_drafting_sequence",
             artifact_type="drafting_sequence",
             path="docs/project/THESIS_DRAFTING_SEQUENCE.md; data/results/thesis_drafting_sequence.csv",
             purpose_de="Konkrete Schreibreihenfolge aus Work Plan, Readiness Board und Kapitelbindungen.",
@@ -238,7 +246,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Trennt Draft-Arbeit von Source Review, Swiss-Gate, DOCX-Render-QA und Future-Work-Agenten.",
         ),
         _index_row(
-            artifact_id="index_21_source_access_audit",
+            artifact_id="index_22_source_access_audit",
             artifact_type="source_access_audit",
             path="docs/project/THESIS_SOURCE_ACCESS_AUDIT.md; data/results/thesis_source_access_audit.csv",
             purpose_de="Zugriffs-Audit fuer lokale und externe Quellen vor manueller Quellenpruefung.",
@@ -246,7 +254,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine Quellenstatus-Hochstufung, keine automatischen Page Notes und keine finale Zitation.",
         ),
         _index_row(
-            artifact_id="index_22_source_structure_inventory",
+            artifact_id="index_23_source_structure_inventory",
             artifact_type="source_structure_inventory",
             path="docs/project/THESIS_SOURCE_STRUCTURE_INVENTORY.md; data/results/thesis_source_structure_inventory.csv",
             purpose_de="Lokales Strukturinventar fuer PDF/HTML-Quellen vor manueller Quellenpruefung.",
@@ -254,7 +262,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine Inhaltsinterpretation, keine Quellenstatus-Hochstufung und keine thesis-facing Claims.",
         ),
         _index_row(
-            artifact_id="index_23_traceability_audit",
+            artifact_id="index_24_traceability_audit",
             artifact_type="traceability_audit",
             path="docs/project/THESIS_TRACEABILITY_AUDIT.md; data/results/thesis_method_interpretation_traceability.csv; data/results/thesis_result_package_traceability.csv",
             purpose_de="Draft-Kontrolle fuer Methoden, Interpretationen, Tabellen und Figuren.",
@@ -262,7 +270,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine finalen Zitationen ohne manuelle Quellenreview und keine neuen Kennzahlen.",
         ),
         _index_row(
-            artifact_id="index_24_goal_completion_audit",
+            artifact_id="index_25_goal_completion_audit",
             artifact_type="goal_completion_audit",
             path="docs/project/THESIS_GOAL_COMPLETION_AUDIT.md; data/results/thesis_goal_completion_audit.csv",
             purpose_de="Belegbarer Audit des aktiven Goals mit erreichten Punkten und offenen Gates.",
@@ -270,7 +278,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Kein Zielabschluss, solange Source Review, Swiss Resultat-Gate oder DOCX-Render-QA offen sind.",
         ),
         _index_row(
-            artifact_id="index_25_status_and_log",
+            artifact_id="index_26_status_and_log",
             artifact_type="project_control",
             path="STATUS.md; docs/project/WORK_LOG.md",
             purpose_de="Automatisierter Projektstatus und append-only Arbeitslog.",
@@ -356,7 +364,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Advisor Handoff Package, Advisor Handoff Note, Advisor Feedback Log, "
         "Submission Readiness Board, Drafting Sequence, Execution Checklist, "
         "Chapter Source Bindings, Source Review Execution, Source Access "
-        "Audit, Source Structure Inventory, Traceability Audit, Goal Completion Audit, Agent Future-Work Handoff, Tabellen/Figuren und "
+        "Audit, Source Structure Inventory, Traceability Audit, Goal Completion Audit, Agent Future-Work Handoff, Agent Pipeline Control Audit, Tabellen/Figuren und "
         "Future-Work-Agenten relevant sind.\n\n"
         "## Counts\n\n"
         f"- Indexed artifacts: {len(index)}\n\n"
@@ -375,7 +383,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Audit als BA-Schreibkontrolle. Nutze das Goal Completion Audit als Stop- und "
         "Weiterarbeitskontrolle. Nutze danach Execution Checklist, Source "
         "Worksheet, Chapter Source Bindings, Source Review Execution, Agent "
-        "Future-Work Handoff, Wording Guard und Next Work Plan fuer das "
+        "Future-Work Handoff, Agent Pipeline Control Audit, Wording Guard und Next Work Plan fuer das "
         "Schreiben. "
         "Review-Access, Runtime-Agenten, MCP, Model Routing, Rohdatenzugriff "
         "und Trading-Pfade bleiben deaktiviert.\n"

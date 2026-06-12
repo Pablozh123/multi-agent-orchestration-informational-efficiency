@@ -19,9 +19,9 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     doc = result.docs_path.read_text(encoding="utf-8")
 
     assert tuple(index.columns) == INDEX_COLUMNS
-    assert result.index_rows == 25
+    assert result.index_rows == 26
     assert "Thesis Consolidation Index" in doc
-    assert "Indexed artifacts: 25" in doc
+    assert "Indexed artifacts: 26" in doc
     assert "dozentenbericht_ba_thesis.docx" in doc
     assert "THESIS_ADVISOR_HANDOFF_PACKAGE.md" in doc
     assert "DOZENTEN_UEBERGABE_TEXT.md" in doc
@@ -36,6 +36,7 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     assert "THESIS_CHAPTER_SOURCE_BINDINGS.md" in doc
     assert "THESIS_SOURCE_REVIEW_EXECUTION.md" in doc
     assert "THESIS_AGENT_FUTURE_WORK_HANDOFF.md" in doc
+    assert "THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md" in doc
     assert "THESIS_WORDING_GUARD.md" in doc
     assert chr(223) not in doc
 
@@ -56,6 +57,7 @@ def test_thesis_consolidation_index_keeps_deferred_boundaries(tmp_path: Path) ->
     assert "source_access_audit" in joined
     assert "source_structure_inventory" in joined
     assert "traceability_audit" in joined
+    assert "agent_pipeline_control" in joined
     assert "goal_completion_audit" in joined
 
 
@@ -80,6 +82,8 @@ def _write_fixture(root: Path) -> None:
         "docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md",
         "docs/project/THESIS_AGENT_FUTURE_WORK_HANDOFF.md",
         "data/results/thesis_agent_future_work_handoff.csv",
+        "docs/project/THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md",
+        "data/results/thesis_agent_pipeline_control_audit.csv",
         "docs/project/THESIS_ADVISOR_HANDOFF_PACKAGE.md",
         "data/results/thesis_advisor_handoff_package.csv",
         "docs/project/DOZENTEN_UEBERGABE_TEXT.md",

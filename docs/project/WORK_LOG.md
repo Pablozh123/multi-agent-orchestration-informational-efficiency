@@ -11199,3 +11199,53 @@ Verification:
   -> PASS, no Swiss sharp-s found.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `576 passed in 61.37s`, clean after the content commit.
+
+## 2026-06-12 - H1 manual source-review follow-up started
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Started the first concrete H1 source-review slice without activating
+  Review-Access, runtime agents, MCP, model routing, LLM metrics, or trading
+  paths.
+
+Changes:
+
+- Added `operations/project/build_h1_manual_source_review_followup.py`.
+- Generated `data/results/thesis_h1_manual_source_review_followup.csv` and
+  `docs/project/THESIS_H1_MANUAL_SOURCE_REVIEW_FOLLOWUP.md`.
+- Updated the thesis consolidation index so the H1 follow-up is part of the
+  thesis-ready navigation package.
+- Added tests for the H1 follow-up and the expanded consolidation index.
+- Updated `GOAL.md` and `ROADMAP.md` so the next recommended content step is
+  the H2 manual source-review follow-up.
+
+Key output:
+
+- H1 follow-up rows: 10.
+- Unique H1 sources: 4.
+- Method rows: 4.
+- Interpretation rows: 6.
+- External locator rows: 7.
+- Local PDF rows: 3.
+- Pending rows: 10.
+- Final-ready rows: 0.
+- Consolidation index rows: 44.
+- Latest content commit:
+  `d4fe5ba docs: start h1 manual source review follow-up`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_h1_manual_source_review_followup.py operations\project\build_thesis_consolidation_index.py tests\test_h1_manual_source_review_followup.py tests\test_thesis_consolidation_index.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_manual_source_review_followup.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_h1_manual_source_review_followup`
+  -> PASS, generated follow-up CSV/Markdown.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, index rows now 44.
+- `git diff --check` -> PASS.
+- `rg -n "ß" docs\project\THESIS_H1_MANUAL_SOURCE_REVIEW_FOLLOWUP.md data\results\thesis_h1_manual_source_review_followup.csv operations\project\build_h1_manual_source_review_followup.py tests\test_h1_manual_source_review_followup.py`
+  -> PASS, no Swiss sharp-s found.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `578 passed in 66.91s`, clean after the content commit.

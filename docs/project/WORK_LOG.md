@@ -12242,3 +12242,54 @@ Verification:
 - `git diff --check` -> PASS.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `597 passed in 65.58s (0:01:05)`.
+
+## 2026-06-13 - Ledger Citation Gate Summary
+
+Goal context:
+
+- Continued active goal `goal-thesis-consolidation-001`.
+- Worked on the scoped commit:
+  `docs: add ledger citation gate summary`.
+- Kept the work deterministic and structural: no source-content reading, no
+  Claim-Support decision, no final citation, no source-status promotion, and
+  no runtime-agent activation.
+
+Changes:
+
+- Added `operations.project.build_ledger_citation_gate_summary`.
+- Generated `data/results/thesis_ledger_citation_gate_summary.csv`.
+- Generated `docs/project/THESIS_LEDGER_CITATION_GATE_SUMMARY.md`.
+- Extended the consolidation index to 54 artifacts.
+- Updated `GOAL.md` and `ROADMAP.md` with the H1/H2/H3/TOTAL citation-gate
+  control point.
+- Committed the content slice as
+  `159da43 docs: add ledger citation gate summary`.
+
+Key output:
+
+- Summary rows: 4.
+- Ledger rows: 23.
+- Unique sources: 9.
+- Method rows: 12.
+- Interpretation rows: 11.
+- Deterministic artifact rows: 23.
+- Blocked pending citation rows: 23.
+- Page-note missing rows: 23.
+- Claim-support pending rows: 23.
+- Blocked-wording pending rows: 23.
+- Citation-use pending rows: 23.
+- Final citation ready rows: 0.
+- Source-status change rows: 0.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_ledger_citation_gate_summary.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_ledger_citation_gate_summary.py tests\test_source_review_progress_ledger.py tests\test_h1_h2_h3_decision_queue_ledger_alignment.py tests\test_h1_h2_h3_manual_source_review_execution_pass.py tests\test_source_review_progress_protocol.py tests\test_thesis_final_gate_board.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 16 passed.
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_ledger_citation_gate_summary.py operations\project\build_source_review_progress_ledger.py operations\project\build_h1_h2_h3_decision_queue_ledger_alignment.py operations\project\build_thesis_consolidation_index.py tests\test_ledger_citation_gate_summary.py tests\test_thesis_consolidation_index.py`
+  -> PASS.
+- `rg -n "<sharp-s>" ...` on touched files -> PASS, no matches.
+- `git diff --check` -> PASS.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `600 passed in 64.82s (0:01:04)`.

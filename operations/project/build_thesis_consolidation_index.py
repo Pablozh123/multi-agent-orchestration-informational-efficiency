@@ -214,7 +214,15 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Finale Abgabe bleibt blockiert, solange Source Review, Swiss-Gate oder Render-QA offen sind.",
         ),
         _index_row(
-            artifact_id="index_18_status_and_log",
+            artifact_id="index_18_drafting_sequence",
+            artifact_type="drafting_sequence",
+            path="docs/project/THESIS_DRAFTING_SEQUENCE.md; data/results/thesis_drafting_sequence.csv",
+            purpose_de="Konkrete Schreibreihenfolge aus Work Plan, Readiness Board und Kapitelbindungen.",
+            use_now_de="Als naechste Arbeitsreihenfolge nach Dozenten-Handoff und Highlevel-View nutzen.",
+            gate_or_limit_de="Trennt Draft-Arbeit von Source Review, Swiss-Gate, DOCX-Render-QA und Future-Work-Agenten.",
+        ),
+        _index_row(
+            artifact_id="index_19_status_and_log",
             artifact_type="project_control",
             path="STATUS.md; docs/project/WORK_LOG.md",
             purpose_de="Automatisierter Projektstatus und append-only Arbeitslog.",
@@ -297,10 +305,10 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "# Thesis Consolidation Index\n\n"
         "Dieser Index zeigt, welche Artefakte fuer den aktuellen Highlevel-"
         "Projektstand, den Dozentenbericht, Source Review, Wording Guard, "
-        "Advisor Handoff Package, Submission Readiness Board, Execution "
-        "Checklist, Chapter Source Bindings, Source Review Execution, Agent "
-        "Future-Work Handoff, Tabellen/Figuren und Future-Work-Agenten relevant "
-        "sind.\n\n"
+        "Advisor Handoff Package, Submission Readiness Board, Drafting "
+        "Sequence, Execution Checklist, Chapter Source Bindings, Source Review "
+        "Execution, Agent Future-Work Handoff, Tabellen/Figuren und "
+        "Future-Work-Agenten relevant sind.\n\n"
         "## Counts\n\n"
         f"- Indexed artifacts: {len(index)}\n\n"
         "## Artifact Index\n\n"
@@ -310,9 +318,11 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Nutze zuerst den Dozentenbericht und die Absprache-Checklist fuer die "
         "Betreuung. Nutze das Advisor Handoff Package als Abgabe- und "
         "Gespraechsreihenfolge. Nutze das Submission Readiness Board fuer die "
-        "finalen Gates. Nutze danach Execution Checklist, Source Worksheet, "
-        "Chapter Source Bindings, Source Review Execution, Agent Future-Work "
-        "Handoff, Wording Guard und Next Work Plan fuer das Schreiben. "
+        "finalen Gates. Nutze die Drafting Sequence fuer die naechste "
+        "Schreibreihenfolge. Nutze danach Execution Checklist, Source "
+        "Worksheet, Chapter Source Bindings, Source Review Execution, Agent "
+        "Future-Work Handoff, Wording Guard und Next Work Plan fuer das "
+        "Schreiben. "
         "Review-Access, Runtime-Agenten, MCP, Model Routing, Rohdatenzugriff "
         "und Trading-Pfade bleiben deaktiviert.\n"
     )

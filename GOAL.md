@@ -33,6 +33,8 @@ deliverables:
   runtime agent implementation.
 - Create a submission-readiness board that separates draft-ready thesis work,
   final submission blockers, and deferred future-work/agent items.
+- Create a thesis drafting sequence that turns the current gates into the next
+  ordered BA writing steps.
 - Keep the Swiss referendum track in data-collection mode until the 14 June
   2026 vote result is available; do not add a final efficiency interpretation
   before the official result.
@@ -82,11 +84,13 @@ acceptance_criteria:
 - Submission readiness clearly marks Source Review, Swiss result mapping, and
   DOCX render QA as final gates while allowing bounded draft writing to
   continue.
+- The next writing sequence is explicit, artifact-linked, and separates
+  bounded draft work, final blockers, appendix-only content, and future work.
 - Tests cover the generated evidence map and curated result package where
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add submission readiness board
+next_commit: docs: add thesis drafting sequence
 
 ## Running Side Goal
 

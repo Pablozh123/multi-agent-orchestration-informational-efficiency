@@ -9176,3 +9176,47 @@ Verification:
 
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 523 passed in 50.48s, latest commit `fa753a5`.
+
+## 2026-06-12 - Thesis drafting sequence
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Turned the high-level project view into an ordered BA writing sequence after
+  leaving Review-Access paused.
+
+Changes:
+
+- Added `operations/project/build_thesis_drafting_sequence.py`.
+- Generated `data/results/thesis_drafting_sequence.csv`.
+- Added `docs/project/THESIS_DRAFTING_SEQUENCE.md`.
+- Added `tests/test_thesis_drafting_sequence.py`.
+- Updated the thesis consolidation index to include the drafting sequence.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Drafting steps: 10.
+- Bounded write-now steps: 4.
+- Final-blocked Source Review step: 1.
+- Descriptive-only Swiss result step: 1.
+- Future-work-only agent step: 1.
+- The sequence says what can be written now and what must not be claimed in
+  each workstream.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_thesis_drafting_sequence.py operations/project/build_thesis_consolidation_index.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_thesis_drafting_sequence.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 4 passed.
+- `git diff --check`
+  -> PASS, no whitespace errors; CRLF warnings only.
+- `rg -n "sharp-s|\\u00df" GOAL.md ROADMAP.md docs/project/THESIS_DRAFTING_SEQUENCE.md docs/project/THESIS_CONSOLIDATION_INDEX.md operations/project/build_thesis_drafting_sequence.py tests/test_thesis_drafting_sequence.py operations/project/build_thesis_consolidation_index.py tests/test_thesis_consolidation_index.py`
+  -> PASS, no matches.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 525 passed in 53.37s.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> PASS, 525 passed in 49.45s.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+  -> PASS, recommends reviewing one coherent docs/data/automation slice.

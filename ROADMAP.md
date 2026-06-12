@@ -718,14 +718,18 @@ Current implemented consolidation:
   submission-readiness board: advisor handoff, chapter/source mapping, source
   review, H1-H2-H3 results, table/figure package, monitor appendix, Swiss
   result gate, agent future-work boundary, and final QA.
+- `data/results/thesis_drafting_sequence.csv` and
+  `docs/project/THESIS_DRAFTING_SEQUENCE.md` translate the current work plan
+  and readiness gates into ten ordered BA writing steps, separating bounded
+  draft work from final blockers, appendix-only material, and future work.
 - `data/results/thesis_consolidation_index.csv` and
   `docs/project/THESIS_CONSOLIDATION_INDEX.md` index the current
   consolidation deliverables so the Dozentenbericht, advisor checklist,
   highlevel view, work plan, execution checklist, source worksheet, source
   advisor handoff package, review execution guide, chapter source bindings,
-  agent future-work handoff, submission readiness board, wording guard,
-  table/figure captions, chapter draft, source review plan, agent protocol,
-  status, and work log are easy to navigate.
+  agent future-work handoff, submission readiness board, drafting sequence,
+  wording guard, table/figure captions, chapter draft, source review plan,
+  agent protocol, status, and work log are easy to navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,

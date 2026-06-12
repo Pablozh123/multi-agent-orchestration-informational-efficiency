@@ -122,7 +122,10 @@ acceptance_criteria:
 - An advisor/source-review follow-up plan exists so the path after
   Dozenten-Handoff is explicit: capture feedback, confirm Source Review depth,
   manually review H1/H2/H3 source rows, update the bounded chapter draft,
-  recheck final gates, and keep agents future-work-only.
+  recheck final gates, and keep agents future-work-only. It now uses the
+  Manual Source Review Follow-up Overview as the compact control point for
+  23 open H1-H2-H3 review rows, 9 unique sources, 23 pending rows, 0
+  final-ready rows, and no source-status promotion.
 - A H1 manual source-review follow-up exists so the first empirical-core
   review slice is startable with 10 H1 source rows, 4 H1 sources, method and
   interpretation Evidence IDs, deterministic artifacts, Page-/Section-Note,
@@ -243,7 +246,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: refresh advisor source review follow-up after overview
+next_commit: docs: refresh source review progress protocol after overview
 
 ## Running Side Goal
 

@@ -771,8 +771,10 @@ Current implemented consolidation:
   concrete post-handoff follow-up order: capture feedback, confirm Source
   Review depth, run H1/H2/H3 Manual Source Review (10/5/8 rows), update the
   bounded chapter draft with five tables and four figures, recheck Final Gates,
-  and keep agents future-work-only. The plan records 23 pending Manual Source
-  Review rows and 0 final-ready rows.
+  and keep agents future-work-only. The plan now uses the Manual Source
+  Review Follow-up Overview as compact control point for 3 slices, 23 open
+  H1-H2-H3 review rows, 9 unique sources, 23 pending rows, and 0 final-ready
+  rows.
 - `data/results/thesis_h1_manual_source_review_followup.csv` and
   `docs/project/THESIS_H1_MANUAL_SOURCE_REVIEW_FOLLOWUP.md` start the first
   concrete H1 review slice: 10 H1 rows, 4 H1 sources, 4 method rows, 6

@@ -77,6 +77,9 @@ def generate_advisor_source_review_followup(
     final_gates = _read_csv(results_dir / "thesis_final_gate_board.csv")
     result_package = _read_csv(results_dir / "thesis_result_package_traceability.csv")
     agent_upgrade = _read_csv(results_dir / "thesis_agent_pipeline_upgrade_plan.csv")
+    manual_followup_overview = _read_csv(
+        results_dir / "thesis_manual_source_review_followup_overview.csv"
+    )
 
     followup = build_advisor_source_review_followup(
         feedback=feedback,
@@ -84,6 +87,7 @@ def generate_advisor_source_review_followup(
         final_gates=final_gates,
         result_package=result_package,
         agent_upgrade=agent_upgrade,
+        manual_followup_overview=manual_followup_overview,
     )
     _validate_followup(followup, repo_root=repo_root)
 
@@ -112,6 +116,7 @@ def build_advisor_source_review_followup(
     final_gates: pd.DataFrame,
     result_package: pd.DataFrame,
     agent_upgrade: pd.DataFrame,
+    manual_followup_overview: pd.DataFrame,
 ) -> pd.DataFrame:
     """Return the ordered follow-up plan after advisor handoff."""
 
@@ -161,10 +166,24 @@ def build_advisor_source_review_followup(
         "result package traceability",
     )
     _require_columns(agent_upgrade, ("current_status",), "agent pipeline upgrade plan")
+    _require_columns(
+        manual_followup_overview,
+        (
+            "slice_id",
+            "review_rows",
+            "unique_sources",
+            "pending_rows",
+            "final_ready_rows",
+            "manual_gate_de",
+            "guardrail_de",
+        ),
+        "manual source-review follow-up overview",
+    )
 
     feedback_summary = _feedback_summary(feedback)
     manual_by_area = _manual_by_area(execution)
     manual_totals = _manual_totals(execution)
+    overview_summary = _overview_summary(manual_followup_overview)
     package_summary = _package_summary(result_package)
     final_gate_summary = _final_gate_summary(final_gates)
     agent_summary = _agent_summary(agent_upgrade)
@@ -211,6 +230,8 @@ def build_advisor_source_review_followup(
             trigger_de="Wenn der Dozent die Review-Tiefe oder Prioritaeten bestaetigt.",
             input_artifacts=(
                 "docs/project/THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md; "
+                "docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md; "
+                "data/results/thesis_manual_source_review_followup_overview.csv; "
                 "docs/project/THESIS_FINAL_GATE_BOARD.md; "
                 "data/results/thesis_h1_h2_h3_manual_source_review_execution_pass.csv"
             ),
@@ -218,7 +239,13 @@ def build_advisor_source_review_followup(
                 f"Manual Source Review: {manual_totals['rows']} Rows; "
                 f"pending: {manual_totals['pending']}; final-ready: "
                 f"{manual_totals['final_ready']}; Quellenstatus-Aenderungen erlaubt: "
-                f"{manual_totals['source_status_change_allowed']}."
+                f"{manual_totals['source_status_change_allowed']}. Manual Source "
+                "Review Follow-up Overview: "
+                f"{overview_summary['slice_rows']} Slices; "
+                f"{overview_summary['review_rows']} offene H1-H2-H3 Review-Zeilen; "
+                f"{manual_totals['unique_sources']} eindeutige Quellen; "
+                f"{overview_summary['pending_rows']} pending; "
+                f"{overview_summary['final_ready_rows']} final-ready."
             ),
             advisor_feedback_status=feedback_summary["status_label"],
             source_review_rows=manual_totals["rows"],
@@ -232,7 +259,8 @@ def build_advisor_source_review_followup(
             ),
             done_when_de=(
                 "Priorisierte H1-H2-H3 Review-Reihenfolge ist bestaetigt und "
-                "Pending-Gates bleiben sichtbar."
+                "die Manual Source Review Follow-up Overview bleibt als "
+                "kompakter Kontrollpunkt sichtbar."
             ),
             guardrail_de=(
                 "Keine finale Zitation, keine Quellenstatus-Hochstufung und keine "
@@ -442,13 +470,24 @@ def _manual_by_area(execution: pd.DataFrame) -> dict[str, dict[str, int]]:
 
 
 def _manual_totals(execution: pd.DataFrame) -> dict[str, int]:
+    _require_columns(execution, ("source_id",), "H1-H2-H3 manual source review execution pass")
     return {
         "rows": int(len(execution)),
+        "unique_sources": int(execution["source_id"].nunique()),
         "pending": int((execution["current_review_status"] == "pending_manual_review").sum()),
         "final_ready": int(execution["final_citation_ready"].map(_bool_value).sum()),
         "source_status_change_allowed": int(
             execution["source_status_change_allowed"].map(_bool_value).sum()
         ),
+    }
+
+
+def _overview_summary(manual_followup_overview: pd.DataFrame) -> dict[str, int]:
+    return {
+        "slice_rows": int(len(manual_followup_overview)),
+        "review_rows": int(manual_followup_overview["review_rows"].astype(int).sum()),
+        "pending_rows": int(manual_followup_overview["pending_rows"].astype(int).sum()),
+        "final_ready_rows": int(manual_followup_overview["final_ready_rows"].astype(int).sum()),
     }
 
 
@@ -553,6 +592,8 @@ def _validate_followup(followup: pd.DataFrame, *, repo_root: Path) -> None:
     required_terms = (
         "pending_advisor_feedback",
         "source review",
+        "manual source review follow-up overview",
+        "23 offene h1-h2-h3 review-zeilen",
         "page-/section-note",
         "claim-support",
         "blocked-wording",
@@ -590,7 +631,9 @@ def _render_followup_doc(followup: pd.DataFrame) -> str:
         "Dieses Artefakt ordnet die naechsten Schritte nach Dozenten-Handoff: "
         "Feedback erfassen, Source-Review-Tiefe festlegen, H1-H2-H3 manuell "
         "reviewen, bounded Draft aktualisieren, Final-Gates erneut pruefen und "
-        "Agenten nur als Future Work halten. Es erzeugt keine neuen "
+        "Agenten nur als Future Work halten. Die Manual Source Review "
+        "Follow-up Overview bleibt der kompakte Kontrollpunkt fuer die 23 "
+        "offenen H1-H2-H3 Review-Zeilen. Es erzeugt keine neuen "
         "empirischen Resultate und interpretiert keine Quelleninhalte.\n\n"
         "## Counts\n\n"
         f"- Follow-up rows: {len(followup)}\n"
@@ -603,7 +646,8 @@ def _render_followup_doc(followup: pd.DataFrame) -> str:
         + "\n\n"
         "## Use Rule\n\n"
         "Nach dem Dozentenfeedback zuerst das Feedback-Log ausfuellen. Danach "
-        "Source Review manuell je H1-H2-H3-Zeile ausfuehren: Page-/Section-Note, "
+        "die Manual Source Review Follow-up Overview pruefen und Source Review "
+        "manuell je H1-H2-H3-Zeile ausfuehren: Page-/Section-Note, "
         "Claim-Support, Blocked-Wording und Citation-Use erfassen. Erst danach "
         "bounded Draft und wenige gute Tabellen/Figuren aktualisieren. Finale "
         "Zitation, Quellenstatus-Hochstufung, finale Abgabebereitschaft, "

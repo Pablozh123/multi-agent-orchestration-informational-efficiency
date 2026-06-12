@@ -29,6 +29,8 @@ def test_generate_advisor_source_review_followup_writes_ordered_plan(
     assert "Advisor Source Review Follow-up" in doc
     assert "Manual Source Review rows: 23" in doc
     assert "Manual Source Review final-ready rows: 0" in doc
+    assert "Manual Source Review Follow-up Overview" in doc
+    assert "23 offenen H1-H2-H3 Review-Zeilen" in doc
     assert "followup_03_h1_manual_source_review" in doc
     assert "followup_08_keep_agents_future_work" in doc
     assert chr(223) not in doc
@@ -46,6 +48,8 @@ def test_advisor_source_review_followup_keeps_manual_and_agent_boundaries(
 
     assert "pending_advisor_feedback" in joined
     assert "source review" in joined
+    assert "manual source review follow-up overview" in joined
+    assert "23 offene h1-h2-h3 review-zeilen" in joined
     assert "page-/section-note" in joined
     assert "claim-support" in joined
     assert "blocked-wording" in joined
@@ -60,6 +64,7 @@ def test_advisor_source_review_followup_keeps_manual_and_agent_boundaries(
     assert "h1: 10 manual source review rows" in joined
     assert "h2: 5 manual source review rows" in joined
     assert "h3: 8 manual source review rows" in joined
+    assert "9 eindeutige quellen" in joined
 
 
 def _write_fixture(root: Path) -> None:
@@ -112,6 +117,14 @@ def _write_fixture(root: Path) -> None:
 
     pd.DataFrame(
         [
+            _overview_row("H1", 10, 4, 10, 0),
+            _overview_row("H2", 5, 3, 5, 0),
+            _overview_row("H3", 8, 4, 8, 0),
+        ]
+    ).to_csv(results / "thesis_manual_source_review_followup_overview.csv", index=False)
+
+    pd.DataFrame(
+        [
             _final_gate("source_review", False, 23),
             _final_gate("h1_h2_h3_drafting", False, 3),
             _final_gate("result_package", False, 1),
@@ -158,6 +171,7 @@ def _write_required_artifacts(root: Path) -> None:
         "docs/project/DOZENTEN_FEEDBACK_LOG.md",
         "docs/project/DOZENTEN_FEEDBACK_INTEGRATION_CHECKLIST.md",
         "docs/project/THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md",
+        "docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md",
         "docs/project/THESIS_FINAL_GATE_BOARD.md",
         "docs/project/THESIS_H1_H2_H3_MANUAL_SOURCE_REVIEW_EXECUTION_PASS.md",
         "docs/project/THESIS_SOURCE_REVIEW_PROGRESS_LEDGER.md",
@@ -169,6 +183,7 @@ def _write_required_artifacts(root: Path) -> None:
         "docs/project/WORK_LOG.md",
         "data/results/thesis_advisor_feedback_integration_checklist.csv",
         "data/results/thesis_h1_h2_h3_manual_source_review_execution_pass.csv",
+        "data/results/thesis_manual_source_review_followup_overview.csv",
         "data/results/thesis_final_gate_board.csv",
         "data/results/thesis_result_package_traceability.csv",
         "data/results/thesis_agent_pipeline_upgrade_plan.csv",
@@ -183,11 +198,54 @@ def _execution_row(thesis_area: str, index: int) -> dict[str, object]:
     return {
         "execution_id": f"manual_exec_{thesis_area}_{index}",
         "thesis_area": thesis_area,
+        "source_id": _source_id(thesis_area, index),
         "current_review_status": "pending_manual_review",
         "final_citation_ready": False,
         "ready_for_bounded_draft": True,
         "ready_for_final_submission": False,
         "source_status_change_allowed": False,
+    }
+
+
+def _source_id(thesis_area: str, index: int) -> str:
+    if thesis_area == "H1":
+        if index <= 3:
+            return "lit_brier_001"
+        if index <= 5:
+            return "lit_dm_001"
+        if index <= 7:
+            return "lit_emh_001"
+        return "zotero_poly_002"
+    if thesis_area == "H2":
+        if index <= 2:
+            return "lit_emh_001"
+        if index <= 4:
+            return "lit_eventstudy_001"
+        return "zotero_poly_001"
+    if index <= 2:
+        return "lit_granger_001"
+    if index <= 4:
+        return "zotero_poly_001"
+    if index <= 7:
+        return "zotero_poly_005"
+    return "zotero_poly_007"
+
+
+def _overview_row(
+    slice_id: str,
+    review_rows: int,
+    unique_sources: int,
+    pending_rows: int,
+    final_ready_rows: int,
+) -> dict[str, object]:
+    return {
+        "slice_id": slice_id,
+        "review_rows": review_rows,
+        "unique_sources": unique_sources,
+        "pending_rows": pending_rows,
+        "final_ready_rows": final_ready_rows,
+        "manual_gate_de": "Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use.",
+        "guardrail_de": "Keine Quellenstatus-Hochstufung und keine Runtime-Agenten.",
     }
 
 

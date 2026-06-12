@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-06-12T02:04:18+00:00",
+  "generated_at_utc": "2026-06-12T03:04:18+00:00",
   "limitations": {
     "manual_or_scheduler_invoked_refresh": true,
     "no_causal_claim_from_refresh": true,
@@ -27,14 +27,14 @@
     "contains_wallet_addresses": false,
     "efficiency_result": {
       "comparison_path": "data\\results\\swiss_referendum_10mio_comparison.csv",
-      "comparison_row_count": 29,
+      "comparison_row_count": 30,
       "dashboard_path": "data\\results\\swiss_referendum_10mio_dashboard.html",
       "figure_path": "data\\results\\swiss_referendum_10mio_efficiency.png",
       "information_response_figure_path": "data\\results\\swiss_referendum_10mio_information_response.png",
       "information_response_path": "data\\results\\swiss_referendum_10mio_information_response.csv",
-      "latest_decided_yes_gap": -0.2439175257731959,
+      "latest_decided_yes_gap": -0.2489175257731959,
       "latest_divergence_label": "polymarket_below_poll_yes_share",
-      "latest_raw_yes_gap": -0.23,
+      "latest_raw_yes_gap": -0.23500000000000001,
       "latest_source_comparison_path": "data\\results\\swiss_referendum_10mio_latest_source_comparison.csv",
       "metadata_path": "data\\results\\swiss_referendum_10mio_efficiency_metadata.json",
       "poll_impact_path": "data\\results\\swiss_referendum_10mio_poll_impacts.csv",
@@ -53,7 +53,7 @@
     },
     "running_status": {
       "auto_refresh_command": ".\\.venv\\Scripts\\python.exe -m operations.collectors.swiss_referendum_auto_refresh --source live --until-utc 2026-06-14T10:00:00Z --min-spacing-minutes 55",
-      "generated_at_utc": "2026-06-12T02:04:18+00:00",
+      "generated_at_utc": "2026-06-12T03:04:18+00:00",
       "limitations": {
         "does_not_identify_causality_or_tradeability": true,
         "does_not_imply_market_data_completeness": true,
@@ -132,19 +132,19 @@
       },
       "status": {
         "all_outputs_exist": true,
-        "latest_snapshot_at_utc": "2026-06-12T02:04:16Z",
+        "latest_snapshot_at_utc": "2026-06-12T03:04:16Z",
         "ready_for_running_view": true,
         "snapshot_age_minutes": 0.033,
         "snapshot_recency_status": "fresh",
-        "snapshot_row_count": 29
+        "snapshot_row_count": 30
       }
     },
     "snapshot_result": {
-      "latest_no_probability": 0.78,
-      "latest_yes_probability": 0.22,
+      "latest_no_probability": 0.785,
+      "latest_yes_probability": 0.215,
       "market_id": "1845700",
       "metadata_path": "data\\results\\swiss_referendum_10mio_polymarket_snapshot_metadata.json",
-      "row_count": 29,
+      "row_count": 30,
       "snapshots_path": "data\\results\\swiss_referendum_10mio_polymarket_snapshots.csv"
     }
   }

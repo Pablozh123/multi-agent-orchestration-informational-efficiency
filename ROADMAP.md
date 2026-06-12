@@ -642,6 +642,12 @@ Current implemented consolidation:
   in German/Swiss spelling from the deterministic consolidation artifacts,
   including artifact references, Evidence IDs, bounded result wording,
   limitations, and a documentation-only agent outlook.
+- `docs/project/dozentenbericht_ba_thesis.md`,
+  `docs/project/dozentenbericht_ba_thesis.html`, and
+  `docs/project/dozentenbericht_ba_thesis.docx` now start with a Phase 12
+  high-level project view for the advisor: review access paused, H1-H3 as
+  empirical core, five core tables, four core figures, citation-review gates,
+  Monitor/Swiss boundaries, and agents as inactive future work.
 - `data/results/thesis_citation_review_packets.csv` and
   `docs/research/THESIS_CITATION_REVIEW_PACKETS.md` break citation readiness
   into source-evidence review packets with review questions, required checks,

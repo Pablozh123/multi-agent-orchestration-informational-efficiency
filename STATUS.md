@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-06-12 02:30
+Generated: 2026-06-12 02:39
 
 Current goal: `goal-thesis-consolidation-001` - Consolidate thesis-ready evidence, results, and future agent design
 
@@ -11,11 +11,11 @@ Current roadmap phase: Phase 12: Thesis Consolidation And Evidence Mapping
 
 Test status: PASS
 
-Pytest summary: `499 passed in 51.11s`
+Pytest summary: `499 passed in 48.90s`
 
 Git branch: `main`
 
-Latest commit: `824b4e3`
+Latest commit: `6a04353`
 
 Git status:
 
@@ -23,27 +23,27 @@ Git status:
  M GOAL.md
  M ROADMAP.md
  M STATUS.md
- M data/results/thesis_consolidation_metadata.json
  M docs/project/WORK_LOG.md
- M docs/research/LITERATURE_MAP.md
- M operations/analysis/thesis_consolidation.py
- M tests/test_thesis_consolidation.py
-?? data/results/thesis_table_figure_captions.csv
-?? docs/research/THESIS_TABLE_FIGURE_CAPTIONS.md
+ M docs/project/dozentenbericht_ba_thesis.docx
+ M docs/project/dozentenbericht_ba_thesis.html
+ M docs/project/dozentenbericht_ba_thesis.md
+ M operations/project/build_dozenten_report.py
+ M tests/test_dozenten_report.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md                                         |   2 +-
- ROADMAP.md                                      |   4 +
- STATUS.md                                       |  28 ++-
- data/results/thesis_consolidation_metadata.json |   7 +
- docs/project/WORK_LOG.md                        |  38 ++++
- docs/research/LITERATURE_MAP.md                 |   5 +
- operations/analysis/thesis_consolidation.py     | 219 ++++++++++++++++++++++++
- tests/test_thesis_consolidation.py              |  39 ++++-
- 8 files changed, 322 insertions(+), 20 deletions(-)
+ GOAL.md                                     |   2 +-
+ ROADMAP.md                                  |   6 +
+ STATUS.md                                   |  38 +++----
+ docs/project/WORK_LOG.md                    |  46 ++++++++
+ docs/project/dozentenbericht_ba_thesis.docx | Bin 7441088 -> 7441880 bytes
+ docs/project/dozentenbericht_ba_thesis.html |  37 ++++--
+ docs/project/dozentenbericht_ba_thesis.md   |  36 ++++--
+ operations/project/build_dozenten_report.py | 169 +++++++++++++++++++++++++++-
+ tests/test_dozenten_report.py               |   6 +
+ 9 files changed, 297 insertions(+), 43 deletions(-)
 ```
 
 Blockers:
@@ -52,7 +52,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: add thesis table figure captions
+- docs: update advisor highlevel project view
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

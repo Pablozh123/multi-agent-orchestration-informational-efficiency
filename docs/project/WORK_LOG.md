@@ -8347,3 +8347,49 @@ Verification:
   -> PASS, 11 passed.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 499 passed in 50.24s.
+
+## 2026-06-12 - Advisor highlevel project view
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Left review-access implementation paused and updated the advisor-facing
+  project view so the current Phase 12 thesis-consolidation state is visible
+  before the detailed H1-H2-H3 result sections.
+
+Changes:
+
+- Extended `operations/project/build_dozenten_report.py` to read
+  `data/results/thesis_consolidation_metadata.json` and
+  `data/results/thesis_table_figure_captions.csv`.
+- Added a generated Highlevel-Projektstand section to
+  `docs/project/dozentenbericht_ba_thesis.md`,
+  `docs/project/dozentenbericht_ba_thesis.html`, and
+  `docs/project/dozentenbericht_ba_thesis.docx`.
+- Updated the report cover phase from Phase 10 to Phase 12.
+- Updated `tests/test_dozenten_report.py` to assert the high-level section,
+  paused review access, Phase 12 wording, five core tables, four core figures,
+  and the caption registry link.
+- Updated `GOAL.md` and `ROADMAP.md` for the advisor high-level update slice.
+
+Key output:
+
+- Dozentenbericht now opens with the practical project view: H1-H3 as the
+  empirical core, Monitor and Swiss as bounded side tracks, citation-review
+  gates still pending, and agents as inactive future work.
+- The report states the current compact thesis package: 5 core tables, 4 core
+  figures, 10 caption rows, 13 Evidence rows, 6 central result rows, 8 chapter
+  plan rows, and 33 citation review packets.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_dozenten_report.py -q`
+  -> PASS, 1 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_dozenten_report.py tests\test_thesis_consolidation.py -q`
+  -> PASS, 12 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown, HTML, and DOCX; figure_count=43.
+- DOCX render QA with the Documents `render_docx.py` helper -> BLOCKED by
+  `WinError 2`, consistent with missing local LibreOffice/`soffice`.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 499 passed in 49.39s.

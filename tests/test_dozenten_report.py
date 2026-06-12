@@ -41,6 +41,12 @@ def test_build_dozenten_report_outputs_readable_artifacts(tmp_path):
     assert overview_path.exists()
 
     html_text = html_path.read_text(encoding="utf-8")
+    assert "Highlevel-Projektstand" in html_text
+    assert "Review-Access bleibt pausiert" in html_text
+    assert "Phase 12: Thesis Consolidation And Evidence Mapping" in html_text
+    assert "5 Kern-Tabellen" in html_text
+    assert "4 Kern-Figuren" in html_text
+    assert "thesis_table_figure_captions.csv" in html_text
     assert "H1 - Forecast-Qualitaet" in html_text
     assert "H1 Forecast-Quality Vergleich" in html_text
     assert "h1_forecast_quality.png" in html_text

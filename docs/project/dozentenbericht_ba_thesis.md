@@ -1,6 +1,6 @@
 # Dozentenbericht zur Bachelorarbeit
 
-Erstellt: 2026-06-11T22:50:11+00:00
+Erstellt: 2026-06-12T00:35:53+00:00
 
 **Arbeitstitel:** Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen.
 
@@ -24,6 +24,24 @@ Dieser Dozentenbericht ist als Zwischenstand im Stil einer Bachelorarbeit aufgeb
 - Empirie: H1 Forecast-Qualitaet, H2 Event-Window-Reaktion, H3 Wallet-Tier-Timing.
 - Erweiterung: read-only Monitor und Schweizer Referendumsvergleich als laufender Track.
 - Diskussion: Grenzen, belastbare Formulierungen und naechste Arbeitsschritte.
+
+## Highlevel-Projektstand
+
+Der Review-Access bleibt pausiert. Der aktuelle Fortschritt liegt in der Thesis-Konsolidierung: Methoden, Interpretationen, Quellen, Tabellen und Figuren sind auf deterministische Artefakte gemappt.
+
+- Aktive Phase: Phase 12: Thesis Consolidation And Evidence Mapping.
+- Thesis-Paket: 5 Kern-Tabellen und 4 Kern-Figuren; insgesamt 10 Caption-Zeilen.
+- Evidenzkarte: 13 Evidence-Zeilen; 6 zentrale Resultatzeilen; 8 Kapitelplan-Zeilen.
+- Citation-Gate: 33 Review-Pakete, davon 32 mit Full-Source-Review vor finaler Zitation.
+- Agenten bleiben nur dokumentierter Ausblick; keine Runtime-Agenten, kein MCP, keine Modell-Router.
+
+| Ebene | Stand | Konsequenz fuer die Thesis |
+| --- | --- | --- |
+| Empirischer Kern | H1 Forecast-Qualitaet, H2 Event-Windows und H3 Wallet-Timing sind die zentrale Ergebnisbasis. | Die Bachelorarbeit sollte diese drei Strukturen zuerst schreiben und erst danach Monitor, Swiss und Agenten einordnen. |
+| Tabellen und Figuren | 5 Kern-Tabellen und 4 Kern-Figuren sind ueber `thesis_table_figure_captions.csv` beschriftet. | Der Dozent bekommt eine fokussierte Ergebnisdarstellung statt einer Rohartefakt-Sammlung. |
+| Quellen und Zitation | Die Citation-Review-Pakete verknuepfen Quellen mit Evidence-IDs, erlaubtem Wording und Review-Gates. | Finale Thesis-Zitate brauchen noch Seiten- oder Abschnittsnachweise; candidate Quellen bleiben blockiert. |
+| Monitor und Swiss | Monitor bleibt Prototype/Appendix; Swiss bleibt bis zum offiziellen Ergebnis beschreibender Side-Track. | Beide Teile duerfen die H1-H3-Kernaussage nicht staerker machen als die deterministischen Artefakte erlauben. |
+| Agenten-Ausblick | Agenten koennen spaeter bei Source Review, Drafting und Guardrail-Checks helfen, bleiben aber jetzt deaktiviert. | Keine Runtime-Agenten, kein MCP, keine Modell-Router und keine LLM-Metriken vor stabilem deterministic core. |
 
 ## Forschungsfrage und Hypothesen
 
@@ -71,7 +89,7 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 | H2 Event-Windows | Polymarket bewegt sich um mehrere kuratierte politische Ereignisse sichtbar in der Tagesauflosung. | 7 kuratierte Ereignisse; groesstes Primaerfenster nach Betrag: 07_13_trump_shooting +7.2 Prozentpunkte. | Das stuetzt eine These, dass oeffentliche Ereignisse in den Marktpreisen sichtbar werden koennen. | Taegliche Daten zeigen Reaktionsrichtung und Groessenordnung, aber keine intraday Reaktionsgeschwindigkeit. |
 | H3 Wallet-Timing | Top-Wallet-Tier-Aktivitaet zeigt eine messbare, aber vorsichtig zu formulierende Timing-Struktur. | 1216 alignierte Modellzeilen; staerkste Korrelation tier_1_top_1pct lag 1 = 0.1858; kleinster Granger-p-Wert 0.0012. | Das ist als Vorhersage-/Timingdiagnostik verwendbar und motiviert weitere Sensitivitaetschecks. | BUY-only Quelle, Tagesaggregation und Multiple-Testing-Risiko begrenzen die Aussage. |
 | Monitor und Review-Queue | Der Monitor hat die richtige Rolle als Kontroll- und Review-Infrastruktur, nicht als Ergebnisgenerator fuer starke Claims. | 3 aktuelle Review-Cases, davon 1 high und 2 medium; Status source_check_pending=3. | Die Review-Queue ist methodisch wichtig, weil sie auffaellige Faelle von thesis-faehiger Evidenz trennt. | Die Queue ist kein Nachweis fuer Ursachen, Regelverstoss, Handelbarkeit, Profitabilitaet oder zukuenftige Entwicklung. |
-| Swiss-Referendum Side-Track | Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen. | 7 Umfragen, 25 Polymarket-Snapshots; latest Polymarket Yes 21.5%, latest poll Yes 45.0%, raw gap -23.5 pp. | Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen. | Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung. |
+| Swiss-Referendum Side-Track | Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen. | 7 Umfragen, 27 Polymarket-Snapshots; latest Polymarket Yes 22.0%, latest poll Yes 45.0%, raw gap -23.0 pp. | Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen. | Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung. |
 
 ## Warum dieses Vorgehen methodisch sinnvoll ist
 
@@ -86,10 +104,10 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Projektstruktur
 
 - SQLite-Datenbank: 9 Tabellen.
-- Ergebnisartefakte: 308 Dateien unter `data/results`.
-- Analyse-Module: 75 Dateien.
+- Ergebnisartefakte: 318 Dateien unter `data/results`.
+- Analyse-Module: 76 Dateien.
 - Collector-Module: 10 Dateien.
-- Tests: 94 Testdateien; letzter Status: 488 passed in 51.95s.
+- Tests: 95 Testdateien; letzter Status: 499 passed in 51.11s.
 
 ## H1 - Forecast-Qualitaet
 
@@ -167,12 +185,12 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Schweizer Referendum
 
 - Kuratierte Umfragen: 7.
-- Polymarket snapshots: 25.
+- Polymarket snapshots: 27.
 - Bounded price-history rows: 504.
-- Latest Polymarket Yes: 21.5 Prozent.
+- Latest Polymarket Yes: 22.0 Prozent.
 - Latest matched poll Yes: 45.0 Prozent.
-- Raw gap: -23.5 Prozentpunkte.
-- Decided-voter gap: -24.9 Prozentpunkte.
+- Raw gap: -23.0 Prozentpunkte.
+- Decided-voter gap: -24.4 Prozentpunkte.
 
 ## Abbildungen
 

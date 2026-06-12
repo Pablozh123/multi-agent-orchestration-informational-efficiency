@@ -209,6 +209,8 @@ def collect_report_data() -> dict[str, Any]:
     event_seed = _read_csv("data/events_timeline_seed.csv")
     swiss_polls = _read_csv("data/swiss_referendum_10mio_polls.csv")
     literature = _read_csv("data/literature/literature_index.csv")
+    thesis_metadata = _read_json("data/results/thesis_consolidation_metadata.json")
+    thesis_captions = _read_csv("data/results/thesis_table_figure_captions.csv")
 
     return {
         "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
@@ -269,6 +271,7 @@ def collect_report_data() -> dict[str, Any]:
             swiss_polls,
         ),
         "literature": _literature_data(literature),
+        "thesis_highlevel": _thesis_highlevel_data(thesis_metadata, thesis_captions),
         "source_counts": {
             "curated_events": len(event_seed),
             "literature_rows": len(literature),
@@ -287,6 +290,7 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
     monitor = data["monitor"]
     swiss = data["swiss"]
     literature = data["literature"]
+    highlevel = data["thesis_highlevel"]
     db = data["project"]["database"]
     folders = data["project"]["folder_inventory"]
     insight_rows = [
@@ -353,6 +357,39 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
         "- Empirie: H1 Forecast-Qualitaet, H2 Event-Window-Reaktion, H3 Wallet-Tier-Timing.",
         "- Erweiterung: read-only Monitor und Schweizer Referendumsvergleich als laufender Track.",
         "- Diskussion: Grenzen, belastbare Formulierungen und naechste Arbeitsschritte.",
+        "",
+        "## Highlevel-Projektstand",
+        "",
+        (
+            "Der Review-Access bleibt pausiert. Der aktuelle Fortschritt liegt "
+            "in der Thesis-Konsolidierung: Methoden, Interpretationen, Quellen, "
+            "Tabellen und Figuren sind auf deterministische Artefakte gemappt."
+        ),
+        "",
+        f"- Aktive Phase: {highlevel['active_phase']}.",
+        (
+            f"- Thesis-Paket: {highlevel['core_tables']} Kern-Tabellen und "
+            f"{highlevel['core_figures']} Kern-Figuren; insgesamt "
+            f"{highlevel['caption_rows']} Caption-Zeilen."
+        ),
+        (
+            f"- Evidenzkarte: {highlevel['evidence_rows']} Evidence-Zeilen; "
+            f"{highlevel['core_result_rows']} zentrale Resultatzeilen; "
+            f"{highlevel['chapter_rows']} Kapitelplan-Zeilen."
+        ),
+        (
+            f"- Citation-Gate: {highlevel['citation_packets']} Review-Pakete, "
+            f"davon {highlevel['full_review_packets']} mit Full-Source-Review "
+            "vor finaler Zitation."
+        ),
+        "- Agenten bleiben nur dokumentierter Ausblick; keine Runtime-Agenten, kein MCP, keine Modell-Router.",
+        "",
+        "| Ebene | Stand | Konsequenz fuer die Thesis |",
+        "| --- | --- | --- |",
+        *[
+            f"| {row[0]} | {row[1]} | {row[2]} |"
+            for row in highlevel["rows"]
+        ],
         "",
         "## Forschungsfrage und Hypothesen",
         "",
@@ -1003,6 +1040,7 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
     monitor = data["monitor"]
     swiss = data["swiss"]
     literature = data["literature"]
+    highlevel = data["thesis_highlevel"]
     figures = "\n".join(
         _figure_html(figure, html_output=html_output)
         for figure in data["figures"]
@@ -1035,6 +1073,14 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
         f"<td>{escape(consequence)}</td>"
         "</tr>"
         for decision, reason, consequence in _method_decision_rows()
+    )
+    highlevel_rows = "\n".join(
+        "<tr>"
+        f"<td>{escape(row[0])}</td>"
+        f"<td>{escape(row[1])}</td>"
+        f"<td>{escape(row[2])}</td>"
+        "</tr>"
+        for row in highlevel["rows"]
     )
     h2_rows = "\n".join(
         f"<tr><td>{escape(row['event'])}</td><td>{row['change_pp']:+.1f} pp</td></tr>"
@@ -1087,6 +1133,17 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
     <li>H3 prueft aggregierte Wallet-Tier-Aktivitaet als Timing-Diagnostik.</li>
     <li>Monitor und Swiss-Referendum-Track bleiben read-only Forschungs- und Vergleichserweiterungen.</li>
   </ul>
+
+  <h2>Highlevel-Projektstand</h2>
+  <p>Der Review-Access bleibt pausiert. Der aktuelle Fortschritt liegt in der Thesis-Konsolidierung: Methoden, Interpretationen, Quellen, Tabellen und Figuren sind auf deterministische Artefakte gemappt.</p>
+  <div class="grid">
+    <div class="metric"><strong>{highlevel['core_tables']}</strong>Kern-Tabellen</div>
+    <div class="metric"><strong>{highlevel['core_figures']}</strong>Kern-Figuren</div>
+    <div class="metric"><strong>{highlevel['citation_packets']}</strong>Citation-Pakete</div>
+    <div class="metric"><strong>{highlevel['chapter_rows']}</strong>Kapitelplan-Zeilen</div>
+  </div>
+  <p>Aktive Phase: {escape(highlevel['active_phase'])}. Das Thesis-Paket umfasst {highlevel['caption_rows']} Caption-Zeilen und wird aus <code>data/results/thesis_table_figure_captions.csv</code> gespeist.</p>
+  <table><tr><th>Ebene</th><th>Stand</th><th>Konsequenz fuer die Thesis</th></tr>{highlevel_rows}</table>
 
   <h2>Forschungsfrage und Design</h2>
   <p>Die Leitfrage lautet, inwiefern Polymarket-Preise Informationen waehrend politischer Ereignisse abbilden, anders als traditionelle Prognosequellen reagieren und ob aggregierte Wallet-Aktivitaet fruehe Timing-Signale zeigt. Informationelle Effizienz wird deshalb nicht direkt behauptet, sondern ueber reproduzierbare Proxies operationalisiert.</p>
@@ -1200,6 +1257,7 @@ def write_docx(data: dict[str, Any], output_path: Path) -> None:
     _setup_document(doc)
     _add_cover(doc, data)
     _add_toc_note(doc)
+    _add_highlevel_status_section(doc, data["thesis_highlevel"])
     _add_research_design_section(doc, data)
     _add_literature_section(doc, data["literature"])
     _add_methodology_section(doc, data)
@@ -1268,6 +1326,67 @@ def write_pipeline_overview(path: Path) -> Path:
 
 def _relative_path(path: Path, base: Path) -> str:
     return os.path.relpath(path, base)
+
+
+def _thesis_highlevel_data(
+    metadata: dict[str, Any],
+    captions: pd.DataFrame,
+) -> dict[str, Any]:
+    """Summarise the current thesis consolidation layer for the advisor report."""
+
+    outputs = metadata.get("outputs", {})
+    caption_counts = metadata.get("table_figure_caption_counts", {})
+    citation_counts = metadata.get("citation_review_packet_counts", {})
+    truthy = captions["include_in_core_package"].astype(str).str.lower().isin(
+        {"true", "1", "yes"}
+    )
+    core = captions[truthy]
+    core_tables = core[core["package_type"] == "table"]
+    core_figures = core[core["package_type"] == "figure"]
+    return {
+        "active_phase": "Phase 12: Thesis Consolidation And Evidence Mapping",
+        "caption_rows": int(caption_counts.get("total_caption_rows", len(captions))),
+        "core_tables": int(
+            caption_counts.get("core_table_captions", len(core_tables))
+        ),
+        "core_figures": int(
+            caption_counts.get("core_figure_captions", len(core_figures))
+        ),
+        "evidence_rows": int(outputs.get("evidence_rows", 0)),
+        "core_result_rows": int(outputs.get("core_result_rows", 0)),
+        "chapter_rows": int(outputs.get("chapter_rows", 0)),
+        "citation_packets": int(outputs.get("citation_review_packet_rows", 0)),
+        "full_review_packets": int(
+            citation_counts.get("full_review_required_packets", 0)
+        ),
+        "rows": [
+            (
+                "Empirischer Kern",
+                "H1 Forecast-Qualitaet, H2 Event-Windows und H3 Wallet-Timing sind die zentrale Ergebnisbasis.",
+                "Die Bachelorarbeit sollte diese drei Strukturen zuerst schreiben und erst danach Monitor, Swiss und Agenten einordnen.",
+            ),
+            (
+                "Tabellen und Figuren",
+                f"{len(core_tables)} Kern-Tabellen und {len(core_figures)} Kern-Figuren sind ueber `thesis_table_figure_captions.csv` beschriftet.",
+                "Der Dozent bekommt eine fokussierte Ergebnisdarstellung statt einer Rohartefakt-Sammlung.",
+            ),
+            (
+                "Quellen und Zitation",
+                "Die Citation-Review-Pakete verknuepfen Quellen mit Evidence-IDs, erlaubtem Wording und Review-Gates.",
+                "Finale Thesis-Zitate brauchen noch Seiten- oder Abschnittsnachweise; candidate Quellen bleiben blockiert.",
+            ),
+            (
+                "Monitor und Swiss",
+                "Monitor bleibt Prototype/Appendix; Swiss bleibt bis zum offiziellen Ergebnis beschreibender Side-Track.",
+                "Beide Teile duerfen die H1-H3-Kernaussage nicht staerker machen als die deterministischen Artefakte erlauben.",
+            ),
+            (
+                "Agenten-Ausblick",
+                "Agenten koennen spaeter bei Source Review, Drafting und Guardrail-Checks helfen, bleiben aber jetzt deaktiviert.",
+                "Keine Runtime-Agenten, kein MCP, keine Modell-Router und keine LLM-Metriken vor stabilem deterministic core.",
+            ),
+        ],
+    }
 
 
 def _interpretation_rows(data: dict[str, Any]) -> list[dict[str, str]]:
@@ -1488,7 +1607,7 @@ def _add_cover(doc: Document, data: dict[str, Any]) -> None:
         ("Stand", data["generated_at_utc"]),
         (
             "Aktive Projektphase",
-            "Phase 10: Politics/Geo Anomaly Monitor Prototype; Swiss-Referendum als laufender Side-Track",
+            "Phase 12: Thesis Consolidation And Evidence Mapping; Monitor und Swiss bleiben bounded Side-Tracks",
         ),
         ("Teststatus", data["project"]["test_summary"]),
         ("Berichtsquelle", "Lokaler Worktree und deterministische Artefakte"),
@@ -1513,6 +1632,7 @@ def _add_toc_note(doc: Document) -> None:
     _add_bullets(
         doc,
         [
+            "Der Highlevel-Block fasst den aktuellen Projektstand fuer den Dozenten zusammen.",
             "Abschnitt 1 formuliert Forschungsfrage, Hypothesen und BA-Aufbau.",
             "Abschnitt 2 ordnet die hinterlegten wissenschaftlichen Quellen ein.",
             "Abschnitt 3 begruendet Datenbasis, Methodik und Guardrails.",
@@ -1521,6 +1641,53 @@ def _add_toc_note(doc: Document) -> None:
             "Abschnitte 9 bis 10 ordnen Monitor-Prototyp und Schweizer Referendumsvergleich ein.",
             "Abschnitt 11 enthaelt Visualisierungen und einen kurzen Praesentationsplan.",
         ],
+    )
+
+
+def _add_highlevel_status_section(doc: Document, highlevel: dict[str, Any]) -> None:
+    doc.add_heading("Highlevel-Projektstand fuer den Dozenten", level=1)
+    doc.add_paragraph(
+        "Der Review-Access bleibt pausiert. Der aktuelle Fortschritt liegt in "
+        "der Thesis-Konsolidierung: Methoden, Interpretationen, Quellen, "
+        "Tabellen und Figuren sind auf deterministische Artefakte gemappt."
+    )
+    rows = [
+        ("Aktive Phase", highlevel["active_phase"]),
+        (
+            "Thesis-Paket",
+            f"{highlevel['core_tables']} Kern-Tabellen, {highlevel['core_figures']} Kern-Figuren und {highlevel['caption_rows']} Caption-Zeilen.",
+        ),
+        (
+            "Evidenz und Kapitel",
+            f"{highlevel['evidence_rows']} Evidence-Zeilen, {highlevel['core_result_rows']} zentrale Resultatzeilen und {highlevel['chapter_rows']} Kapitelplan-Zeilen.",
+        ),
+        (
+            "Citation-Gate",
+            f"{highlevel['citation_packets']} Review-Pakete; {highlevel['full_review_packets']} brauchen Full-Source-Review vor finaler Zitation.",
+        ),
+        (
+            "Agenten",
+            "Nur dokumentierter Ausblick; keine Runtime-Agenten, kein MCP, keine Modell-Router und keine unlogged LLM-Interpretation.",
+        ),
+    ]
+    table = _add_table(doc, rows, ["Ebene", "Stand"], [2100, 7260])
+    _shade_table_header(table)
+    table = _add_table(
+        doc,
+        highlevel["rows"],
+        ["Ebene", "Stand", "Konsequenz fuer die Thesis"],
+        [1900, 3560, 3900],
+    )
+    _shade_table_header(table)
+    _add_callout(
+        doc,
+        "Naechste Lesart",
+        (
+            "Fuer den Dozenten ist der Kern jetzt: H1-H3 sind die empirische "
+            "Basis, Monitor und Swiss bleiben abgegrenzt, und die Thesis soll "
+            "mit wenigen guten Tabellen/Figuren statt vielen Rohartefakten "
+            "geschrieben werden."
+        ),
     )
 
 

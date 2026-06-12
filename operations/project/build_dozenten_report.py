@@ -213,6 +213,7 @@ def collect_report_data() -> dict[str, Any]:
     thesis_captions = _read_csv("data/results/thesis_table_figure_captions.csv")
     thesis_next_work = _read_csv("data/results/thesis_next_work_plan.csv")
     thesis_project_highlevel = _read_csv("data/results/thesis_project_highlevel_view.csv")
+    thesis_source_worksheet = _read_csv("data/results/thesis_source_review_worksheet.csv")
 
     return {
         "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
@@ -273,6 +274,7 @@ def collect_report_data() -> dict[str, Any]:
             swiss_polls,
         ),
         "literature": _literature_data(literature),
+        "source_review": _source_review_worksheet_data(thesis_source_worksheet),
         "thesis_highlevel": _thesis_highlevel_data(thesis_metadata, thesis_captions),
         "project_highlevel": _project_highlevel_report_data(thesis_project_highlevel),
         "next_work": _next_work_report_data(thesis_next_work),
@@ -294,6 +296,7 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
     monitor = data["monitor"]
     swiss = data["swiss"]
     literature = data["literature"]
+    source_review = data["source_review"]
     highlevel = data["thesis_highlevel"]
     project_highlevel = data["project_highlevel"]
     next_work = data["next_work"]
@@ -460,6 +463,13 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
             f"{literature['selected_source_count']} wissenschaftlich relevante "
             f"Kernquellen als Rahmen verwendet. Statusverteilung: "
             f"{literature['status_counts_text']}."
+        ),
+        (
+            f"Das neue Source-Review-Worksheet enthaelt "
+            f"{source_review['worksheet_rows']} manuelle Review-Zeilen, davon "
+            f"{source_review['priority_1_rows']} Priority-1-Methodenquellen "
+            f"und {source_review['blocked_rows']} blockierte oder Future-Work-Quelle. "
+            "Alle Reviewer-Entscheide bleiben pending."
         ),
         "",
         *literature_rows,
@@ -1088,6 +1098,7 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
     monitor = data["monitor"]
     swiss = data["swiss"]
     literature = data["literature"]
+    source_review = data["source_review"]
     highlevel = data["thesis_highlevel"]
     project_highlevel = data["project_highlevel"]
     next_work = data["next_work"]
@@ -1227,6 +1238,7 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
 
   <h2>Wissenschaftlicher Quellenrahmen</h2>
   <p>Der lokale Literaturindex umfasst {literature['source_count']} Quellen; fuer diesen Bericht werden {literature['selected_source_count']} wissenschaftlich relevante Kernquellen als Rahmen verwendet. Statusverteilung: {escape(literature['status_counts_text'])}.</p>
+  <p>Das Source-Review-Worksheet enthaelt {source_review['worksheet_rows']} manuelle Review-Zeilen, davon {source_review['priority_1_rows']} Priority-1-Methodenquellen und {source_review['blocked_rows']} blockierte oder Future-Work-Quelle. Alle Reviewer-Entscheide bleiben pending.</p>
   <table><tr><th>Quelle</th><th>Rolle in der Arbeit</th><th>Beitrag zur Interpretation</th><th>Status</th></tr>{literature_rows}</table>
   <p class="small">{escape(literature['citation_boundary'])}</p>
 
@@ -1337,7 +1349,7 @@ def write_docx(data: dict[str, Any], output_path: Path) -> None:
     _add_project_highlevel_matrix_section(doc, data["project_highlevel"])
     _add_next_work_section(doc, data["next_work"])
     _add_research_design_section(doc, data)
-    _add_literature_section(doc, data["literature"])
+    _add_literature_section(doc, data["literature"], data["source_review"])
     _add_methodology_section(doc, data)
     _add_interpretation_section(doc, data)
     _add_project_overview(doc, data)
@@ -2031,7 +2043,11 @@ def _add_research_design_section(doc: Document, data: dict[str, Any]) -> None:
     )
 
 
-def _add_literature_section(doc: Document, literature: dict[str, Any]) -> None:
+def _add_literature_section(
+    doc: Document,
+    literature: dict[str, Any],
+    source_review: dict[str, Any],
+) -> None:
     doc.add_heading("2. Wissenschaftlicher Quellenrahmen", level=1)
     doc.add_paragraph(
         f"Der lokale Literaturindex umfasst {literature['source_count']} Quellen. "
@@ -2055,6 +2071,17 @@ def _add_literature_section(doc: Document, literature: dict[str, Any]) -> None:
         [1700, 2800, 3560, 1300],
     )
     _shade_table_header(table)
+    _add_callout(
+        doc,
+        "Quellenreview-Worksheet",
+        (
+            f"Das Worksheet enthaelt {source_review['worksheet_rows']} manuelle "
+            f"Review-Zeilen, davon {source_review['priority_1_rows']} "
+            f"Priority-1-Methodenquellen und {source_review['blocked_rows']} "
+            "blockierte oder Future-Work-Quelle. Alle Reviewer-Entscheide "
+            "bleiben pending."
+        ),
+    )
     _add_callout(doc, "Zitationsgrenze", literature["citation_boundary"])
 
 
@@ -4079,6 +4106,19 @@ def _literature_data(literature: pd.DataFrame) -> dict[str, Any]:
             "reviewed oder cited verwendet werden; candidate/rejected Quellen "
             "tragen keine Ergebnisbehauptungen."
         ),
+    }
+
+
+def _source_review_worksheet_data(worksheet: pd.DataFrame) -> dict[str, Any]:
+    """Return compact source-review worksheet counts for the report."""
+
+    return {
+        "worksheet_rows": int(len(worksheet)),
+        "priority_1_rows": int(
+            (worksheet["priority_band"] == "priority_1_method_foundation_review").sum()
+        ),
+        "blocked_rows": int((worksheet["priority_band"] == "blocked_or_future_work_only").sum()),
+        "pending_rows": int((worksheet["reviewer_decision"] == "pending").sum()),
     }
 
 

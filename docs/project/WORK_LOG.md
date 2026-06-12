@@ -8667,3 +8667,41 @@ Verification:
   -> PASS, generated 15 worksheet rows.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 505 passed in 48.37s.
+
+## 2026-06-12 - Advisor source worksheet summary
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Integrated the new manual source-review worksheet into the advisor-facing
+  Dozentenbericht so the literature section shows what still needs review
+  before final thesis citation.
+
+Changes:
+
+- Extended `operations/project/build_dozenten_report.py` to read
+  `data/results/thesis_source_review_worksheet.csv`.
+- Added a source-review worksheet summary to
+  `docs/project/dozentenbericht_ba_thesis.md`,
+  `docs/project/dozentenbericht_ba_thesis.html`, and
+  `docs/project/dozentenbericht_ba_thesis.docx`.
+- Updated `tests/test_dozenten_report.py`, `GOAL.md`, and `ROADMAP.md`.
+
+Key output:
+
+- Advisor report literature section now states 15 manual review rows, 11
+  Priority-1 method-foundation sources, 1 blocked/future-work-only source, and
+  pending reviewer decisions.
+- The section makes clear that the worksheet is a review gate, not automatic
+  source promotion.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_dozenten_report.py tests\test_thesis_source_review_worksheet.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown, HTML, and DOCX; figure_count=43.
+- DOCX render QA with the Documents `render_docx.py` helper -> BLOCKED by
+  `WinError 2`, consistent with missing local LibreOffice/`soffice`.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 505 passed in 50.93s.

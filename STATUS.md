@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-06-12 03:39
+Generated: 2026-06-12 03:45
 
 Current goal: `goal-thesis-consolidation-001` - Consolidate thesis-ready evidence, results, and future agent design
 
@@ -11,29 +11,35 @@ Current roadmap phase: Phase 12: Thesis Consolidation And Evidence Mapping
 
 Test status: PASS
 
-Pytest summary: `505 passed in 48.37s`
+Pytest summary: `505 passed in 50.93s`
 
 Git branch: `main`
 
-Latest commit: `7a5fcea`
+Latest commit: `8045a1a`
 
 Git status:
 
 ```text
  M GOAL.md
  M ROADMAP.md
-?? data/results/thesis_source_review_worksheet.csv
-?? docs/research/THESIS_SOURCE_REVIEW_WORKSHEET.md
-?? operations/analysis/thesis_source_review_worksheet.py
-?? tests/test_thesis_source_review_worksheet.py
+ M docs/project/dozentenbericht_ba_thesis.docx
+ M docs/project/dozentenbericht_ba_thesis.html
+ M docs/project/dozentenbericht_ba_thesis.md
+ M operations/project/build_dozenten_report.py
+ M tests/test_dozenten_report.py
 ```
 
 Git diff stat:
 
 ```text
- GOAL.md    | 2 +-
- ROADMAP.md | 5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ GOAL.md                                     |   2 +-
+ ROADMAP.md                                  |   3 ++
+ docs/project/dozentenbericht_ba_thesis.docx | Bin 7444261 -> 7444365 bytes
+ docs/project/dozentenbericht_ba_thesis.html |  11 +++----
+ docs/project/dozentenbericht_ba_thesis.md   |   9 +++---
+ operations/project/build_dozenten_report.py |  44 ++++++++++++++++++++++++++--
+ tests/test_dozenten_report.py               |   3 ++
+ 7 files changed, 60 insertions(+), 12 deletions(-)
 ```
 
 Blockers:
@@ -42,7 +48,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: add thesis source review worksheet
+- docs: add advisor source worksheet summary
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

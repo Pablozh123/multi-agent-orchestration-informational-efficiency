@@ -677,6 +677,9 @@ Current implemented consolidation:
 - The Dozentenbericht now includes a `Projektmatrix fuer die naechste
   Abstimmung` section generated from `thesis_project_highlevel_view.csv`, so
   the advisor can see status, decision, and next gate for each project layer.
+- The Dozentenbericht literature section now also summarises the source-review
+  worksheet: 15 manual review rows, 11 priority-1 method-foundation sources,
+  and 1 blocked/future-work-only row with all reviewer decisions still pending.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - `data/results/thesis_citation_review_packets.csv` and

@@ -1,6 +1,6 @@
 # Dozentenbericht zur Bachelorarbeit
 
-Erstellt: 2026-06-12T01:30:59+00:00
+Erstellt: 2026-06-12T01:43:31+00:00
 
 **Arbeitstitel:** Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen.
 
@@ -88,6 +88,7 @@ Die Leitfrage lautet, inwiefern Polymarket-Preise Informationen waehrend politis
 ## Wissenschaftlicher Quellenrahmen
 
 Der lokale Literaturindex umfasst 15 Quellen; fuer diesen Bericht werden 10 wissenschaftlich relevante Kernquellen als Rahmen verwendet. Statusverteilung: candidate: 2, rejected: 1, skimmed: 12.
+Das neue Source-Review-Worksheet enthaelt 15 manuelle Review-Zeilen, davon 11 Priority-1-Methodenquellen und 1 blockierte oder Future-Work-Quelle. Alle Reviewer-Entscheide bleiben pending.
 
 | Quelle | Rolle in der Arbeit | Beitrag zur Interpretation | Status |
 | --- | --- | --- | --- |
@@ -138,10 +139,10 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Projektstruktur
 
 - SQLite-Datenbank: 9 Tabellen.
-- Ergebnisartefakte: 322 Dateien unter `data/results`.
-- Analyse-Module: 76 Dateien.
+- Ergebnisartefakte: 323 Dateien unter `data/results`.
+- Analyse-Module: 77 Dateien.
 - Collector-Module: 10 Dateien.
-- Tests: 95 Testdateien; letzter Status: 503 passed in 51.38s.
+- Tests: 96 Testdateien; letzter Status: 505 passed in 48.37s.
 
 ## H1 - Forecast-Qualitaet
 

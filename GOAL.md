@@ -248,7 +248,10 @@ acceptance_criteria:
   blocks for H1, H2, and H3, so the 15 paragraph-level steps, Manual Source
   Review counts, Page-/Section-Note, Claim-Support, Blocked-Wording,
   Citation-Use, compact table/figure integration, final blockers, and inactive
-  future-agent boundaries are visible in the BA prose draft.
+  future-agent boundaries are visible in the BA prose draft. It now carries
+  the Manual Source Review Follow-up Overview-/Ledger-Abgleich through the
+  H1/H2/H3 Quellengate, Source Review action, Manual Source Review execution,
+  Finalgate, and Status lines.
 - A future agent-pipeline upgrade plan exists so later source-review,
   evidence-drafting, wording, table/figure, advisor, monitor, and bounded MCP
   improvements are documented without activating runtime agents.
@@ -264,7 +267,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: refresh thesis chapter draft after overview
+next_commit: docs: refresh dozenten report after overview
 
 ## Running Side Goal
 

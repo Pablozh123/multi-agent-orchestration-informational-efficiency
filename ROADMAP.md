@@ -912,6 +912,9 @@ Current implemented consolidation:
   Blocked-Wording, Citation-Use, selected table/figure actions, final blockers,
   and documentation-only future-agent boundaries directly into the BA prose
   draft.
+  The BA prose draft now keeps the Manual Source Review Follow-up
+  Overview-/Ledger-Abgleich visible in H1/H2/H3 Quellengate, Source Review
+  action, Manual Source Review execution, Finalgate, and Status lines.
 - `data/results/thesis_final_gate_board.csv` and
   `docs/project/THESIS_FINAL_GATE_BOARD.md` provide the current highlevel
   Stop-/Go view over the project: 8 gates, 8 draft-allowed rows,

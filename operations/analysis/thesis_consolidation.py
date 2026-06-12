@@ -3994,6 +3994,8 @@ def _source_gated_chapter_insert(
             ),
             (
                 f"Quellengate: {record['source_gate_paragraph_de']} "
+                "Manual Source Review Follow-up Overview-/Ledger-Abgleich "
+                "bleibt vor Ledger-Entscheiden und finaler Zitation sichtbar. "
                 "Der Abschnitt bleibt bounded-draft-ready, aber nicht "
                 "final-submission-ready; keine finale Zitation ohne manuelle "
                 "Page-/Section-Notes und Claim-Support-Entscheide."
@@ -4019,8 +4021,8 @@ def _source_gated_drafting_chapter_insert(
             f"**Source-Gated Drafting Sequence fuer {hypothesis}:** Noch kein "
             "paragraphenweiser Drafting-Pass im Konsolidierungslauf gefunden. "
             "Der Abschnitt bleibt am Source-Gated Writing Pass, dem Manual "
-            "Source Review Gate und dem kuratierten Tabellen-/Figurenpaket "
-            "gebunden.\n"
+            "Source Review Gate, dem Manual Source Review Follow-up Overview-/"
+            "Ledger-Abgleich und dem kuratierten Tabellen-/Figurenpaket gebunden.\n"
         )
     chapter_rows = source_gated_thesis_drafting_pass[
         source_gated_thesis_drafting_pass["thesis_area"].astype(str) == hypothesis
@@ -4043,7 +4045,8 @@ def _source_gated_drafting_chapter_insert(
             f"{int(first['manual_execution_pending_rows'])} pending, "
             f"{int(first['manual_execution_final_ready_rows'])} final-ready. "
             "Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use "
-            "bleiben manuelle Gates."
+            "bleiben manuelle Gates. Manual Source Review Follow-up Overview-/"
+            "Ledger-Abgleich bleibt vor Ledger-Entscheidungen sichtbar."
         ),
         (
             f"Tabellen/Figuren: nur `{first['selected_tables']}` und "
@@ -4069,8 +4072,9 @@ def _source_gated_drafting_chapter_insert(
         "Status: bounded-draft-ready, aber nicht final-submission-ready; "
         "keine finale Zitation, keine Quellenstatus-Hochstufung, keine "
         "Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken, "
-        "bounded inputs mit max 50 rows und `llm_audit_log` erst fuer spaetere "
-        "documentation-only Agentenarbeit.\n"
+        "Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation "
+        "Gate sichtbar halten, bounded inputs mit max 50 rows und "
+        "`llm_audit_log` erst fuer spaetere documentation-only Agentenarbeit.\n"
     )
     return "\n".join(lines)
 

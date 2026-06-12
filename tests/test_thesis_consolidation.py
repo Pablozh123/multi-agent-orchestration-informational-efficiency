@@ -437,6 +437,8 @@ def test_chapter_draft_integrates_source_gated_h1_h2_h3_pass(tmp_path: Path) -> 
     assert "Source-Gated Drafting Sequence fuer H3" in draft
     assert "Paragraphenweiser Drafting-Pass: 5 Schreibschritte" in draft
     assert "Manual Source Review: 10 rows, 10 pending, 0 final-ready" in draft
+    assert "Manual Source Review Follow-up Overview" in draft
+    assert "Overview-/Ledger-Abgleich" in draft
     assert "Schritt 4: Manual Source Review ausfuehren" in draft
     assert "Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use" in draft
     assert "nur `T2` und `F1`" in draft
@@ -668,7 +670,10 @@ def _write_source_gated_writing_pass_fixture(root: Path) -> None:
                     f"{area} nutzt wenige gute Tabellen/Figuren statt Rohartefakt-Dumps."
                 ),
                 "source_gate_paragraph_de": (
-                    f"{area}: keine finale Zitation ohne Source Review."
+                    f"{area}: keine finale Zitation ohne Source Review. "
+                    "Manual Source Review Follow-up Overview pruefen; "
+                    "Overview-/Ledger-Abgleich vor Citation Gate dokumentieren. "
+                    "Keine Quellenstatus-Hochstufung aus dem Draft."
                 ),
                 "future_agent_boundary_de": (
                     "keine Runtime-Agenten; llm_audit_log und bounded inputs vor spaeterer Nutzung."
@@ -758,7 +763,8 @@ def _write_source_gated_thesis_drafting_pass_fixture(root: Path) -> None:
                     "paragraph_seed_de": (
                         f"{area} bleibt source-gated und nicht final-submission-ready. "
                         "Der Absatz nutzt wenige gute Tabellen/Figuren und keine neuen "
-                        "Kennzahlen."
+                        "Kennzahlen. Manual Source Review Follow-up Overview-/"
+                        "Ledger-Abgleich bleibt sichtbar."
                     ),
                     "writer_action_de": (
                         f"{area}: {section_name} im BA-Entwurf setzen und Evidence IDs "
@@ -766,8 +772,9 @@ def _write_source_gated_thesis_drafting_pass_fixture(root: Path) -> None:
                     ),
                     "source_review_action_de": (
                         f"{area}: Manual Source Review mit Page-/Section-Note, "
-                        "Claim-Support, Blocked-Wording und Citation-Use abarbeiten; "
-                        "keine finale Zitation."
+                        "Claim-Support, Blocked-Wording, Citation-Use und Manual Source "
+                        "Review Follow-up Overview-/Ledger-Abgleich abarbeiten; keine "
+                        "finale Zitation."
                     ),
                     "table_figure_action_de": (
                         f"{area}: nur {table}/{figure} nutzen; wenige gute Tabellen/Figuren "
@@ -775,9 +782,10 @@ def _write_source_gated_thesis_drafting_pass_fixture(root: Path) -> None:
                     ),
                     "final_gate_de": (
                         f"{area}: final-ready Manual-Execution rows 0; keine "
-                        "Runtime-Agenten, kein MCP, kein Model Routing, keine "
-                        "LLM-Metriken; spaeter nur bounded inputs, max 50 rows und "
-                        "llm_audit_log."
+                        "Quellenstatus-Hochstufung, keine Runtime-Agenten, kein MCP, "
+                        "kein Model Routing, keine LLM-Metriken; Manual Source Review "
+                        "Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar "
+                        "halten; spaeter nur bounded inputs, max 50 rows und llm_audit_log."
                     ),
                     "blocked_wording_de": (
                         "keine finale Zitation | keine Runtime-Agenten | keine "

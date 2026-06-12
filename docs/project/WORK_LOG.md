@@ -12293,3 +12293,53 @@ Verification:
 - `git diff --check` -> PASS.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `600 passed in 64.82s (0:01:04)`.
+
+## 2026-06-13 - Manual Source Review Update Checklist
+
+Goal context:
+
+- Continued active goal `goal-thesis-consolidation-001`.
+- Worked on the scoped commit:
+  `docs: add manual source review update checklist`.
+- Kept the work deterministic and structural: no source-content reading, no
+  Claim-Support decision, no final citation, no source-status promotion, and
+  no runtime-agent activation.
+
+Changes:
+
+- Added `operations.project.build_manual_source_review_update_checklist`.
+- Generated `data/results/thesis_manual_source_review_update_checklist.csv`.
+- Generated `docs/project/THESIS_MANUAL_SOURCE_REVIEW_UPDATE_CHECKLIST.md`.
+- Extended the consolidation index to 55 artifacts.
+- Updated `GOAL.md` and `ROADMAP.md` with the eight-step allowed manual
+  Ledger update path.
+- Committed the content slice as
+  `2212037 docs: add manual source review update checklist`.
+
+Key output:
+
+- Checklist rows: 8.
+- Ledger rows in scope: 23.
+- Unique sources in scope: 9.
+- External locator rows: 13.
+- Local PDF rows: 10.
+- Pending citation rows: 23.
+- Final ready rows: 0.
+- Final citation release ready checklist rows: 0.
+- Allowed manual Ledger fields: `review_status`, `page_or_section_note`,
+  `claim_support_decision`, `blocked_wording_check`,
+  `citation_use_decision`, `reviewed_by`, `reviewed_at`,
+  `review_comment_de`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_manual_source_review_update_checklist.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_manual_source_review_update_checklist.py tests\test_ledger_citation_gate_summary.py tests\test_source_review_progress_ledger.py tests\test_h1_h2_h3_decision_queue_ledger_alignment.py tests\test_h1_h2_h3_manual_source_review_execution_pass.py tests\test_source_review_progress_protocol.py tests\test_chapter_source_review_checklist.py tests\test_thesis_final_gate_board.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 21 passed.
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_manual_source_review_update_checklist.py operations\project\build_ledger_citation_gate_summary.py operations\project\build_thesis_consolidation_index.py tests\test_manual_source_review_update_checklist.py tests\test_thesis_consolidation_index.py`
+  -> PASS.
+- `rg -n "<sharp-s>" ...` on touched files -> PASS, no matches.
+- `git diff --check` -> PASS.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `603 passed in 73.49s (0:01:13)`.

@@ -327,7 +327,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add manual source review update checklist
+next_commit: docs: add source review batch execution plan
 
 ## Running Side Goal
 

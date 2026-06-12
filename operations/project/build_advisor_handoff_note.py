@@ -58,12 +58,16 @@ def generate_advisor_handoff_note(
     handoff = _read_csv(results_dir / "thesis_advisor_handoff_package.csv")
     readiness = _read_csv(results_dir / "thesis_submission_readiness_board.csv")
     drafting = _read_csv(results_dir / "thesis_drafting_sequence.csv")
+    source_gated_drafting = _read_csv(
+        results_dir / "thesis_h1_h2_h3_source_gated_thesis_drafting_pass.csv"
+    )
     advisor_questions = _read_csv(results_dir / "thesis_advisor_alignment_checklist.csv")
 
     note = build_advisor_handoff_note(
         handoff=handoff,
         readiness=readiness,
         drafting=drafting,
+        source_gated_drafting=source_gated_drafting,
         advisor_questions=advisor_questions,
     )
     _validate_note(note=note, repo_root=repo_root)
@@ -87,6 +91,7 @@ def build_advisor_handoff_note(
     handoff: pd.DataFrame,
     readiness: pd.DataFrame,
     drafting: pd.DataFrame,
+    source_gated_drafting: pd.DataFrame,
     advisor_questions: pd.DataFrame,
 ) -> pd.DataFrame:
     """Return the short advisor-facing handoff note."""
@@ -94,6 +99,18 @@ def build_advisor_handoff_note(
     _require_columns(handoff, ("deliverable_id", "path"), "advisor handoff package")
     _require_columns(readiness, ("gate_area", "current_status"), "submission readiness board")
     _require_columns(drafting, ("draft_permission", "sequence_id"), "drafting sequence")
+    _require_columns(
+        source_gated_drafting,
+        (
+            "thesis_area",
+            "manual_execution_rows",
+            "manual_execution_pending_rows",
+            "manual_execution_final_ready_rows",
+            "ready_for_bounded_draft",
+            "ready_for_final_submission",
+        ),
+        "source-gated thesis drafting pass",
+    )
     _require_columns(
         advisor_questions,
         ("question_id", "advisor_question_de", "decision_needed_de"),
@@ -110,6 +127,7 @@ def build_advisor_handoff_note(
     )
     write_now = int((drafting["draft_permission"] == "write_now_bounded").sum())
     future_only = int((drafting["draft_permission"] == "future_work_only").sum())
+    source_gated_summary = _source_gated_drafting_summary(source_gated_drafting)
     selected_questions = _selected_questions(advisor_questions)
 
     rows = [
@@ -130,10 +148,11 @@ def build_advisor_handoff_note(
                 "Ich habe den aktuellen Stand der Bachelorarbeit schriftlich "
                 "aufbereitet. Der empirische Kern besteht aus H1 Forecast-"
                 "Qualitaet, H2 taeglicher Event-Window-Analyse und H3 Wallet-"
-                "Tier-Timing. Review-Access bleibt pausiert; Monitor, Swiss "
-                "und Agenten sind klar abgegrenzt."
+                "Tier-Timing. Der Word-Bericht enthaelt jetzt die Source-Gated "
+                "H1-H2-H3 Drafting Sequence. Review-Access bleibt pausiert; "
+                "Monitor, Swiss und Agenten sind klar abgegrenzt."
             ),
-            source_artifacts="docs/project/dozentenbericht_ba_thesis.docx; data/results/thesis_project_highlevel_view.csv",
+            source_artifacts="docs/project/dozentenbericht_ba_thesis.docx; data/results/thesis_project_highlevel_view.csv; data/results/thesis_h1_h2_h3_source_gated_thesis_drafting_pass.csv",
             do_not_imply_de="Keine neuen empirischen Resultate oder Runtime-Agenten ankuendigen.",
         ),
         _note_row(
@@ -141,7 +160,9 @@ def build_advisor_handoff_note(
             section_title_de="Anhaenge",
             content_de=(
                 "Als Einstieg reichen der Word-Bericht und die Absprache-"
-                "Checklist. Die Checklist startet mit einer empfohlenen "
+                "Checklist. Der Bericht zeigt die Source-Gated H1-H2-H3 "
+                "Drafting Sequence als naechste BA-Schreiblogik. Die Checklist "
+                "startet mit einer empfohlenen "
                 "Gespraechsreihenfolge: H1-H2-H3 Scope, Source Review Tiefe, "
                 "Tabellen/Figuren, Monitor/Swiss Grenzen, Agenten-Future-Work "
                 "und finale QA. Fuer die eigentliche Weiterarbeit liegen ausserdem "
@@ -159,9 +180,14 @@ def build_advisor_handoff_note(
                 f"final blockierte Gates. Source Review: {source_status}; "
                 f"Swiss: {swiss_status}; Agenten: {agent_status}. "
                 f"Drafting Sequence: {write_now} bounded write-now Schritte "
-                f"und {future_only} future-work-only Schritt."
+                f"und {future_only} future-work-only Schritt. Source-Gated "
+                f"H1-H2-H3 Drafting Sequence: {source_gated_summary['rows']} "
+                f"Absatzschritte, {source_gated_summary['manual_rows_linked']} "
+                "Manual Source Review Zeilen verlinkt, "
+                f"{source_gated_summary['manual_pending_rows']} pending und "
+                f"{source_gated_summary['manual_final_ready_rows']} final-ready."
             ),
-            source_artifacts="data/results/thesis_submission_readiness_board.csv; data/results/thesis_drafting_sequence.csv",
+            source_artifacts="data/results/thesis_submission_readiness_board.csv; data/results/thesis_drafting_sequence.csv; data/results/thesis_h1_h2_h3_source_gated_thesis_drafting_pass.csv",
             do_not_imply_de="Finale Abgabebereitschaft bleibt blockiert, solange Source Review, Swiss-Gate oder DOCX-Render-QA offen sind.",
         ),
         _note_row(
@@ -265,6 +291,24 @@ def _selected_questions(advisor_questions: pd.DataFrame) -> str:
     )
 
 
+def _source_gated_drafting_summary(source_gated_drafting: pd.DataFrame) -> dict[str, int]:
+    grouped = source_gated_drafting.groupby("thesis_area", dropna=False)
+    return {
+        "rows": int(len(source_gated_drafting)),
+        "bounded_ready_rows": int(
+            source_gated_drafting["ready_for_bounded_draft"].astype(bool).sum()
+        ),
+        "final_submission_ready_rows": int(
+            source_gated_drafting["ready_for_final_submission"].astype(bool).sum()
+        ),
+        "manual_rows_linked": int(grouped["manual_execution_rows"].max().sum()),
+        "manual_pending_rows": int(grouped["manual_execution_pending_rows"].max().sum()),
+        "manual_final_ready_rows": int(
+            grouped["manual_execution_final_ready_rows"].max().sum()
+        ),
+    }
+
+
 def _status_for_gate(readiness: pd.DataFrame, gate_area: str) -> str:
     rows = readiness.loc[readiness["gate_area"] == gate_area, "current_status"]
     if rows.empty:
@@ -288,6 +332,7 @@ def _validate_note(*, note: pd.DataFrame, repo_root: Path) -> None:
     lower_joined = joined.lower()
     required_terms = (
         "review-access bleibt pausiert",
+        "source-gated h1-h2-h3 drafting sequence",
         "final blockierte gates",
         "keine runtime-agenten",
         "keine llm-metriken",

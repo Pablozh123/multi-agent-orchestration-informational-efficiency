@@ -57,7 +57,13 @@ def generate_advisor_handoff_package(
     results_dir = _resolve_under(repo_root, results_dir)
     docs_dir = _resolve_under(repo_root, docs_dir)
     index = _read_csv(results_dir / "thesis_consolidation_index.csv")
-    package = build_advisor_handoff_package(index=index)
+    source_gated_drafting = _read_csv(
+        results_dir / "thesis_h1_h2_h3_source_gated_thesis_drafting_pass.csv"
+    )
+    package = build_advisor_handoff_package(
+        index=index,
+        source_gated_drafting=source_gated_drafting,
+    )
     _validate_package(package=package, repo_root=repo_root)
 
     results_dir.mkdir(parents=True, exist_ok=True)
@@ -74,10 +80,27 @@ def generate_advisor_handoff_package(
     )
 
 
-def build_advisor_handoff_package(*, index: pd.DataFrame) -> pd.DataFrame:
+def build_advisor_handoff_package(
+    *,
+    index: pd.DataFrame,
+    source_gated_drafting: pd.DataFrame,
+) -> pd.DataFrame:
     """Return the ordered package that can be sent or discussed with the advisor."""
 
     _require_columns(index, ("path", "artifact_id"), "thesis consolidation index")
+    _require_columns(
+        source_gated_drafting,
+        (
+            "thesis_area",
+            "manual_execution_rows",
+            "manual_execution_pending_rows",
+            "manual_execution_final_ready_rows",
+            "ready_for_bounded_draft",
+            "ready_for_final_submission",
+        ),
+        "source-gated thesis drafting pass",
+    )
+    source_gated_summary = _source_gated_drafting_summary(source_gated_drafting)
     indexed_paths = set()
     for value in index["path"].astype(str):
         indexed_paths.update(path.strip() for path in value.split(";") if path.strip())
@@ -95,9 +118,23 @@ def build_advisor_handoff_package(*, index: pd.DataFrame) -> pd.DataFrame:
             package_order=2,
             deliverable_id="advisor_report_docx",
             path="docs/project/dozentenbericht_ba_thesis.docx",
-            handoff_use_de="Als schriftliches Word-Update an den Dozenten geben.",
-            advisor_decision_de="Projektstand, Aufbau, H1-H3-Kern, Grenzen und naechste Schritte abstimmen.",
-            boundary_de="DOCX-Render-QA bleibt lokal blockiert, wenn LibreOffice/soffice fehlt.",
+            handoff_use_de=(
+                "Als schriftliches Word-Update mit Source-Gated H1-H2-H3 "
+                f"Drafting Sequence an den Dozenten geben: {source_gated_summary['rows']} "
+                "Absatzschritte, "
+                f"{source_gated_summary['manual_rows_linked']} Manual Source "
+                "Review Zeilen verlinkt."
+            ),
+            advisor_decision_de=(
+                "Projektstand, Aufbau, H1-H3-Kern, Source-Review-Gates, "
+                "Grenzen und naechste Schritte abstimmen."
+            ),
+            boundary_de=(
+                "Source-Gated Sequence bleibt bounded-draft-ready und nicht "
+                f"final-submission-ready ({source_gated_summary['manual_final_ready_rows']} "
+                "final-ready Source-Review-Zeilen); DOCX-Render-QA bleibt lokal "
+                "blockiert, wenn LibreOffice/soffice fehlt."
+            ),
         ),
         _package_row(
             package_order=3,
@@ -222,6 +259,24 @@ def _package_row(
     }
 
 
+def _source_gated_drafting_summary(source_gated_drafting: pd.DataFrame) -> dict[str, int]:
+    grouped = source_gated_drafting.groupby("thesis_area", dropna=False)
+    return {
+        "rows": int(len(source_gated_drafting)),
+        "bounded_ready_rows": int(
+            source_gated_drafting["ready_for_bounded_draft"].astype(bool).sum()
+        ),
+        "final_submission_ready_rows": int(
+            source_gated_drafting["ready_for_final_submission"].astype(bool).sum()
+        ),
+        "manual_rows_linked": int(grouped["manual_execution_rows"].max().sum()),
+        "manual_pending_rows": int(grouped["manual_execution_pending_rows"].max().sum()),
+        "manual_final_ready_rows": int(
+            grouped["manual_execution_final_ready_rows"].max().sum()
+        ),
+    }
+
+
 def _validate_package(*, package: pd.DataFrame, repo_root: Path) -> None:
     _require_columns(package, PACKAGE_COLUMNS, "advisor handoff package")
     if package["deliverable_id"].duplicated().any():
@@ -240,6 +295,8 @@ def _validate_package(*, package: pd.DataFrame, repo_root: Path) -> None:
         "dozenten_uebergabe_text.md",
         "dozenten_feedback_log.md",
         "review-access bleibt pausiert",
+        "source-gated h1-h2-h3 drafting sequence",
+        "nicht final-submission-ready",
         "quellenstatus nicht automatisch hochstufen",
         "keine runtime-agenten",
         "thesis-facing claims",
@@ -264,6 +321,8 @@ def _render_package_doc(package: pd.DataFrame) -> str:
         + "\n\n"
         "## Use Rule\n\n"
         "Nutze zuerst Uebergabetext, Dozentenbericht und Absprache-Checklist. "
+        "Der Dozentenbericht ist der erste fachliche Einstieg, weil er die "
+        "Source-Gated H1-H2-H3 Drafting Sequence sichtbar macht. "
         "Danach kommen Submission Readiness Board, Drafting Sequence, Execution "
         "Checklist, Chapter Source Bindings und Source Review Execution fuer "
         "die eigentliche Schreibarbeit. Das Feedback-Log wird nach der "

@@ -114,6 +114,8 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert "review access remains paused" in project_highlevel_doc
     assert "Review-Access bleibt pausiert" in project_highlevel_doc
     assert "Dozentenpaket senden" in project_highlevel_doc
+    assert "Source-Gated H1-H2-H3 Drafting Sequence" in project_highlevel_doc
+    assert "refreshed Dozentenbericht" in project_highlevel_doc
     assert "Source Structure Inventory und Traceability Audit nur" in project_highlevel_doc
     assert core["bounded_interpretation"].str.len().gt(0).all()
     assert package["main_limitation"].str.len().gt(0).all()
@@ -355,7 +357,10 @@ def test_project_highlevel_view_keeps_paused_and_deferred_boundaries(tmp_path: P
     assert agents["status"] == "documentation_only_deferred"
     assert "llm_audit_log" in agents["next_gate"]
     assert "no runtime agents" in agents["guardrail"].lower()
+    advisor = view[view["view_id"] == "project_09_advisor_iteration"].iloc[0]
+    assert "source-gated h1-h2-h3 drafting sequence" in advisor["current_decision"].lower()
     assert "reactivate review access" in joined
+    assert "source-gated h1-h2-h3 drafting sequence" in joined
     assert "deterministic python artifacts" in joined
     assert "do not infer support claims from file structure" in joined
     assert set(view["status"]).issuperset(

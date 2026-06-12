@@ -688,6 +688,11 @@ Current implemented consolidation:
   by default, and no order or trading paths.
 - `docs/research/THESIS_CONSOLIDATION.md` gives the high-level project view
   and a deferred agent-pipeline roadmap.
+- `data/results/thesis_project_highlevel_view.csv` and
+  `docs/research/THESIS_PROJECT_HIGHLEVEL_VIEW.md` now answer the next-step
+  question without Review-Access: use the refreshed Dozentenbericht as the
+  written high-level handoff, then complete Source Review and turn the
+  Source-Gated H1-H2-H3 Drafting Sequence into thesis prose.
 - `docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md` documents the future
   agent stages as inactive architecture only.
 - `docs/research/THESIS_WRITING_BLUEPRINT.md` translates the consolidation
@@ -739,12 +744,15 @@ Current implemented consolidation:
   handoff order: handoff note, Word report, advisor questions, submission
   readiness board, drafting sequence, execution checklist, chapter source
   bindings, source review execution, agent future-work handoff, feedback log,
-  and consolidation index.
+  and consolidation index. The Word-report row now points to the Source-Gated
+  H1-H2-H3 Drafting Sequence with 15 paragraph steps, 23 linked Manual Source
+  Review rows, and 0 final-ready Source Review rows.
 - `data/results/thesis_advisor_handoff_note.csv` and
   `docs/project/DOZENTEN_UEBERGABE_TEXT.md` provide a short mail/chat handoff
   text for the advisor with subject, attachment order, a pointer to the
   recommended checklist discussion order, key questions, gate status, and
-  non-goals.
+  non-goals. The text now states that the Word report contains the
+  Source-Gated H1-H2-H3 Drafting Sequence while Review-Access remains paused.
 - `data/results/thesis_advisor_feedback_log_template.csv` and
   `docs/project/DOZENTEN_FEEDBACK_LOG.md` provide a pending feedback log for
   advisor answers, resulting actions, and small follow-up commit scopes.
@@ -920,8 +928,7 @@ Current implemented consolidation:
   an eight-row chapter execution view from `thesis_execution_checklist.csv`
   with draft actions, done-when criteria, and advisor-question IDs.
 - The Dozentenbericht now includes `Dozentenpaket und Uebergabereihenfolge`,
-  a seven-file advisor handoff order from
-  `thesis_advisor_handoff_package.csv`.
+  an 11-file advisor handoff order from `thesis_advisor_handoff_package.csv`.
 - `data/results/thesis_citation_review_packets.csv` and
   `docs/research/THESIS_CITATION_REVIEW_PACKETS.md` break citation readiness
   into source-evidence review packets with review questions, required checks,

@@ -112,6 +112,10 @@ acceptance_criteria:
 - The advisor handoff package is updated so the Word report, handoff note,
   readiness board, drafting sequence, feedback log, source review, and index
   appear in one consistent order.
+- The advisor handoff note and package now point to the refreshed Word report
+  with Source-Gated H1-H2-H3 Drafting Sequence, 15 paragraph-level writing
+  steps, 23 linked Manual Source Review rows, 23 pending rows, 0 final-ready
+  rows, and the boundary that Review-Access remains paused.
 - The high-level project view explicitly answers the path forward without
   Review-Access: advisor feedback, source review, H1-H3 writing,
   table/figure integration, Swiss result gate, and final QA.
@@ -212,7 +216,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: update advisor handoff after source-gated report refresh
+next_commit: docs: prepare advisor feedback and source review follow-up
 
 ## Running Side Goal
 

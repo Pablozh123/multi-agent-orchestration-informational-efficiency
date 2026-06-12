@@ -1853,8 +1853,8 @@ def build_project_highlevel_view(
                     first_workstream,
                     final_workstream,
                 ],
-                current_decision=f"Without review access, use {len(core_results)} core result rows, {core_table_count} core tables, and {core_figure_count} core figures as the main thesis package.",
-                next_gate="Complete source review and turn the chapter plan into thesis prose.",
+                current_decision=f"Without review access, use {len(core_results)} core result rows, {core_table_count} core tables, and {core_figure_count} core figures as the main thesis package; use the refreshed Dozentenbericht as the written high-level handoff.",
+                next_gate="Complete source review and turn the Source-Gated H1-H2-H3 Drafting Sequence into thesis prose.",
                 guardrail="Deterministic Python artifacts first; no LLM metric calculation, no raw table dumps, and no runtime agents.",
                 thesis_use="main_text_project_overview",
             ),
@@ -2013,7 +2013,7 @@ def build_project_highlevel_view(
                     "docs/project/DOZENTEN_FEEDBACK_LOG.md",
                 ],
                 evidence_or_workstream_ids=["work_09_advisor_iteration"],
-                current_decision="Use the Dozentenbericht to align on bounded H1 wording, source-review depth, Swiss placement, and appendix scope.",
+                current_decision="Use the Dozentenbericht with the Source-Gated H1-H2-H3 Drafting Sequence to align on bounded H1 wording, source-review depth, Swiss placement, and appendix scope.",
                 next_gate="Advisor feedback is received, logged in DOZENTEN_FEEDBACK_LOG, and translated into the next small commit plan.",
                 guardrail="Do not expand empirical scope or reactivate review access before the current deterministic thesis core is written.",
                 thesis_use="advisor_update",
@@ -2755,6 +2755,7 @@ def _validate_project_highlevel_view(frame: pd.DataFrame, *, repo_root: Path) ->
     joined = "\n".join(frame.astype(str).agg(" ".join, axis=1).tolist()).lower()
     required_terms = (
         "review access remains paused",
+        "source-gated h1-h2-h3 drafting sequence",
         "source review is manual",
         "llm_audit_log",
         "official 14 june 2026 vote result",
@@ -3465,9 +3466,10 @@ def _render_project_highlevel_view_doc(
         "## Kurzantwort: Weiter Ohne Review-Access\n\n"
         "- Review-Access bleibt pausiert; der naechste Fortschritt kommt aus "
         "Schreiben und Review-Gates.\n"
-        "- Zuerst Dozentenpaket senden und Feedback im Log festhalten.\n"
-        "- Danach Source Review prioritaer abarbeiten, H1-H3 Kapitel schreiben "
-        "und Tabellen/Figuren integrieren.\n"
+        "- Zuerst Dozentenbericht und Dozentenpaket senden; der Bericht enthaelt "
+        "die Source-Gated H1-H2-H3 Drafting Sequence. Feedback im Log festhalten.\n"
+        "- Danach Source Review prioritaer abarbeiten, H1-H3 Kapitel entlang "
+        "der Source-Gated Sequence schreiben und Tabellen/Figuren integrieren.\n"
         "- Access Audit, Source Structure Inventory und Traceability Audit nur "
         "als Vorbereitung nutzen: keine Quellenstatus-Hochstufung und keine "
         "Support-Claims aus Dateistruktur.\n"

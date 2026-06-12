@@ -10,7 +10,7 @@ This document is the high-level consolidation layer for the bachelor thesis. It 
 
 | view_id | project_layer | status | current_decision | next_gate | thesis_use |
 | --- | --- | --- | --- | --- | --- |
-| project_00_current_frame | Current high-level frame | active_thesis_core | Without review access, use 6 core result rows, 5 core tables, and 4 core figures as the main thesis package. | Complete source review and turn the chapter plan into thesis prose. | main_text_project_overview |
+| project_00_current_frame | Current high-level frame | active_thesis_core | Without review access, use 6 core result rows, 5 core tables, and 4 core figures as the main thesis package; use the refreshed Dozentenbericht as the written high-level handoff. | Complete source review and turn the Source-Gated H1-H2-H3 Drafting Sequence into thesis prose. | main_text_project_overview |
 | project_01_h1_forecast_quality | H1 forecast quality | thesis_facing_ready | Write H1 as bounded support in compatible poll-comparison scopes, not as universal Polymarket superiority. | Final citation wording after source review confirms method and interpretation support. | main_text_results |
 | project_02_h2_event_windows | H2 event-window response | thesis_facing_ready | Use H2 as daily event-window evidence, not as an intraday reaction-speed claim. | Draft result text with event curation and daily-resolution limitation explicit. | main_text_results |
 | project_03_h3_wallet_timing | H3 wallet timing diagnostics | thesis_facing_ready_with_limits | Use top-tier timing diagnostics as predictive pattern evidence, not causal or misconduct evidence. | Draft H3 with BUY-only, daily aggregation, and multiple-testing limitations visible. | main_text_results_with_limits |
@@ -19,7 +19,7 @@ This document is the high-level consolidation layer for the bachelor thesis. It 
 | project_06_monitor_review_access | Monitor prototype and review access | paused_appendix_only | Review access remains paused; continue with advisor feedback, source review, and draft writing instead of access work. | Human source review of monitor cases and a separate approved goal before any renewed access work. | appendix_or_discussion_only |
 | project_07_swiss_referendum | Swiss referendum side track | descriptive_pending_result | Keep the Swiss material descriptive until the official 14 June 2026 vote result is available. | Regenerate Swiss artifacts after official result mapping. | discussion_pending_final_result |
 | project_08_future_agents | Future agent-assisted pipeline | documentation_only_deferred | Keep 6 roadmap stages and 6 documentation-only assistance rows inactive. | Separate approved goal with bounded prompts, tests, and llm_audit_log integration. | future_work_only |
-| project_09_advisor_iteration | Advisor communication | project_management_ready | Use the Dozentenbericht to align on bounded H1 wording, source-review depth, Swiss placement, and appendix scope. | Advisor feedback is received, logged in DOZENTEN_FEEDBACK_LOG, and translated into the next small commit plan. | advisor_update |
+| project_09_advisor_iteration | Advisor communication | project_management_ready | Use the Dozentenbericht with the Source-Gated H1-H2-H3 Drafting Sequence to align on bounded H1 wording, source-review depth, Swiss placement, and appendix scope. | Advisor feedback is received, logged in DOZENTEN_FEEDBACK_LOG, and translated into the next small commit plan. | advisor_update |
 
 ## Core Result Table
 

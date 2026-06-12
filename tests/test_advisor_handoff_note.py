@@ -26,6 +26,9 @@ def test_generate_advisor_handoff_note_writes_mail_template(tmp_path: Path) -> N
     assert "docs/project/dozentenbericht_ba_thesis.docx" in doc
     assert "Gespraechsreihenfolge" in doc
     assert "H1-H2-H3 Scope" in doc
+    assert "Source-Gated H1-H2-H3 Drafting Sequence" in doc
+    assert "15 Absatzschritte" in doc
+    assert "23 Manual Source Review Zeilen" in doc
     assert chr(223) not in doc
 
 
@@ -38,6 +41,7 @@ def test_advisor_handoff_note_keeps_boundaries_visible(tmp_path: Path) -> None:
     joined = "\n".join(note.fillna("").astype(str).agg(" ".join, axis=1).tolist()).lower()
 
     assert "review-access bleibt pausiert" in joined
+    assert "source-gated h1-h2-h3 drafting sequence" in joined
     assert "final blockierte gates" in joined
     assert "keine runtime-agenten" in joined
     assert "keine llm-metriken" in joined
@@ -84,6 +88,21 @@ def _write_fixture(root: Path) -> None:
 
     pd.DataFrame(
         [
+            _source_gated_row("H1", index, 10, 10, 0)
+            for index in range(1, 6)
+        ]
+        + [
+            _source_gated_row("H2", index, 5, 5, 0)
+            for index in range(1, 6)
+        ]
+        + [
+            _source_gated_row("H3", index, 8, 8, 0)
+            for index in range(1, 6)
+        ]
+    ).to_csv(results / "thesis_h1_h2_h3_source_gated_thesis_drafting_pass.csv", index=False)
+
+    pd.DataFrame(
+        [
             {
                 "question_id": question_id,
                 "advisor_question_de": f"Frage {question_id}?",
@@ -114,6 +133,7 @@ def _write_required_artifacts(root: Path) -> None:
         "data/results/thesis_consolidation_index.csv",
         "data/results/thesis_submission_readiness_board.csv",
         "data/results/thesis_drafting_sequence.csv",
+        "data/results/thesis_h1_h2_h3_source_gated_thesis_drafting_pass.csv",
         "data/results/thesis_advisor_alignment_checklist.csv",
     ]
     for relative in paths:
@@ -126,4 +146,22 @@ def _gate(gate_area: str, current_status: str) -> dict[str, str]:
     return {
         "gate_area": gate_area,
         "current_status": current_status,
+    }
+
+
+def _source_gated_row(
+    thesis_area: str,
+    row_index: int,
+    manual_execution_rows: int,
+    manual_pending_rows: int,
+    manual_final_ready_rows: int,
+) -> dict[str, object]:
+    return {
+        "thesis_area": thesis_area,
+        "draft_step_order": row_index,
+        "manual_execution_rows": manual_execution_rows,
+        "manual_execution_pending_rows": manual_pending_rows,
+        "manual_execution_final_ready_rows": manual_final_ready_rows,
+        "ready_for_bounded_draft": True,
+        "ready_for_final_submission": False,
     }

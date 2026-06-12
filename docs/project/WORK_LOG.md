@@ -11669,3 +11669,47 @@ Verification:
   -> PASS, no Swiss sharp-s found.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `584 passed in 66.10s`, clean after the content commit.
+
+## 2026-06-12 - H1-H2-H3 drafting checklist refreshed after overview
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Refreshed the H1-H2-H3 drafting checklist so the source-review-and-citation
+  writing step carries the Manual Source Review Follow-up Overview and
+  Overview-/Ledger-Abgleich before any final citation.
+
+Changes:
+
+- Updated `operations/project/build_h1_h2_h3_drafting_checklist.py`.
+- Regenerated `data/results/thesis_h1_h2_h3_drafting_checklist.csv` and
+  `docs/project/THESIS_H1_H2_H3_DRAFTING_CHECKLIST.md`.
+- Updated `tests/test_h1_h2_h3_drafting_checklist.py`.
+- Updated `GOAL.md` and `ROADMAP.md` so the next content step is refreshing
+  the bounded H1-H2-H3 chapter draft after the overview.
+
+Key output:
+
+- Checklist rows: 18.
+- Bounded draft ready rows: 18.
+- Final submission ready rows: 0.
+- Final blocked source-review rows: 3.
+- Future documentation-only rows: 3.
+- Source Review citation gate now carries the Manual Source Review Follow-up
+  Overview-/Ledger-Abgleich into the H1/H2/H3 writing order.
+- Latest content commit:
+  `144bd53 docs: refresh h1 h2 h3 drafting checklist after overview`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_h1_h2_h3_drafting_checklist.py tests\test_h1_h2_h3_drafting_checklist.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_h2_h3_drafting_checklist.py -q`
+  -> PASS, 2 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_h1_h2_h3_drafting_checklist`
+  -> PASS, generated checklist CSV/Markdown.
+- `git diff --check` -> PASS.
+- `rg -n "<sharp-s>" GOAL.md ROADMAP.md docs\project\THESIS_H1_H2_H3_DRAFTING_CHECKLIST.md data\results\thesis_h1_h2_h3_drafting_checklist.csv operations\project\build_h1_h2_h3_drafting_checklist.py tests\test_h1_h2_h3_drafting_checklist.py`
+  -> PASS, no Swiss sharp-s found.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `584 passed in 61.47s`, clean after the content commit.

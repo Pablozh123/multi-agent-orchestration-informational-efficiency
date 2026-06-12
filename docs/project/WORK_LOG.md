@@ -8816,6 +8816,50 @@ Verification:
 - `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
   -> PASS, recommends reviewing one coherent docs/data/automation slice.
 
+## 2026-06-12 - Agent future-work handoff
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Documented how agents could later improve the thesis pipeline without
+  implementing or activating runtime agents, MCP, model routing, or LLM metric
+  calculation.
+
+Changes:
+
+- Added `operations/project/build_agent_future_work_handoff.py`.
+- Generated `data/results/thesis_agent_future_work_handoff.csv`.
+- Added `docs/project/THESIS_AGENT_FUTURE_WORK_HANDOFF.md`.
+- Added `tests/test_agent_future_work_handoff.py`.
+- Updated the thesis consolidation index to include the handoff.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Future handoff rows: 7.
+- Documentation-only rows: 6.
+- Deferred rows: 1.
+- The handoff maps future source-review, evidence-reader, wording-guard,
+  table/figure-checker, advisor-update, monitor-review, and bounded-MCP support
+  to required gates.
+- Every row keeps runtime agents, MCP, model routing, LLM metrics, raw-data
+  prompts, wallet-address exposure by default, and trading paths disabled.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_agent_future_work_handoff.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_agent_future_work_handoff`
+  -> PASS, generated 7 future-work handoff rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 15 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 517 passed in 49.30s.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> PASS, 517 passed in 50.20s.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+  -> PASS, recommends reviewing one coherent docs/data/automation slice.
+
 ## 2026-06-12 - Advisor report execution section
 
 Goal context:

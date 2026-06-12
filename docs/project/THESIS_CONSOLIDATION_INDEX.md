@@ -1,10 +1,10 @@
 # Thesis Consolidation Index
 
-Dieser Index zeigt, welche Artefakte fuer den aktuellen Highlevel-Projektstand, den Dozentenbericht, Source Review, Wording Guard, Execution Checklist, Source Review Execution, Tabellen/Figuren und Future-Work-Agenten relevant sind.
+Dieser Index zeigt, welche Artefakte fuer den aktuellen Highlevel-Projektstand, den Dozentenbericht, Source Review, Wording Guard, Execution Checklist, Source Review Execution, Agent Future-Work Handoff, Tabellen/Figuren und Future-Work-Agenten relevant sind.
 
 ## Counts
 
-- Indexed artifacts: 14
+- Indexed artifacts: 15
 
 ## Artifact Index
 
@@ -23,8 +23,9 @@ Dieser Index zeigt, welche Artefakte fuer den aktuellen Highlevel-Projektstand, 
 | index_11_chapter_draft | chapter_draft | docs/research/THESIS_CHAPTER_DRAFT.md | Erster deutschsprachiger Kapitelentwurf aus der Konsolidierung. | Als Rohfassung fuer BA-Kapitel nutzen. | Vor finaler Abgabe Quellenreview und Wording Guard anwenden. |
 | index_12_source_review_plan | source_review | docs/research/THESIS_SOURCE_REVIEW_PLAN.md | Priorisierte Quellenreview-Planung nach Quelle. | Quelle-fuer-Quelle abarbeiten. | Candidate/rejected Quellen nicht fuer thesis-facing Claims nutzen. |
 | index_13_agent_protocol | future_work | docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md | Dokumentations-only Agenten-Ausblick mit erlaubten Rollen und Gates. | Nur als Future-Work-Abschnitt nutzen. | Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade. |
-| index_14_status_and_log | project_control | STATUS.md; docs/project/WORK_LOG.md | Automatisierter Projektstatus und append-only Arbeitslog. | Vor jedem Stop und Commit pruefen. | Nicht behaupten, dass Phase bereit ist, wenn Checks fehlschlagen. |
+| index_14_agent_future_handoff | future_work | docs/project/THESIS_AGENT_FUTURE_WORK_HANDOFF.md; data/results/thesis_agent_future_work_handoff.csv | Future-Work-Handoff fuer spaetere Assistenz-Agenten nach Gates. | Nur als Highlevel-Ausblick fuer Pipeline-Verbesserungen nutzen. | Keine Aktivierung ohne separates Goal, Tests, bounded inputs und llm_audit_log. |
+| index_15_status_and_log | project_control | STATUS.md; docs/project/WORK_LOG.md | Automatisierter Projektstatus und append-only Arbeitslog. | Vor jedem Stop und Commit pruefen. | Nicht behaupten, dass Phase bereit ist, wenn Checks fehlschlagen. |
 
 ## Use Rule
 
-Nutze zuerst den Dozentenbericht und die Absprache-Checklist fuer die Betreuung. Nutze danach Execution Checklist, Source Worksheet, Source Review Execution, Wording Guard und Next Work Plan fuer das Schreiben. Review-Access, Runtime-Agenten, MCP, Model Routing, Rohdatenzugriff und Trading-Pfade bleiben deaktiviert.
+Nutze zuerst den Dozentenbericht und die Absprache-Checklist fuer die Betreuung. Nutze danach Execution Checklist, Source Worksheet, Source Review Execution, Agent Future-Work Handoff, Wording Guard und Next Work Plan fuer das Schreiben. Review-Access, Runtime-Agenten, MCP, Model Routing, Rohdatenzugriff und Trading-Pfade bleiben deaktiviert.

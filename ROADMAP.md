@@ -652,6 +652,11 @@ Current implemented consolidation:
   review, evidence drafting, wording guardrails, table/figure checks, advisor
   updates, monitor appendix review, and a deferred bounded MCP summary
   interface.
+- `data/results/thesis_agent_future_work_handoff.csv` and
+  `docs/project/THESIS_AGENT_FUTURE_WORK_HANDOFF.md` translate those protocols
+  into seven future-work handoff rows: six documentation-only assistance ideas
+  and one deferred bounded MCP interface, all blocked until a separate goal,
+  tests, bounded inputs, and `llm_audit_log` exist.
 - `data/results/thesis_next_work_plan.csv` and
   `docs/research/THESIS_NEXT_WORK_PLAN.md` order the remaining thesis work into
   ten guardrail-bound workstreams: source review, front-matter/method chapters,
@@ -703,9 +708,9 @@ Current implemented consolidation:
   `docs/project/THESIS_CONSOLIDATION_INDEX.md` index the current
   consolidation deliverables so the Dozentenbericht, advisor checklist,
   highlevel view, work plan, execution checklist, source worksheet, source
-  review execution guide, wording guard, table/figure captions, chapter draft,
-  source review plan, agent protocol, status, and work log are easy to
-  navigate.
+  review execution guide, agent future-work handoff, wording guard,
+  table/figure captions, chapter draft, source review plan, agent protocol,
+  status, and work log are easy to navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,

@@ -182,7 +182,15 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade.",
         ),
         _index_row(
-            artifact_id="index_14_status_and_log",
+            artifact_id="index_14_agent_future_handoff",
+            artifact_type="future_work",
+            path="docs/project/THESIS_AGENT_FUTURE_WORK_HANDOFF.md; data/results/thesis_agent_future_work_handoff.csv",
+            purpose_de="Future-Work-Handoff fuer spaetere Assistenz-Agenten nach Gates.",
+            use_now_de="Nur als Highlevel-Ausblick fuer Pipeline-Verbesserungen nutzen.",
+            gate_or_limit_de="Keine Aktivierung ohne separates Goal, Tests, bounded inputs und llm_audit_log.",
+        ),
+        _index_row(
+            artifact_id="index_15_status_and_log",
             artifact_type="project_control",
             path="STATUS.md; docs/project/WORK_LOG.md",
             purpose_de="Automatisierter Projektstatus und append-only Arbeitslog.",
@@ -265,8 +273,8 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "# Thesis Consolidation Index\n\n"
         "Dieser Index zeigt, welche Artefakte fuer den aktuellen Highlevel-"
         "Projektstand, den Dozentenbericht, Source Review, Wording Guard, "
-        "Execution Checklist, Source Review Execution, Tabellen/Figuren und "
-        "Future-Work-Agenten relevant sind.\n\n"
+        "Execution Checklist, Source Review Execution, Agent Future-Work "
+        "Handoff, Tabellen/Figuren und Future-Work-Agenten relevant sind.\n\n"
         "## Counts\n\n"
         f"- Indexed artifacts: {len(index)}\n\n"
         "## Artifact Index\n\n"
@@ -275,9 +283,9 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "## Use Rule\n\n"
         "Nutze zuerst den Dozentenbericht und die Absprache-Checklist fuer die "
         "Betreuung. Nutze danach Execution Checklist, Source Worksheet, Source "
-        "Review Execution, Wording Guard und Next Work Plan fuer das Schreiben. "
-        "Review-Access, Runtime-Agenten, MCP, Model Routing, Rohdatenzugriff und "
-        "Trading-Pfade bleiben deaktiviert.\n"
+        "Review Execution, Agent Future-Work Handoff, Wording Guard und Next "
+        "Work Plan fuer das Schreiben. Review-Access, Runtime-Agenten, MCP, "
+        "Model Routing, Rohdatenzugriff und Trading-Pfade bleiben deaktiviert.\n"
     )
 
 

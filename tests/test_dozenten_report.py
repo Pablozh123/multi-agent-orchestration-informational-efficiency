@@ -51,6 +51,10 @@ def test_build_dozenten_report_outputs_readable_artifacts(tmp_path):
     assert "Monitor Review-Access" in html_text
     assert "Review-Access bleibt pausiert" in html_text
     assert "Agenten bleiben Dokumentationsausblick" in html_text
+    assert "Dozentenpaket und Uebergabereihenfolge" in html_text
+    assert "advisor_report_docx" in html_text
+    assert "THESIS_EXECUTION_CHECKLIST.md" in html_text
+    assert "Chapter Source Bindings" in html_text
     assert "llm_audit_log" in html_text
     assert "Naechste Arbeitsschritte" in html_text
     assert "work_01_source_review" in html_text

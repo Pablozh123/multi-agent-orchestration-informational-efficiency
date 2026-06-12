@@ -726,6 +726,9 @@ Current implemented consolidation:
 - The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,
   an eight-row chapter execution view from `thesis_execution_checklist.csv`
   with draft actions, done-when criteria, and advisor-question IDs.
+- The Dozentenbericht now includes `Dozentenpaket und Uebergabereihenfolge`,
+  a seven-file advisor handoff order from
+  `thesis_advisor_handoff_package.csv`.
 - `data/results/thesis_citation_review_packets.csv` and
   `docs/research/THESIS_CITATION_REVIEW_PACKETS.md` break citation readiness
   into source-evidence review packets with review questions, required checks,

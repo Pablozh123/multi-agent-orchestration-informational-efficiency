@@ -8816,6 +8816,45 @@ Verification:
 - `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
   -> PASS, recommends reviewing one coherent docs/data/automation slice.
 
+## 2026-06-12 - Advisor handoff section in report
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Integrated the advisor handoff order into the Dozentenbericht itself, so the
+  Word/HTML/Markdown report states which files to give or use first.
+
+Changes:
+
+- Updated `operations/project/build_dozenten_report.py`.
+- Regenerated `docs/project/dozentenbericht_ba_thesis.md`.
+- Regenerated `docs/project/dozentenbericht_ba_thesis.html`.
+- Regenerated `docs/project/dozentenbericht_ba_thesis.docx`.
+- Updated `tests/test_dozenten_report.py`.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Added `Dozentenpaket und Uebergabereihenfolge` to the advisor report.
+- The section lists 7 deliverables from `advisor_report_docx` through the
+  consolidation index and keeps review access, agents, raw artifacts, and
+  empirical expansion bounded.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_dozenten_report.py tests\test_advisor_handoff_package.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, generated MD, HTML, DOCX, and 43 figures.
+- `.\.venv\Scripts\python.exe C:\Users\chole\.codex\plugins\cache\openai-primary-runtime\documents\26.601.10930\skills\documents\render_docx.py docs/project/dozentenbericht_ba_thesis.docx --output_dir %TEMP%\dozentenbericht_render_20260612_handoff`
+  -> BLOCKED, LibreOffice/soffice is missing (`FileNotFoundError: [WinError 2]`).
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 521 passed in 51.87s.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> PASS, 521 passed in 52.21s.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+  -> PASS, recommends reviewing one coherent report/update slice.
+
 ## 2026-06-12 - Advisor handoff package
 
 Goal context:

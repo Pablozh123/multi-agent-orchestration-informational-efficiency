@@ -215,6 +215,7 @@ def collect_report_data() -> dict[str, Any]:
     thesis_project_highlevel = _read_csv("data/results/thesis_project_highlevel_view.csv")
     thesis_source_worksheet = _read_csv("data/results/thesis_source_review_worksheet.csv")
     thesis_execution_checklist = _read_csv("data/results/thesis_execution_checklist.csv")
+    thesis_advisor_handoff = _read_csv("data/results/thesis_advisor_handoff_package.csv")
 
     return {
         "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
@@ -280,6 +281,7 @@ def collect_report_data() -> dict[str, Any]:
         "project_highlevel": _project_highlevel_report_data(thesis_project_highlevel),
         "next_work": _next_work_report_data(thesis_next_work),
         "execution_checklist": _execution_checklist_report_data(thesis_execution_checklist),
+        "advisor_handoff": _advisor_handoff_report_data(thesis_advisor_handoff),
         "source_counts": {
             "curated_events": len(event_seed),
             "literature_rows": len(literature),
@@ -303,6 +305,7 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
     project_highlevel = data["project_highlevel"]
     next_work = data["next_work"]
     execution_checklist = data["execution_checklist"]
+    advisor_handoff = data["advisor_handoff"]
     db = data["project"]["database"]
     folders = data["project"]["folder_inventory"]
     insight_rows = [
@@ -355,6 +358,16 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
     for row in execution_checklist["rows"]:
         execution_rows.append(
             "| {task_id} | {chapter_title} | {draft_action_de} | {done_when_de} | {advisor_question_ids} |".format(
+                **{key: str(value).replace("|", ",") for key, value in row.items()}
+            )
+        )
+    advisor_handoff_rows = [
+        "| Reihenfolge | Datei | Verwendung | Entscheidung | Grenze |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+    for row in advisor_handoff["rows"]:
+        advisor_handoff_rows.append(
+            "| {package_order} | `{path}` | {handoff_use_de} | {advisor_decision_de} | {boundary_de} |".format(
                 **{key: str(value).replace("|", ",") for key, value in row.items()}
             )
         )
@@ -433,6 +446,18 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
             f"| {row[0]} | {row[1]} | {row[2]} |"
             for row in highlevel["rows"]
         ],
+        "",
+        "## Dozentenpaket und Uebergabereihenfolge",
+        "",
+        (
+            f"Das Advisor-Handoff-Paket ordnet {advisor_handoff['row_count']} "
+            "Dateien fuer die naechste Betreuung. Zuerst kommt der "
+            f"`{advisor_handoff['first_deliverable']}`, danach folgen "
+            "Absprache-Checklist, Execution Checklist, Chapter Source Bindings "
+            "und Source Review Execution."
+        ),
+        "",
+        *advisor_handoff_rows,
         "",
         "## Projektmatrix fuer die naechste Abstimmung",
         "",
@@ -1133,6 +1158,7 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
     project_highlevel = data["project_highlevel"]
     next_work = data["next_work"]
     execution_checklist = data["execution_checklist"]
+    advisor_handoff = data["advisor_handoff"]
     figures = "\n".join(
         _figure_html(figure, html_output=html_output)
         for figure in data["figures"]
@@ -1192,6 +1218,16 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
         f"<td>{escape(row['advisor_question_ids'])}</td>"
         "</tr>"
         for row in execution_checklist["rows"]
+    )
+    advisor_handoff_rows = "\n".join(
+        "<tr>"
+        f"<td>{row['package_order']}</td>"
+        f"<td><code>{escape(row['path'])}</code></td>"
+        f"<td>{escape(row['handoff_use_de'])}</td>"
+        f"<td>{escape(row['advisor_decision_de'])}</td>"
+        f"<td>{escape(row['boundary_de'])}</td>"
+        "</tr>"
+        for row in advisor_handoff["rows"]
     )
     project_highlevel_rows = "\n".join(
         "<tr>"
@@ -1264,6 +1300,10 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
   </div>
   <p>Aktive Phase: {escape(highlevel['active_phase'])}. Das Thesis-Paket umfasst {highlevel['caption_rows']} Caption-Zeilen und wird aus <code>data/results/thesis_table_figure_captions.csv</code> gespeist.</p>
   <table><tr><th>Ebene</th><th>Stand</th><th>Konsequenz fuer die Thesis</th></tr>{highlevel_rows}</table>
+
+  <h2>Dozentenpaket und Uebergabereihenfolge</h2>
+  <p>Das Advisor-Handoff-Paket ordnet {advisor_handoff['row_count']} Dateien fuer die naechste Betreuung. Zuerst kommt <code>{escape(advisor_handoff['first_deliverable'])}</code>, danach folgen Absprache-Checklist, Execution Checklist, Chapter Source Bindings und Source Review Execution.</p>
+  <table><tr><th>Reihenfolge</th><th>Datei</th><th>Verwendung</th><th>Entscheidung</th><th>Grenze</th></tr>{advisor_handoff_rows}</table>
 
   <h2>Projektmatrix fuer die naechste Abstimmung</h2>
   <p>Die Projektmatrix fasst {project_highlevel['row_count']} Ebenen als Status-, Entscheidungs- und Gate-Sicht zusammen. Sie zeigt explizit, dass Review-Access pausiert bleibt und Agenten nur dokumentierter Ausblick sind.</p>
@@ -1391,6 +1431,7 @@ def write_docx(data: dict[str, Any], output_path: Path) -> None:
     _add_cover(doc, data)
     _add_toc_note(doc)
     _add_highlevel_status_section(doc, data["thesis_highlevel"])
+    _add_advisor_handoff_package_section(doc, data["advisor_handoff"])
     _add_project_highlevel_matrix_section(doc, data["project_highlevel"])
     _add_next_work_section(doc, data["next_work"])
     _add_execution_checklist_section(doc, data["execution_checklist"])
@@ -1703,6 +1744,41 @@ def _execution_checklist_report_data(execution_checklist: pd.DataFrame) -> dict[
     }
 
 
+def _advisor_handoff_report_data(advisor_handoff: pd.DataFrame) -> dict[str, Any]:
+    """Translate advisor handoff package rows into report rows."""
+
+    required_columns = {
+        "package_order",
+        "deliverable_id",
+        "path",
+        "handoff_use_de",
+        "advisor_decision_de",
+        "boundary_de",
+    }
+    missing = sorted(required_columns.difference(advisor_handoff.columns))
+    if missing:
+        raise ValueError(f"advisor handoff package missing required columns: {missing}")
+
+    ordered = advisor_handoff.sort_values("package_order")
+    rows = [
+        {
+            "package_order": int(row["package_order"]),
+            "deliverable_id": str(row["deliverable_id"]),
+            "path": str(row["path"]),
+            "handoff_use_de": str(row["handoff_use_de"]),
+            "advisor_decision_de": str(row["advisor_decision_de"]),
+            "boundary_de": str(row["boundary_de"]),
+        }
+        for row in ordered.to_dict(orient="records")
+    ]
+    return {
+        "row_count": len(rows),
+        "first_deliverable": rows[0]["deliverable_id"] if rows else "",
+        "final_deliverable": rows[-1]["deliverable_id"] if rows else "",
+        "rows": rows,
+    }
+
+
 def _interpretation_rows(data: dict[str, Any]) -> list[dict[str, str]]:
     """Create thesis-facing insight rows from deterministic report data."""
 
@@ -2003,6 +2079,47 @@ def _add_highlevel_status_section(doc: Document, highlevel: dict[str, Any]) -> N
             "Basis, Monitor und Swiss bleiben abgegrenzt, und die Thesis soll "
             "mit wenigen guten Tabellen/Figuren statt vielen Rohartefakten "
             "geschrieben werden."
+        ),
+    )
+
+
+def _add_advisor_handoff_package_section(
+    doc: Document,
+    advisor_handoff: dict[str, Any],
+) -> None:
+    doc.add_heading("Dozentenpaket und Uebergabereihenfolge", level=1)
+    doc.add_paragraph(
+        f"Das Advisor-Handoff-Paket ordnet {advisor_handoff['row_count']} "
+        "Dateien fuer die naechste Betreuung. Zuerst kommt "
+        f"`{advisor_handoff['first_deliverable']}`, danach folgen "
+        "Absprache-Checklist, Execution Checklist, Chapter Source Bindings "
+        "und Source Review Execution."
+    )
+    rows = [
+        (
+            row["package_order"],
+            row["path"],
+            row["handoff_use_de"],
+            row["advisor_decision_de"],
+            row["boundary_de"],
+        )
+        for row in advisor_handoff["rows"]
+    ]
+    table = _add_table(
+        doc,
+        rows,
+        ["Reihenfolge", "Datei", "Verwendung", "Entscheidung", "Grenze"],
+        [900, 2300, 2200, 2500, 1460],
+    )
+    _shade_table_header(table)
+    _add_callout(
+        doc,
+        "Uebergabe",
+        (
+            "Fuer den Dozenten reicht als Einstieg das Word-Dokument plus "
+            "Absprache-Checklist. Die weiteren Dateien steuern das Schreiben "
+            "und Quellenreview, ohne Review-Access, Agenten oder neue Empirie "
+            "zu aktivieren."
         ),
     )
 

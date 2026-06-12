@@ -1,6 +1,6 @@
 # Dozentenbericht zur Bachelorarbeit
 
-Erstellt: 2026-06-12T02:20:06+00:00
+Erstellt: 2026-06-12T02:52:21+00:00
 
 **Arbeitstitel:** Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen.
 
@@ -42,6 +42,20 @@ Der Review-Access bleibt pausiert. Der aktuelle Fortschritt liegt in der Thesis-
 | Quellen und Zitation | Die Citation-Review-Pakete verknuepfen Quellen mit Evidence-IDs, erlaubtem Wording und Review-Gates. | Finale Thesis-Zitate brauchen noch Seiten- oder Abschnittsnachweise; candidate Quellen bleiben blockiert. |
 | Monitor und Swiss | Monitor bleibt Prototype/Appendix; Swiss bleibt bis zum offiziellen Ergebnis beschreibender Side-Track. | Beide Teile duerfen die H1-H3-Kernaussage nicht staerker machen als die deterministischen Artefakte erlauben. |
 | Agenten-Ausblick | Agenten koennen spaeter bei Source Review, Drafting und Guardrail-Checks helfen, bleiben aber jetzt deaktiviert. | Keine Runtime-Agenten, kein MCP, keine Modell-Router und keine LLM-Metriken vor stabilem deterministic core. |
+
+## Dozentenpaket und Uebergabereihenfolge
+
+Das Advisor-Handoff-Paket ordnet 7 Dateien fuer die naechste Betreuung. Zuerst kommt der `advisor_report_docx`, danach folgen Absprache-Checklist, Execution Checklist, Chapter Source Bindings und Source Review Execution.
+
+| Reihenfolge | Datei | Verwendung | Entscheidung | Grenze |
+| --- | --- | --- | --- | --- |
+| 1 | `docs/project/dozentenbericht_ba_thesis.docx` | Als schriftliches Word-Update an den Dozenten geben. | Projektstand, Aufbau, H1-H3-Kern, Grenzen und naechste Schritte abstimmen. | DOCX-Render-QA bleibt lokal blockiert, wenn LibreOffice/soffice fehlt. |
+| 2 | `docs/project/DOZENTEN_ABSPRACHE_CHECKLIST.md` | Als Gespraechsagenda fuer die naechste Betreuung nutzen. | H1-Wording, Source-Review-Tiefe, H2/H3-Scope, Swiss und Appendix-Scope klaeren. | Fragen klaeren Scope; sie aktivieren keine Empirie-Erweiterung. |
+| 3 | `docs/project/THESIS_EXECUTION_CHECKLIST.md` | Nach Feedback als Kapitel- und Abnahme-Checkliste nutzen. | Reihenfolge und Done-Kriterien fuer die BA-Kapitel bestaetigen. | Review-Access bleibt pausiert; keine Runtime-Agenten oder Rohartefakt-Dumps. |
+| 4 | `docs/project/THESIS_CHAPTER_SOURCE_BINDINGS.md` | Beim Schreiben je Kapitel Quellen, Artefakte und Gates pruefen. | Klaeren, ob diese Kapitel-zu-Quelle-Bindung fuer die Abgabe reicht. | Keine thesis-facing Claims ohne Human Review, Artefaktverweis, Limitation und Wording Guard. |
+| 5 | `docs/project/THESIS_SOURCE_REVIEW_EXECUTION.md` | Als manuelle Reihenfolge fuer die Quellenpruefung nutzen. | Prioritaet der 11 Priority-1-Quellen und blocked/future-only Quellen bestaetigen. | Quellenstatus nicht automatisch hochstufen. |
+| 6 | `docs/project/THESIS_AGENT_FUTURE_WORK_HANDOFF.md` | Nur als Future-Work-Ausblick fuer spaetere Pipeline-Verbesserungen nutzen. | Bestaetigen, dass Agenten nicht Teil des empirischen Kerns werden. | Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade. |
+| 7 | `docs/project/THESIS_CONSOLIDATION_INDEX.md` | Als Navigationsindex fuer alle aktuellen Projektartefakte nutzen. | Keine Entscheidung; dient Orientierung und Nachvollziehbarkeit. | Nicht als neues empirisches Resultat verwenden. |
 
 ## Projektmatrix fuer die naechste Abstimmung
 
@@ -156,10 +170,10 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Projektstruktur
 
 - SQLite-Datenbank: 9 Tabellen.
-- Ergebnisartefakte: 327 Dateien unter `data/results`.
+- Ergebnisartefakte: 331 Dateien unter `data/results`.
 - Analyse-Module: 78 Dateien.
 - Collector-Module: 10 Dateien.
-- Tests: 100 Testdateien; letzter Status: 513 passed in 49.26s.
+- Tests: 104 Testdateien; letzter Status: 521 passed in 48.69s.
 
 ## H1 - Forecast-Qualitaet
 

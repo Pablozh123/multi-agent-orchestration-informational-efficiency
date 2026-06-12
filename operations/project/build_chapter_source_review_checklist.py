@@ -82,7 +82,13 @@ def generate_chapter_source_review_checklist(
     docs_dir = _resolve_under(repo_root, docs_dir)
 
     handoff = _read_csv(results_dir / "thesis_source_review_chapter_handoff.csv")
-    checklist = build_chapter_source_review_checklist(handoff=handoff)
+    manual_followup_overview = _read_csv(
+        results_dir / "thesis_manual_source_review_followup_overview.csv"
+    )
+    checklist = build_chapter_source_review_checklist(
+        handoff=handoff,
+        manual_followup_overview=manual_followup_overview,
+    )
     _validate_checklist(checklist)
 
     results_dir.mkdir(parents=True, exist_ok=True)
@@ -106,7 +112,11 @@ def generate_chapter_source_review_checklist(
     )
 
 
-def build_chapter_source_review_checklist(*, handoff: pd.DataFrame) -> pd.DataFrame:
+def build_chapter_source_review_checklist(
+    *,
+    handoff: pd.DataFrame,
+    manual_followup_overview: pd.DataFrame,
+) -> pd.DataFrame:
     """Return six checklist rows per empirical chapter handoff row."""
 
     _require_columns(
@@ -135,14 +145,44 @@ def build_chapter_source_review_checklist(*, handoff: pd.DataFrame) -> pd.DataFr
         ),
         "source review chapter handoff",
     )
+    _require_columns(
+        manual_followup_overview,
+        (
+            "slice_id",
+            "review_rows",
+            "pending_rows",
+            "final_ready_rows",
+            "followup_doc",
+            "followup_csv",
+        ),
+        "manual source-review follow-up overview",
+    )
 
+    overview_by_area = manual_followup_overview.set_index("slice_id").to_dict(orient="index")
     rows: list[dict[str, object]] = []
     for chapter in handoff.sort_values("thesis_area").to_dict(orient="records"):
         area = str(chapter["thesis_area"])
+        if area not in CORE_AREAS:
+            raise ValueError(f"Unexpected thesis area in chapter checklist: {area}")
         handoff_id = str(chapter["handoff_id"])
         pending_reviews = int(chapter["pending_review_rows"])
         review_rows = int(chapter["source_review_rows"])
         final_ready_rows = int(chapter["final_citation_ready_rows"])
+        overview_row = overview_by_area.get(area)
+        if overview_row is None:
+            raise ValueError(f"Chapter source review checklist missing overview row for {area}.")
+        _validate_overview_match(
+            area=area,
+            overview_row=overview_row,
+            review_rows=review_rows,
+            pending_reviews=pending_reviews,
+            final_ready_rows=final_ready_rows,
+        )
+        overview_artifacts = (
+            "data/results/thesis_manual_source_review_followup_overview.csv; "
+            "docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md; "
+            f"{overview_row['followup_csv']}; {overview_row['followup_doc']}"
+        )
         rows.extend(
             [
                 _checklist_row(
@@ -170,7 +210,10 @@ def build_chapter_source_review_checklist(*, handoff: pd.DataFrame) -> pd.DataFr
                     chapter=chapter,
                     check_order=2,
                     check_area="literature_source_review",
-                    source_artifact="data/results/thesis_source_review_progress_ledger.csv",
+                    source_artifact=(
+                        "data/results/thesis_source_review_progress_ledger.csv; "
+                        f"{overview_artifacts}"
+                    ),
                     current_state="manual_source_review_pending",
                     completion_status=(
                         "pending_manual_source_review"
@@ -179,11 +222,17 @@ def build_chapter_source_review_checklist(*, handoff: pd.DataFrame) -> pd.DataFr
                     ),
                     required_evidence_de=(
                         f"{area}: {review_rows} Ledger-Zeilen; {pending_reviews} pending; "
-                        f"{final_ready_rows} final-ready; Literatur IDs `{chapter['literature_source_ids']}`."
+                        f"{final_ready_rows} final-ready; Manual Source Review Follow-up "
+                        f"Overview: {overview_row['review_rows']} Review-Zeilen, "
+                        f"{overview_row['pending_rows']} pending, "
+                        f"{overview_row['final_ready_rows']} final-ready; "
+                        f"Detailstart `{overview_row['followup_doc']}`; Literatur IDs "
+                        f"`{chapter['literature_source_ids']}`."
                     ),
                     manual_action_de=(
-                        "Page-/Section-Note, Claim-Support, Blocked-Wording, Citation-Use, "
-                        "Reviewer und Kommentar pro Quelle im Ledger erfassen."
+                        "Manual Source Review Follow-up Overview pruefen; danach "
+                        "Page-/Section-Note, Claim-Support, Blocked-Wording, "
+                        "Citation-Use, Reviewer und Kommentar pro Quelle im Ledger erfassen."
                     ),
                     thesis_use_rule_de=(
                         "Draft darf Pending-Status zeigen; finale Quellenzitation erst nach "
@@ -240,7 +289,10 @@ def build_chapter_source_review_checklist(*, handoff: pd.DataFrame) -> pd.DataFr
                     chapter=chapter,
                     check_order=5,
                     check_area="final_citation_gate",
-                    source_artifact="data/results/thesis_source_review_progress_ledger.csv",
+                    source_artifact=(
+                        "data/results/thesis_source_review_progress_ledger.csv; "
+                        f"{overview_artifacts}"
+                    ),
                     current_state=str(chapter["chapter_write_status"]),
                     completion_status=(
                         "final_citation_ready"
@@ -248,7 +300,10 @@ def build_chapter_source_review_checklist(*, handoff: pd.DataFrame) -> pd.DataFr
                         else "final_blocked_source_review_pending"
                     ),
                     required_evidence_de=str(chapter["required_source_review_de"]),
-                    manual_action_de="Erst nach abgeschlossener manueller Review finale Zitation formatieren.",
+                    manual_action_de=(
+                        "Erst nach abgeschlossener manueller Review und Overview-/"
+                        "Ledger-Abgleich finale Zitation formatieren."
+                    ),
                     thesis_use_rule_de="Keine finale Zitation, solange Ledger-Zeilen pending sind.",
                     blocked_actions_de=(
                         "Keine finale Zitation, keine Candidate-Quellen als Thesis-Evidence "
@@ -276,8 +331,6 @@ def build_chapter_source_review_checklist(*, handoff: pd.DataFrame) -> pd.DataFr
                 ),
             ]
         )
-        if area not in CORE_AREAS:
-            raise ValueError(f"Unexpected thesis area in chapter checklist: {area}")
         if not handoff_id:
             raise ValueError(f"Missing handoff id for {area}.")
     return pd.DataFrame(rows, columns=CHECKLIST_COLUMNS)
@@ -365,6 +418,8 @@ def _validate_checklist(checklist: pd.DataFrame) -> None:
     lower_joined = joined.lower()
     required_terms = (
         "source-review",
+        "manual source review follow-up overview",
+        "overview-/ledger-abgleich",
         "keine finale zitation",
         "keine quellenstatus-hochstufung",
         "keine rohartefakt-dumps",
@@ -376,6 +431,25 @@ def _validate_checklist(checklist: pd.DataFrame) -> None:
     missing = [term for term in required_terms if term not in lower_joined]
     if missing:
         raise ValueError("Chapter source review checklist missing required terms: " + ", ".join(missing))
+
+
+def _validate_overview_match(
+    *,
+    area: str,
+    overview_row: dict[str, object],
+    review_rows: int,
+    pending_reviews: int,
+    final_ready_rows: int,
+) -> None:
+    overview_review_rows = int(overview_row["review_rows"])
+    overview_pending_rows = int(overview_row["pending_rows"])
+    overview_final_ready_rows = int(overview_row["final_ready_rows"])
+    if overview_review_rows != review_rows:
+        raise ValueError(f"{area} checklist overview rows do not match handoff rows.")
+    if overview_pending_rows != pending_reviews:
+        raise ValueError(f"{area} checklist overview pending rows do not match handoff rows.")
+    if overview_final_ready_rows != final_ready_rows:
+        raise ValueError(f"{area} checklist overview final-ready rows do not match handoff rows.")
 
 
 def _render_checklist_doc(checklist: pd.DataFrame) -> str:
@@ -398,7 +472,9 @@ def _render_checklist_doc(checklist: pd.DataFrame) -> str:
         "manuelle Abnahmeschritte. Sie liest keine Quelleninhalte, berechnet "
         "keine Kennzahlen, promotet keinen Quellenstatus und aktiviert keine "
         "Runtime-Agenten. Sie ist eine Schreib- und Review-Kontrolle fuer den "
-        "BA-Draft, nicht die finale Quellenfreigabe.\n\n"
+        "BA-Draft, nicht die finale Quellenfreigabe. Die Manual Source Review "
+        "Follow-up Overview bleibt der Overview-/Ledger-Abgleich fuer die "
+        "kapitelweisen Pending-Zeilen.\n\n"
         "## Counts\n\n"
         f"- Checklist rows: {len(checklist)}\n"
         f"- Bounded draft ready rows: {int(checklist['ready_for_bounded_draft'].map(_bool_value).sum())}\n"
@@ -414,6 +490,7 @@ def _render_checklist_doc(checklist: pd.DataFrame) -> str:
         "H3. Jeder Kapitelteil muss Evidence IDs, Literatur IDs, Artefakte, "
         "kuratierte Tabellen/Figuren, Limitationen und Source-Review-Gates "
         "sichtbar halten. Keine finale Zitation ohne manuelle Ledger-Review. "
+        "Vor finaler Zitation ist der Overview-/Ledger-Abgleich zu pruefen. "
         "Keine Rohartefakt-Dumps, keine Quellenstatus-Hochstufung, keine "
         "Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken, "
         "keine Wallet-Adress-Exposition und keine Trading-Pfade.\n"

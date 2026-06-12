@@ -853,7 +853,10 @@ Current implemented consolidation:
   handoff into 18 manual check rows: six checks per H1-H2-H3 chapter for
   coverage, literature review, result package, limitation/blocked wording,
   final citation, and future-agent boundary. All rows are bounded-draft-ready;
-  final submission remains blocked by Source Review.
+  final submission remains blocked by Source Review. Literature-review and
+  final-citation checks now require the Manual Source Review Follow-up
+  Overview as Overview-/Ledger-Abgleich before Ledger updates or final
+  citation.
 - `data/results/thesis_h1_h2_h3_drafting_checklist.csv` and
   `docs/project/THESIS_H1_H2_H3_DRAFTING_CHECKLIST.md` turn the checked
   handoff into 18 drafting rows: method setup, result statement,

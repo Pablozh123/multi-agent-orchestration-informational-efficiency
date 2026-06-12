@@ -206,7 +206,9 @@ acceptance_criteria:
 - A chapter-level source-review checklist exists so H1-H2-H3 writing can be
   checked against coverage, literature review, result-package integration,
   limitations, blocked wording, final citation gates, and future-agent
-  boundaries before final submission.
+  boundaries before final submission. It now uses the Manual Source Review
+  Follow-up Overview in literature-review and final-citation checks, requiring
+  the Overview-/Ledger-Abgleich before Ledger updates or final citation.
 - A H1-H2-H3 drafting checklist exists so each empirical core chapter can be
   drafted in a fixed order: method setup, result statement, interpretation
   boundary, table/figure integration, Source Review citation gate, and
@@ -252,7 +254,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: refresh chapter source review checklist after overview
+next_commit: docs: refresh h1 h2 h3 drafting checklist after overview
 
 ## Running Side Goal
 

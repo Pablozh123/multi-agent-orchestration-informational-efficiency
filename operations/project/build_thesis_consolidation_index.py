@@ -310,6 +310,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine Quellenstatus-Hochstufung, keine finale Zitation durch den Ledger und keine automatisierte Quelleninterpretation.",
         ),
         _index_row(
+            artifact_id="index_26_h1_h2_h3_manual_source_review_execution_pass",
+            artifact_type="manual_source_review_execution_pass",
+            path="docs/project/THESIS_H1_H2_H3_MANUAL_SOURCE_REVIEW_EXECUTION_PASS.md; data/results/thesis_h1_h2_h3_manual_source_review_execution_pass.csv",
+            purpose_de="Geordnete manuelle H1-H2-H3 Source-Review-Ausfuehrungsliste aus Ledger, Notes, Decision Packets, Coverage, Handoff und Tabellen/Figurenkontext.",
+            use_now_de="Als konkrete source-by-source Arbeitsliste fuer Page-/Section-Notes, Claim-Support, Blocked-Wording und Citation-Use nutzen.",
+            gate_or_limit_de="Keine Quellenstatus-Hochstufung, keine finale Zitation, keine Rohartefakt-Dumps und keine Runtime-Agenten.",
+        ),
+        _index_row(
             artifact_id="index_27_source_review_progress_protocol",
             artifact_type="source_review_progress_protocol",
             path="docs/project/THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md; data/results/thesis_source_review_progress_protocol.csv",
@@ -479,8 +487,9 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Source Review Execution, Source Access "
         "Audit, Source Structure Inventory, Source Review Decision Packets, "
         "H1-H2-H3 Source Review Notes, Source Review Progress Ledger, "
-        "Source Review Progress Protocol, Source Review Chapter Handoff, "
-        "Chapter Source Review Checklist, H1-H2-H3 Drafting Checklist, "
+        "H1-H2-H3 Manual Source Review Execution Pass, Source Review "
+        "Progress Protocol, Source Review Chapter Handoff, Chapter Source "
+        "Review Checklist, H1-H2-H3 Drafting Checklist, "
         "H1-H2-H3 Bounded Chapter Draft, H1-H2-H3 Source-Gated Writing Pass, Thesis Final Gate Board, Traceability Audit, Method/Interpretation Source Coverage, "
         "H1-H2-H3 Core Sections, Agent Pipeline Upgrade Plan, Goal Completion Audit, Agent Future-Work Handoff, Agent Pipeline Control Audit, Tabellen/Figuren und "
         "Future-Work-Agenten relevant sind.\n\n"
@@ -502,9 +511,12 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Inventory sowie Source Review Decision Packets vor der manuellen "
         "Quellenpruefung. Nutze die H1-H2-H3 Source Review Notes fuer den "
         "empirischen BA-Kern und den Source Review Progress Ledger fuer "
-        "manuelle Fortschrittsentscheide. Nutze das Source Review Progress "
-        "Protocol als Reihenfolge fuer Coverage, Resultatpaket, Source Review "
-        "und Future-Agent-Grenzen. Nutze das Source Review Chapter Handoff "
+        "manuelle Fortschrittsentscheide. Nutze den H1-H2-H3 Manual Source "
+        "Review Execution Pass als konkrete source-by-source Arbeitsliste "
+        "fuer Page-/Section-Notes, Claim-Support, Blocked-Wording und "
+        "Citation-Use. Nutze das Source Review Progress Protocol als "
+        "Reihenfolge fuer Coverage, Resultatpaket, Source Review und "
+        "Future-Agent-Grenzen. Nutze das Source Review Chapter Handoff "
         "als kapitelweise Uebergabe fuer H1-H2-H3 und die Chapter Source "
         "Review Checklist als Abhakliste. Nutze die H1-H2-H3 Drafting Checklist "
         "als konkrete Schreibreihenfolge, den H1-H2-H3 Bounded Chapter Draft als Prosa-Bausteine und den H1-H2-H3 Source-Gated Writing Pass als zusammenhaengenden Schreibstand fuer den empirischen Kern. Nutze das Thesis Final Gate Board als Highlevel-Stop-/Go-Kontrolle. Nutze den Traceability Audit als BA-Schreibkontrolle. "

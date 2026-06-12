@@ -19,9 +19,9 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     doc = result.docs_path.read_text(encoding="utf-8")
 
     assert tuple(index.columns) == INDEX_COLUMNS
-    assert result.index_rows == 40
+    assert result.index_rows == 41
     assert "Thesis Consolidation Index" in doc
-    assert "Indexed artifacts: 40" in doc
+    assert "Indexed artifacts: 41" in doc
     assert "dozentenbericht_ba_thesis.docx" in doc
     assert "THESIS_ADVISOR_HANDOFF_PACKAGE.md" in doc
     assert "DOZENTEN_UEBERGABE_TEXT.md" in doc
@@ -34,6 +34,7 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     assert "THESIS_SOURCE_REVIEW_DECISION_PACKETS.md" in doc
     assert "THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md" in doc
     assert "THESIS_SOURCE_REVIEW_PROGRESS_LEDGER.md" in doc
+    assert "THESIS_H1_H2_H3_MANUAL_SOURCE_REVIEW_EXECUTION_PASS.md" in doc
     assert "THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md" in doc
     assert "THESIS_SOURCE_REVIEW_CHAPTER_HANDOFF.md" in doc
     assert "THESIS_CHAPTER_SOURCE_REVIEW_CHECKLIST.md" in doc
@@ -73,6 +74,7 @@ def test_thesis_consolidation_index_keeps_deferred_boundaries(tmp_path: Path) ->
     assert "source_review_decision_packets" in joined
     assert "h1_h2_h3_source_review_notes" in joined
     assert "source_review_progress_ledger" in joined
+    assert "manual_source_review_execution_pass" in joined
     assert "source_review_progress_protocol" in joined
     assert "source_review_chapter_handoff" in joined
     assert "chapter_source_review_checklist" in joined
@@ -139,6 +141,8 @@ def _write_fixture(root: Path) -> None:
         "data/results/thesis_h1_h2_h3_source_review_notes.csv",
         "docs/project/THESIS_SOURCE_REVIEW_PROGRESS_LEDGER.md",
         "data/results/thesis_source_review_progress_ledger.csv",
+        "docs/project/THESIS_H1_H2_H3_MANUAL_SOURCE_REVIEW_EXECUTION_PASS.md",
+        "data/results/thesis_h1_h2_h3_manual_source_review_execution_pass.csv",
         "docs/project/THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md",
         "data/results/thesis_source_review_progress_protocol.csv",
         "docs/project/THESIS_SOURCE_REVIEW_CHAPTER_HANDOFF.md",

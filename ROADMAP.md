@@ -789,6 +789,14 @@ Current implemented consolidation:
   pending, with manual fields preserved by `note_id` across regenerations.
   The ledger allows no automatic Quellenstatus-Hochstufung, no final citation
   claim, no Review-Access expansion, and no runtime-agent interpretation.
+- `data/results/thesis_h1_h2_h3_manual_source_review_execution_pass.csv` and
+  `docs/project/THESIS_H1_H2_H3_MANUAL_SOURCE_REVIEW_EXECUTION_PASS.md`
+  translate the H1-H2-H3 Source Review Ledger into a source-by-source manual
+  execution pass: 23 rows across H1 (10), H2 (5), and H3 (8), 9 unique
+  sources, 0 final-citation-ready rows, 0 source-status change rows, and
+  explicit Page-/Section-Note, Claim-Support, Blocked-Wording and Citation-Use
+  gates linked to Evidence IDs, deterministic artifacts, selected
+  tables/figures, source coverage, and chapter context.
 - `data/results/thesis_source_review_progress_protocol.csv` and
   `docs/project/THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md` turn the highlevel
   Source Review path into six ordered gates: method/interpretation coverage,

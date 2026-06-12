@@ -67,6 +67,9 @@ def generate_goal_completion_audit(
     source_decisions = _read_csv(results_dir / "thesis_source_review_decision_packets.csv")
     h1_h2_h3_source_notes = _read_csv(results_dir / "thesis_h1_h2_h3_source_review_notes.csv")
     source_progress_ledger = _read_csv(results_dir / "thesis_source_review_progress_ledger.csv")
+    manual_source_review_execution_pass = _read_csv(
+        results_dir / "thesis_h1_h2_h3_manual_source_review_execution_pass.csv"
+    )
     source_progress_protocol = _read_csv(results_dir / "thesis_source_review_progress_protocol.csv")
     source_chapter_handoff = _read_csv(results_dir / "thesis_source_review_chapter_handoff.csv")
     chapter_checklist = _read_csv(results_dir / "thesis_chapter_source_review_checklist.csv")
@@ -98,6 +101,7 @@ def generate_goal_completion_audit(
         source_decisions=source_decisions,
         h1_h2_h3_source_notes=h1_h2_h3_source_notes,
         source_progress_ledger=source_progress_ledger,
+        manual_source_review_execution_pass=manual_source_review_execution_pass,
         source_progress_protocol=source_progress_protocol,
         source_chapter_handoff=source_chapter_handoff,
         chapter_checklist=chapter_checklist,
@@ -142,6 +146,7 @@ def build_goal_completion_audit(
     source_decisions: pd.DataFrame,
     h1_h2_h3_source_notes: pd.DataFrame,
     source_progress_ledger: pd.DataFrame,
+    manual_source_review_execution_pass: pd.DataFrame,
     source_progress_protocol: pd.DataFrame,
     source_chapter_handoff: pd.DataFrame,
     chapter_checklist: pd.DataFrame,
@@ -203,6 +208,22 @@ def build_goal_completion_audit(
             "source_status_change_allowed",
         ),
         "source review progress ledger",
+    )
+    _require_columns(
+        manual_source_review_execution_pass,
+        (
+            "execution_id",
+            "thesis_area",
+            "source_id",
+            "evidence_id",
+            "source_known_in_literature_index",
+            "primary_artifact_exists",
+            "coverage_status",
+            "source_status_change_allowed",
+            "final_citation_ready",
+            "ready_for_bounded_draft",
+        ),
+        "manual source review execution pass",
     )
     _require_columns(
         source_progress_protocol,
@@ -388,6 +409,29 @@ def build_goal_completion_audit(
     ledger_status_change_allowed = int(
         source_progress_ledger["source_status_change_allowed"].astype(bool).sum()
     )
+    manual_execution_rows = int(len(manual_source_review_execution_pass))
+    manual_execution_area_counts = manual_source_review_execution_pass["thesis_area"].value_counts().to_dict()
+    manual_execution_unique_sources = int(manual_source_review_execution_pass["source_id"].nunique())
+    manual_execution_final_ready = int(
+        manual_source_review_execution_pass["final_citation_ready"].astype(bool).sum()
+    )
+    manual_execution_status_change_allowed = int(
+        manual_source_review_execution_pass["source_status_change_allowed"].astype(bool).sum()
+    )
+    manual_execution_draft_ready = int(
+        manual_source_review_execution_pass["ready_for_bounded_draft"].astype(bool).sum()
+    )
+    manual_execution_coverage_gaps = int(
+        manual_source_review_execution_pass["coverage_status"].astype(str).str.contains(
+            "gap", case=False
+        ).sum()
+    )
+    manual_execution_unknown_sources = int(
+        (~manual_source_review_execution_pass["source_known_in_literature_index"].astype(bool)).sum()
+    )
+    manual_execution_missing_artifacts = int(
+        (~manual_source_review_execution_pass["primary_artifact_exists"].astype(bool)).sum()
+    )
     protocol_rows = int(len(source_progress_protocol))
     protocol_areas = int(source_progress_protocol["protocol_area"].nunique())
     traceable_thesis_facing = method_traceability[
@@ -500,7 +544,7 @@ def build_goal_completion_audit(
             audit_id="goal_audit_02_evidence_map",
             goal_requirement_de="Methoden und Interpretationen sind auf Artefakte und Quellen gemappt.",
             current_status="draft_ready_final_source_review_pending",
-            evidence_artifacts="data/results/thesis_evidence_map.csv; data/results/thesis_citation_readiness.csv; data/results/thesis_source_access_audit.csv; data/results/thesis_source_structure_inventory.csv; data/results/thesis_source_review_decision_packets.csv; data/results/thesis_h1_h2_h3_source_review_notes.csv; docs/project/THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md; data/results/thesis_source_review_progress_ledger.csv; docs/project/THESIS_SOURCE_REVIEW_PROGRESS_LEDGER.md; data/results/thesis_source_review_progress_protocol.csv; docs/project/THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md; data/results/thesis_method_interpretation_traceability.csv; data/results/thesis_method_interpretation_source_coverage.csv; docs/project/THESIS_METHOD_INTERPRETATION_SOURCE_COVERAGE.md",
+            evidence_artifacts="data/results/thesis_evidence_map.csv; data/results/thesis_citation_readiness.csv; data/results/thesis_source_access_audit.csv; data/results/thesis_source_structure_inventory.csv; data/results/thesis_source_review_decision_packets.csv; data/results/thesis_h1_h2_h3_source_review_notes.csv; docs/project/THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md; data/results/thesis_source_review_progress_ledger.csv; docs/project/THESIS_SOURCE_REVIEW_PROGRESS_LEDGER.md; data/results/thesis_h1_h2_h3_manual_source_review_execution_pass.csv; docs/project/THESIS_H1_H2_H3_MANUAL_SOURCE_REVIEW_EXECUTION_PASS.md; data/results/thesis_source_review_progress_protocol.csv; docs/project/THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md; data/results/thesis_method_interpretation_traceability.csv; data/results/thesis_method_interpretation_source_coverage.csv; docs/project/THESIS_METHOD_INTERPRETATION_SOURCE_COVERAGE.md",
             key_evidence_de=(
                 f"Thesis-facing Evidence: {len(thesis_facing)} Zeilen; "
                 f"Methoden: {method_rows}; Interpretationen: {interpretation_rows}; "
@@ -519,6 +563,17 @@ def build_goal_completion_audit(
                 f"Source Progress Ledger: {ledger_rows} Zeilen; pending: {ledger_pending}; "
                 f"final-ready: {ledger_final_ready}; "
                 f"source-status changes erlaubt: {ledger_status_change_allowed}. "
+                f"Manual Execution Pass: {manual_execution_rows} Zeilen; "
+                f"H1: {int(manual_execution_area_counts.get('H1', 0))}; "
+                f"H2: {int(manual_execution_area_counts.get('H2', 0))}; "
+                f"H3: {int(manual_execution_area_counts.get('H3', 0))}; "
+                f"unique sources: {manual_execution_unique_sources}; "
+                f"bounded-draft-ready: {manual_execution_draft_ready}; "
+                f"final-ready: {manual_execution_final_ready}; "
+                f"source-status changes erlaubt: {manual_execution_status_change_allowed}; "
+                f"coverage gaps: {manual_execution_coverage_gaps}; "
+                f"unknown sources: {manual_execution_unknown_sources}; "
+                f"missing artifacts: {manual_execution_missing_artifacts}. "
                 f"Source Progress Protocol: {protocol_rows} Zeilen in {protocol_areas} Bereichen. "
                 f"Traceability: {traceable_methods} Methoden, {traceable_interpretations} Interpretationen, "
                 f"{traceability_gap_count} Gaps. "

@@ -30,6 +30,8 @@ def test_generate_goal_completion_audit_writes_remaining_gates(tmp_path: Path) -
     assert "THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md" in doc
     assert "thesis_source_review_progress_ledger.csv" in doc
     assert "THESIS_SOURCE_REVIEW_PROGRESS_LEDGER.md" in doc
+    assert "thesis_h1_h2_h3_manual_source_review_execution_pass.csv" in doc
+    assert "THESIS_H1_H2_H3_MANUAL_SOURCE_REVIEW_EXECUTION_PASS.md" in doc
     assert "thesis_source_review_progress_protocol.csv" in doc
     assert "THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md" in doc
     assert "thesis_method_interpretation_traceability.csv" in doc
@@ -80,6 +82,8 @@ def test_goal_completion_audit_keeps_open_gates_visible(tmp_path: Path) -> None:
     assert "h1-h2-h3 source notes: 3 zeilen; h1: 1; h2: 1; h3: 1; pending: 3" in joined
     assert "source progress ledger: 3 zeilen; pending: 3; final-ready: 0" in joined
     assert "source-status changes erlaubt: 0" in joined
+    assert "manual execution pass: 3 zeilen; h1: 1; h2: 1; h3: 1; unique sources: 3" in joined
+    assert "bounded-draft-ready: 3; final-ready: 0; source-status changes erlaubt: 0; coverage gaps: 0; unknown sources: 0; missing artifacts: 0" in joined
     assert "source progress protocol: 6 zeilen in 6 bereichen" in joined
     assert "traceability: 1 methoden, 1 interpretationen, 0 gaps" in joined
     assert "source coverage: 3 links; thesis-facing: 3; unique sources: 2; h1: 3; h2: 0; h3: 0; coverage gaps: 0" in joined
@@ -200,6 +204,16 @@ def _write_fixture(root: Path) -> None:
             _ledger("ledger_h3", "H3"),
         ]
     ).to_csv(results / "thesis_source_review_progress_ledger.csv", index=False)
+    pd.DataFrame(
+        [
+            _manual_execution("manual_h1", "H1", "source_a", "method_h1"),
+            _manual_execution("manual_h2", "H2", "source_b", "method_h2"),
+            _manual_execution("manual_h3", "H3", "source_c", "method_h3"),
+        ]
+    ).to_csv(
+        results / "thesis_h1_h2_h3_manual_source_review_execution_pass.csv",
+        index=False,
+    )
     pd.DataFrame(
         [
             _protocol("protocol_01", "evidence_mapping"),
@@ -362,6 +376,7 @@ def _write_fixture(root: Path) -> None:
         "docs/project/THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md",
         "docs/project/THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md",
         "docs/project/THESIS_SOURCE_REVIEW_PROGRESS_LEDGER.md",
+        "docs/project/THESIS_H1_H2_H3_MANUAL_SOURCE_REVIEW_EXECUTION_PASS.md",
         "docs/project/THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md",
         "docs/project/THESIS_METHOD_INTERPRETATION_SOURCE_COVERAGE.md",
         "docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md",
@@ -434,6 +449,26 @@ def _ledger(ledger_id: str, area: str) -> dict[str, object]:
         "review_progress_state": "pending_manual_review",
         "final_citation_ready": False,
         "source_status_change_allowed": False,
+    }
+
+
+def _manual_execution(
+    execution_id: str,
+    area: str,
+    source_id: str,
+    evidence_id: str,
+) -> dict[str, object]:
+    return {
+        "execution_id": execution_id,
+        "thesis_area": area,
+        "source_id": source_id,
+        "evidence_id": evidence_id,
+        "source_known_in_literature_index": True,
+        "primary_artifact_exists": True,
+        "coverage_status": "source_mapped_final_review_pending",
+        "source_status_change_allowed": False,
+        "final_citation_ready": False,
+        "ready_for_bounded_draft": True,
     }
 
 

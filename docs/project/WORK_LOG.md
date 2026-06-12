@@ -10745,3 +10745,60 @@ Verification:
   -> PASS, suggested `docs: update project control workflow`.
 - `git diff --stat`
   -> PASS, 2 project-control files changed.
+
+## 2026-06-12 - H1-H2-H3 manual source review execution pass
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Kept Review-Access paused and worked only on the manual literature/source
+  review gate for the empirical BA core.
+- Built the next deterministic bridge from source notes and the progress ledger
+  to an executable manual source-by-source work order.
+
+Changes:
+
+- Added
+  `operations/project/build_h1_h2_h3_manual_source_review_execution_pass.py`.
+- Added
+  `tests/test_h1_h2_h3_manual_source_review_execution_pass.py`.
+- Generated
+  `data/results/thesis_h1_h2_h3_manual_source_review_execution_pass.csv`.
+- Generated
+  `docs/project/THESIS_H1_H2_H3_MANUAL_SOURCE_REVIEW_EXECUTION_PASS.md`.
+- Updated `operations/project/build_thesis_consolidation_index.py` and
+  `operations/project/build_thesis_goal_completion_audit.py` so the new
+  execution pass is indexed and counted.
+- Regenerated `data/results/thesis_consolidation_index.csv`,
+  `docs/project/THESIS_CONSOLIDATION_INDEX.md`,
+  `data/results/thesis_goal_completion_audit.csv`, and
+  `docs/project/THESIS_GOAL_COMPLETION_AUDIT.md`.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Manual execution pass rows: 23.
+- H1 rows: 10.
+- H2 rows: 5.
+- H3 rows: 8.
+- Unique source IDs: 9.
+- Final-citation-ready rows: 0.
+- Source-status change rows: 0.
+- Every row keeps Evidence ID, deterministic artifact, selected table/figure,
+  coverage status, ledger state, Page-/Section-Note output,
+  Claim-Support, Blocked-Wording and Citation-Use gates visible.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_h1_h2_h3_manual_source_review_execution_pass.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_h2_h3_manual_source_review_execution_pass.py -q`
+  -> PASS, 2 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_consolidation_index.py tests\test_thesis_goal_completion_audit.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_h1_h2_h3_manual_source_review_execution_pass`
+  -> PASS, generated 23 execution rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 41 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
+  -> PASS, generated 10 audit rows.

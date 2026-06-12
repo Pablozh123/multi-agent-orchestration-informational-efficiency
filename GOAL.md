@@ -146,6 +146,11 @@ acceptance_criteria:
 - A source-review progress ledger exists so H1-H2-H3 manual review decisions
   can be preserved across regenerations without automatic source-status
   promotion or final citation claims.
+- A H1-H2-H3 manual source-review execution pass exists so the empirical core
+  has a source-by-source work order with Evidence IDs, selected tables/figures,
+  deterministic artifacts, coverage checks, ledger states, Page-/Section-Note
+  outputs, Claim-Support decisions, Blocked-Wording checks, Citation-Use gates,
+  and no automatic source-status promotion.
 - A source-review progress protocol exists so thesis-facing method coverage,
   interpretation coverage, compact result-package use, manual ledger flow,
   final citation gates, H1-H2-H3 drafting, and future-agent boundaries are
@@ -193,7 +198,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: prepare manual source review execution pass
+next_commit: docs: continue source-gated h1 h2 h3 thesis drafting
 
 ## Running Side Goal
 

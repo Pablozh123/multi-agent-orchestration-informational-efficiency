@@ -36,6 +36,8 @@ def test_generate_goal_completion_audit_writes_remaining_gates(tmp_path: Path) -
     assert "thesis_result_package_traceability.csv" in doc
     assert "thesis_h1_h2_h3_core_sections.csv" in doc
     assert "THESIS_H1_H2_H3_CORE_SECTIONS.md" in doc
+    assert "thesis_source_review_chapter_handoff.csv" in doc
+    assert "THESIS_SOURCE_REVIEW_CHAPTER_HANDOFF.md" in doc
     assert "thesis_agent_pipeline_control_audit.csv" in doc
     assert "THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md" in doc
     assert "thesis_agent_pipeline_upgrade_plan.csv" in doc
@@ -69,6 +71,7 @@ def test_goal_completion_audit_keeps_open_gates_visible(tmp_path: Path) -> None:
     assert "traceability: 1 methoden, 1 interpretationen, 0 gaps" in joined
     assert "traceability-kernpaket: 5 tabellen, 4 figuren, 0 gaps" in joined
     assert "h1-h2-h3 core sections: 3 zeilen (h1; h2; h3)" in joined
+    assert "chapter handoff: 3 kapitel; coverage-ready: 3; review rows: 3; pending: 3; final-ready: 0" in joined
     assert "agent control: 2 rollen; documentation-only: 1; deferred: 1; aktiv: 0" in joined
     assert "agent upgrade plan: 2 reihen; aktive upgrade-reihen: 0" in joined
 
@@ -225,6 +228,13 @@ def _write_fixture(root: Path) -> None:
     ).to_csv(results / "thesis_h1_h2_h3_core_sections.csv", index=False)
     pd.DataFrame(
         [
+            _chapter_handoff("handoff_h1", "H1", "T2; F1"),
+            _chapter_handoff("handoff_h2", "H2", "T3; F2"),
+            _chapter_handoff("handoff_h3", "H3", "T4; F3"),
+        ]
+    ).to_csv(results / "thesis_source_review_chapter_handoff.csv", index=False)
+    pd.DataFrame(
+        [
             {
                 "control_id": "agent_control_01",
                 "current_activation_state": "future_documentation_only",
@@ -281,6 +291,7 @@ def _write_fixture(root: Path) -> None:
         "docs/project/THESIS_SOURCE_REVIEW_PROGRESS_LEDGER.md",
         "docs/project/THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md",
         "docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md",
+        "docs/project/THESIS_SOURCE_REVIEW_CHAPTER_HANDOFF.md",
         "docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md",
     ]:
         path = root / relative
@@ -331,4 +342,16 @@ def _protocol(protocol_id: str, area: str) -> dict[str, str]:
         "protocol_area": area,
         "current_state": "fixture_state",
         "deterministic_evidence_de": "Fixture evidence.",
+    }
+
+
+def _chapter_handoff(handoff_id: str, area: str, package_items: str) -> dict[str, object]:
+    return {
+        "handoff_id": handoff_id,
+        "thesis_area": area,
+        "coverage_status": "covered_artifact_source_package_ready",
+        "source_review_rows": 1,
+        "pending_review_rows": 1,
+        "final_citation_ready_rows": 0,
+        "result_package_items": package_items,
     }

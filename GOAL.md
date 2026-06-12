@@ -137,6 +137,10 @@ acceptance_criteria:
   interpretation coverage, compact result-package use, manual ledger flow,
   final citation gates, H1-H2-H3 drafting, and future-agent boundaries are
   ordered before continued BA writing.
+- A source-review chapter handoff exists so H1-H2-H3 can be written chapter by
+  chapter with Evidence IDs, literature IDs, deterministic artifacts, selected
+  tables/figures, open Source Review rows, blocked wording, limitations, and
+  future-agent boundaries visible before final citation.
 - A future agent-pipeline upgrade plan exists so later source-review,
   evidence-drafting, wording, table/figure, advisor, monitor, and bounded MCP
   improvements are documented without activating runtime agents.
@@ -144,7 +148,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: prepare source review chapter handoff
+next_commit: docs: add chapter-level source review checklist
 
 ## Running Side Goal
 

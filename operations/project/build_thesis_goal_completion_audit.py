@@ -68,6 +68,7 @@ def generate_goal_completion_audit(
     h1_h2_h3_source_notes = _read_csv(results_dir / "thesis_h1_h2_h3_source_review_notes.csv")
     source_progress_ledger = _read_csv(results_dir / "thesis_source_review_progress_ledger.csv")
     source_progress_protocol = _read_csv(results_dir / "thesis_source_review_progress_protocol.csv")
+    source_chapter_handoff = _read_csv(results_dir / "thesis_source_review_chapter_handoff.csv")
     method_traceability = _read_csv(results_dir / "thesis_method_interpretation_traceability.csv")
     result_package_traceability = _read_csv(results_dir / "thesis_result_package_traceability.csv")
     core_sections = _read_csv(results_dir / "thesis_h1_h2_h3_core_sections.csv")
@@ -88,6 +89,7 @@ def generate_goal_completion_audit(
         h1_h2_h3_source_notes=h1_h2_h3_source_notes,
         source_progress_ledger=source_progress_ledger,
         source_progress_protocol=source_progress_protocol,
+        source_chapter_handoff=source_chapter_handoff,
         method_traceability=method_traceability,
         result_package_traceability=result_package_traceability,
         core_sections=core_sections,
@@ -125,6 +127,7 @@ def build_goal_completion_audit(
     h1_h2_h3_source_notes: pd.DataFrame,
     source_progress_ledger: pd.DataFrame,
     source_progress_protocol: pd.DataFrame,
+    source_chapter_handoff: pd.DataFrame,
     method_traceability: pd.DataFrame,
     result_package_traceability: pd.DataFrame,
     core_sections: pd.DataFrame,
@@ -183,6 +186,19 @@ def build_goal_completion_audit(
         source_progress_protocol,
         ("protocol_id", "protocol_area", "current_state", "deterministic_evidence_de"),
         "source review progress protocol",
+    )
+    _require_columns(
+        source_chapter_handoff,
+        (
+            "handoff_id",
+            "thesis_area",
+            "coverage_status",
+            "source_review_rows",
+            "pending_review_rows",
+            "final_citation_ready_rows",
+            "result_package_items",
+        ),
+        "source review chapter handoff",
     )
     _require_columns(
         method_traceability,
@@ -296,6 +312,15 @@ def build_goal_completion_audit(
     traceable_core_figures = int((traceable_core_package["package_type"] == "figure").sum())
     core_section_rows = int(len(core_sections))
     core_section_hypotheses = "; ".join(core_sections["hypothesis"].astype(str).tolist())
+    chapter_handoff_rows = int(len(source_chapter_handoff))
+    chapter_handoff_review_rows = int(source_chapter_handoff["source_review_rows"].astype(int).sum())
+    chapter_handoff_pending = int(source_chapter_handoff["pending_review_rows"].astype(int).sum())
+    chapter_handoff_final_ready = int(
+        source_chapter_handoff["final_citation_ready_rows"].astype(int).sum()
+    )
+    chapter_handoff_covered = int(
+        (source_chapter_handoff["coverage_status"] == "covered_artifact_source_package_ready").sum()
+    )
     agent_control_rows = int(len(agent_control))
     agent_documentation_only = int(
         (agent_control["current_activation_state"] == "future_documentation_only").sum()
@@ -349,14 +374,18 @@ def build_goal_completion_audit(
             audit_id="goal_audit_03_curated_package",
             goal_requirement_de="Ergebnisdarstellung nutzt wenige starke Tabellen und Figuren.",
             current_status="proved_current_artifact",
-            evidence_artifacts="data/results/thesis_curated_result_package.csv; data/results/thesis_table_figure_captions.csv; data/results/thesis_result_package_traceability.csv; data/results/thesis_h1_h2_h3_core_sections.csv; docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md",
+            evidence_artifacts="data/results/thesis_curated_result_package.csv; data/results/thesis_table_figure_captions.csv; data/results/thesis_result_package_traceability.csv; data/results/thesis_h1_h2_h3_core_sections.csv; docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md; data/results/thesis_source_review_chapter_handoff.csv; docs/project/THESIS_SOURCE_REVIEW_CHAPTER_HANDOFF.md",
             key_evidence_de=(
                 f"Kernpaket: {core_tables} Tabellen und {core_figures} Figuren. "
                 f"Traceability-Kernpaket: {traceable_core_tables} Tabellen, "
                 f"{traceable_core_figures} Figuren, {package_gap_count} Gaps. "
                 f"H1-H2-H3 Core Sections: {core_section_rows} Zeilen "
                 f"({core_section_hypotheses}) mit Methode, Interpretation, "
-                "Quellen, Artefakten, Tabellen und Figuren."
+                "Quellen, Artefakten, Tabellen und Figuren. "
+                f"Chapter Handoff: {chapter_handoff_rows} Kapitel; "
+                f"coverage-ready: {chapter_handoff_covered}; review rows: "
+                f"{chapter_handoff_review_rows}; pending: {chapter_handoff_pending}; "
+                f"final-ready: {chapter_handoff_final_ready}."
             ),
             remaining_gap_de="Finale Nummerierung und Layout folgen erst im Thesis-Dokument.",
             next_action_de="Tabellen/Figuren in H1-H3 Kapitel integrieren.",

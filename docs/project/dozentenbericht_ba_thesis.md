@@ -1,6 +1,6 @@
 # Dozentenbericht zur Bachelorarbeit
 
-Erstellt: 2026-06-12T22:10:36+00:00
+Erstellt: 2026-06-12T22:59:12+00:00
 
 **Arbeitstitel:** Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen.
 
@@ -68,11 +68,11 @@ Die Projektmatrix fasst 10 Ebenen als Status-, Entscheidungs- und Gate-Sicht zus
 
 | Projektteil | Status | Entscheidung | Naechstes Gate |
 | --- | --- | --- | --- |
-| Gesamtrahmen | Aktiver Thesis-Kern | H1-H3 als Kern schreiben; Monitor und Swiss klar begrenzen. | Source Review und Kapiteldraft. |
-| H1 Forecast-Qualitaet | Thesis-ready | H1 als begrenzte Polymarket-Stuetze schreiben, nicht als Universalclaim. | Finales Wording nach Quellenreview. |
-| H2 Event-Windows | Thesis-ready | H2 als taegliche Event-Window-Evidenz schreiben, nicht als Intraday-Speed. | Event-Kuration und Tageslimit im Text sichtbar machen. |
-| H3 Wallet-Timing | Thesis-ready mit Grenzen | H3 als Timingdiagnostik schreiben, nicht als Kausalitaet oder Profitabilitaet. | BUY-only, Tagesaggregation und Multiple Testing sichtbar machen. |
-| Quellen und Zitation | Aktives Gate | 11 Quellen brauchen Full Review; Status wird nicht automatisch hochgestuft. | Seiten- oder Abschnittsnotizen und Human Decisions eintragen. |
+| Gesamtrahmen | Aktiver Thesis-Kern | H1-H3 als Kern schreiben; Decision Queues 10/5/8 mit 0 final-ready rows abarbeiten. | Decision Queues, Source Review und Kapiteldraft. |
+| H1 Forecast-Qualitaet | Thesis-ready | H1 als begrenzte Polymarket-Stuetze schreiben; H1 Queue: 10 rows, T2/F1, 0 final-ready. | H1 Queue-Felder vor finalem Wording fuellen. |
+| H2 Event-Windows | Thesis-ready | H2 als taegliche Event-Window-Evidenz schreiben; H2 Queue: 5 rows, T3/F2, Kausalclaim-Grenze. | H2 Queue-Felder inklusive Kausalclaim-Grenze fuellen. |
+| H3 Wallet-Timing | Thesis-ready mit Grenzen | H3 als Timingdiagnostik schreiben; H3 Queue: 8 rows, T4/F3, Granger-/Wallet-Grenze. | H3 Queue-Felder inklusive Granger-/Wallet-Grenze fuellen. |
+| Quellen und Zitation | Aktives Gate | H1/H2/H3 Decision Queues bilden den 23-row Manual Source Review Pfad; Status wird nicht automatisch hochgestuft. | Page-/Section-Notes, Claim-Support, Blocked-Wording und Citation-Use eintragen. |
 | Tabellen/Figuren-Paket | Thesis-Paket | 5 Kern-Tabellen und 4 Kern-Figuren mit Captions verwenden. | In Thesis-Layout integrieren; Nummerierung spaeter finalisieren. |
 | Monitor Review-Access | Pausiert / Appendix | Review-Access bleibt pausiert; Monitor bleibt Appendix/Prototype. | Nur mit Human Review oder separatem freigegebenem Goal fortsetzen. |
 | Swiss Referendum | Beschreibend bis Resultat | Bis zum offiziellen Ergebnis nur beschreibend verwenden. | Nach offiziellem 14. Juni 2026 Resultat Artefakte neu generieren. |
@@ -253,10 +253,10 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Projektstruktur
 
 - SQLite-Datenbank: 9 Tabellen.
-- Ergebnisartefakte: 363 Dateien unter `data/results`.
+- Ergebnisartefakte: 366 Dateien unter `data/results`.
 - Analyse-Module: 78 Dateien.
 - Collector-Module: 10 Dateien.
-- Tests: 134 Testdateien; letzter Status: 587 passed in 64.14s (0:01:04).
+- Tests: 137 Testdateien; letzter Status: 593 passed in 70.75s (0:01:10).
 
 ## H1 - Forecast-Qualitaet
 

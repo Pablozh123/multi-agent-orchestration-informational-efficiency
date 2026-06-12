@@ -1854,6 +1854,9 @@ def build_project_highlevel_view(
                     "data/results/thesis_evidence_map.csv",
                     "data/results/thesis_core_results_table.csv",
                     "data/results/thesis_curated_result_package.csv",
+                    "data/results/thesis_h1_source_review_decision_queue.csv",
+                    "data/results/thesis_h2_source_review_decision_queue.csv",
+                    "data/results/thesis_h3_source_review_decision_queue.csv",
                 ],
                 evidence_or_workstream_ids=[
                     "method_h1_brier_dm",
@@ -1862,8 +1865,8 @@ def build_project_highlevel_view(
                     first_workstream,
                     final_workstream,
                 ],
-                current_decision=f"Without review access, use {len(core_results)} core result rows, {core_table_count} core tables, and {core_figure_count} core figures as the main thesis package; use the refreshed Dozentenbericht as the written high-level handoff.",
-                next_gate="Complete source review and turn the Source-Gated H1-H2-H3 Drafting Sequence into thesis prose.",
+                current_decision=f"Without review access, use {len(core_results)} core result rows, {core_table_count} core tables, and {core_figure_count} core figures as the main thesis package; use the refreshed Dozentenbericht as the written high-level handoff; H1/H2/H3 Source Review Decision Queues are complete as 10/5/8 manual rows with 0 final-ready rows.",
+                next_gate="Work through the H1/H2/H3 Source Review Decision Queues, then turn the Source-Gated H1-H2-H3 Drafting Sequence into thesis prose.",
                 guardrail="Deterministic Python artifacts first; no LLM metric calculation, no raw table dumps, and no runtime agents.",
                 thesis_use="main_text_project_overview",
             ),
@@ -1876,14 +1879,15 @@ def build_project_highlevel_view(
                     "data/results/thesis_core_results_table.csv",
                     "data/results/h1_poll_claim_readiness_summary.csv",
                     "data/results/h1_poll_claim_readiness.png",
+                    "data/results/thesis_h1_source_review_decision_queue.csv",
                 ],
                 evidence_or_workstream_ids=[
                     "interpretation_h1_bounded_advantage",
                     "interpretation_h1_broad_claim_not_proven",
                     "work_03_h1_results",
                 ],
-                current_decision="Write H1 as bounded support in compatible poll-comparison scopes, not as universal Polymarket superiority.",
-                next_gate="Final citation wording after source review confirms method and interpretation support.",
+                current_decision="Write H1 as bounded support in compatible poll-comparison scopes, not as universal Polymarket superiority; use the H1 decision queue with 10 rows, T2/F1 binding, and 0 final-ready rows before citation.",
+                next_gate="Complete the H1 Source Review Decision Queue fields before final H1 citation wording.",
                 guardrail="No RCP probability claim and no broad superiority claim beyond deterministic artifacts.",
                 thesis_use="main_text_results",
             ),
@@ -1896,14 +1900,15 @@ def build_project_highlevel_view(
                     "data/results/h2_event_window_summary.csv",
                     "data/results/thesis_h2_event_window_car.png",
                     "data/events_timeline_seed.csv",
+                    "data/results/thesis_h2_source_review_decision_queue.csv",
                 ],
                 evidence_or_workstream_ids=[
                     "method_h2_event_window",
                     "interpretation_h2_daily_response",
                     "work_04_h2_h3_results",
                 ],
-                current_decision="Use H2 as daily event-window evidence, not as an intraday reaction-speed claim.",
-                next_gate="Draft result text with event curation and daily-resolution limitation explicit.",
+                current_decision="Use H2 as daily event-window evidence, not as an intraday reaction-speed claim; use the H2 decision queue with 5 rows, T3/F2 binding, Kausalclaim-Grenze, and 0 final-ready rows before citation.",
+                next_gate="Complete the H2 Source Review Decision Queue fields before final H2 citation wording.",
                 guardrail="No intraday speed claim and no event selection after seeing the response.",
                 thesis_use="main_text_results",
             ),
@@ -1916,6 +1921,7 @@ def build_project_highlevel_view(
                     "data/results/thesis_h3_summary.csv",
                     "data/results/h3_granger_results.csv",
                     "data/results/thesis_h3_granger_pvalues.png",
+                    "data/results/thesis_h3_source_review_decision_queue.csv",
                 ],
                 evidence_or_workstream_ids=[
                     "method_h3_wallet_tiers",
@@ -1923,8 +1929,8 @@ def build_project_highlevel_view(
                     "interpretation_h3_top_tier_signal",
                     "work_04_h2_h3_results",
                 ],
-                current_decision="Use top-tier timing diagnostics as predictive pattern evidence, not causal or misconduct evidence.",
-                next_gate="Draft H3 with BUY-only, daily aggregation, and multiple-testing limitations visible.",
+                current_decision="Use top-tier timing diagnostics as predictive pattern evidence, not causal or misconduct evidence; use the H3 decision queue with 8 rows, T4/F3 binding, Granger-Grenze, Wallet-Grenze, and 0 final-ready rows before citation.",
+                next_gate="Complete the H3 Source Review Decision Queue fields before final H3 citation wording.",
                 guardrail="No Granger causality claim, no private-information claim, and no profitability claim.",
                 thesis_use="main_text_results_with_limits",
             ),
@@ -1936,11 +1942,14 @@ def build_project_highlevel_view(
                 primary_artifacts=[
                     "data/results/thesis_source_review_plan.csv",
                     "data/results/thesis_citation_review_packets.csv",
+                    "data/results/thesis_h1_source_review_decision_queue.csv",
+                    "data/results/thesis_h2_source_review_decision_queue.csv",
+                    "data/results/thesis_h3_source_review_decision_queue.csv",
                     "data/literature/literature_index.csv",
                 ],
                 evidence_or_workstream_ids=["work_01_source_review"],
-                current_decision=f"Treat {full_source_review_count} sources as requiring full review, including {priority_source_count} priority-1 method-foundation rows. Use access, structure, and traceability audits only to prepare manual review and BA drafting.",
-                next_gate="Record page or section notes, structure checks, and human decisions before final thesis citation.",
+                current_decision=f"Treat {full_source_review_count} sources as requiring full review, including {priority_source_count} priority-1 method-foundation rows. Use H1/H2/H3 decision queues as the operative 23-row manual Source Review path; access, structure, and traceability audits only prepare manual review and BA drafting.",
+                next_gate="Record Page-/Section-Notes, Claim-Support, Blocked-Wording, Citation-Use, H2 Kausalclaim-Grenze, and H3 Granger-/Wallet-Grenzen before final thesis citation.",
                 guardrail="Source review is manual; do not promote skimmed or candidate sources automatically and do not infer support claims from file structure.",
                 thesis_use="theory_methods_citation_gate",
             ),
@@ -2028,7 +2037,7 @@ def build_project_highlevel_view(
                     "docs/project/DOZENTEN_FEEDBACK_LOG.md",
                 ],
                 evidence_or_workstream_ids=["work_09_advisor_iteration"],
-                current_decision="Use the Dozentenbericht with the Source-Gated H1-H2-H3 Drafting Sequence to align on bounded H1 wording, source-review depth, Swiss placement, and appendix scope.",
+                current_decision="Use the Dozentenbericht with the Source-Gated H1-H2-H3 Drafting Sequence and the completed H1/H2/H3 Decision Queues to align on bounded H1 wording, source-review depth, Swiss placement, and appendix scope.",
                 next_gate="Advisor feedback is received, logged in DOZENTEN_FEEDBACK_LOG, and translated into the next small commit plan.",
                 guardrail="Do not expand empirical scope or reactivate review access before the current deterministic thesis core is written.",
                 thesis_use="advisor_update",
@@ -2789,6 +2798,9 @@ def _validate_project_highlevel_view(
     required_terms = (
         "review access remains paused",
         "source-gated h1-h2-h3 drafting sequence",
+        "source review decision queues",
+        "10/5/8 manual rows",
+        "0 final-ready rows",
         "source review is manual",
         "llm_audit_log",
         "official 14 june 2026 vote result",
@@ -3505,6 +3517,8 @@ def _render_project_highlevel_view_doc(
         "die Source-Gated H1-H2-H3 Drafting Sequence. Feedback im Log festhalten.\n"
         "- Danach Source Review prioritaer abarbeiten, H1-H3 Kapitel entlang "
         "der Source-Gated Sequence schreiben und Tabellen/Figuren integrieren.\n"
+        "- Die H1/H2/H3 Source Review Decision Queues sind jetzt der operative "
+        "Review-Pfad: 10/5/8 manual rows, 23 total, 0 final-ready rows.\n"
         "- Access Audit, Source Structure Inventory und Traceability Audit nur "
         "als Vorbereitung nutzen: keine Quellenstatus-Hochstufung und keine "
         "Support-Claims aus Dateistruktur.\n"

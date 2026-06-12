@@ -692,7 +692,11 @@ Current implemented consolidation:
   `docs/research/THESIS_PROJECT_HIGHLEVEL_VIEW.md` now answer the next-step
   question without Review-Access: use the refreshed Dozentenbericht as the
   written high-level handoff, then complete Source Review and turn the
-  Source-Gated H1-H2-H3 Drafting Sequence into thesis prose.
+  Source-Gated H1-H2-H3 Drafting Sequence into thesis prose. The view now
+  carries the completed H1/H2/H3 Source Review Decision Queues as the operative
+  manual review path: 10/5/8 rows, 23 total, 0 final-ready rows, T2/F1, T3/F2
+  and T4/F3 bindings, no source-status promotion, and no Review-Access
+  reactivation.
 - `docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md` documents the future
   agent stages as inactive architecture only.
 - `docs/research/THESIS_WRITING_BLUEPRINT.md` translates the consolidation

@@ -25,7 +25,7 @@
 <body>
   <h1>Dozentenbericht zur Bachelorarbeit</h1>
   <p class="subtitle">Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen</p>
-  <p class="small">Erstellt aus lokalen deterministischen Artefakten: 2026-06-12T22:10:36+00:00</p>
+  <p class="small">Erstellt aus lokalen deterministischen Artefakten: 2026-06-12T22:59:12+00:00</p>
   <div class="callout"><strong>Kurzfazit.</strong> Das Projekt prueft informationelle Effizienz ueber drei reproduzierbare Analyseebenen: H1 Forecast-Qualitaet, H2 taegliche Event-Window-Reaktion und H3 Wallet-Tier-Timing. Der Monitor ist ein read-only Forschungsprototyp mit deterministischer Anomaly-Review-Queue; der Swiss-Referendum-Vergleich laeuft als separater Datensammlungs-Track.</div>
 
   <h2>Aufbau wie in der Bachelorarbeit</h2>
@@ -69,11 +69,11 @@
 
   <h2>Projektmatrix fuer die naechste Abstimmung</h2>
   <p>Die Projektmatrix fasst 10 Ebenen als Status-, Entscheidungs- und Gate-Sicht zusammen. Sie zeigt explizit, dass Review-Access pausiert bleibt und Agenten nur dokumentierter Ausblick sind.</p>
-  <table><tr><th>Projektteil</th><th>Status</th><th>Entscheidung</th><th>Naechstes Gate</th></tr><tr><td>Gesamtrahmen</td><td>Aktiver Thesis-Kern</td><td>H1-H3 als Kern schreiben; Monitor und Swiss klar begrenzen.</td><td>Source Review und Kapiteldraft.</td></tr>
-<tr><td>H1 Forecast-Qualitaet</td><td>Thesis-ready</td><td>H1 als begrenzte Polymarket-Stuetze schreiben, nicht als Universalclaim.</td><td>Finales Wording nach Quellenreview.</td></tr>
-<tr><td>H2 Event-Windows</td><td>Thesis-ready</td><td>H2 als taegliche Event-Window-Evidenz schreiben, nicht als Intraday-Speed.</td><td>Event-Kuration und Tageslimit im Text sichtbar machen.</td></tr>
-<tr><td>H3 Wallet-Timing</td><td>Thesis-ready mit Grenzen</td><td>H3 als Timingdiagnostik schreiben, nicht als Kausalitaet oder Profitabilitaet.</td><td>BUY-only, Tagesaggregation und Multiple Testing sichtbar machen.</td></tr>
-<tr><td>Quellen und Zitation</td><td>Aktives Gate</td><td>11 Quellen brauchen Full Review; Status wird nicht automatisch hochgestuft.</td><td>Seiten- oder Abschnittsnotizen und Human Decisions eintragen.</td></tr>
+  <table><tr><th>Projektteil</th><th>Status</th><th>Entscheidung</th><th>Naechstes Gate</th></tr><tr><td>Gesamtrahmen</td><td>Aktiver Thesis-Kern</td><td>H1-H3 als Kern schreiben; Decision Queues 10/5/8 mit 0 final-ready rows abarbeiten.</td><td>Decision Queues, Source Review und Kapiteldraft.</td></tr>
+<tr><td>H1 Forecast-Qualitaet</td><td>Thesis-ready</td><td>H1 als begrenzte Polymarket-Stuetze schreiben; H1 Queue: 10 rows, T2/F1, 0 final-ready.</td><td>H1 Queue-Felder vor finalem Wording fuellen.</td></tr>
+<tr><td>H2 Event-Windows</td><td>Thesis-ready</td><td>H2 als taegliche Event-Window-Evidenz schreiben; H2 Queue: 5 rows, T3/F2, Kausalclaim-Grenze.</td><td>H2 Queue-Felder inklusive Kausalclaim-Grenze fuellen.</td></tr>
+<tr><td>H3 Wallet-Timing</td><td>Thesis-ready mit Grenzen</td><td>H3 als Timingdiagnostik schreiben; H3 Queue: 8 rows, T4/F3, Granger-/Wallet-Grenze.</td><td>H3 Queue-Felder inklusive Granger-/Wallet-Grenze fuellen.</td></tr>
+<tr><td>Quellen und Zitation</td><td>Aktives Gate</td><td>H1/H2/H3 Decision Queues bilden den 23-row Manual Source Review Pfad; Status wird nicht automatisch hochgestuft.</td><td>Page-/Section-Notes, Claim-Support, Blocked-Wording und Citation-Use eintragen.</td></tr>
 <tr><td>Tabellen/Figuren-Paket</td><td>Thesis-Paket</td><td>5 Kern-Tabellen und 4 Kern-Figuren mit Captions verwenden.</td><td>In Thesis-Layout integrieren; Nummerierung spaeter finalisieren.</td></tr>
 <tr><td>Monitor Review-Access</td><td>Pausiert / Appendix</td><td>Review-Access bleibt pausiert; Monitor bleibt Appendix/Prototype.</td><td>Nur mit Human Review oder separatem freigegebenem Goal fortsetzen.</td></tr>
 <tr><td>Swiss Referendum</td><td>Beschreibend bis Resultat</td><td>Bis zum offiziellen Ergebnis nur beschreibend verwenden.</td><td>Nach offiziellem 14. Juni 2026 Resultat Artefakte neu generieren.</td></tr>
@@ -198,11 +198,11 @@
   <h2>Projektstruktur</h2>
   <div class="grid">
     <div class="metric"><strong>9</strong>Datenbanktabellen</div>
-    <div class="metric"><strong>363</strong>Result-Artefakte</div>
+    <div class="metric"><strong>366</strong>Result-Artefakte</div>
     <div class="metric"><strong>78</strong>Analyse-Module</div>
-    <div class="metric"><strong>134</strong>Testdateien</div>
+    <div class="metric"><strong>137</strong>Testdateien</div>
   </div>
-  <p>Letzter Teststatus: <code>587 passed in 64.14s (0:01:04)</code>.</p>
+  <p>Letzter Teststatus: <code>593 passed in 70.75s (0:01:10)</code>.</p>
 
   <h2>H1 - Forecast-Qualitaet</h2>
   <table><tr><th>Aspekt</th><th>Wert</th></tr>

@@ -70,6 +70,10 @@ def test_build_dozenten_report_outputs_readable_artifacts(tmp_path):
     assert "keine Rohartefakt-Dumps" in html_text
     assert "Source-Gated H1-H2-H3 Drafting Sequence" in html_text
     assert "15 paragraphenweise Schreibschritte" in html_text
+    assert "Decision Queues 10/5/8 mit 0 final-ready rows" in html_text
+    assert "H1 Queue: 10 rows, T2/F1, 0 final-ready" in html_text
+    assert "H2 Queue: 5 rows, T3/F2, Kausalclaim-Grenze" in html_text
+    assert "H3 Queue: 8 rows, T4/F3, Granger-/Wallet-Grenze" in html_text
     assert "Manual Source Review: 23 Rows verlinkt, 23 pending, 0 final-ready" in html_text
     assert "Methode und Resultat setzen" in html_text
     assert "Finalgate und Future-Agent-Grenze sichtbar lassen" in html_text
@@ -313,6 +317,10 @@ def test_build_dozenten_report_outputs_readable_artifacts(tmp_path):
     assert len(media) == result["figure_count"]
     assert "Source-Gated H1-H2-H3 Drafting Sequence" in document_xml
     assert "15 paragraphenweise Schreibschritte" in document_xml
+    assert "Decision Queues 10/5/8 mit 0 final-ready rows" in document_xml
+    assert "H1 Queue: 10 rows, T2/F1, 0 final-ready" in document_xml
+    assert "H2 Queue: 5 rows, T3/F2, Kausalclaim-Grenze" in document_xml
+    assert "H3 Queue: 8 rows, T4/F3, Granger-/Wallet-Grenze" in document_xml
     assert "Manual Source Review" in document_xml
     assert "Manual Source Review Follow-up Overview-/Ledger-Abgleich" in document_xml
     assert "Review-Access bleibt pausiert" in document_xml

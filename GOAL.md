@@ -168,6 +168,10 @@ acceptance_criteria:
 - The high-level project view explicitly answers the path forward without
   Review-Access: advisor feedback, source review, H1-H3 writing,
   table/figure integration, Swiss result gate, and final QA.
+- The high-level project view now carries the completed H1/H2/H3 Source Review
+  Decision Queues as the operative next review path: 10/5/8 manual rows, 23
+  total rows, 0 final-ready rows, T2/F1, T3/F2, T4/F3 bindings, and no
+  source-status promotion.
 - The advisor checklist contains a recommended discussion order for the next
   Betreuung so the high-level path can be discussed quickly.
 - A goal-completion audit exists so achieved evidence and remaining final
@@ -296,7 +300,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add h3 source review decision queue
+next_commit: docs: refresh highlevel project view after h1 h2 h3 queues
 
 ## Running Side Goal
 

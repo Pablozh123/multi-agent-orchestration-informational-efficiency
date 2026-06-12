@@ -115,6 +115,9 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert "Review-Access bleibt pausiert" in project_highlevel_doc
     assert "Dozentenpaket senden" in project_highlevel_doc
     assert "Source-Gated H1-H2-H3 Drafting Sequence" in project_highlevel_doc
+    assert "H1/H2/H3 Source Review Decision Queues" in project_highlevel_doc
+    assert "10/5/8 manual rows" in project_highlevel_doc
+    assert "0 final-ready rows" in project_highlevel_doc
     assert "refreshed Dozentenbericht" in project_highlevel_doc
     assert "Source Structure Inventory und Traceability Audit nur" in project_highlevel_doc
     assert "Agent protocol rows: 7" in project_highlevel_doc
@@ -365,9 +368,27 @@ def test_project_highlevel_view_keeps_paused_and_deferred_boundaries(tmp_path: P
     assert "refreshed safety case" in agents["next_gate"]
     assert "no runtime agents" in agents["guardrail"].lower()
     advisor = view[view["view_id"] == "project_09_advisor_iteration"].iloc[0]
+    h1 = view[view["view_id"] == "project_01_h1_forecast_quality"].iloc[0]
+    h2 = view[view["view_id"] == "project_02_h2_event_windows"].iloc[0]
+    h3 = view[view["view_id"] == "project_03_h3_wallet_timing"].iloc[0]
+    source_gate = view[view["view_id"] == "project_04_source_review_gate"].iloc[0]
     assert "source-gated h1-h2-h3 drafting sequence" in advisor["current_decision"].lower()
+    assert "thesis_h1_source_review_decision_queue.csv" in h1["primary_artifacts"]
+    assert "10 rows" in h1["current_decision"]
+    assert "0 final-ready rows" in h1["current_decision"]
+    assert "thesis_h2_source_review_decision_queue.csv" in h2["primary_artifacts"]
+    assert "5 rows" in h2["current_decision"]
+    assert "kausalclaim-grenze" in h2["current_decision"].lower()
+    assert "thesis_h3_source_review_decision_queue.csv" in h3["primary_artifacts"]
+    assert "8 rows" in h3["current_decision"]
+    assert "granger-grenze" in h3["current_decision"].lower()
+    assert "wallet-grenze" in h3["current_decision"].lower()
+    assert "23-row manual source review path" in source_gate["current_decision"].lower()
+    assert "page-/section-notes" in source_gate["next_gate"].lower()
     assert "reactivate review access" in joined
     assert "source-gated h1-h2-h3 drafting sequence" in joined
+    assert "source review decision queues" in joined
+    assert "10/5/8 manual rows" in joined
     assert "deterministic python artifacts" in joined
     assert "do not infer support claims from file structure" in joined
     assert set(view["status"]).issuperset(
@@ -539,6 +560,12 @@ def _write_fixture(root: Path) -> None:
         index=False,
     )
     _write_binary(results / "h1_poll_claim_readiness.png")
+    pd.DataFrame(
+        {
+            "decision_id": [f"h1_decision_{index:02d}" for index in range(1, 11)],
+            "final_citation_ready": [False] * 10,
+        }
+    ).to_csv(results / "thesis_h1_source_review_decision_queue.csv", index=False)
 
     pd.DataFrame(
         {
@@ -553,6 +580,12 @@ def _write_fixture(root: Path) -> None:
         index=False,
     )
     _write_binary(results / "thesis_h2_event_window_car.png")
+    pd.DataFrame(
+        {
+            "decision_id": [f"h2_decision_{index:02d}" for index in range(1, 6)],
+            "final_citation_ready": [False] * 5,
+        }
+    ).to_csv(results / "thesis_h2_source_review_decision_queue.csv", index=False)
 
     (results / "h3_wallet_distribution_inventory.json").write_text(
         json.dumps({"tier_counts": {"tier_1_top_1pct": 1}}),
@@ -587,6 +620,12 @@ def _write_fixture(root: Path) -> None:
         }
     ).to_csv(results / "thesis_h3_summary.csv", index=False)
     _write_binary(results / "thesis_h3_granger_pvalues.png")
+    pd.DataFrame(
+        {
+            "decision_id": [f"h3_decision_{index:02d}" for index in range(1, 9)],
+            "final_citation_ready": [False] * 8,
+        }
+    ).to_csv(results / "thesis_h3_source_review_decision_queue.csv", index=False)
 
     pd.DataFrame(
         {

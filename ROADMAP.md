@@ -767,6 +767,19 @@ Current implemented consolidation:
   methods, interpretations, tables, and figures: 4 thesis-facing methods,
   4 thesis-facing interpretations, 5 core tables, and 4 core figures, all
   still gated by manual Source Review before final citation.
+- `data/results/thesis_h1_h2_h3_core_sections.csv` and
+  `docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md` translate the H1-H2-H3
+  empirical core into three thesis-ready section rows: each row binds
+  methods, interpretations, literature IDs, deterministic artifacts, selected
+  table, selected figure, limitations, blocked wording, and Source Review
+  gate before BA drafting.
+- `data/results/thesis_agent_pipeline_upgrade_plan.csv` and
+  `docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md` document seven
+  future pipeline-improvement rows for source review, evidence drafting,
+  wording review, table/figure checks, advisor updates, monitor appendix
+  review, and bounded MCP summaries. All rows remain documentation-only or
+  deferred; no runtime agents, MCP, model routing, LLM metrics, raw artifact
+  dumps, wallet-address exposure, or trading paths are activated.
 - `data/results/thesis_consolidation_index.csv` and
   `docs/project/THESIS_CONSOLIDATION_INDEX.md` index the current
   consolidation deliverables so the Dozentenbericht, advisor checklist,

@@ -117,11 +117,18 @@ acceptance_criteria:
 - A traceability audit exists so thesis-facing methods, interpretations,
   tables, and figures are checked against deterministic artifacts, literature
   IDs, limitations, captions, and final source-review gates before BA writing.
+- A H1-H2-H3 core writing package exists so each empirical core section binds
+  methods, interpretations, literature IDs, deterministic artifacts, selected
+  tables, selected figures, limitations, blocked wording, and Source Review
+  gates before BA drafting.
+- A future agent-pipeline upgrade plan exists so later source-review,
+  evidence-drafting, wording, table/figure, advisor, monitor, and bounded MCP
+  improvements are documented without activating runtime agents.
 - Tests cover the generated evidence map and curated result package where
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: draft h1 h2 h3 thesis core sections
+next_commit: docs: integrate h1 h2 h3 core sections into thesis draft
 
 ## Running Side Goal
 

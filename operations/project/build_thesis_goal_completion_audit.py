@@ -67,7 +67,9 @@ def generate_goal_completion_audit(
     source_decisions = _read_csv(results_dir / "thesis_source_review_decision_packets.csv")
     method_traceability = _read_csv(results_dir / "thesis_method_interpretation_traceability.csv")
     result_package_traceability = _read_csv(results_dir / "thesis_result_package_traceability.csv")
+    core_sections = _read_csv(results_dir / "thesis_h1_h2_h3_core_sections.csv")
     agent_control = _read_csv(results_dir / "thesis_agent_pipeline_control_audit.csv")
+    agent_upgrade = _read_csv(results_dir / "thesis_agent_pipeline_upgrade_plan.csv")
     handoff_package = _read_csv(results_dir / "thesis_advisor_handoff_package.csv")
     handoff_note = _read_csv(results_dir / "thesis_advisor_handoff_note.csv")
     feedback_log = _read_csv(results_dir / "thesis_advisor_feedback_log_template.csv")
@@ -82,7 +84,9 @@ def generate_goal_completion_audit(
         source_decisions=source_decisions,
         method_traceability=method_traceability,
         result_package_traceability=result_package_traceability,
+        core_sections=core_sections,
         agent_control=agent_control,
+        agent_upgrade=agent_upgrade,
         handoff_package=handoff_package,
         handoff_note=handoff_note,
         feedback_log=feedback_log,
@@ -114,7 +118,9 @@ def build_goal_completion_audit(
     source_decisions: pd.DataFrame,
     method_traceability: pd.DataFrame,
     result_package_traceability: pd.DataFrame,
+    core_sections: pd.DataFrame,
     agent_control: pd.DataFrame,
+    agent_upgrade: pd.DataFrame,
     handoff_package: pd.DataFrame,
     handoff_note: pd.DataFrame,
     feedback_log: pd.DataFrame,
@@ -159,9 +165,27 @@ def build_goal_completion_audit(
         "result package traceability",
     )
     _require_columns(
+        core_sections,
+        (
+            "hypothesis",
+            "method_evidence_ids",
+            "interpretation_evidence_ids",
+            "literature_source_ids",
+            "deterministic_artifacts",
+            "selected_tables",
+            "selected_figures",
+        ),
+        "H1-H2-H3 core sections",
+    )
+    _require_columns(
         agent_control,
         ("control_id", "current_activation_state"),
         "agent pipeline control audit",
+    )
+    _require_columns(
+        agent_upgrade,
+        ("upgrade_id", "current_status"),
+        "agent pipeline upgrade plan",
     )
     _require_columns(handoff_package, ("deliverable_id", "path"), "handoff package")
     _require_columns(handoff_note, ("section_id",), "handoff note")
@@ -225,12 +249,16 @@ def build_goal_completion_audit(
     ]
     traceable_core_tables = int((traceable_core_package["package_type"] == "table").sum())
     traceable_core_figures = int((traceable_core_package["package_type"] == "figure").sum())
+    core_section_rows = int(len(core_sections))
+    core_section_hypotheses = "; ".join(core_sections["hypothesis"].astype(str).tolist())
     agent_control_rows = int(len(agent_control))
     agent_documentation_only = int(
         (agent_control["current_activation_state"] == "future_documentation_only").sum()
     )
     agent_deferred = int((agent_control["current_activation_state"] == "future_deferred").sum())
     agent_active = int(agent_control["current_activation_state"].astype(str).str.contains("active").sum())
+    agent_upgrade_rows = int(len(agent_upgrade))
+    agent_upgrade_active = int(agent_upgrade["current_status"].astype(str).str.contains("active").sum())
 
     rows = [
         _audit_row(
@@ -267,11 +295,14 @@ def build_goal_completion_audit(
             audit_id="goal_audit_03_curated_package",
             goal_requirement_de="Ergebnisdarstellung nutzt wenige starke Tabellen und Figuren.",
             current_status="proved_current_artifact",
-            evidence_artifacts="data/results/thesis_curated_result_package.csv; data/results/thesis_table_figure_captions.csv; data/results/thesis_result_package_traceability.csv",
+            evidence_artifacts="data/results/thesis_curated_result_package.csv; data/results/thesis_table_figure_captions.csv; data/results/thesis_result_package_traceability.csv; data/results/thesis_h1_h2_h3_core_sections.csv; docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md",
             key_evidence_de=(
                 f"Kernpaket: {core_tables} Tabellen und {core_figures} Figuren. "
                 f"Traceability-Kernpaket: {traceable_core_tables} Tabellen, "
-                f"{traceable_core_figures} Figuren, {package_gap_count} Gaps."
+                f"{traceable_core_figures} Figuren, {package_gap_count} Gaps. "
+                f"H1-H2-H3 Core Sections: {core_section_rows} Zeilen "
+                f"({core_section_hypotheses}) mit Methode, Interpretation, "
+                "Quellen, Artefakten, Tabellen und Figuren."
             ),
             remaining_gap_de="Finale Nummerierung und Layout folgen erst im Thesis-Dokument.",
             next_action_de="Tabellen/Figuren in H1-H3 Kapitel integrieren.",
@@ -319,11 +350,12 @@ def build_goal_completion_audit(
             audit_id="goal_audit_08_future_agents",
             goal_requirement_de="Agentenpipeline ist nur Highlevel-Future-Work.",
             current_status="deferred_future_work_only",
-            evidence_artifacts="data/results/thesis_agent_assistance_protocol.csv; docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md; data/results/thesis_agent_pipeline_control_audit.csv; docs/project/THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md",
+            evidence_artifacts="data/results/thesis_agent_assistance_protocol.csv; docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md; data/results/thesis_agent_pipeline_control_audit.csv; docs/project/THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md; data/results/thesis_agent_pipeline_upgrade_plan.csv; docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md",
             key_evidence_de=(
                 f"Agent Control: {agent_control_rows} Rollen; "
                 f"documentation-only: {agent_documentation_only}; deferred: {agent_deferred}; "
-                f"aktiv: {agent_active}. llm_audit_log, bounded prompts und Tests bleiben Vorbedingungen."
+                f"aktiv: {agent_active}. Agent Upgrade Plan: {agent_upgrade_rows} Reihen; "
+                f"aktive Upgrade-Reihen: {agent_upgrade_active}. llm_audit_log, bounded prompts und Tests bleiben Vorbedingungen."
             ),
             remaining_gap_de="Keine Aktivierung im aktuellen Goal erlaubt.",
             next_action_de="Nur Future-Work-Abschnitt schreiben, keine Runtime-Agenten implementieren.",

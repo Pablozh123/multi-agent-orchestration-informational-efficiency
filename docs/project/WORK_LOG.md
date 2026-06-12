@@ -9848,3 +9848,59 @@ Verification:
 
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 541 passed in 49.27s.
+
+## 2026-06-12 - H1-H2-H3 core writing package and agent upgrade plan
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Moved from high-level consolidation into thesis-ready H1-H2-H3 writing
+  structure.
+- Kept Review-Access, runtime agents, MCP, model routing, LLM metric
+  calculation, raw artifact dumps, wallet-address exposure, and trading paths
+  disabled.
+
+Changes:
+
+- Added `operations/project/build_thesis_core_writing_package.py`.
+- Generated `data/results/thesis_h1_h2_h3_core_sections.csv`.
+- Generated `docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md`.
+- Generated `data/results/thesis_agent_pipeline_upgrade_plan.csv`.
+- Generated `docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md`.
+- Added `tests/test_thesis_core_writing_package.py`.
+- Updated the consolidation index and goal-completion audit to include the
+  core writing package and future agent upgrade plan.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- H1-H2-H3 core sections: 3 rows.
+- Each core row binds method Evidence IDs, interpretation Evidence IDs,
+  literature source IDs, deterministic artifacts, selected table, selected
+  figure, limitation, blocked wording, and Source Review gate.
+- Curated result package remains compact: H1 uses T2/F1, H2 uses T3/F2, H3
+  uses T4/F3.
+- Agent pipeline upgrade plan: 7 rows, 6 documentation-only, 1 deferred,
+  0 active upgrade rows.
+- Future agent ideas remain bounded to later source review, evidence drafting,
+  wording review, table/figure checks, advisor updates, monitor appendix
+  review, and bounded MCP summaries after separate approval and
+  `llm_audit_log`.
+- Incidental Swiss running-snapshot output from the status refresh was kept
+  atomic and committed separately as
+  `9c8b8e3 data: refresh swiss referendum running snapshot`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_thesis_core_writing_package.py operations/project/build_thesis_goal_completion_audit.py operations/project/build_thesis_consolidation_index.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_thesis_core_writing_package.py tests/test_thesis_goal_completion_audit.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 7 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_core_writing_package`
+  -> PASS, generated 3 core sections and 7 agent upgrade rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
+  -> PASS, generated 10 audit rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 29 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 544 passed in 51.88s after the Swiss split commit.

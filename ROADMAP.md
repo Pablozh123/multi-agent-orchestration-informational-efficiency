@@ -822,6 +822,12 @@ Current implemented consolidation:
   Notes, 23 pending Claim-Support rows, 23 pending Blocked-Wording rows,
   23 pending Citation-Use rows, 0 final-ready rows, and 0 source-status change
   rows.
+- `data/results/thesis_manual_source_review_update_checklist.csv` and
+  `docs/project/THESIS_MANUAL_SOURCE_REVIEW_UPDATE_CHECKLIST.md` define the
+  allowed manual Ledger update path before any review field changes:
+  8 update steps, 23 Ledger rows, 9 unique sources, 13 external locator rows,
+  10 local PDF rows, 23 pending citation rows, 0 final-ready rows, and
+  0 final-release-ready checklist rows.
 - `data/results/thesis_submission_readiness_board.csv` and
   `docs/project/THESIS_SUBMISSION_READINESS_BOARD.md` provide a nine-gate
   submission-readiness board: advisor handoff, chapter/source mapping, source
@@ -1019,6 +1025,11 @@ Current implemented consolidation:
   23 citation-blocked rows, 23 missing Page-/Section-Notes, 23 pending
   Claim-Support rows, 23 pending Blocked-Wording rows, 23 pending
   Citation-Use rows, 0 final-ready rows, and 0 source-status change rows.
+- `data/results/thesis_manual_source_review_update_checklist.csv` and
+  `docs/project/THESIS_MANUAL_SOURCE_REVIEW_UPDATE_CHECKLIST.md` provide the
+  eight-step manual update rule for the Ledger: preflight, source access,
+  Page-/Section-Note, Claim-Support, Blocked-Wording, Citation-Use, reviewer
+  metadata, regeneration/preservation, and final-release guard.
 - `data/results/thesis_h1_h2_h3_core_sections.csv` and
   `docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md` translate the H1-H2-H3
   empirical core into three thesis-ready section rows: each row binds

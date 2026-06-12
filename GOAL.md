@@ -180,6 +180,14 @@ acceptance_criteria:
   Page-/Section-Notes, 23 pending Claim-Support rows, 23 pending
   Blocked-Wording rows, 23 pending Citation-Use rows, 0 final-ready rows,
   0 source-status change rows, and inactive future-agent boundaries.
+- A manual source-review update checklist exists so the allowed Ledger update
+  path is explicit before any manual field is changed: 8 update steps, 23
+  Ledger rows in scope, 9 unique sources, 13 external locator rows,
+  10 local PDF rows, 23 pending citation rows, 0 final-ready rows,
+  0 final-release-ready checklist rows, and explicit allowed fields
+  `review_status`, `page_or_section_note`, `claim_support_decision`,
+  `blocked_wording_check`, `citation_use_decision`, `reviewed_by`,
+  `reviewed_at`, and `review_comment_de`.
 - A consolidated H1-H2-H3 manual source-review follow-up overview exists so
   the 23 open empirical-core review rows are visible in one compact control
   artifact with 9 unique sources, method/interpretation counts, access-route

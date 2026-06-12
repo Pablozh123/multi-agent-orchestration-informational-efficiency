@@ -342,6 +342,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="23 citation-blocked rows, 0 final-ready rows, 0 Quellenstatus-Aenderungen, keine finale Zitation, max 50 rows und llm_audit_log fuer spaetere Agentenhilfe.",
         ),
         _index_row(
+            artifact_id="index_19_manual_source_review_update_checklist",
+            artifact_type="manual_source_review_update_checklist",
+            path="docs/project/THESIS_MANUAL_SOURCE_REVIEW_UPDATE_CHECKLIST.md; data/results/thesis_manual_source_review_update_checklist.csv",
+            purpose_de="Ordnet die erlaubten manuellen Ledger-Update-Schritte fuer H1/H2/H3 Source Review von Preflight bis Finalgate.",
+            use_now_de="Als achtstufige Checkliste nutzen, bevor Page-/Section-Note, Claim-Support, Blocked-Wording, Citation-Use oder Reviewer-Felder im Ledger geaendert werden.",
+            gate_or_limit_de="8 Update-Schritte, 23 Ledger Rows, 23 pending citation rows, 0 final-ready rows, 0 final-release rows; keine finale Zitation, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.",
+        ),
+        _index_row(
             artifact_id="index_19_manual_source_review_followup_overview",
             artifact_type="manual_source_review_followup_overview",
             path="docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md; data/results/thesis_manual_source_review_followup_overview.csv",
@@ -592,6 +600,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "H3 Manual Source Review Follow-up, H3 Source Review Decision Queue, "
         "H1-H2-H3 Decision Queue Overview, H1-H2-H3 Decision Queue Ledger Alignment, "
         "Ledger Citation Gate Summary, "
+        "Manual Source Review Update Checklist, "
         "Manual Source Review Follow-up Overview, Submission Readiness Board, "
         "Drafting Sequence, Execution Checklist, Chapter Source Bindings, "
         "Source Review Execution, Source Access "
@@ -642,6 +651,10 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Kontrolle vor jeder Zitationsfreigabe: 23 citation-blocked rows, "
         "0 final-ready rows und 0 Quellenstatus-Aenderungen muessen sichtbar "
         "bleiben, bis manuelle Ledger-Felder gesetzt sind. "
+        "Nutze die Manual Source Review Update Checklist als achtstufige "
+        "Arbeitsregel, bevor erlaubte Ledger-Felder wie Page-/Section-Note, "
+        "Claim-Support, Blocked-Wording, Citation-Use oder Reviewer-Metadaten "
+        "geaendert werden. "
         "Nutze die Manual Source Review Follow-up Overview als kompakte "
         "H1-H2-H3 Steuerungsuebersicht fuer die 23 offenen Review-Zeilen. "
         "Nutze das Submission Readiness Board fuer die "

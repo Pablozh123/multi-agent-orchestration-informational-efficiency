@@ -11580,3 +11580,47 @@ Verification:
   -> PASS, no Swiss sharp-s found.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `584 passed in 66.04s`, clean after the content commit.
+
+## 2026-06-12 - Source review chapter handoff refreshed after overview
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Refreshed the H1-H2-H3 chapter handoff so each empirical chapter validates
+  against the Manual Source Review Follow-up Overview before Ledger updates.
+
+Changes:
+
+- Updated `operations/project/build_source_review_chapter_handoff.py`.
+- Regenerated `data/results/thesis_source_review_chapter_handoff.csv` and
+  `docs/project/THESIS_SOURCE_REVIEW_CHAPTER_HANDOFF.md`.
+- Updated `tests/test_source_review_chapter_handoff.py`.
+- Updated `GOAL.md` and `ROADMAP.md` so the next content step is refreshing
+  the Chapter Source Review Checklist after the overview.
+
+Key output:
+
+- Chapter handoff rows: 3.
+- Source-review rows: 23.
+- Pending review rows: 23.
+- Final citation ready rows: 0.
+- H1 source-review rows: 10.
+- H2 source-review rows: 5.
+- H3 source-review rows: 8.
+- Selected result items: T2/F1, T3/F2, T4/F3.
+- Latest content commit:
+  `fff84a0 docs: refresh source review chapter handoff after overview`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_source_review_chapter_handoff.py tests\test_source_review_chapter_handoff.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_source_review_chapter_handoff.py -q`
+  -> PASS, 2 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_source_review_chapter_handoff`
+  -> PASS, generated chapter handoff CSV/Markdown.
+- `git diff --check` -> PASS.
+- `rg -n "<sharp-s>" GOAL.md ROADMAP.md docs\project\THESIS_SOURCE_REVIEW_CHAPTER_HANDOFF.md data\results\thesis_source_review_chapter_handoff.csv operations\project\build_source_review_chapter_handoff.py tests\test_source_review_chapter_handoff.py`
+  -> PASS, no Swiss sharp-s found.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `584 passed in 60.46s`, clean after the content commit.

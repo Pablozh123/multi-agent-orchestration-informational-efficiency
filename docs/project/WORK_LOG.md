@@ -9412,6 +9412,57 @@ Verification:
   -> PASS, suggested `docs: update project control workflow`.
 - `git diff --stat`
   -> PASS, 2 project-control files changed.
+
+## 2026-06-12 - Source-gated H1-H2-H3 thesis drafting pass
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Advanced from the connected H1-H2-H3 source-gated writing pass to a
+  paragraph-level BA drafting sequence.
+- Kept the work bounded: no new metrics, no source-content interpretation, no
+  final citation claim, no Review-Access expansion, and no runtime agents.
+
+Changes:
+
+- Added
+  `operations/project/build_h1_h2_h3_source_gated_thesis_drafting_pass.py`.
+- Added
+  `tests/test_h1_h2_h3_source_gated_thesis_drafting_pass.py`.
+- Generated
+  `data/results/thesis_h1_h2_h3_source_gated_thesis_drafting_pass.csv`.
+- Generated
+  `docs/research/THESIS_H1_H2_H3_SOURCE_GATED_THESIS_DRAFTING_PASS.md`.
+- Updated the consolidation index and goal-completion audit so the new
+  paragraph-level drafting pass is navigable and counted.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Source-gated thesis drafting rows: 15.
+- H1 rows: 5.
+- H2 rows: 5.
+- H3 rows: 5.
+- Linked Manual Source Review execution rows: 23.
+- Final-submission-ready rows: 0.
+- Drafting sequence per chapter: method/result setup, interpretation/
+  limitation, table/figure integration, Manual Source Review execution, and
+  finalgate/future-agent boundary.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_h1_h2_h3_source_gated_thesis_drafting_pass.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_h2_h3_source_gated_thesis_drafting_pass.py -q`
+  -> PASS, 2 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_h2_h3_source_gated_thesis_drafting_pass.py tests\test_thesis_consolidation_index.py tests\test_thesis_goal_completion_audit.py -q`
+  -> PASS, 6 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_h1_h2_h3_source_gated_thesis_drafting_pass`
+  -> PASS, generated 15 drafting rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 42 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
+  -> PASS, generated 10 audit rows.
 - `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
   -> PASS, generated 24 indexed artifacts.
 - `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`

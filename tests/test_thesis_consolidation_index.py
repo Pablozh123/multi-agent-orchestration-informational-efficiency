@@ -19,9 +19,9 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     doc = result.docs_path.read_text(encoding="utf-8")
 
     assert tuple(index.columns) == INDEX_COLUMNS
-    assert result.index_rows == 41
+    assert result.index_rows == 42
     assert "Thesis Consolidation Index" in doc
-    assert "Indexed artifacts: 41" in doc
+    assert "Indexed artifacts: 42" in doc
     assert "dozentenbericht_ba_thesis.docx" in doc
     assert "THESIS_ADVISOR_HANDOFF_PACKAGE.md" in doc
     assert "DOZENTEN_UEBERGABE_TEXT.md" in doc
@@ -53,6 +53,7 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     assert "THESIS_WORDING_GUARD.md" in doc
     assert "THESIS_H1_H2_H3_BOUNDED_CHAPTER_DRAFT.md" in doc
     assert "THESIS_H1_H2_H3_SOURCE_GATED_WRITING_PASS.md" in doc
+    assert "THESIS_H1_H2_H3_SOURCE_GATED_THESIS_DRAFTING_PASS.md" in doc
     assert chr(223) not in doc
 
 
@@ -81,6 +82,7 @@ def test_thesis_consolidation_index_keeps_deferred_boundaries(tmp_path: Path) ->
     assert "h1_h2_h3_drafting_checklist" in joined
     assert "h1_h2_h3_bounded_chapter_draft" in joined
     assert "source_gated_writing_pass" in joined
+    assert "source_gated_thesis_drafting_pass" in joined
     assert "final_gate_board" in joined
     assert "traceability_audit" in joined
     assert "method_interpretation_source_coverage" in joined
@@ -113,6 +115,8 @@ def _write_fixture(root: Path) -> None:
         "data/results/thesis_h1_h2_h3_bounded_chapter_draft.csv",
         "docs/research/THESIS_H1_H2_H3_SOURCE_GATED_WRITING_PASS.md",
         "data/results/thesis_h1_h2_h3_source_gated_writing_pass.csv",
+        "docs/research/THESIS_H1_H2_H3_SOURCE_GATED_THESIS_DRAFTING_PASS.md",
+        "data/results/thesis_h1_h2_h3_source_gated_thesis_drafting_pass.csv",
         "docs/research/THESIS_SOURCE_REVIEW_PLAN.md",
         "docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md",
         "docs/project/THESIS_AGENT_FUTURE_WORK_HANDOFF.md",

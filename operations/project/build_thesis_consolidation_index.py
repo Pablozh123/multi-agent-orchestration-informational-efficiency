@@ -190,6 +190,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Bounded Draft ja; keine finale Zitation, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.",
         ),
         _index_row(
+            artifact_id="index_13_h1_h2_h3_source_gated_thesis_drafting_pass",
+            artifact_type="source_gated_thesis_drafting_pass",
+            path="docs/research/THESIS_H1_H2_H3_SOURCE_GATED_THESIS_DRAFTING_PASS.md; data/results/thesis_h1_h2_h3_source_gated_thesis_drafting_pass.csv",
+            purpose_de="Paragraphenweise H1-H2-H3 BA-Schreibreihenfolge aus Source-Gated Writing Pass und Manual Source Review Execution Pass.",
+            use_now_de="Als konkrete naechste Schreibreihenfolge fuer Methode/Resultat, Interpretation, Tabelle/Figur, Manual Source Review und Finalgate nutzen.",
+            gate_or_limit_de="Bounded Draft ja; nicht final-submission-ready, keine finale Zitation, keine Rohartefakt-Dumps und keine Runtime-Agenten.",
+        ),
+        _index_row(
             artifact_id="index_13_source_review_plan",
             artifact_type="source_review",
             path="docs/research/THESIS_SOURCE_REVIEW_PLAN.md",
@@ -490,7 +498,8 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "H1-H2-H3 Manual Source Review Execution Pass, Source Review "
         "Progress Protocol, Source Review Chapter Handoff, Chapter Source "
         "Review Checklist, H1-H2-H3 Drafting Checklist, "
-        "H1-H2-H3 Bounded Chapter Draft, H1-H2-H3 Source-Gated Writing Pass, Thesis Final Gate Board, Traceability Audit, Method/Interpretation Source Coverage, "
+        "H1-H2-H3 Bounded Chapter Draft, H1-H2-H3 Source-Gated Writing Pass, "
+        "H1-H2-H3 Source-Gated Thesis Drafting Pass, Thesis Final Gate Board, Traceability Audit, Method/Interpretation Source Coverage, "
         "H1-H2-H3 Core Sections, Agent Pipeline Upgrade Plan, Goal Completion Audit, Agent Future-Work Handoff, Agent Pipeline Control Audit, Tabellen/Figuren und "
         "Future-Work-Agenten relevant sind.\n\n"
         "## Counts\n\n"
@@ -519,7 +528,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Future-Agent-Grenzen. Nutze das Source Review Chapter Handoff "
         "als kapitelweise Uebergabe fuer H1-H2-H3 und die Chapter Source "
         "Review Checklist als Abhakliste. Nutze die H1-H2-H3 Drafting Checklist "
-        "als konkrete Schreibreihenfolge, den H1-H2-H3 Bounded Chapter Draft als Prosa-Bausteine und den H1-H2-H3 Source-Gated Writing Pass als zusammenhaengenden Schreibstand fuer den empirischen Kern. Nutze das Thesis Final Gate Board als Highlevel-Stop-/Go-Kontrolle. Nutze den Traceability Audit als BA-Schreibkontrolle. "
+        "als konkrete Schreibreihenfolge, den H1-H2-H3 Bounded Chapter Draft als Prosa-Bausteine, den H1-H2-H3 Source-Gated Writing Pass als zusammenhaengenden Schreibstand und den H1-H2-H3 Source-Gated Thesis Drafting Pass als paragraphenweise naechste Schreibreihenfolge fuer den empirischen Kern. Nutze das Thesis Final Gate Board als Highlevel-Stop-/Go-Kontrolle. Nutze den Traceability Audit als BA-Schreibkontrolle. "
         "Nutze die Method/Interpretation Source Coverage als flachen Literaturindex- und Artefaktcheck vor jedem H1-H3-Schreibpass. "
         "Nutze die H1-H2-H3 Core Sections als Schreibkern und den Agent "
         "Pipeline Upgrade Plan nur als Future-Work-Gedanke. Nutze das Goal Completion Audit als Stop- und "

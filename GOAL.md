@@ -178,6 +178,11 @@ acceptance_criteria:
   connected chapter drafts that preserve Evidence IDs, source coverage,
   deterministic artifacts, compact table/figure choices, limitations,
   blocked wording, Source Review gates, and inactive future-agent boundaries.
+- A H1-H2-H3 source-gated thesis drafting pass exists so the empirical core
+  has a paragraph-level writing sequence for method/result setup,
+  interpretation/limitation, table/figure integration, manual Source Review
+  execution, final gates, and future-agent boundaries while linking the 23
+  manual Source Review rows and preserving 0 final-submission-ready rows.
 - The main thesis chapter draft contains Source-Gated Integration blocks for
   H1, H2, and H3, so each empirical chapter now shows method binding,
   interpretation binding, literature IDs, deterministic artifacts, source
@@ -198,7 +203,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: continue source-gated h1 h2 h3 thesis drafting
+next_commit: docs: integrate source-gated drafting into thesis chapter draft
 
 ## Running Side Goal
 

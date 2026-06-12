@@ -841,6 +841,14 @@ Current implemented consolidation:
   counts, selected table/figure IDs, blocked wording, final Source Review
   gates, and future-agent boundaries while remaining bounded-draft-ready but
   not final-submission-ready.
+- `data/results/thesis_h1_h2_h3_source_gated_thesis_drafting_pass.csv` and
+  `docs/research/THESIS_H1_H2_H3_SOURCE_GATED_THESIS_DRAFTING_PASS.md` turn
+  the connected H1-H2-H3 source-gated draft into a 15-row paragraph-level BA
+  drafting sequence: five rows each for H1, H2, and H3 covering
+  method/result setup, interpretation/limitation, table/figure integration,
+  Manual Source Review execution, final gates, and future-agent boundaries.
+  The pass links all 23 Manual Source Review execution rows, keeps all 15
+  drafting rows bounded-draft-ready, and keeps 0 rows final-submission-ready.
 - `docs/research/THESIS_CHAPTER_DRAFT.md` now integrates that source-gated
   pass directly into the empirical BA draft. H1, H2, and H3 each show
   `Source-Gated Integration` blocks with method binding, interpretation

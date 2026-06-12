@@ -483,8 +483,9 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
             f"Das Advisor-Handoff-Paket ordnet {advisor_handoff['row_count']} "
             "Dateien fuer die naechste Betreuung. Zuerst kommt der "
             f"`{advisor_handoff['first_deliverable']}`, danach folgen "
-            "Absprache-Checklist, Execution Checklist, Chapter Source Bindings "
-            "und Source Review Execution."
+            "Word-Bericht, Absprache-Checklist, Submission Readiness Board, "
+            "Drafting Sequence, Feedback-Log und die Arbeitsdateien fuer "
+            "Kapitel und Source Review."
         ),
         "",
         *advisor_handoff_rows,
@@ -1382,7 +1383,7 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
   <table><tr><th>Ebene</th><th>Stand</th><th>Konsequenz fuer die Thesis</th></tr>{highlevel_rows}</table>
 
   <h2>Dozentenpaket und Uebergabereihenfolge</h2>
-  <p>Das Advisor-Handoff-Paket ordnet {advisor_handoff['row_count']} Dateien fuer die naechste Betreuung. Zuerst kommt <code>{escape(advisor_handoff['first_deliverable'])}</code>, danach folgen Absprache-Checklist, Execution Checklist, Chapter Source Bindings und Source Review Execution.</p>
+  <p>Das Advisor-Handoff-Paket ordnet {advisor_handoff['row_count']} Dateien fuer die naechste Betreuung. Zuerst kommt <code>{escape(advisor_handoff['first_deliverable'])}</code>, danach folgen Word-Bericht, Absprache-Checklist, Submission Readiness Board, Drafting Sequence, Feedback-Log und die Arbeitsdateien fuer Kapitel und Source Review.</p>
   <table><tr><th>Reihenfolge</th><th>Datei</th><th>Verwendung</th><th>Entscheidung</th><th>Grenze</th></tr>{advisor_handoff_rows}</table>
 
   <h2>Projektmatrix fuer die naechste Abstimmung</h2>
@@ -2283,8 +2284,9 @@ def _add_advisor_handoff_package_section(
         f"Das Advisor-Handoff-Paket ordnet {advisor_handoff['row_count']} "
         "Dateien fuer die naechste Betreuung. Zuerst kommt "
         f"`{advisor_handoff['first_deliverable']}`, danach folgen "
-        "Absprache-Checklist, Execution Checklist, Chapter Source Bindings "
-        "und Source Review Execution."
+        "Word-Bericht, Absprache-Checklist, Submission Readiness Board, "
+        "Drafting Sequence, Feedback-Log und die Arbeitsdateien fuer Kapitel "
+        "und Source Review."
     )
     rows = [
         (
@@ -2308,9 +2310,10 @@ def _add_advisor_handoff_package_section(
         "Uebergabe",
         (
             "Fuer den Dozenten reicht als Einstieg das Word-Dokument plus "
-            "Absprache-Checklist. Die weiteren Dateien steuern das Schreiben "
-            "und Quellenreview, ohne Review-Access, Agenten oder neue Empirie "
-            "zu aktivieren."
+            "Absprache-Checklist; der Uebergabetext eroeffnet die Nachricht. "
+            "Die weiteren Dateien steuern Schreiben, Gates, Feedback und "
+            "Quellenreview, ohne Review-Access, Agenten oder neue Empirie zu "
+            "aktivieren."
         ),
     )
 

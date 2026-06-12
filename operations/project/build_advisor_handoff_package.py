@@ -85,6 +85,14 @@ def build_advisor_handoff_package(*, index: pd.DataFrame) -> pd.DataFrame:
     rows = [
         _package_row(
             package_order=1,
+            deliverable_id="advisor_handoff_note",
+            path="docs/project/DOZENTEN_UEBERGABE_TEXT.md",
+            handoff_use_de="Als kurze Mail- oder Chat-Vorlage fuer die Uebergabe nutzen.",
+            advisor_decision_de="Keine Entscheidung; eroeffnet die Betreuung mit klarer Datei- und Fragenordnung.",
+            boundary_de="Zwischenstand, kein finales Abgabe- oder Quellenreview-Signal.",
+        ),
+        _package_row(
+            package_order=2,
             deliverable_id="advisor_report_docx",
             path="docs/project/dozentenbericht_ba_thesis.docx",
             handoff_use_de="Als schriftliches Word-Update an den Dozenten geben.",
@@ -92,7 +100,7 @@ def build_advisor_handoff_package(*, index: pd.DataFrame) -> pd.DataFrame:
             boundary_de="DOCX-Render-QA bleibt lokal blockiert, wenn LibreOffice/soffice fehlt.",
         ),
         _package_row(
-            package_order=2,
+            package_order=3,
             deliverable_id="advisor_questions",
             path="docs/project/DOZENTEN_ABSPRACHE_CHECKLIST.md",
             handoff_use_de="Als Gespraechsagenda fuer die naechste Betreuung nutzen.",
@@ -100,7 +108,23 @@ def build_advisor_handoff_package(*, index: pd.DataFrame) -> pd.DataFrame:
             boundary_de="Fragen klaeren Scope; sie aktivieren keine Empirie-Erweiterung.",
         ),
         _package_row(
-            package_order=3,
+            package_order=4,
+            deliverable_id="submission_readiness",
+            path="docs/project/THESIS_SUBMISSION_READINESS_BOARD.md",
+            handoff_use_de="Als Gate-Uebersicht fuer draft-ready, final-blocked und deferred Schritte nutzen.",
+            advisor_decision_de="Klaeren, welche finalen Gates vor Abgabe zwingend geloest werden muessen.",
+            boundary_de="Source Review, Swiss-Gate und DOCX-Render-QA bleiben final blockiert.",
+        ),
+        _package_row(
+            package_order=5,
+            deliverable_id="drafting_sequence",
+            path="docs/project/THESIS_DRAFTING_SEQUENCE.md",
+            handoff_use_de="Als naechste Schreibreihenfolge fuer den BA-Entwurf nutzen.",
+            advisor_decision_de="Bestaetigen, ob diese Reihenfolge fuer den naechsten Entwurf sinnvoll ist.",
+            boundary_de="Trennt bounded Draft-Arbeit von finalen Blockern und Future Work.",
+        ),
+        _package_row(
+            package_order=6,
             deliverable_id="execution_checklist",
             path="docs/project/THESIS_EXECUTION_CHECKLIST.md",
             handoff_use_de="Nach Feedback als Kapitel- und Abnahme-Checkliste nutzen.",
@@ -108,7 +132,7 @@ def build_advisor_handoff_package(*, index: pd.DataFrame) -> pd.DataFrame:
             boundary_de="Review-Access bleibt pausiert; keine Runtime-Agenten oder Rohartefakt-Dumps.",
         ),
         _package_row(
-            package_order=4,
+            package_order=7,
             deliverable_id="chapter_source_bindings",
             path="docs/project/THESIS_CHAPTER_SOURCE_BINDINGS.md",
             handoff_use_de="Beim Schreiben je Kapitel Quellen, Artefakte und Gates pruefen.",
@@ -116,7 +140,7 @@ def build_advisor_handoff_package(*, index: pd.DataFrame) -> pd.DataFrame:
             boundary_de="Keine thesis-facing Claims ohne Human Review, Artefaktverweis, Limitation und Wording Guard.",
         ),
         _package_row(
-            package_order=5,
+            package_order=8,
             deliverable_id="source_review_execution",
             path="docs/project/THESIS_SOURCE_REVIEW_EXECUTION.md",
             handoff_use_de="Als manuelle Reihenfolge fuer die Quellenpruefung nutzen.",
@@ -124,7 +148,7 @@ def build_advisor_handoff_package(*, index: pd.DataFrame) -> pd.DataFrame:
             boundary_de="Quellenstatus nicht automatisch hochstufen.",
         ),
         _package_row(
-            package_order=6,
+            package_order=9,
             deliverable_id="agent_future_handoff",
             path="docs/project/THESIS_AGENT_FUTURE_WORK_HANDOFF.md",
             handoff_use_de="Nur als Future-Work-Ausblick fuer spaetere Pipeline-Verbesserungen nutzen.",
@@ -132,7 +156,15 @@ def build_advisor_handoff_package(*, index: pd.DataFrame) -> pd.DataFrame:
             boundary_de="Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade.",
         ),
         _package_row(
-            package_order=7,
+            package_order=10,
+            deliverable_id="advisor_feedback_log",
+            path="docs/project/DOZENTEN_FEEDBACK_LOG.md",
+            handoff_use_de="Nach der Betreuung Feedback und Folgeaktionen eintragen.",
+            advisor_decision_de="Keine Entscheidung im Voraus; dient als pending Feedback-Log.",
+            boundary_de="Alle Eintraege bleiben pending, bis der Dozent Feedback gegeben hat.",
+        ),
+        _package_row(
+            package_order=11,
             deliverable_id="consolidation_index",
             path="docs/project/THESIS_CONSOLIDATION_INDEX.md",
             handoff_use_de="Als Navigationsindex fuer alle aktuellen Projektartefakte nutzen.",
@@ -194,8 +226,8 @@ def _validate_package(*, package: pd.DataFrame, repo_root: Path) -> None:
     _require_columns(package, PACKAGE_COLUMNS, "advisor handoff package")
     if package["deliverable_id"].duplicated().any():
         raise ValueError("Advisor handoff package contains duplicate deliverable_id values.")
-    if len(package) != 7:
-        raise ValueError("Advisor handoff package must contain exactly 7 deliverables.")
+    if len(package) != 11:
+        raise ValueError("Advisor handoff package must contain exactly 11 deliverables.")
     for path in package["path"].astype(str):
         if not (repo_root / path).exists():
             raise FileNotFoundError(f"Advisor handoff package path missing: {path}")
@@ -205,6 +237,8 @@ def _validate_package(*, package: pd.DataFrame, repo_root: Path) -> None:
     lower_joined = joined.lower()
     required_terms = (
         "dozentenbericht_ba_thesis.docx",
+        "dozenten_uebergabe_text.md",
+        "dozenten_feedback_log.md",
         "review-access bleibt pausiert",
         "quellenstatus nicht automatisch hochstufen",
         "keine runtime-agenten",
@@ -229,11 +263,13 @@ def _render_package_doc(package: pd.DataFrame) -> str:
         + _markdown_table(package)
         + "\n\n"
         "## Use Rule\n\n"
-        "Nutze zuerst den Dozentenbericht und die Absprache-Checklist. Danach "
-        "kommen Execution Checklist, Chapter Source Bindings und Source Review "
-        "Execution fuer die eigentliche Schreibarbeit. Agent Future-Work Handoff "
-        "bleibt Ausblick; Runtime-Agenten, MCP, Model Routing, LLM-Metriken und "
-        "Trading-Pfade bleiben deaktiviert.\n"
+        "Nutze zuerst Uebergabetext, Dozentenbericht und Absprache-Checklist. "
+        "Danach kommen Submission Readiness Board, Drafting Sequence, Execution "
+        "Checklist, Chapter Source Bindings und Source Review Execution fuer "
+        "die eigentliche Schreibarbeit. Das Feedback-Log wird nach der "
+        "Betreuung ausgefuellt. Agent Future-Work Handoff bleibt Ausblick; "
+        "Runtime-Agenten, MCP, Model Routing, LLM-Metriken und Trading-Pfade "
+        "bleiben deaktiviert.\n"
     )
 
 

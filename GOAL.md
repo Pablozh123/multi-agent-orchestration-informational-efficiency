@@ -92,11 +92,14 @@ acceptance_criteria:
   clear subject, attachment order, questions, and scope boundaries.
 - A pending advisor feedback log exists so later feedback can be translated
   into small scoped follow-up commits.
+- The advisor handoff package is updated so the Word report, handoff note,
+  readiness board, drafting sequence, feedback log, source review, and index
+  appear in one consistent order.
 - Tests cover the generated evidence map and curated result package where
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add advisor feedback log
+next_commit: docs: update advisor handoff package
 
 ## Running Side Goal
 

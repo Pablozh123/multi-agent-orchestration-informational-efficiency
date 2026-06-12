@@ -19,11 +19,11 @@ def test_generate_advisor_handoff_package_writes_ordered_deliverables(tmp_path: 
     doc = result.docs_path.read_text(encoding="utf-8")
 
     assert tuple(package.columns) == PACKAGE_COLUMNS
-    assert result.package_rows == 7
-    assert package["deliverable_id"].tolist()[0] == "advisor_report_docx"
+    assert result.package_rows == 11
+    assert package["deliverable_id"].tolist()[0] == "advisor_handoff_note"
     assert package["deliverable_id"].tolist()[-1] == "consolidation_index"
     assert "Thesis Advisor Handoff Package" in doc
-    assert "Package deliverables: 7" in doc
+    assert "Package deliverables: 11" in doc
     assert chr(223) not in doc
 
 
@@ -36,6 +36,8 @@ def test_advisor_handoff_package_preserves_boundaries(tmp_path: Path) -> None:
     joined = "\n".join(package.fillna("").astype(str).agg(" ".join, axis=1).tolist()).lower()
 
     assert "dozentenbericht_ba_thesis.docx" in joined
+    assert "dozenten_uebergabe_text.md" in joined
+    assert "dozenten_feedback_log.md" in joined
     assert "review-access bleibt pausiert" in joined
     assert "quellenstatus nicht automatisch hochstufen" in joined
     assert "keine runtime-agenten" in joined
@@ -49,12 +51,16 @@ def _write_fixture(root: Path) -> None:
     docs.mkdir(parents=True)
 
     paths = [
+        "docs/project/DOZENTEN_UEBERGABE_TEXT.md",
         "docs/project/dozentenbericht_ba_thesis.docx",
         "docs/project/DOZENTEN_ABSPRACHE_CHECKLIST.md",
+        "docs/project/THESIS_SUBMISSION_READINESS_BOARD.md",
+        "docs/project/THESIS_DRAFTING_SEQUENCE.md",
         "docs/project/THESIS_EXECUTION_CHECKLIST.md",
         "docs/project/THESIS_CHAPTER_SOURCE_BINDINGS.md",
         "docs/project/THESIS_SOURCE_REVIEW_EXECUTION.md",
         "docs/project/THESIS_AGENT_FUTURE_WORK_HANDOFF.md",
+        "docs/project/DOZENTEN_FEEDBACK_LOG.md",
         "docs/project/THESIS_CONSOLIDATION_INDEX.md",
     ]
     for relative in paths:

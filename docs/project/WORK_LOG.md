@@ -9316,6 +9316,60 @@ Verification:
 - `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
   -> PASS, recommends reviewing one coherent docs/data/automation slice.
 
+## 2026-06-12 - Advisor handoff package 11-file order
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Kept Review-Access paused and focused on the high-level advisor handoff view.
+- Kept runtime agents, MCP, model routing, LLM metric calculation, and trading
+  paths deferred.
+
+Changes:
+
+- Updated `operations/project/build_advisor_handoff_package.py` to publish an
+  11-deliverable advisor package order.
+- Regenerated `data/results/thesis_advisor_handoff_package.csv` and
+  `docs/project/THESIS_ADVISOR_HANDOFF_PACKAGE.md`.
+- Regenerated `data/results/thesis_advisor_handoff_note.csv` and
+  `docs/project/DOZENTEN_UEBERGABE_TEXT.md`.
+- Updated the advisor report generator so the Markdown, HTML, and DOCX report
+  contain the current readiness, drafting-sequence, feedback-log, and handoff
+  package view.
+- Updated `GOAL.md` and `ROADMAP.md` to reflect the 11-file advisor handoff
+  order.
+- Updated tests for the expanded package and report content.
+
+Key output:
+
+- Advisor handoff package rows: 11.
+- The package now orders the handoff note, Word advisor report, advisor
+  questions, readiness board, drafting sequence, execution checklist, source
+  bindings, source review, future-agent handoff, feedback log, and
+  consolidation index.
+- The report keeps thesis-facing claims tied to deterministic artifacts or
+  pending review gates.
+- Review-Access remains explicitly paused; no new review-access implementation
+  was added.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_advisor_handoff_package.py operations/project/build_dozenten_report.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_advisor_handoff_package.py tests/test_advisor_handoff_note.py tests/test_dozenten_report.py -q`
+  -> PASS, 5 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_advisor_handoff_package`
+  -> PASS, generated 11 deliverables.
+- `.\.venv\Scripts\python.exe -m operations.project.build_advisor_handoff_note`
+  -> PASS, generated 6 handoff-note sections.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown, HTML, and DOCX advisor report.
+- `.\.venv\Scripts\python.exe C:\Users\chole\.codex\plugins\cache\openai-primary-runtime\documents\26.601.10930\skills\documents\render_docx.py docs\project\dozentenbericht_ba_thesis.docx --output_dir docs\project\dozentenbericht_render_qa`
+  -> FAIL, `soffice`/LibreOffice is not available in the environment, so DOCX
+  visual render QA could not be completed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 529 passed in 51.29s.
+
 ## 2026-06-12 - Advisor feedback log
 
 Goal context:

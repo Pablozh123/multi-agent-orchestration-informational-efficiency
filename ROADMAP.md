@@ -713,9 +713,10 @@ Current implemented consolidation:
   review depth, H2/H3 scope, table/figure package, monitor appendix, Swiss
   placement, agent outlook, and final QA.
 - `data/results/thesis_advisor_handoff_package.csv` and
-  `docs/project/THESIS_ADVISOR_HANDOFF_PACKAGE.md` define the seven-file
-  advisor handoff order: Word report, advisor questions, execution checklist,
-  chapter source bindings, source review execution, agent future-work handoff,
+  `docs/project/THESIS_ADVISOR_HANDOFF_PACKAGE.md` define the 11-file advisor
+  handoff order: handoff note, Word report, advisor questions, submission
+  readiness board, drafting sequence, execution checklist, chapter source
+  bindings, source review execution, agent future-work handoff, feedback log,
   and consolidation index.
 - `data/results/thesis_advisor_handoff_note.csv` and
   `docs/project/DOZENTEN_UEBERGABE_TEXT.md` provide a short mail/chat handoff

@@ -11533,3 +11533,50 @@ Verification:
   -> PASS, no Swiss sharp-s found.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `584 passed in 59.42s`, clean after the content commit.
+
+## 2026-06-12 - Source review progress protocol refreshed after overview
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Refreshed the Source Review Progress Protocol so the Manual Source Review
+  Follow-up Overview is the explicit pre-Ledger control point.
+
+Changes:
+
+- Updated `operations/project/build_source_review_progress_protocol.py`.
+- Regenerated `data/results/thesis_source_review_progress_protocol.csv` and
+  `docs/project/THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md`.
+- Updated `tests/test_source_review_progress_protocol.py`.
+- Updated `GOAL.md` and `ROADMAP.md` so the next content step is refreshing
+  the Source Review Chapter Handoff after the overview.
+
+Key output:
+
+- Protocol rows: 6.
+- Thesis-facing method rows: 4.
+- Thesis-facing interpretation rows: 4.
+- Core table rows: 5.
+- Core figure rows: 4.
+- Ledger rows: 23.
+- Ledger pending rows: 23.
+- Ledger final-ready rows: 0.
+- Unique H1-H2-H3 source IDs: 9.
+- Manual Source Review Follow-up Overview rows: 3.
+- Active agent rows: 0.
+- Latest content commit:
+  `a2783f0 docs: refresh source review progress protocol after overview`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_source_review_progress_protocol.py tests\test_source_review_progress_protocol.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_source_review_progress_protocol.py -q`
+  -> PASS, 2 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_source_review_progress_protocol`
+  -> PASS, generated protocol CSV/Markdown.
+- `git diff --check` -> PASS.
+- `rg -n "<sharp-s>" GOAL.md ROADMAP.md docs\project\THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md data\results\thesis_source_review_progress_protocol.csv operations\project\build_source_review_progress_protocol.py tests\test_source_review_progress_protocol.py`
+  -> PASS, no Swiss sharp-s found.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `584 passed in 66.04s`, clean after the content commit.

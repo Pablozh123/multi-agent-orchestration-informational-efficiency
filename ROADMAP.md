@@ -904,6 +904,13 @@ Current implemented consolidation:
   23 thesis-facing H1-H2-H3 links, 11 unique source IDs, and 0 coverage gaps.
   H1 has 10 thesis-facing links, H2 has 5, and H3 has 8; all remain
   final-review-pending rather than final-citation-ready.
+- `data/results/thesis_h2_manual_source_review_followup.csv` and
+  `docs/project/THESIS_H2_MANUAL_SOURCE_REVIEW_FOLLOWUP.md` start the H2
+  manual Source Review slice with 5 H2 rows, 3 unique H2 sources, 3 method
+  rows, 2 interpretation rows, 4 external locator rows, 1 local PDF row,
+  5 pending rows, and 0 final-citation-ready rows. The slice keeps
+  Page-/Section-Note, Claim-Support, Blocked-Wording, Citation-Use and
+  Kausalclaim-Grenze visible before any final H2 citation.
 - `data/results/thesis_h1_h2_h3_core_sections.csv` and
   `docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md` translate the H1-H2-H3
   empirical core into three thesis-ready section rows: each row binds
@@ -932,9 +939,10 @@ Current implemented consolidation:
   bounded chapter draft, thesis final gate board, traceability audit, chapter
   source bindings, agent future-work handoff, advisor handoff note, advisor
   feedback log, advisor source-review follow-up, H1 manual source-review
-  follow-up, submission readiness board, drafting sequence, wording guard,
-  table/figure captions, chapter draft, source review plan, agent protocol,
-  status, and work log are easy to navigate.
+  follow-up, H2 manual source-review follow-up, submission readiness board,
+  drafting sequence, wording guard, table/figure captions, chapter draft,
+  source review plan, agent protocol, status, and work log are easy to
+  navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,

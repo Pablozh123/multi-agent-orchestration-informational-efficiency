@@ -125,6 +125,11 @@ acceptance_criteria:
   interpretation Evidence IDs, deterministic artifacts, Page-/Section-Note,
   Claim-Support, Blocked-Wording, Citation-Use, and no automatic source-status
   promotion.
+- A H2 manual source-review follow-up exists so the second empirical-core
+  review slice is startable with 5 H2 source rows, 3 H2 sources, method and
+  interpretation Evidence IDs, deterministic artifacts, Page-/Section-Note,
+  Claim-Support, Blocked-Wording, Citation-Use, Kausalclaim-Grenze, and no
+  automatic source-status promotion.
 - The high-level project view explicitly answers the path forward without
   Review-Access: advisor feedback, source review, H1-H3 writing,
   table/figure integration, Swiss result gate, and final QA.
@@ -225,7 +230,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: start h2 manual source review follow-up
+next_commit: docs: start h3 manual source review follow-up
 
 ## Running Side Goal
 

@@ -33,6 +33,8 @@ def test_generate_h1_h2_h3_bounded_chapter_draft_writes_ordered_rows(tmp_path: P
     assert "data/results/thesis_h1_summary.csv" in doc
     assert "Source-Coverage: 10 Links" in doc
     assert "Coverage-Gaps: 0" in doc
+    assert "Manual Source Review Follow-up Overview" in doc
+    assert "Overview-/Ledger-Abgleich" in doc
     assert "wenige gute Tabellen" in doc
     assert "Keine finale Zitation" in doc
     assert "keine Runtime-Agenten" in doc
@@ -56,8 +58,11 @@ def test_h1_h2_h3_bounded_chapter_draft_keeps_mapping_columns_complete(tmp_path:
     ):
         assert draft[column].astype(str).str.len().gt(0).all()
     assert "source review" in joined
+    assert "manual source review follow-up overview" in joined
+    assert "overview-/ledger-abgleich" in joined
     assert "keine finale zitation" in joined
     assert "keine rohartefakt-dumps" in joined
+    assert "keine quellenstatus-hochstufung" in joined
     assert "keine runtime-agenten" in joined
     assert "method_h3_granger_timing" in joined
     assert "interpretation_h3_top_tier_signal" in joined
@@ -275,7 +280,12 @@ def _drafting_row(
         "literature_source_ids": literature,
         "deterministic_artifacts": artifacts,
         "result_package_items": items,
-        "source_review_gate": f"{area}: Keine finale Zitation ohne Source Review.",
+        "source_review_gate": (
+            f"{area}: Keine finale Zitation ohne Source Review. "
+            "Manual Source Review Follow-up Overview pruefen; "
+            "Overview-/Ledger-Abgleich vor Citation Gate dokumentieren. "
+            "Keine Quellenstatus-Hochstufung aus dem Draft."
+        ),
         "thesis_ready_text_seed_de": f"{area} Textseed fuer {step}.",
         "mandatory_limitation_de": f"{area} Limitation.",
         "blocked_wording_de": "Keine Rohartefakt-Dumps",

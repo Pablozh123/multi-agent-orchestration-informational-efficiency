@@ -219,6 +219,9 @@ acceptance_criteria:
   prose blocks for method setup, result statement, interpretation boundary,
   table/figure integration, Source Review citation gate, and future-agent
   boundary without new metrics, raw artifact dumps, or final citation claims.
+  It now carries the Manual Source Review Follow-up Overview-/Ledger-Abgleich
+  into each H1/H2/H3 Source Review citation gate before final citation or
+  source-status changes.
 - The H1-H2-H3 bounded chapter draft carries source-coverage counts per
   chapter so each writing pass sees source links, unique source IDs, zero
   coverage gaps, and final Source Review blockers before prose is expanded.
@@ -256,7 +259,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: refresh bounded chapter draft after overview
+next_commit: docs: refresh source gated writing pass after overview
 
 ## Running Side Goal
 

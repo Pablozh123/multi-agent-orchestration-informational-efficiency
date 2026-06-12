@@ -333,6 +333,9 @@ def _paragraph_for_step(
     if step == "source_review_and_citation_gate":
         return (
             f"Das Zitationsgate fuer {area} bleibt sichtbar: {source_gate} "
+            "Der Manual Source Review Follow-up Overview-/Ledger-Abgleich "
+            "bleibt vor Ledger-Entscheiden, Quellenstatus-Aenderungen und "
+            "finaler Zitation sichtbar. "
             f"Im Handoff stehen {int(handoff['source_review_rows'])} "
             f"Source-Review-Zeilen, davon {int(handoff['pending_review_rows'])} "
             f"pending und {int(handoff['final_citation_ready_rows'])} final-ready. "
@@ -398,6 +401,8 @@ def _validate_draft(draft: pd.DataFrame, *, repo_root: Path) -> None:
         "t2",
         "f1",
         "keine finale zitation",
+        "manual source review follow-up overview",
+        "overview-/ledger-abgleich",
         "keine runtime-agenten",
         "llm_audit_log",
         "wenige gute tabellen",
@@ -409,6 +414,26 @@ def _validate_draft(draft: pd.DataFrame, *, repo_root: Path) -> None:
         missing.append("source review")
     if missing:
         raise ValueError("H1-H2-H3 bounded chapter draft missing terms: " + ", ".join(missing))
+    source_gate_rows = draft[draft["draft_step"].astype(str) == "source_review_and_citation_gate"]
+    for area, area_rows in source_gate_rows.groupby("thesis_area"):
+        gate_text = "\n".join(
+            area_rows[["source_review_gate_de", "chapter_paragraph_de"]]
+            .astype(str)
+            .agg(" ".join, axis=1)
+            .tolist()
+        ).lower()
+        gate_terms = (
+            "manual source review follow-up overview",
+            "overview-/ledger-abgleich",
+            "keine finale zitation",
+            "keine quellenstatus-hochstufung",
+        )
+        missing_gate_terms = [term for term in gate_terms if term not in gate_text]
+        if missing_gate_terms:
+            raise ValueError(
+                f"H1-H2-H3 bounded chapter draft missing source-gate terms for {area}: "
+                + ", ".join(missing_gate_terms)
+            )
 
 
 def _render_draft_doc(draft: pd.DataFrame) -> str:
@@ -420,7 +445,9 @@ def _render_draft_doc(draft: pd.DataFrame) -> str:
         "Es erzeugt keine neuen Kennzahlen, liest keine Quelleninhalte und "
         "ersetzt keine finale Quellenpruefung. Es uebersetzt bestehende "
         "Core-Sections, Drafting-Checks, Source-Review-Gates und Caption-"
-        "Registry-Eintraege in geordnete Prosa-Bausteine.\n",
+        "Registry-Eintraege in geordnete Prosa-Bausteine. Die "
+        "Source-Review-Abschnitte halten den Manual Source Review Follow-up "
+        "Overview-/Ledger-Abgleich vor jeder finalen Zitation sichtbar.\n",
         "## Counts\n",
         f"- Draft rows: {len(draft)}\n",
         f"- Bounded draft ready rows: {bounded_ready}\n",
@@ -468,7 +495,9 @@ def _render_draft_doc(draft: pd.DataFrame) -> str:
             "und deterministische Artefakte gebunden. Keine finale Zitation, "
             "keine Rohartefakt-Dumps, keine neuen Kennzahlen, keine "
             "Quellenstatus-Hochstufung, keine Runtime-Agenten, kein MCP, kein "
-            "Model Routing und keine LLM-Metriken.\n",
+            "Model Routing und keine LLM-Metriken. Der Manual Source Review "
+            "Follow-up Overview-/Ledger-Abgleich bleibt vor dem Citation Gate "
+            "sichtbar.\n",
         ]
     )
     return "\n".join(sections)

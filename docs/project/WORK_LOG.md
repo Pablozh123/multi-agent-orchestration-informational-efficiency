@@ -12102,3 +12102,45 @@ Verification:
   LibreOffice/`soffice` is not installed (`FileNotFoundError: [WinError 2]`).
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `593 passed in 67.09s (0:01:07)`.
+
+## 2026-06-13 - Swiss referendum running track refreshed to 49 snapshots
+
+Goal context:
+
+- Continued the running side goal `goal-swiss-referendum-efficiency-001`.
+- Kept the Swiss track in descriptive data-collection mode before the official
+  14 June 2026 result.
+- Preserved the boundary: no final efficiency interpretation, no causality,
+  no true-mispricing claim, no tradeability claim, and no profitability claim.
+
+Changes:
+
+- Refreshed the read-only Swiss referendum running artifacts after the local
+  auto-refresh added one Polymarket snapshot.
+- Updated the latest summary, dashboard, metadata files, comparison CSVs, and
+  figure output under `data/results/swiss_referendum_10mio_*`.
+- Committed the slice as
+  `be8fd2e data: refresh swiss referendum running track`.
+
+Key output:
+
+- Polymarket snapshot rows: 49.
+- Latest snapshot: 2026-06-12T23:04:17Z.
+- Latest Polymarket Yes probability: 27.0%.
+- Latest matched poll: `srg_gfs_bern_2026_w2`.
+- Latest poll Yes share: 45.0%.
+- Latest decided Yes share: 46.4%.
+- Raw Yes gap: -18.0 pp.
+- Decided Yes gap: -19.4 pp.
+- Poll-proxy relation: `below_poll_proxy`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_refresh.py tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_auto_refresh.py -q`
+  -> PASS, 32 passed.
+- Boundary scan on latest Swiss summary/dashboard/status confirmed the text
+  remains descriptive and contains explicit no-causality/tradeability/mispricing
+  limitations.
+- `git diff --check` on the staged Swiss snapshot -> PASS.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `593 passed in 60.42s (0:01:00)`.

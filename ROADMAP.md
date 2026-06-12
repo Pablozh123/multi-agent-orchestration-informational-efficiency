@@ -684,6 +684,11 @@ Current implemented consolidation:
 - The Dozentenbericht literature section now also summarises the source-review
   worksheet: 15 manual review rows, 11 priority-1 method-foundation sources,
   and 1 blocked/future-work-only row with all reviewer decisions still pending.
+- `data/results/thesis_advisor_alignment_checklist.csv` and
+  `docs/project/DOZENTEN_ABSPRACHE_CHECKLIST.md` translate the high-level
+  status into eight concrete advisor questions covering H1 wording, source
+  review depth, H2/H3 scope, table/figure package, monitor appendix, Swiss
+  placement, agent outlook, and final QA.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - `data/results/thesis_citation_review_packets.csv` and

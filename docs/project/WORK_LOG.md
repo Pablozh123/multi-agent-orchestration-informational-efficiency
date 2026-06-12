@@ -8740,3 +8740,37 @@ Verification:
   -> PASS, generated 13 guard rows.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 507 passed in 49.22s.
+
+## 2026-06-12 - Advisor alignment checklist
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Turned the high-level project view into concrete advisor questions for the
+  next discussion.
+
+Changes:
+
+- Added `operations/project/build_advisor_alignment_checklist.py`.
+- Generated `data/results/thesis_advisor_alignment_checklist.csv`.
+- Added `docs/project/DOZENTEN_ABSPRACHE_CHECKLIST.md`.
+- Added `tests/test_advisor_alignment_checklist.py`.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Advisor questions: 8.
+- Topics: H1 bounded wording, source-review depth, H2/H3 scope, compact
+  table/figure package, monitor appendix, Swiss result gate, agent outlook, and
+  final QA.
+- The checklist keeps Review-Access paused, agents documentation-only, Swiss
+  pending official result mapping, and no trading/runtime-agent paths.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_advisor_alignment_checklist.py tests\test_dozenten_report.py tests\test_thesis_wording_guard.py -q`
+  -> PASS, 5 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_advisor_alignment_checklist`
+  -> PASS, generated 8 advisor questions.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 509 passed in 49.86s.

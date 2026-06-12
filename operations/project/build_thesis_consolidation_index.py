@@ -206,7 +206,15 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Handoff-Uebersicht, kein neues empirisches Resultat.",
         ),
         _index_row(
-            artifact_id="index_17_status_and_log",
+            artifact_id="index_17_submission_readiness",
+            artifact_type="submission_readiness",
+            path="docs/project/THESIS_SUBMISSION_READINESS_BOARD.md; data/results/thesis_submission_readiness_board.csv",
+            purpose_de="Gate-Board fuer draft-ready, final-blocked und deferred Thesis-Schritte.",
+            use_now_de="Vor finalem Export Source Review, Swiss Resultat, DOCX Render-QA und Agentenstatus pruefen.",
+            gate_or_limit_de="Finale Abgabe bleibt blockiert, solange Source Review, Swiss-Gate oder Render-QA offen sind.",
+        ),
+        _index_row(
+            artifact_id="index_18_status_and_log",
             artifact_type="project_control",
             path="STATUS.md; docs/project/WORK_LOG.md",
             purpose_de="Automatisierter Projektstatus und append-only Arbeitslog.",
@@ -289,9 +297,10 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "# Thesis Consolidation Index\n\n"
         "Dieser Index zeigt, welche Artefakte fuer den aktuellen Highlevel-"
         "Projektstand, den Dozentenbericht, Source Review, Wording Guard, "
-        "Advisor Handoff Package, Execution Checklist, Chapter Source Bindings, "
-        "Source Review Execution, Agent Future-Work Handoff, Tabellen/Figuren "
-        "und Future-Work-Agenten relevant sind.\n\n"
+        "Advisor Handoff Package, Submission Readiness Board, Execution "
+        "Checklist, Chapter Source Bindings, Source Review Execution, Agent "
+        "Future-Work Handoff, Tabellen/Figuren und Future-Work-Agenten relevant "
+        "sind.\n\n"
         "## Counts\n\n"
         f"- Indexed artifacts: {len(index)}\n\n"
         "## Artifact Index\n\n"
@@ -300,7 +309,8 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "## Use Rule\n\n"
         "Nutze zuerst den Dozentenbericht und die Absprache-Checklist fuer die "
         "Betreuung. Nutze das Advisor Handoff Package als Abgabe- und "
-        "Gespraechsreihenfolge. Nutze danach Execution Checklist, Source Worksheet, "
+        "Gespraechsreihenfolge. Nutze das Submission Readiness Board fuer die "
+        "finalen Gates. Nutze danach Execution Checklist, Source Worksheet, "
         "Chapter Source Bindings, Source Review Execution, Agent Future-Work "
         "Handoff, Wording Guard und Next Work Plan fuer das Schreiben. "
         "Review-Access, Runtime-Agenten, MCP, Model Routing, Rohdatenzugriff "

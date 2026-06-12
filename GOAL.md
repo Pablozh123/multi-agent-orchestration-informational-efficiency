@@ -31,6 +31,8 @@ deliverables:
   `llm_audit_log` for later LLM calls, no raw table dumps, max 50 rows, no
   wallet-address exposure by default, no order/trading paths, and no active
   runtime agent implementation.
+- Create a submission-readiness board that separates draft-ready thesis work,
+  final submission blockers, and deferred future-work/agent items.
 - Keep the Swiss referendum track in data-collection mode until the 14 June
   2026 vote result is available; do not add a final efficiency interpretation
   before the official result.
@@ -77,11 +79,14 @@ acceptance_criteria:
   unless deterministic thesis-use gates approve it.
 - Future agent pipeline design remains documentation-only and does not activate
   runtime agents, MCP tools, model routing, or unlogged LLM interpretation.
+- Submission readiness clearly marks Source Review, Swiss result mapping, and
+  DOCX render QA as final gates while allowing bounded draft writing to
+  continue.
 - Tests cover the generated evidence map and curated result package where
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add advisor handoff to report
+next_commit: docs: add submission readiness board
 
 ## Running Side Goal
 

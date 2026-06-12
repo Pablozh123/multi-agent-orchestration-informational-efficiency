@@ -9103,3 +9103,76 @@ Verification:
   -> PASS, 513 passed in 50.51s.
 - `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
   -> PASS, recommends reviewing one coherent docs/data/automation slice.
+
+## 2026-06-12 - Thesis submission readiness board
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Left Review-Access paused and converted the high-level project view into a
+  submission-readiness board for draft-ready, final-blocked, and deferred work.
+
+Changes:
+
+- Added `operations/project/build_submission_readiness_board.py`.
+- Generated `data/results/thesis_submission_readiness_board.csv`.
+- Added `docs/project/THESIS_SUBMISSION_READINESS_BOARD.md`.
+- Added `tests/test_submission_readiness_board.py`.
+- Updated the thesis consolidation index to include the readiness board.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Readiness gates: 9.
+- Final Source Review blocker: 1 gate.
+- Final Swiss official-result blocker: 1 gate.
+- Deferred future-agent work: 1 gate.
+- Draft writing can continue, but final submission remains blocked while
+  Source Review, Swiss result mapping, or DOCX render QA are open.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_submission_readiness_board.py operations/project/build_thesis_consolidation_index.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_submission_readiness_board.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 4 passed.
+- `git diff --check`
+  -> PASS, no whitespace errors; CRLF warnings only.
+- `rg -n "sharp-s|\\u00df" GOAL.md ROADMAP.md docs/project/THESIS_SUBMISSION_READINESS_BOARD.md docs/project/THESIS_CONSOLIDATION_INDEX.md operations/project/build_submission_readiness_board.py tests/test_submission_readiness_board.py operations/project/build_thesis_consolidation_index.py tests/test_thesis_consolidation_index.py`
+  -> PASS, no matches.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 523 passed in 49.09s.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> PASS, 523 passed in 50.00s.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+  -> PASS, recommends reviewing one coherent docs/data/automation slice.
+
+## 2026-06-12 - Commit split after Swiss auto-refresh
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Kept the incidental Swiss referendum auto-refresh separate from the
+  submission-readiness board commit.
+
+Changes:
+
+- Committed 13 Swiss referendum running snapshot files separately as
+  `fa753a5 data: refresh swiss referendum running snapshot`.
+- Left the readiness-board generator, docs, data, tests, and project control
+  files for the next atomic commit.
+
+Key output:
+
+- Swiss auto-refresh metadata reports one bounded read-only refresh.
+- Snapshot/comparison row count after refresh: 30.
+- Latest Polymarket yes probability in the running snapshot: 0.215.
+- Latest raw Yes gap: -0.235.
+- Latest decided-voter Yes gap: -0.2489175257731959.
+- This remains descriptive only until the official 14 June 2026 result is
+  available and mapped.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 523 passed in 50.48s, latest commit `fa753a5`.

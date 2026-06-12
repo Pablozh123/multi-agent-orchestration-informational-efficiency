@@ -12144,3 +12144,51 @@ Verification:
 - `git diff --check` on the staged Swiss snapshot -> PASS.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `593 passed in 60.42s (0:01:00)`.
+
+## 2026-06-13 - H1-H2-H3 Decision Queue Overview
+
+Goal context:
+
+- Continued active goal `goal-thesis-consolidation-001`.
+- Kept Review-Access paused and future agents documentation-only.
+- Built only a deterministic project-control overview over existing decision
+  queue CSVs; no source content was read and no thesis metric was calculated
+  by an LLM.
+
+Changes:
+
+- Added `operations.project.build_h1_h2_h3_decision_queue_overview`.
+- Generated `data/results/thesis_h1_h2_h3_decision_queue_overview.csv`.
+- Generated `docs/project/THESIS_H1_H2_H3_DECISION_QUEUE_OVERVIEW.md`.
+- Added tests for the new overview and extended the consolidation index to
+  52 artifacts.
+- Updated `GOAL.md` and `ROADMAP.md` with the new 3-row control artifact.
+- Committed the content slice as
+  `05a0b7c docs: add h1 h2 h3 decision queue overview`.
+
+Key output:
+
+- Overview rows: 3.
+- Total decision rows: 23.
+- Unique sources: 9.
+- Method rows: 12.
+- Interpretation rows: 11.
+- External locator rows: 13.
+- Local PDF rows: 10.
+- Pending queue rows: 23.
+- Final citation ready rows: 0.
+- Source-status change rows: 0.
+- Table/figure bindings: H1 T2/F1, H2 T3/F2, H3 T4/F3.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_h2_h3_decision_queue_overview.py -q`
+  -> PASS, 2 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_source_review_decision_queue.py tests\test_h2_source_review_decision_queue.py tests\test_h3_source_review_decision_queue.py tests\test_h1_h2_h3_decision_queue_overview.py tests\test_manual_source_review_followup_overview.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 12 passed.
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_h1_h2_h3_decision_queue_overview.py operations\project\build_thesis_consolidation_index.py tests\test_h1_h2_h3_decision_queue_overview.py tests\test_thesis_consolidation_index.py`
+  -> PASS.
+- `rg -n "ß" ...` on touched files -> PASS, no matches.
+- `git diff --check` -> PASS.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `595 passed in 61.17s (0:01:01)`.

@@ -8393,3 +8393,41 @@ Verification:
   `WinError 2`, consistent with missing local LibreOffice/`soffice`.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 499 passed in 49.39s.
+
+## 2026-06-12 - Thesis source review plan
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Converted the existing source-evidence citation packets into a source-level
+  manual review plan. This keeps review-access implementation paused while
+  making the next literature work explicit.
+
+Changes:
+
+- Extended `operations/analysis/thesis_consolidation.py` with generated
+  `data/results/thesis_source_review_plan.csv`.
+- Added `docs/research/THESIS_SOURCE_REVIEW_PLAN.md`.
+- Updated `docs/research/THESIS_CONSOLIDATION.md`,
+  `docs/research/LITERATURE_MAP.md`, `ROADMAP.md`, and `GOAL.md`.
+- Extended `tests/test_thesis_consolidation.py` to validate source-review
+  columns, source uniqueness, packet-count consistency, manual review actions,
+  method-foundation priority bands, and candidate-source blocking.
+
+Key output:
+
+- Real literature index source-review rows: 15.
+- Priority-1 method-foundation review sources: 11.
+- Currently unused sources: 3.
+- Blocked or future-work-only sources: 1.
+- Citation review packets covered by the source plan: 33.
+- Full-source-review-required packets: 32.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`
+  -> PASS, generated source review plan and documentation.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_consolidation.py tests\test_dozenten_report.py -q`
+  -> PASS, 13 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 500 passed in 48.97s.

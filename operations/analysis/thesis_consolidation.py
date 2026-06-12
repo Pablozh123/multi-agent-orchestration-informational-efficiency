@@ -31,6 +31,7 @@ GENERATED_ARTIFACTS: frozenset[str] = frozenset(
         "data/results/thesis_agent_pipeline_roadmap.csv",
         "data/results/thesis_citation_review_packets.csv",
         "data/results/thesis_table_figure_captions.csv",
+        "data/results/thesis_source_review_plan.csv",
         "data/results/thesis_consolidation_metadata.json",
         "docs/research/THESIS_CONSOLIDATION.md",
         "docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md",
@@ -38,6 +39,7 @@ GENERATED_ARTIFACTS: frozenset[str] = frozenset(
         "docs/research/THESIS_CHAPTER_DRAFT.md",
         "docs/research/THESIS_CITATION_REVIEW_PACKETS.md",
         "docs/research/THESIS_TABLE_FIGURE_CAPTIONS.md",
+        "docs/research/THESIS_SOURCE_REVIEW_PLAN.md",
     }
 )
 
@@ -50,6 +52,7 @@ CHAPTER_PLAN_OUTPUT = "thesis_chapter_plan.csv"
 AGENT_PIPELINE_OUTPUT = "thesis_agent_pipeline_roadmap.csv"
 CITATION_REVIEW_PACKETS_OUTPUT = "thesis_citation_review_packets.csv"
 TABLE_FIGURE_CAPTIONS_OUTPUT = "thesis_table_figure_captions.csv"
+SOURCE_REVIEW_PLAN_OUTPUT = "thesis_source_review_plan.csv"
 METADATA_OUTPUT = "thesis_consolidation_metadata.json"
 DOC_OUTPUT = "THESIS_CONSOLIDATION.md"
 AGENT_DOC_OUTPUT = "THESIS_AGENT_PIPELINE_ROADMAP.md"
@@ -57,6 +60,7 @@ WRITING_BLUEPRINT_OUTPUT = "THESIS_WRITING_BLUEPRINT.md"
 CHAPTER_DRAFT_OUTPUT = "THESIS_CHAPTER_DRAFT.md"
 CITATION_REVIEW_DOC_OUTPUT = "THESIS_CITATION_REVIEW_PACKETS.md"
 TABLE_FIGURE_CAPTIONS_DOC_OUTPUT = "THESIS_TABLE_FIGURE_CAPTIONS.md"
+SOURCE_REVIEW_PLAN_DOC_OUTPUT = "THESIS_SOURCE_REVIEW_PLAN.md"
 
 EVIDENCE_COLUMNS: tuple[str, ...] = (
     "evidence_id",
@@ -180,6 +184,22 @@ TABLE_FIGURE_CAPTION_COLUMNS: tuple[str, ...] = (
     "thesis_readiness",
 )
 
+SOURCE_REVIEW_PLAN_COLUMNS: tuple[str, ...] = (
+    "source_id",
+    "source_title",
+    "source_status",
+    "final_citation_readiness",
+    "citation_risk",
+    "evidence_packet_count",
+    "h1_h2_h3_packet_count",
+    "method_packet_count",
+    "interpretation_packet_count",
+    "priority_band",
+    "required_review_output",
+    "thesis_use_boundary",
+    "next_action",
+)
+
 
 @dataclass(frozen=True)
 class ThesisConsolidationResult:
@@ -194,6 +214,7 @@ class ThesisConsolidationResult:
     agent_pipeline_path: Path
     citation_review_packets_path: Path
     table_figure_captions_path: Path
+    source_review_plan_path: Path
     metadata_path: Path
     docs_path: Path
     agent_docs_path: Path
@@ -201,6 +222,7 @@ class ThesisConsolidationResult:
     chapter_draft_path: Path
     citation_review_docs_path: Path
     table_figure_captions_docs_path: Path
+    source_review_plan_docs_path: Path
     evidence_rows: int
     core_result_rows: int
     package_rows: int
@@ -209,6 +231,7 @@ class ThesisConsolidationResult:
     agent_stage_rows: int
     citation_review_packet_rows: int
     table_figure_caption_rows: int
+    source_review_plan_rows: int
 
     def to_dict(self) -> dict[str, str | int]:
         return {
@@ -221,6 +244,7 @@ class ThesisConsolidationResult:
             "agent_pipeline_path": str(self.agent_pipeline_path),
             "citation_review_packets_path": str(self.citation_review_packets_path),
             "table_figure_captions_path": str(self.table_figure_captions_path),
+            "source_review_plan_path": str(self.source_review_plan_path),
             "metadata_path": str(self.metadata_path),
             "docs_path": str(self.docs_path),
             "agent_docs_path": str(self.agent_docs_path),
@@ -228,6 +252,7 @@ class ThesisConsolidationResult:
             "chapter_draft_path": str(self.chapter_draft_path),
             "citation_review_docs_path": str(self.citation_review_docs_path),
             "table_figure_captions_docs_path": str(self.table_figure_captions_docs_path),
+            "source_review_plan_docs_path": str(self.source_review_plan_docs_path),
             "evidence_rows": self.evidence_rows,
             "core_result_rows": self.core_result_rows,
             "package_rows": self.package_rows,
@@ -236,6 +261,7 @@ class ThesisConsolidationResult:
             "agent_stage_rows": self.agent_stage_rows,
             "citation_review_packet_rows": self.citation_review_packet_rows,
             "table_figure_caption_rows": self.table_figure_caption_rows,
+            "source_review_plan_rows": self.source_review_plan_rows,
         }
 
 
@@ -328,6 +354,11 @@ def generate_thesis_consolidation(
     _validate_citation_review_packets(citation_review_packets, evidence_map)
     table_figure_captions = build_table_figure_captions(curated_package=curated_package)
     _validate_table_figure_captions(table_figure_captions, repo_root=repo_root)
+    source_review_plan = build_source_review_plan(
+        citation_readiness=citation_readiness,
+        citation_review_packets=citation_review_packets,
+    )
+    _validate_source_review_plan(source_review_plan)
 
     results_dir.mkdir(parents=True, exist_ok=True)
     docs_dir.mkdir(parents=True, exist_ok=True)
@@ -340,6 +371,7 @@ def generate_thesis_consolidation(
     agent_pipeline_path = results_dir / AGENT_PIPELINE_OUTPUT
     citation_review_packets_path = results_dir / CITATION_REVIEW_PACKETS_OUTPUT
     table_figure_captions_path = results_dir / TABLE_FIGURE_CAPTIONS_OUTPUT
+    source_review_plan_path = results_dir / SOURCE_REVIEW_PLAN_OUTPUT
     metadata_path = results_dir / METADATA_OUTPUT
     docs_path = docs_dir / DOC_OUTPUT
     agent_docs_path = docs_dir / AGENT_DOC_OUTPUT
@@ -347,6 +379,7 @@ def generate_thesis_consolidation(
     chapter_draft_path = docs_dir / CHAPTER_DRAFT_OUTPUT
     citation_review_docs_path = docs_dir / CITATION_REVIEW_DOC_OUTPUT
     table_figure_captions_docs_path = docs_dir / TABLE_FIGURE_CAPTIONS_DOC_OUTPUT
+    source_review_plan_docs_path = docs_dir / SOURCE_REVIEW_PLAN_DOC_OUTPUT
 
     evidence_map.to_csv(evidence_map_path, index=False)
     core_results.to_csv(core_results_path, index=False)
@@ -356,6 +389,7 @@ def generate_thesis_consolidation(
     agent_pipeline.to_csv(agent_pipeline_path, index=False)
     citation_review_packets.to_csv(citation_review_packets_path, index=False)
     table_figure_captions.to_csv(table_figure_captions_path, index=False)
+    source_review_plan.to_csv(source_review_plan_path, index=False)
     evidence_map_md_path.write_text(
         _render_evidence_markdown(evidence_map),
         encoding="utf-8",
@@ -370,6 +404,7 @@ def generate_thesis_consolidation(
         agent_pipeline=agent_pipeline,
         citation_review_packets=citation_review_packets,
         table_figure_captions=table_figure_captions,
+        source_review_plan=source_review_plan,
     )
     metadata_path.write_text(json.dumps(metadata, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     docs_path.write_text(
@@ -421,6 +456,13 @@ def generate_thesis_consolidation(
         ),
         encoding="utf-8",
     )
+    source_review_plan_docs_path.write_text(
+        _render_source_review_plan_doc(
+            source_review_plan=source_review_plan,
+            metadata=metadata,
+        ),
+        encoding="utf-8",
+    )
 
     return ThesisConsolidationResult(
         evidence_map_path=evidence_map_path,
@@ -432,6 +474,7 @@ def generate_thesis_consolidation(
         agent_pipeline_path=agent_pipeline_path,
         citation_review_packets_path=citation_review_packets_path,
         table_figure_captions_path=table_figure_captions_path,
+        source_review_plan_path=source_review_plan_path,
         metadata_path=metadata_path,
         docs_path=docs_path,
         agent_docs_path=agent_docs_path,
@@ -439,6 +482,7 @@ def generate_thesis_consolidation(
         chapter_draft_path=chapter_draft_path,
         citation_review_docs_path=citation_review_docs_path,
         table_figure_captions_docs_path=table_figure_captions_docs_path,
+        source_review_plan_docs_path=source_review_plan_docs_path,
         evidence_rows=len(evidence_map),
         core_result_rows=len(core_results),
         package_rows=len(curated_package),
@@ -447,6 +491,7 @@ def generate_thesis_consolidation(
         agent_stage_rows=len(agent_pipeline),
         citation_review_packet_rows=len(citation_review_packets),
         table_figure_caption_rows=len(table_figure_captions),
+        source_review_plan_rows=len(source_review_plan),
     )
 
 
@@ -1390,6 +1435,61 @@ def build_citation_review_packets(
     return pd.DataFrame(rows, columns=CITATION_REVIEW_PACKET_COLUMNS)
 
 
+def build_source_review_plan(
+    *,
+    citation_readiness: pd.DataFrame,
+    citation_review_packets: pd.DataFrame,
+) -> pd.DataFrame:
+    """Build a source-level manual review plan from citation packets."""
+
+    packet_groups = {
+        source_id: rows
+        for source_id, rows in citation_review_packets.groupby("source_id", sort=False)
+    }
+    rows: list[dict[str, object]] = []
+    for source in citation_readiness.sort_values("source_id").to_dict(orient="records"):
+        source_id = str(source["source_id"])
+        packets = packet_groups.get(
+            source_id,
+            pd.DataFrame(columns=CITATION_REVIEW_PACKET_COLUMNS),
+        )
+        evidence_packet_count = int(len(packets))
+        h1_h2_h3_packet_count = int(
+            packets["thesis_area"].astype(str).isin({"H1", "H2", "H3"}).sum()
+        )
+        method_packet_count = int((packets["item_type"].astype(str) == "method").sum())
+        interpretation_packet_count = int(
+            (packets["item_type"].astype(str) == "interpretation").sum()
+        )
+        readiness = str(source["final_citation_readiness"])
+        source_status = str(source["status"])
+        priority_band = _source_review_priority_band(
+            source_status=source_status,
+            readiness=readiness,
+            method_packet_count=method_packet_count,
+            h1_h2_h3_packet_count=h1_h2_h3_packet_count,
+            evidence_packet_count=evidence_packet_count,
+        )
+        rows.append(
+            {
+                "source_id": source_id,
+                "source_title": str(source["title"]),
+                "source_status": source_status,
+                "final_citation_readiness": readiness,
+                "citation_risk": str(source["citation_risk"]),
+                "evidence_packet_count": evidence_packet_count,
+                "h1_h2_h3_packet_count": h1_h2_h3_packet_count,
+                "method_packet_count": method_packet_count,
+                "interpretation_packet_count": interpretation_packet_count,
+                "priority_band": priority_band,
+                "required_review_output": _source_review_required_output(priority_band),
+                "thesis_use_boundary": _source_review_use_boundary(readiness),
+                "next_action": _source_review_next_action(priority_band, readiness),
+            }
+        )
+    return pd.DataFrame(rows, columns=SOURCE_REVIEW_PLAN_COLUMNS)
+
+
 def build_table_figure_captions(*, curated_package: pd.DataFrame) -> pd.DataFrame:
     """Build thesis-ready captions and source notes for curated package rows."""
 
@@ -1846,6 +1946,39 @@ def _validate_citation_review_packets(
         raise ValueError("Citation review packets require check instructions.")
 
 
+def _validate_source_review_plan(frame: pd.DataFrame) -> None:
+    _require_columns(frame, SOURCE_REVIEW_PLAN_COLUMNS, "source review plan")
+    if frame["source_id"].duplicated().any():
+        raise ValueError("Source review plan contains duplicate source_id values.")
+    for column in (
+        "priority_band",
+        "required_review_output",
+        "thesis_use_boundary",
+        "next_action",
+    ):
+        if frame[column].astype(str).str.len().eq(0).any():
+            raise ValueError(f"Source review plan contains empty {column}.")
+    blocked = frame[
+        frame["final_citation_readiness"].isin(
+            {"not_allowed_for_thesis_facing_claims", "do_not_cite"}
+        )
+    ]
+    if not blocked["priority_band"].eq("blocked_or_future_work_only").all():
+        raise ValueError("Blocked sources must remain blocked or future-work only.")
+    core_priority = frame["priority_band"].isin(
+        {
+            "priority_1_method_foundation_review",
+            "priority_2_core_interpretation_review",
+        }
+    )
+    risky_core = frame[core_priority & frame["source_status"].isin({"candidate", "rejected"})]
+    if not risky_core.empty:
+        raise ValueError("Candidate or rejected sources cannot be core source-review priorities.")
+    joined = " ".join(frame.fillna("").astype(str).agg(" ".join, axis=1).tolist())
+    if chr(223) in joined:
+        raise ValueError("Source review plan contains German sharp-s.")
+
+
 def _validate_table_figure_captions(
     captions: pd.DataFrame,
     *,
@@ -1895,6 +2028,7 @@ def _build_metadata(
     agent_pipeline: pd.DataFrame,
     citation_review_packets: pd.DataFrame,
     table_figure_captions: pd.DataFrame,
+    source_review_plan: pd.DataFrame,
 ) -> dict[str, object]:
     core = curated_package[curated_package["include_in_core_package"].astype(bool)]
     return {
@@ -1915,6 +2049,7 @@ def _build_metadata(
             "agent_stage_rows": int(len(agent_pipeline)),
             "citation_review_packet_rows": int(len(citation_review_packets)),
             "table_figure_caption_rows": int(len(table_figure_captions)),
+            "source_review_plan_rows": int(len(source_review_plan)),
             "writing_blueprint_generated": True,
             "chapter_draft_generated": True,
             "core_table_count": int((core["package_type"] == "table").sum()),
@@ -1970,11 +2105,19 @@ def _build_metadata(
             ),
             "total_caption_rows": int(len(table_figure_captions)),
         },
+        "source_review_plan_counts": {
+            str(key): int(value)
+            for key, value in source_review_plan["priority_band"]
+            .value_counts()
+            .sort_index()
+            .items()
+        },
         "guardrails": {
             "every_method_and_interpretation_has_artifact": True,
             "citation_readiness_is_status_mapping_not_source_promotion": True,
             "citation_review_packets_are_pending_human_review": True,
             "table_figure_captions_use_curated_package_only": True,
+            "source_review_plan_is_manual_review_queue": True,
             "chapter_plan_uses_curated_package": True,
             "thesis_facing_rows_avoid_candidate_or_rejected_sources": True,
             "swiss_final_efficiency_interpretation_pending": True,
@@ -2093,6 +2236,11 @@ def _render_consolidation_doc(
         "Evidence ID, the deterministic artifact, allowed wording, blocked wording, "
         "review question, and final citation gate. The packet file is a worklist, "
         "not a source-status promotion.\n\n"
+        "## Source Review Plan\n\n"
+        "`data/results/thesis_source_review_plan.csv` groups the citation packets "
+        "by source and assigns manual review bands. It has "
+        f"{metadata['outputs']['source_review_plan_rows']} source rows and remains "
+        "a human review queue, not an automatic source-status promotion.\n\n"
         "## Chapter Plan\n\n"
         + _markdown_table(
             chapter_plan[
@@ -2256,6 +2404,51 @@ def _render_table_figure_captions_doc(
         "Use these captions with the exact linked artifacts. Do not replace the "
         "curated package with additional raw result files unless the evidence map "
         "and chapter plan are updated first.\n"
+    )
+
+
+def _render_source_review_plan_doc(
+    *,
+    source_review_plan: pd.DataFrame,
+    metadata: dict[str, object],
+) -> str:
+    display = source_review_plan[
+        [
+            "source_id",
+            "source_status",
+            "priority_band",
+            "evidence_packet_count",
+            "h1_h2_h3_packet_count",
+            "method_packet_count",
+            "interpretation_packet_count",
+            "thesis_use_boundary",
+        ]
+    ]
+    priority_summary = (
+        source_review_plan.groupby("priority_band", dropna=False)
+        .size()
+        .reset_index(name="source_count")
+        .sort_values("priority_band")
+    )
+    return (
+        "# Thesis Source Review Plan\n\n"
+        "This plan groups the citation review packets by source. It is a manual "
+        "source-review queue, not an automatic citation approval step.\n\n"
+        "## Counts\n\n"
+        f"- Source review rows: {metadata['outputs']['source_review_plan_rows']}\n"
+        f"- Citation review packets: {metadata['outputs']['citation_review_packet_rows']}\n"
+        f"- Full source review required packets: {metadata['citation_review_packet_counts']['full_review_required_packets']}\n\n"
+        "## Priority Summary\n\n"
+        + _markdown_table(priority_summary)
+        + "\n\n"
+        "## Source Review Queue\n\n"
+        + _markdown_table(display)
+        + "\n\n"
+        "## Manual Review Rule\n\n"
+        "For each priority source, record page or section support before final "
+        "citation. Candidate or blocked sources remain unavailable for "
+        "thesis-facing claims unless their metadata and status are reviewed "
+        "under a separate source update.\n"
     )
 
 
@@ -2612,6 +2805,65 @@ def _citation_review_question(evidence_row: dict[str, object]) -> str:
         f"Is this source suitable only for the planned {thesis_area} future-work framing, "
         "without supporting active thesis metrics or runtime agents?"
     )
+
+
+def _source_review_priority_band(
+    *,
+    source_status: str,
+    readiness: str,
+    method_packet_count: int,
+    h1_h2_h3_packet_count: int,
+    evidence_packet_count: int,
+) -> str:
+    if readiness in {"not_allowed_for_thesis_facing_claims", "do_not_cite"}:
+        return "blocked_or_future_work_only"
+    if evidence_packet_count == 0:
+        return "not_currently_needed"
+    if source_status in {"reviewed", "cited"}:
+        return "format_and_page_note_check"
+    if method_packet_count > 0:
+        return "priority_1_method_foundation_review"
+    if h1_h2_h3_packet_count > 0:
+        return "priority_2_core_interpretation_review"
+    return "priority_3_context_or_appendix_review"
+
+
+def _source_review_required_output(priority_band: str) -> str:
+    if priority_band == "not_currently_needed":
+        return "none_until_source_is_added_to_an_evidence_row"
+    if priority_band == "blocked_or_future_work_only":
+        return "metadata_and_relevance_note_only_no_thesis_claim_use"
+    if priority_band == "format_and_page_note_check":
+        return "page_or_section_note_and_final_citation_format_check"
+    return "page_or_section_note_claim_support_check_and_blocked_wording_check"
+
+
+def _source_review_use_boundary(readiness: str) -> str:
+    if readiness == "final_citation_ready":
+        return "may_be_used_after_format_and_page_note_check"
+    if readiness == "reviewed_not_final_citation":
+        return "reviewed_but_final_citation_format_still_needed"
+    if readiness == "needs_full_source_review_before_final_citation":
+        return "draft_structure_only_until_full_source_review"
+    if readiness == "not_currently_needed":
+        return "not_used_in_current_thesis_map"
+    return "not_allowed_for_thesis_facing_claims"
+
+
+def _source_review_next_action(priority_band: str, readiness: str) -> str:
+    if priority_band == "priority_1_method_foundation_review":
+        return "Review method sections first and record page or section notes before final methodology citation."
+    if priority_band == "priority_2_core_interpretation_review":
+        return "Review evidence-specific passages and confirm allowed wording before final result discussion."
+    if priority_band == "priority_3_context_or_appendix_review":
+        return "Review only after H1-H3 method and interpretation sources are cleared."
+    if priority_band == "format_and_page_note_check":
+        return "Check citation formatting and record final page or section support."
+    if priority_band == "blocked_or_future_work_only":
+        return "Do not use for thesis-facing claims unless metadata and status are re-reviewed."
+    if readiness == "not_currently_needed":
+        return "No action unless this source becomes mapped to a thesis claim."
+    return "Assign a recognised source status before thesis use."
 
 
 def _require_columns(frame: pd.DataFrame, columns: Sequence[str], name: str) -> None:

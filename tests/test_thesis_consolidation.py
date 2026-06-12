@@ -12,6 +12,7 @@ from operations.analysis.thesis_consolidation import (
     CITATION_READINESS_COLUMNS,
     CITATION_REVIEW_PACKET_COLUMNS,
     EVIDENCE_COLUMNS,
+    SOURCE_REVIEW_PLAN_COLUMNS,
     TABLE_FIGURE_CAPTION_COLUMNS,
     generate_thesis_consolidation,
 )
@@ -28,6 +29,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     citations = pd.read_csv(result.citation_readiness_path)
     citation_packets = pd.read_csv(result.citation_review_packets_path)
     captions = pd.read_csv(result.table_figure_captions_path)
+    source_review_plan = pd.read_csv(result.source_review_plan_path)
     chapters = pd.read_csv(result.chapter_plan_path)
     agents = pd.read_csv(result.agent_pipeline_path)
     metadata = json.loads(result.metadata_path.read_text(encoding="utf-8"))
@@ -37,11 +39,13 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     chapter_draft = result.chapter_draft_path.read_text(encoding="utf-8")
     citation_packet_doc = result.citation_review_docs_path.read_text(encoding="utf-8")
     caption_doc = result.table_figure_captions_docs_path.read_text(encoding="utf-8")
+    source_review_doc = result.source_review_plan_docs_path.read_text(encoding="utf-8")
 
     assert tuple(evidence.columns) == EVIDENCE_COLUMNS
     assert tuple(citations.columns) == CITATION_READINESS_COLUMNS
     assert tuple(citation_packets.columns) == CITATION_REVIEW_PACKET_COLUMNS
     assert tuple(captions.columns) == TABLE_FIGURE_CAPTION_COLUMNS
+    assert tuple(source_review_plan.columns) == SOURCE_REVIEW_PLAN_COLUMNS
     assert tuple(chapters.columns) == CHAPTER_PLAN_COLUMNS
     assert tuple(agents.columns) == AGENT_PIPELINE_COLUMNS
     assert result.evidence_rows == 13
@@ -49,6 +53,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert result.citation_rows == 12
     assert result.citation_review_packet_rows == 33
     assert result.table_figure_caption_rows == 10
+    assert result.source_review_plan_rows == 12
     assert result.chapter_rows == 8
     assert result.agent_stage_rows == 6
     assert metadata["method"]["does_not_use_llms"] is True
@@ -62,10 +67,12 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert metadata["outputs"]["chapter_draft_generated"] is True
     assert metadata["outputs"]["citation_review_packet_rows"] == 33
     assert metadata["outputs"]["table_figure_caption_rows"] == 10
+    assert metadata["outputs"]["source_review_plan_rows"] == 12
     assert metadata["table_figure_caption_counts"]["core_table_captions"] == 5
     assert metadata["table_figure_caption_counts"]["core_figure_captions"] == 4
     assert metadata["guardrails"]["citation_review_packets_are_pending_human_review"] is True
     assert metadata["guardrails"]["table_figure_captions_use_curated_package_only"] is True
+    assert metadata["guardrails"]["source_review_plan_is_manual_review_queue"] is True
     assert "Deferred Agent Pipeline Idea" in doc
     assert "Citation Readiness" in doc
     assert "Citation Review Packets" in doc
@@ -76,6 +83,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert "keine neuen Kennzahlen" in chapter_draft
     assert "Thesis Citation Review Packets" in citation_packet_doc
     assert "Thesis Table And Figure Captions" in caption_doc
+    assert "Thesis Source Review Plan" in source_review_doc
     assert core["bounded_interpretation"].str.len().gt(0).all()
     assert package["main_limitation"].str.len().gt(0).all()
 
@@ -150,6 +158,43 @@ def test_citation_review_packets_link_sources_to_evidence_and_keep_pending(
     assert candidate["draft_use_allowed"] in {False, "False", "false"}
     assert candidate["final_citation_gate"] == "metadata_and_relevance_review_before_future_work_use"
     assert metadata["citation_review_packet_counts"]["pending_packets"] == len(packets)
+
+
+def test_source_review_plan_prioritises_manual_source_checks(tmp_path: Path) -> None:
+    _write_fixture(tmp_path)
+
+    result = generate_thesis_consolidation(repo_root=tmp_path)
+
+    citations = pd.read_csv(result.citation_readiness_path)
+    plan = pd.read_csv(result.source_review_plan_path)
+    packets = pd.read_csv(result.citation_review_packets_path)
+    metadata = json.loads(result.metadata_path.read_text(encoding="utf-8"))
+    core_priorities = {
+        "priority_1_method_foundation_review",
+        "priority_2_core_interpretation_review",
+    }
+
+    assert set(plan["source_id"]) == set(citations["source_id"])
+    assert plan["source_id"].is_unique
+    assert plan["evidence_packet_count"].sum() == len(packets)
+    assert plan["priority_band"].str.len().gt(0).all()
+    assert plan["required_review_output"].str.len().gt(0).all()
+    assert plan["thesis_use_boundary"].str.len().gt(0).all()
+    assert plan["next_action"].str.len().gt(0).all()
+    assert metadata["source_review_plan_counts"]["blocked_or_future_work_only"] == 1
+
+    method_sources = plan[plan["method_packet_count"] > 0]
+    assert method_sources["priority_band"].eq("priority_1_method_foundation_review").all()
+
+    risky_core = plan[
+        plan["priority_band"].isin(core_priorities)
+        & plan["source_status"].isin({"candidate", "rejected"})
+    ]
+    assert risky_core.empty
+
+    candidate = plan[plan["source_id"] == "zotero_poly_010"].iloc[0]
+    assert candidate["priority_band"] == "blocked_or_future_work_only"
+    assert candidate["thesis_use_boundary"] == "not_allowed_for_thesis_facing_claims"
 
 
 def test_chapter_plan_uses_curated_package_ids(tmp_path: Path) -> None:

@@ -34,6 +34,7 @@
     "no_order_or_trading_paths": true,
     "no_raw_table_dumps": true,
     "no_wallet_address_exposure_by_default": true,
+    "source_review_plan_is_manual_review_queue": true,
     "swiss_final_efficiency_interpretation_pending": true,
     "table_figure_captions_use_curated_package_only": true,
     "thesis_facing_rows_avoid_candidate_or_rejected_sources": true
@@ -59,6 +60,7 @@
     "max_core_figures": 4,
     "max_core_tables": 5,
     "package_rows": 10,
+    "source_review_plan_rows": 15,
     "table_figure_caption_rows": 10,
     "writing_blueprint_generated": true
   },
@@ -67,6 +69,11 @@
     "descriptive_pending_result": 2,
     "future_work_deferred": 1,
     "thesis_facing_ready": 8
+  },
+  "source_review_plan_counts": {
+    "blocked_or_future_work_only": 1,
+    "not_currently_needed": 3,
+    "priority_1_method_foundation_review": 11
   },
   "table_figure_caption_counts": {
     "core_figure_captions": 4,

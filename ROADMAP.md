@@ -622,6 +622,11 @@ Current implemented consolidation:
 - `data/results/thesis_citation_readiness.csv` maps every indexed source to
   evidence usage, current source status, citation risk, and the next review
   action before final thesis citation.
+- `data/results/thesis_source_review_plan.csv` and
+  `docs/research/THESIS_SOURCE_REVIEW_PLAN.md` group citation packets by
+  source into a manual review queue: 11 priority-1 method-foundation sources,
+  3 currently unused sources, and 1 blocked/future-work-only source in the
+  current real literature index.
 - `data/results/thesis_chapter_plan.csv` maps the BA chapter structure to
   curated tables, figures, evidence IDs, artifacts, limitations, and next
   writing actions.

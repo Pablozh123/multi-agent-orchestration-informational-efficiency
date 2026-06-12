@@ -57,6 +57,10 @@ This table is a source-control view, not a promotion of source status. Sources m
 
 `data/results/thesis_citation_review_packets.csv` breaks the source review into source-evidence packets. Each row links one source to one Evidence ID, the deterministic artifact, allowed wording, blocked wording, review question, and final citation gate. The packet file is a worklist, not a source-status promotion.
 
+## Source Review Plan
+
+`data/results/thesis_source_review_plan.csv` groups the citation packets by source and assigns manual review bands. It has 15 source rows and remains a human review queue, not an automatic source-status promotion.
+
 ## Chapter Plan
 
 | chapter_id | chapter_title | writing_status | recommended_tables | recommended_figures | next_action |

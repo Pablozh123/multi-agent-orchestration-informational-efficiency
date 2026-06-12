@@ -911,6 +911,15 @@ Current implemented consolidation:
   5 pending rows, and 0 final-citation-ready rows. The slice keeps
   Page-/Section-Note, Claim-Support, Blocked-Wording, Citation-Use and
   Kausalclaim-Grenze visible before any final H2 citation.
+- `data/results/thesis_h3_manual_source_review_followup.csv` and
+  `docs/project/THESIS_H3_MANUAL_SOURCE_REVIEW_FOLLOWUP.md` start the H3
+  manual Source Review slice with 8 H3 rows, 4 unique H3 sources, 5 method
+  rows, 3 interpretation rows, 2 external locator rows, 6 local PDF rows,
+  8 pending rows, and 0 final-citation-ready rows. The slice keeps
+  Page-/Section-Note, Claim-Support, Blocked-Wording, Citation-Use,
+  Granger-Grenze, Wallet-Grenze, no arbitrary Whale thresholds, no
+  Wallet-address exposure, and no trading/profitability claims visible before
+  any final H3 citation.
 - `data/results/thesis_h1_h2_h3_core_sections.csv` and
   `docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md` translate the H1-H2-H3
   empirical core into three thesis-ready section rows: each row binds
@@ -939,10 +948,10 @@ Current implemented consolidation:
   bounded chapter draft, thesis final gate board, traceability audit, chapter
   source bindings, agent future-work handoff, advisor handoff note, advisor
   feedback log, advisor source-review follow-up, H1 manual source-review
-  follow-up, H2 manual source-review follow-up, submission readiness board,
-  drafting sequence, wording guard, table/figure captions, chapter draft,
-  source review plan, agent protocol, status, and work log are easy to
-  navigate.
+  follow-up, H2 manual source-review follow-up, H3 manual source-review
+  follow-up, submission readiness board, drafting sequence, wording guard,
+  table/figure captions, chapter draft, source review plan, agent protocol,
+  status, and work log are easy to navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,

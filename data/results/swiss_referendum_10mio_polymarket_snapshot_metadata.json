@@ -2,7 +2,7 @@
   "endpoints": {
     "gamma_events": "https://gamma-api.polymarket.com/events"
   },
-  "generated_at_utc": "2026-06-12T00:04:17Z",
+  "generated_at_utc": "2026-06-12T01:04:17Z",
   "limitations": {
     "does_not_send_orders": true,
     "does_not_use_agents_or_mcp": true,
@@ -16,7 +16,7 @@
   },
   "method": {
     "append_to_existing_outputs": true,
-    "collector_received_at_utc": "2026-06-12T00:04:16Z",
+    "collector_received_at_utc": "2026-06-12T01:04:16Z",
     "event_slug": "switzerlands-june-referendum-what-will-pass",
     "market_slug": "will-the-no-to-ten-million-switzerland-initiative-be-approved-in-switzerlands-june-14-2026-popular-vote",
     "name": "swiss_referendum_10mio_polymarket_snapshot",
@@ -27,10 +27,10 @@
   "outputs": {
     "contains_order_instructions": false,
     "contains_wallet_addresses": false,
-    "latest_collected_at_utc": "2026-06-12T00:04:16Z",
+    "latest_collected_at_utc": "2026-06-12T01:04:16Z",
     "latest_no_probability": 0.78,
     "latest_yes_probability": 0.22,
-    "row_count": 27,
+    "row_count": 28,
     "snapshots_path": "data\\results\\swiss_referendum_10mio_polymarket_snapshots.csv"
   }
 }

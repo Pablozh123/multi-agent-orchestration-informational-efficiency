@@ -10,16 +10,16 @@ This document is the high-level consolidation layer for the bachelor thesis. It 
 
 | view_id | project_layer | status | current_decision | next_gate | thesis_use |
 | --- | --- | --- | --- | --- | --- |
-| project_00_current_frame | Current high-level frame | active_thesis_core | Use 6 core result rows, 5 core tables, and 4 core figures as the main thesis package. | Complete source review and turn the chapter plan into thesis prose. | main_text_project_overview |
+| project_00_current_frame | Current high-level frame | active_thesis_core | Without review access, use 6 core result rows, 5 core tables, and 4 core figures as the main thesis package. | Complete source review and turn the chapter plan into thesis prose. | main_text_project_overview |
 | project_01_h1_forecast_quality | H1 forecast quality | thesis_facing_ready | Write H1 as bounded support in compatible poll-comparison scopes, not as universal Polymarket superiority. | Final citation wording after source review confirms method and interpretation support. | main_text_results |
 | project_02_h2_event_windows | H2 event-window response | thesis_facing_ready | Use H2 as daily event-window evidence, not as an intraday reaction-speed claim. | Draft result text with event curation and daily-resolution limitation explicit. | main_text_results |
 | project_03_h3_wallet_timing | H3 wallet timing diagnostics | thesis_facing_ready_with_limits | Use top-tier timing diagnostics as predictive pattern evidence, not causal or misconduct evidence. | Draft H3 with BUY-only, daily aggregation, and multiple-testing limitations visible. | main_text_results_with_limits |
 | project_04_source_review_gate | Sources and citations | active_gate | Treat 11 sources as requiring full review, including 11 priority-1 method-foundation rows. | Record page or section notes and human decisions before final thesis citation. | theory_methods_citation_gate |
 | project_05_table_figure_package | Compact tables and figures | thesis_facing_package | Use 5 core tables and 4 core figures, with generated captions and limitation notes. | Integrate the selected package into draft chapters and appendix placement. | main_text_and_appendix |
-| project_06_monitor_review_access | Monitor prototype and review access | paused_appendix_only | Review access remains paused; no further runtime MCP or agent layer is part of the current thesis consolidation. | Human source review of monitor cases or a separate approved goal before any renewed access work. | appendix_or_discussion_only |
+| project_06_monitor_review_access | Monitor prototype and review access | paused_appendix_only | Review access remains paused; continue with advisor feedback, source review, and draft writing instead of access work. | Human source review of monitor cases and a separate approved goal before any renewed access work. | appendix_or_discussion_only |
 | project_07_swiss_referendum | Swiss referendum side track | descriptive_pending_result | Keep the Swiss material descriptive until the official 14 June 2026 vote result is available. | Regenerate Swiss artifacts after official result mapping. | discussion_pending_final_result |
 | project_08_future_agents | Future agent-assisted pipeline | documentation_only_deferred | Keep 6 roadmap stages and 6 documentation-only assistance rows inactive. | Separate approved goal with bounded prompts, tests, and llm_audit_log integration. | future_work_only |
-| project_09_advisor_iteration | Advisor communication | project_management_ready | Use the Dozentenbericht to align on bounded H1 wording, source-review depth, Swiss placement, and appendix scope. | Advisor feedback is received and logged into the next small commit plan. | advisor_update |
+| project_09_advisor_iteration | Advisor communication | project_management_ready | Use the Dozentenbericht to align on bounded H1 wording, source-review depth, Swiss placement, and appendix scope. | Advisor feedback is received, logged in DOZENTEN_FEEDBACK_LOG, and translated into the next small commit plan. | advisor_update |
 
 ## Core Result Table
 
@@ -30,7 +30,7 @@ This document is the high-level consolidation layer for the bachelor thesis. It 
 | core_h2_largest_daily_event_window | H2 | The largest primary daily event-window move is the Trump shooting window. | evt_2024_07_13_trump_shooting 7.2 pp | thesis_facing_ready |
 | core_h3_top_tier_timing | H3 | The top wallet tier has the clearest current timing diagnostic. | tier_1_top_1pct lag 1 correlation 0.1858; tier_1_top_1pct lag 1 Granger p=0.0012; 1216 aligned rows | thesis_facing_ready |
 | core_monitor_review_queue_boundary | monitor_prototype | The monitor review queue is useful as workflow evidence, not empirical proof. | 3 review cases; 1 high; 2 medium; source_check_pending=3 | appendix_prototype_only |
-| core_swiss_running_gap_pending | swiss_referendum | Swiss referendum market-poll divergence is descriptive until the result is known. | 28 snapshots; latest SRG/gfs.bern Polymarket Yes 22.0%, poll Yes 45.0%, raw gap -23.0 pp | descriptive_pending_result |
+| core_swiss_running_gap_pending | swiss_referendum | Swiss referendum market-poll divergence is descriptive until the result is known. | 31 snapshots; latest SRG/gfs.bern Polymarket Yes 21.5%, poll Yes 45.0%, raw gap -23.5 pp | descriptive_pending_result |
 
 ## Recommended Tables
 

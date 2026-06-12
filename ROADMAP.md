@@ -669,8 +669,8 @@ Current implemented consolidation:
 - `data/results/thesis_project_highlevel_view.csv` and
   `docs/research/THESIS_PROJECT_HIGHLEVEL_VIEW.md` provide a compact project
   status matrix for the high-level view: H1-H3 as thesis core, source review as
-  the active gate, review access paused, Swiss pending final result, and agents
-  documentation-only.
+  the active gate, review access paused, advisor feedback plus writing as the
+  next path forward, Swiss pending final result, and agents documentation-only.
 - `data/results/thesis_execution_checklist.csv` and
   `docs/project/THESIS_EXECUTION_CHECKLIST.md` translate the high-level view
   into eight chapter-level writing and acceptance tasks with source gates,

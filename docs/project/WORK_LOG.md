@@ -9370,6 +9370,60 @@ Verification:
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 529 passed in 51.29s.
 
+## 2026-06-12 - Project high-level path without review access
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Answered the current project-level question without reactivating
+  Review-Access.
+- Kept monitor review access, runtime agents, MCP, model routing, LLM metric
+  calculation, and trading paths deferred.
+
+Changes:
+
+- Updated `operations/analysis/thesis_consolidation.py` so the generated
+  project high-level view explicitly states the path forward without
+  Review-Access.
+- Added a German `Kurzantwort: Weiter Ohne Review-Access` section to
+  `docs/research/THESIS_PROJECT_HIGHLEVEL_VIEW.md`.
+- Regenerated the high-level project view, consolidation view, writing
+  blueprint, chapter draft, core result table, and advisor report outputs.
+- Updated `GOAL.md` and `ROADMAP.md` so the path forward is listed as advisor
+  feedback, source review, H1-H3 writing, table/figure integration, Swiss
+  result gate, and final QA.
+- Updated tests to keep the paused-review-access boundary visible.
+
+Key output:
+
+- Project high-level rows: 10.
+- The monitor/review-access row remains `paused_appendix_only`.
+- The future-agent row remains `documentation_only_deferred`.
+- The Swiss side track remains `descriptive_pending_result`.
+- The high-level path now prioritises advisor feedback, source review, draft
+  writing, compact table/figure integration, Swiss result mapping, and final
+  QA.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/analysis/thesis_consolidation.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_thesis_consolidation.py -q`
+  -> PASS, 15 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`
+  -> PASS, generated 10 high-level rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown, HTML, and DOCX advisor report.
+- `.\.venv\Scripts\python.exe -m py_compile operations/analysis/thesis_consolidation.py operations/project/build_dozenten_report.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_thesis_consolidation.py tests/test_dozenten_report.py -q`
+  -> PASS, 16 passed.
+- `.\.venv\Scripts\python.exe C:\Users\chole\.codex\plugins\cache\openai-primary-runtime\documents\26.601.10930\skills\documents\render_docx.py docs\project\dozentenbericht_ba_thesis.docx --output_dir docs\project\dozentenbericht_render_qa`
+  -> FAIL, `soffice`/LibreOffice is not available in the environment, so DOCX
+  visual render QA could not be completed.
+- `rg -n "sharp-s|\\u00df" operations/analysis/thesis_consolidation.py tests/test_thesis_consolidation.py docs/research/THESIS_PROJECT_HIGHLEVEL_VIEW.md docs/research/THESIS_CONSOLIDATION.md docs/research/THESIS_CHAPTER_DRAFT.md docs/research/THESIS_WRITING_BLUEPRINT.md docs/project/dozentenbericht_ba_thesis.md docs/project/dozentenbericht_ba_thesis.html`
+  -> PASS, no matches.
+
 ## 2026-06-12 - Advisor feedback log
 
 Goal context:

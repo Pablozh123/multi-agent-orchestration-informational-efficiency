@@ -1783,7 +1783,7 @@ def build_project_highlevel_view(
                     first_workstream,
                     final_workstream,
                 ],
-                current_decision=f"Use {len(core_results)} core result rows, {core_table_count} core tables, and {core_figure_count} core figures as the main thesis package.",
+                current_decision=f"Without review access, use {len(core_results)} core result rows, {core_table_count} core tables, and {core_figure_count} core figures as the main thesis package.",
                 next_gate="Complete source review and turn the chapter plan into thesis prose.",
                 guardrail="Deterministic Python artifacts first; no LLM metric calculation, no raw table dumps, and no runtime agents.",
                 thesis_use="main_text_project_overview",
@@ -1890,8 +1890,8 @@ def build_project_highlevel_view(
                     "data/results/monitor_anomaly_review_dashboard.html",
                 ],
                 evidence_or_workstream_ids=["work_06_monitor_appendix"],
-                current_decision="Review access remains paused; no further runtime MCP or agent layer is part of the current thesis consolidation.",
-                next_gate="Human source review of monitor cases or a separate approved goal before any renewed access work.",
+                current_decision="Review access remains paused; continue with advisor feedback, source review, and draft writing instead of access work.",
+                next_gate="Human source review of monitor cases and a separate approved goal before any renewed access work.",
                 guardrail="No wallet-address exposure by default, no raw monitor rows, no order or trading paths, and no causal claims.",
                 thesis_use="appendix_or_discussion_only",
             ),
@@ -1939,11 +1939,13 @@ def build_project_highlevel_view(
                 primary_artifacts=[
                     "docs/project/dozentenbericht_ba_thesis.docx",
                     "docs/project/dozentenbericht_ba_thesis.md",
+                    "docs/project/THESIS_ADVISOR_HANDOFF_PACKAGE.md",
+                    "docs/project/DOZENTEN_FEEDBACK_LOG.md",
                 ],
                 evidence_or_workstream_ids=["work_09_advisor_iteration"],
                 current_decision="Use the Dozentenbericht to align on bounded H1 wording, source-review depth, Swiss placement, and appendix scope.",
-                next_gate="Advisor feedback is received and logged into the next small commit plan.",
-                guardrail="Do not expand empirical scope before the current deterministic thesis core is written.",
+                next_gate="Advisor feedback is received, logged in DOZENTEN_FEEDBACK_LOG, and translated into the next small commit plan.",
+                guardrail="Do not expand empirical scope or reactivate review access before the current deterministic thesis core is written.",
                 thesis_use="advisor_update",
             ),
         ],
@@ -3390,6 +3392,16 @@ def _render_project_highlevel_view_doc(
         "happens next: the thesis core is H1-H3, review access remains paused, "
         "monitor material stays appendix/prototype only, Swiss remains pending "
         "until the official result, and future agents stay documentation-only.\n\n"
+        "## Kurzantwort: Weiter Ohne Review-Access\n\n"
+        "- Review-Access bleibt pausiert; der naechste Fortschritt kommt aus "
+        "Schreiben und Review-Gates.\n"
+        "- Zuerst Dozentenpaket senden und Feedback im Log festhalten.\n"
+        "- Danach Source Review prioritaer abarbeiten, H1-H3 Kapitel schreiben "
+        "und Tabellen/Figuren integrieren.\n"
+        "- Swiss bleibt bis zum offiziellen Resultat am 14. Juni 2026 "
+        "beschreibend.\n"
+        "- Agenten bleiben Future Work; keine Runtime-Agenten, MCP, Model "
+        "Routing oder LLM-Metriken.\n\n"
         "## Counts\n\n"
         f"- Project rows: {counts['rows']}\n"
         f"- Thesis-facing empirical rows: {counts['thesis_facing_rows']}\n"

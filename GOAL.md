@@ -95,11 +95,14 @@ acceptance_criteria:
 - The advisor handoff package is updated so the Word report, handoff note,
   readiness board, drafting sequence, feedback log, source review, and index
   appear in one consistent order.
+- The high-level project view explicitly answers the path forward without
+  Review-Access: advisor feedback, source review, H1-H3 writing,
+  table/figure integration, Swiss result gate, and final QA.
 - Tests cover the generated evidence map and curated result package where
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: update advisor handoff package
+next_commit: docs: clarify project high-level path
 
 ## Running Side Goal
 

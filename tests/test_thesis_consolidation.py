@@ -112,6 +112,8 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert "Thesis Next Work Plan" in next_work_doc
     assert "Thesis Project Highlevel View" in project_highlevel_doc
     assert "review access remains paused" in project_highlevel_doc
+    assert "Review-Access bleibt pausiert" in project_highlevel_doc
+    assert "Dozentenpaket senden" in project_highlevel_doc
     assert core["bounded_interpretation"].str.len().gt(0).all()
     assert package["main_limitation"].str.len().gt(0).all()
 
@@ -345,12 +347,14 @@ def test_project_highlevel_view_keeps_paused_and_deferred_boundaries(tmp_path: P
 
     assert monitor["status"] == "paused_appendix_only"
     assert "review access remains paused" in monitor["current_decision"].lower()
+    assert "draft writing" in monitor["current_decision"].lower()
     assert "no order or trading paths" in monitor["guardrail"].lower()
     assert swiss["status"] == "descriptive_pending_result"
     assert "official 14 june 2026 vote result" in swiss["current_decision"].lower()
     assert agents["status"] == "documentation_only_deferred"
     assert "llm_audit_log" in agents["next_gate"]
     assert "no runtime agents" in agents["guardrail"].lower()
+    assert "reactivate review access" in joined
     assert "deterministic python artifacts" in joined
     assert set(view["status"]).issuperset(
         {
@@ -411,6 +415,14 @@ def _write_fixture(root: Path) -> None:
     (docs / "SWISS_REFERENDUM_EFFICIENCY.md").write_text("swiss note\n", encoding="utf-8")
     (project_docs / "dozentenbericht_ba_thesis.md").write_text("advisor report\n", encoding="utf-8")
     _write_binary(project_docs / "dozentenbericht_ba_thesis.docx")
+    (project_docs / "THESIS_ADVISOR_HANDOFF_PACKAGE.md").write_text(
+        "advisor package\n",
+        encoding="utf-8",
+    )
+    (project_docs / "DOZENTEN_FEEDBACK_LOG.md").write_text(
+        "feedback log\n",
+        encoding="utf-8",
+    )
     (root / "data").mkdir(exist_ok=True)
     pd.DataFrame({"event_id": ["evt_1"]}).to_csv(root / "data/events_timeline_seed.csv", index=False)
     pd.DataFrame({"poll_id": ["poll_1"]}).to_csv(

@@ -25,7 +25,7 @@
 <body>
   <h1>Dozentenbericht zur Bachelorarbeit</h1>
   <p class="subtitle">Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen</p>
-  <p class="small">Erstellt aus lokalen deterministischen Artefakten: 2026-06-12T03:58:12+00:00</p>
+  <p class="small">Erstellt aus lokalen deterministischen Artefakten: 2026-06-12T04:12:10+00:00</p>
   <div class="callout"><strong>Kurzfazit.</strong> Das Projekt prueft informationelle Effizienz ueber drei reproduzierbare Analyseebenen: H1 Forecast-Qualitaet, H2 taegliche Event-Window-Reaktion und H3 Wallet-Tier-Timing. Der Monitor ist ein read-only Forschungsprototyp mit deterministischer Anomaly-Review-Queue; der Swiss-Referendum-Vergleich laeuft als separater Datensammlungs-Track.</div>
 
   <h2>Aufbau wie in der Bachelorarbeit</h2>
@@ -153,7 +153,7 @@
 <tr><td>H2 Event-Windows</td><td>Polymarket bewegt sich um mehrere kuratierte politische Ereignisse sichtbar in der Tagesauflosung.</td><td>7 kuratierte Ereignisse; groesstes Primaerfenster nach Betrag: 07_13_trump_shooting +7.2 Prozentpunkte.</td><td>Das stuetzt eine These, dass oeffentliche Ereignisse in den Marktpreisen sichtbar werden koennen.</td><td>Taegliche Daten zeigen Reaktionsrichtung und Groessenordnung, aber keine intraday Reaktionsgeschwindigkeit.</td></tr>
 <tr><td>H3 Wallet-Timing</td><td>Top-Wallet-Tier-Aktivitaet zeigt eine messbare, aber vorsichtig zu formulierende Timing-Struktur.</td><td>1216 alignierte Modellzeilen; staerkste Korrelation tier_1_top_1pct lag 1 = 0.1858; kleinster Granger-p-Wert 0.0012.</td><td>Das ist als Vorhersage-/Timingdiagnostik verwendbar und motiviert weitere Sensitivitaetschecks.</td><td>BUY-only Quelle, Tagesaggregation und Multiple-Testing-Risiko begrenzen die Aussage.</td></tr>
 <tr><td>Monitor und Review-Queue</td><td>Der Monitor hat die richtige Rolle als Kontroll- und Review-Infrastruktur, nicht als Ergebnisgenerator fuer starke Claims.</td><td>3 aktuelle Review-Cases, davon 1 high und 2 medium; Status source_check_pending=3.</td><td>Die Review-Queue ist methodisch wichtig, weil sie auffaellige Faelle von thesis-faehiger Evidenz trennt.</td><td>Die Queue ist kein Nachweis fuer Ursachen, Regelverstoss, Handelbarkeit, Profitabilitaet oder zukuenftige Entwicklung.</td></tr>
-<tr><td>Swiss-Referendum Side-Track</td><td>Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen.</td><td>7 Umfragen, 30 Polymarket-Snapshots; latest Polymarket Yes 21.5%, latest poll Yes 45.0%, raw gap -23.5 pp.</td><td>Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen.</td><td>Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung.</td></tr></table>
+<tr><td>Swiss-Referendum Side-Track</td><td>Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen.</td><td>7 Umfragen, 31 Polymarket-Snapshots; latest Polymarket Yes 21.5%, latest poll Yes 45.0%, raw gap -23.5 pp.</td><td>Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen.</td><td>Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung.</td></tr></table>
 
   <h2>Warum dieses Vorgehen methodisch sinnvoll ist</h2>
   <table><tr><th>Entscheidung</th><th>Begruendung</th><th>Konsequenz</th></tr><tr><td>Brier Score und DM-Test</td><td>H1 vergleicht Probability-Forecasts, deshalb braucht es einen Verlustscore und einen Test auf Verlustserien.</td><td>Die Aussage bleibt Forecast-Qualitaet, nicht Reaktionsgeschwindigkeit oder Mechanismus.</td></tr>
@@ -169,7 +169,7 @@
     <div class="metric"><strong>78</strong>Analyse-Module</div>
     <div class="metric"><strong>108</strong>Testdateien</div>
   </div>
-  <p>Letzter Teststatus: <code>529 passed in 49.57s</code>.</p>
+  <p>Letzter Teststatus: <code>529 passed in 50.31s</code>.</p>
 
   <h2>H1 - Forecast-Qualitaet</h2>
   <table><tr><th>Aspekt</th><th>Wert</th></tr>
@@ -236,7 +236,7 @@
   <p>Der Monitor bleibt read-only und ist keine Trading- oder Profitabilitaetskomponente.</p>
 
   <h2>Schweizer Referendum</h2>
-  <p>7 Umfragen, 30 Polymarket-Snapshots und 504 bounded price-history rows.</p>
+  <p>7 Umfragen, 31 Polymarket-Snapshots und 504 bounded price-history rows.</p>
   <table><tr><th>Quelle</th><th>Neuester Poll</th><th>Poll Yes</th><th>Raw Gap</th></tr><tr><td>SRG/gfs.bern</td><td>srg_gfs_bern_2026_w2</td><td>45.0%</td><td>-23.5 pp</td></tr>
 <tr><td>Tamedia/20 Minuten/LeeWas</td><td>tamedia_leewas_2026_w2</td><td>47.0%</td><td>-25.5 pp</td></tr>
 <tr><td>YouGov Schweiz</td><td>yougov_2026_w2_final</td><td>38.0%</td><td>-16.5 pp</td></tr></table>

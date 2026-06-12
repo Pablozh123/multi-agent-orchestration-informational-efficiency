@@ -627,6 +627,11 @@ Current implemented consolidation:
   source into a manual review queue: 11 priority-1 method-foundation sources,
   3 currently unused sources, and 1 blocked/future-work-only source in the
   current real literature index.
+- `data/results/thesis_source_review_worksheet.csv` and
+  `docs/research/THESIS_SOURCE_REVIEW_WORKSHEET.md` turn that queue into a
+  manual worksheet with one row per source, linked Evidence IDs, bounded
+  wording to confirm, wording not to claim, locator information, and pending
+  reviewer fields.
 - `data/results/thesis_chapter_plan.csv` maps the BA chapter structure to
   curated tables, figures, evidence IDs, artifacts, limitations, and next
   writing actions.

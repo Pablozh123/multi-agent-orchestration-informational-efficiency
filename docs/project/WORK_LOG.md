@@ -8630,3 +8630,40 @@ Verification:
   `WinError 2`, consistent with missing local LibreOffice/`soffice`.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 503 passed in 49.07s.
+
+## 2026-06-12 - Thesis source review worksheet
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Added a manual source-review work surface so the literature can be checked
+  source by source before final thesis citation, without automatically
+  promoting any source status.
+
+Changes:
+
+- Added `operations/analysis/thesis_source_review_worksheet.py`.
+- Generated `data/results/thesis_source_review_worksheet.csv`.
+- Added `docs/research/THESIS_SOURCE_REVIEW_WORKSHEET.md`.
+- Added `tests/test_thesis_source_review_worksheet.py`.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Worksheet rows: 15.
+- Priority-1 method-foundation rows: 11.
+- Blocked or future-work-only rows: 1.
+- Every row keeps `reviewer_decision=pending` and provides linked Evidence IDs,
+  wording to confirm, wording not to claim, source locator, and manual reviewer
+  fields.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_source_review_worksheet.py -q`
+  -> PASS, 2 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_source_review_worksheet.py tests\test_thesis_consolidation.py tests\test_dozenten_report.py -q`
+  -> PASS, 18 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_source_review_worksheet`
+  -> PASS, generated 15 worksheet rows.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 505 passed in 48.37s.

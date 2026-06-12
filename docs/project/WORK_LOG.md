@@ -8816,6 +8816,47 @@ Verification:
 - `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
   -> PASS, recommends reviewing one coherent docs/data/automation slice.
 
+## 2026-06-12 - Advisor handoff package
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Added a compact package view showing which files should be given to or used
+  with the advisor first.
+
+Changes:
+
+- Added `operations/project/build_advisor_handoff_package.py`.
+- Generated `data/results/thesis_advisor_handoff_package.csv`.
+- Added `docs/project/THESIS_ADVISOR_HANDOFF_PACKAGE.md`.
+- Added `tests/test_advisor_handoff_package.py`.
+- Updated the thesis consolidation index to include the package.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Advisor package deliverables: 7.
+- First deliverable: `advisor_report_docx`.
+- Final deliverable: `consolidation_index`.
+- The package orders the Word report, advisor questions, execution checklist,
+  chapter source bindings, source review execution, agent future-work handoff,
+  and consolidation index.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_advisor_handoff_package.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_advisor_handoff_package`
+  -> PASS, generated 7 advisor handoff rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 17 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 521 passed in 48.69s.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> PASS, 521 passed in 50.71s.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+  -> PASS, recommends reviewing one coherent docs/data/automation slice.
+
 ## 2026-06-12 - Chapter source bindings
 
 Goal context:

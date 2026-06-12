@@ -1,10 +1,10 @@
 # Thesis Consolidation Index
 
-Dieser Index zeigt, welche Artefakte fuer den aktuellen Highlevel-Projektstand, den Dozentenbericht, Source Review, Wording Guard, Execution Checklist, Chapter Source Bindings, Source Review Execution, Agent Future-Work Handoff, Tabellen/Figuren und Future-Work-Agenten relevant sind.
+Dieser Index zeigt, welche Artefakte fuer den aktuellen Highlevel-Projektstand, den Dozentenbericht, Source Review, Wording Guard, Advisor Handoff Package, Execution Checklist, Chapter Source Bindings, Source Review Execution, Agent Future-Work Handoff, Tabellen/Figuren und Future-Work-Agenten relevant sind.
 
 ## Counts
 
-- Indexed artifacts: 16
+- Indexed artifacts: 17
 
 ## Artifact Index
 
@@ -25,8 +25,9 @@ Dieser Index zeigt, welche Artefakte fuer den aktuellen Highlevel-Projektstand, 
 | index_13_source_review_plan | source_review | docs/research/THESIS_SOURCE_REVIEW_PLAN.md | Priorisierte Quellenreview-Planung nach Quelle. | Quelle-fuer-Quelle abarbeiten. | Candidate/rejected Quellen nicht fuer thesis-facing Claims nutzen. |
 | index_14_agent_protocol | future_work | docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md | Dokumentations-only Agenten-Ausblick mit erlaubten Rollen und Gates. | Nur als Future-Work-Abschnitt nutzen. | Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade. |
 | index_15_agent_future_handoff | future_work | docs/project/THESIS_AGENT_FUTURE_WORK_HANDOFF.md; data/results/thesis_agent_future_work_handoff.csv | Future-Work-Handoff fuer spaetere Assistenz-Agenten nach Gates. | Nur als Highlevel-Ausblick fuer Pipeline-Verbesserungen nutzen. | Keine Aktivierung ohne separates Goal, Tests, bounded inputs und llm_audit_log. |
-| index_16_status_and_log | project_control | STATUS.md; docs/project/WORK_LOG.md | Automatisierter Projektstatus und append-only Arbeitslog. | Vor jedem Stop und Commit pruefen. | Nicht behaupten, dass Phase bereit ist, wenn Checks fehlschlagen. |
+| index_16_advisor_handoff_package | advisor_handoff | docs/project/THESIS_ADVISOR_HANDOFF_PACKAGE.md; data/results/thesis_advisor_handoff_package.csv | Geordnete Liste der Dateien fuer Dozentenabgabe und Abstimmung. | Zeigt, was dem Dozenten zuerst gegeben und womit danach gearbeitet wird. | Handoff-Uebersicht, kein neues empirisches Resultat. |
+| index_17_status_and_log | project_control | STATUS.md; docs/project/WORK_LOG.md | Automatisierter Projektstatus und append-only Arbeitslog. | Vor jedem Stop und Commit pruefen. | Nicht behaupten, dass Phase bereit ist, wenn Checks fehlschlagen. |
 
 ## Use Rule
 
-Nutze zuerst den Dozentenbericht und die Absprache-Checklist fuer die Betreuung. Nutze danach Execution Checklist, Source Worksheet, Source Chapter Source Bindings, Source Review Execution, Agent Future-Work Handoff, Wording Guard und Next Work Plan fuer das Schreiben. Review-Access, Runtime-Agenten, MCP, Model Routing, Rohdatenzugriff und Trading-Pfade bleiben deaktiviert.
+Nutze zuerst den Dozentenbericht und die Absprache-Checklist fuer die Betreuung. Nutze das Advisor Handoff Package als Abgabe- und Gespraechsreihenfolge. Nutze danach Execution Checklist, Source Worksheet, Chapter Source Bindings, Source Review Execution, Agent Future-Work Handoff, Wording Guard und Next Work Plan fuer das Schreiben. Review-Access, Runtime-Agenten, MCP, Model Routing, Rohdatenzugriff und Trading-Pfade bleiben deaktiviert.

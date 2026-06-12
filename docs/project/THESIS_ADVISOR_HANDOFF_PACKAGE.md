@@ -1,0 +1,25 @@
+# Thesis Advisor Handoff Package
+
+Dieses Paket sagt, welche Dateien dem Dozenten zuerst gezeigt oder mitgegeben werden sollten. Es ist eine Handoff-Uebersicht und erzeugt keine neuen empirischen Resultate.
+
+## Counts
+
+- Package deliverables: 7
+- First deliverable: advisor_report_docx
+- Final deliverable: consolidation_index
+
+## Deliverables
+
+| package_order | deliverable_id | path | handoff_use_de | advisor_decision_de | boundary_de |
+| --- | --- | --- | --- | --- | --- |
+| 1 | advisor_report_docx | docs/project/dozentenbericht_ba_thesis.docx | Als schriftliches Word-Update an den Dozenten geben. | Projektstand, Aufbau, H1-H3-Kern, Grenzen und naechste Schritte abstimmen. | DOCX-Render-QA bleibt lokal blockiert, wenn LibreOffice/soffice fehlt. |
+| 2 | advisor_questions | docs/project/DOZENTEN_ABSPRACHE_CHECKLIST.md | Als Gespraechsagenda fuer die naechste Betreuung nutzen. | H1-Wording, Source-Review-Tiefe, H2/H3-Scope, Swiss und Appendix-Scope klaeren. | Fragen klaeren Scope; sie aktivieren keine Empirie-Erweiterung. |
+| 3 | execution_checklist | docs/project/THESIS_EXECUTION_CHECKLIST.md | Nach Feedback als Kapitel- und Abnahme-Checkliste nutzen. | Reihenfolge und Done-Kriterien fuer die BA-Kapitel bestaetigen. | Review-Access bleibt pausiert; keine Runtime-Agenten oder Rohartefakt-Dumps. |
+| 4 | chapter_source_bindings | docs/project/THESIS_CHAPTER_SOURCE_BINDINGS.md | Beim Schreiben je Kapitel Quellen, Artefakte und Gates pruefen. | Klaeren, ob diese Kapitel-zu-Quelle-Bindung fuer die Abgabe reicht. | Keine thesis-facing Claims ohne Human Review, Artefaktverweis, Limitation und Wording Guard. |
+| 5 | source_review_execution | docs/project/THESIS_SOURCE_REVIEW_EXECUTION.md | Als manuelle Reihenfolge fuer die Quellenpruefung nutzen. | Prioritaet der 11 Priority-1-Quellen und blocked/future-only Quellen bestaetigen. | Quellenstatus nicht automatisch hochstufen. |
+| 6 | agent_future_handoff | docs/project/THESIS_AGENT_FUTURE_WORK_HANDOFF.md | Nur als Future-Work-Ausblick fuer spaetere Pipeline-Verbesserungen nutzen. | Bestaetigen, dass Agenten nicht Teil des empirischen Kerns werden. | Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade. |
+| 7 | consolidation_index | docs/project/THESIS_CONSOLIDATION_INDEX.md | Als Navigationsindex fuer alle aktuellen Projektartefakte nutzen. | Keine Entscheidung; dient Orientierung und Nachvollziehbarkeit. | Nicht als neues empirisches Resultat verwenden. |
+
+## Use Rule
+
+Nutze zuerst den Dozentenbericht und die Absprache-Checklist. Danach kommen Execution Checklist, Chapter Source Bindings und Source Review Execution fuer die eigentliche Schreibarbeit. Agent Future-Work Handoff bleibt Ausblick; Runtime-Agenten, MCP, Model Routing, LLM-Metriken und Trading-Pfade bleiben deaktiviert.

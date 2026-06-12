@@ -81,7 +81,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add chapter source bindings
+next_commit: docs: add advisor handoff package
 
 ## Running Side Goal
 

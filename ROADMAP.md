@@ -708,13 +708,19 @@ Current implemented consolidation:
   status into eight concrete advisor questions covering H1 wording, source
   review depth, H2/H3 scope, table/figure package, monitor appendix, Swiss
   placement, agent outlook, and final QA.
+- `data/results/thesis_advisor_handoff_package.csv` and
+  `docs/project/THESIS_ADVISOR_HANDOFF_PACKAGE.md` define the seven-file
+  advisor handoff order: Word report, advisor questions, execution checklist,
+  chapter source bindings, source review execution, agent future-work handoff,
+  and consolidation index.
 - `data/results/thesis_consolidation_index.csv` and
   `docs/project/THESIS_CONSOLIDATION_INDEX.md` index the current
   consolidation deliverables so the Dozentenbericht, advisor checklist,
   highlevel view, work plan, execution checklist, source worksheet, source
-  review execution guide, chapter source bindings, agent future-work handoff,
-  wording guard, table/figure captions, chapter draft, source review plan,
-  agent protocol, status, and work log are easy to navigate.
+  advisor handoff package, review execution guide, chapter source bindings,
+  agent future-work handoff, wording guard, table/figure captions, chapter
+  draft, source review plan, agent protocol, status, and work log are easy to
+  navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,

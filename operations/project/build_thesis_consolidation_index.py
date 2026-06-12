@@ -198,7 +198,15 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine Aktivierung ohne separates Goal, Tests, bounded inputs und llm_audit_log.",
         ),
         _index_row(
-            artifact_id="index_16_status_and_log",
+            artifact_id="index_16_advisor_handoff_package",
+            artifact_type="advisor_handoff",
+            path="docs/project/THESIS_ADVISOR_HANDOFF_PACKAGE.md; data/results/thesis_advisor_handoff_package.csv",
+            purpose_de="Geordnete Liste der Dateien fuer Dozentenabgabe und Abstimmung.",
+            use_now_de="Zeigt, was dem Dozenten zuerst gegeben und womit danach gearbeitet wird.",
+            gate_or_limit_de="Handoff-Uebersicht, kein neues empirisches Resultat.",
+        ),
+        _index_row(
+            artifact_id="index_17_status_and_log",
             artifact_type="project_control",
             path="STATUS.md; docs/project/WORK_LOG.md",
             purpose_de="Automatisierter Projektstatus und append-only Arbeitslog.",
@@ -281,9 +289,9 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "# Thesis Consolidation Index\n\n"
         "Dieser Index zeigt, welche Artefakte fuer den aktuellen Highlevel-"
         "Projektstand, den Dozentenbericht, Source Review, Wording Guard, "
-        "Execution Checklist, Chapter Source Bindings, Source Review "
-        "Execution, Agent Future-Work Handoff, Tabellen/Figuren und "
-        "Future-Work-Agenten relevant sind.\n\n"
+        "Advisor Handoff Package, Execution Checklist, Chapter Source Bindings, "
+        "Source Review Execution, Agent Future-Work Handoff, Tabellen/Figuren "
+        "und Future-Work-Agenten relevant sind.\n\n"
         "## Counts\n\n"
         f"- Indexed artifacts: {len(index)}\n\n"
         "## Artifact Index\n\n"
@@ -291,7 +299,8 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         + "\n\n"
         "## Use Rule\n\n"
         "Nutze zuerst den Dozentenbericht und die Absprache-Checklist fuer die "
-        "Betreuung. Nutze danach Execution Checklist, Source Worksheet, Source "
+        "Betreuung. Nutze das Advisor Handoff Package als Abgabe- und "
+        "Gespraechsreihenfolge. Nutze danach Execution Checklist, Source Worksheet, "
         "Chapter Source Bindings, Source Review Execution, Agent Future-Work "
         "Handoff, Wording Guard und Next Work Plan fuer das Schreiben. "
         "Review-Access, Runtime-Agenten, MCP, Model Routing, Rohdatenzugriff "

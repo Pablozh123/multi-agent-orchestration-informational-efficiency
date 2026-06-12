@@ -8705,3 +8705,38 @@ Verification:
   `WinError 2`, consistent with missing local LibreOffice/`soffice`.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 505 passed in 50.93s.
+
+## 2026-06-12 - Thesis wording guard
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Added a German thesis-writing guard so each Evidence ID has explicit allowed
+  wording, blocked overclaims, artifact reference, limitation, and use gate.
+
+Changes:
+
+- Added `operations/analysis/thesis_wording_guard.py`.
+- Generated `data/results/thesis_wording_guard.csv`.
+- Added `docs/research/THESIS_WORDING_GUARD.md`.
+- Added `tests/test_thesis_wording_guard.py`.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Wording-guard rows: 13.
+- Thesis-text rows allowed after source review: 8.
+- Draft rows allowed only with explicit source-review/result gate: 4.
+- Future-work or appendix-only rows: 1.
+- The guard blocks broad superiority, Intraday-speed, causality,
+  private-information, profit, mispricing, trading, raw table, and unlogged LLM
+  claims.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_wording_guard.py tests\test_thesis_source_review_worksheet.py tests\test_thesis_consolidation.py -q`
+  -> PASS, 19 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_wording_guard`
+  -> PASS, generated 13 guard rows.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 507 passed in 49.22s.

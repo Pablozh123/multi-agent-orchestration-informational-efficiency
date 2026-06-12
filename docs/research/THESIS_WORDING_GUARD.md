@@ -1,0 +1,32 @@
+# Thesis Wording Guard
+
+This file is a drafting guard for German thesis prose. It converts each Evidence ID into allowed wording, blocked overclaims, the artifact that must be cited, and the limitation that must remain visible.
+
+## Counts
+
+- Guard rows: 13
+- Thesis text allowed after source review: 8
+- Draft allowed with explicit source-review gate: 4
+- Future work or appendix only: 1
+
+## Guard Rows
+
+| evidence_id | thesis_area | allowed_thesis_wording_de | blocked_thesis_wording_de | required_artifact_reference | required_limitation_de | final_use_gate |
+| --- | --- | --- | --- | --- | --- | --- |
+| method_h1_brier_dm | H1 | H1 misst Prognosequalitaet ueber Brier-Verluste und den Vergleich vorberechneter Verlustreihen. | Nicht schreiben: Polymarket reagiert schneller, Polymarket ist generell ueberlegen, oder RCP sei ohne Transformation eine Wahrscheinlichkeit. | data/results/thesis_h1_summary.csv | Wiederholte Tageszeilen und ein einzelner Wahlkontext begrenzen die Generalisierung. | thesis_text_allowed_after_source_review |
+| interpretation_h1_bounded_advantage | H1 | Polymarket zeigt in definierten spaeten und kompatiblen Poll-Vergleichsscopes eine begrenzte Staerke. | Nicht schreiben: Polymarket ist immer besser, die Arbeit beweise viele unabhaengige Wahlen, oder die Ursache sei geklaert. | data/results/h1_poll_claim_readiness_summary.csv | Das volle State-Date-Panel und andere Scopes bleiben Gegenbeispiele zur breiten Behauptung. | thesis_text_allowed_after_source_review |
+| interpretation_h1_broad_claim_not_proven | H1 | Die breite Aussage, dass Polymarket traditionelle Quellen generell schlaegt, bleibt nicht bewiesen. | Nicht schreiben: allgemeine Ueberlegenheit, universelle Forecast-Dominanz oder ein starker Viele-Faelle-Beweis. | data/results/h1_forecast_quality_synthesis.csv | Die Evidenz mischt Tageszeilen, State-Outcomes, transformierte Polls und quellenspezifische Scopes. | thesis_text_allowed_after_source_review |
+| method_h2_event_window | H2 | H2 nutzt vorab kuratierte oeffentliche Ereignisse und feste Tagesfenster. | Nicht schreiben: Intraday-Reaktionsgeschwindigkeit oder nachtraeglich ausgewaehlte Ereignisse. | data/results/h2_event_window_summary.csv | Tagespreise koennen kein Minuten- oder Stunden-Timing identifizieren. | thesis_text_allowed_after_source_review |
+| interpretation_h2_daily_response | H2 | Kuratierte Ereignisse zeigen sichtbare taegliche Polymarket-Bewegungen. | Nicht schreiben: sofortige Marktreaktion, kausaler Ereignisbeweis oder Intraday-Speed. | data/results/h2_event_window_summary.csv | Richtung und Groesse sind Event-Window-Diagnostik, keine kausalen Intraday-Schaetzungen. | thesis_text_allowed_after_source_review |
+| method_h3_wallet_tiers | H3 | Wallet-Gruppen werden dataset-relativ aus beobachteten Verteilungen abgeleitet. | Nicht schreiben: fixe Whale-Schwellen, identifizierte private Informationswallets oder Personenzuschreibungen. | data/results/h3_wallet_distribution_inventory.json | Die beobachteten Walletdaten sind BUY-only und quellengefiltert. | thesis_text_allowed_after_source_review |
+| method_h3_granger_timing | H3 | Lead-Lag-Korrelationen und Granger-Tests werden als predictive timing diagnostics gelesen. | Nicht schreiben: Kausalitaetsbeweis, private Informationen oder Profitabilitaetsbeweis. | data/results/h3_granger_results.csv | Taegliche Aggregation, Mehrfachtests und BUY-only-Extraktion begrenzen die Aussage. | thesis_text_allowed_after_source_review |
+| interpretation_h3_top_tier_signal | H3 | Das oberste Wallet-Tier zeigt im aktuellen H3-Baseline-Output die deutlichste Timingdiagnostik. | Nicht schreiben: Insiderbeweis, Fehlverhalten, handelbare Strategie oder Gewinnsignal. | data/results/thesis_h3_summary.csv | Die Signalstaerke ist diagnostisch und braucht Sensitivitaets- sowie Multiple-Testing-Vorsicht. | thesis_text_allowed_after_source_review |
+| method_monitor_prototype | monitor_prototype | Der Monitor kombiniert Marktbewegung, aggregierte Wallet-Tiers, Konzentration und Ereigniskontext als Review-Cues. | Nicht schreiben: thesis-facing Evidenz vor Human Review, private Informationsnutzung oder Trading-Signal. | data/results/monitor_anomaly_review_summary.csv | Aktuelle Cases bleiben source-check-pending und fuer thesis-facing Claims blockiert. | draft_allowed_with_explicit_source_review_gate |
+| interpretation_monitor_review_queue | monitor_prototype | Die Queue ist ein Review-Workflow und Appendix-Material, kein Beweis fuer Ursachen oder Ineffizienz. | Nicht schreiben: Kausalclaim, Fehlverhalten, Effizienzschluss, Profitclaim oder Handelsstrategie. | data/results/monitor_anomaly_review_summary.csv | Alle aktuellen Cases brauchen manuelle Quellen- und Thesis-Use-Pruefung. | draft_allowed_with_explicit_source_review_gate |
+| method_swiss_running_comparison | swiss_referendum | Der Swiss-Track vergleicht Polymarket-Snapshots und kuratierte Poll-Anteile bis zum Ergebnis beschreibend. | Nicht schreiben: Mispricing-Beweis, finale Effizienzaussage oder Handelssignal. | data/results/swiss_referendum_10mio_comparison.csv | Poll-Anteile sind keine echten Gewinnwahrscheinlichkeiten und das offizielle Resultat ist noch nicht gemappt. | draft_allowed_with_explicit_source_review_gate |
+| interpretation_swiss_gap_pending | swiss_referendum | Aktuelle Swiss-Divergenzen sind beschreibend und entscheiden die Informationseffizienz vor dem Ergebnis nicht. | Nicht schreiben: finaler Accuracy-Befund oder Effizienzbeweis vor dem Abstimmungsergebnis. | data/results/swiss_referendum_10mio_latest_source_comparison.csv | Finales Outcome und source-gepruefte Post-Vote-Interpretation fehlen. | draft_allowed_with_explicit_source_review_gate |
+| future_agent_pipeline_guarded | future_agents | Agenten werden nur als spaeterer, auditierter Workflow ueber bounded summaries beschrieben. | Nicht schreiben: agentenberechnete Metriken, rohe Tabellenprompts, autonome Trades oder unlogged LLM-Interpretation. | docs/research/STRATEGY_AGENT_ARCHITECTURE.md | Implementierung bleibt bis zu separatem Goal, Tests und llm_audit_log-Integration deferred. | future_work_or_appendix_only |
+
+## Use Rule
+
+Use these formulations when drafting the BA thesis. Do not remove the artifact reference or the limitation. Do not use blocked formulations without new deterministic evidence and reviewed sources.

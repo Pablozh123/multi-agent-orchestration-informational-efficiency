@@ -619,6 +619,10 @@ Current implemented consolidation:
   `docs/research/THESIS_TABLE_FIGURE_CAPTIONS.md` turn that curated package
   into thesis-ready labels, captions, source notes, interpretation notes, and
   limitation notes without adding extra raw result files.
+- `data/results/thesis_wording_guard.csv` and
+  `docs/research/THESIS_WORDING_GUARD.md` translate each Evidence ID into
+  German allowed wording, blocked overclaims, required artifact references,
+  mandatory limitations, and final-use gates for thesis drafting.
 - `data/results/thesis_citation_readiness.csv` maps every indexed source to
   evidence usage, current source status, citation risk, and the next review
   action before final thesis citation.

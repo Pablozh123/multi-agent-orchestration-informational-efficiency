@@ -14,6 +14,7 @@ from operations.analysis.thesis_consolidation import (
     CITATION_REVIEW_PACKET_COLUMNS,
     EVIDENCE_COLUMNS,
     NEXT_WORK_PLAN_COLUMNS,
+    PROJECT_HIGHLEVEL_VIEW_COLUMNS,
     SOURCE_REVIEW_PLAN_COLUMNS,
     TABLE_FIGURE_CAPTION_COLUMNS,
     generate_thesis_consolidation,
@@ -34,6 +35,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     source_review_plan = pd.read_csv(result.source_review_plan_path)
     agent_protocol = pd.read_csv(result.agent_assistance_protocol_path)
     next_work_plan = pd.read_csv(result.next_work_plan_path)
+    project_highlevel = pd.read_csv(result.project_highlevel_view_path)
     chapters = pd.read_csv(result.chapter_plan_path)
     agents = pd.read_csv(result.agent_pipeline_path)
     metadata = json.loads(result.metadata_path.read_text(encoding="utf-8"))
@@ -46,6 +48,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     source_review_doc = result.source_review_plan_docs_path.read_text(encoding="utf-8")
     agent_protocol_doc = result.agent_assistance_protocol_docs_path.read_text(encoding="utf-8")
     next_work_doc = result.next_work_plan_docs_path.read_text(encoding="utf-8")
+    project_highlevel_doc = result.project_highlevel_view_docs_path.read_text(encoding="utf-8")
 
     assert tuple(evidence.columns) == EVIDENCE_COLUMNS
     assert tuple(citations.columns) == CITATION_READINESS_COLUMNS
@@ -54,6 +57,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert tuple(source_review_plan.columns) == SOURCE_REVIEW_PLAN_COLUMNS
     assert tuple(agent_protocol.columns) == AGENT_ASSISTANCE_PROTOCOL_COLUMNS
     assert tuple(next_work_plan.columns) == NEXT_WORK_PLAN_COLUMNS
+    assert tuple(project_highlevel.columns) == PROJECT_HIGHLEVEL_VIEW_COLUMNS
     assert tuple(chapters.columns) == CHAPTER_PLAN_COLUMNS
     assert tuple(agents.columns) == AGENT_PIPELINE_COLUMNS
     assert result.evidence_rows == 13
@@ -64,6 +68,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert result.source_review_plan_rows == 12
     assert result.agent_assistance_protocol_rows == 7
     assert result.next_work_plan_rows == 10
+    assert result.project_highlevel_view_rows == 10
     assert result.chapter_rows == 8
     assert result.agent_stage_rows == 6
     assert metadata["method"]["does_not_use_llms"] is True
@@ -80,6 +85,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert metadata["outputs"]["source_review_plan_rows"] == 12
     assert metadata["outputs"]["agent_assistance_protocol_rows"] == 7
     assert metadata["outputs"]["next_work_plan_rows"] == 10
+    assert metadata["outputs"]["project_highlevel_view_rows"] == 10
     assert metadata["table_figure_caption_counts"]["core_table_captions"] == 5
     assert metadata["table_figure_caption_counts"]["core_figure_captions"] == 4
     assert metadata["guardrails"]["citation_review_packets_are_pending_human_review"] is True
@@ -87,7 +93,11 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert metadata["guardrails"]["source_review_plan_is_manual_review_queue"] is True
     assert metadata["guardrails"]["agent_assistance_protocol_is_documentation_only"] is True
     assert metadata["guardrails"]["next_work_plan_is_guardrail_bound"] is True
+    assert metadata["guardrails"]["project_highlevel_view_keeps_review_access_paused"] is True
+    assert metadata["project_highlevel_view_counts"]["paused_rows"] == 1
+    assert metadata["project_highlevel_view_counts"]["documentation_only_rows"] == 1
     assert "Deferred Agent Pipeline Idea" in doc
+    assert "Project Highlevel View" in doc
     assert "Citation Readiness" in doc
     assert "Citation Review Packets" in doc
     assert "Thesis Agent Pipeline Roadmap" in agent_doc
@@ -100,6 +110,8 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert "Thesis Source Review Plan" in source_review_doc
     assert "Thesis Agent Assistance Protocol" in agent_protocol_doc
     assert "Thesis Next Work Plan" in next_work_doc
+    assert "Thesis Project Highlevel View" in project_highlevel_doc
+    assert "review access remains paused" in project_highlevel_doc
     assert core["bounded_interpretation"].str.len().gt(0).all()
     assert package["main_limitation"].str.len().gt(0).all()
 
@@ -320,6 +332,35 @@ def test_next_work_plan_orders_remaining_work_with_guardrails(tmp_path: Path) ->
     assert metadata["next_work_plan_counts"]["final_priority"] == "work_10_final_qa"
 
 
+def test_project_highlevel_view_keeps_paused_and_deferred_boundaries(tmp_path: Path) -> None:
+    _write_fixture(tmp_path)
+
+    result = generate_thesis_consolidation(repo_root=tmp_path)
+
+    view = pd.read_csv(result.project_highlevel_view_path)
+    monitor = view[view["view_id"] == "project_06_monitor_review_access"].iloc[0]
+    swiss = view[view["view_id"] == "project_07_swiss_referendum"].iloc[0]
+    agents = view[view["view_id"] == "project_08_future_agents"].iloc[0]
+    joined = "\n".join(view.fillna("").astype(str).agg(" ".join, axis=1).tolist()).lower()
+
+    assert monitor["status"] == "paused_appendix_only"
+    assert "review access remains paused" in monitor["current_decision"].lower()
+    assert "no order or trading paths" in monitor["guardrail"].lower()
+    assert swiss["status"] == "descriptive_pending_result"
+    assert "official 14 june 2026 vote result" in swiss["current_decision"].lower()
+    assert agents["status"] == "documentation_only_deferred"
+    assert "llm_audit_log" in agents["next_gate"]
+    assert "no runtime agents" in agents["guardrail"].lower()
+    assert "deterministic python artifacts" in joined
+    assert set(view["status"]).issuperset(
+        {
+            "thesis_facing_ready",
+            "paused_appendix_only",
+            "documentation_only_deferred",
+        }
+    )
+
+
 def test_writing_blueprint_keeps_front_matter_method_focused(tmp_path: Path) -> None:
     _write_fixture(tmp_path)
 
@@ -357,15 +398,19 @@ def test_missing_source_artifact_fails_clearly(tmp_path: Path) -> None:
 def _write_fixture(root: Path) -> None:
     results = root / "data/results"
     docs = root / "docs/research"
+    project_docs = root / "docs/project"
     literature_dir = root / "data/literature"
     results.mkdir(parents=True)
     docs.mkdir(parents=True)
+    project_docs.mkdir(parents=True)
     literature_dir.mkdir(parents=True)
 
     _write_literature(literature_dir / "literature_index.csv")
     (docs / "RESEARCH_SPEC.md").write_text("research spec\n", encoding="utf-8")
     (docs / "STRATEGY_AGENT_ARCHITECTURE.md").write_text("agent architecture\n", encoding="utf-8")
     (docs / "SWISS_REFERENDUM_EFFICIENCY.md").write_text("swiss note\n", encoding="utf-8")
+    (project_docs / "dozentenbericht_ba_thesis.md").write_text("advisor report\n", encoding="utf-8")
+    _write_binary(project_docs / "dozentenbericht_ba_thesis.docx")
     (root / "data").mkdir(exist_ok=True)
     pd.DataFrame({"event_id": ["evt_1"]}).to_csv(root / "data/events_timeline_seed.csv", index=False)
     pd.DataFrame({"poll_id": ["poll_1"]}).to_csv(
@@ -482,6 +527,7 @@ def _write_fixture(root: Path) -> None:
         index=False,
     )
     (results / "monitor_anomaly_review_dashboard.html").write_text("dashboard\n", encoding="utf-8")
+    (results / "monitor_anomaly_review_access_contract.json").write_text("{}\n", encoding="utf-8")
 
     pd.DataFrame(
         {

@@ -643,6 +643,11 @@ Current implemented consolidation:
   ten guardrail-bound workstreams: source review, front-matter/method chapters,
   H1, H2/H3, compact table/figure integration, monitor appendix, Swiss result
   gate, agent outlook, advisor iteration, and final QA.
+- `data/results/thesis_project_highlevel_view.csv` and
+  `docs/research/THESIS_PROJECT_HIGHLEVEL_VIEW.md` provide a compact project
+  status matrix for the high-level view: H1-H3 as thesis core, source review as
+  the active gate, review access paused, Swiss pending final result, and agents
+  documentation-only.
 - `data/results/thesis_consolidation_metadata.json` records guardrails:
   no LLM use, no agents or MCP, no database writes, no external API calls,
   no raw table dumps, max future tool rows of 50, no wallet-address exposure

@@ -40,6 +40,8 @@
     "no_order_or_trading_paths": true,
     "no_raw_table_dumps": true,
     "no_wallet_address_exposure_by_default": true,
+    "project_highlevel_view_is_status_summary_not_result_metric": true,
+    "project_highlevel_view_keeps_review_access_paused": true,
     "source_review_plan_is_manual_review_queue": true,
     "swiss_final_efficiency_interpretation_pending": true,
     "table_figure_captions_use_curated_package_only": true,
@@ -73,9 +75,16 @@
     "max_core_tables": 5,
     "next_work_plan_rows": 10,
     "package_rows": 10,
+    "project_highlevel_view_rows": 10,
     "source_review_plan_rows": 15,
     "table_figure_caption_rows": 10,
     "writing_blueprint_generated": true
+  },
+  "project_highlevel_view_counts": {
+    "documentation_only_rows": 1,
+    "paused_rows": 1,
+    "rows": 10,
+    "thesis_facing_rows": 3
   },
   "readiness_counts": {
     "appendix_prototype_only": 2,

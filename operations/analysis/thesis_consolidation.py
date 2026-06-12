@@ -34,6 +34,7 @@ GENERATED_ARTIFACTS: frozenset[str] = frozenset(
         "data/results/thesis_source_review_plan.csv",
         "data/results/thesis_agent_assistance_protocol.csv",
         "data/results/thesis_next_work_plan.csv",
+        "data/results/thesis_project_highlevel_view.csv",
         "data/results/thesis_consolidation_metadata.json",
         "docs/research/THESIS_CONSOLIDATION.md",
         "docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md",
@@ -44,6 +45,7 @@ GENERATED_ARTIFACTS: frozenset[str] = frozenset(
         "docs/research/THESIS_SOURCE_REVIEW_PLAN.md",
         "docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md",
         "docs/research/THESIS_NEXT_WORK_PLAN.md",
+        "docs/research/THESIS_PROJECT_HIGHLEVEL_VIEW.md",
     }
 )
 
@@ -59,6 +61,7 @@ TABLE_FIGURE_CAPTIONS_OUTPUT = "thesis_table_figure_captions.csv"
 SOURCE_REVIEW_PLAN_OUTPUT = "thesis_source_review_plan.csv"
 AGENT_ASSISTANCE_PROTOCOL_OUTPUT = "thesis_agent_assistance_protocol.csv"
 NEXT_WORK_PLAN_OUTPUT = "thesis_next_work_plan.csv"
+PROJECT_HIGHLEVEL_VIEW_OUTPUT = "thesis_project_highlevel_view.csv"
 METADATA_OUTPUT = "thesis_consolidation_metadata.json"
 DOC_OUTPUT = "THESIS_CONSOLIDATION.md"
 AGENT_DOC_OUTPUT = "THESIS_AGENT_PIPELINE_ROADMAP.md"
@@ -69,6 +72,7 @@ TABLE_FIGURE_CAPTIONS_DOC_OUTPUT = "THESIS_TABLE_FIGURE_CAPTIONS.md"
 SOURCE_REVIEW_PLAN_DOC_OUTPUT = "THESIS_SOURCE_REVIEW_PLAN.md"
 AGENT_ASSISTANCE_PROTOCOL_DOC_OUTPUT = "THESIS_AGENT_ASSISTANCE_PROTOCOL.md"
 NEXT_WORK_PLAN_DOC_OUTPUT = "THESIS_NEXT_WORK_PLAN.md"
+PROJECT_HIGHLEVEL_VIEW_DOC_OUTPUT = "THESIS_PROJECT_HIGHLEVEL_VIEW.md"
 
 EVIDENCE_COLUMNS: tuple[str, ...] = (
     "evidence_id",
@@ -233,6 +237,19 @@ NEXT_WORK_PLAN_COLUMNS: tuple[str, ...] = (
     "guardrail",
 )
 
+PROJECT_HIGHLEVEL_VIEW_COLUMNS: tuple[str, ...] = (
+    "view_id",
+    "project_layer",
+    "status",
+    "role_in_thesis",
+    "primary_artifacts",
+    "evidence_or_workstream_ids",
+    "current_decision",
+    "next_gate",
+    "guardrail",
+    "thesis_use",
+)
+
 
 @dataclass(frozen=True)
 class ThesisConsolidationResult:
@@ -250,6 +267,7 @@ class ThesisConsolidationResult:
     source_review_plan_path: Path
     agent_assistance_protocol_path: Path
     next_work_plan_path: Path
+    project_highlevel_view_path: Path
     metadata_path: Path
     docs_path: Path
     agent_docs_path: Path
@@ -260,6 +278,7 @@ class ThesisConsolidationResult:
     source_review_plan_docs_path: Path
     agent_assistance_protocol_docs_path: Path
     next_work_plan_docs_path: Path
+    project_highlevel_view_docs_path: Path
     evidence_rows: int
     core_result_rows: int
     package_rows: int
@@ -271,6 +290,7 @@ class ThesisConsolidationResult:
     source_review_plan_rows: int
     agent_assistance_protocol_rows: int
     next_work_plan_rows: int
+    project_highlevel_view_rows: int
 
     def to_dict(self) -> dict[str, str | int]:
         return {
@@ -286,6 +306,7 @@ class ThesisConsolidationResult:
             "source_review_plan_path": str(self.source_review_plan_path),
             "agent_assistance_protocol_path": str(self.agent_assistance_protocol_path),
             "next_work_plan_path": str(self.next_work_plan_path),
+            "project_highlevel_view_path": str(self.project_highlevel_view_path),
             "metadata_path": str(self.metadata_path),
             "docs_path": str(self.docs_path),
             "agent_docs_path": str(self.agent_docs_path),
@@ -296,6 +317,7 @@ class ThesisConsolidationResult:
             "source_review_plan_docs_path": str(self.source_review_plan_docs_path),
             "agent_assistance_protocol_docs_path": str(self.agent_assistance_protocol_docs_path),
             "next_work_plan_docs_path": str(self.next_work_plan_docs_path),
+            "project_highlevel_view_docs_path": str(self.project_highlevel_view_docs_path),
             "evidence_rows": self.evidence_rows,
             "core_result_rows": self.core_result_rows,
             "package_rows": self.package_rows,
@@ -307,6 +329,7 @@ class ThesisConsolidationResult:
             "source_review_plan_rows": self.source_review_plan_rows,
             "agent_assistance_protocol_rows": self.agent_assistance_protocol_rows,
             "next_work_plan_rows": self.next_work_plan_rows,
+            "project_highlevel_view_rows": self.project_highlevel_view_rows,
         }
 
 
@@ -413,6 +436,17 @@ def generate_thesis_consolidation(
         agent_assistance_protocol=agent_assistance_protocol,
     )
     _validate_next_work_plan(next_work_plan)
+    project_highlevel_view = build_project_highlevel_view(
+        evidence_map=evidence_map,
+        core_results=core_results,
+        curated_package=curated_package,
+        citation_readiness=citation_readiness,
+        source_review_plan=source_review_plan,
+        agent_pipeline=agent_pipeline,
+        agent_assistance_protocol=agent_assistance_protocol,
+        next_work_plan=next_work_plan,
+    )
+    _validate_project_highlevel_view(project_highlevel_view, repo_root=repo_root)
 
     results_dir.mkdir(parents=True, exist_ok=True)
     docs_dir.mkdir(parents=True, exist_ok=True)
@@ -428,6 +462,7 @@ def generate_thesis_consolidation(
     source_review_plan_path = results_dir / SOURCE_REVIEW_PLAN_OUTPUT
     agent_assistance_protocol_path = results_dir / AGENT_ASSISTANCE_PROTOCOL_OUTPUT
     next_work_plan_path = results_dir / NEXT_WORK_PLAN_OUTPUT
+    project_highlevel_view_path = results_dir / PROJECT_HIGHLEVEL_VIEW_OUTPUT
     metadata_path = results_dir / METADATA_OUTPUT
     docs_path = docs_dir / DOC_OUTPUT
     agent_docs_path = docs_dir / AGENT_DOC_OUTPUT
@@ -438,6 +473,7 @@ def generate_thesis_consolidation(
     source_review_plan_docs_path = docs_dir / SOURCE_REVIEW_PLAN_DOC_OUTPUT
     agent_assistance_protocol_docs_path = docs_dir / AGENT_ASSISTANCE_PROTOCOL_DOC_OUTPUT
     next_work_plan_docs_path = docs_dir / NEXT_WORK_PLAN_DOC_OUTPUT
+    project_highlevel_view_docs_path = docs_dir / PROJECT_HIGHLEVEL_VIEW_DOC_OUTPUT
 
     evidence_map.to_csv(evidence_map_path, index=False)
     core_results.to_csv(core_results_path, index=False)
@@ -450,6 +486,7 @@ def generate_thesis_consolidation(
     source_review_plan.to_csv(source_review_plan_path, index=False)
     agent_assistance_protocol.to_csv(agent_assistance_protocol_path, index=False)
     next_work_plan.to_csv(next_work_plan_path, index=False)
+    project_highlevel_view.to_csv(project_highlevel_view_path, index=False)
     evidence_map_md_path.write_text(
         _render_evidence_markdown(evidence_map),
         encoding="utf-8",
@@ -467,6 +504,7 @@ def generate_thesis_consolidation(
         source_review_plan=source_review_plan,
         agent_assistance_protocol=agent_assistance_protocol,
         next_work_plan=next_work_plan,
+        project_highlevel_view=project_highlevel_view,
     )
     metadata_path.write_text(json.dumps(metadata, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     docs_path.write_text(
@@ -477,6 +515,7 @@ def generate_thesis_consolidation(
             citation_readiness=citation_readiness,
             chapter_plan=chapter_plan,
             agent_pipeline=agent_pipeline,
+            project_highlevel_view=project_highlevel_view,
             metadata=metadata,
         ),
         encoding="utf-8",
@@ -539,6 +578,13 @@ def generate_thesis_consolidation(
         ),
         encoding="utf-8",
     )
+    project_highlevel_view_docs_path.write_text(
+        _render_project_highlevel_view_doc(
+            project_highlevel_view=project_highlevel_view,
+            metadata=metadata,
+        ),
+        encoding="utf-8",
+    )
 
     return ThesisConsolidationResult(
         evidence_map_path=evidence_map_path,
@@ -553,6 +599,7 @@ def generate_thesis_consolidation(
         source_review_plan_path=source_review_plan_path,
         agent_assistance_protocol_path=agent_assistance_protocol_path,
         next_work_plan_path=next_work_plan_path,
+        project_highlevel_view_path=project_highlevel_view_path,
         metadata_path=metadata_path,
         docs_path=docs_path,
         agent_docs_path=agent_docs_path,
@@ -563,6 +610,7 @@ def generate_thesis_consolidation(
         source_review_plan_docs_path=source_review_plan_docs_path,
         agent_assistance_protocol_docs_path=agent_assistance_protocol_docs_path,
         next_work_plan_docs_path=next_work_plan_docs_path,
+        project_highlevel_view_docs_path=project_highlevel_view_docs_path,
         evidence_rows=len(evidence_map),
         core_result_rows=len(core_results),
         package_rows=len(curated_package),
@@ -574,6 +622,7 @@ def generate_thesis_consolidation(
         source_review_plan_rows=len(source_review_plan),
         agent_assistance_protocol_rows=len(agent_assistance_protocol),
         next_work_plan_rows=len(next_work_plan),
+        project_highlevel_view_rows=len(project_highlevel_view),
     )
 
 
@@ -1680,6 +1729,228 @@ def build_next_work_plan(
     )
 
 
+def build_project_highlevel_view(
+    *,
+    evidence_map: pd.DataFrame,
+    core_results: pd.DataFrame,
+    curated_package: pd.DataFrame,
+    citation_readiness: pd.DataFrame,
+    source_review_plan: pd.DataFrame,
+    agent_pipeline: pd.DataFrame,
+    agent_assistance_protocol: pd.DataFrame,
+    next_work_plan: pd.DataFrame,
+) -> pd.DataFrame:
+    """Build a compact high-level project view from consolidation artifacts."""
+
+    core_package = curated_package[curated_package["include_in_core_package"].astype(bool)]
+    core_table_count = int((core_package["package_type"] == "table").sum())
+    core_figure_count = int((core_package["package_type"] == "figure").sum())
+    priority_source_count = int(
+        (
+            source_review_plan["priority_band"]
+            == "priority_1_method_foundation_review"
+        ).sum()
+    )
+    full_source_review_count = int(
+        (
+            citation_readiness["final_citation_readiness"]
+            == "needs_full_source_review_before_final_citation"
+        ).sum()
+    )
+    first_workstream = str(next_work_plan.sort_values("priority_order").iloc[0]["workstream_id"])
+    final_workstream = str(next_work_plan.sort_values("priority_order").iloc[-1]["workstream_id"])
+    agent_documentation_rows = int(
+        (agent_assistance_protocol["activation_status"] == "future_documentation_only").sum()
+    )
+    agent_stage_rows = int(len(agent_pipeline))
+
+    return pd.DataFrame(
+        [
+            _project_view_row(
+                view_id="project_00_current_frame",
+                project_layer="Current high-level frame",
+                status="active_thesis_core",
+                role_in_thesis="Frames the BA thesis around deterministic H1, H2, and H3 evidence, with monitor and Swiss material kept bounded.",
+                primary_artifacts=[
+                    "data/results/thesis_evidence_map.csv",
+                    "data/results/thesis_core_results_table.csv",
+                    "data/results/thesis_curated_result_package.csv",
+                ],
+                evidence_or_workstream_ids=[
+                    "method_h1_brier_dm",
+                    "method_h2_event_window",
+                    "method_h3_wallet_tiers",
+                    first_workstream,
+                    final_workstream,
+                ],
+                current_decision=f"Use {len(core_results)} core result rows, {core_table_count} core tables, and {core_figure_count} core figures as the main thesis package.",
+                next_gate="Complete source review and turn the chapter plan into thesis prose.",
+                guardrail="Deterministic Python artifacts first; no LLM metric calculation, no raw table dumps, and no runtime agents.",
+                thesis_use="main_text_project_overview",
+            ),
+            _project_view_row(
+                view_id="project_01_h1_forecast_quality",
+                project_layer="H1 forecast quality",
+                status="thesis_facing_ready",
+                role_in_thesis="Core empirical result on forecast quality and bounded Polymarket support.",
+                primary_artifacts=[
+                    "data/results/thesis_core_results_table.csv",
+                    "data/results/h1_poll_claim_readiness_summary.csv",
+                    "data/results/h1_poll_claim_readiness.png",
+                ],
+                evidence_or_workstream_ids=[
+                    "interpretation_h1_bounded_advantage",
+                    "interpretation_h1_broad_claim_boundary",
+                    "work_03_h1_results",
+                ],
+                current_decision="Write H1 as bounded support in compatible poll-comparison scopes, not as universal Polymarket superiority.",
+                next_gate="Final citation wording after source review confirms method and interpretation support.",
+                guardrail="No RCP probability claim and no broad superiority claim beyond deterministic artifacts.",
+                thesis_use="main_text_results",
+            ),
+            _project_view_row(
+                view_id="project_02_h2_event_windows",
+                project_layer="H2 event-window response",
+                status="thesis_facing_ready",
+                role_in_thesis="Core empirical result on visible daily Polymarket moves around curated public events.",
+                primary_artifacts=[
+                    "data/results/h2_event_window_summary.csv",
+                    "data/results/thesis_h2_event_window_car.png",
+                    "data/events_timeline_seed.csv",
+                ],
+                evidence_or_workstream_ids=[
+                    "method_h2_event_window",
+                    "interpretation_h2_daily_response",
+                    "work_04_h2_h3_results",
+                ],
+                current_decision="Use H2 as daily event-window evidence, not as an intraday reaction-speed claim.",
+                next_gate="Draft result text with event curation and daily-resolution limitation explicit.",
+                guardrail="No intraday speed claim and no event selection after seeing the response.",
+                thesis_use="main_text_results",
+            ),
+            _project_view_row(
+                view_id="project_03_h3_wallet_timing",
+                project_layer="H3 wallet timing diagnostics",
+                status="thesis_facing_ready_with_limits",
+                role_in_thesis="Core empirical result on dataset-relative wallet-tier timing diagnostics.",
+                primary_artifacts=[
+                    "data/results/thesis_h3_summary.csv",
+                    "data/results/h3_granger_results.csv",
+                    "data/results/thesis_h3_granger_pvalues.png",
+                ],
+                evidence_or_workstream_ids=[
+                    "method_h3_wallet_tiers",
+                    "interpretation_h3_predictive_diagnostic",
+                    "work_04_h2_h3_results",
+                ],
+                current_decision="Use top-tier timing diagnostics as predictive pattern evidence, not causal or misconduct evidence.",
+                next_gate="Draft H3 with BUY-only, daily aggregation, and multiple-testing limitations visible.",
+                guardrail="No Granger causality claim, no private-information claim, and no profitability claim.",
+                thesis_use="main_text_results_with_limits",
+            ),
+            _project_view_row(
+                view_id="project_04_source_review_gate",
+                project_layer="Sources and citations",
+                status="active_gate",
+                role_in_thesis="Controls which literature can support final method and interpretation wording.",
+                primary_artifacts=[
+                    "data/results/thesis_source_review_plan.csv",
+                    "data/results/thesis_citation_review_packets.csv",
+                    "data/literature/literature_index.csv",
+                ],
+                evidence_or_workstream_ids=["work_01_source_review"],
+                current_decision=f"Treat {full_source_review_count} sources as requiring full review, including {priority_source_count} priority-1 method-foundation rows.",
+                next_gate="Record page or section notes and human decisions before final thesis citation.",
+                guardrail="Source review is manual; do not promote skimmed or candidate sources automatically.",
+                thesis_use="theory_methods_citation_gate",
+            ),
+            _project_view_row(
+                view_id="project_05_table_figure_package",
+                project_layer="Compact tables and figures",
+                status="thesis_facing_package",
+                role_in_thesis="Keeps the thesis readable by selecting a small number of strong tables and figures.",
+                primary_artifacts=[
+                    "data/results/thesis_table_figure_captions.csv",
+                    "data/results/thesis_curated_result_package.csv",
+                ],
+                evidence_or_workstream_ids=["work_05_table_figure_integration"],
+                current_decision=f"Use {core_table_count} core tables and {core_figure_count} core figures, with generated captions and limitation notes.",
+                next_gate="Integrate the selected package into draft chapters and appendix placement.",
+                guardrail="Do not add raw result artifacts to the core package without updating evidence map and chapter plan.",
+                thesis_use="main_text_and_appendix",
+            ),
+            _project_view_row(
+                view_id="project_06_monitor_review_access",
+                project_layer="Monitor prototype and review access",
+                status="paused_appendix_only",
+                role_in_thesis="Shows a read-only prototype and review workflow only if kept in appendix or discussion.",
+                primary_artifacts=[
+                    "data/results/monitor_anomaly_review_summary.csv",
+                    "data/results/monitor_anomaly_review_access_contract.json",
+                    "data/results/monitor_anomaly_review_dashboard.html",
+                ],
+                evidence_or_workstream_ids=["work_06_monitor_appendix"],
+                current_decision="Review access remains paused; no further runtime MCP or agent layer is part of the current thesis consolidation.",
+                next_gate="Human source review of monitor cases or a separate approved goal before any renewed access work.",
+                guardrail="No wallet-address exposure by default, no raw monitor rows, no order or trading paths, and no causal claims.",
+                thesis_use="appendix_or_discussion_only",
+            ),
+            _project_view_row(
+                view_id="project_07_swiss_referendum",
+                project_layer="Swiss referendum side track",
+                status="descriptive_pending_result",
+                role_in_thesis="Provides a bounded side comparison until the official vote outcome can be mapped.",
+                primary_artifacts=[
+                    "data/results/swiss_referendum_10mio_latest_source_comparison.csv",
+                    "data/results/swiss_referendum_10mio_efficiency.png",
+                ],
+                evidence_or_workstream_ids=[
+                    "interpretation_swiss_descriptive_pending_result",
+                    "work_07_swiss_result_gate",
+                ],
+                current_decision="Keep the Swiss material descriptive until the official 14 June 2026 vote result is available.",
+                next_gate="Regenerate Swiss artifacts after official result mapping.",
+                guardrail="Poll shares are not win probabilities and cannot support final efficiency claims before result mapping.",
+                thesis_use="discussion_pending_final_result",
+            ),
+            _project_view_row(
+                view_id="project_08_future_agents",
+                project_layer="Future agent-assisted pipeline",
+                status="documentation_only_deferred",
+                role_in_thesis="Outlook on how bounded assistants could support source review and wording checks later.",
+                primary_artifacts=[
+                    "data/results/thesis_agent_pipeline_roadmap.csv",
+                    "data/results/thesis_agent_assistance_protocol.csv",
+                ],
+                evidence_or_workstream_ids=[
+                    "future_agent_pipeline_guarded",
+                    "work_08_agent_outlook",
+                ],
+                current_decision=f"Keep {agent_stage_rows} roadmap stages and {agent_documentation_rows} documentation-only assistance rows inactive.",
+                next_gate="Separate approved goal with bounded prompts, tests, and llm_audit_log integration.",
+                guardrail="No runtime agents, no MCP tools, no model routing, no raw table access, and no LLM metric calculation now.",
+                thesis_use="future_work_only",
+            ),
+            _project_view_row(
+                view_id="project_09_advisor_iteration",
+                project_layer="Advisor communication",
+                status="project_management_ready",
+                role_in_thesis="Gives the advisor a concise written project view and decision points.",
+                primary_artifacts=[
+                    "docs/project/dozentenbericht_ba_thesis.docx",
+                    "docs/project/dozentenbericht_ba_thesis.md",
+                ],
+                evidence_or_workstream_ids=["work_09_advisor_iteration"],
+                current_decision="Use the Dozentenbericht to align on bounded H1 wording, source-review depth, Swiss placement, and appendix scope.",
+                next_gate="Advisor feedback is received and logged into the next small commit plan.",
+                guardrail="Do not expand empirical scope before the current deterministic thesis core is written.",
+                thesis_use="advisor_update",
+            ),
+        ],
+        columns=PROJECT_HIGHLEVEL_VIEW_COLUMNS,
+    )
+
+
 def build_citation_review_packets(
     *,
     evidence_map: pd.DataFrame,
@@ -2120,6 +2391,33 @@ def _next_work_row(
     }
 
 
+def _project_view_row(
+    *,
+    view_id: str,
+    project_layer: str,
+    status: str,
+    role_in_thesis: str,
+    primary_artifacts: list[str],
+    evidence_or_workstream_ids: list[str],
+    current_decision: str,
+    next_gate: str,
+    guardrail: str,
+    thesis_use: str,
+) -> dict[str, object]:
+    return {
+        "view_id": view_id,
+        "project_layer": project_layer,
+        "status": status,
+        "role_in_thesis": role_in_thesis,
+        "primary_artifacts": "; ".join(primary_artifacts),
+        "evidence_or_workstream_ids": "; ".join(evidence_or_workstream_ids),
+        "current_decision": current_decision,
+        "next_gate": next_gate,
+        "guardrail": guardrail,
+        "thesis_use": thesis_use,
+    }
+
+
 def _read_csv(path: Path) -> pd.DataFrame:
     _required_file(path)
     return pd.read_csv(path)
@@ -2338,6 +2636,64 @@ def _validate_next_work_plan(plan: pd.DataFrame) -> None:
         raise ValueError("Next work plan missing guardrail terms: " + ", ".join(missing_terms))
 
 
+def _validate_project_highlevel_view(frame: pd.DataFrame, *, repo_root: Path) -> None:
+    _require_columns(frame, PROJECT_HIGHLEVEL_VIEW_COLUMNS, "project highlevel view")
+    if frame["view_id"].duplicated().any():
+        raise ValueError("Project highlevel view contains duplicate view_id values.")
+    allowed_statuses = {
+        "active_thesis_core",
+        "thesis_facing_ready",
+        "thesis_facing_ready_with_limits",
+        "active_gate",
+        "thesis_facing_package",
+        "paused_appendix_only",
+        "descriptive_pending_result",
+        "documentation_only_deferred",
+        "project_management_ready",
+    }
+    unknown_statuses = sorted(set(frame["status"]).difference(allowed_statuses))
+    if unknown_statuses:
+        raise ValueError(f"Project highlevel view contains unknown statuses: {unknown_statuses}")
+    for column in (
+        "project_layer",
+        "role_in_thesis",
+        "primary_artifacts",
+        "current_decision",
+        "next_gate",
+        "guardrail",
+        "thesis_use",
+    ):
+        if frame[column].astype(str).str.len().eq(0).any():
+            raise ValueError(f"Project highlevel view contains empty {column}.")
+    for row in frame.to_dict(orient="records"):
+        _validate_artifact_list(repo_root, _split_list(str(row["primary_artifacts"])))
+    ids = set(frame["view_id"])
+    required_ids = {
+        "project_00_current_frame",
+        "project_01_h1_forecast_quality",
+        "project_02_h2_event_windows",
+        "project_03_h3_wallet_timing",
+        "project_06_monitor_review_access",
+        "project_07_swiss_referendum",
+        "project_08_future_agents",
+    }
+    missing_ids = sorted(required_ids.difference(ids))
+    if missing_ids:
+        raise ValueError(f"Project highlevel view missing required rows: {missing_ids}")
+    joined = "\n".join(frame.astype(str).agg(" ".join, axis=1).tolist()).lower()
+    required_terms = (
+        "review access remains paused",
+        "source review is manual",
+        "llm_audit_log",
+        "official 14 june 2026 vote result",
+        "no order or trading paths",
+        "deterministic python artifacts",
+    )
+    missing_terms = [term for term in required_terms if term not in joined]
+    if missing_terms:
+        raise ValueError("Project highlevel view missing guardrail terms: " + ", ".join(missing_terms))
+
+
 def _validate_citation_review_packets(
     packets: pd.DataFrame,
     evidence_map: pd.DataFrame,
@@ -2452,6 +2808,7 @@ def _build_metadata(
     source_review_plan: pd.DataFrame,
     agent_assistance_protocol: pd.DataFrame,
     next_work_plan: pd.DataFrame,
+    project_highlevel_view: pd.DataFrame,
 ) -> dict[str, object]:
     core = curated_package[curated_package["include_in_core_package"].astype(bool)]
     return {
@@ -2475,6 +2832,7 @@ def _build_metadata(
             "source_review_plan_rows": int(len(source_review_plan)),
             "agent_assistance_protocol_rows": int(len(agent_assistance_protocol)),
             "next_work_plan_rows": int(len(next_work_plan)),
+            "project_highlevel_view_rows": int(len(project_highlevel_view)),
             "writing_blueprint_generated": True,
             "chapter_draft_generated": True,
             "core_table_count": int((core["package_type"] == "table").sum()),
@@ -2553,6 +2911,18 @@ def _build_metadata(
                 next_work_plan.sort_values("priority_order").iloc[-1]["workstream_id"]
             ),
         },
+        "project_highlevel_view_counts": {
+            "rows": int(len(project_highlevel_view)),
+            "paused_rows": int((project_highlevel_view["status"] == "paused_appendix_only").sum()),
+            "documentation_only_rows": int(
+                (project_highlevel_view["status"] == "documentation_only_deferred").sum()
+            ),
+            "thesis_facing_rows": int(
+                project_highlevel_view["status"]
+                .isin({"thesis_facing_ready", "thesis_facing_ready_with_limits"})
+                .sum()
+            ),
+        },
         "guardrails": {
             "every_method_and_interpretation_has_artifact": True,
             "citation_readiness_is_status_mapping_not_source_promotion": True,
@@ -2561,6 +2931,8 @@ def _build_metadata(
             "source_review_plan_is_manual_review_queue": True,
             "agent_assistance_protocol_is_documentation_only": True,
             "next_work_plan_is_guardrail_bound": True,
+            "project_highlevel_view_is_status_summary_not_result_metric": True,
+            "project_highlevel_view_keeps_review_access_paused": True,
             "chapter_plan_uses_curated_package": True,
             "thesis_facing_rows_avoid_candidate_or_rejected_sources": True,
             "swiss_final_efficiency_interpretation_pending": True,
@@ -2604,6 +2976,7 @@ def _render_consolidation_doc(
     citation_readiness: pd.DataFrame,
     chapter_plan: pd.DataFrame,
     agent_pipeline: pd.DataFrame,
+    project_highlevel_view: pd.DataFrame,
     metadata: dict[str, object],
 ) -> str:
     core = curated_package[curated_package["include_in_core_package"].astype(bool)].copy()
@@ -2621,6 +2994,16 @@ def _render_consolidation_doc(
             "citation_risk",
         ]
     ]
+    highlevel_display = project_highlevel_view[
+        [
+            "view_id",
+            "project_layer",
+            "status",
+            "current_decision",
+            "next_gate",
+            "thesis_use",
+        ]
+    ]
 
     return (
         "# Thesis Consolidation\n\n"
@@ -2628,6 +3011,12 @@ def _render_consolidation_doc(
         "This document is the high-level consolidation layer for the bachelor thesis. "
         "It reduces the many generated artifacts to a small thesis-ready package and "
         "keeps every central method and interpretation tied to deterministic evidence.\n\n"
+        "## Project Highlevel View\n\n"
+        "`data/results/thesis_project_highlevel_view.csv` summarises the current "
+        "project layers, decisions, next gates, and thesis-use boundaries. It keeps "
+        "review access paused and does not add new empirical metrics.\n\n"
+        + _markdown_table(highlevel_display)
+        + "\n\n"
         "## Core Result Table\n\n"
         + _markdown_table(
             core_results[
@@ -2974,6 +3363,46 @@ def _render_next_work_plan_doc(
         "Use this file to sequence the thesis work. Do not expand empirical scope, "
         "activate agents, add raw result files to the core package, or make final "
         "Swiss efficiency claims before the relevant gates are cleared.\n"
+    )
+
+
+def _render_project_highlevel_view_doc(
+    *,
+    project_highlevel_view: pd.DataFrame,
+    metadata: dict[str, object],
+) -> str:
+    display = project_highlevel_view[
+        [
+            "view_id",
+            "project_layer",
+            "status",
+            "role_in_thesis",
+            "current_decision",
+            "next_gate",
+            "guardrail",
+            "thesis_use",
+        ]
+    ]
+    counts = metadata["project_highlevel_view_counts"]
+    return (
+        "# Thesis Project Highlevel View\n\n"
+        "This generated status matrix gives the project-level answer to what "
+        "happens next: the thesis core is H1-H3, review access remains paused, "
+        "monitor material stays appendix/prototype only, Swiss remains pending "
+        "until the official result, and future agents stay documentation-only.\n\n"
+        "## Counts\n\n"
+        f"- Project rows: {counts['rows']}\n"
+        f"- Thesis-facing empirical rows: {counts['thesis_facing_rows']}\n"
+        f"- Paused appendix rows: {counts['paused_rows']}\n"
+        f"- Documentation-only rows: {counts['documentation_only_rows']}\n\n"
+        "## Project Matrix\n\n"
+        + _markdown_table(display)
+        + "\n\n"
+        "## Use Rule\n\n"
+        "Use this file for advisor discussion and thesis sequencing. It is a "
+        "status and boundary summary, not a new empirical result. It must not be "
+        "used to reactivate review access, agents, MCP tools, model routing, raw "
+        "table access, wallet-address exposure, or order/trading paths.\n"
     )
 
 

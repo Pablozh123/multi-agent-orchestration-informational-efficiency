@@ -8551,3 +8551,42 @@ Verification:
   `WinError 2`, consistent with missing local LibreOffice/`soffice`.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 502 passed in 48.77s.
+
+## 2026-06-12 - Thesis project highlevel view
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Kept review-access work paused and turned the "how next at high level"
+  question into a deterministic project-status matrix for advisor discussion
+  and thesis sequencing.
+
+Changes:
+
+- Extended `operations/analysis/thesis_consolidation.py` with generated
+  `data/results/thesis_project_highlevel_view.csv`.
+- Added `docs/research/THESIS_PROJECT_HIGHLEVEL_VIEW.md`.
+- Embedded the high-level project matrix into
+  `docs/research/THESIS_CONSOLIDATION.md`.
+- Updated metadata, tests, `ROADMAP.md`, and `GOAL.md`.
+- Regenerated dependent thesis docs; the Swiss running snapshot count now
+  reflects 28 local snapshots in the derived consolidation text.
+
+Key output:
+
+- Project rows: 10.
+- Thesis-facing empirical rows: 3.
+- Paused appendix rows: 1.
+- Documentation-only rows: 1.
+- Core decision: H1-H3 stay the thesis core, source review is the active gate,
+  monitor review access stays paused, Swiss remains pending final result, and
+  agents remain documentation-only.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_consolidation.py tests\test_dozenten_report.py -q`
+  -> PASS, 16 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`
+  -> PASS, generated 10 high-level project rows.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 503 passed in 51.38s.

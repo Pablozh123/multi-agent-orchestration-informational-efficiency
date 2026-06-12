@@ -150,7 +150,7 @@ Result statements to use:
 
 - The monitor review queue is useful as workflow evidence, not empirical proof. Key value: 3 review cases; 1 high; 2 medium; source_check_pending=3 Source: `data/results/monitor_anomaly_review_summary.csv`.
 
-- Swiss referendum market-poll divergence is descriptive until the result is known. Key value: 27 snapshots; latest SRG/gfs.bern Polymarket Yes 22.0%, poll Yes 45.0%, raw gap -23.0 pp Source: `data/results/swiss_referendum_10mio_latest_source_comparison.csv`.
+- Swiss referendum market-poll divergence is descriptive until the result is known. Key value: 28 snapshots; latest SRG/gfs.bern Polymarket Yes 22.0%, poll Yes 45.0%, raw gap -23.0 pp Source: `data/results/swiss_referendum_10mio_latest_source_comparison.csv`.
 
 Limitation to state: Monitor cases need human review; Swiss interpretation needs official result.
 

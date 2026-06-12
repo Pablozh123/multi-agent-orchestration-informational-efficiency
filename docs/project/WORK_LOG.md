@@ -11014,3 +11014,28 @@ Verification:
   -> PASS, regenerated thesis consolidation outputs.
 - `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
   -> PASS, generated 10 audit rows.
+
+## 2026-06-12 - Project control after source-gated drafting integration
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Refreshed project control after committing
+  `55a065a docs: integrate source-gated drafting into thesis chapter draft`.
+
+Changes:
+
+- Updated `STATUS.md` with the latest automation snapshot.
+- Added this append-only Work Log entry.
+
+Key output:
+
+- Latest content commit: `55a065a`.
+- Test snapshot: 574 passed.
+- Next recommended content action:
+  `docs: refresh advisor report with source-gated drafting sequence`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `574 passed in 58.67s`, clean before the status refresh.

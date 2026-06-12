@@ -11441,3 +11441,51 @@ Main limitation:
 - Poll shares are survey shares, not model-implied win probabilities. The
   official vote result is still unavailable, so no final referendum efficiency
   conclusion is allowed.
+
+## 2026-06-12 - Advisor handoff package linked source-review overview
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Updated the advisor handoff material so the new H1-H2-H3 Manual Source
+  Review Follow-up Overview is visible before future-agent or feedback items.
+
+Changes:
+
+- Updated `operations/project/build_advisor_handoff_package.py`.
+- Updated `operations/project/build_advisor_handoff_note.py`.
+- Regenerated `data/results/thesis_advisor_handoff_package.csv` and
+  `docs/project/THESIS_ADVISOR_HANDOFF_PACKAGE.md`.
+- Regenerated `data/results/thesis_advisor_handoff_note.csv` and
+  `docs/project/DOZENTEN_UEBERGABE_TEXT.md`.
+- Updated Handoff Package and Handoff Note tests.
+- Updated `GOAL.md` and `ROADMAP.md` so the advisor package has 12
+  deliverables and includes the 23-row source-review overview.
+
+Key output:
+
+- Advisor handoff package rows: 12.
+- Manual Source Review Follow-up Overview is deliverable 9.
+- Uebergabetext rows: 6.
+- Source-Gated H1-H2-H3 Drafting Sequence remains 15 Absatzschritte.
+- Manual Source Review rows linked in the handoff context: 23.
+- Manual Source Review rows pending: 23.
+- Manual Source Review rows final-ready: 0.
+- Latest content commit:
+  `451f8fa docs: update advisor handoff package with source review overview`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_advisor_handoff_package.py operations\project\build_advisor_handoff_note.py tests\test_advisor_handoff_package.py tests\test_advisor_handoff_note.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_advisor_handoff_package.py tests\test_advisor_handoff_note.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_advisor_handoff_package`
+  -> PASS, package rows 12.
+- `.\.venv\Scripts\python.exe -m operations.project.build_advisor_handoff_note`
+  -> PASS, note rows 6.
+- `git diff --check` -> PASS.
+- `rg -n "<sharp-s>" GOAL.md ROADMAP.md docs\project\DOZENTEN_UEBERGABE_TEXT.md docs\project\THESIS_ADVISOR_HANDOFF_PACKAGE.md operations\project\build_advisor_handoff_package.py operations\project\build_advisor_handoff_note.py tests\test_advisor_handoff_package.py tests\test_advisor_handoff_note.py`
+  -> PASS, no Swiss sharp-s found.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `584 passed in 57.35s`, clean after the content commit.

@@ -141,6 +141,10 @@ acceptance_criteria:
   chapter with Evidence IDs, literature IDs, deterministic artifacts, selected
   tables/figures, open Source Review rows, blocked wording, limitations, and
   future-agent boundaries visible before final citation.
+- A chapter-level source-review checklist exists so H1-H2-H3 writing can be
+  checked against coverage, literature review, result-package integration,
+  limitations, blocked wording, final citation gates, and future-agent
+  boundaries before final submission.
 - A future agent-pipeline upgrade plan exists so later source-review,
   evidence-drafting, wording, table/figure, advisor, monitor, and bounded MCP
   improvements are documented without activating runtime agents.
@@ -148,7 +152,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add chapter-level source review checklist
+next_commit: docs: add h1 h2 h3 drafting checklist
 
 ## Running Side Goal
 

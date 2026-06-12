@@ -38,6 +38,8 @@ def test_generate_goal_completion_audit_writes_remaining_gates(tmp_path: Path) -
     assert "THESIS_H1_H2_H3_CORE_SECTIONS.md" in doc
     assert "thesis_source_review_chapter_handoff.csv" in doc
     assert "THESIS_SOURCE_REVIEW_CHAPTER_HANDOFF.md" in doc
+    assert "thesis_chapter_source_review_checklist.csv" in doc
+    assert "THESIS_CHAPTER_SOURCE_REVIEW_CHECKLIST.md" in doc
     assert "thesis_agent_pipeline_control_audit.csv" in doc
     assert "THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md" in doc
     assert "thesis_agent_pipeline_upgrade_plan.csv" in doc
@@ -72,6 +74,7 @@ def test_goal_completion_audit_keeps_open_gates_visible(tmp_path: Path) -> None:
     assert "traceability-kernpaket: 5 tabellen, 4 figuren, 0 gaps" in joined
     assert "h1-h2-h3 core sections: 3 zeilen (h1; h2; h3)" in joined
     assert "chapter handoff: 3 kapitel; coverage-ready: 3; review rows: 3; pending: 3; final-ready: 0" in joined
+    assert "chapter checklist: 18 checks; bounded-draft-ready: 18; final-ready: 0; final-blocked: 3" in joined
     assert "agent control: 2 rollen; documentation-only: 1; deferred: 1; aktiv: 0" in joined
     assert "agent upgrade plan: 2 reihen; aktive upgrade-reihen: 0" in joined
 
@@ -235,6 +238,13 @@ def _write_fixture(root: Path) -> None:
     ).to_csv(results / "thesis_source_review_chapter_handoff.csv", index=False)
     pd.DataFrame(
         [
+            _chapter_check(check_idx, area, is_final_gate=(check_idx == 5))
+            for area in ("H1", "H2", "H3")
+            for check_idx in range(1, 7)
+        ]
+    ).to_csv(results / "thesis_chapter_source_review_checklist.csv", index=False)
+    pd.DataFrame(
+        [
             {
                 "control_id": "agent_control_01",
                 "current_activation_state": "future_documentation_only",
@@ -292,6 +302,7 @@ def _write_fixture(root: Path) -> None:
         "docs/project/THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md",
         "docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md",
         "docs/project/THESIS_SOURCE_REVIEW_CHAPTER_HANDOFF.md",
+        "docs/project/THESIS_CHAPTER_SOURCE_REVIEW_CHECKLIST.md",
         "docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md",
     ]:
         path = root / relative
@@ -354,4 +365,17 @@ def _chapter_handoff(handoff_id: str, area: str, package_items: str) -> dict[str
         "pending_review_rows": 1,
         "final_citation_ready_rows": 0,
         "result_package_items": package_items,
+    }
+
+
+def _chapter_check(check_idx: int, area: str, *, is_final_gate: bool) -> dict[str, object]:
+    return {
+        "checklist_id": f"check_{area.lower()}_{check_idx}",
+        "thesis_area": area,
+        "check_area": "final_citation_gate" if is_final_gate else "fixture_check",
+        "completion_status": (
+            "final_blocked_source_review_pending" if is_final_gate else "bounded_draft_ready"
+        ),
+        "ready_for_bounded_draft": True,
+        "ready_for_final_submission": False,
     }

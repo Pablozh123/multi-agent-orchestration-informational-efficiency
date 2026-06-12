@@ -69,6 +69,7 @@ def generate_goal_completion_audit(
     source_progress_ledger = _read_csv(results_dir / "thesis_source_review_progress_ledger.csv")
     source_progress_protocol = _read_csv(results_dir / "thesis_source_review_progress_protocol.csv")
     source_chapter_handoff = _read_csv(results_dir / "thesis_source_review_chapter_handoff.csv")
+    chapter_checklist = _read_csv(results_dir / "thesis_chapter_source_review_checklist.csv")
     method_traceability = _read_csv(results_dir / "thesis_method_interpretation_traceability.csv")
     result_package_traceability = _read_csv(results_dir / "thesis_result_package_traceability.csv")
     core_sections = _read_csv(results_dir / "thesis_h1_h2_h3_core_sections.csv")
@@ -90,6 +91,7 @@ def generate_goal_completion_audit(
         source_progress_ledger=source_progress_ledger,
         source_progress_protocol=source_progress_protocol,
         source_chapter_handoff=source_chapter_handoff,
+        chapter_checklist=chapter_checklist,
         method_traceability=method_traceability,
         result_package_traceability=result_package_traceability,
         core_sections=core_sections,
@@ -128,6 +130,7 @@ def build_goal_completion_audit(
     source_progress_ledger: pd.DataFrame,
     source_progress_protocol: pd.DataFrame,
     source_chapter_handoff: pd.DataFrame,
+    chapter_checklist: pd.DataFrame,
     method_traceability: pd.DataFrame,
     result_package_traceability: pd.DataFrame,
     core_sections: pd.DataFrame,
@@ -199,6 +202,18 @@ def build_goal_completion_audit(
             "result_package_items",
         ),
         "source review chapter handoff",
+    )
+    _require_columns(
+        chapter_checklist,
+        (
+            "checklist_id",
+            "thesis_area",
+            "check_area",
+            "completion_status",
+            "ready_for_bounded_draft",
+            "ready_for_final_submission",
+        ),
+        "chapter source review checklist",
     )
     _require_columns(
         method_traceability,
@@ -321,6 +336,16 @@ def build_goal_completion_audit(
     chapter_handoff_covered = int(
         (source_chapter_handoff["coverage_status"] == "covered_artifact_source_package_ready").sum()
     )
+    chapter_checklist_rows = int(len(chapter_checklist))
+    chapter_checklist_draft_ready = int(
+        chapter_checklist["ready_for_bounded_draft"].astype(bool).sum()
+    )
+    chapter_checklist_final_ready = int(
+        chapter_checklist["ready_for_final_submission"].astype(bool).sum()
+    )
+    chapter_checklist_final_blocked = int(
+        chapter_checklist["completion_status"].astype(str).str.startswith("final_blocked").sum()
+    )
     agent_control_rows = int(len(agent_control))
     agent_documentation_only = int(
         (agent_control["current_activation_state"] == "future_documentation_only").sum()
@@ -374,7 +399,7 @@ def build_goal_completion_audit(
             audit_id="goal_audit_03_curated_package",
             goal_requirement_de="Ergebnisdarstellung nutzt wenige starke Tabellen und Figuren.",
             current_status="proved_current_artifact",
-            evidence_artifacts="data/results/thesis_curated_result_package.csv; data/results/thesis_table_figure_captions.csv; data/results/thesis_result_package_traceability.csv; data/results/thesis_h1_h2_h3_core_sections.csv; docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md; data/results/thesis_source_review_chapter_handoff.csv; docs/project/THESIS_SOURCE_REVIEW_CHAPTER_HANDOFF.md",
+            evidence_artifacts="data/results/thesis_curated_result_package.csv; data/results/thesis_table_figure_captions.csv; data/results/thesis_result_package_traceability.csv; data/results/thesis_h1_h2_h3_core_sections.csv; docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md; data/results/thesis_source_review_chapter_handoff.csv; docs/project/THESIS_SOURCE_REVIEW_CHAPTER_HANDOFF.md; data/results/thesis_chapter_source_review_checklist.csv; docs/project/THESIS_CHAPTER_SOURCE_REVIEW_CHECKLIST.md",
             key_evidence_de=(
                 f"Kernpaket: {core_tables} Tabellen und {core_figures} Figuren. "
                 f"Traceability-Kernpaket: {traceable_core_tables} Tabellen, "
@@ -385,7 +410,11 @@ def build_goal_completion_audit(
                 f"Chapter Handoff: {chapter_handoff_rows} Kapitel; "
                 f"coverage-ready: {chapter_handoff_covered}; review rows: "
                 f"{chapter_handoff_review_rows}; pending: {chapter_handoff_pending}; "
-                f"final-ready: {chapter_handoff_final_ready}."
+                f"final-ready: {chapter_handoff_final_ready}. "
+                f"Chapter Checklist: {chapter_checklist_rows} Checks; "
+                f"bounded-draft-ready: {chapter_checklist_draft_ready}; "
+                f"final-ready: {chapter_checklist_final_ready}; "
+                f"final-blocked: {chapter_checklist_final_blocked}."
             ),
             remaining_gap_de="Finale Nummerierung und Layout folgen erst im Thesis-Dokument.",
             next_action_de="Tabellen/Figuren in H1-H3 Kapitel integrieren.",

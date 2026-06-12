@@ -792,6 +792,12 @@ Current implemented consolidation:
   IDs, interpretation Evidence IDs, literature IDs, deterministic artifacts,
   selected table/figure IDs, Source Review row counts, limitations, blocked
   wording, and the future-agent boundary before chapter drafting.
+- `data/results/thesis_chapter_source_review_checklist.csv` and
+  `docs/project/THESIS_CHAPTER_SOURCE_REVIEW_CHECKLIST.md` turn the chapter
+  handoff into 18 manual check rows: six checks per H1-H2-H3 chapter for
+  coverage, literature review, result package, limitation/blocked wording,
+  final citation, and future-agent boundary. All rows are bounded-draft-ready;
+  final submission remains blocked by Source Review.
 - `data/results/thesis_method_interpretation_traceability.csv`,
   `data/results/thesis_result_package_traceability.csv`, and
   `docs/project/THESIS_TRACEABILITY_AUDIT.md` audit the draft traceability of
@@ -818,11 +824,11 @@ Current implemented consolidation:
   advisor handoff package, review execution guide, source access audit, source
   structure inventory, source review decision packets, source review progress
   ledger, source review progress protocol, source review chapter handoff,
-  traceability audit, chapter source bindings, agent future-work handoff,
-  advisor handoff note, advisor feedback log, submission readiness board,
-  drafting sequence, wording guard, table/figure captions, chapter draft,
-  source review plan, agent protocol, status, and work log are easy to
-  navigate.
+  chapter source review checklist, traceability audit, chapter source
+  bindings, agent future-work handoff, advisor handoff note, advisor feedback
+  log, submission readiness board, drafting sequence, wording guard,
+  table/figure captions, chapter draft, source review plan, agent protocol,
+  status, and work log are easy to navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,

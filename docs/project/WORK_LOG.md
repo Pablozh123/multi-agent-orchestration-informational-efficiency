@@ -10152,3 +10152,51 @@ Verification:
   -> PASS, generated 33 indexed artifacts.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 552 passed in 51.69s.
+
+## 2026-06-12 - Chapter source review checklist
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Converted the H1-H2-H3 chapter handoff into concrete manual check rows for
+  BA drafting and review.
+- Did not inspect source contents, promote source status, activate agents,
+  call MCP tools, route models, calculate LLM metrics, expose wallet
+  addresses, or create trading paths.
+
+Changes:
+
+- Added `operations/project/build_chapter_source_review_checklist.py`.
+- Generated `data/results/thesis_chapter_source_review_checklist.csv`.
+- Generated `docs/project/THESIS_CHAPTER_SOURCE_REVIEW_CHECKLIST.md`.
+- Added `tests/test_chapter_source_review_checklist.py`.
+- Updated the goal-completion audit and consolidation index to include the
+  checklist.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Checklist rows: 18.
+- H1 rows: 6.
+- H2 rows: 6.
+- H3 rows: 6.
+- Bounded draft ready rows: 18.
+- Final submission ready rows: 0.
+- Final blocked source-review rows: 3.
+- Completion groups: coverage, literature source review, result package,
+  limitation/blocked wording, final citation gate, and future-agent boundary.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_chapter_source_review_checklist.py operations/project/build_thesis_goal_completion_audit.py operations/project/build_thesis_consolidation_index.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_chapter_source_review_checklist.py tests/test_thesis_goal_completion_audit.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 6 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_chapter_source_review_checklist`
+  -> PASS, generated 18 checklist rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
+  -> PASS, generated 10 audit rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 34 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 554 passed in 52.38s.

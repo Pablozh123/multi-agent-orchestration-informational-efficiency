@@ -55,6 +55,10 @@ def test_build_dozenten_report_outputs_readable_artifacts(tmp_path):
     assert "Naechste Arbeitsschritte" in html_text
     assert "work_01_source_review" in html_text
     assert "work_10_final_qa" in html_text
+    assert "Kapitelweise Umsetzungscheckliste" in html_text
+    assert "exec_04_04_h1_results" in html_text
+    assert "advisor_q06_swiss_gate" in html_text
+    assert "Schreib- und Abnahmelogik fuer den naechsten Entwurf" in html_text
     assert "Quellenreview Kernquellen" in html_text
     assert "Source-Review-Worksheet enthaelt 15 manuelle Review-Zeilen" in html_text
     assert "11 Priority-1-Methodenquellen" in html_text

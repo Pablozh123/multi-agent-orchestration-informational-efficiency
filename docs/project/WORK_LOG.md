@@ -8816,6 +8816,46 @@ Verification:
 - `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
   -> PASS, recommends reviewing one coherent docs/data/automation slice.
 
+## 2026-06-12 - Advisor report execution section
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Moved the new high-level execution checklist into the Dozentenbericht so the
+  advisor-facing Word/HTML/Markdown report shows what happens next by chapter.
+
+Changes:
+
+- Updated `operations/project/build_dozenten_report.py`.
+- Regenerated `docs/project/dozentenbericht_ba_thesis.md`.
+- Regenerated `docs/project/dozentenbericht_ba_thesis.html`.
+- Regenerated `docs/project/dozentenbericht_ba_thesis.docx`.
+- Updated `tests/test_dozenten_report.py`.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Added `Kapitelweise Umsetzungscheckliste` to the Dozentenbericht.
+- The section shows 8 chapter tasks, including H1 result writing and the
+  Swiss/monitor extension gate with advisor-question IDs.
+- It keeps the report framed as a project-control and thesis-writing view, not
+  a new empirical result.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_dozenten_report.py tests\test_thesis_execution_checklist.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, generated MD, HTML, DOCX, and 43 figures.
+- `.\.venv\Scripts\python.exe C:\Users\chole\.codex\plugins\cache\openai-primary-runtime\documents\26.601.10930\skills\documents\render_docx.py docs/project/dozentenbericht_ba_thesis.docx --output_dir %TEMP%\dozentenbericht_render_20260612`
+  -> BLOCKED, LibreOffice/soffice is missing (`FileNotFoundError: [WinError 2]`).
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 513 passed in 50.84s.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> PASS, 513 passed in 51.14s.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+  -> PASS, recommends reviewing one coherent report/update slice.
+
 ## 2026-06-12 - Thesis execution checklist
 
 Goal context:

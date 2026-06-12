@@ -702,6 +702,9 @@ Current implemented consolidation:
   protocol, status, and work log are easy to navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
+- The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,
+  an eight-row chapter execution view from `thesis_execution_checklist.csv`
+  with draft actions, done-when criteria, and advisor-question IDs.
 - `data/results/thesis_citation_review_packets.csv` and
   `docs/research/THESIS_CITATION_REVIEW_PACKETS.md` break citation readiness
   into source-evidence review packets with review questions, required checks,

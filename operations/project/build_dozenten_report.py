@@ -214,6 +214,7 @@ def collect_report_data() -> dict[str, Any]:
     thesis_next_work = _read_csv("data/results/thesis_next_work_plan.csv")
     thesis_project_highlevel = _read_csv("data/results/thesis_project_highlevel_view.csv")
     thesis_source_worksheet = _read_csv("data/results/thesis_source_review_worksheet.csv")
+    thesis_execution_checklist = _read_csv("data/results/thesis_execution_checklist.csv")
 
     return {
         "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
@@ -278,6 +279,7 @@ def collect_report_data() -> dict[str, Any]:
         "thesis_highlevel": _thesis_highlevel_data(thesis_metadata, thesis_captions),
         "project_highlevel": _project_highlevel_report_data(thesis_project_highlevel),
         "next_work": _next_work_report_data(thesis_next_work),
+        "execution_checklist": _execution_checklist_report_data(thesis_execution_checklist),
         "source_counts": {
             "curated_events": len(event_seed),
             "literature_rows": len(literature),
@@ -300,6 +302,7 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
     highlevel = data["thesis_highlevel"]
     project_highlevel = data["project_highlevel"]
     next_work = data["next_work"]
+    execution_checklist = data["execution_checklist"]
     db = data["project"]["database"]
     folders = data["project"]["folder_inventory"]
     insight_rows = [
@@ -342,6 +345,16 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
     for row in next_work["rows"]:
         next_work_rows.append(
             "| {priority_order} | {workstream} | {next_action} | {guardrail} |".format(
+                **{key: str(value).replace("|", ",") for key, value in row.items()}
+            )
+        )
+    execution_rows = [
+        "| Task | Kapitel | Schreibaktion | Fertig wenn | Advisor-Fragen |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+    for row in execution_checklist["rows"]:
+        execution_rows.append(
+            "| {task_id} | {chapter_title} | {draft_action_de} | {done_when_de} | {advisor_question_ids} |".format(
                 **{key: str(value).replace("|", ",") for key, value in row.items()}
             )
         )
@@ -441,6 +454,23 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
         ),
         "",
         *next_work_rows,
+        "",
+        "## Kapitelweise Umsetzungscheckliste",
+        "",
+        (
+            f"Die Execution-Checkliste uebersetzt die Highlevel-View in "
+            f"{execution_checklist['row_count']} Kapitelaufgaben. Erste Aufgabe "
+            f"ist `{execution_checklist['first_task']}`, letzte Aufgabe ist "
+            f"`{execution_checklist['final_task']}`."
+        ),
+        "",
+        *execution_rows,
+        "",
+        (
+            "Die Liste ist kein neues empirisches Ergebnis. Sie zeigt nur, "
+            "welche Kapitel mit welchen Inputs, Done-Kriterien und "
+            "Advisor-Fragen abgearbeitet werden sollen."
+        ),
         "",
         "## Forschungsfrage und Hypothesen",
         "",
@@ -1102,6 +1132,7 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
     highlevel = data["thesis_highlevel"]
     project_highlevel = data["project_highlevel"]
     next_work = data["next_work"]
+    execution_checklist = data["execution_checklist"]
     figures = "\n".join(
         _figure_html(figure, html_output=html_output)
         for figure in data["figures"]
@@ -1151,6 +1182,16 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
         f"<td>{escape(row['guardrail'])}</td>"
         "</tr>"
         for row in next_work["rows"]
+    )
+    execution_rows = "\n".join(
+        "<tr>"
+        f"<td><code>{escape(row['task_id'])}</code></td>"
+        f"<td>{escape(row['chapter_title'])}</td>"
+        f"<td>{escape(row['draft_action_de'])}</td>"
+        f"<td>{escape(row['done_when_de'])}</td>"
+        f"<td>{escape(row['advisor_question_ids'])}</td>"
+        "</tr>"
+        for row in execution_checklist["rows"]
     )
     project_highlevel_rows = "\n".join(
         "<tr>"
@@ -1231,6 +1272,10 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
   <h2>Naechste Arbeitsschritte</h2>
   <p>Der Next-Work-Plan ordnet {next_work['row_count']} Workstreams. Erste Prioritaet ist <code>{escape(next_work['first_workstream'])}</code>, letzte QA-Prioritaet ist <code>{escape(next_work['final_workstream'])}</code>.</p>
   <table><tr><th>Prioritaet</th><th>Workstream</th><th>Naechste Aktion</th><th>Guardrail</th></tr>{next_work_rows}</table>
+
+  <h2>Kapitelweise Umsetzungscheckliste</h2>
+  <p>Die Execution-Checkliste uebersetzt die Highlevel-View in {execution_checklist['row_count']} Kapitelaufgaben. Erste Aufgabe ist <code>{escape(execution_checklist['first_task'])}</code>, letzte Aufgabe ist <code>{escape(execution_checklist['final_task'])}</code>. Sie ist kein neues empirisches Ergebnis, sondern eine Schreib- und Abnahmelogik fuer den naechsten Entwurf.</p>
+  <table><tr><th>Task</th><th>Kapitel</th><th>Schreibaktion</th><th>Fertig wenn</th><th>Advisor-Fragen</th></tr>{execution_rows}</table>
 
   <h2>Forschungsfrage und Design</h2>
   <p>Die Leitfrage lautet, inwiefern Polymarket-Preise Informationen waehrend politischer Ereignisse abbilden, anders als traditionelle Prognosequellen reagieren und ob aggregierte Wallet-Aktivitaet fruehe Timing-Signale zeigt. Informationelle Effizienz wird deshalb nicht direkt behauptet, sondern ueber reproduzierbare Proxies operationalisiert.</p>
@@ -1348,6 +1393,7 @@ def write_docx(data: dict[str, Any], output_path: Path) -> None:
     _add_highlevel_status_section(doc, data["thesis_highlevel"])
     _add_project_highlevel_matrix_section(doc, data["project_highlevel"])
     _add_next_work_section(doc, data["next_work"])
+    _add_execution_checklist_section(doc, data["execution_checklist"])
     _add_research_design_section(doc, data)
     _add_literature_section(doc, data["literature"], data["source_review"])
     _add_methodology_section(doc, data)
@@ -1620,6 +1666,39 @@ def _next_work_report_data(next_work_plan: pd.DataFrame) -> dict[str, Any]:
         "row_count": len(rows),
         "first_workstream": str(ordered.iloc[0]["workstream_id"]),
         "final_workstream": str(ordered.iloc[-1]["workstream_id"]),
+        "rows": rows,
+    }
+
+
+def _execution_checklist_report_data(execution_checklist: pd.DataFrame) -> dict[str, Any]:
+    """Translate chapter execution tasks into advisor-facing rows."""
+
+    required_columns = {
+        "task_id",
+        "chapter_title",
+        "draft_action_de",
+        "done_when_de",
+        "advisor_question_ids",
+    }
+    missing = sorted(required_columns.difference(execution_checklist.columns))
+    if missing:
+        raise ValueError(f"execution checklist missing required columns: {missing}")
+
+    ordered = execution_checklist.sort_values("task_id")
+    rows = [
+        {
+            "task_id": str(row["task_id"]),
+            "chapter_title": str(row["chapter_title"]),
+            "draft_action_de": str(row["draft_action_de"]),
+            "done_when_de": str(row["done_when_de"]),
+            "advisor_question_ids": str(row["advisor_question_ids"]),
+        }
+        for row in ordered.to_dict(orient="records")
+    ]
+    return {
+        "row_count": len(rows),
+        "first_task": rows[0]["task_id"] if rows else "",
+        "final_task": rows[-1]["task_id"] if rows else "",
         "rows": rows,
     }
 
@@ -1995,6 +2074,48 @@ def _add_next_work_section(doc: Document, next_work: dict[str, Any]) -> None:
         (
             "Die naechsten Schritte beginnen mit Source Review und Kapiteldraft. "
             "Swiss, Monitor und Agenten bleiben an ihre jeweiligen Gates gebunden."
+        ),
+    )
+
+
+def _add_execution_checklist_section(
+    doc: Document,
+    execution_checklist: dict[str, Any],
+) -> None:
+    doc.add_heading("Kapitelweise Umsetzungscheckliste", level=1)
+    doc.add_paragraph(
+        f"Die Execution-Checkliste uebersetzt die Highlevel-View in "
+        f"{execution_checklist['row_count']} Kapitelaufgaben. Erste Aufgabe "
+        f"ist `{execution_checklist['first_task']}`, letzte Aufgabe ist "
+        f"`{execution_checklist['final_task']}`. Sie ist kein neues "
+        "empirisches Ergebnis, sondern eine Schreib- und Abnahmelogik fuer "
+        "den naechsten Entwurf."
+    )
+    rows = [
+        (
+            row["task_id"],
+            row["chapter_title"],
+            row["draft_action_de"],
+            row["done_when_de"],
+            row["advisor_question_ids"],
+        )
+        for row in execution_checklist["rows"]
+    ]
+    table = _add_table(
+        doc,
+        rows,
+        ["Task", "Kapitel", "Schreibaktion", "Fertig wenn", "Advisor-Fragen"],
+        [900, 1700, 3000, 2800, 960],
+    )
+    _shade_table_header(table)
+    _add_callout(
+        doc,
+        "Grenze",
+        (
+            "Diese Checkliste reaktiviert keinen Review-Access und keine "
+            "Agenten. Sie steuert nur, wie der bestehende H1-H3-Kern mit "
+            "Quellenreview, Tabellen/Figuren und Advisor-Feedback in "
+            "Thesis-Prosa ueberfuehrt wird."
         ),
     )
 

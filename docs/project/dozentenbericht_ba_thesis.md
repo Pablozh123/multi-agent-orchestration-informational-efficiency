@@ -1,6 +1,6 @@
 # Dozentenbericht zur Bachelorarbeit
 
-Erstellt: 2026-06-12T01:43:31+00:00
+Erstellt: 2026-06-12T02:20:06+00:00
 
 **Arbeitstitel:** Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen.
 
@@ -77,6 +77,23 @@ Der Next-Work-Plan ordnet 10 Workstreams. Erste Prioritaet ist `work_01_source_r
 | 9 | Dozentenfeedback zur Scope-Engfuehrung nutzen | H1-Wording, Source-Review-Tiefe, Swiss-Platzierung und Appendix-Scope klaeren. | Empirischen Scope nicht erweitern, bevor der Kern geschrieben ist. |
 | 10 | Finale Thesis-QA | Tests, Review-Checks, Citation Checks, Tabellen/Figuren und Swiss-Spelling pruefen. | Keine finale Aussage ueber Artefakte und gepruefte Quellen hinaus. |
 
+## Kapitelweise Umsetzungscheckliste
+
+Die Execution-Checkliste uebersetzt die Highlevel-View in 8 Kapitelaufgaben. Erste Aufgabe ist `exec_01_01_intro`, letzte Aufgabe ist `exec_08_08_discussion_conclusion`.
+
+| Task | Kapitel | Schreibaktion | Fertig wenn | Advisor-Fragen |
+| --- | --- | --- | --- | --- |
+| exec_01_01_intro | Einleitung und Forschungsfrage | Forschungsfrage, Scope Polymarket/US-Wahl und Proxy-Logik knapp formulieren. | Forschungsfrage, H1-H3-Logik und Nicht-Ziele sind sichtbar. | advisor_q01_h1_wording; advisor_q08_final_qa |
+| exec_02_02_theory_literature | Theorie und Literatur | EMH, Prognosemaerkte, Event-Study und Wallet-Vorsicht quellengebunden ausarbeiten. | Jede Theorie- und Methodenbehauptung hat eine reviewte Quelle oder bleibt Draft. | advisor_q02_source_depth |
+| exec_03_03_data_method | Daten und Methodik | Datenpipeline, Artefakthierarchie und Python-only-Metrikregel als Methodik schreiben. | Alle Methoden verweisen auf deterministische Artefakte und passende Quellenanker. | advisor_q02_source_depth; advisor_q03_h2_h3_scope |
+| exec_04_04_h1_results | H1: Prognosequalitaet | H1 als begrenzte Polymarket-Stuetze plus klare Grenze der breiten Behauptung schreiben. | Bounded H1-Claim, Gegenbeispiel und Limitation stehen direkt nebeneinander. | advisor_q01_h1_wording; advisor_q04_table_figure_package |
+| exec_05_05_h2_results | H2: Ereignisfenster | H2 als Tagesfensterdiagnostik schreiben und Intraday-Speed ausschliessen. | Ereignisse, Tagesfenster und Tagesfrequenz-Limitation sind transparent. | advisor_q03_h2_h3_scope; advisor_q04_table_figure_package |
+| exec_06_06_h3_results | H3: Wallet-Timing | H3 als dataset-relative Timingdiagnostik schreiben, nicht als Kausal- oder Private-Information-Claim. | BUY-only, Tagesaggregation, Mehrfachtests und Nicht-Profitabilitaet sind genannt. | advisor_q03_h2_h3_scope; advisor_q04_table_figure_package |
+| exec_07_07_extensions | Erweiterungen: Monitor und Schweizer Abstimmung | Monitor als Prototyp und Swiss als Side-Track knapp platzieren. | Review-Access bleibt pausiert und Swiss traegt keine finale Effizienzaussage. | advisor_q05_monitor_appendix; advisor_q06_swiss_gate |
+| exec_08_08_discussion_conclusion | Diskussion, Limitationen und Fazit | Fazit als begrenzte Evidenz fuer H1-H3 schreiben und Agenten nur als Future Work fuehren. | Keine finale Aussage geht ueber deterministische Artefakte und reviewte Quellen hinaus. | advisor_q07_agent_outlook; advisor_q08_final_qa |
+
+Die Liste ist kein neues empirisches Ergebnis. Sie zeigt nur, welche Kapitel mit welchen Inputs, Done-Kriterien und Advisor-Fragen abgearbeitet werden sollen.
+
 ## Forschungsfrage und Hypothesen
 
 Die Leitfrage lautet, inwiefern Polymarket-Preise Informationen waehrend politischer Ereignisse abbilden, schneller oder anders als traditionelle Prognosequellen reagieren und ob aggregierte Wallet-Aktivitaet als frueher Timing-Indikator sichtbar wird.
@@ -124,7 +141,7 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 | H2 Event-Windows | Polymarket bewegt sich um mehrere kuratierte politische Ereignisse sichtbar in der Tagesauflosung. | 7 kuratierte Ereignisse; groesstes Primaerfenster nach Betrag: 07_13_trump_shooting +7.2 Prozentpunkte. | Das stuetzt eine These, dass oeffentliche Ereignisse in den Marktpreisen sichtbar werden koennen. | Taegliche Daten zeigen Reaktionsrichtung und Groessenordnung, aber keine intraday Reaktionsgeschwindigkeit. |
 | H3 Wallet-Timing | Top-Wallet-Tier-Aktivitaet zeigt eine messbare, aber vorsichtig zu formulierende Timing-Struktur. | 1216 alignierte Modellzeilen; staerkste Korrelation tier_1_top_1pct lag 1 = 0.1858; kleinster Granger-p-Wert 0.0012. | Das ist als Vorhersage-/Timingdiagnostik verwendbar und motiviert weitere Sensitivitaetschecks. | BUY-only Quelle, Tagesaggregation und Multiple-Testing-Risiko begrenzen die Aussage. |
 | Monitor und Review-Queue | Der Monitor hat die richtige Rolle als Kontroll- und Review-Infrastruktur, nicht als Ergebnisgenerator fuer starke Claims. | 3 aktuelle Review-Cases, davon 1 high und 2 medium; Status source_check_pending=3. | Die Review-Queue ist methodisch wichtig, weil sie auffaellige Faelle von thesis-faehiger Evidenz trennt. | Die Queue ist kein Nachweis fuer Ursachen, Regelverstoss, Handelbarkeit, Profitabilitaet oder zukuenftige Entwicklung. |
-| Swiss-Referendum Side-Track | Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen. | 7 Umfragen, 28 Polymarket-Snapshots; latest Polymarket Yes 22.0%, latest poll Yes 45.0%, raw gap -23.0 pp. | Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen. | Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung. |
+| Swiss-Referendum Side-Track | Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen. | 7 Umfragen, 29 Polymarket-Snapshots; latest Polymarket Yes 22.0%, latest poll Yes 45.0%, raw gap -23.0 pp. | Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen. | Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung. |
 
 ## Warum dieses Vorgehen methodisch sinnvoll ist
 
@@ -139,10 +156,10 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Projektstruktur
 
 - SQLite-Datenbank: 9 Tabellen.
-- Ergebnisartefakte: 323 Dateien unter `data/results`.
-- Analyse-Module: 77 Dateien.
+- Ergebnisartefakte: 327 Dateien unter `data/results`.
+- Analyse-Module: 78 Dateien.
 - Collector-Module: 10 Dateien.
-- Tests: 96 Testdateien; letzter Status: 505 passed in 48.37s.
+- Tests: 100 Testdateien; letzter Status: 513 passed in 49.26s.
 
 ## H1 - Forecast-Qualitaet
 
@@ -220,7 +237,7 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Schweizer Referendum
 
 - Kuratierte Umfragen: 7.
-- Polymarket snapshots: 28.
+- Polymarket snapshots: 29.
 - Bounded price-history rows: 504.
 - Latest Polymarket Yes: 22.0 Prozent.
 - Latest matched poll Yes: 45.0 Prozent.

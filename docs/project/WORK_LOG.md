@@ -11624,3 +11624,48 @@ Verification:
   -> PASS, no Swiss sharp-s found.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `584 passed in 60.46s`, clean after the content commit.
+
+## 2026-06-12 - Chapter source-review checklist refreshed after overview
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Refreshed the chapter-level checklist so literature-review and final-citation
+  gates explicitly require the Manual Source Review Follow-up Overview before
+  Ledger updates or final citations.
+
+Changes:
+
+- Updated `operations/project/build_chapter_source_review_checklist.py`.
+- Regenerated `data/results/thesis_chapter_source_review_checklist.csv` and
+  `docs/project/THESIS_CHAPTER_SOURCE_REVIEW_CHECKLIST.md`.
+- Updated `tests/test_chapter_source_review_checklist.py`.
+- Updated `GOAL.md` and `ROADMAP.md` so the next content step is refreshing
+  the H1-H2-H3 Drafting Checklist after the overview.
+
+Key output:
+
+- Checklist rows: 18.
+- Bounded draft ready rows: 18.
+- Final submission ready rows: 0.
+- Final blocked source-review rows: 3.
+- Pending manual source-review rows: 3.
+- Future documentation-only rows: 3.
+- Literature-review and final-citation check rows now reference the Manual
+  Source Review Follow-up Overview and Overview-/Ledger-Abgleich.
+- Latest content commit:
+  `774d7c1 docs: refresh chapter source review checklist after overview`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_chapter_source_review_checklist.py tests\test_chapter_source_review_checklist.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_chapter_source_review_checklist.py -q`
+  -> PASS, 2 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_chapter_source_review_checklist`
+  -> PASS, generated checklist CSV/Markdown.
+- `git diff --check` -> PASS.
+- `rg -n "<sharp-s>" GOAL.md ROADMAP.md docs\project\THESIS_CHAPTER_SOURCE_REVIEW_CHECKLIST.md data\results\thesis_chapter_source_review_checklist.csv operations\project\build_chapter_source_review_checklist.py tests\test_chapter_source_review_checklist.py`
+  -> PASS, no Swiss sharp-s found.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `584 passed in 66.10s`, clean after the content commit.

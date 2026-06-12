@@ -36,18 +36,23 @@ def test_generate_source_gated_thesis_drafting_pass_writes_paragraph_rows(
     assert "manual_source_review_execution" in "\n".join(drafting["drafting_pass_id"])
     joined = "\n".join(drafting.fillna("").astype(str).agg(" ".join, axis=1).tolist()).lower()
     assert "manual source review" in joined
+    assert "manual source review follow-up overview" in joined
+    assert "overview-/ledger-abgleich" in joined
     assert "page-/section-note" in joined
     assert "claim-support" in joined
     assert "blocked-wording" in joined
     assert "citation-use" in joined
     assert "wenige gute tabellen" in joined
     assert "keine finale zitation" in joined
+    assert "keine quellenstatus-hochstufung" in joined
     assert "nicht final-submission-ready" in joined
     assert "llm_audit_log" in joined
     assert "H1-H2-H3 Source-Gated Thesis Drafting Pass" in doc
     assert "Drafting rows: 15" in doc
     assert "Manual execution rows linked once per chapter: 6" in doc
     assert "Final submission ready rows: 0" in doc
+    assert "Manual Source Review Follow-up Overview" in doc
+    assert "Overview-/Ledger-Abgleich" in doc
     assert chr(223) not in doc
 
 
@@ -129,7 +134,12 @@ def _writing_pass(
         "result_paragraph_de": f"{area}: Resultat nutzt wenige gute Tabellen.",
         "interpretation_paragraph_de": f"{area}: Interpretation bleibt bounded.",
         "table_figure_paragraph_de": f"{area}: Tabelle/Figur statt Rohartefakt-Dumps.",
-        "source_gate_paragraph_de": f"{area}: Keine finale Zitation ohne Source Review.",
+        "source_gate_paragraph_de": (
+            f"{area}: Keine finale Zitation ohne Source Review. "
+            "Manual Source Review Follow-up Overview pruefen; "
+            "Overview-/Ledger-Abgleich vor Citation Gate dokumentieren. "
+            "Keine Quellenstatus-Hochstufung aus dem Draft."
+        ),
         "future_agent_boundary_de": (
             f"{area}: keine Runtime-Agenten; llm_audit_log vor spaeterer Nutzung."
         ),

@@ -236,7 +236,9 @@ acceptance_criteria:
   has a paragraph-level writing sequence for method/result setup,
   interpretation/limitation, table/figure integration, manual Source Review
   execution, final gates, and future-agent boundaries while linking the 23
-  manual Source Review rows and preserving 0 final-submission-ready rows.
+  manual Source Review rows and preserving 0 final-submission-ready rows. It
+  now keeps the Manual Source Review Follow-up Overview-/Ledger-Abgleich
+  visible in all review-action and finalgate rows.
 - The main thesis chapter draft contains Source-Gated Integration blocks for
   H1, H2, and H3, so each empirical chapter now shows method binding,
   interpretation binding, literature IDs, deterministic artifacts, source
@@ -262,7 +264,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: refresh source gated thesis drafting pass after overview
+next_commit: docs: refresh thesis chapter draft after overview
 
 ## Running Side Goal
 

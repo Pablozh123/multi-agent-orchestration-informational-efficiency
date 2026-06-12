@@ -328,6 +328,8 @@ def _validate_drafting_pass(drafting_pass: pd.DataFrame, *, repo_root: Path) -> 
     required_terms = (
         "source-gated",
         "manual source review",
+        "manual source review follow-up overview",
+        "overview-/ledger-abgleich",
         "page-/section-note",
         "claim-support",
         "blocked-wording",
@@ -344,6 +346,25 @@ def _validate_drafting_pass(drafting_pass: pd.DataFrame, *, repo_root: Path) -> 
         raise ValueError(
             "Source-gated thesis drafting pass missing required terms: " + ", ".join(missing)
         )
+    for area, area_rows in drafting_pass.groupby("thesis_area"):
+        gate_text = "\n".join(
+            area_rows[["paragraph_seed_de", "source_review_action_de", "final_gate_de"]]
+            .astype(str)
+            .agg(" ".join, axis=1)
+            .tolist()
+        ).lower()
+        gate_terms = (
+            "manual source review follow-up overview",
+            "overview-/ledger-abgleich",
+            "keine finale zitation",
+            "keine quellenstatus-hochstufung",
+        )
+        missing_gate_terms = [term for term in gate_terms if term not in gate_text]
+        if missing_gate_terms:
+            raise ValueError(
+                f"Source-gated thesis drafting pass missing source-gate terms for {area}: "
+                + ", ".join(missing_gate_terms)
+            )
 
 
 def _render_drafting_pass_doc(drafting_pass: pd.DataFrame) -> str:
@@ -368,7 +389,9 @@ def _render_drafting_pass_doc(drafting_pass: pd.DataFrame) -> str:
         "Dieser Pass ist eine paragraphenweise BA-Schreibreihenfolge fuer H1, "
         "H2 und H3. Er nutzt nur den bestehenden Source-Gated Writing Pass und "
         "die Manual Source Review Execution-Liste. Er liest keine Quelleninhalte, "
-        "berechnet keine Kennzahlen und ersetzt keine finale Source Review.\n",
+        "berechnet keine Kennzahlen und ersetzt keine finale Source Review. "
+        "Der Manual Source Review Follow-up Overview-/Ledger-Abgleich bleibt "
+        "in den Review- und Finalgate-Zeilen sichtbar.\n",
         "## Counts\n",
         f"- Drafting rows: {len(drafting_pass)}\n",
         f"- H1 rows: {int(area_counts.get('H1', 0))}\n",
@@ -410,7 +433,8 @@ def _render_drafting_pass_doc(drafting_pass: pd.DataFrame) -> str:
             "H1-H2-H3 Thesis-Draft. Jede Zeile bleibt source-gated: Evidence "
             "IDs, Literatur-IDs, deterministische Artefakte, wenige gute "
             "Tabellen/Figuren, Manual Source Review, Page-/Section-Note, "
-            "Claim-Support, Blocked-Wording und Citation-Use bleiben sichtbar. "
+            "Claim-Support, Blocked-Wording, Citation-Use und Manual Source "
+            "Review Follow-up Overview-/Ledger-Abgleich bleiben sichtbar. "
             "Keine finale Zitation, keine Quellenstatus-Hochstufung, keine "
             "Rohartefakt-Dumps, keine neuen Kennzahlen, keine Runtime-Agenten, "
             "kein MCP, kein Model Routing, keine LLM-Metriken und keine "
@@ -446,7 +470,9 @@ def _paragraph_seed(
         return (
             f"Manual Source Review fuer dieses Kapitel: {manual_count} Execution-Zeilen, "
             f"{manual_pending} pending. Page-/Section-Note, Claim-Support, "
-            "Blocked-Wording und Citation-Use muessen manuell gesetzt werden."
+            "Blocked-Wording und Citation-Use muessen manuell gesetzt werden. "
+            "Der Manual Source Review Follow-up Overview-/Ledger-Abgleich ist "
+            "vor Ledger-Entscheidungen zu pruefen."
         )
     if section_id == "final_boundary_and_future_agents":
         return (
@@ -481,6 +507,7 @@ def _writer_action(
     if section_id == "manual_source_review_execution":
         return (
             f"{area}: Manual Source Review Execution Pass abarbeiten und "
+            "Manual Source Review Follow-up Overview-/Ledger-Abgleich, "
             "Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen."
         )
     if section_id == "final_boundary_and_future_agents":
@@ -500,8 +527,10 @@ def _source_review_action(
 ) -> str:
     return (
         f"{area}: Manual Source Review hat {manual_count} rows, {manual_pending} pending "
-        f"und {manual_final_ready} final-ready. Keine finale Zitation und keine "
-        "Quellenstatus-Hochstufung ohne vollstaendige manuelle Entscheidung."
+        f"und {manual_final_ready} final-ready. Manual Source Review Follow-up "
+        "Overview-/Ledger-Abgleich bleibt vor jeder Entscheidung sichtbar. "
+        "Keine finale Zitation und keine Quellenstatus-Hochstufung ohne "
+        "vollstaendige manuelle Entscheidung."
     )
 
 
@@ -516,8 +545,9 @@ def _final_gate(*, area: str, source_coverage_gap_rows: int, manual_final_ready:
     return (
         f"{area}: Source-Coverage-Gaps {source_coverage_gap_rows}; final-ready "
         f"Manual-Execution rows {manual_final_ready}. Bounded Draft ja, aber nicht "
-        "final-submission-ready. Keine finale Zitation, keine Rohartefakt-Dumps, "
-        "keine Runtime-Agenten und keine LLM-Metriken."
+        "final-submission-ready. Manual Source Review Follow-up Overview-/Ledger-"
+        "Abgleich vor Citation Gate sichtbar halten. Keine finale Zitation, "
+        "keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken."
     )
 
 

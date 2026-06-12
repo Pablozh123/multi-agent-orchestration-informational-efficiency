@@ -1,6 +1,6 @@
 # H1-H2-H3 Source-Gated Thesis Drafting Pass
 
-Dieser Pass ist eine paragraphenweise BA-Schreibreihenfolge fuer H1, H2 und H3. Er nutzt nur den bestehenden Source-Gated Writing Pass und die Manual Source Review Execution-Liste. Er liest keine Quelleninhalte, berechnet keine Kennzahlen und ersetzt keine finale Source Review.
+Dieser Pass ist eine paragraphenweise BA-Schreibreihenfolge fuer H1, H2 und H3. Er nutzt nur den bestehenden Source-Gated Writing Pass und die Manual Source Review Execution-Liste. Er liest keine Quelleninhalte, berechnet keine Kennzahlen und ersetzt keine finale Source Review. Der Manual Source Review Follow-up Overview-/Ledger-Abgleich bleibt in den Review- und Finalgate-Zeilen sichtbar.
 
 ## Counts
 
@@ -53,7 +53,7 @@ Im Abschnitt `H1: Prognosequalitaet` wird H1 ueber die Methode `method_h1_brier_
 
 Writer action: H1: Methoden- und Resultatabsatz aus dem Source-Gated Writing Pass in den BA-Entwurf uebernehmen; Evidence IDs sichtbar halten.
 
-Gate: H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
+Gate: H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
 
 ### 2. Interpretation und Limitation setzen
 
@@ -61,7 +61,7 @@ Die Interpretation fuer H1 lautet begrenzt: Polymarket darf nur in klar definier
 
 Writer action: H1: Interpretation nur bounded formulieren und Limitation direkt nach dem Resultat platzieren.
 
-Gate: H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
+Gate: H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
 
 ### 3. Tabelle und Figur einbauen
 
@@ -69,23 +69,23 @@ Die Ergebnisdarstellung fuer H1 nutzt nur die kuratierten Package-Items T2 (tab:
 
 Writer action: H1: Nur Tabelle T2 und Abbildung F1 einbauen; keine Rohartefakt-Dumps.
 
-Gate: H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
+Gate: H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
 
 ### 4. Manual Source Review ausfuehren
 
-Manual Source Review fuer dieses Kapitel: 10 Execution-Zeilen, 10 pending. Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use muessen manuell gesetzt werden.
+Manual Source Review fuer dieses Kapitel: 10 Execution-Zeilen, 10 pending. Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use muessen manuell gesetzt werden. Der Manual Source Review Follow-up Overview-/Ledger-Abgleich ist vor Ledger-Entscheidungen zu pruefen.
 
-Writer action: H1: Manual Source Review Execution Pass abarbeiten und Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen.
+Writer action: H1: Manual Source Review Execution Pass abarbeiten und Manual Source Review Follow-up Overview-/Ledger-Abgleich, Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen.
 
-Gate: H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
+Gate: H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
 
 ### 5. Finalgate und Future-Agent-Grenze setzen
 
-Das Zitationsgate fuer H1 bleibt sichtbar: H1: 10 Source-Review-Zeilen im Ledger; 10 pending; 0 final-ready. Keine finale Zitation ohne abgeschlossene manuelle Review. Vor finaler Zitation Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use je Quelle dokumentieren. Im Handoff stehen 10 Source-Review-Zeilen, davon 10 pending und 0 final-ready. Der Source-Coverage-Audit weist 10 Quellenlinks, 4 eindeutige Source-IDs und 0 Coverage-Gaps fuer dieses Kapitel aus. Keine finale Zitation und keine Quellenstatus-Hochstufung erfolgen aus diesem Draft. Die Agenten-Grenze fuer H1 bleibt Future Work: Agentenstatus bleibt `future_documentation_only`: keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken; spaeter nur mit separatem Goal, Tests, bounded inputs, max 50 rows und llm_audit_log. Der Abschnitt darf nur als Pipeline-Ausblick formuliert werden; keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken, kein Rohdaten-Prompt und keine Trading-Pfade. Keine Runtime-Agenten, kein MCP, kein Model Routing und keine LLM-Metriken.
+Das Zitationsgate fuer H1 bleibt sichtbar: H1: 10 Source-Review-Zeilen im Ledger und in der Manual Source Review Follow-up Overview; 10 pending; 0 final-ready. Keine finale Zitation ohne abgeschlossene manuelle Review. Detailstart: docs\project\THESIS_H1_MANUAL_SOURCE_REVIEW_FOLLOWUP.md und data\results\thesis_h1_manual_source_review_followup.csv. Vor finaler Zitation Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use je Quelle dokumentieren. Manual Source Review Follow-up Overview und Overview-/Ledger-Abgleich fuer H1: H1: 10 Source-Review-Zeilen im Ledger und in der Manual Source Review Follow-up Overview; 10 pending; 0 final-ready. Keine finale Zitation ohne abgeschlossene manuelle Review. Detailstart: docs\project\THESIS_H1_MANUAL_SOURCE_REVIEW_FOLLOWUP.md und data\results\thesis_h1_manual_source_review_followup.csv. Vor finaler Zitation Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use je Quelle dokumentieren. H1: 10 Ledger-Zeilen; 10 pending; 0 final-ready; Manual Source Review Follow-up Overview: 10 Review-Zeilen, 10 pending, 0 final-ready; Detailstart `docs\project\THESIS_H1_MANUAL_SOURCE_REVIEW_FOLLOWUP.md`; Literatur IDs `lit_brier_001; lit_dm_001; lit_emh_001; zotero_poly_002`. Erst nach abgeschlossener manueller Review und Overview-/Ledger-Abgleich finale Zitation formatieren. Manual Source Review Follow-up Overview pruefen; danach Page-/Section-Note, Claim-Support, Blocked-Wording, Citation-Use, Reviewer und Kommentar pro Quelle im Ledger erfassen. Der Manual Source Review Follow-up Overview-/Ledger-Abgleich bleibt vor Ledger-Entscheiden, Quellenstatus-Aenderungen und finaler Zitation sichtbar. Im Handoff stehen 10 Source-Review-Zeilen, davon 10 pending und 0 final-ready. Der Source-Coverage-Audit weist 10 Quellenlinks, 4 eindeutige Source-IDs und 0 Coverage-Gaps fuer dieses Kapitel aus. Keine finale Zitation und keine Quellenstatus-Hochstufung erfolgen aus diesem Draft. Die Agenten-Grenze fuer H1 bleibt Future Work: Agentenstatus bleibt `future_documentation_only`: keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken; spaeter nur mit separatem Goal, Tests, bounded inputs, max 50 rows und llm_audit_log. Der Abschnitt darf nur als Pipeline-Ausblick formuliert werden; keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken, kein Rohdaten-Prompt und keine Trading-Pfade. Keine Runtime-Agenten, kein MCP, kein Model Routing und keine LLM-Metriken.
 
 Writer action: H1: Finalgate sichtbar lassen und Agenten nur als Future-Work-Grenze mit llm_audit_log-Vorbedingung erwaehnen.
 
-Gate: H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
+Gate: H1: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
 
 ## H2: Tagesbasierte Ereignisfenster
 
@@ -105,7 +105,7 @@ Im Abschnitt `H2: Tagesbasierte Ereignisfenster` wird H2 ueber die Methode `meth
 
 Writer action: H2: Methoden- und Resultatabsatz aus dem Source-Gated Writing Pass in den BA-Entwurf uebernehmen; Evidence IDs sichtbar halten.
 
-Gate: H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
+Gate: H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
 
 ### 7. Interpretation und Limitation setzen
 
@@ -113,7 +113,7 @@ Die Interpretation fuer H2 lautet begrenzt: Die Ergebnisse zeigen oeffentliche E
 
 Writer action: H2: Interpretation nur bounded formulieren und Limitation direkt nach dem Resultat platzieren.
 
-Gate: H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
+Gate: H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
 
 ### 8. Tabelle und Figur einbauen
 
@@ -121,23 +121,23 @@ Die Ergebnisdarstellung fuer H2 nutzt nur die kuratierten Package-Items T3 (tab:
 
 Writer action: H2: Nur Tabelle T3 und Abbildung F2 einbauen; keine Rohartefakt-Dumps.
 
-Gate: H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
+Gate: H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
 
 ### 9. Manual Source Review ausfuehren
 
-Manual Source Review fuer dieses Kapitel: 5 Execution-Zeilen, 5 pending. Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use muessen manuell gesetzt werden.
+Manual Source Review fuer dieses Kapitel: 5 Execution-Zeilen, 5 pending. Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use muessen manuell gesetzt werden. Der Manual Source Review Follow-up Overview-/Ledger-Abgleich ist vor Ledger-Entscheidungen zu pruefen.
 
-Writer action: H2: Manual Source Review Execution Pass abarbeiten und Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen.
+Writer action: H2: Manual Source Review Execution Pass abarbeiten und Manual Source Review Follow-up Overview-/Ledger-Abgleich, Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen.
 
-Gate: H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
+Gate: H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
 
 ### 10. Finalgate und Future-Agent-Grenze setzen
 
-Das Zitationsgate fuer H2 bleibt sichtbar: H2: 5 Source-Review-Zeilen im Ledger; 5 pending; 0 final-ready. Keine finale Zitation ohne abgeschlossene manuelle Review. Vor finaler Zitation Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use je Quelle dokumentieren. Im Handoff stehen 5 Source-Review-Zeilen, davon 5 pending und 0 final-ready. Der Source-Coverage-Audit weist 5 Quellenlinks, 3 eindeutige Source-IDs und 0 Coverage-Gaps fuer dieses Kapitel aus. Keine finale Zitation und keine Quellenstatus-Hochstufung erfolgen aus diesem Draft. Die Agenten-Grenze fuer H2 bleibt Future Work: Agentenstatus bleibt `future_documentation_only`: keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken; spaeter nur mit separatem Goal, Tests, bounded inputs, max 50 rows und llm_audit_log. Der Abschnitt darf nur als Pipeline-Ausblick formuliert werden; keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken, kein Rohdaten-Prompt und keine Trading-Pfade. Keine Runtime-Agenten, kein MCP, kein Model Routing und keine LLM-Metriken.
+Das Zitationsgate fuer H2 bleibt sichtbar: H2: 5 Source-Review-Zeilen im Ledger und in der Manual Source Review Follow-up Overview; 5 pending; 0 final-ready. Keine finale Zitation ohne abgeschlossene manuelle Review. Detailstart: docs\project\THESIS_H2_MANUAL_SOURCE_REVIEW_FOLLOWUP.md und data\results\thesis_h2_manual_source_review_followup.csv. Vor finaler Zitation Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use je Quelle dokumentieren. Manual Source Review Follow-up Overview und Overview-/Ledger-Abgleich fuer H2: H2: 5 Source-Review-Zeilen im Ledger und in der Manual Source Review Follow-up Overview; 5 pending; 0 final-ready. Keine finale Zitation ohne abgeschlossene manuelle Review. Detailstart: docs\project\THESIS_H2_MANUAL_SOURCE_REVIEW_FOLLOWUP.md und data\results\thesis_h2_manual_source_review_followup.csv. Vor finaler Zitation Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use je Quelle dokumentieren. H2: 5 Ledger-Zeilen; 5 pending; 0 final-ready; Manual Source Review Follow-up Overview: 5 Review-Zeilen, 5 pending, 0 final-ready; Detailstart `docs\project\THESIS_H2_MANUAL_SOURCE_REVIEW_FOLLOWUP.md`; Literatur IDs `lit_eventstudy_001; lit_emh_001; zotero_poly_001`. Erst nach abgeschlossener manueller Review und Overview-/Ledger-Abgleich finale Zitation formatieren. Manual Source Review Follow-up Overview pruefen; danach Page-/Section-Note, Claim-Support, Blocked-Wording, Citation-Use, Reviewer und Kommentar pro Quelle im Ledger erfassen. Der Manual Source Review Follow-up Overview-/Ledger-Abgleich bleibt vor Ledger-Entscheiden, Quellenstatus-Aenderungen und finaler Zitation sichtbar. Im Handoff stehen 5 Source-Review-Zeilen, davon 5 pending und 0 final-ready. Der Source-Coverage-Audit weist 5 Quellenlinks, 3 eindeutige Source-IDs und 0 Coverage-Gaps fuer dieses Kapitel aus. Keine finale Zitation und keine Quellenstatus-Hochstufung erfolgen aus diesem Draft. Die Agenten-Grenze fuer H2 bleibt Future Work: Agentenstatus bleibt `future_documentation_only`: keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken; spaeter nur mit separatem Goal, Tests, bounded inputs, max 50 rows und llm_audit_log. Der Abschnitt darf nur als Pipeline-Ausblick formuliert werden; keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken, kein Rohdaten-Prompt und keine Trading-Pfade. Keine Runtime-Agenten, kein MCP, kein Model Routing und keine LLM-Metriken.
 
 Writer action: H2: Finalgate sichtbar lassen und Agenten nur als Future-Work-Grenze mit llm_audit_log-Vorbedingung erwaehnen.
 
-Gate: H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
+Gate: H2: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
 
 ## H3: Wallet-Timing-Diagnostik
 
@@ -157,7 +157,7 @@ Im Abschnitt `H3: Wallet-Timing-Diagnostik` wird H3 ueber die Methode `method_h3
 
 Writer action: H3: Methoden- und Resultatabsatz aus dem Source-Gated Writing Pass in den BA-Entwurf uebernehmen; Evidence IDs sichtbar halten.
 
-Gate: H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
+Gate: H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
 
 ### 12. Interpretation und Limitation setzen
 
@@ -165,7 +165,7 @@ Die Interpretation fuer H3 lautet begrenzt: Top-tier Wallet-Aktivitaet ist eine 
 
 Writer action: H3: Interpretation nur bounded formulieren und Limitation direkt nach dem Resultat platzieren.
 
-Gate: H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
+Gate: H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
 
 ### 13. Tabelle und Figur einbauen
 
@@ -173,24 +173,24 @@ Die Ergebnisdarstellung fuer H3 nutzt nur die kuratierten Package-Items T4 (tab:
 
 Writer action: H3: Nur Tabelle T4 und Abbildung F3 einbauen; keine Rohartefakt-Dumps.
 
-Gate: H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
+Gate: H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
 
 ### 14. Manual Source Review ausfuehren
 
-Manual Source Review fuer dieses Kapitel: 8 Execution-Zeilen, 8 pending. Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use muessen manuell gesetzt werden.
+Manual Source Review fuer dieses Kapitel: 8 Execution-Zeilen, 8 pending. Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use muessen manuell gesetzt werden. Der Manual Source Review Follow-up Overview-/Ledger-Abgleich ist vor Ledger-Entscheidungen zu pruefen.
 
-Writer action: H3: Manual Source Review Execution Pass abarbeiten und Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen.
+Writer action: H3: Manual Source Review Execution Pass abarbeiten und Manual Source Review Follow-up Overview-/Ledger-Abgleich, Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use erfassen.
 
-Gate: H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
+Gate: H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
 
 ### 15. Finalgate und Future-Agent-Grenze setzen
 
-Das Zitationsgate fuer H3 bleibt sichtbar: H3: 8 Source-Review-Zeilen im Ledger; 8 pending; 0 final-ready. Keine finale Zitation ohne abgeschlossene manuelle Review. Vor finaler Zitation Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use je Quelle dokumentieren. Im Handoff stehen 8 Source-Review-Zeilen, davon 8 pending und 0 final-ready. Der Source-Coverage-Audit weist 8 Quellenlinks, 4 eindeutige Source-IDs und 0 Coverage-Gaps fuer dieses Kapitel aus. Keine finale Zitation und keine Quellenstatus-Hochstufung erfolgen aus diesem Draft. Die Agenten-Grenze fuer H3 bleibt Future Work: Agentenstatus bleibt `future_documentation_only`: keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken; spaeter nur mit separatem Goal, Tests, bounded inputs, max 50 rows und llm_audit_log. Der Abschnitt darf nur als Pipeline-Ausblick formuliert werden; keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken, kein Rohdaten-Prompt und keine Trading-Pfade. Keine Runtime-Agenten, kein MCP, kein Model Routing und keine LLM-Metriken.
+Das Zitationsgate fuer H3 bleibt sichtbar: H3: 8 Source-Review-Zeilen im Ledger und in der Manual Source Review Follow-up Overview; 8 pending; 0 final-ready. Keine finale Zitation ohne abgeschlossene manuelle Review. Detailstart: docs\project\THESIS_H3_MANUAL_SOURCE_REVIEW_FOLLOWUP.md und data\results\thesis_h3_manual_source_review_followup.csv. Vor finaler Zitation Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use je Quelle dokumentieren. Manual Source Review Follow-up Overview und Overview-/Ledger-Abgleich fuer H3: H3: 8 Source-Review-Zeilen im Ledger und in der Manual Source Review Follow-up Overview; 8 pending; 0 final-ready. Keine finale Zitation ohne abgeschlossene manuelle Review. Detailstart: docs\project\THESIS_H3_MANUAL_SOURCE_REVIEW_FOLLOWUP.md und data\results\thesis_h3_manual_source_review_followup.csv. Vor finaler Zitation Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use je Quelle dokumentieren. H3: 8 Ledger-Zeilen; 8 pending; 0 final-ready; Manual Source Review Follow-up Overview: 8 Review-Zeilen, 8 pending, 0 final-ready; Detailstart `docs\project\THESIS_H3_MANUAL_SOURCE_REVIEW_FOLLOWUP.md`; Literatur IDs `zotero_poly_001; zotero_poly_005; zotero_poly_007; lit_granger_001`. Erst nach abgeschlossener manueller Review und Overview-/Ledger-Abgleich finale Zitation formatieren. Manual Source Review Follow-up Overview pruefen; danach Page-/Section-Note, Claim-Support, Blocked-Wording, Citation-Use, Reviewer und Kommentar pro Quelle im Ledger erfassen. Der Manual Source Review Follow-up Overview-/Ledger-Abgleich bleibt vor Ledger-Entscheiden, Quellenstatus-Aenderungen und finaler Zitation sichtbar. Im Handoff stehen 8 Source-Review-Zeilen, davon 8 pending und 0 final-ready. Der Source-Coverage-Audit weist 8 Quellenlinks, 4 eindeutige Source-IDs und 0 Coverage-Gaps fuer dieses Kapitel aus. Keine finale Zitation und keine Quellenstatus-Hochstufung erfolgen aus diesem Draft. Die Agenten-Grenze fuer H3 bleibt Future Work: Agentenstatus bleibt `future_documentation_only`: keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken; spaeter nur mit separatem Goal, Tests, bounded inputs, max 50 rows und llm_audit_log. Der Abschnitt darf nur als Pipeline-Ausblick formuliert werden; keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken, kein Rohdaten-Prompt und keine Trading-Pfade. Keine Runtime-Agenten, kein MCP, kein Model Routing und keine LLM-Metriken.
 
 Writer action: H3: Finalgate sichtbar lassen und Agenten nur als Future-Work-Grenze mit llm_audit_log-Vorbedingung erwaehnen.
 
-Gate: H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
+Gate: H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Bounded Draft ja, aber nicht final-submission-ready. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten. Keine finale Zitation, keine Rohartefakt-Dumps, keine Runtime-Agenten und keine LLM-Metriken.
 
 ## Use Rule
 
-Nutze diesen Pass als konkrete Reihenfolge fuer den naechsten H1-H2-H3 Thesis-Draft. Jede Zeile bleibt source-gated: Evidence IDs, Literatur-IDs, deterministische Artefakte, wenige gute Tabellen/Figuren, Manual Source Review, Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use bleiben sichtbar. Keine finale Zitation, keine Quellenstatus-Hochstufung, keine Rohartefakt-Dumps, keine neuen Kennzahlen, keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade.
+Nutze diesen Pass als konkrete Reihenfolge fuer den naechsten H1-H2-H3 Thesis-Draft. Jede Zeile bleibt source-gated: Evidence IDs, Literatur-IDs, deterministische Artefakte, wenige gute Tabellen/Figuren, Manual Source Review, Page-/Section-Note, Claim-Support, Blocked-Wording, Citation-Use und Manual Source Review Follow-up Overview-/Ledger-Abgleich bleiben sichtbar. Keine finale Zitation, keine Quellenstatus-Hochstufung, keine Rohartefakt-Dumps, keine neuen Kennzahlen, keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade.

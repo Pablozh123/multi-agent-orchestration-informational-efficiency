@@ -897,6 +897,9 @@ Current implemented consolidation:
   Manual Source Review execution, final gates, and future-agent boundaries.
   The pass links all 23 Manual Source Review execution rows, keeps all 15
   drafting rows bounded-draft-ready, and keeps 0 rows final-submission-ready.
+  Review-action and finalgate rows now keep the Manual Source Review
+  Follow-up Overview-/Ledger-Abgleich visible before final citation or
+  source-status changes.
 - `docs/research/THESIS_CHAPTER_DRAFT.md` now integrates that source-gated
   pass directly into the empirical BA draft. H1, H2, and H3 each show
   `Source-Gated Integration` blocks with method binding, interpretation

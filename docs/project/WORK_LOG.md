@@ -11767,3 +11767,56 @@ Verification:
   missing LibreOffice/`soffice`.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `584 passed in 65.79s (0:01:05)`, clean after the content commit.
+
+## 2026-06-12 - Final gate, agent safety case, and goal audit refreshed
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Kept Review-Access paused and kept runtime agents, MCP, model routing, and
+  unlogged LLM interpretation deferred.
+- Preserved the Swiss referendum track as descriptive data collection until
+  the official 14 June 2026 result is available.
+
+Changes:
+
+- Refreshed the thesis final gate board after the latest Swiss running-track
+  update and committed it as
+  `cdb3500 docs: refresh final gate board after swiss update`.
+- Added the future agent-pipeline safety case and committed it as
+  `4c6ca78 docs: add agent pipeline safety case`.
+- Refreshed the goal-completion audit so it now cites the safety case and
+  committed it as
+  `77ea15e docs: refresh goal completion audit after safety case`.
+
+Key output:
+
+- Final gate board now shows 45 Swiss Polymarket snapshots, latest Yes price
+  0.265, and the Swiss gate remains `final_blocked_official_result`.
+- Agent safety case contains 7 rows: 6 documentation-only rows, 1 deferred row,
+  and 0 active runtime rows.
+- Safety case binds future agent ideas to 4 thesis-facing methods, 4
+  thesis-facing interpretations, 23 H1-H2-H3 Source-Links, 31 total
+  method/interpretation Source-Links including Monitor/Swiss, 23 open Manual
+  Source Review rows, 5 core tables, 4 core figures, Swiss/result gates,
+  DOCX-QA, bounded access, max 50 rows, `llm_audit_log`, and no runtime
+  activation.
+- Goal-completion audit now separates achieved consolidation evidence from
+  remaining final gates and includes the safety case as deferred proof.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_final_gate_board.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_agent_pipeline_safety_case.py tests\test_thesis_consolidation_index.py tests\test_thesis_final_gate_board.py -q`
+  -> PASS, 8 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_goal_completion_audit.py tests\test_agent_pipeline_safety_case.py -q`
+  -> PASS, 5 passed.
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_agent_pipeline_safety_case.py operations\project\build_thesis_consolidation_index.py operations\project\build_thesis_goal_completion_audit.py tests\test_agent_pipeline_safety_case.py tests\test_thesis_consolidation_index.py tests\test_thesis_goal_completion_audit.py`
+  -> PASS.
+- `git diff --check` on the changed final-gate, safety-case, and goal-audit
+  files -> PASS, with expected CRLF warnings only.
+- `rg -n "<sharp-s>"` on the touched thesis-facing files -> PASS, no Swiss
+  sharp-s found.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `587 passed in 64.14s (0:01:04)`.

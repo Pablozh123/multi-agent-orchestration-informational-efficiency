@@ -11713,3 +11713,57 @@ Verification:
   -> PASS, no Swiss sharp-s found.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `584 passed in 61.47s`, clean after the content commit.
+
+## 2026-06-12 - Dozentenbericht highlevel path refreshed after overview
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Left Review-Access paused and refreshed the advisor-facing highlevel path:
+  Advisor-Feedback, Manual Source Review Follow-up Overview-/Ledger-Abgleich,
+  H1-H3 prose, compact tables/figures, Swiss result gate, and final DOCX QA.
+
+Changes:
+
+- Committed Swiss running side-track refresh separately:
+  `8f74379 data: refresh swiss referendum running track`.
+- Updated `operations/project/build_dozenten_report.py` so Markdown, HTML, and
+  DOCX carry the paused Review-Access path and Overview-/Ledger-Abgleich.
+- Regenerated `docs/project/dozentenbericht_ba_thesis.md`,
+  `docs/project/dozentenbericht_ba_thesis.html`, and
+  `docs/project/dozentenbericht_ba_thesis.docx`.
+- Updated `tests/test_dozenten_report.py`.
+- Committed the advisor report refresh:
+  `298c7ff docs: refresh dozenten report after overview`.
+
+Key output:
+
+- Swiss running track now has 45 Polymarket snapshots; latest Polymarket Yes
+  26.5%, latest matched poll Yes 45.0%, raw gap -18.5 pp.
+- Dozentenbericht now shows 12 handoff files, including the Manual Source
+  Review Follow-up Overview.
+- Source-Gated H1-H2-H3 Drafting Sequence remains 15 paragraph steps,
+  23 linked Manual Source Review rows, 23 pending rows, 0 final-ready rows.
+- Review-Access remains paused; no source-status promotion, no final citation,
+  no runtime agents, no MCP, no model routing, and no LLM metrics were added.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_auto_refresh.py tests\test_swiss_referendum_refresh.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_polymarket.py -q`
+  -> PASS, 32 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_dozenten_report.py -q`
+  -> PASS, 1 passed.
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_dozenten_report.py tests\test_dozenten_report.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, generated Markdown, HTML, DOCX, and 43 figures.
+- `git diff --check` on the changed report files -> PASS.
+- `rg -n "<sharp-s>" docs\project\dozentenbericht_ba_thesis.md operations\project\build_dozenten_report.py tests\test_dozenten_report.py`
+  -> PASS, no Swiss sharp-s found.
+- DOCX structural QA is covered by `tests/test_dozenten_report.py` through ZIP,
+  media, and document XML checks.
+- Visual DOCX render QA could not be completed because
+  `render_docx.py` failed with `FileNotFoundError: [WinError 2]`, indicating
+  missing LibreOffice/`soffice`.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `584 passed in 65.79s (0:01:05)`, clean after the content commit.

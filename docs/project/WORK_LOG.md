@@ -11489,3 +11489,47 @@ Verification:
   -> PASS, no Swiss sharp-s found.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `584 passed in 57.35s`, clean after the content commit.
+
+## 2026-06-12 - Advisor source-review follow-up refreshed after overview
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Refreshed the post-handoff source-review plan so it now uses the Manual
+  Source Review Follow-up Overview as compact control point before H1-H2-H3
+  Ledger decisions.
+
+Changes:
+
+- Updated `operations/project/build_advisor_source_review_followup.py`.
+- Regenerated `data/results/thesis_advisor_source_review_followup.csv` and
+  `docs/project/THESIS_ADVISOR_SOURCE_REVIEW_FOLLOWUP.md`.
+- Updated `tests/test_advisor_source_review_followup.py`.
+- Updated `GOAL.md` and `ROADMAP.md` so the next content step is refreshing
+  the Source Review Progress Protocol after the overview.
+
+Key output:
+
+- Follow-up rows: 8.
+- Manual Source Review rows: 23.
+- Manual Source Review pending rows: 23.
+- Manual Source Review final-ready rows: 0.
+- Manual Source Review Follow-up Overview rows: 3.
+- Unique H1-H2-H3 source IDs: 9.
+- Final-submission-ready follow-up rows: 1.
+- Latest content commit:
+  `3d93340 docs: refresh advisor source review follow-up after overview`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_advisor_source_review_followup.py tests\test_advisor_source_review_followup.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_advisor_source_review_followup.py -q`
+  -> PASS, 2 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_advisor_source_review_followup`
+  -> PASS, generated follow-up CSV/Markdown.
+- `git diff --check` -> PASS.
+- `rg -n "<sharp-s>" GOAL.md ROADMAP.md docs\project\THESIS_ADVISOR_SOURCE_REVIEW_FOLLOWUP.md data\results\thesis_advisor_source_review_followup.csv operations\project\build_advisor_source_review_followup.py tests\test_advisor_source_review_followup.py`
+  -> PASS, no Swiss sharp-s found.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `584 passed in 59.42s`, clean after the content commit.

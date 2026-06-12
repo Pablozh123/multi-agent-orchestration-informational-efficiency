@@ -11195,7 +11195,7 @@ Verification:
 - `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
   -> PASS, index rows now 43.
 - `git diff --check` -> PASS.
-- `rg -n "ß" docs\project\THESIS_ADVISOR_SOURCE_REVIEW_FOLLOWUP.md data\results\thesis_advisor_source_review_followup.csv operations\project\build_advisor_source_review_followup.py tests\test_advisor_source_review_followup.py`
+- `rg -n "<sharp-s>" docs\project\THESIS_ADVISOR_SOURCE_REVIEW_FOLLOWUP.md data\results\thesis_advisor_source_review_followup.csv operations\project\build_advisor_source_review_followup.py tests\test_advisor_source_review_followup.py`
   -> PASS, no Swiss sharp-s found.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `576 passed in 61.37s`, clean after the content commit.
@@ -11245,7 +11245,7 @@ Verification:
 - `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
   -> PASS, index rows now 44.
 - `git diff --check` -> PASS.
-- `rg -n "ß" docs\project\THESIS_H1_MANUAL_SOURCE_REVIEW_FOLLOWUP.md data\results\thesis_h1_manual_source_review_followup.csv operations\project\build_h1_manual_source_review_followup.py tests\test_h1_manual_source_review_followup.py`
+- `rg -n "<sharp-s>" docs\project\THESIS_H1_MANUAL_SOURCE_REVIEW_FOLLOWUP.md data\results\thesis_h1_manual_source_review_followup.csv operations\project\build_h1_manual_source_review_followup.py tests\test_h1_manual_source_review_followup.py`
   -> PASS, no Swiss sharp-s found.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `578 passed in 66.91s`, clean after the content commit.
@@ -12188,7 +12188,57 @@ Verification:
   -> PASS, 12 passed.
 - `.\.venv\Scripts\python.exe -m py_compile operations\project\build_h1_h2_h3_decision_queue_overview.py operations\project\build_thesis_consolidation_index.py tests\test_h1_h2_h3_decision_queue_overview.py tests\test_thesis_consolidation_index.py`
   -> PASS.
-- `rg -n "ß" ...` on touched files -> PASS, no matches.
+- `rg -n "<sharp-s>" ...` on touched files -> PASS, no matches.
 - `git diff --check` -> PASS.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `595 passed in 61.17s (0:01:01)`.
+
+## 2026-06-13 - H1-H2-H3 Decision Queue Ledger Alignment
+
+Goal context:
+
+- Continued active goal `goal-thesis-consolidation-001`.
+- Worked on the next scoped commit:
+  `docs: align decision queue overview with source review ledger`.
+- Kept the work deterministic and structural: no source-content reading, no
+  Claim-Support decision, no final citation, no source-status promotion, and
+  no runtime-agent activation.
+
+Changes:
+
+- Added `operations.project.build_h1_h2_h3_decision_queue_ledger_alignment`.
+- Generated
+  `data/results/thesis_h1_h2_h3_decision_queue_ledger_alignment.csv`.
+- Generated
+  `docs/project/THESIS_H1_H2_H3_DECISION_QUEUE_LEDGER_ALIGNMENT.md`.
+- Extended the consolidation index to 53 artifacts.
+- Updated `GOAL.md` and `ROADMAP.md` with the new alignment control point.
+- Committed the content slice as
+  `0369a93 docs: align decision queue overview with source review ledger`.
+
+Key output:
+
+- Alignment rows: 3.
+- Total decision queue rows: 23.
+- Total ledger rows: 23.
+- Matched rows: 23.
+- Queue rows missing ledger: 0.
+- Ledger rows missing queue: 0.
+- Field mismatch rows: 0.
+- Queue final-ready rows: 0.
+- Ledger final-ready rows: 0.
+- Queue source-status change rows: 0.
+- Ledger source-status change rows: 0.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_h2_h3_decision_queue_ledger_alignment.py -q`
+  -> PASS, 2 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_source_review_decision_queue.py tests\test_h2_source_review_decision_queue.py tests\test_h3_source_review_decision_queue.py tests\test_h1_h2_h3_decision_queue_overview.py tests\test_h1_h2_h3_decision_queue_ledger_alignment.py tests\test_source_review_progress_ledger.py tests\test_h1_h2_h3_manual_source_review_execution_pass.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 16 passed.
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_h1_h2_h3_decision_queue_ledger_alignment.py operations\project\build_h1_h2_h3_decision_queue_overview.py operations\project\build_source_review_progress_ledger.py operations\project\build_thesis_consolidation_index.py tests\test_h1_h2_h3_decision_queue_ledger_alignment.py tests\test_thesis_consolidation_index.py`
+  -> PASS.
+- `rg -n "<sharp-s>" ...` on touched files -> PASS, no matches.
+- `git diff --check` -> PASS.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `597 passed in 65.58s (0:01:05)`.

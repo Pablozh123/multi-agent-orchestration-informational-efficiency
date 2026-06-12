@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-06-13 01:19
+Generated: 2026-06-13 01:31
 
 Current goal: `goal-thesis-consolidation-001` - Consolidate thesis-ready evidence, results, and future agent design
 
@@ -11,11 +11,11 @@ Current roadmap phase: Phase 12: Thesis Consolidation And Evidence Mapping
 
 Test status: PASS
 
-Pytest summary: `595 passed in 61.17s (0:01:01)`
+Pytest summary: `597 passed in 65.58s (0:01:05)`
 
 Git branch: `main`
 
-Latest commit: `05a0b7c`
+Latest commit: `0369a93`
 
 Git status:
 
@@ -36,7 +36,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: align decision queue overview with source review ledger
+- docs: add ledger citation gate summary
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

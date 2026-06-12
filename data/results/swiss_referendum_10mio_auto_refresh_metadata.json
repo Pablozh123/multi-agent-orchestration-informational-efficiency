@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-06-11T23:04:19+00:00",
+  "generated_at_utc": "2026-06-12T00:04:16+00:00",
   "limitations": {
     "each_invocation_collects_at_most_one_snapshot": true,
     "no_causal_claim_from_refresh": true,
@@ -28,7 +28,7 @@
   },
   "refresh_result": {
     "comparison_path": "data\\results\\swiss_referendum_10mio_comparison.csv",
-    "comparison_row_count": 26,
+    "comparison_row_count": 27,
     "dashboard_path": "data\\results\\swiss_referendum_10mio_dashboard.html",
     "figure_path": "data\\results\\swiss_referendum_10mio_efficiency.png",
     "history_path": "data\\results\\swiss_referendum_10mio_polymarket_price_history.csv",
@@ -46,17 +46,17 @@
     "poll_reaction_windows_path": "data\\results\\swiss_referendum_10mio_poll_reaction_windows.csv",
     "reaction_figure_path": "data\\results\\swiss_referendum_10mio_reaction_windows.png",
     "running_status_path": "data\\results\\swiss_referendum_10mio_running_status.json",
-    "snapshot_row_count": 26,
+    "snapshot_row_count": 27,
     "snapshots_path": "data\\results\\swiss_referendum_10mio_polymarket_snapshots.csv",
     "source_audit_path": "data\\results\\swiss_referendum_10mio_source_audit.csv",
     "summary_path": "data\\results\\swiss_referendum_10mio_latest_summary.md"
   },
   "status": {
-    "latest_snapshot_at_utc": "2026-06-11T23:04:19Z",
+    "latest_snapshot_at_utc": "2026-06-12T00:04:16Z",
     "message": "Collected one bounded read-only refresh and exited.",
     "refreshed": true,
     "snapshot_age_minutes": 0.0,
-    "snapshot_row_count": 26,
+    "snapshot_row_count": 27,
     "status": "refreshed"
   }
 }

@@ -10450,3 +10450,51 @@ Verification:
   -> PASS, generated 38 indexed artifacts.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 564 passed in 52.87s.
+
+## 2026-06-12 - Method/interpretation source coverage audit
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Strengthened the literature and deterministic-artifact mapping for every
+  method and interpretation before the H1-H2-H3 writing pass.
+- Kept the work deterministic: no source-content interpretation, no automatic
+  source-status promotion, no Review-Access expansion, no agents, no MCP, no
+  LLM metrics, and no trading paths.
+
+Changes:
+
+- Added `operations/project/build_method_interpretation_source_coverage.py`.
+- Generated `data/results/thesis_method_interpretation_source_coverage.csv`.
+- Generated `docs/project/THESIS_METHOD_INTERPRETATION_SOURCE_COVERAGE.md`.
+- Added `tests/test_method_interpretation_source_coverage.py`.
+- Updated the consolidation index so the new coverage audit is navigable.
+- Updated the goal-completion audit so source-coverage counts are part of the
+  active-goal audit evidence.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Coverage rows: 31.
+- Thesis-facing H1-H2-H3 coverage rows: 23.
+- Unique source IDs: 11.
+- Coverage gap rows: 0.
+- H1 thesis-facing source links: 10.
+- H2 thesis-facing source links: 5.
+- H3 thesis-facing source links: 8.
+- All thesis-facing links remain final-review-pending, not final-citation-ready.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_method_interpretation_source_coverage.py operations/project/build_thesis_consolidation_index.py operations/project/build_thesis_goal_completion_audit.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_method_interpretation_source_coverage.py tests/test_thesis_consolidation_index.py tests/test_thesis_goal_completion_audit.py -q`
+  -> PASS, 6 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_method_interpretation_source_coverage`
+  -> PASS, generated 31 coverage rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 39 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
+  -> PASS, generated 10 audit rows.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 566 passed in 52.26s.

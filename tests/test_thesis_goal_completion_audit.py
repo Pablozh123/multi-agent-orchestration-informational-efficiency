@@ -34,6 +34,8 @@ def test_generate_goal_completion_audit_writes_remaining_gates(tmp_path: Path) -
     assert "THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md" in doc
     assert "thesis_method_interpretation_traceability.csv" in doc
     assert "thesis_result_package_traceability.csv" in doc
+    assert "thesis_method_interpretation_source_coverage.csv" in doc
+    assert "THESIS_METHOD_INTERPRETATION_SOURCE_COVERAGE.md" in doc
     assert "thesis_h1_h2_h3_core_sections.csv" in doc
     assert "THESIS_H1_H2_H3_CORE_SECTIONS.md" in doc
     assert "thesis_source_review_chapter_handoff.csv" in doc
@@ -77,6 +79,7 @@ def test_goal_completion_audit_keeps_open_gates_visible(tmp_path: Path) -> None:
     assert "source-status changes erlaubt: 0" in joined
     assert "source progress protocol: 6 zeilen in 6 bereichen" in joined
     assert "traceability: 1 methoden, 1 interpretationen, 0 gaps" in joined
+    assert "source coverage: 3 links; thesis-facing: 3; unique sources: 2; h1: 3; h2: 0; h3: 0; coverage gaps: 0" in joined
     assert "traceability-kernpaket: 5 tabellen, 4 figuren, 0 gaps" in joined
     assert "h1-h2-h3 core sections: 3 zeilen (h1; h2; h3)" in joined
     assert "chapter handoff: 3 kapitel; coverage-ready: 3; review rows: 3; pending: 3; final-ready: 0" in joined
@@ -210,6 +213,13 @@ def _write_fixture(root: Path) -> None:
     ).to_csv(results / "thesis_method_interpretation_traceability.csv", index=False)
     pd.DataFrame(
         [
+            _source_coverage("method_h1", "H1", "source_a"),
+            _source_coverage("method_h1", "H1", "source_b"),
+            _source_coverage("interpretation_h1", "H1", "source_a"),
+        ]
+    ).to_csv(results / "thesis_method_interpretation_source_coverage.csv", index=False)
+    pd.DataFrame(
+        [
             {
                 "package_type": "table",
                 "include_in_core_package": True,
@@ -337,6 +347,7 @@ def _write_fixture(root: Path) -> None:
         "docs/project/THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md",
         "docs/project/THESIS_SOURCE_REVIEW_PROGRESS_LEDGER.md",
         "docs/project/THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md",
+        "docs/project/THESIS_METHOD_INTERPRETATION_SOURCE_COVERAGE.md",
         "docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md",
         "docs/project/THESIS_SOURCE_REVIEW_CHAPTER_HANDOFF.md",
         "docs/project/THESIS_CHAPTER_SOURCE_REVIEW_CHECKLIST.md",
@@ -374,6 +385,28 @@ def _source_note(note_id: str, area: str, table: str, figure: str) -> dict[str, 
         "note_status": "pending_manual_source_review",
         "selected_table": table,
         "selected_figure": figure,
+    }
+
+
+def _source_coverage(evidence_id: str, area: str, source_id: str) -> dict[str, object]:
+    return {
+        "coverage_id": f"coverage_{evidence_id}_{source_id}",
+        "evidence_id": evidence_id,
+        "thesis_area": area,
+        "item_type": "method" if evidence_id.startswith("method") else "interpretation",
+        "thesis_readiness": "thesis_facing_ready",
+        "source_id": source_id,
+        "source_known_in_literature_index": True,
+        "source_status": "skimmed",
+        "source_relevance": "high",
+        "final_citation_readiness": "needs_full_source_review_before_final_citation",
+        "primary_artifact": "data/results/thesis_core_results_table.csv",
+        "primary_artifact_exists": True,
+        "supporting_artifact_count": 1,
+        "supporting_artifact_exists_count": 1,
+        "limitation_present": True,
+        "coverage_status": "source_mapped_final_review_pending",
+        "thesis_use_gate_de": "Draft nutzbar; keine finale Zitation ohne manuelle Source Review.",
     }
 
 

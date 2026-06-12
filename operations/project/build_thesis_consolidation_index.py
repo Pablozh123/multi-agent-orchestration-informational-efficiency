@@ -350,6 +350,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine finalen Zitationen ohne manuelle Quellenreview und keine neuen Kennzahlen.",
         ),
         _index_row(
+            artifact_id="index_32_method_interpretation_source_coverage",
+            artifact_type="method_interpretation_source_coverage",
+            path="docs/project/THESIS_METHOD_INTERPRETATION_SOURCE_COVERAGE.md; data/results/thesis_method_interpretation_source_coverage.csv",
+            purpose_de="Flaches Coverage-Audit fuer jede Methoden-/Interpretationsquelle gegen Literaturindex und deterministisches Primaerartefakt.",
+            use_now_de="Vor BA-Schreiben und Dozentenfeedback-Follow-up pruefen, ob jede Methode und Interpretation Quellen-/Artefaktbindung behaelt.",
+            gate_or_limit_de="Keine Quellenstatus-Hochstufung, keine Quelleninhaltsinterpretation und keine finale Zitation aus diesem Audit.",
+        ),
+        _index_row(
             artifact_id="index_33_h1_h2_h3_core_sections",
             artifact_type="core_writing_package",
             path="docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md; data/results/thesis_h1_h2_h3_core_sections.csv",
@@ -465,8 +473,8 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "H1-H2-H3 Source Review Notes, Source Review Progress Ledger, "
         "Source Review Progress Protocol, Source Review Chapter Handoff, "
         "Chapter Source Review Checklist, H1-H2-H3 Drafting Checklist, "
-        "H1-H2-H3 Bounded Chapter Draft, Thesis Final Gate Board, Traceability Audit, H1-H2-H3 Core Sections, Agent Pipeline Upgrade "
-        "Plan, Goal Completion Audit, Agent Future-Work Handoff, Agent Pipeline Control Audit, Tabellen/Figuren und "
+        "H1-H2-H3 Bounded Chapter Draft, Thesis Final Gate Board, Traceability Audit, Method/Interpretation Source Coverage, "
+        "H1-H2-H3 Core Sections, Agent Pipeline Upgrade Plan, Goal Completion Audit, Agent Future-Work Handoff, Agent Pipeline Control Audit, Tabellen/Figuren und "
         "Future-Work-Agenten relevant sind.\n\n"
         "## Counts\n\n"
         f"- Indexed artifacts: {len(index)}\n\n"
@@ -492,6 +500,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "als kapitelweise Uebergabe fuer H1-H2-H3 und die Chapter Source "
         "Review Checklist als Abhakliste. Nutze die H1-H2-H3 Drafting Checklist "
         "als konkrete Schreibreihenfolge und den H1-H2-H3 Bounded Chapter Draft als Prosa-Bausteine fuer den empirischen Kern. Nutze das Thesis Final Gate Board als Highlevel-Stop-/Go-Kontrolle. Nutze den Traceability Audit als BA-Schreibkontrolle. "
+        "Nutze die Method/Interpretation Source Coverage als flachen Literaturindex- und Artefaktcheck vor jedem H1-H3-Schreibpass. "
         "Nutze die H1-H2-H3 Core Sections als Schreibkern und den Agent "
         "Pipeline Upgrade Plan nur als Future-Work-Gedanke. Nutze das Goal Completion Audit als Stop- und "
         "Weiterarbeitskontrolle. Nutze danach Execution Checklist, Source "

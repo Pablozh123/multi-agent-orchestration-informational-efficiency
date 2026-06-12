@@ -834,6 +834,12 @@ Current implemented consolidation:
   methods, interpretations, tables, and figures: 4 thesis-facing methods,
   4 thesis-facing interpretations, 5 core tables, and 4 core figures, all
   still gated by manual Source Review before final citation.
+- `data/results/thesis_method_interpretation_source_coverage.csv` and
+  `docs/project/THESIS_METHOD_INTERPRETATION_SOURCE_COVERAGE.md` flatten the
+  literature/source coverage for methods and interpretations: 31 source links,
+  23 thesis-facing H1-H2-H3 links, 11 unique source IDs, and 0 coverage gaps.
+  H1 has 10 thesis-facing links, H2 has 5, and H3 has 8; all remain
+  final-review-pending rather than final-citation-ready.
 - `data/results/thesis_h1_h2_h3_core_sections.csv` and
   `docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md` translate the H1-H2-H3
   empirical core into three thesis-ready section rows: each row binds

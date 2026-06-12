@@ -19,9 +19,9 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     doc = result.docs_path.read_text(encoding="utf-8")
 
     assert tuple(index.columns) == INDEX_COLUMNS
-    assert result.index_rows == 38
+    assert result.index_rows == 39
     assert "Thesis Consolidation Index" in doc
-    assert "Indexed artifacts: 38" in doc
+    assert "Indexed artifacts: 39" in doc
     assert "dozentenbericht_ba_thesis.docx" in doc
     assert "THESIS_ADVISOR_HANDOFF_PACKAGE.md" in doc
     assert "DOZENTEN_UEBERGABE_TEXT.md" in doc
@@ -40,6 +40,7 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     assert "THESIS_H1_H2_H3_DRAFTING_CHECKLIST.md" in doc
     assert "THESIS_FINAL_GATE_BOARD.md" in doc
     assert "THESIS_TRACEABILITY_AUDIT.md" in doc
+    assert "THESIS_METHOD_INTERPRETATION_SOURCE_COVERAGE.md" in doc
     assert "THESIS_H1_H2_H3_CORE_SECTIONS.md" in doc
     assert "THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md" in doc
     assert "THESIS_GOAL_COMPLETION_AUDIT.md" in doc
@@ -78,6 +79,7 @@ def test_thesis_consolidation_index_keeps_deferred_boundaries(tmp_path: Path) ->
     assert "h1_h2_h3_bounded_chapter_draft" in joined
     assert "final_gate_board" in joined
     assert "traceability_audit" in joined
+    assert "method_interpretation_source_coverage" in joined
     assert "h1_h2_h3_core_sections" in joined
     assert "agent_pipeline_upgrade_plan" in joined
     assert "agent_pipeline_control" in joined
@@ -146,6 +148,8 @@ def _write_fixture(root: Path) -> None:
         "docs/project/THESIS_TRACEABILITY_AUDIT.md",
         "data/results/thesis_method_interpretation_traceability.csv",
         "data/results/thesis_result_package_traceability.csv",
+        "docs/project/THESIS_METHOD_INTERPRETATION_SOURCE_COVERAGE.md",
+        "data/results/thesis_method_interpretation_source_coverage.csv",
         "docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md",
         "data/results/thesis_h1_h2_h3_core_sections.csv",
         "docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md",

@@ -126,6 +126,10 @@ acceptance_criteria:
 - A traceability audit exists so thesis-facing methods, interpretations,
   tables, and figures are checked against deterministic artifacts, literature
   IDs, limitations, captions, and final source-review gates before BA writing.
+- A method/interpretation source coverage audit exists so every method and
+  interpretation link is checked against `literature_index.csv`, citation
+  readiness, deterministic primary artifacts, limitations, and remaining
+  Source Review gates before BA writing.
 - A H1-H2-H3 core writing package exists so each empirical core section binds
   methods, interpretations, literature IDs, deterministic artifacts, selected
   tables, selected figures, limitations, blocked wording, and Source Review
@@ -173,7 +177,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: verify method interpretation source coverage against literature index
+next_commit: docs: integrate source coverage gates into h1 h2 h3 writing pass
 
 ## Running Side Goal
 

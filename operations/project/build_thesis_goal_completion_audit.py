@@ -76,6 +76,7 @@ def generate_goal_completion_audit(
     )
     method_traceability = _read_csv(results_dir / "thesis_method_interpretation_traceability.csv")
     result_package_traceability = _read_csv(results_dir / "thesis_result_package_traceability.csv")
+    source_coverage = _read_csv(results_dir / "thesis_method_interpretation_source_coverage.csv")
     core_sections = _read_csv(results_dir / "thesis_h1_h2_h3_core_sections.csv")
     agent_control = _read_csv(results_dir / "thesis_agent_pipeline_control_audit.csv")
     agent_upgrade = _read_csv(results_dir / "thesis_agent_pipeline_upgrade_plan.csv")
@@ -101,6 +102,7 @@ def generate_goal_completion_audit(
         h1_h2_h3_bounded_chapter_draft=h1_h2_h3_bounded_chapter_draft,
         method_traceability=method_traceability,
         result_package_traceability=result_package_traceability,
+        source_coverage=source_coverage,
         core_sections=core_sections,
         agent_control=agent_control,
         agent_upgrade=agent_upgrade,
@@ -143,6 +145,7 @@ def build_goal_completion_audit(
     h1_h2_h3_bounded_chapter_draft: pd.DataFrame,
     method_traceability: pd.DataFrame,
     result_package_traceability: pd.DataFrame,
+    source_coverage: pd.DataFrame,
     core_sections: pd.DataFrame,
     agent_control: pd.DataFrame,
     agent_upgrade: pd.DataFrame,
@@ -266,6 +269,18 @@ def build_goal_completion_audit(
         "result package traceability",
     )
     _require_columns(
+        source_coverage,
+        (
+            "thesis_area",
+            "thesis_readiness",
+            "source_id",
+            "coverage_status",
+            "source_known_in_literature_index",
+            "primary_artifact_exists",
+        ),
+        "method interpretation source coverage",
+    )
+    _require_columns(
         core_sections,
         (
             "hypothesis",
@@ -367,6 +382,16 @@ def build_goal_completion_audit(
     traceability_gap_count = int(
         (method_traceability["traceability_status"] == "traceability_gap").sum()
     )
+    source_coverage_thesis_facing = source_coverage[
+        source_coverage["thesis_readiness"] == "thesis_facing_ready"
+    ]
+    source_coverage_rows = int(len(source_coverage))
+    source_coverage_thesis_rows = int(len(source_coverage_thesis_facing))
+    source_coverage_unique_sources = int(source_coverage["source_id"].nunique())
+    source_coverage_gaps = int((source_coverage["coverage_status"] == "coverage_gap").sum())
+    source_coverage_area_counts = (
+        source_coverage_thesis_facing["thesis_area"].value_counts().to_dict()
+    )
     package_gap_count = int(
         (result_package_traceability["package_traceability_status"] == "package_traceability_gap").sum()
     )
@@ -447,7 +472,7 @@ def build_goal_completion_audit(
             audit_id="goal_audit_02_evidence_map",
             goal_requirement_de="Methoden und Interpretationen sind auf Artefakte und Quellen gemappt.",
             current_status="draft_ready_final_source_review_pending",
-            evidence_artifacts="data/results/thesis_evidence_map.csv; data/results/thesis_citation_readiness.csv; data/results/thesis_source_access_audit.csv; data/results/thesis_source_structure_inventory.csv; data/results/thesis_source_review_decision_packets.csv; data/results/thesis_h1_h2_h3_source_review_notes.csv; docs/project/THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md; data/results/thesis_source_review_progress_ledger.csv; docs/project/THESIS_SOURCE_REVIEW_PROGRESS_LEDGER.md; data/results/thesis_source_review_progress_protocol.csv; docs/project/THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md; data/results/thesis_method_interpretation_traceability.csv",
+            evidence_artifacts="data/results/thesis_evidence_map.csv; data/results/thesis_citation_readiness.csv; data/results/thesis_source_access_audit.csv; data/results/thesis_source_structure_inventory.csv; data/results/thesis_source_review_decision_packets.csv; data/results/thesis_h1_h2_h3_source_review_notes.csv; docs/project/THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md; data/results/thesis_source_review_progress_ledger.csv; docs/project/THESIS_SOURCE_REVIEW_PROGRESS_LEDGER.md; data/results/thesis_source_review_progress_protocol.csv; docs/project/THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md; data/results/thesis_method_interpretation_traceability.csv; data/results/thesis_method_interpretation_source_coverage.csv; docs/project/THESIS_METHOD_INTERPRETATION_SOURCE_COVERAGE.md",
             key_evidence_de=(
                 f"Thesis-facing Evidence: {len(thesis_facing)} Zeilen; "
                 f"Methoden: {method_rows}; Interpretationen: {interpretation_rows}; "
@@ -468,7 +493,13 @@ def build_goal_completion_audit(
                 f"source-status changes erlaubt: {ledger_status_change_allowed}. "
                 f"Source Progress Protocol: {protocol_rows} Zeilen in {protocol_areas} Bereichen. "
                 f"Traceability: {traceable_methods} Methoden, {traceable_interpretations} Interpretationen, "
-                f"{traceability_gap_count} Gaps."
+                f"{traceability_gap_count} Gaps. "
+                f"Source Coverage: {source_coverage_rows} Links; thesis-facing: "
+                f"{source_coverage_thesis_rows}; unique sources: {source_coverage_unique_sources}; "
+                f"H1: {int(source_coverage_area_counts.get('H1', 0))}; "
+                f"H2: {int(source_coverage_area_counts.get('H2', 0))}; "
+                f"H3: {int(source_coverage_area_counts.get('H3', 0))}; "
+                f"coverage gaps: {source_coverage_gaps}."
             ),
             remaining_gap_de="Finale Zitationsreife bleibt vom manuellen Source Review abhaengig.",
             next_action_de="Priority-1-Quellen mit Seiten- oder Abschnittsnotizen pruefen.",

@@ -9355,6 +9355,38 @@ Verification:
   -> PASS, generated 15 inventory rows.
 - `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
   -> PASS, generated 10 audit rows.
+
+## 2026-06-12 - Swiss referendum running snapshot update
+
+Goal context:
+
+- Continued the running Swiss referendum data-collection side track.
+- Kept the output descriptive until the official 14 June 2026 result is
+  available.
+- Did not add a final efficiency, mispricing, causality, tradeability, or
+  market-completeness claim.
+
+Changes:
+
+- Preserved the latest auto-refresh output under `data/results/` as a bounded
+  running snapshot.
+- Updated comparison, latest-source summary, dashboard, metadata, Polymarket
+  snapshot/history outputs, and the local running-status artifact.
+
+Key output:
+
+- Latest snapshot: 2026-06-12T16:04:17Z.
+- Snapshot rows: 43.
+- Latest Polymarket Yes probability: 21.5%.
+- Latest SRG/gfs.bern raw Yes gap: -23.5 pp.
+- Latest SRG/gfs.bern decided Yes gap: -24.9 pp.
+- Valuation scope remains
+  `descriptive_latest_source_poll_proxy_not_true_mispricing_or_trade_signal`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_auto_refresh.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_refresh.py -q`
+  -> PASS, 32 passed.
 - `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
   -> PASS, generated 24 indexed artifacts.
 - `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`

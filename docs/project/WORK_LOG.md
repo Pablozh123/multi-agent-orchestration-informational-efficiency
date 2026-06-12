@@ -8816,6 +8816,48 @@ Verification:
 - `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
   -> PASS, recommends reviewing one coherent docs/data/automation slice.
 
+## 2026-06-12 - Chapter source bindings
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Added a chapter-level binding matrix so each planned BA chapter can be
+  checked against Evidence IDs, source IDs, review tasks, artifacts, tables,
+  figures, limitations, and writing gates.
+
+Changes:
+
+- Added `operations/project/build_chapter_source_bindings.py`.
+- Generated `data/results/thesis_chapter_source_bindings.csv`.
+- Added `docs/project/THESIS_CHAPTER_SOURCE_BINDINGS.md`.
+- Added `tests/test_chapter_source_bindings.py`.
+- Updated the thesis consolidation index to include the binding matrix.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Chapter binding rows: 8.
+- Chapters with source mapping: 8.
+- H1, H2, H3, Swiss/Monitor, and discussion chapters now show their source
+  IDs and source-review gates explicitly.
+- The matrix keeps final thesis claims blocked until Human Review, artifact
+  references, limitations, and Wording Guard are satisfied.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_chapter_source_bindings.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_chapter_source_bindings`
+  -> PASS, generated 8 chapter binding rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 16 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 519 passed in 49.71s.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> PASS, 519 passed in 48.88s.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+  -> PASS, recommends reviewing one coherent docs/data/automation slice.
+
 ## 2026-06-12 - Agent future-work handoff
 
 Goal context:

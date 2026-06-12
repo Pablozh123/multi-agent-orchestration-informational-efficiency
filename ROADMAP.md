@@ -644,6 +644,10 @@ Current implemented consolidation:
 - `data/results/thesis_chapter_plan.csv` maps the BA chapter structure to
   curated tables, figures, evidence IDs, artifacts, limitations, and next
   writing actions.
+- `data/results/thesis_chapter_source_bindings.csv` and
+  `docs/project/THESIS_CHAPTER_SOURCE_BINDINGS.md` bind each planned BA
+  chapter to Evidence IDs, source IDs, source-review tasks, primary artifacts,
+  table/figure items, source gates, and writing gates.
 - `data/results/thesis_agent_pipeline_roadmap.csv` defines documentation-only
   future agent stages and their activation gates.
 - `data/results/thesis_agent_assistance_protocol.csv` and
@@ -708,9 +712,9 @@ Current implemented consolidation:
   `docs/project/THESIS_CONSOLIDATION_INDEX.md` index the current
   consolidation deliverables so the Dozentenbericht, advisor checklist,
   highlevel view, work plan, execution checklist, source worksheet, source
-  review execution guide, agent future-work handoff, wording guard,
-  table/figure captions, chapter draft, source review plan, agent protocol,
-  status, and work log are easy to navigate.
+  review execution guide, chapter source bindings, agent future-work handoff,
+  wording guard, table/figure captions, chapter draft, source review plan,
+  agent protocol, status, and work log are easy to navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,

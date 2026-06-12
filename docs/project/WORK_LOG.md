@@ -9819,3 +9819,32 @@ Verification:
   -> PASS, generated 27 indexed artifacts.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 541 passed in 52.85s.
+
+## 2026-06-12 - High-level project steering
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Kept Review-Access work paused and did not start another monitor, MCP,
+  agent, or source-access implementation slice.
+- Confirmed the project path from the existing high-level view: advisor
+  feedback, manual source-review decisions, H1-H2-H3 core writing,
+  table/figure integration, Swiss result gate, and final QA.
+
+Changes:
+
+- Refreshed `STATUS.md` after commit `f65a1fe`.
+- Updated the next recommended commit in `GOAL.md` to the next thesis-writing
+  slice.
+
+Key output:
+
+- Latest clean evidence commit before this status slice:
+  `f65a1fe docs: add source review decision packets`.
+- Working direction: no more Review-Access expansion now; move from
+  consolidation control artifacts into BA chapter drafting.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 541 passed in 49.27s.

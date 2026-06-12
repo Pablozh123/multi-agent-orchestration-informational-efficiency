@@ -73,6 +73,9 @@ def generate_source_review_progress_protocol(
     traceability = _read_csv(results_dir / "thesis_method_interpretation_traceability.csv")
     package = _read_csv(results_dir / "thesis_result_package_traceability.csv")
     ledger = _read_csv(results_dir / "thesis_source_review_progress_ledger.csv")
+    manual_followup_overview = _read_csv(
+        results_dir / "thesis_manual_source_review_followup_overview.csv"
+    )
     core_sections = _read_csv(results_dir / "thesis_h1_h2_h3_core_sections.csv")
     agent_upgrade = _read_csv(results_dir / "thesis_agent_pipeline_upgrade_plan.csv")
 
@@ -80,6 +83,7 @@ def generate_source_review_progress_protocol(
         traceability=traceability,
         package=package,
         ledger=ledger,
+        manual_followup_overview=manual_followup_overview,
         core_sections=core_sections,
         agent_upgrade=agent_upgrade,
     )
@@ -96,6 +100,7 @@ def generate_source_review_progress_protocol(
         traceability=traceability,
         package=package,
         ledger=ledger,
+        manual_followup_overview=manual_followup_overview,
         core_sections=core_sections,
         agent_upgrade=agent_upgrade,
     )
@@ -116,6 +121,7 @@ def build_source_review_progress_protocol(
     traceability: pd.DataFrame,
     package: pd.DataFrame,
     ledger: pd.DataFrame,
+    manual_followup_overview: pd.DataFrame,
     core_sections: pd.DataFrame,
     agent_upgrade: pd.DataFrame,
 ) -> pd.DataFrame:
@@ -125,6 +131,7 @@ def build_source_review_progress_protocol(
         traceability=traceability,
         package=package,
         ledger=ledger,
+        manual_followup_overview=manual_followup_overview,
         core_sections=core_sections,
         agent_upgrade=agent_upgrade,
     )
@@ -189,11 +196,20 @@ def build_source_review_progress_protocol(
         _protocol_row(
             protocol_id="protocol_03_ledger_review_flow",
             protocol_area="source_review_ledger",
-            source_artifact="data/results/thesis_source_review_progress_ledger.csv",
+            source_artifact=(
+                "data/results/thesis_source_review_progress_ledger.csv; "
+                "data/results/thesis_manual_source_review_followup_overview.csv; "
+                "docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md"
+            ),
             deterministic_evidence_de=(
                 f"Ledger rows: {summary['ledger_rows']}; pending: {summary['ledger_pending_rows']}; "
-                f"final-ready: {summary['ledger_final_ready_rows']}; source-status changes "
-                f"erlaubt: {summary['ledger_source_status_change_rows']}."
+                f"final-ready: {summary['ledger_final_ready_rows']}; unique sources: "
+                f"{summary['ledger_unique_source_rows']}; source-status changes "
+                f"erlaubt: {summary['ledger_source_status_change_rows']}. Manual Source "
+                f"Review Follow-up Overview: {summary['overview_slice_rows']} Slices; "
+                f"{summary['overview_review_rows']} offene H1-H2-H3 Review-Zeilen; "
+                f"{summary['overview_pending_rows']} pending; "
+                f"{summary['overview_final_ready_rows']} final-ready."
             ),
             current_state="manual_review_pending",
             required_manual_action_de=(
@@ -208,7 +224,10 @@ def build_source_review_progress_protocol(
                 "Keine Quellenstatus-Hochstufung, keine automatische Page Note, "
                 "keine finale Zitation und keine Quelleninterpretation durch das Skript."
             ),
-            next_safe_step_de="Priority-1-Quellen manuell oeffnen und Ledger-Felder pflegen.",
+            next_safe_step_de=(
+                "Manual Source Review Follow-up Overview pruefen, dann "
+                "Priority-1-Quellen manuell oeffnen und Ledger-Felder pflegen."
+            ),
         ),
         _protocol_row(
             protocol_id="protocol_04_final_citation_gate",
@@ -320,6 +339,7 @@ def _summary(
     traceability: pd.DataFrame,
     package: pd.DataFrame,
     ledger: pd.DataFrame,
+    manual_followup_overview: pd.DataFrame,
     core_sections: pd.DataFrame,
     agent_upgrade: pd.DataFrame,
 ) -> dict[str, int | str]:
@@ -349,12 +369,23 @@ def _summary(
         ledger,
         (
             "ledger_id",
+            "source_id",
             "review_progress_state",
             "source_status_change_allowed",
             "final_citation_ready",
             "preserved_manual_fields",
         ),
         "source review progress ledger",
+    )
+    _require_columns(
+        manual_followup_overview,
+        (
+            "slice_id",
+            "review_rows",
+            "pending_rows",
+            "final_ready_rows",
+        ),
+        "manual source-review follow-up overview",
     )
     _require_columns(
         core_sections,
@@ -398,12 +429,17 @@ def _summary(
             package["package_traceability_status"].astype(str).str.contains("gap", case=False, na=False).sum()
         ),
         "ledger_rows": int(len(ledger)),
+        "ledger_unique_source_rows": int(ledger["source_id"].nunique()),
         "ledger_pending_rows": int((ledger["review_progress_state"] == "pending_manual_review").sum()),
         "ledger_final_ready_rows": int(_bool_series(ledger["final_citation_ready"]).sum()),
         "ledger_source_status_change_rows": int(
             _bool_series(ledger["source_status_change_allowed"]).sum()
         ),
         "ledger_preserved_rows": int(_bool_series(ledger["preserved_manual_fields"]).sum()),
+        "overview_slice_rows": int(len(manual_followup_overview)),
+        "overview_review_rows": int(manual_followup_overview["review_rows"].astype(int).sum()),
+        "overview_pending_rows": int(manual_followup_overview["pending_rows"].astype(int).sum()),
+        "overview_final_ready_rows": int(manual_followup_overview["final_ready_rows"].astype(int).sum()),
         "core_section_rows": int(len(core_sections)),
         "core_hypotheses": core_hypotheses,
         "core_selected_tables": core_selected_tables,
@@ -431,6 +467,14 @@ def _validate_summary(summary: dict[str, int | str]) -> None:
         raise ValueError("Source review protocol requires curated core tables and figures.")
     if summary["ledger_rows"] == 0:
         raise ValueError("Source review protocol requires ledger rows.")
+    if summary["overview_slice_rows"] != 3:
+        raise ValueError("Source review protocol expects exactly three overview slices.")
+    if summary["overview_review_rows"] != summary["ledger_rows"]:
+        raise ValueError("Manual follow-up overview rows must match ledger rows.")
+    if summary["overview_pending_rows"] != summary["ledger_pending_rows"]:
+        raise ValueError("Manual follow-up overview pending rows must match ledger pending rows.")
+    if summary["overview_final_ready_rows"] != summary["ledger_final_ready_rows"]:
+        raise ValueError("Manual follow-up overview final-ready rows must match ledger final-ready rows.")
     if summary["ledger_source_status_change_rows"] != 0:
         raise ValueError("Source review protocol must not allow source-status changes.")
     if summary["core_section_rows"] != 3:
@@ -458,6 +502,8 @@ def _validate_protocol(protocol: pd.DataFrame) -> None:
         "tabellen",
         "figuren",
         "source review",
+        "manual source review follow-up overview",
+        "23 offene h1-h2-h3 review-zeilen",
         "keine quellenstatus-hochstufung",
         "keine finale zitation",
         "keine runtime-agenten",
@@ -478,6 +524,9 @@ def _render_protocol_doc(protocol: pd.DataFrame) -> str:
         "keine Kennzahlen, promotet keinen Quellenstatus und aktiviert keine "
         "Runtime-Agenten. Es bindet Methoden, Interpretationen, Tabellen/Figuren, "
         "Source Review und spaetere Agentenverbesserungen an bestehende Artefakte.\n\n"
+        "Die Manual Source Review Follow-up Overview ist der kompakte "
+        "Kontrollpunkt fuer die offenen H1-H2-H3 Review-Zeilen vor jeder "
+        "Ledger-Aktualisierung.\n\n"
         "## Counts\n\n"
         f"- Protocol rows: {len(protocol)}\n"
         f"- Evidence mapping rows: {int(by_area.get('evidence_mapping', 0))}\n"

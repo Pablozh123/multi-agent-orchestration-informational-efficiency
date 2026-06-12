@@ -835,7 +835,10 @@ Current implemented consolidation:
   H1-H2-H3 drafting sequence, and future-agent boundary. The protocol verifies
   that 4 thesis-facing methods and 4 thesis-facing interpretations have
   deterministic coverage, keeps the package to 5 tables and 4 figures, and
-  keeps future agents at 0 active rows.
+  keeps future agents at 0 active rows. The ledger review flow now also uses
+  the Manual Source Review Follow-up Overview as pre-Ledger control point:
+  3 slices, 23 open H1-H2-H3 review rows, 9 unique sources, 23 pending rows,
+  and 0 final-ready rows.
 - `data/results/thesis_source_review_chapter_handoff.csv` and
   `docs/project/THESIS_SOURCE_REVIEW_CHAPTER_HANDOFF.md` translate the protocol
   into three chapter rows for H1, H2, and H3. Each row binds method Evidence

@@ -33,6 +33,9 @@ def test_generate_source_review_progress_protocol_writes_protocol(tmp_path: Path
     assert "methoden: 2/2" in joined
     assert "interpretationen: 2/2" in joined
     assert "kernpaket: 2 tabellen und 1 figuren" in joined
+    assert "ledger rows: 23" in joined
+    assert "manual source review follow-up overview" in joined
+    assert "23 offene h1-h2-h3 review-zeilen" in joined
     assert "active: 0" in joined
     assert "llm_audit_log" in joined
     assert "max 50 rows" in joined
@@ -76,11 +79,25 @@ def _write_fixture(root: Path) -> None:
     ).to_csv(results / "thesis_result_package_traceability.csv", index=False)
     pd.DataFrame(
         [
-            _ledger("ledger_h1"),
-            _ledger("ledger_h2"),
-            _ledger("ledger_h3"),
+            _ledger("H1", index)
+            for index in range(1, 11)
+        ]
+        + [
+            _ledger("H2", index)
+            for index in range(1, 6)
+        ]
+        + [
+            _ledger("H3", index)
+            for index in range(1, 9)
         ]
     ).to_csv(results / "thesis_source_review_progress_ledger.csv", index=False)
+    pd.DataFrame(
+        [
+            _overview_row("H1", 10, 10, 0),
+            _overview_row("H2", 5, 5, 0),
+            _overview_row("H3", 8, 8, 0),
+        ]
+    ).to_csv(results / "thesis_manual_source_review_followup_overview.csv", index=False)
     pd.DataFrame(
         [
             _core_section("H1", "T2", "F1"),
@@ -123,13 +140,52 @@ def _package(
     }
 
 
-def _ledger(ledger_id: str) -> dict[str, object]:
+def _ledger(thesis_area: str, index: int) -> dict[str, object]:
     return {
-        "ledger_id": ledger_id,
+        "ledger_id": f"ledger_{thesis_area}_{index}",
+        "source_id": _source_id(thesis_area, index),
         "review_progress_state": "pending_manual_review",
         "source_status_change_allowed": False,
         "final_citation_ready": False,
         "preserved_manual_fields": False,
+    }
+
+
+def _source_id(thesis_area: str, index: int) -> str:
+    if thesis_area == "H1":
+        if index <= 3:
+            return "lit_brier_001"
+        if index <= 5:
+            return "lit_dm_001"
+        if index <= 7:
+            return "lit_emh_001"
+        return "zotero_poly_002"
+    if thesis_area == "H2":
+        if index <= 2:
+            return "lit_emh_001"
+        if index <= 4:
+            return "lit_eventstudy_001"
+        return "zotero_poly_001"
+    if index <= 2:
+        return "lit_granger_001"
+    if index <= 4:
+        return "zotero_poly_001"
+    if index <= 7:
+        return "zotero_poly_005"
+    return "zotero_poly_007"
+
+
+def _overview_row(
+    slice_id: str,
+    review_rows: int,
+    pending_rows: int,
+    final_ready_rows: int,
+) -> dict[str, object]:
+    return {
+        "slice_id": slice_id,
+        "review_rows": review_rows,
+        "pending_rows": pending_rows,
+        "final_ready_rows": final_ready_rows,
     }
 
 

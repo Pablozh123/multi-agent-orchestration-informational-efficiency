@@ -192,7 +192,10 @@ acceptance_criteria:
 - A source-review progress protocol exists so thesis-facing method coverage,
   interpretation coverage, compact result-package use, manual ledger flow,
   final citation gates, H1-H2-H3 drafting, and future-agent boundaries are
-  ordered before continued BA writing.
+  ordered before continued BA writing. It now uses the Manual Source Review
+  Follow-up Overview as the compact pre-Ledger control point for 23 open
+  H1-H2-H3 review rows, 9 unique sources, 23 pending rows, 0 final-ready rows,
+  and no source-status promotion.
 - A source-review chapter handoff exists so H1-H2-H3 can be written chapter by
   chapter with Evidence IDs, literature IDs, deterministic artifacts, selected
   tables/figures, open Source Review rows, blocked wording, limitations, and
@@ -246,7 +249,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: refresh source review progress protocol after overview
+next_commit: docs: refresh source review chapter handoff after overview
 
 ## Running Side Goal
 

@@ -110,12 +110,15 @@ acceptance_criteria:
   table/figure boundaries, Swiss/result gates, final QA, and inactive
   future-agent limits.
 - The advisor handoff package is updated so the Word report, handoff note,
-  readiness board, drafting sequence, feedback log, source review, and index
-  appear in one consistent order.
+  readiness board, drafting sequence, feedback log, manual source-review
+  follow-up overview, source review, and index appear in one consistent order.
 - The advisor handoff note and package now point to the refreshed Word report
   with Source-Gated H1-H2-H3 Drafting Sequence, 15 paragraph-level writing
   steps, 23 linked Manual Source Review rows, 23 pending rows, 0 final-ready
   rows, and the boundary that Review-Access remains paused.
+- The advisor handoff note and package now include the Manual Source Review
+  Follow-up Overview so the Dozent can see the 23 open H1-H2-H3 review rows
+  before Ledger decisions, final citations, or source-status changes.
 - An advisor/source-review follow-up plan exists so the path after
   Dozenten-Handoff is explicit: capture feedback, confirm Source Review depth,
   manually review H1/H2/H3 source rows, update the bounded chapter draft,
@@ -240,7 +243,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: update advisor handoff package with source review overview
+next_commit: docs: refresh advisor source review follow-up after overview
 
 ## Running Side Goal
 

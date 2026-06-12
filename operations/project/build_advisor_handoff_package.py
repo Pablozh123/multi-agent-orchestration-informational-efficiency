@@ -60,9 +60,13 @@ def generate_advisor_handoff_package(
     source_gated_drafting = _read_csv(
         results_dir / "thesis_h1_h2_h3_source_gated_thesis_drafting_pass.csv"
     )
+    manual_followup_overview = _read_csv(
+        results_dir / "thesis_manual_source_review_followup_overview.csv"
+    )
     package = build_advisor_handoff_package(
         index=index,
         source_gated_drafting=source_gated_drafting,
+        manual_followup_overview=manual_followup_overview,
     )
     _validate_package(package=package, repo_root=repo_root)
 
@@ -84,6 +88,7 @@ def build_advisor_handoff_package(
     *,
     index: pd.DataFrame,
     source_gated_drafting: pd.DataFrame,
+    manual_followup_overview: pd.DataFrame,
 ) -> pd.DataFrame:
     """Return the ordered package that can be sent or discussed with the advisor."""
 
@@ -100,7 +105,19 @@ def build_advisor_handoff_package(
         ),
         "source-gated thesis drafting pass",
     )
+    _require_columns(
+        manual_followup_overview,
+        (
+            "slice_id",
+            "review_rows",
+            "pending_rows",
+            "final_ready_rows",
+            "unique_sources",
+        ),
+        "manual source-review follow-up overview",
+    )
     source_gated_summary = _source_gated_drafting_summary(source_gated_drafting)
+    manual_followup_summary = _manual_followup_summary(manual_followup_overview)
     indexed_paths = set()
     for value in index["path"].astype(str):
         indexed_paths.update(path.strip() for path in value.split(";") if path.strip())
@@ -186,6 +203,27 @@ def build_advisor_handoff_package(
         ),
         _package_row(
             package_order=9,
+            deliverable_id="manual_source_review_followup_overview",
+            path="docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md",
+            handoff_use_de=(
+                "Als kompakte H1-H2-H3 Source-Review-Steuerung nutzen: "
+                f"{manual_followup_summary['review_rows']} offene Review-Zeilen, "
+                f"{manual_followup_summary['slice_rows']} Slices, "
+                f"{manual_followup_summary['pending_rows']} pending, "
+                f"{manual_followup_summary['final_ready_rows']} final-ready."
+            ),
+            advisor_decision_de=(
+                "Klaeren, ob H1, H2 und H3 in dieser Reihenfolge source-by-source "
+                "reviewed werden sollen."
+            ),
+            boundary_de=(
+                "Alle Zitationen bleiben final blockiert; keine Quellenstatus-"
+                "Hochstufung, keine Kausalclaims, keine Runtime-Agenten und "
+                "keine Rohartefakt-Dumps."
+            ),
+        ),
+        _package_row(
+            package_order=10,
             deliverable_id="agent_future_handoff",
             path="docs/project/THESIS_AGENT_FUTURE_WORK_HANDOFF.md",
             handoff_use_de="Nur als Future-Work-Ausblick fuer spaetere Pipeline-Verbesserungen nutzen.",
@@ -193,7 +231,7 @@ def build_advisor_handoff_package(
             boundary_de="Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade.",
         ),
         _package_row(
-            package_order=10,
+            package_order=11,
             deliverable_id="advisor_feedback_log",
             path="docs/project/DOZENTEN_FEEDBACK_LOG.md",
             handoff_use_de="Nach der Betreuung Feedback und Folgeaktionen eintragen.",
@@ -201,7 +239,7 @@ def build_advisor_handoff_package(
             boundary_de="Alle Eintraege bleiben pending, bis der Dozent Feedback gegeben hat.",
         ),
         _package_row(
-            package_order=11,
+            package_order=12,
             deliverable_id="consolidation_index",
             path="docs/project/THESIS_CONSOLIDATION_INDEX.md",
             handoff_use_de="Als Navigationsindex fuer alle aktuellen Projektartefakte nutzen.",
@@ -277,12 +315,21 @@ def _source_gated_drafting_summary(source_gated_drafting: pd.DataFrame) -> dict[
     }
 
 
+def _manual_followup_summary(manual_followup_overview: pd.DataFrame) -> dict[str, int]:
+    return {
+        "slice_rows": int(len(manual_followup_overview)),
+        "review_rows": int(manual_followup_overview["review_rows"].astype(int).sum()),
+        "pending_rows": int(manual_followup_overview["pending_rows"].astype(int).sum()),
+        "final_ready_rows": int(manual_followup_overview["final_ready_rows"].astype(int).sum()),
+    }
+
+
 def _validate_package(*, package: pd.DataFrame, repo_root: Path) -> None:
     _require_columns(package, PACKAGE_COLUMNS, "advisor handoff package")
     if package["deliverable_id"].duplicated().any():
         raise ValueError("Advisor handoff package contains duplicate deliverable_id values.")
-    if len(package) != 11:
-        raise ValueError("Advisor handoff package must contain exactly 11 deliverables.")
+    if len(package) != 12:
+        raise ValueError("Advisor handoff package must contain exactly 12 deliverables.")
     for path in package["path"].astype(str):
         if not (repo_root / path).exists():
             raise FileNotFoundError(f"Advisor handoff package path missing: {path}")
@@ -296,6 +343,8 @@ def _validate_package(*, package: pd.DataFrame, repo_root: Path) -> None:
         "dozenten_feedback_log.md",
         "review-access bleibt pausiert",
         "source-gated h1-h2-h3 drafting sequence",
+        "manual_source_review_followup_overview",
+        "23 offene review-zeilen",
         "nicht final-submission-ready",
         "quellenstatus nicht automatisch hochstufen",
         "keine runtime-agenten",
@@ -325,7 +374,9 @@ def _render_package_doc(package: pd.DataFrame) -> str:
         "Source-Gated H1-H2-H3 Drafting Sequence sichtbar macht. "
         "Danach kommen Submission Readiness Board, Drafting Sequence, Execution "
         "Checklist, Chapter Source Bindings und Source Review Execution fuer "
-        "die eigentliche Schreibarbeit. Das Feedback-Log wird nach der "
+        "die eigentliche Schreibarbeit. Die Manual Source Review Follow-up "
+        "Overview zeigt die 23 offenen H1-H2-H3 Review-Zeilen vor dem "
+        "Ledger-Update. Das Feedback-Log wird nach der "
         "Betreuung ausgefuellt. Agent Future-Work Handoff bleibt Ausblick; "
         "Runtime-Agenten, MCP, Model Routing, LLM-Metriken und Trading-Pfade "
         "bleiben deaktiviert.\n"

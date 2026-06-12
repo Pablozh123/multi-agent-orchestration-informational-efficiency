@@ -740,19 +740,23 @@ Current implemented consolidation:
   placement, agent outlook, and final QA. The Markdown checklist now also
   starts with a recommended discussion order for the next Betreuung.
 - `data/results/thesis_advisor_handoff_package.csv` and
-  `docs/project/THESIS_ADVISOR_HANDOFF_PACKAGE.md` define the 11-file advisor
+  `docs/project/THESIS_ADVISOR_HANDOFF_PACKAGE.md` define the 12-file advisor
   handoff order: handoff note, Word report, advisor questions, submission
   readiness board, drafting sequence, execution checklist, chapter source
-  bindings, source review execution, agent future-work handoff, feedback log,
-  and consolidation index. The Word-report row now points to the Source-Gated
-  H1-H2-H3 Drafting Sequence with 15 paragraph steps, 23 linked Manual Source
-  Review rows, and 0 final-ready Source Review rows.
+  bindings, source review execution, manual source-review follow-up overview,
+  agent future-work handoff, feedback log, and consolidation index. The
+  Word-report row now points to the Source-Gated H1-H2-H3 Drafting Sequence
+  with 15 paragraph steps, 23 linked Manual Source Review rows, and 0
+  final-ready Source Review rows. The overview row makes the 23 open H1-H2-H3
+  review rows visible before Ledger decisions.
 - `data/results/thesis_advisor_handoff_note.csv` and
   `docs/project/DOZENTEN_UEBERGABE_TEXT.md` provide a short mail/chat handoff
   text for the advisor with subject, attachment order, a pointer to the
   recommended checklist discussion order, key questions, gate status, and
   non-goals. The text now states that the Word report contains the
-  Source-Gated H1-H2-H3 Drafting Sequence while Review-Access remains paused.
+  Source-Gated H1-H2-H3 Drafting Sequence and that the Manual Source Review
+  Follow-up Overview lists 23 open H1-H2-H3 review rows while Review-Access
+  remains paused.
 - `data/results/thesis_advisor_feedback_log_template.csv` and
   `docs/project/DOZENTEN_FEEDBACK_LOG.md` provide a pending feedback log for
   advisor answers, resulting actions, and small follow-up commit scopes.
@@ -965,7 +969,7 @@ Current implemented consolidation:
   an eight-row chapter execution view from `thesis_execution_checklist.csv`
   with draft actions, done-when criteria, and advisor-question IDs.
 - The Dozentenbericht now includes `Dozentenpaket und Uebergabereihenfolge`,
-  an 11-file advisor handoff order from `thesis_advisor_handoff_package.csv`.
+  a 12-file advisor handoff order from `thesis_advisor_handoff_package.csv`.
 - `data/results/thesis_citation_review_packets.csv` and
   `docs/research/THESIS_CITATION_REVIEW_PACKETS.md` break citation readiness
   into source-evidence review packets with review questions, required checks,

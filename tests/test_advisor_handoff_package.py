@@ -19,14 +19,15 @@ def test_generate_advisor_handoff_package_writes_ordered_deliverables(tmp_path: 
     doc = result.docs_path.read_text(encoding="utf-8")
 
     assert tuple(package.columns) == PACKAGE_COLUMNS
-    assert result.package_rows == 11
+    assert result.package_rows == 12
     assert package["deliverable_id"].tolist()[0] == "advisor_handoff_note"
     assert package["deliverable_id"].tolist()[-1] == "consolidation_index"
     assert "Thesis Advisor Handoff Package" in doc
-    assert "Package deliverables: 11" in doc
+    assert "Package deliverables: 12" in doc
     assert "Source-Gated H1-H2-H3 Drafting Sequence" in doc
     assert "15 Absatzschritte" in doc
     assert "23 Manual Source Review Zeilen" in doc
+    assert "manual_source_review_followup_overview" in package["deliverable_id"].tolist()
     assert chr(223) not in doc
 
 
@@ -41,6 +42,8 @@ def test_advisor_handoff_package_preserves_boundaries(tmp_path: Path) -> None:
     assert "dozentenbericht_ba_thesis.docx" in joined
     assert "dozenten_uebergabe_text.md" in joined
     assert "dozenten_feedback_log.md" in joined
+    assert "thesis_manual_source_review_followup_overview.md" in joined
+    assert "23 offene review-zeilen" in joined
     assert "review-access bleibt pausiert" in joined
     assert "source-gated h1-h2-h3 drafting sequence" in joined
     assert "nicht final-submission-ready" in joined
@@ -64,6 +67,7 @@ def _write_fixture(root: Path) -> None:
         "docs/project/THESIS_EXECUTION_CHECKLIST.md",
         "docs/project/THESIS_CHAPTER_SOURCE_BINDINGS.md",
         "docs/project/THESIS_SOURCE_REVIEW_EXECUTION.md",
+        "docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md",
         "docs/project/THESIS_AGENT_FUTURE_WORK_HANDOFF.md",
         "docs/project/DOZENTEN_FEEDBACK_LOG.md",
         "docs/project/THESIS_CONSOLIDATION_INDEX.md",
@@ -79,6 +83,14 @@ def _write_fixture(root: Path) -> None:
             for index, path in enumerate(paths, start=1)
         ]
     ).to_csv(results / "thesis_consolidation_index.csv", index=False)
+
+    pd.DataFrame(
+        [
+            _followup_overview_row("H1", 10, 4, 10, 0),
+            _followup_overview_row("H2", 5, 3, 5, 0),
+            _followup_overview_row("H3", 8, 4, 8, 0),
+        ]
+    ).to_csv(results / "thesis_manual_source_review_followup_overview.csv", index=False)
 
     pd.DataFrame(
         [
@@ -111,4 +123,20 @@ def _source_gated_row(
         "manual_execution_final_ready_rows": manual_final_ready_rows,
         "ready_for_bounded_draft": True,
         "ready_for_final_submission": False,
+    }
+
+
+def _followup_overview_row(
+    slice_id: str,
+    review_rows: int,
+    unique_sources: int,
+    pending_rows: int,
+    final_ready_rows: int,
+) -> dict[str, object]:
+    return {
+        "slice_id": slice_id,
+        "review_rows": review_rows,
+        "unique_sources": unique_sources,
+        "pending_rows": pending_rows,
+        "final_ready_rows": final_ready_rows,
     }

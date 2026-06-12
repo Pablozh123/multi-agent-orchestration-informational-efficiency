@@ -29,6 +29,8 @@ def test_generate_advisor_handoff_note_writes_mail_template(tmp_path: Path) -> N
     assert "Source-Gated H1-H2-H3 Drafting Sequence" in doc
     assert "15 Absatzschritte" in doc
     assert "23 Manual Source Review Zeilen" in doc
+    assert "THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md" in doc
+    assert "23 offenen H1-H2-H3 Review-Zeilen" in doc
     assert chr(223) not in doc
 
 
@@ -60,6 +62,7 @@ def _write_fixture(root: Path) -> None:
         [
             {"deliverable_id": "advisor_report_docx", "path": "docs/project/dozentenbericht_ba_thesis.docx"},
             {"deliverable_id": "advisor_questions", "path": "docs/project/DOZENTEN_ABSPRACHE_CHECKLIST.md"},
+            {"deliverable_id": "manual_source_review_followup_overview", "path": "docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md"},
             {"deliverable_id": "consolidation_index", "path": "docs/project/THESIS_CONSOLIDATION_INDEX.md"},
         ]
     ).to_csv(results / "thesis_advisor_handoff_package.csv", index=False)
@@ -128,6 +131,7 @@ def _write_required_artifacts(root: Path) -> None:
         "docs/project/THESIS_CONSOLIDATION_INDEX.md",
         "docs/project/THESIS_SUBMISSION_READINESS_BOARD.md",
         "docs/project/THESIS_DRAFTING_SEQUENCE.md",
+        "docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md",
         "data/results/thesis_project_highlevel_view.csv",
         "data/results/thesis_advisor_handoff_package.csv",
         "data/results/thesis_consolidation_index.csv",

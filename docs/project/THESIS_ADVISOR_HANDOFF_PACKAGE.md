@@ -4,7 +4,7 @@ Dieses Paket sagt, welche Dateien dem Dozenten zuerst gezeigt oder mitgegeben we
 
 ## Counts
 
-- Package deliverables: 11
+- Package deliverables: 12
 - First deliverable: advisor_handoff_note
 - Final deliverable: consolidation_index
 
@@ -20,10 +20,11 @@ Dieses Paket sagt, welche Dateien dem Dozenten zuerst gezeigt oder mitgegeben we
 | 6 | execution_checklist | docs/project/THESIS_EXECUTION_CHECKLIST.md | Nach Feedback als Kapitel- und Abnahme-Checkliste nutzen. | Reihenfolge und Done-Kriterien fuer die BA-Kapitel bestaetigen. | Review-Access bleibt pausiert; keine Runtime-Agenten oder Rohartefakt-Dumps. |
 | 7 | chapter_source_bindings | docs/project/THESIS_CHAPTER_SOURCE_BINDINGS.md | Beim Schreiben je Kapitel Quellen, Artefakte und Gates pruefen. | Klaeren, ob diese Kapitel-zu-Quelle-Bindung fuer die Abgabe reicht. | Keine thesis-facing Claims ohne Human Review, Artefaktverweis, Limitation und Wording Guard. |
 | 8 | source_review_execution | docs/project/THESIS_SOURCE_REVIEW_EXECUTION.md | Als manuelle Reihenfolge fuer die Quellenpruefung nutzen. | Prioritaet der 11 Priority-1-Quellen und blocked/future-only Quellen bestaetigen. | Quellenstatus nicht automatisch hochstufen. |
-| 9 | agent_future_handoff | docs/project/THESIS_AGENT_FUTURE_WORK_HANDOFF.md | Nur als Future-Work-Ausblick fuer spaetere Pipeline-Verbesserungen nutzen. | Bestaetigen, dass Agenten nicht Teil des empirischen Kerns werden. | Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade. |
-| 10 | advisor_feedback_log | docs/project/DOZENTEN_FEEDBACK_LOG.md | Nach der Betreuung Feedback und Folgeaktionen eintragen. | Keine Entscheidung im Voraus; dient als pending Feedback-Log. | Alle Eintraege bleiben pending, bis der Dozent Feedback gegeben hat. |
-| 11 | consolidation_index | docs/project/THESIS_CONSOLIDATION_INDEX.md | Als Navigationsindex fuer alle aktuellen Projektartefakte nutzen. | Keine Entscheidung; dient Orientierung und Nachvollziehbarkeit. | Nicht als neues empirisches Resultat verwenden. |
+| 9 | manual_source_review_followup_overview | docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md | Als kompakte H1-H2-H3 Source-Review-Steuerung nutzen: 23 offene Review-Zeilen, 3 Slices, 23 pending, 0 final-ready. | Klaeren, ob H1, H2 und H3 in dieser Reihenfolge source-by-source reviewed werden sollen. | Alle Zitationen bleiben final blockiert; keine Quellenstatus-Hochstufung, keine Kausalclaims, keine Runtime-Agenten und keine Rohartefakt-Dumps. |
+| 10 | agent_future_handoff | docs/project/THESIS_AGENT_FUTURE_WORK_HANDOFF.md | Nur als Future-Work-Ausblick fuer spaetere Pipeline-Verbesserungen nutzen. | Bestaetigen, dass Agenten nicht Teil des empirischen Kerns werden. | Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade. |
+| 11 | advisor_feedback_log | docs/project/DOZENTEN_FEEDBACK_LOG.md | Nach der Betreuung Feedback und Folgeaktionen eintragen. | Keine Entscheidung im Voraus; dient als pending Feedback-Log. | Alle Eintraege bleiben pending, bis der Dozent Feedback gegeben hat. |
+| 12 | consolidation_index | docs/project/THESIS_CONSOLIDATION_INDEX.md | Als Navigationsindex fuer alle aktuellen Projektartefakte nutzen. | Keine Entscheidung; dient Orientierung und Nachvollziehbarkeit. | Nicht als neues empirisches Resultat verwenden. |
 
 ## Use Rule
 
-Nutze zuerst Uebergabetext, Dozentenbericht und Absprache-Checklist. Der Dozentenbericht ist der erste fachliche Einstieg, weil er die Source-Gated H1-H2-H3 Drafting Sequence sichtbar macht. Danach kommen Submission Readiness Board, Drafting Sequence, Execution Checklist, Chapter Source Bindings und Source Review Execution fuer die eigentliche Schreibarbeit. Das Feedback-Log wird nach der Betreuung ausgefuellt. Agent Future-Work Handoff bleibt Ausblick; Runtime-Agenten, MCP, Model Routing, LLM-Metriken und Trading-Pfade bleiben deaktiviert.
+Nutze zuerst Uebergabetext, Dozentenbericht und Absprache-Checklist. Der Dozentenbericht ist der erste fachliche Einstieg, weil er die Source-Gated H1-H2-H3 Drafting Sequence sichtbar macht. Danach kommen Submission Readiness Board, Drafting Sequence, Execution Checklist, Chapter Source Bindings und Source Review Execution fuer die eigentliche Schreibarbeit. Die Manual Source Review Follow-up Overview zeigt die 23 offenen H1-H2-H3 Review-Zeilen vor dem Ledger-Update. Das Feedback-Log wird nach der Betreuung ausgefuellt. Agent Future-Work Handoff bleibt Ausblick; Runtime-Agenten, MCP, Model Routing, LLM-Metriken und Trading-Pfade bleiben deaktiviert.

@@ -166,7 +166,9 @@ def build_advisor_handoff_note(
                 "Gespraechsreihenfolge: H1-H2-H3 Scope, Source Review Tiefe, "
                 "Tabellen/Figuren, Monitor/Swiss Grenzen, Agenten-Future-Work "
                 "und finale QA. Fuer die eigentliche Weiterarbeit liegen ausserdem "
-                f"Submission Readiness Board und Drafting Sequence bereit. "
+                "Submission Readiness Board, Drafting Sequence und die Manual "
+                "Source Review Follow-up Overview mit 23 offenen H1-H2-H3 "
+                "Review-Zeilen bereit. "
                 f"Empfohlene Dateien: {', '.join(attachment_paths)}."
             ),
             source_artifacts="data/results/thesis_advisor_handoff_package.csv; data/results/thesis_consolidation_index.csv",
@@ -259,6 +261,7 @@ def _attachment_paths(handoff: pd.DataFrame) -> list[str]:
         "docs/project/DOZENTEN_ABSPRACHE_CHECKLIST.md",
         "docs/project/THESIS_SUBMISSION_READINESS_BOARD.md",
         "docs/project/THESIS_DRAFTING_SEQUENCE.md",
+        "docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md",
     }
     paths = [str(path) for path in handoff["path"] if str(path) in wanted]
     for path in sorted(wanted.difference(paths)):

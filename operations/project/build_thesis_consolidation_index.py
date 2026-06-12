@@ -438,6 +438,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken, bounded inputs, max 50 rows und llm_audit_log vor jeder Aktivierung.",
         ),
         _index_row(
+            artifact_id="index_34_agent_pipeline_safety_case",
+            artifact_type="future_agent_safety_case",
+            path="docs/project/THESIS_AGENT_PIPELINE_SAFETY_CASE.md; data/results/thesis_agent_pipeline_safety_case.csv",
+            purpose_de="Dokumentations-only Safety Case, der spaetere Agentenideen an Evidence Lock, Source Review, Tabellen/Figuren, Swiss-Gate, DOCX-QA und Access-Limits bindet.",
+            use_now_de="Als Future-Work-Kontrollpunkt nutzen, bevor spaeter Prompt-, Access- oder Agentendesigns spezifiziert werden.",
+            gate_or_limit_de="0 aktive Runtime-Rows; keine Runtime-Agenten, kein MCP, kein Model Routing, max 50 rows, llm_audit_log und separates Goal vor Aktivierung.",
+        ),
+        _index_row(
             artifact_id="index_35_goal_completion_audit",
             artifact_type="goal_completion_audit",
             path="docs/project/THESIS_GOAL_COMPLETION_AUDIT.md; data/results/thesis_goal_completion_audit.csv",

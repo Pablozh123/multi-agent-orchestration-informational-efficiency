@@ -259,6 +259,13 @@ acceptance_criteria:
   names the post-source-gated sequence, Human-Owner, safe value,
   Proof-Artifact, Failure-Mode, bounded input/output limits, max 50 rows,
   `llm_audit_log`, and blocked actions for every future assistance role.
+- A future-agent safety case exists so later agent ideas are checked against
+  the current deterministic evidence lock: 4 thesis-facing methods, 4
+  thesis-facing interpretations, 23 H1-H2-H3 Source-Links, 31 total
+  method/interpretation Source-Links including Monitor/Swiss, 23 open manual
+  Source Review rows, 5 core tables, 4 core figures, Swiss/result gates,
+  DOCX-QA, bounded access, max 50 rows, `llm_audit_log`, and 0 active runtime
+  rows before any future activation.
 - A thesis final gate board exists so bounded draft permission, final
   submission readiness, evidence counts, blockers, Source Review, Swiss
   official result, DOCX render QA, project checks, and future-agent boundaries
@@ -267,7 +274,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: refresh dozenten report after overview
+next_commit: docs: add agent pipeline safety case
 
 ## Running Side Goal
 

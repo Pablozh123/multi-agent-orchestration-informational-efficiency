@@ -972,6 +972,15 @@ Current implemented consolidation:
   documentation-only or deferred; no runtime agents, MCP, model routing, LLM
   metrics, raw artifact dumps, wallet-address exposure, or trading paths are
   activated.
+- `data/results/thesis_agent_pipeline_safety_case.csv` and
+  `docs/project/THESIS_AGENT_PIPELINE_SAFETY_CASE.md` add a documentation-only
+  future-agent safety case after the Dozenten handoff. It binds any later
+  agent idea to the current deterministic evidence lock: 4 thesis-facing
+  methods, 4 thesis-facing interpretations, 23 H1-H2-H3 Source-Links, 31
+  total method/interpretation Source-Links including Monitor/Swiss, 23 open
+  Manual Source Review rows, 5 core tables, 4 core figures, the refreshed
+  Swiss gate with 45 running snapshot rows, DOCX-QA, bounded read-only access,
+  max 50 rows, `llm_audit_log`, and 0 active runtime rows.
 - `data/results/thesis_consolidation_index.csv` and
   `docs/project/THESIS_CONSOLIDATION_INDEX.md` index the current
   consolidation deliverables so the Dozentenbericht, advisor checklist,

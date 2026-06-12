@@ -19,9 +19,9 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     doc = result.docs_path.read_text(encoding="utf-8")
 
     assert tuple(index.columns) == INDEX_COLUMNS
-    assert result.index_rows == 47
+    assert result.index_rows == 48
     assert "Thesis Consolidation Index" in doc
-    assert "Indexed artifacts: 47" in doc
+    assert "Indexed artifacts: 48" in doc
     assert "dozentenbericht_ba_thesis.docx" in doc
     assert "THESIS_ADVISOR_HANDOFF_PACKAGE.md" in doc
     assert "DOZENTEN_UEBERGABE_TEXT.md" in doc
@@ -49,6 +49,7 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     assert "THESIS_METHOD_INTERPRETATION_SOURCE_COVERAGE.md" in doc
     assert "THESIS_H1_H2_H3_CORE_SECTIONS.md" in doc
     assert "THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md" in doc
+    assert "THESIS_AGENT_PIPELINE_SAFETY_CASE.md" in doc
     assert "THESIS_GOAL_COMPLETION_AUDIT.md" in doc
     assert "THESIS_EXECUTION_CHECKLIST.md" in doc
     assert "THESIS_CHAPTER_SOURCE_BINDINGS.md" in doc
@@ -93,6 +94,7 @@ def test_thesis_consolidation_index_keeps_deferred_boundaries(tmp_path: Path) ->
     assert "method_interpretation_source_coverage" in joined
     assert "h1_h2_h3_core_sections" in joined
     assert "agent_pipeline_upgrade_plan" in joined
+    assert "agent_pipeline_safety_case" in joined
     assert "agent_pipeline_control" in joined
     assert "goal_completion_audit" in joined
     assert "advisor_feedback_integration" in joined
@@ -186,6 +188,8 @@ def _write_fixture(root: Path) -> None:
         "data/results/thesis_h1_h2_h3_core_sections.csv",
         "docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md",
         "data/results/thesis_agent_pipeline_upgrade_plan.csv",
+        "docs/project/THESIS_AGENT_PIPELINE_SAFETY_CASE.md",
+        "data/results/thesis_agent_pipeline_safety_case.csv",
         "docs/project/THESIS_GOAL_COMPLETION_AUDIT.md",
         "data/results/thesis_goal_completion_audit.csv",
         "STATUS.md",

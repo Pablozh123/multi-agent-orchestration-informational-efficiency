@@ -9387,6 +9387,31 @@ Verification:
 
 - `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_auto_refresh.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_polymarket.py tests\test_swiss_referendum_refresh.py -q`
   -> PASS, 32 passed.
+
+## 2026-06-12 - Final project control after source review and Swiss commits
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Refreshed project control after committing the manual Source Review
+  execution pass and the Swiss running snapshot as separate atomic commits.
+
+Changes:
+
+- Updated `STATUS.md` after commits `3de03d7` and `f4373ab`.
+- Kept the next recommended commit as
+  `docs: continue source-gated h1 h2 h3 thesis drafting`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 572 passed in 54.61s.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> PASS, 572 passed in 56.41s.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+  -> PASS, suggested `docs: update project control workflow`.
+- `git diff --stat`
+  -> PASS, 2 project-control files changed.
 - `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
   -> PASS, generated 24 indexed artifacts.
 - `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`

@@ -142,6 +142,12 @@ acceptance_criteria:
   interpretation Evidence IDs, deterministic artifacts, Page-/Section-Note,
   Claim-Support, Blocked-Wording, Citation-Use, Kausalclaim-Grenze, and no
   automatic source-status promotion.
+- A H2 source-review decision queue exists so the second empirical-core review
+  slice is directly actionable with 5 H2 decision rows, 3 H2 sources, 3 method
+  rows, 2 interpretation rows, 4 external locator rows, 1 local PDF row, T3/F2
+  table/figure binding, manual Page-/Section-Note, Claim-Support,
+  Blocked-Wording, Citation-Use, Kausalclaim-Grenze fields, 0 final-ready
+  rows, no source-status promotion, and inactive future-agent boundaries.
 - A H3 manual source-review follow-up exists so the third empirical-core
   review slice is startable with 8 H3 source rows, 4 H3 sources, wallet and
   Granger method Evidence IDs, interpretation Evidence IDs, deterministic
@@ -283,7 +289,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add h1 source review decision queue
+next_commit: docs: add h2 source review decision queue
 
 ## Running Side Goal
 

@@ -33,6 +33,8 @@ def test_generate_h1_h2_h3_source_gated_writing_pass_writes_three_rows(
     assert "Source coverage gap rows: 0" in doc
     assert "method_h1_brier_dm" in doc
     assert "interpretation_h3_top_tier_signal" in doc
+    assert "Manual Source Review Follow-up Overview" in doc
+    assert "Overview-/Ledger-Abgleich" in doc
     assert "keine Runtime-Agenten" in doc
     assert "llm_audit_log" in doc
     assert chr(223) not in doc
@@ -55,7 +57,10 @@ def test_h1_h2_h3_source_gated_writing_pass_preserves_gates(
     assert not writing_pass["ready_for_final_submission"].astype(bool).any()
     assert writing_pass["source_coverage_gap_rows"].astype(int).eq(0).all()
     assert "source-gated" in joined
+    assert "manual source review follow-up overview" in joined
+    assert "overview-/ledger-abgleich" in joined
     assert "keine finale zitation" in joined
+    assert "keine quellenstatus-hochstufung" in joined
     assert "wenige gute tabellen" in joined
     assert "nicht final-submission-ready" in joined
     assert "keine rohartefakt-dumps" in joined
@@ -148,7 +153,12 @@ def _write_fixture(root: Path) -> None:
                     "selected_tables": table,
                     "selected_figures": figure,
                     "selected_result_package_items": f"{table}; {figure}",
-                    "source_review_gate_de": f"{area}: Keine finale Zitation ohne Source Review.",
+                    "source_review_gate_de": (
+                        f"{area}: Keine finale Zitation ohne Source Review. "
+                        "Manual Source Review Follow-up Overview pruefen; "
+                        "Overview-/Ledger-Abgleich vor Citation Gate dokumentieren. "
+                        "Keine Quellenstatus-Hochstufung aus dem Draft."
+                    ),
                     "source_coverage_links": links,
                     "source_coverage_unique_sources": 3,
                     "source_coverage_gap_rows": 0,
@@ -174,7 +184,11 @@ def _paragraph(area: str, step: str) -> str:
     if step == "table_figure_integration":
         return f"{area} nutzt wenige gute Tabellen/Figuren statt Rohartefakt-Dumps."
     if step == "source_review_and_citation_gate":
-        return f"{area} bleibt source-gated: keine finale Zitation ohne Source Review."
+        return (
+            f"{area} bleibt source-gated: keine finale Zitation ohne Source Review. "
+            "Manual Source Review Follow-up Overview und Overview-/Ledger-Abgleich "
+            "bleiben sichtbar. Keine Quellenstatus-Hochstufung aus dem Draft."
+        )
     if step == "future_agent_boundary":
         return f"{area}: keine Runtime-Agenten, kein MCP, llm_audit_log fuer spaeter."
     raise AssertionError(step)

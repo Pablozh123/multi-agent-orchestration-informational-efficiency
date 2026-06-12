@@ -886,6 +886,9 @@ Current implemented consolidation:
   counts, selected table/figure IDs, blocked wording, final Source Review
   gates, and future-agent boundaries while remaining bounded-draft-ready but
   not final-submission-ready.
+  The connected drafts now carry the Manual Source Review Follow-up
+  Overview-/Ledger-Abgleich through each Source Review paragraph before final
+  citation or source-status changes.
 - `data/results/thesis_h1_h2_h3_source_gated_thesis_drafting_pass.csv` and
   `docs/research/THESIS_H1_H2_H3_SOURCE_GATED_THESIS_DRAFTING_PASS.md` turn
   the connected H1-H2-H3 source-gated draft into a 15-row paragraph-level BA

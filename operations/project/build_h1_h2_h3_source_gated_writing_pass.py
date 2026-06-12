@@ -225,7 +225,8 @@ def _full_chapter_text(
         [
             str(first["chapter_title_de"]),
             "Source-gated Schreibpass: Der Abschnitt bleibt an Source Coverage, "
-            "deterministische Artefakte und finale Source-Review-Gates gebunden.",
+            "deterministische Artefakte, Manual Source Review Follow-up "
+            "Overview-/Ledger-Abgleich und finale Source-Review-Gates gebunden.",
             paragraphs["method_paragraph_de"],
             paragraphs["result_paragraph_de"],
             paragraphs["interpretation_paragraph_de"],
@@ -235,7 +236,8 @@ def _full_chapter_text(
             (
                 "Schreibgate: Dieser Abschnitt ist bounded-draft-ready, aber "
                 "nicht final-submission-ready. Finale Zitation bleibt vom "
-                "Source Review mit Page-/Section-Notes abhaengig."
+                "Source Review mit Manual Source Review Follow-up Overview, "
+                "Overview-/Ledger-Abgleich und Page-/Section-Notes abhaengig."
             ),
         ]
     )
@@ -271,7 +273,10 @@ def _validate_writing_pass(writing_pass: pd.DataFrame, *, repo_root: Path) -> No
         "interpretation_h3_top_tier_signal",
         "source review",
         "source-gated",
+        "manual source review follow-up overview",
+        "overview-/ledger-abgleich",
         "keine finale zitation",
+        "keine quellenstatus-hochstufung",
         "wenige gute tabellen",
         "keine runtime-agenten",
         "llm_audit_log",
@@ -280,6 +285,25 @@ def _validate_writing_pass(writing_pass: pd.DataFrame, *, repo_root: Path) -> No
     missing = [term for term in required_terms if term not in lower_joined]
     if missing:
         raise ValueError("Source-gated writing pass missing terms: " + ", ".join(missing))
+    for area, area_rows in writing_pass.groupby("thesis_area"):
+        gate_text = "\n".join(
+            area_rows[["source_gate_paragraph_de", "full_chapter_draft_de"]]
+            .astype(str)
+            .agg(" ".join, axis=1)
+            .tolist()
+        ).lower()
+        gate_terms = (
+            "manual source review follow-up overview",
+            "overview-/ledger-abgleich",
+            "keine finale zitation",
+            "keine quellenstatus-hochstufung",
+        )
+        missing_gate_terms = [term for term in gate_terms if term not in gate_text]
+        if missing_gate_terms:
+            raise ValueError(
+                f"Source-gated writing pass missing source-gate terms for {area}: "
+                + ", ".join(missing_gate_terms)
+            )
 
 
 def _render_writing_pass_doc(writing_pass: pd.DataFrame) -> str:
@@ -292,7 +316,9 @@ def _render_writing_pass_doc(writing_pass: pd.DataFrame) -> str:
         "Kernkapitel. Es baut ausschliesslich auf dem bounded chapter draft, "
         "der Source Coverage und den deterministischen Artefakten auf. Es "
         "liest keine Quelleninhalte, erzeugt keine neuen Kennzahlen und "
-        "ersetzt keine finale Quellenreview.\n",
+        "ersetzt keine finale Quellenreview. Die Source-Gate-Paragraphen "
+        "uebernehmen den Manual Source Review Follow-up Overview-/Ledger-"
+        "Abgleich aus dem bounded chapter draft.\n",
         "## Counts\n",
         f"- Writing pass rows: {len(writing_pass)}\n",
         f"- Bounded draft ready rows: {bounded_ready}\n",
@@ -328,7 +354,8 @@ def _render_writing_pass_doc(writing_pass: pd.DataFrame) -> str:
             "gebunden. Keine finale Zitation, keine Rohartefakt-Dumps, keine "
             "neuen Kennzahlen, keine Quellenstatus-Hochstufung, keine "
             "Runtime-Agenten, kein MCP, kein Model Routing und keine "
-            "LLM-Metriken.\n",
+            "LLM-Metriken. Der Manual Source Review Follow-up Overview-/"
+            "Ledger-Abgleich bleibt vor dem Citation Gate sichtbar.\n",
         ]
     )
     return "\n".join(sections)

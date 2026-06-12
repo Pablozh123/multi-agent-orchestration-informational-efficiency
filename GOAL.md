@@ -229,6 +229,9 @@ acceptance_criteria:
   connected chapter drafts that preserve Evidence IDs, source coverage,
   deterministic artifacts, compact table/figure choices, limitations,
   blocked wording, Source Review gates, and inactive future-agent boundaries.
+  It now carries the Manual Source Review Follow-up Overview-/Ledger-Abgleich
+  through all three connected chapter drafts before final citation or
+  source-status changes.
 - A H1-H2-H3 source-gated thesis drafting pass exists so the empirical core
   has a paragraph-level writing sequence for method/result setup,
   interpretation/limitation, table/figure integration, manual Source Review
@@ -259,7 +262,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: refresh source gated writing pass after overview
+next_commit: docs: refresh source gated thesis drafting pass after overview
 
 ## Running Side Goal
 

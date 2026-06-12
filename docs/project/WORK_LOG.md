@@ -11935,3 +11935,57 @@ Verification:
   sharp-s found.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `589 passed in 61.91s (0:01:01)`.
+
+## 2026-06-13 - H2 source review decision queue added
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Kept Review-Access paused and kept Source Review manual.
+- Preserved the H2 boundary: daily event-window evidence only; no intraday
+  speed claim, no causal event-effect claim, no post-hoc event selection, no
+  final citation, no source-status promotion, and no runtime agents.
+
+Changes:
+
+- Added `operations/project/build_h2_source_review_decision_queue.py`.
+- Generated `data/results/thesis_h2_source_review_decision_queue.csv`.
+- Added `docs/project/THESIS_H2_SOURCE_REVIEW_DECISION_QUEUE.md`.
+- Added `tests/test_h2_source_review_decision_queue.py`.
+- Updated `operations/project/build_thesis_consolidation_index.py` and
+  `tests/test_thesis_consolidation_index.py`.
+- Regenerated `data/results/thesis_consolidation_index.csv` and
+  `docs/project/THESIS_CONSOLIDATION_INDEX.md`.
+- Updated `GOAL.md` and `ROADMAP.md`.
+- Committed the slice as
+  `76c5741 docs: add h2 source review decision queue`.
+
+Key output:
+
+- H2 decision queue rows: 5.
+- Unique H2 sources: 3.
+- Method rows: 3.
+- Interpretation rows: 2.
+- External locator rows: 4.
+- Local PDF rows: 1.
+- Selected table/figure binding: T3/F2.
+- Final citation ready rows: 0.
+- Source-status change rows: 0.
+- Future-agent boundary: only missing-field marking is allowed later; no
+  source-content judgement, no invented page numbers, no Kausalclaim-Grenze
+  relaxation, no citation release, no metric calculation, max 50 rows, tests,
+  and `llm_audit_log` before any later agent use.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h2_source_review_decision_queue.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_source_review_decision_queue.py tests\test_h2_source_review_decision_queue.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 6 passed.
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_h2_source_review_decision_queue.py operations\project\build_thesis_consolidation_index.py tests\test_h2_source_review_decision_queue.py tests\test_thesis_consolidation_index.py`
+  -> PASS.
+- `git diff --check` -> PASS, with expected CRLF warnings only.
+- `rg -n "<sharp-s>"` on the touched thesis-facing files -> PASS, no Swiss
+  sharp-s found.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `591 passed in 64.97s (0:01:04)`.

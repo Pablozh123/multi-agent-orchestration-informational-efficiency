@@ -631,6 +631,9 @@ Current implemented consolidation:
   and a deferred agent-pipeline roadmap.
 - `docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md` documents the future
   agent stages as inactive architecture only.
+- `docs/research/THESIS_WRITING_BLUEPRINT.md` translates the consolidation
+  package into a chapter-by-chapter writing plan with source-review counts,
+  package placements, result statements, limitations, and next writing actions.
 
 Blockers:
 

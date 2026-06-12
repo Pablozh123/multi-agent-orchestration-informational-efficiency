@@ -32,6 +32,7 @@ GENERATED_ARTIFACTS: frozenset[str] = frozenset(
         "data/results/thesis_consolidation_metadata.json",
         "docs/research/THESIS_CONSOLIDATION.md",
         "docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md",
+        "docs/research/THESIS_WRITING_BLUEPRINT.md",
     }
 )
 
@@ -45,6 +46,7 @@ AGENT_PIPELINE_OUTPUT = "thesis_agent_pipeline_roadmap.csv"
 METADATA_OUTPUT = "thesis_consolidation_metadata.json"
 DOC_OUTPUT = "THESIS_CONSOLIDATION.md"
 AGENT_DOC_OUTPUT = "THESIS_AGENT_PIPELINE_ROADMAP.md"
+WRITING_BLUEPRINT_OUTPUT = "THESIS_WRITING_BLUEPRINT.md"
 
 EVIDENCE_COLUMNS: tuple[str, ...] = (
     "evidence_id",
@@ -143,6 +145,7 @@ class ThesisConsolidationResult:
     metadata_path: Path
     docs_path: Path
     agent_docs_path: Path
+    writing_blueprint_path: Path
     evidence_rows: int
     core_result_rows: int
     package_rows: int
@@ -162,6 +165,7 @@ class ThesisConsolidationResult:
             "metadata_path": str(self.metadata_path),
             "docs_path": str(self.docs_path),
             "agent_docs_path": str(self.agent_docs_path),
+            "writing_blueprint_path": str(self.writing_blueprint_path),
             "evidence_rows": self.evidence_rows,
             "core_result_rows": self.core_result_rows,
             "package_rows": self.package_rows,
@@ -265,6 +269,7 @@ def generate_thesis_consolidation(
     metadata_path = results_dir / METADATA_OUTPUT
     docs_path = docs_dir / DOC_OUTPUT
     agent_docs_path = docs_dir / AGENT_DOC_OUTPUT
+    writing_blueprint_path = docs_dir / WRITING_BLUEPRINT_OUTPUT
 
     evidence_map.to_csv(evidence_map_path, index=False)
     core_results.to_csv(core_results_path, index=False)
@@ -302,6 +307,15 @@ def generate_thesis_consolidation(
         _render_agent_pipeline_doc(agent_pipeline=agent_pipeline, metadata=metadata),
         encoding="utf-8",
     )
+    writing_blueprint_path.write_text(
+        _render_writing_blueprint(
+            core_results=core_results,
+            curated_package=curated_package,
+            citation_readiness=citation_readiness,
+            chapter_plan=chapter_plan,
+        ),
+        encoding="utf-8",
+    )
 
     return ThesisConsolidationResult(
         evidence_map_path=evidence_map_path,
@@ -314,6 +328,7 @@ def generate_thesis_consolidation(
         metadata_path=metadata_path,
         docs_path=docs_path,
         agent_docs_path=agent_docs_path,
+        writing_blueprint_path=writing_blueprint_path,
         evidence_rows=len(evidence_map),
         core_result_rows=len(core_results),
         package_rows=len(curated_package),
@@ -1558,6 +1573,7 @@ def _build_metadata(
             "citation_readiness_rows": int(len(citation_readiness)),
             "chapter_rows": int(len(chapter_plan)),
             "agent_stage_rows": int(len(agent_pipeline)),
+            "writing_blueprint_generated": True,
             "core_table_count": int((core["package_type"] == "table").sum()),
             "core_figure_count": int((core["package_type"] == "figure").sum()),
             "max_core_tables": 5,
@@ -1780,6 +1796,111 @@ def _render_agent_pipeline_doc(
         f"- Future documentation-only stages: {metadata['agent_stage_status_counts'].get('future_documentation_only', 0)}\n"
         f"- Future deferred stages: {metadata['agent_stage_status_counts'].get('future_deferred', 0)}\n"
     )
+
+
+def _render_writing_blueprint(
+    *,
+    core_results: pd.DataFrame,
+    curated_package: pd.DataFrame,
+    citation_readiness: pd.DataFrame,
+    chapter_plan: pd.DataFrame,
+) -> str:
+    package_lookup = curated_package.set_index("package_id").to_dict(orient="index")
+    core_by_area = {
+        area: rows.to_dict(orient="records")
+        for area, rows in core_results.groupby("thesis_area", sort=True)
+    }
+    citation_counts = citation_readiness["final_citation_readiness"].value_counts().to_dict()
+    sections: list[str] = [
+        "# Thesis Writing Blueprint\n",
+        "This blueprint translates the deterministic consolidation package into a "
+        "chapter-by-chapter writing plan. It is a drafting guide, not a new "
+        "empirical analysis.\n",
+        "## Source And Citation Work\n",
+        f"- Sources needing full review before final citation: "
+        f"{int(citation_counts.get('needs_full_source_review_before_final_citation', 0))}\n",
+        f"- Candidate sources blocked from thesis-facing claims: "
+        f"{int(citation_counts.get('not_allowed_for_thesis_facing_claims', 0))}\n",
+        f"- Indexed sources not currently needed: "
+        f"{int(citation_counts.get('not_currently_needed', 0))}\n",
+        "Use `data/results/thesis_citation_readiness.csv` as the source-review queue. "
+        "Do not promote source status automatically.\n",
+        "## Core Writing Rule\n",
+        "Every paragraph that states a result should name one deterministic artifact "
+        "or one evidence_id. Every paragraph that states a method should name the "
+        "method source or explain why the artifact is sufficient.\n",
+    ]
+
+    for row in chapter_plan.to_dict(orient="records"):
+        tables = _split_list(str(row["recommended_tables"]))
+        figures = _split_list(str(row["recommended_figures"]))
+        evidence_ids = _split_list(str(row["core_evidence_ids"]))
+        package_refs = [package_lookup[item] for item in [*tables, *figures] if item in package_lookup]
+        areas = _areas_for_evidence_ids(evidence_ids)
+        include_result_statements = str(row["chapter_id"]) in {
+            "ch_04_h1_results",
+            "ch_05_h2_results",
+            "ch_06_h3_results",
+            "ch_07_extensions",
+            "ch_08_discussion_conclusion",
+        }
+        result_rows = (
+            [
+                result
+                for area in areas
+                for result in core_by_area.get(area, [])
+            ]
+            if include_result_statements
+            else []
+        )
+        sections.append(f"## {row['chapter_title']}\n")
+        sections.append(f"Chapter role: {row['chapter_role']}\n")
+        sections.append(f"Writing status: `{row['writing_status']}`\n")
+        sections.append(f"Core evidence ids: `{'; '.join(evidence_ids)}`\n")
+        if package_refs:
+            sections.append("Recommended package items:\n")
+            for ref in package_refs:
+                sections.append(
+                    f"- `{ref['title']}` from `{ref['primary_artifact']}` "
+                    f"({ref['recommended_placement']}).\n"
+                )
+        if result_rows:
+            sections.append("Result statements to use:\n")
+            for result in result_rows:
+                sections.append(
+                    f"- {result['headline_result']} Key value: {result['key_value']} "
+                    f"Source: `{result['primary_artifact']}`.\n"
+                )
+        sections.append(f"Limitation to state: {row['main_limitation_to_state']}\n")
+        sections.append(f"Next writing action: {row['next_action']}\n")
+
+    sections.extend(
+        [
+            "## Agent-Assisted Pipeline Outlook\n",
+            "Use this only as future work. Later agents may help read the evidence map, "
+            "check citation readiness, and compare draft paragraphs with allowed or "
+            "blocked wording. They must not calculate metrics, read raw tables by "
+            "default, expose wallet-address rows, or create order/trading paths. "
+            "Future LLM calls require `llm_audit_log` first.\n",
+        ]
+    )
+    return "\n".join(sections)
+
+
+def _areas_for_evidence_ids(evidence_ids: list[str]) -> list[str]:
+    areas: list[str] = []
+    for evidence_id in evidence_ids:
+        if "_h1_" in evidence_id or evidence_id.endswith("_h1_brier_dm"):
+            areas.append("H1")
+        elif "_h2_" in evidence_id:
+            areas.append("H2")
+        elif "_h3_" in evidence_id:
+            areas.append("H3")
+        elif "monitor" in evidence_id:
+            areas.append("monitor_prototype")
+        elif "swiss" in evidence_id:
+            areas.append("swiss_referendum")
+    return sorted(set(areas))
 
 
 def _require_columns(frame: pd.DataFrame, columns: Sequence[str], name: str) -> None:

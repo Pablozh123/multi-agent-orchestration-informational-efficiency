@@ -48,7 +48,8 @@
     "evidence_rows": 13,
     "max_core_figures": 4,
     "max_core_tables": 5,
-    "package_rows": 10
+    "package_rows": 10,
+    "writing_blueprint_generated": true
   },
   "readiness_counts": {
     "appendix_prototype_only": 2,

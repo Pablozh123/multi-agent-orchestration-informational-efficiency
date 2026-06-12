@@ -29,6 +29,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     metadata = json.loads(result.metadata_path.read_text(encoding="utf-8"))
     doc = result.docs_path.read_text(encoding="utf-8")
     agent_doc = result.agent_docs_path.read_text(encoding="utf-8")
+    writing_blueprint = result.writing_blueprint_path.read_text(encoding="utf-8")
 
     assert tuple(evidence.columns) == EVIDENCE_COLUMNS
     assert tuple(citations.columns) == CITATION_READINESS_COLUMNS
@@ -46,9 +47,12 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert metadata["guardrails"]["future_agents_documentation_only"] is True
     assert metadata["outputs"]["core_table_count"] <= metadata["outputs"]["max_core_tables"]
     assert metadata["outputs"]["core_figure_count"] <= metadata["outputs"]["max_core_figures"]
+    assert metadata["outputs"]["writing_blueprint_generated"] is True
     assert "Deferred Agent Pipeline Idea" in doc
     assert "Citation Readiness" in doc
     assert "Thesis Agent Pipeline Roadmap" in agent_doc
+    assert "Thesis Writing Blueprint" in writing_blueprint
+    assert "Agent-Assisted Pipeline Outlook" in writing_blueprint
     assert core["bounded_interpretation"].str.len().gt(0).all()
     assert package["main_limitation"].str.len().gt(0).all()
 
@@ -136,6 +140,19 @@ def test_agent_pipeline_is_documentation_only_and_audited(tmp_path: Path) -> Non
     assert "raw table" in joined
     assert "wallet-address" in joined
     assert "order or trading paths" in joined
+
+
+def test_writing_blueprint_keeps_front_matter_method_focused(tmp_path: Path) -> None:
+    _write_fixture(tmp_path)
+
+    result = generate_thesis_consolidation(repo_root=tmp_path)
+
+    blueprint = result.writing_blueprint_path.read_text(encoding="utf-8")
+    front_matter = blueprint.split("## H1: Prognosequalitaet", maxsplit=1)[0]
+
+    assert "Result statements to use:" not in front_matter
+    assert "Core Writing Rule" in front_matter
+    assert "data/results/thesis_citation_readiness.csv" in front_matter
 
 
 def test_missing_source_artifact_fails_clearly(tmp_path: Path) -> None:

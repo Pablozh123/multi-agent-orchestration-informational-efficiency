@@ -8188,3 +8188,41 @@ Verification:
   -> PASS, 14 passed.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 495 passed in 48.91s.
+
+## 2026-06-12 - Thesis writing blueprint
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Turned the consolidation package into a chapter-by-chapter writing blueprint
+  so the selected tables, figures, evidence IDs, limitations, and source-review
+  tasks can directly guide BA drafting.
+
+Changes:
+
+- Extended `operations/analysis/thesis_consolidation.py` with
+  `docs/research/THESIS_WRITING_BLUEPRINT.md` generation.
+- The blueprint uses `thesis_chapter_plan.csv`,
+  `thesis_core_results_table.csv`, `thesis_curated_result_package.csv`, and
+  `thesis_citation_readiness.csv`.
+- Result statements are kept out of the introduction, theory, and methodology
+  front matter; they begin in the H1-H3, extensions, and discussion chapters.
+- Updated tests to verify that the blueprint is generated and that front matter
+  stays method-focused.
+- Updated `GOAL.md` and `ROADMAP.md` for the writing-blueprint slice.
+
+Key output:
+
+- New document: `docs/research/THESIS_WRITING_BLUEPRINT.md`.
+- The blueprint covers source/citation work, the core writing rule, eight BA
+  chapter sections, recommended package items, result statements, limitations,
+  and next writing actions.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`
+  -> PASS, generated the writing blueprint.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_consolidation.py tests\test_thesis_result_summaries.py tests\test_thesis_figures.py`
+  -> PASS, 15 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 496 passed in 47.23s.

@@ -664,6 +664,8 @@ Current implemented consolidation:
   high-level project view for the advisor: review access paused, H1-H3 as
   empirical core, five core tables, four core figures, citation-review gates,
   Monitor/Swiss boundaries, and agents as inactive future work.
+- The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
+  German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - `data/results/thesis_citation_review_packets.csv` and
   `docs/research/THESIS_CITATION_REVIEW_PACKETS.md` break citation readiness
   into source-evidence review packets with review questions, required checks,

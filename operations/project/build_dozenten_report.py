@@ -211,6 +211,7 @@ def collect_report_data() -> dict[str, Any]:
     literature = _read_csv("data/literature/literature_index.csv")
     thesis_metadata = _read_json("data/results/thesis_consolidation_metadata.json")
     thesis_captions = _read_csv("data/results/thesis_table_figure_captions.csv")
+    thesis_next_work = _read_csv("data/results/thesis_next_work_plan.csv")
 
     return {
         "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
@@ -272,6 +273,7 @@ def collect_report_data() -> dict[str, Any]:
         ),
         "literature": _literature_data(literature),
         "thesis_highlevel": _thesis_highlevel_data(thesis_metadata, thesis_captions),
+        "next_work": _next_work_report_data(thesis_next_work),
         "source_counts": {
             "curated_events": len(event_seed),
             "literature_rows": len(literature),
@@ -291,6 +293,7 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
     swiss = data["swiss"]
     literature = data["literature"]
     highlevel = data["thesis_highlevel"]
+    next_work = data["next_work"]
     db = data["project"]["database"]
     folders = data["project"]["folder_inventory"]
     insight_rows = [
@@ -324,6 +327,17 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
         note = str(source["research_note"]).replace("|", ",")
         literature_rows.append(
             f"| `{source['source_id']}` - {citation} | {role} | {note} | {source['status']} |"
+        )
+
+    next_work_rows = [
+        "| Prioritaet | Workstream | Naechste Aktion | Guardrail |",
+        "| --- | --- | --- | --- |",
+    ]
+    for row in next_work["rows"]:
+        next_work_rows.append(
+            "| {priority_order} | {workstream} | {next_action} | {guardrail} |".format(
+                **{key: str(value).replace("|", ",") for key, value in row.items()}
+            )
         )
 
     lines = [
@@ -390,6 +404,16 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
             f"| {row[0]} | {row[1]} | {row[2]} |"
             for row in highlevel["rows"]
         ],
+        "",
+        "## Naechste Arbeitsschritte",
+        "",
+        (
+            f"Der Next-Work-Plan ordnet {next_work['row_count']} Workstreams. "
+            f"Erste Prioritaet ist `{next_work['first_workstream']}`, letzte "
+            f"QA-Prioritaet ist `{next_work['final_workstream']}`."
+        ),
+        "",
+        *next_work_rows,
         "",
         "## Forschungsfrage und Hypothesen",
         "",
@@ -1041,6 +1065,7 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
     swiss = data["swiss"]
     literature = data["literature"]
     highlevel = data["thesis_highlevel"]
+    next_work = data["next_work"]
     figures = "\n".join(
         _figure_html(figure, html_output=html_output)
         for figure in data["figures"]
@@ -1081,6 +1106,15 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
         f"<td>{escape(row[2])}</td>"
         "</tr>"
         for row in highlevel["rows"]
+    )
+    next_work_rows = "\n".join(
+        "<tr>"
+        f"<td>{row['priority_order']}</td>"
+        f"<td>{escape(row['workstream'])}</td>"
+        f"<td>{escape(row['next_action'])}</td>"
+        f"<td>{escape(row['guardrail'])}</td>"
+        "</tr>"
+        for row in next_work["rows"]
     )
     h2_rows = "\n".join(
         f"<tr><td>{escape(row['event'])}</td><td>{row['change_pp']:+.1f} pp</td></tr>"
@@ -1144,6 +1178,10 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
   </div>
   <p>Aktive Phase: {escape(highlevel['active_phase'])}. Das Thesis-Paket umfasst {highlevel['caption_rows']} Caption-Zeilen und wird aus <code>data/results/thesis_table_figure_captions.csv</code> gespeist.</p>
   <table><tr><th>Ebene</th><th>Stand</th><th>Konsequenz fuer die Thesis</th></tr>{highlevel_rows}</table>
+
+  <h2>Naechste Arbeitsschritte</h2>
+  <p>Der Next-Work-Plan ordnet {next_work['row_count']} Workstreams. Erste Prioritaet ist <code>{escape(next_work['first_workstream'])}</code>, letzte QA-Prioritaet ist <code>{escape(next_work['final_workstream'])}</code>.</p>
+  <table><tr><th>Prioritaet</th><th>Workstream</th><th>Naechste Aktion</th><th>Guardrail</th></tr>{next_work_rows}</table>
 
   <h2>Forschungsfrage und Design</h2>
   <p>Die Leitfrage lautet, inwiefern Polymarket-Preise Informationen waehrend politischer Ereignisse abbilden, anders als traditionelle Prognosequellen reagieren und ob aggregierte Wallet-Aktivitaet fruehe Timing-Signale zeigt. Informationelle Effizienz wird deshalb nicht direkt behauptet, sondern ueber reproduzierbare Proxies operationalisiert.</p>
@@ -1258,6 +1296,7 @@ def write_docx(data: dict[str, Any], output_path: Path) -> None:
     _add_cover(doc, data)
     _add_toc_note(doc)
     _add_highlevel_status_section(doc, data["thesis_highlevel"])
+    _add_next_work_section(doc, data["next_work"])
     _add_research_design_section(doc, data)
     _add_literature_section(doc, data["literature"])
     _add_methodology_section(doc, data)
@@ -1386,6 +1425,82 @@ def _thesis_highlevel_data(
                 "Keine Runtime-Agenten, kein MCP, keine Modell-Router und keine LLM-Metriken vor stabilem deterministic core.",
             ),
         ],
+    }
+
+
+def _next_work_report_data(next_work_plan: pd.DataFrame) -> dict[str, Any]:
+    ordered = next_work_plan.sort_values("priority_order")
+    german_rows = {
+        "work_01_source_review": (
+            "Quellenreview Kernquellen",
+            "Die 11 Priority-1-Quellen mit Seiten- oder Abschnittsnotizen pruefen.",
+            "Quellenstatus nicht automatisch hochstufen.",
+        ),
+        "work_02_method_chapters": (
+            "Einleitung, Theorie und Methodik schreiben",
+            "Die 8 Kapitelplan-Zeilen fuer Front Matter und Methodenkapitel nutzen.",
+            "RCP, H2-Kuration, H3-Tiers und Agent-Deferral explizit halten.",
+        ),
+        "work_03_h1_results": (
+            "H1-Ergebniskapitel schreiben",
+            "H1 als begrenzte Polymarket-Stuetze plus breiten Claim-Grenze formulieren.",
+            "Keine universelle Polymarket-Ueberlegenheit behaupten.",
+        ),
+        "work_04_h2_h3_results": (
+            "H2- und H3-Ergebniskapitel schreiben",
+            "H2 als taegliche Event-Window-Reaktion und H3 als Wallet-Timingdiagnostik schreiben.",
+            "Keine Intraday-, Kausalitaets-, Private-Information- oder Profitabilitaetsclaims.",
+        ),
+        "work_05_table_figure_integration": (
+            "Kompakte Tabellen und Figuren integrieren",
+            "5 Kern-Tabellen und 4 Kern-Figuren mit generierten Captions verwenden.",
+            "Keine Rohartefakte ohne Update von Evidence Map und Kapitelplan einfuegen.",
+        ),
+        "work_06_monitor_appendix": (
+            "Monitor als Appendix-Prototyp halten",
+            "Monitor nur als read-only Review-Workflow und nicht als Kernbeweis darstellen.",
+            "Keine Wallet-Adress-Exposition und keine Order- oder Trading-Pfade.",
+        ),
+        "work_07_swiss_result_gate": (
+            "Swiss Side-Track nach Ergebnis finalisieren",
+            "Bis zum offiziellen Ergebnis beschreibend bleiben und danach Artefakte neu generieren.",
+            "Poll-Anteile nicht als Gewinnwahrscheinlichkeiten behandeln.",
+        ),
+        "work_08_agent_outlook": (
+            "Agenten-Pipeline als Future Work halten",
+            "Die 7 Protokollzeilen nur als Zukunftsdesign nutzen.",
+            "Keine Runtime-Agenten, kein MCP, kein Model Routing und keine LLM-Metriken.",
+        ),
+        "work_09_advisor_iteration": (
+            "Dozentenfeedback zur Scope-Engfuehrung nutzen",
+            "H1-Wording, Source-Review-Tiefe, Swiss-Platzierung und Appendix-Scope klaeren.",
+            "Empirischen Scope nicht erweitern, bevor der Kern geschrieben ist.",
+        ),
+        "work_10_final_qa": (
+            "Finale Thesis-QA",
+            "Tests, Review-Checks, Citation Checks, Tabellen/Figuren und Swiss-Spelling pruefen.",
+            "Keine finale Aussage ueber Artefakte und gepruefte Quellen hinaus.",
+        ),
+    }
+    rows = []
+    for row in ordered.to_dict(orient="records"):
+        workstream, next_action, guardrail = german_rows.get(
+            str(row["workstream_id"]),
+            (str(row["workstream"]), str(row["next_action"]), str(row["guardrail"])),
+        )
+        rows.append(
+            {
+                "priority_order": int(row["priority_order"]),
+                "workstream": workstream,
+                "next_action": next_action,
+                "guardrail": guardrail,
+            }
+        )
+    return {
+        "row_count": len(rows),
+        "first_workstream": str(ordered.iloc[0]["workstream_id"]),
+        "final_workstream": str(ordered.iloc[-1]["workstream_id"]),
+        "rows": rows,
     }
 
 
@@ -1633,6 +1748,7 @@ def _add_toc_note(doc: Document) -> None:
         doc,
         [
             "Der Highlevel-Block fasst den aktuellen Projektstand fuer den Dozenten zusammen.",
+            "Der Abschnitt Naechste Arbeitsschritte ordnet die kommenden Thesis-Workstreams.",
             "Abschnitt 1 formuliert Forschungsfrage, Hypothesen und BA-Aufbau.",
             "Abschnitt 2 ordnet die hinterlegten wissenschaftlichen Quellen ein.",
             "Abschnitt 3 begruendet Datenbasis, Methodik und Guardrails.",
@@ -1687,6 +1803,39 @@ def _add_highlevel_status_section(doc: Document, highlevel: dict[str, Any]) -> N
             "Basis, Monitor und Swiss bleiben abgegrenzt, und die Thesis soll "
             "mit wenigen guten Tabellen/Figuren statt vielen Rohartefakten "
             "geschrieben werden."
+        ),
+    )
+
+
+def _add_next_work_section(doc: Document, next_work: dict[str, Any]) -> None:
+    doc.add_heading("Naechste Arbeitsschritte", level=1)
+    doc.add_paragraph(
+        f"Der Next-Work-Plan ordnet {next_work['row_count']} Workstreams. "
+        f"Erste Prioritaet ist `{next_work['first_workstream']}`, letzte "
+        f"QA-Prioritaet ist `{next_work['final_workstream']}`."
+    )
+    rows = [
+        (
+            row["priority_order"],
+            row["workstream"],
+            row["next_action"],
+            row["guardrail"],
+        )
+        for row in next_work["rows"]
+    ]
+    table = _add_table(
+        doc,
+        rows,
+        ["Prioritaet", "Workstream", "Naechste Aktion", "Guardrail"],
+        [900, 2100, 3460, 2900],
+    )
+    _shade_table_header(table)
+    _add_callout(
+        doc,
+        "Arbeitslogik",
+        (
+            "Die naechsten Schritte beginnen mit Source Review und Kapiteldraft. "
+            "Swiss, Monitor und Agenten bleiben an ihre jeweiligen Gates gebunden."
         ),
     )
 

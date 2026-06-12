@@ -8509,3 +8509,45 @@ Verification:
   -> PASS, 15 passed.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 502 passed in 50.00s.
+
+## 2026-06-12 - Advisor next-work section
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Integrated the new thesis next-work plan into the advisor-facing
+  Dozentenbericht so the report now explains both project state and the next
+  ordered workstreams.
+
+Changes:
+
+- Extended `operations/project/build_dozenten_report.py` to read
+  `data/results/thesis_next_work_plan.csv`.
+- Added a German `Naechste Arbeitsschritte` section to
+  `docs/project/dozentenbericht_ba_thesis.md`,
+  `docs/project/dozentenbericht_ba_thesis.html`, and
+  `docs/project/dozentenbericht_ba_thesis.docx`.
+- Updated `tests/test_dozenten_report.py` to verify the new section and the
+  first and final workstream IDs.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- The advisor report now shows 10 ordered workstreams, starting with
+  `work_01_source_review` and ending with `work_10_final_qa`.
+- The rendered report table uses German labels and keeps the guardrails
+  visible for source review, chapter drafting, Swiss, Monitor, agents, and
+  final QA.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_dozenten_report.py -q`
+  -> PASS, 1 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_dozenten_report.py tests\test_thesis_consolidation.py -q`
+  -> PASS, 15 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown, HTML, and DOCX; figure_count=43.
+- DOCX render QA with the Documents `render_docx.py` helper -> BLOCKED by
+  `WinError 2`, consistent with missing local LibreOffice/`soffice`.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 502 passed in 48.77s.

@@ -1,6 +1,6 @@
 # Dozentenbericht zur Bachelorarbeit
 
-Erstellt: 2026-06-12T00:35:53+00:00
+Erstellt: 2026-06-12T01:12:54+00:00
 
 **Arbeitstitel:** Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen.
 
@@ -42,6 +42,23 @@ Der Review-Access bleibt pausiert. Der aktuelle Fortschritt liegt in der Thesis-
 | Quellen und Zitation | Die Citation-Review-Pakete verknuepfen Quellen mit Evidence-IDs, erlaubtem Wording und Review-Gates. | Finale Thesis-Zitate brauchen noch Seiten- oder Abschnittsnachweise; candidate Quellen bleiben blockiert. |
 | Monitor und Swiss | Monitor bleibt Prototype/Appendix; Swiss bleibt bis zum offiziellen Ergebnis beschreibender Side-Track. | Beide Teile duerfen die H1-H3-Kernaussage nicht staerker machen als die deterministischen Artefakte erlauben. |
 | Agenten-Ausblick | Agenten koennen spaeter bei Source Review, Drafting und Guardrail-Checks helfen, bleiben aber jetzt deaktiviert. | Keine Runtime-Agenten, kein MCP, keine Modell-Router und keine LLM-Metriken vor stabilem deterministic core. |
+
+## Naechste Arbeitsschritte
+
+Der Next-Work-Plan ordnet 10 Workstreams. Erste Prioritaet ist `work_01_source_review`, letzte QA-Prioritaet ist `work_10_final_qa`.
+
+| Prioritaet | Workstream | Naechste Aktion | Guardrail |
+| --- | --- | --- | --- |
+| 1 | Quellenreview Kernquellen | Die 11 Priority-1-Quellen mit Seiten- oder Abschnittsnotizen pruefen. | Quellenstatus nicht automatisch hochstufen. |
+| 2 | Einleitung, Theorie und Methodik schreiben | Die 8 Kapitelplan-Zeilen fuer Front Matter und Methodenkapitel nutzen. | RCP, H2-Kuration, H3-Tiers und Agent-Deferral explizit halten. |
+| 3 | H1-Ergebniskapitel schreiben | H1 als begrenzte Polymarket-Stuetze plus breiten Claim-Grenze formulieren. | Keine universelle Polymarket-Ueberlegenheit behaupten. |
+| 4 | H2- und H3-Ergebniskapitel schreiben | H2 als taegliche Event-Window-Reaktion und H3 als Wallet-Timingdiagnostik schreiben. | Keine Intraday-, Kausalitaets-, Private-Information- oder Profitabilitaetsclaims. |
+| 5 | Kompakte Tabellen und Figuren integrieren | 5 Kern-Tabellen und 4 Kern-Figuren mit generierten Captions verwenden. | Keine Rohartefakte ohne Update von Evidence Map und Kapitelplan einfuegen. |
+| 6 | Monitor als Appendix-Prototyp halten | Monitor nur als read-only Review-Workflow und nicht als Kernbeweis darstellen. | Keine Wallet-Adress-Exposition und keine Order- oder Trading-Pfade. |
+| 7 | Swiss Side-Track nach Ergebnis finalisieren | Bis zum offiziellen Ergebnis beschreibend bleiben und danach Artefakte neu generieren. | Poll-Anteile nicht als Gewinnwahrscheinlichkeiten behandeln. |
+| 8 | Agenten-Pipeline als Future Work halten | Die 7 Protokollzeilen nur als Zukunftsdesign nutzen. | Keine Runtime-Agenten, kein MCP, kein Model Routing und keine LLM-Metriken. |
+| 9 | Dozentenfeedback zur Scope-Engfuehrung nutzen | H1-Wording, Source-Review-Tiefe, Swiss-Platzierung und Appendix-Scope klaeren. | Empirischen Scope nicht erweitern, bevor der Kern geschrieben ist. |
+| 10 | Finale Thesis-QA | Tests, Review-Checks, Citation Checks, Tabellen/Figuren und Swiss-Spelling pruefen. | Keine finale Aussage ueber Artefakte und gepruefte Quellen hinaus. |
 
 ## Forschungsfrage und Hypothesen
 
@@ -89,7 +106,7 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 | H2 Event-Windows | Polymarket bewegt sich um mehrere kuratierte politische Ereignisse sichtbar in der Tagesauflosung. | 7 kuratierte Ereignisse; groesstes Primaerfenster nach Betrag: 07_13_trump_shooting +7.2 Prozentpunkte. | Das stuetzt eine These, dass oeffentliche Ereignisse in den Marktpreisen sichtbar werden koennen. | Taegliche Daten zeigen Reaktionsrichtung und Groessenordnung, aber keine intraday Reaktionsgeschwindigkeit. |
 | H3 Wallet-Timing | Top-Wallet-Tier-Aktivitaet zeigt eine messbare, aber vorsichtig zu formulierende Timing-Struktur. | 1216 alignierte Modellzeilen; staerkste Korrelation tier_1_top_1pct lag 1 = 0.1858; kleinster Granger-p-Wert 0.0012. | Das ist als Vorhersage-/Timingdiagnostik verwendbar und motiviert weitere Sensitivitaetschecks. | BUY-only Quelle, Tagesaggregation und Multiple-Testing-Risiko begrenzen die Aussage. |
 | Monitor und Review-Queue | Der Monitor hat die richtige Rolle als Kontroll- und Review-Infrastruktur, nicht als Ergebnisgenerator fuer starke Claims. | 3 aktuelle Review-Cases, davon 1 high und 2 medium; Status source_check_pending=3. | Die Review-Queue ist methodisch wichtig, weil sie auffaellige Faelle von thesis-faehiger Evidenz trennt. | Die Queue ist kein Nachweis fuer Ursachen, Regelverstoss, Handelbarkeit, Profitabilitaet oder zukuenftige Entwicklung. |
-| Swiss-Referendum Side-Track | Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen. | 7 Umfragen, 27 Polymarket-Snapshots; latest Polymarket Yes 22.0%, latest poll Yes 45.0%, raw gap -23.0 pp. | Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen. | Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung. |
+| Swiss-Referendum Side-Track | Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen. | 7 Umfragen, 28 Polymarket-Snapshots; latest Polymarket Yes 22.0%, latest poll Yes 45.0%, raw gap -23.0 pp. | Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen. | Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung. |
 
 ## Warum dieses Vorgehen methodisch sinnvoll ist
 
@@ -104,10 +121,10 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Projektstruktur
 
 - SQLite-Datenbank: 9 Tabellen.
-- Ergebnisartefakte: 318 Dateien unter `data/results`.
+- Ergebnisartefakte: 321 Dateien unter `data/results`.
 - Analyse-Module: 76 Dateien.
 - Collector-Module: 10 Dateien.
-- Tests: 95 Testdateien; letzter Status: 499 passed in 51.11s.
+- Tests: 95 Testdateien; letzter Status: 502 passed in 50.46s.
 
 ## H1 - Forecast-Qualitaet
 
@@ -185,7 +202,7 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Schweizer Referendum
 
 - Kuratierte Umfragen: 7.
-- Polymarket snapshots: 27.
+- Polymarket snapshots: 28.
 - Bounded price-history rows: 504.
 - Latest Polymarket Yes: 22.0 Prozent.
 - Latest matched poll Yes: 45.0 Prozent.

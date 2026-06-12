@@ -78,11 +78,13 @@ Current generated consolidation artifacts:
 - `data/results/thesis_chapter_plan.csv`
 - `data/results/thesis_agent_pipeline_roadmap.csv`
 - `data/results/thesis_agent_assistance_protocol.csv`
+- `data/results/thesis_next_work_plan.csv`
 - `docs/research/THESIS_CONSOLIDATION.md`
 - `docs/research/THESIS_TABLE_FIGURE_CAPTIONS.md`
 - `docs/research/THESIS_SOURCE_REVIEW_PLAN.md`
 - `docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md`
 - `docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md`
+- `docs/research/THESIS_NEXT_WORK_PLAN.md`
 - `docs/research/THESIS_CITATION_REVIEW_PACKETS.md`
 
 These artifacts are the current thesis-draft bridge from deterministic outputs
@@ -121,6 +123,8 @@ Current mapping rule:
 - `thesis_agent_assistance_protocol.csv` documents possible future helper
   roles over bounded artifacts. It does not activate runtime agents, MCP
   tools, model routing, or unlogged LLM interpretation.
+- `thesis_next_work_plan.csv` orders the remaining thesis work and keeps each
+  step tied to a guardrail, blocker, and deterministic source artifact.
 
 ## Initial Literature Synthesis
 

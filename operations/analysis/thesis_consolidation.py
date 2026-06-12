@@ -33,6 +33,7 @@ GENERATED_ARTIFACTS: frozenset[str] = frozenset(
         "data/results/thesis_table_figure_captions.csv",
         "data/results/thesis_source_review_plan.csv",
         "data/results/thesis_agent_assistance_protocol.csv",
+        "data/results/thesis_next_work_plan.csv",
         "data/results/thesis_consolidation_metadata.json",
         "docs/research/THESIS_CONSOLIDATION.md",
         "docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md",
@@ -42,6 +43,7 @@ GENERATED_ARTIFACTS: frozenset[str] = frozenset(
         "docs/research/THESIS_TABLE_FIGURE_CAPTIONS.md",
         "docs/research/THESIS_SOURCE_REVIEW_PLAN.md",
         "docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md",
+        "docs/research/THESIS_NEXT_WORK_PLAN.md",
     }
 )
 
@@ -56,6 +58,7 @@ CITATION_REVIEW_PACKETS_OUTPUT = "thesis_citation_review_packets.csv"
 TABLE_FIGURE_CAPTIONS_OUTPUT = "thesis_table_figure_captions.csv"
 SOURCE_REVIEW_PLAN_OUTPUT = "thesis_source_review_plan.csv"
 AGENT_ASSISTANCE_PROTOCOL_OUTPUT = "thesis_agent_assistance_protocol.csv"
+NEXT_WORK_PLAN_OUTPUT = "thesis_next_work_plan.csv"
 METADATA_OUTPUT = "thesis_consolidation_metadata.json"
 DOC_OUTPUT = "THESIS_CONSOLIDATION.md"
 AGENT_DOC_OUTPUT = "THESIS_AGENT_PIPELINE_ROADMAP.md"
@@ -65,6 +68,7 @@ CITATION_REVIEW_DOC_OUTPUT = "THESIS_CITATION_REVIEW_PACKETS.md"
 TABLE_FIGURE_CAPTIONS_DOC_OUTPUT = "THESIS_TABLE_FIGURE_CAPTIONS.md"
 SOURCE_REVIEW_PLAN_DOC_OUTPUT = "THESIS_SOURCE_REVIEW_PLAN.md"
 AGENT_ASSISTANCE_PROTOCOL_DOC_OUTPUT = "THESIS_AGENT_ASSISTANCE_PROTOCOL.md"
+NEXT_WORK_PLAN_DOC_OUTPUT = "THESIS_NEXT_WORK_PLAN.md"
 
 EVIDENCE_COLUMNS: tuple[str, ...] = (
     "evidence_id",
@@ -217,6 +221,18 @@ AGENT_ASSISTANCE_PROTOCOL_COLUMNS: tuple[str, ...] = (
     "thesis_value",
 )
 
+NEXT_WORK_PLAN_COLUMNS: tuple[str, ...] = (
+    "workstream_id",
+    "priority_order",
+    "workstream",
+    "thesis_section",
+    "current_artifact",
+    "next_action",
+    "done_when",
+    "blocked_until",
+    "guardrail",
+)
+
 
 @dataclass(frozen=True)
 class ThesisConsolidationResult:
@@ -233,6 +249,7 @@ class ThesisConsolidationResult:
     table_figure_captions_path: Path
     source_review_plan_path: Path
     agent_assistance_protocol_path: Path
+    next_work_plan_path: Path
     metadata_path: Path
     docs_path: Path
     agent_docs_path: Path
@@ -242,6 +259,7 @@ class ThesisConsolidationResult:
     table_figure_captions_docs_path: Path
     source_review_plan_docs_path: Path
     agent_assistance_protocol_docs_path: Path
+    next_work_plan_docs_path: Path
     evidence_rows: int
     core_result_rows: int
     package_rows: int
@@ -252,6 +270,7 @@ class ThesisConsolidationResult:
     table_figure_caption_rows: int
     source_review_plan_rows: int
     agent_assistance_protocol_rows: int
+    next_work_plan_rows: int
 
     def to_dict(self) -> dict[str, str | int]:
         return {
@@ -266,6 +285,7 @@ class ThesisConsolidationResult:
             "table_figure_captions_path": str(self.table_figure_captions_path),
             "source_review_plan_path": str(self.source_review_plan_path),
             "agent_assistance_protocol_path": str(self.agent_assistance_protocol_path),
+            "next_work_plan_path": str(self.next_work_plan_path),
             "metadata_path": str(self.metadata_path),
             "docs_path": str(self.docs_path),
             "agent_docs_path": str(self.agent_docs_path),
@@ -275,6 +295,7 @@ class ThesisConsolidationResult:
             "table_figure_captions_docs_path": str(self.table_figure_captions_docs_path),
             "source_review_plan_docs_path": str(self.source_review_plan_docs_path),
             "agent_assistance_protocol_docs_path": str(self.agent_assistance_protocol_docs_path),
+            "next_work_plan_docs_path": str(self.next_work_plan_docs_path),
             "evidence_rows": self.evidence_rows,
             "core_result_rows": self.core_result_rows,
             "package_rows": self.package_rows,
@@ -285,6 +306,7 @@ class ThesisConsolidationResult:
             "table_figure_caption_rows": self.table_figure_caption_rows,
             "source_review_plan_rows": self.source_review_plan_rows,
             "agent_assistance_protocol_rows": self.agent_assistance_protocol_rows,
+            "next_work_plan_rows": self.next_work_plan_rows,
         }
 
 
@@ -384,6 +406,13 @@ def generate_thesis_consolidation(
     _validate_source_review_plan(source_review_plan)
     agent_assistance_protocol = build_agent_assistance_protocol()
     _validate_agent_assistance_protocol(agent_assistance_protocol)
+    next_work_plan = build_next_work_plan(
+        chapter_plan=chapter_plan,
+        source_review_plan=source_review_plan,
+        table_figure_captions=table_figure_captions,
+        agent_assistance_protocol=agent_assistance_protocol,
+    )
+    _validate_next_work_plan(next_work_plan)
 
     results_dir.mkdir(parents=True, exist_ok=True)
     docs_dir.mkdir(parents=True, exist_ok=True)
@@ -398,6 +427,7 @@ def generate_thesis_consolidation(
     table_figure_captions_path = results_dir / TABLE_FIGURE_CAPTIONS_OUTPUT
     source_review_plan_path = results_dir / SOURCE_REVIEW_PLAN_OUTPUT
     agent_assistance_protocol_path = results_dir / AGENT_ASSISTANCE_PROTOCOL_OUTPUT
+    next_work_plan_path = results_dir / NEXT_WORK_PLAN_OUTPUT
     metadata_path = results_dir / METADATA_OUTPUT
     docs_path = docs_dir / DOC_OUTPUT
     agent_docs_path = docs_dir / AGENT_DOC_OUTPUT
@@ -407,6 +437,7 @@ def generate_thesis_consolidation(
     table_figure_captions_docs_path = docs_dir / TABLE_FIGURE_CAPTIONS_DOC_OUTPUT
     source_review_plan_docs_path = docs_dir / SOURCE_REVIEW_PLAN_DOC_OUTPUT
     agent_assistance_protocol_docs_path = docs_dir / AGENT_ASSISTANCE_PROTOCOL_DOC_OUTPUT
+    next_work_plan_docs_path = docs_dir / NEXT_WORK_PLAN_DOC_OUTPUT
 
     evidence_map.to_csv(evidence_map_path, index=False)
     core_results.to_csv(core_results_path, index=False)
@@ -418,6 +449,7 @@ def generate_thesis_consolidation(
     table_figure_captions.to_csv(table_figure_captions_path, index=False)
     source_review_plan.to_csv(source_review_plan_path, index=False)
     agent_assistance_protocol.to_csv(agent_assistance_protocol_path, index=False)
+    next_work_plan.to_csv(next_work_plan_path, index=False)
     evidence_map_md_path.write_text(
         _render_evidence_markdown(evidence_map),
         encoding="utf-8",
@@ -434,6 +466,7 @@ def generate_thesis_consolidation(
         table_figure_captions=table_figure_captions,
         source_review_plan=source_review_plan,
         agent_assistance_protocol=agent_assistance_protocol,
+        next_work_plan=next_work_plan,
     )
     metadata_path.write_text(json.dumps(metadata, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     docs_path.write_text(
@@ -499,6 +532,13 @@ def generate_thesis_consolidation(
         ),
         encoding="utf-8",
     )
+    next_work_plan_docs_path.write_text(
+        _render_next_work_plan_doc(
+            next_work_plan=next_work_plan,
+            metadata=metadata,
+        ),
+        encoding="utf-8",
+    )
 
     return ThesisConsolidationResult(
         evidence_map_path=evidence_map_path,
@@ -512,6 +552,7 @@ def generate_thesis_consolidation(
         table_figure_captions_path=table_figure_captions_path,
         source_review_plan_path=source_review_plan_path,
         agent_assistance_protocol_path=agent_assistance_protocol_path,
+        next_work_plan_path=next_work_plan_path,
         metadata_path=metadata_path,
         docs_path=docs_path,
         agent_docs_path=agent_docs_path,
@@ -521,6 +562,7 @@ def generate_thesis_consolidation(
         table_figure_captions_docs_path=table_figure_captions_docs_path,
         source_review_plan_docs_path=source_review_plan_docs_path,
         agent_assistance_protocol_docs_path=agent_assistance_protocol_docs_path,
+        next_work_plan_docs_path=next_work_plan_docs_path,
         evidence_rows=len(evidence_map),
         core_result_rows=len(core_results),
         package_rows=len(curated_package),
@@ -531,6 +573,7 @@ def generate_thesis_consolidation(
         table_figure_caption_rows=len(table_figure_captions),
         source_review_plan_rows=len(source_review_plan),
         agent_assistance_protocol_rows=len(agent_assistance_protocol),
+        next_work_plan_rows=len(next_work_plan),
     )
 
 
@@ -1493,6 +1536,150 @@ def build_agent_assistance_protocol() -> pd.DataFrame:
     return pd.DataFrame(rows, columns=AGENT_ASSISTANCE_PROTOCOL_COLUMNS)
 
 
+def build_next_work_plan(
+    *,
+    chapter_plan: pd.DataFrame,
+    source_review_plan: pd.DataFrame,
+    table_figure_captions: pd.DataFrame,
+    agent_assistance_protocol: pd.DataFrame,
+) -> pd.DataFrame:
+    """Build the next thesis workstreams from generated planning artifacts."""
+
+    priority_source_count = int(
+        (
+            source_review_plan["priority_band"]
+            == "priority_1_method_foundation_review"
+        ).sum()
+    )
+    core_tables = int(
+        (
+            table_figure_captions["include_in_core_package"].astype(bool)
+            & (table_figure_captions["package_type"] == "table")
+        ).sum()
+    )
+    core_figures = int(
+        (
+            table_figure_captions["include_in_core_package"].astype(bool)
+            & (table_figure_captions["package_type"] == "figure")
+        ).sum()
+    )
+    return pd.DataFrame(
+        [
+            _next_work_row(
+                workstream_id="work_01_source_review",
+                priority_order=1,
+                workstream="Core source review",
+                thesis_section="theory_literature_and_methods",
+                current_artifact="data/results/thesis_source_review_plan.csv",
+                next_action=f"Review the {priority_source_count} priority-1 method-foundation sources and record page or section notes.",
+                done_when="All priority-1 rows have reviewer page or section notes and status decisions are updated by a human.",
+                blocked_until="Full source review is completed for method and core interpretation sources.",
+                guardrail="Do not promote skimmed or candidate sources automatically.",
+            ),
+            _next_work_row(
+                workstream_id="work_02_method_chapters",
+                priority_order=2,
+                workstream="Write introduction, theory, and methods",
+                thesis_section="chapters_01_to_03",
+                current_artifact="data/results/thesis_chapter_plan.csv",
+                next_action=f"Use the {len(chapter_plan)} chapter-plan rows to draft the front matter and methods chapters.",
+                done_when="Each method paragraph names a deterministic artifact and a reviewed or pending-reviewed source boundary.",
+                blocked_until="Core method source review is at least page-note complete.",
+                guardrail="RCP transformation, H2 event curation, H3 tier construction, and agent deferral must stay explicit.",
+            ),
+            _next_work_row(
+                workstream_id="work_03_h1_results",
+                priority_order=3,
+                workstream="Write H1 result chapter",
+                thesis_section="h1_results",
+                current_artifact="data/results/thesis_core_results_table.csv; data/results/h1_poll_claim_readiness_summary.csv",
+                next_action="Write H1 as bounded Polymarket support plus explicit broad-claim boundary.",
+                done_when="The chapter states supported scope, counterexample scopes, and why the broad claim remains not proven.",
+                blocked_until="No blocker for draft; final citation wording waits for source review.",
+                guardrail="Do not state universal Polymarket superiority or RCP probability claims.",
+            ),
+            _next_work_row(
+                workstream_id="work_04_h2_h3_results",
+                priority_order=4,
+                workstream="Write H2 and H3 result chapters",
+                thesis_section="h2_h3_results",
+                current_artifact="data/results/h2_event_window_summary.csv; data/results/thesis_h3_summary.csv",
+                next_action="Draft H2 as daily event-window response and H3 as wallet-tier timing diagnostics.",
+                done_when="Both chapters include the main deterministic result, artifact path, and limitation paragraph.",
+                blocked_until="No blocker for draft; sensitivity and final wording can be refined after source review.",
+                guardrail="No intraday speed claim, no Granger causality claim, no private-information or profitability claim.",
+            ),
+            _next_work_row(
+                workstream_id="work_05_table_figure_integration",
+                priority_order=5,
+                workstream="Integrate compact tables and figures",
+                thesis_section="results_and_appendix",
+                current_artifact="data/results/thesis_table_figure_captions.csv",
+                next_action=f"Use {core_tables} core tables and {core_figures} core figures with the generated captions and limitation notes.",
+                done_when="Every inserted table or figure has label, source artifact, interpretation note, and limitation note.",
+                blocked_until="No blocker for draft; final numbering waits for thesis layout.",
+                guardrail="Do not add raw result files to the core package without updating evidence map and chapter plan.",
+            ),
+            _next_work_row(
+                workstream_id="work_06_monitor_appendix",
+                priority_order=6,
+                workstream="Keep monitor as appendix prototype",
+                thesis_section="appendix_or_discussion",
+                current_artifact="data/results/monitor_anomaly_review_summary.csv",
+                next_action="Mention monitor only as read-only prototype and review workflow.",
+                done_when="Monitor text says review cases are cues, not causal, trading, or thesis-facing efficiency proof.",
+                blocked_until="Human source review of monitor cases exists.",
+                guardrail="No wallet-address exposure by default and no order or trading paths.",
+            ),
+            _next_work_row(
+                workstream_id="work_07_swiss_result_gate",
+                priority_order=7,
+                workstream="Finalize Swiss side track after result",
+                thesis_section="discussion_pending_final_result",
+                current_artifact="data/results/swiss_referendum_10mio_latest_source_comparison.csv",
+                next_action="Keep the Swiss comparison descriptive until the official vote result is available and mapped.",
+                done_when="Official result is recorded, deterministic Swiss artifacts are regenerated, and wording remains bounded.",
+                blocked_until="Official 14 June 2026 vote result is available.",
+                guardrail="Poll shares are not win probabilities and cannot support a final efficiency claim before result mapping.",
+            ),
+            _next_work_row(
+                workstream_id="work_08_agent_outlook",
+                priority_order=8,
+                workstream="Keep agent pipeline as future work",
+                thesis_section="future_work",
+                current_artifact="data/results/thesis_agent_assistance_protocol.csv",
+                next_action=f"Use the {len(agent_assistance_protocol)} protocol rows only as a future-work design section.",
+                done_when="The thesis names useful future roles but states activation gates and blocked actions.",
+                blocked_until="Separate approved goal, llm_audit_log integration, bounded prompts, and tests exist.",
+                guardrail="Do not implement runtime agents, MCP tools, model routing, or LLM metric calculation now.",
+            ),
+            _next_work_row(
+                workstream_id="work_09_advisor_iteration",
+                priority_order=9,
+                workstream="Use advisor feedback to narrow scope",
+                thesis_section="project_management",
+                current_artifact="docs/project/dozentenbericht_ba_thesis.docx",
+                next_action="Ask the advisor to approve the bounded H1 wording, source-review depth, Swiss placement, and appendix scope.",
+                done_when="Advisor feedback is logged and translated into a small next commit plan.",
+                blocked_until="Advisor feedback is received.",
+                guardrail="Do not expand empirical scope before current thesis core is written.",
+            ),
+            _next_work_row(
+                workstream_id="work_10_final_qa",
+                priority_order=10,
+                workstream="Final thesis QA",
+                thesis_section="whole_thesis",
+                current_artifact="STATUS.md; docs/project/WORK_LOG.md",
+                next_action="Run full tests, review checks, citation checks, table/figure checks, and Swiss spelling scan before export.",
+                done_when="Review checks pass, final citations are approved, and the thesis export has no unsupported claims.",
+                blocked_until="Draft chapters, source review, and final result gates are complete.",
+                guardrail="No final submission claim may exceed deterministic artifacts and reviewed sources.",
+            ),
+        ],
+        columns=NEXT_WORK_PLAN_COLUMNS,
+    )
+
+
 def build_citation_review_packets(
     *,
     evidence_map: pd.DataFrame,
@@ -1908,6 +2095,31 @@ def _agent_protocol_row(
     }
 
 
+def _next_work_row(
+    *,
+    workstream_id: str,
+    priority_order: int,
+    workstream: str,
+    thesis_section: str,
+    current_artifact: str,
+    next_action: str,
+    done_when: str,
+    blocked_until: str,
+    guardrail: str,
+) -> dict[str, object]:
+    return {
+        "workstream_id": workstream_id,
+        "priority_order": priority_order,
+        "workstream": workstream,
+        "thesis_section": thesis_section,
+        "current_artifact": current_artifact,
+        "next_action": next_action,
+        "done_when": done_when,
+        "blocked_until": blocked_until,
+        "guardrail": guardrail,
+    }
+
+
 def _read_csv(path: Path) -> pd.DataFrame:
     _required_file(path)
     return pd.read_csv(path)
@@ -2099,6 +2311,33 @@ def _validate_agent_assistance_protocol(protocol: pd.DataFrame) -> None:
         raise ValueError("Agent assistance protocol requires blocked_behaviour for every row.")
 
 
+def _validate_next_work_plan(plan: pd.DataFrame) -> None:
+    _require_columns(plan, NEXT_WORK_PLAN_COLUMNS, "next work plan")
+    if plan["workstream_id"].duplicated().any():
+        raise ValueError("Next work plan contains duplicate workstream_id values.")
+    if plan["priority_order"].duplicated().any():
+        raise ValueError("Next work plan contains duplicate priority_order values.")
+    expected_order = list(range(1, len(plan) + 1))
+    actual_order = sorted(int(value) for value in plan["priority_order"].tolist())
+    if actual_order != expected_order:
+        raise ValueError("Next work plan priority_order must be contiguous from 1.")
+    for column in ("next_action", "done_when", "blocked_until", "guardrail"):
+        if plan[column].astype(str).str.len().eq(0).any():
+            raise ValueError(f"Next work plan contains empty {column}.")
+    joined = "\n".join(plan.astype(str).agg(" ".join, axis=1).tolist()).lower()
+    required_terms = (
+        "source review",
+        "bounded",
+        "llm_audit_log",
+        "no order or trading paths",
+        "official 14 june 2026 vote result",
+        "deterministic artifacts",
+    )
+    missing_terms = [term for term in required_terms if term not in joined]
+    if missing_terms:
+        raise ValueError("Next work plan missing guardrail terms: " + ", ".join(missing_terms))
+
+
 def _validate_citation_review_packets(
     packets: pd.DataFrame,
     evidence_map: pd.DataFrame,
@@ -2212,6 +2451,7 @@ def _build_metadata(
     table_figure_captions: pd.DataFrame,
     source_review_plan: pd.DataFrame,
     agent_assistance_protocol: pd.DataFrame,
+    next_work_plan: pd.DataFrame,
 ) -> dict[str, object]:
     core = curated_package[curated_package["include_in_core_package"].astype(bool)]
     return {
@@ -2234,6 +2474,7 @@ def _build_metadata(
             "table_figure_caption_rows": int(len(table_figure_captions)),
             "source_review_plan_rows": int(len(source_review_plan)),
             "agent_assistance_protocol_rows": int(len(agent_assistance_protocol)),
+            "next_work_plan_rows": int(len(next_work_plan)),
             "writing_blueprint_generated": True,
             "chapter_draft_generated": True,
             "core_table_count": int((core["package_type"] == "table").sum()),
@@ -2303,6 +2544,15 @@ def _build_metadata(
             .sort_index()
             .items()
         },
+        "next_work_plan_counts": {
+            "workstreams": int(len(next_work_plan)),
+            "highest_priority": str(
+                next_work_plan.sort_values("priority_order").iloc[0]["workstream_id"]
+            ),
+            "final_priority": str(
+                next_work_plan.sort_values("priority_order").iloc[-1]["workstream_id"]
+            ),
+        },
         "guardrails": {
             "every_method_and_interpretation_has_artifact": True,
             "citation_readiness_is_status_mapping_not_source_promotion": True,
@@ -2310,6 +2560,7 @@ def _build_metadata(
             "table_figure_captions_use_curated_package_only": True,
             "source_review_plan_is_manual_review_queue": True,
             "agent_assistance_protocol_is_documentation_only": True,
+            "next_work_plan_is_guardrail_bound": True,
             "chapter_plan_uses_curated_package": True,
             "thesis_facing_rows_avoid_candidate_or_rejected_sources": True,
             "swiss_final_efficiency_interpretation_pending": True,
@@ -2438,6 +2689,10 @@ def _render_consolidation_doc(
         "agents could help with source review, wording checks, advisor updates, "
         "and bounded summaries. It is documentation-only and does not activate "
         "runtime agents, MCP tools, model routing, or unlogged LLM interpretation.\n\n"
+        "## Next Work Plan\n\n"
+        "`data/results/thesis_next_work_plan.csv` orders the remaining workstreams "
+        "from source review through final thesis QA. It is a planning artifact and "
+        "does not change empirical results.\n\n"
         "## Chapter Plan\n\n"
         + _markdown_table(
             chapter_plan[
@@ -2684,6 +2939,41 @@ def _render_agent_assistance_protocol_doc(
         "blocked behaviours remain enforced. Agents must not calculate thesis "
         "metrics, read raw table dumps, expose wallet addresses by default, or "
         "touch order or trading paths.\n"
+    )
+
+
+def _render_next_work_plan_doc(
+    *,
+    next_work_plan: pd.DataFrame,
+    metadata: dict[str, object],
+) -> str:
+    display = next_work_plan[
+        [
+            "priority_order",
+            "workstream_id",
+            "workstream",
+            "thesis_section",
+            "current_artifact",
+            "next_action",
+            "blocked_until",
+            "guardrail",
+        ]
+    ].sort_values("priority_order")
+    return (
+        "# Thesis Next Work Plan\n\n"
+        "This plan orders the remaining thesis work after the consolidation "
+        "package. It is a project-control artifact, not a new empirical analysis.\n\n"
+        "## Counts\n\n"
+        f"- Workstreams: {metadata['outputs']['next_work_plan_rows']}\n"
+        f"- First priority: {metadata['next_work_plan_counts']['highest_priority']}\n"
+        f"- Final priority: {metadata['next_work_plan_counts']['final_priority']}\n\n"
+        "## Ordered Workstreams\n\n"
+        + _markdown_table(display)
+        + "\n\n"
+        "## Use Rule\n\n"
+        "Use this file to sequence the thesis work. Do not expand empirical scope, "
+        "activate agents, add raw result files to the core package, or make final "
+        "Swiss efficiency claims before the relevant gates are cleared.\n"
     )
 
 

@@ -65,6 +65,10 @@ This table is a source-control view, not a promotion of source status. Sources m
 
 `data/results/thesis_agent_assistance_protocol.csv` documents how future agents could help with source review, wording checks, advisor updates, and bounded summaries. It is documentation-only and does not activate runtime agents, MCP tools, model routing, or unlogged LLM interpretation.
 
+## Next Work Plan
+
+`data/results/thesis_next_work_plan.csv` orders the remaining workstreams from source review through final thesis QA. It is a planning artifact and does not change empirical results.
+
 ## Chapter Plan
 
 | chapter_id | chapter_title | writing_status | recommended_tables | recommended_figures | next_action |

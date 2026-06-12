@@ -36,6 +36,7 @@
     "llm_audit_log_required_before_future_llm_calls": true,
     "max_future_tool_rows": 50,
     "monitor_review_cases_not_thesis_evidence": true,
+    "next_work_plan_is_guardrail_bound": true,
     "no_order_or_trading_paths": true,
     "no_raw_table_dumps": true,
     "no_wallet_address_exposure_by_default": true,
@@ -52,6 +53,11 @@
     "does_not_write_database": true,
     "name": "thesis_consolidation_evidence_mapping"
   },
+  "next_work_plan_counts": {
+    "final_priority": "work_10_final_qa",
+    "highest_priority": "work_01_source_review",
+    "workstreams": 10
+  },
   "outputs": {
     "agent_assistance_protocol_rows": 7,
     "agent_stage_rows": 6,
@@ -65,6 +71,7 @@
     "evidence_rows": 13,
     "max_core_figures": 4,
     "max_core_tables": 5,
+    "next_work_plan_rows": 10,
     "package_rows": 10,
     "source_review_plan_rows": 15,
     "table_figure_caption_rows": 10,

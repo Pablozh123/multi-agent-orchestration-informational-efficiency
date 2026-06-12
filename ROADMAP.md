@@ -638,6 +638,11 @@ Current implemented consolidation:
   review, evidence drafting, wording guardrails, table/figure checks, advisor
   updates, monitor appendix review, and a deferred bounded MCP summary
   interface.
+- `data/results/thesis_next_work_plan.csv` and
+  `docs/research/THESIS_NEXT_WORK_PLAN.md` order the remaining thesis work into
+  ten guardrail-bound workstreams: source review, front-matter/method chapters,
+  H1, H2/H3, compact table/figure integration, monitor appendix, Swiss result
+  gate, agent outlook, advisor iteration, and final QA.
 - `data/results/thesis_consolidation_metadata.json` records guardrails:
   no LLM use, no agents or MCP, no database writes, no external API calls,
   no raw table dumps, max future tool rows of 50, no wallet-address exposure

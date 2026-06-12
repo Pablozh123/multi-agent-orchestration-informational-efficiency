@@ -8470,3 +8470,42 @@ Verification:
   -> PASS, 14 passed.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 501 passed in 49.23s.
+
+## 2026-06-12 - Thesis next work plan
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Converted the high-level "how to continue" view into an ordered thesis work
+  plan, after leaving review-access implementation paused and keeping agents
+  documentation-only.
+
+Changes:
+
+- Extended `operations/analysis/thesis_consolidation.py` with generated
+  `data/results/thesis_next_work_plan.csv`.
+- Added `docs/research/THESIS_NEXT_WORK_PLAN.md`.
+- Updated `docs/research/THESIS_CONSOLIDATION.md`,
+  `docs/research/LITERATURE_MAP.md`, `ROADMAP.md`, and `GOAL.md`.
+- Extended `tests/test_thesis_consolidation.py` to validate workstream
+  uniqueness, contiguous priority order, non-empty next actions, blockers,
+  done criteria, guardrails, and key gates for source review, agents, Swiss,
+  and final QA.
+
+Key output:
+
+- Next-work plan rows: 10.
+- First priority: `work_01_source_review`.
+- Final priority: `work_10_final_qa`.
+- Workstreams: source review, front-matter/method chapters, H1, H2/H3,
+  compact tables/figures, monitor appendix, Swiss result gate, agent outlook,
+  advisor iteration, and final thesis QA.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`
+  -> PASS, generated next-work plan and documentation.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_consolidation.py tests\test_dozenten_report.py -q`
+  -> PASS, 15 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 502 passed in 50.00s.

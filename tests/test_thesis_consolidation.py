@@ -13,6 +13,7 @@ from operations.analysis.thesis_consolidation import (
     CITATION_READINESS_COLUMNS,
     CITATION_REVIEW_PACKET_COLUMNS,
     EVIDENCE_COLUMNS,
+    NEXT_WORK_PLAN_COLUMNS,
     SOURCE_REVIEW_PLAN_COLUMNS,
     TABLE_FIGURE_CAPTION_COLUMNS,
     generate_thesis_consolidation,
@@ -32,6 +33,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     captions = pd.read_csv(result.table_figure_captions_path)
     source_review_plan = pd.read_csv(result.source_review_plan_path)
     agent_protocol = pd.read_csv(result.agent_assistance_protocol_path)
+    next_work_plan = pd.read_csv(result.next_work_plan_path)
     chapters = pd.read_csv(result.chapter_plan_path)
     agents = pd.read_csv(result.agent_pipeline_path)
     metadata = json.loads(result.metadata_path.read_text(encoding="utf-8"))
@@ -43,6 +45,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     caption_doc = result.table_figure_captions_docs_path.read_text(encoding="utf-8")
     source_review_doc = result.source_review_plan_docs_path.read_text(encoding="utf-8")
     agent_protocol_doc = result.agent_assistance_protocol_docs_path.read_text(encoding="utf-8")
+    next_work_doc = result.next_work_plan_docs_path.read_text(encoding="utf-8")
 
     assert tuple(evidence.columns) == EVIDENCE_COLUMNS
     assert tuple(citations.columns) == CITATION_READINESS_COLUMNS
@@ -50,6 +53,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert tuple(captions.columns) == TABLE_FIGURE_CAPTION_COLUMNS
     assert tuple(source_review_plan.columns) == SOURCE_REVIEW_PLAN_COLUMNS
     assert tuple(agent_protocol.columns) == AGENT_ASSISTANCE_PROTOCOL_COLUMNS
+    assert tuple(next_work_plan.columns) == NEXT_WORK_PLAN_COLUMNS
     assert tuple(chapters.columns) == CHAPTER_PLAN_COLUMNS
     assert tuple(agents.columns) == AGENT_PIPELINE_COLUMNS
     assert result.evidence_rows == 13
@@ -59,6 +63,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert result.table_figure_caption_rows == 10
     assert result.source_review_plan_rows == 12
     assert result.agent_assistance_protocol_rows == 7
+    assert result.next_work_plan_rows == 10
     assert result.chapter_rows == 8
     assert result.agent_stage_rows == 6
     assert metadata["method"]["does_not_use_llms"] is True
@@ -74,12 +79,14 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert metadata["outputs"]["table_figure_caption_rows"] == 10
     assert metadata["outputs"]["source_review_plan_rows"] == 12
     assert metadata["outputs"]["agent_assistance_protocol_rows"] == 7
+    assert metadata["outputs"]["next_work_plan_rows"] == 10
     assert metadata["table_figure_caption_counts"]["core_table_captions"] == 5
     assert metadata["table_figure_caption_counts"]["core_figure_captions"] == 4
     assert metadata["guardrails"]["citation_review_packets_are_pending_human_review"] is True
     assert metadata["guardrails"]["table_figure_captions_use_curated_package_only"] is True
     assert metadata["guardrails"]["source_review_plan_is_manual_review_queue"] is True
     assert metadata["guardrails"]["agent_assistance_protocol_is_documentation_only"] is True
+    assert metadata["guardrails"]["next_work_plan_is_guardrail_bound"] is True
     assert "Deferred Agent Pipeline Idea" in doc
     assert "Citation Readiness" in doc
     assert "Citation Review Packets" in doc
@@ -92,6 +99,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert "Thesis Table And Figure Captions" in caption_doc
     assert "Thesis Source Review Plan" in source_review_doc
     assert "Thesis Agent Assistance Protocol" in agent_protocol_doc
+    assert "Thesis Next Work Plan" in next_work_doc
     assert core["bounded_interpretation"].str.len().gt(0).all()
     assert package["main_limitation"].str.len().gt(0).all()
 
@@ -285,6 +293,31 @@ def test_agent_assistance_protocol_is_documentation_only(tmp_path: Path) -> None
     assert "no status changes" in joined
     assert metadata["agent_assistance_protocol_counts"]["future_documentation_only"] == 6
     assert metadata["agent_assistance_protocol_counts"]["future_deferred"] == 1
+
+
+def test_next_work_plan_orders_remaining_work_with_guardrails(tmp_path: Path) -> None:
+    _write_fixture(tmp_path)
+
+    result = generate_thesis_consolidation(repo_root=tmp_path)
+
+    plan = pd.read_csv(result.next_work_plan_path)
+    metadata = json.loads(result.metadata_path.read_text(encoding="utf-8"))
+    joined = "\n".join(plan.fillna("").astype(str).agg(" ".join, axis=1).tolist()).lower()
+
+    assert plan["workstream_id"].is_unique
+    assert plan["priority_order"].tolist() == list(range(1, len(plan) + 1))
+    assert plan.iloc[0]["workstream_id"] == "work_01_source_review"
+    assert plan.iloc[-1]["workstream_id"] == "work_10_final_qa"
+    assert plan["next_action"].str.len().gt(0).all()
+    assert plan["done_when"].str.len().gt(0).all()
+    assert plan["blocked_until"].str.len().gt(0).all()
+    assert plan["guardrail"].str.len().gt(0).all()
+    assert "llm_audit_log" in joined
+    assert "no order or trading paths" in joined
+    assert "official 14 june 2026 vote result" in joined
+    assert "deterministic artifacts" in joined
+    assert metadata["next_work_plan_counts"]["highest_priority"] == "work_01_source_review"
+    assert metadata["next_work_plan_counts"]["final_priority"] == "work_10_final_qa"
 
 
 def test_writing_blueprint_keeps_front_matter_method_focused(tmp_path: Path) -> None:

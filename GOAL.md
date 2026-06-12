@@ -212,7 +212,9 @@ acceptance_criteria:
 - A H1-H2-H3 drafting checklist exists so each empirical core chapter can be
   drafted in a fixed order: method setup, result statement, interpretation
   boundary, table/figure integration, Source Review citation gate, and
-  future-agent boundary.
+  future-agent boundary. It now carries the Manual Source Review Follow-up
+  Overview-/Ledger-Abgleich into every source-review-and-citation drafting
+  step before any final citation.
 - A bounded H1-H2-H3 chapter draft exists so the empirical core has ordered
   prose blocks for method setup, result statement, interpretation boundary,
   table/figure integration, Source Review citation gate, and future-agent
@@ -254,7 +256,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: refresh h1 h2 h3 drafting checklist after overview
+next_commit: docs: refresh bounded chapter draft after overview
 
 ## Running Side Goal
 

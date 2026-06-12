@@ -863,6 +863,8 @@ Current implemented consolidation:
   interpretation boundary, table/figure integration, Source Review citation
   gate, and future-agent boundary for each empirical core chapter. All rows
   are bounded-draft-ready; final submission remains blocked by Source Review.
+  The Source Review citation gate now carries the Manual Source Review
+  Follow-up Overview-/Ledger-Abgleich into the H1/H2/H3 writing order.
 - `data/results/thesis_h1_h2_h3_bounded_chapter_draft.csv` and
   `docs/research/THESIS_H1_H2_H3_BOUNDED_CHAPTER_DRAFT.md` turn that
   checklist into 18 ordered BA-prose blocks: method setup, result statement,

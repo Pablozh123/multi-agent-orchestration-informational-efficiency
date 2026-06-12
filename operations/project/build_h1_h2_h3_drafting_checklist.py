@@ -167,7 +167,10 @@ def build_h1_h2_h3_drafting_checklist(
         (
             "thesis_area",
             "check_area",
+            "source_artifact",
             "completion_status",
+            "required_evidence_de",
+            "manual_action_de",
             "ready_for_bounded_draft",
             "ready_for_final_submission",
         ),
@@ -199,9 +202,10 @@ def build_h1_h2_h3_drafting_checklist(
             raise ValueError(f"Missing chapter handoff row for {area}.")
         area_checks = source_checklist[source_checklist["thesis_area"] == area]
         _validate_area_checks(area=area, area_checks=area_checks)
+        overview_gate = _overview_gate_text(area=area, area_checks=area_checks)
         package_ids = _split_semicolon(str(handoff_row["result_package_items"]))
         caption_labels = _caption_labels(captions_by_package=captions_by_package, package_ids=package_ids)
-        source_gate = str(handoff_row["required_source_review_de"])
+        source_gate = f"{handoff_row['required_source_review_de']} {overview_gate}"
         final_ready = bool(area_checks["ready_for_final_submission"].map(_bool_value).all())
         rows.extend(
             [
@@ -279,7 +283,9 @@ def build_h1_h2_h3_drafting_checklist(
                     source_review_gate=source_gate,
                     draft_instruction_de=(
                         "Source-Gate im Kapitel sichtbar halten: finale Zitation erst "
-                        "nach Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use."
+                        "nach Manual Source Review Follow-up Overview, "
+                        "Overview-/Ledger-Abgleich, Page-/Section-Note, "
+                        "Claim-Support, Blocked-Wording und Citation-Use."
                     ),
                     text_seed=source_gate,
                     completion_status=(
@@ -402,6 +408,8 @@ def _validate_drafting_checklist(checklist: pd.DataFrame) -> None:
         "keine neue kennzahl",
         "keine finale zitation",
         "source-gate",
+        "manual source review follow-up overview",
+        "overview-/ledger-abgleich",
         "keine runtime-agenten",
         "llm_audit_log",
         "bounded inputs",
@@ -418,6 +426,34 @@ def _validate_area_checks(*, area: str, area_checks: pd.DataFrame) -> None:
         raise ValueError(f"Expected 6 chapter source-review checklist rows for {area}.")
     if not area_checks["ready_for_bounded_draft"].map(_bool_value).all():
         raise ValueError(f"Not all source-review checklist rows are bounded-draft-ready for {area}.")
+    overview_checks = area_checks[
+        area_checks["check_area"].isin(("literature_source_review", "final_citation_gate"))
+    ]
+    if len(overview_checks) != 2:
+        raise ValueError(f"Missing overview-bound source-review checks for {area}.")
+    joined = "\n".join(overview_checks.astype(str).agg(" ".join, axis=1).tolist()).lower()
+    required_terms = (
+        "thesis_manual_source_review_followup_overview",
+        "manual source review follow-up overview",
+        "overview-/ledger-abgleich",
+    )
+    missing = [term for term in required_terms if term not in joined]
+    if missing:
+        raise ValueError(f"{area} source-review checks missing overview terms: {', '.join(missing)}")
+
+
+def _overview_gate_text(*, area: str, area_checks: pd.DataFrame) -> str:
+    rows = area_checks[
+        area_checks["check_area"].isin(("literature_source_review", "final_citation_gate"))
+    ].sort_values("check_area")
+    if rows.empty:
+        raise ValueError(f"Missing overview-bound source-review rows for {area}.")
+    evidence = " ".join(rows["required_evidence_de"].astype(str).tolist())
+    actions = " ".join(rows["manual_action_de"].astype(str).tolist())
+    return (
+        "Manual Source Review Follow-up Overview und Overview-/Ledger-Abgleich "
+        f"fuer {area}: {evidence} {actions}"
+    )
 
 
 def _caption_labels(*, captions_by_package: dict[str, dict[str, object]], package_ids: list[str]) -> str:
@@ -494,6 +530,9 @@ def _render_drafting_doc(checklist: pd.DataFrame) -> str:
         "die empirischen BA-Kapitel. Sie berechnet keine Kennzahlen, liest keine "
         "Quelleninhalte, promotet keinen Quellenstatus und aktiviert keine "
         "Runtime-Agenten.\n\n"
+        "Die Source-Review- und Zitationsschritte uebernehmen den Manual "
+        "Source Review Follow-up Overview-/Ledger-Abgleich aus der Chapter "
+        "Source Review Checklist.\n\n"
         "## Counts\n\n"
         f"- Drafting rows: {len(checklist)}\n"
         f"- Bounded draft ready rows: {int(checklist['ready_for_bounded_draft'].map(_bool_value).sum())}\n"
@@ -509,6 +548,8 @@ def _render_drafting_doc(checklist: pd.DataFrame) -> str:
         "kuratierte Tabellen/Figuren, Limitationen, blockiertes Wording und "
         "Source-Gate sichtbar halten. Keine neue Kennzahl, keine Rohartefakt-"
         "Dumps und keine finale Zitation, solange Source Review offen ist. "
+        "Vor dem Citation Gate muss der Manual Source Review Follow-up "
+        "Overview-/Ledger-Abgleich sichtbar bleiben. "
         "Agenten bleiben Future Work: keine Runtime-Agenten, kein MCP, kein "
         "Model Routing, keine LLM-Metriken, keine Wallet-Adress-Exposition und "
         "keine Trading-Pfade.\n"

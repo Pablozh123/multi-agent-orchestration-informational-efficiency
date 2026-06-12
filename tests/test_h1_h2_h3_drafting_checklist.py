@@ -34,6 +34,8 @@ def test_generate_h1_h2_h3_drafting_checklist_writes_six_steps_per_chapter(
     assert "H1-H2-H3 Drafting Checklist" in doc
     assert "Drafting rows: 18" in doc
     assert "Final submission ready rows: 0" in doc
+    assert "Manual Source Review Follow-up Overview" in doc
+    assert "Overview-/Ledger-Abgleich" in doc
     assert "Keine neue Kennzahl" in doc
     assert "Runtime-Agenten" in doc
     assert chr(223) not in doc
@@ -134,12 +136,33 @@ def _handoff(area: str, package_items: str) -> dict[str, str]:
 
 
 def _source_check(area: str, idx: int, *, is_final_gate: bool) -> dict[str, object]:
+    is_literature_review = idx == 2
+    check_area = "final_citation_gate" if is_final_gate else "literature_source_review" if is_literature_review else "fixture_check"
+    source_artifact = "data/results/thesis_source_review_chapter_handoff.csv"
+    required_evidence = f"{area}: fixture evidence."
+    manual_action = "Fixture pruefen."
+    if is_literature_review or is_final_gate:
+        source_artifact = (
+            "data/results/thesis_manual_source_review_followup_overview.csv; "
+            f"data/results/thesis_{area.lower()}_manual_source_review_followup.csv"
+        )
+        required_evidence = (
+            f"{area}: Manual Source Review Follow-up Overview; "
+            "Overview-/Ledger-Abgleich pending."
+        )
+        manual_action = (
+            "Manual Source Review Follow-up Overview pruefen und "
+            "Overview-/Ledger-Abgleich dokumentieren."
+        )
     return {
         "thesis_area": area,
-        "check_area": "final_citation_gate" if is_final_gate else "fixture_check",
+        "check_area": check_area,
+        "source_artifact": source_artifact,
         "completion_status": (
             "final_blocked_source_review_pending" if is_final_gate else "bounded_draft_ready"
         ),
+        "required_evidence_de": required_evidence,
+        "manual_action_de": manual_action,
         "ready_for_bounded_draft": True,
         "ready_for_final_submission": False,
     }

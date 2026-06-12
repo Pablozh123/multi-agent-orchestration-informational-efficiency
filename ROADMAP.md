@@ -657,6 +657,11 @@ Current implemented consolidation:
   status matrix for the high-level view: H1-H3 as thesis core, source review as
   the active gate, review access paused, Swiss pending final result, and agents
   documentation-only.
+- `data/results/thesis_execution_checklist.csv` and
+  `docs/project/THESIS_EXECUTION_CHECKLIST.md` translate the high-level view
+  into eight chapter-level writing and acceptance tasks with source gates,
+  table/figure items, advisor-question IDs, and explicit Review-Access,
+  Swiss, runtime-agent, and raw-artifact boundaries.
 - `data/results/thesis_consolidation_metadata.json` records guardrails:
   no LLM use, no agents or MCP, no database writes, no external API calls,
   no raw table dumps, max future tool rows of 50, no wallet-address exposure
@@ -692,9 +697,9 @@ Current implemented consolidation:
 - `data/results/thesis_consolidation_index.csv` and
   `docs/project/THESIS_CONSOLIDATION_INDEX.md` index the current
   consolidation deliverables so the Dozentenbericht, advisor checklist,
-  highlevel view, work plan, source worksheet, wording guard, table/figure
-  captions, chapter draft, source review plan, agent protocol, status, and
-  work log are easy to navigate.
+  highlevel view, work plan, execution checklist, source worksheet, wording
+  guard, table/figure captions, chapter draft, source review plan, agent
+  protocol, status, and work log are easy to navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - `data/results/thesis_citation_review_packets.csv` and

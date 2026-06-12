@@ -8815,3 +8815,44 @@ Verification:
   -> PASS, 511 passed in 50.66s.
 - `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
   -> PASS, recommends reviewing one coherent docs/data/automation slice.
+
+## 2026-06-12 - Thesis execution checklist
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Left Review-Access paused and turned the high-level project view into a
+  chapter-level writing and acceptance checklist.
+
+Changes:
+
+- Added `operations/project/build_thesis_execution_checklist.py`.
+- Generated `data/results/thesis_execution_checklist.csv`.
+- Added `docs/project/THESIS_EXECUTION_CHECKLIST.md`.
+- Added `tests/test_thesis_execution_checklist.py`.
+- Updated the thesis consolidation index to include the execution checklist.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Execution tasks: 8.
+- The checklist maps each thesis chapter to primary inputs, table/figure items,
+  source gates, draft action, done-when criterion, and advisor-question IDs.
+- It keeps Review-Access paused, Swiss descriptive until the official 14 June
+  2026 result mapping, runtime agents/MCP/model routing disabled, and raw
+  artifact dumps out of the active thesis core.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_execution_checklist.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_execution_checklist`
+  -> PASS, generated 8 execution tasks.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 13 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 513 passed in 49.26s.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> PASS, 513 passed in 50.51s.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+  -> PASS, recommends reviewing one coherent docs/data/automation slice.

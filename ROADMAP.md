@@ -766,6 +766,12 @@ Current implemented consolidation:
   rows, 1 metadata/future-work row, and 33 pending reviewer decisions. These
   rows require Page-/Section-Notes, claim-support decisions, and
   blocked-wording checks before final citation.
+- `data/results/thesis_h1_h2_h3_source_review_notes.csv` and
+  `docs/project/THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md` focus the manual
+  source-review queue on the empirical BA core: 23 pending H1-H2-H3 notes
+  across H1 (10), H2 (5), and H3 (8), each linked to Evidence ID, selected
+  table, selected figure, deterministic artifact, locator task,
+  Claim-Support decision, Blocked-Wording check, and Source Review gate.
 - `data/results/thesis_method_interpretation_traceability.csv`,
   `data/results/thesis_result_package_traceability.csv`, and
   `docs/project/THESIS_TRACEABILITY_AUDIT.md` audit the draft traceability of

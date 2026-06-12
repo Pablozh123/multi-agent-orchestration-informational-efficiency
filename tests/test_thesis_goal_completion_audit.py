@@ -26,6 +26,8 @@ def test_generate_goal_completion_audit_writes_remaining_gates(tmp_path: Path) -
     assert "thesis_source_access_audit.csv" in doc
     assert "thesis_source_structure_inventory.csv" in doc
     assert "thesis_source_review_decision_packets.csv" in doc
+    assert "thesis_h1_h2_h3_source_review_notes.csv" in doc
+    assert "THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md" in doc
     assert "thesis_method_interpretation_traceability.csv" in doc
     assert "thesis_result_package_traceability.csv" in doc
     assert "thesis_h1_h2_h3_core_sections.csv" in doc
@@ -56,6 +58,7 @@ def test_goal_completion_audit_keeps_open_gates_visible(tmp_path: Path) -> None:
     assert "llm_audit_log" in joined
     assert "source structure: 1 pdf, 1 html, 1 external-only zeilen" in joined
     assert "source decisions: 2 pakete; full review: 1; metadata-only: 1; pending: 2" in joined
+    assert "h1-h2-h3 source notes: 3 zeilen; h1: 1; h2: 1; h3: 1; pending: 3" in joined
     assert "traceability: 1 methoden, 1 interpretationen, 0 gaps" in joined
     assert "traceability-kernpaket: 5 tabellen, 4 figuren, 0 gaps" in joined
     assert "h1-h2-h3 core sections: 3 zeilen (h1; h2; h3)" in joined
@@ -143,6 +146,13 @@ def _write_fixture(root: Path) -> None:
             },
         ]
     ).to_csv(results / "thesis_source_review_decision_packets.csv", index=False)
+    pd.DataFrame(
+        [
+            _source_note("note_h1", "H1", "T2", "F1"),
+            _source_note("note_h2", "H2", "T3", "F2"),
+            _source_note("note_h3", "H3", "T4", "F3"),
+        ]
+    ).to_csv(results / "thesis_h1_h2_h3_source_review_notes.csv", index=False)
     pd.DataFrame(
         [
             {
@@ -243,6 +253,7 @@ def _write_fixture(root: Path) -> None:
         "data/results/thesis_project_highlevel_view.csv",
         "data/results/thesis_agent_assistance_protocol.csv",
         "docs/project/THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md",
+        "docs/project/THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md",
         "docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md",
         "docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md",
     ]:
@@ -265,4 +276,14 @@ def _gate(gate_area: str, current_status: str) -> dict[str, str]:
     return {
         "gate_area": gate_area,
         "current_status": current_status,
+    }
+
+
+def _source_note(note_id: str, area: str, table: str, figure: str) -> dict[str, str]:
+    return {
+        "note_id": note_id,
+        "thesis_area": area,
+        "note_status": "pending_manual_source_review",
+        "selected_table": table,
+        "selected_figure": figure,
     }

@@ -19,9 +19,9 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     doc = result.docs_path.read_text(encoding="utf-8")
 
     assert tuple(index.columns) == INDEX_COLUMNS
-    assert result.index_rows == 29
+    assert result.index_rows == 30
     assert "Thesis Consolidation Index" in doc
-    assert "Indexed artifacts: 29" in doc
+    assert "Indexed artifacts: 30" in doc
     assert "dozentenbericht_ba_thesis.docx" in doc
     assert "THESIS_ADVISOR_HANDOFF_PACKAGE.md" in doc
     assert "DOZENTEN_UEBERGABE_TEXT.md" in doc
@@ -31,6 +31,7 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     assert "THESIS_SOURCE_ACCESS_AUDIT.md" in doc
     assert "THESIS_SOURCE_STRUCTURE_INVENTORY.md" in doc
     assert "THESIS_SOURCE_REVIEW_DECISION_PACKETS.md" in doc
+    assert "THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md" in doc
     assert "THESIS_TRACEABILITY_AUDIT.md" in doc
     assert "THESIS_H1_H2_H3_CORE_SECTIONS.md" in doc
     assert "THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md" in doc
@@ -60,6 +61,7 @@ def test_thesis_consolidation_index_keeps_deferred_boundaries(tmp_path: Path) ->
     assert "source_access_audit" in joined
     assert "source_structure_inventory" in joined
     assert "source_review_decision_packets" in joined
+    assert "h1_h2_h3_source_review_notes" in joined
     assert "traceability_audit" in joined
     assert "h1_h2_h3_core_sections" in joined
     assert "agent_pipeline_upgrade_plan" in joined
@@ -106,6 +108,8 @@ def _write_fixture(root: Path) -> None:
         "data/results/thesis_source_structure_inventory.csv",
         "docs/project/THESIS_SOURCE_REVIEW_DECISION_PACKETS.md",
         "data/results/thesis_source_review_decision_packets.csv",
+        "docs/project/THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md",
+        "data/results/thesis_h1_h2_h3_source_review_notes.csv",
         "docs/project/THESIS_TRACEABILITY_AUDIT.md",
         "data/results/thesis_method_interpretation_traceability.csv",
         "data/results/thesis_result_package_traceability.csv",

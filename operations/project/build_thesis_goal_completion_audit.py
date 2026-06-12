@@ -65,6 +65,7 @@ def generate_goal_completion_audit(
     source_access = _read_csv(results_dir / "thesis_source_access_audit.csv")
     source_structure = _read_csv(results_dir / "thesis_source_structure_inventory.csv")
     source_decisions = _read_csv(results_dir / "thesis_source_review_decision_packets.csv")
+    h1_h2_h3_source_notes = _read_csv(results_dir / "thesis_h1_h2_h3_source_review_notes.csv")
     method_traceability = _read_csv(results_dir / "thesis_method_interpretation_traceability.csv")
     result_package_traceability = _read_csv(results_dir / "thesis_result_package_traceability.csv")
     core_sections = _read_csv(results_dir / "thesis_h1_h2_h3_core_sections.csv")
@@ -82,6 +83,7 @@ def generate_goal_completion_audit(
         source_access=source_access,
         source_structure=source_structure,
         source_decisions=source_decisions,
+        h1_h2_h3_source_notes=h1_h2_h3_source_notes,
         method_traceability=method_traceability,
         result_package_traceability=result_package_traceability,
         core_sections=core_sections,
@@ -116,6 +118,7 @@ def build_goal_completion_audit(
     source_access: pd.DataFrame,
     source_structure: pd.DataFrame,
     source_decisions: pd.DataFrame,
+    h1_h2_h3_source_notes: pd.DataFrame,
     method_traceability: pd.DataFrame,
     result_package_traceability: pd.DataFrame,
     core_sections: pd.DataFrame,
@@ -153,6 +156,11 @@ def build_goal_completion_audit(
         source_decisions,
         ("decision_packet_id", "final_citation_gate", "reviewer_decision"),
         "source review decision packets",
+    )
+    _require_columns(
+        h1_h2_h3_source_notes,
+        ("note_id", "thesis_area", "note_status", "selected_table", "selected_figure"),
+        "H1-H2-H3 source review notes",
     )
     _require_columns(
         method_traceability,
@@ -231,6 +239,11 @@ def build_goal_completion_audit(
         (source_decisions["final_citation_gate"] == "metadata_and_relevance_review_before_future_work_use").sum()
     )
     pending_decisions = int((source_decisions["reviewer_decision"] == "pending").sum())
+    h1_h2_h3_note_rows = int(len(h1_h2_h3_source_notes))
+    h1_h2_h3_note_pending = int(
+        (h1_h2_h3_source_notes["note_status"] == "pending_manual_source_review").sum()
+    )
+    h1_h2_h3_note_area_counts = h1_h2_h3_source_notes["thesis_area"].value_counts().to_dict()
     traceable_thesis_facing = method_traceability[
         method_traceability["thesis_readiness"] == "thesis_facing_ready"
     ]
@@ -274,7 +287,7 @@ def build_goal_completion_audit(
             audit_id="goal_audit_02_evidence_map",
             goal_requirement_de="Methoden und Interpretationen sind auf Artefakte und Quellen gemappt.",
             current_status="draft_ready_final_source_review_pending",
-            evidence_artifacts="data/results/thesis_evidence_map.csv; data/results/thesis_citation_readiness.csv; data/results/thesis_source_access_audit.csv; data/results/thesis_source_structure_inventory.csv; data/results/thesis_source_review_decision_packets.csv; data/results/thesis_method_interpretation_traceability.csv",
+            evidence_artifacts="data/results/thesis_evidence_map.csv; data/results/thesis_citation_readiness.csv; data/results/thesis_source_access_audit.csv; data/results/thesis_source_structure_inventory.csv; data/results/thesis_source_review_decision_packets.csv; data/results/thesis_h1_h2_h3_source_review_notes.csv; docs/project/THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md; data/results/thesis_method_interpretation_traceability.csv",
             key_evidence_de=(
                 f"Thesis-facing Evidence: {len(thesis_facing)} Zeilen; "
                 f"Methoden: {method_rows}; Interpretationen: {interpretation_rows}; "
@@ -285,6 +298,11 @@ def build_goal_completion_audit(
                 f"{external_only_structures} external-only Zeilen. "
                 f"Source Decisions: {decision_packets} Pakete; Full Review: {full_review_decisions}; "
                 f"Metadata-only: {metadata_only_decisions}; pending: {pending_decisions}. "
+                f"H1-H2-H3 Source Notes: {h1_h2_h3_note_rows} Zeilen; "
+                f"H1: {int(h1_h2_h3_note_area_counts.get('H1', 0))}; "
+                f"H2: {int(h1_h2_h3_note_area_counts.get('H2', 0))}; "
+                f"H3: {int(h1_h2_h3_note_area_counts.get('H3', 0))}; "
+                f"pending: {h1_h2_h3_note_pending}. "
                 f"Traceability: {traceable_methods} Methoden, {traceable_interpretations} Interpretationen, "
                 f"{traceability_gap_count} Gaps."
             ),

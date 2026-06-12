@@ -126,6 +126,10 @@ acceptance_criteria:
   IDs, literature IDs, deterministic artifacts, selected table, selected
   figure, limitations, blocked wording, and Source Review gate in the prose
   draft.
+- Bounded H1-H2-H3 source-review notes exist so the empirical core can be
+  reviewed source-by-source with Page-/Section-Notes, Claim-Support decisions,
+  Blocked-Wording checks, selected table/figure context, and no automatic
+  source-status promotion.
 - A future agent-pipeline upgrade plan exists so later source-review,
   evidence-drafting, wording, table/figure, advisor, monitor, and bounded MCP
   improvements are documented without activating runtime agents.
@@ -133,7 +137,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: prepare bounded source review notes for h1 h2 h3
+next_commit: docs: add source review progress ledger
 
 ## Running Side Goal
 

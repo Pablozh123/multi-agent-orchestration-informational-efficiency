@@ -9952,3 +9952,53 @@ Verification:
   -> PASS, regenerated the chapter draft and consolidation artifacts.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 544 passed in 55.38s.
+
+## 2026-06-12 - H1-H2-H3 bounded source review notes
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Turned the broad source-review decision packets into a bounded manual
+  review queue for the empirical BA core only: H1, H2, and H3.
+- Did not inspect source contents, promote source status, activate agents,
+  call MCP tools, route models, calculate LLM metrics, expose wallet
+  addresses, or create trading paths.
+
+Changes:
+
+- Added `operations/project/build_h1_h2_h3_source_review_notes.py`.
+- Generated `data/results/thesis_h1_h2_h3_source_review_notes.csv`.
+- Generated `docs/project/THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md`.
+- Added `tests/test_h1_h2_h3_source_review_notes.py`.
+- Updated the consolidation index and goal-completion audit to include the
+  H1-H2-H3 source-review notes.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Source-review note rows: 23.
+- H1 rows: 10.
+- H2 rows: 5.
+- H3 rows: 8.
+- Pending manual source-review rows: 23.
+- Local PDF rows: 10.
+- External locator rows: 13.
+- Each row links source ID, Evidence ID, selected table, selected figure,
+  deterministic artifact, locator task, Page-/Section-Note field,
+  Claim-Support decision field, Blocked-Wording check field, and final
+  citation gate.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_h1_h2_h3_source_review_notes.py operations/project/build_thesis_goal_completion_audit.py operations/project/build_thesis_consolidation_index.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_h1_h2_h3_source_review_notes.py tests/test_thesis_goal_completion_audit.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 6 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_h1_h2_h3_source_review_notes`
+  -> PASS, generated 23 notes.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
+  -> PASS, generated 10 audit rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 30 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 546 passed in 56.60s.

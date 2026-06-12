@@ -154,6 +154,13 @@ acceptance_criteria:
   artifacts, Page-/Section-Note, Claim-Support, Blocked-Wording,
   Citation-Use, Granger-Grenze, Wallet-Grenze, and no automatic source-status
   promotion.
+- A H3 source-review decision queue exists so the third empirical-core review
+  slice is directly actionable with 8 H3 decision rows, 4 H3 sources, 5 method
+  rows, 3 interpretation rows, 2 external locator rows, 6 local PDF rows, T4/F3
+  table/figure binding, manual Page-/Section-Note, Claim-Support,
+  Blocked-Wording, Citation-Use, Granger-Grenze, Wallet-Grenze fields, 0
+  final-ready rows, no source-status promotion, and inactive future-agent
+  boundaries.
 - A consolidated H1-H2-H3 manual source-review follow-up overview exists so
   the 23 open empirical-core review rows are visible in one compact control
   artifact with 9 unique sources, method/interpretation counts, access-route
@@ -289,7 +296,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add h2 source review decision queue
+next_commit: docs: add h3 source review decision queue
 
 ## Running Side Goal
 

@@ -792,6 +792,12 @@ Current implemented consolidation:
   2 interpretation rows, T3/F2 binding, Page-/Section-Note, Claim-Support,
   Blocked-Wording, Citation-Use, Kausalclaim-Grenze, 0 final-ready rows, no
   source-status promotion, and inactive future-agent boundaries.
+- `data/results/thesis_h3_source_review_decision_queue.csv` and
+  `docs/project/THESIS_H3_SOURCE_REVIEW_DECISION_QUEUE.md` turn the H3 slice
+  into a direct decision queue: 8 H3 decision rows, 4 sources, 5 method rows,
+  3 interpretation rows, T4/F3 binding, Page-/Section-Note, Claim-Support,
+  Blocked-Wording, Citation-Use, Granger-Grenze, Wallet-Grenze, 0 final-ready
+  rows, no source-status promotion, and inactive future-agent boundaries.
 - `data/results/thesis_submission_readiness_board.csv` and
   `docs/project/THESIS_SUBMISSION_READINESS_BOARD.md` provide a nine-gate
   submission-readiness board: advisor handoff, chapter/source mapping, source

@@ -11820,3 +11820,65 @@ Verification:
   sharp-s found.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `587 passed in 64.14s (0:01:04)`.
+
+## 2026-06-13 - Highlevel evidence mapping refreshed after Swiss update
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Kept Review-Access paused and kept runtime agents, MCP, model routing,
+  unlogged LLM interpretation, raw table prompts, wallet-address exposure, and
+  trading paths blocked.
+- Preserved the Swiss referendum track as descriptive until the official
+  14 June 2026 result and post-result mapping exist.
+
+Changes:
+
+- Committed the Swiss running-track refresh as
+  `56dcddf data: refresh swiss referendum running track`.
+- Corrected the project highlevel matrix so it references existing Evidence
+  IDs for H1, H3, and Swiss instead of stale aliases.
+- Added validation in `operations/analysis/thesis_consolidation.py` so every
+  `evidence_or_workstream_ids` reference in `thesis_project_highlevel_view.csv`
+  must be a known Evidence ID or Workstream ID.
+- Refreshed the future-agent highlevel boundary: 6 roadmap stages and 7
+  inactive assistance-protocol rows (6 documentation-only, 1 deferred), with
+  refreshed safety-case gating before any future activation.
+- Regenerated thesis consolidation docs, final gate board, agent safety case,
+  goal audit dependencies, and the Dozentenbericht Markdown/HTML/DOCX.
+- Committed the highlevel mapping refresh as
+  `255007f docs: refresh highlevel evidence mapping after swiss update`.
+
+Key output:
+
+- Swiss running track now has 48 Polymarket snapshots; latest snapshot
+  2026-06-12T22:04:18Z; latest Polymarket Yes 26.0%; latest matched poll Yes
+  45.0%; raw gap -19.0 pp; still descriptive only.
+- Final gate board Swiss gate now has evidence count 48 and remains
+  `final_blocked_official_result`.
+- Agent safety case now carries the Swiss boundary with 48 running snapshot
+  rows and still has 7 rows, 6 documentation-only rows, 1 deferred row, and
+  0 active runtime rows.
+- Project highlevel view now keeps 5 core tables and 4 core figures as the
+  compact thesis package and makes the agent boundary visible as future work
+  only.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_auto_refresh.py tests\test_swiss_referendum_refresh.py tests\test_swiss_referendum_efficiency.py tests\test_swiss_referendum_history.py tests\test_swiss_referendum_polymarket.py -q`
+  -> PASS, 32 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_consolidation.py tests\test_dozenten_report.py tests\test_advisor_alignment_checklist.py -q`
+  -> PASS, 19 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_consolidation.py tests\test_thesis_final_gate_board.py tests\test_agent_pipeline_safety_case.py tests\test_thesis_goal_completion_audit.py tests\test_dozenten_report.py -q`
+  -> PASS, 25 passed.
+- `.\.venv\Scripts\python.exe -m py_compile operations\analysis\thesis_consolidation.py operations\project\build_thesis_final_gate_board.py operations\project\build_agent_pipeline_safety_case.py operations\project\build_thesis_goal_completion_audit.py operations\project\build_dozenten_report.py tests\test_thesis_consolidation.py tests\test_thesis_final_gate_board.py tests\test_agent_pipeline_safety_case.py tests\test_thesis_goal_completion_audit.py tests\test_dozenten_report.py`
+  -> PASS.
+- `git diff --check` -> PASS, with expected CRLF warnings only.
+- `rg -n "<sharp-s>"` on the touched thesis-facing files -> PASS, no Swiss
+  sharp-s found.
+- `render_docx.py docs\project\dozentenbericht_ba_thesis.docx` could not
+  complete because LibreOffice/`soffice` is missing
+  (`FileNotFoundError: [WinError 2]`); structural DOCX tests pass, visual
+  render QA remains a final gate.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `587 passed in 66.91s (0:01:06)`.

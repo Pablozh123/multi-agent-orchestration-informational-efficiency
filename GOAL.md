@@ -88,11 +88,13 @@ acceptance_criteria:
   bounded draft work, final blockers, appendix-only content, and future work.
 - The advisor report contains the current submission-readiness and drafting
   sequence view so the high-level next steps are visible in the Word update.
+- A short advisor handoff note exists so the Word update can be sent with a
+  clear subject, attachment order, questions, and scope boundaries.
 - Tests cover the generated evidence map and curated result package where
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: update advisor report high-level gates
+next_commit: docs: add advisor handoff note
 
 ## Running Side Goal
 

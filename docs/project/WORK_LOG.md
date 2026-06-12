@@ -9267,3 +9267,51 @@ Verification:
   -> PASS, 525 passed in 49.60s.
 - `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
   -> PASS, recommends reviewing one coherent docs/report/automation slice.
+
+## 2026-06-12 - Advisor handoff note
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Added a short advisor-facing mail/chat text so the Word update can be sent
+  with a clear subject, file order, questions, and scope boundaries.
+
+Changes:
+
+- Added `operations/project/build_advisor_handoff_note.py`.
+- Generated `data/results/thesis_advisor_handoff_note.csv`.
+- Added `docs/project/DOZENTEN_UEBERGABE_TEXT.md`.
+- Added `tests/test_advisor_handoff_note.py`.
+- Updated the thesis consolidation index to include the handoff note.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Handoff note sections: 6.
+- The text names Word report, Absprache-Checklist, Drafting Sequence, and
+  Submission Readiness Board as recommended files.
+- It surfaces 4 draft-ready gates, 2 final blockers, 4 bounded write-now
+  drafting steps, and 1 future-work-only step.
+- It keeps Review-Access paused and blocks final Swiss, monitor, runtime-agent,
+  MCP, LLM-metric, and trading claims.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_advisor_handoff_note.py operations/project/build_thesis_consolidation_index.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_advisor_handoff_note.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_advisor_handoff_note`
+  -> PASS, generated 6 handoff-note sections.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 20 indexed artifacts.
+- `git diff --check`
+  -> PASS, no whitespace errors; CRLF warnings only.
+- `rg -n "sharp-s|\\u00df" GOAL.md ROADMAP.md docs/project/DOZENTEN_UEBERGABE_TEXT.md docs/project/THESIS_CONSOLIDATION_INDEX.md operations/project/build_advisor_handoff_note.py tests/test_advisor_handoff_note.py operations/project/build_thesis_consolidation_index.py tests/test_thesis_consolidation_index.py`
+  -> PASS, no matches.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 527 passed in 52.61s.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> PASS, 527 passed in 49.29s.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+  -> PASS, recommends reviewing one coherent docs/data/automation slice.

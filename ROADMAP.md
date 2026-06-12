@@ -717,6 +717,10 @@ Current implemented consolidation:
   advisor handoff order: Word report, advisor questions, execution checklist,
   chapter source bindings, source review execution, agent future-work handoff,
   and consolidation index.
+- `data/results/thesis_advisor_handoff_note.csv` and
+  `docs/project/DOZENTEN_UEBERGABE_TEXT.md` provide a short mail/chat handoff
+  text for the advisor with subject, attachment order, key questions, gate
+  status, and non-goals.
 - `data/results/thesis_submission_readiness_board.csv` and
   `docs/project/THESIS_SUBMISSION_READINESS_BOARD.md` provide a nine-gate
   submission-readiness board: advisor handoff, chapter/source mapping, source
@@ -731,9 +735,10 @@ Current implemented consolidation:
   consolidation deliverables so the Dozentenbericht, advisor checklist,
   highlevel view, work plan, execution checklist, source worksheet, source
   advisor handoff package, review execution guide, chapter source bindings,
-  agent future-work handoff, submission readiness board, drafting sequence,
-  wording guard, table/figure captions, chapter draft, source review plan,
-  agent protocol, status, and work log are easy to navigate.
+  agent future-work handoff, advisor handoff note, submission readiness board,
+  drafting sequence, wording guard, table/figure captions, chapter draft,
+  source review plan, agent protocol, status, and work log are easy to
+  navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,

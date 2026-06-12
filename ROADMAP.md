@@ -804,6 +804,13 @@ Current implemented consolidation:
   interpretation boundary, table/figure integration, Source Review citation
   gate, and future-agent boundary for each empirical core chapter. All rows
   are bounded-draft-ready; final submission remains blocked by Source Review.
+- `data/results/thesis_h1_h2_h3_bounded_chapter_draft.csv` and
+  `docs/research/THESIS_H1_H2_H3_BOUNDED_CHAPTER_DRAFT.md` turn that
+  checklist into 18 ordered BA-prose blocks: method setup, result statement,
+  interpretation boundary, table/figure integration, Source Review citation
+  gate, and future-agent boundary for H1, H2, and H3. Every block carries
+  Evidence IDs, literature IDs, deterministic artifacts, selected table/figure
+  IDs, limitations, blocked wording, and 0 final-submission-ready rows.
 - `data/results/thesis_final_gate_board.csv` and
   `docs/project/THESIS_FINAL_GATE_BOARD.md` provide the current highlevel
   Stop-/Go view over the project: 8 gates, 8 draft-allowed rows,
@@ -836,12 +843,12 @@ Current implemented consolidation:
   advisor handoff package, review execution guide, source access audit, source
   structure inventory, source review decision packets, source review progress
   ledger, source review progress protocol, source review chapter handoff,
-  chapter source review checklist, H1-H2-H3 drafting checklist, thesis final
-  gate board, traceability audit, chapter source bindings, agent future-work
-  handoff, advisor handoff note, advisor feedback log, submission readiness
-  board, drafting sequence, wording guard, table/figure captions, chapter
-  draft, source review plan, agent protocol, status, and work log are easy to
-  navigate.
+  chapter source review checklist, H1-H2-H3 drafting checklist, H1-H2-H3
+  bounded chapter draft, thesis final gate board, traceability audit, chapter
+  source bindings, agent future-work handoff, advisor handoff note, advisor
+  feedback log, submission readiness board, drafting sequence, wording guard,
+  table/figure captions, chapter draft, source review plan, agent protocol,
+  status, and work log are easy to navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,

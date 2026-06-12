@@ -71,6 +71,9 @@ def generate_goal_completion_audit(
     source_chapter_handoff = _read_csv(results_dir / "thesis_source_review_chapter_handoff.csv")
     chapter_checklist = _read_csv(results_dir / "thesis_chapter_source_review_checklist.csv")
     h1_h2_h3_drafting_checklist = _read_csv(results_dir / "thesis_h1_h2_h3_drafting_checklist.csv")
+    h1_h2_h3_bounded_chapter_draft = _read_csv(
+        results_dir / "thesis_h1_h2_h3_bounded_chapter_draft.csv"
+    )
     method_traceability = _read_csv(results_dir / "thesis_method_interpretation_traceability.csv")
     result_package_traceability = _read_csv(results_dir / "thesis_result_package_traceability.csv")
     core_sections = _read_csv(results_dir / "thesis_h1_h2_h3_core_sections.csv")
@@ -95,6 +98,7 @@ def generate_goal_completion_audit(
         source_chapter_handoff=source_chapter_handoff,
         chapter_checklist=chapter_checklist,
         h1_h2_h3_drafting_checklist=h1_h2_h3_drafting_checklist,
+        h1_h2_h3_bounded_chapter_draft=h1_h2_h3_bounded_chapter_draft,
         method_traceability=method_traceability,
         result_package_traceability=result_package_traceability,
         core_sections=core_sections,
@@ -136,6 +140,7 @@ def build_goal_completion_audit(
     source_chapter_handoff: pd.DataFrame,
     chapter_checklist: pd.DataFrame,
     h1_h2_h3_drafting_checklist: pd.DataFrame,
+    h1_h2_h3_bounded_chapter_draft: pd.DataFrame,
     method_traceability: pd.DataFrame,
     result_package_traceability: pd.DataFrame,
     core_sections: pd.DataFrame,
@@ -232,6 +237,23 @@ def build_goal_completion_audit(
             "ready_for_final_submission",
         ),
         "H1-H2-H3 drafting checklist",
+    )
+    _require_columns(
+        h1_h2_h3_bounded_chapter_draft,
+        (
+            "chapter_draft_id",
+            "thesis_area",
+            "draft_step",
+            "method_evidence_ids",
+            "interpretation_evidence_ids",
+            "literature_source_ids",
+            "deterministic_artifacts",
+            "selected_tables",
+            "selected_figures",
+            "ready_for_bounded_draft",
+            "ready_for_final_submission",
+        ),
+        "H1-H2-H3 bounded chapter draft",
     )
     _require_columns(
         method_traceability,
@@ -387,6 +409,16 @@ def build_goal_completion_audit(
         .str.startswith("final_blocked")
         .sum()
     )
+    h1_h2_h3_bounded_draft_rows = int(len(h1_h2_h3_bounded_chapter_draft))
+    h1_h2_h3_bounded_draft_ready = int(
+        h1_h2_h3_bounded_chapter_draft["ready_for_bounded_draft"].astype(bool).sum()
+    )
+    h1_h2_h3_bounded_draft_final_ready = int(
+        h1_h2_h3_bounded_chapter_draft["ready_for_final_submission"].astype(bool).sum()
+    )
+    h1_h2_h3_bounded_draft_areas = "; ".join(
+        sorted(h1_h2_h3_bounded_chapter_draft["thesis_area"].astype(str).unique().tolist())
+    )
     agent_control_rows = int(len(agent_control))
     agent_documentation_only = int(
         (agent_control["current_activation_state"] == "future_documentation_only").sum()
@@ -445,7 +477,7 @@ def build_goal_completion_audit(
             audit_id="goal_audit_03_curated_package",
             goal_requirement_de="Ergebnisdarstellung nutzt wenige starke Tabellen und Figuren.",
             current_status="proved_current_artifact",
-            evidence_artifacts="data/results/thesis_curated_result_package.csv; data/results/thesis_table_figure_captions.csv; data/results/thesis_result_package_traceability.csv; data/results/thesis_h1_h2_h3_core_sections.csv; docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md; data/results/thesis_source_review_chapter_handoff.csv; docs/project/THESIS_SOURCE_REVIEW_CHAPTER_HANDOFF.md; data/results/thesis_chapter_source_review_checklist.csv; docs/project/THESIS_CHAPTER_SOURCE_REVIEW_CHECKLIST.md; data/results/thesis_h1_h2_h3_drafting_checklist.csv; docs/project/THESIS_H1_H2_H3_DRAFTING_CHECKLIST.md",
+            evidence_artifacts="data/results/thesis_curated_result_package.csv; data/results/thesis_table_figure_captions.csv; data/results/thesis_result_package_traceability.csv; data/results/thesis_h1_h2_h3_core_sections.csv; docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md; data/results/thesis_source_review_chapter_handoff.csv; docs/project/THESIS_SOURCE_REVIEW_CHAPTER_HANDOFF.md; data/results/thesis_chapter_source_review_checklist.csv; docs/project/THESIS_CHAPTER_SOURCE_REVIEW_CHECKLIST.md; data/results/thesis_h1_h2_h3_drafting_checklist.csv; docs/project/THESIS_H1_H2_H3_DRAFTING_CHECKLIST.md; data/results/thesis_h1_h2_h3_bounded_chapter_draft.csv; docs/research/THESIS_H1_H2_H3_BOUNDED_CHAPTER_DRAFT.md",
             key_evidence_de=(
                 f"Kernpaket: {core_tables} Tabellen und {core_figures} Figuren. "
                 f"Traceability-Kernpaket: {traceable_core_tables} Tabellen, "
@@ -464,7 +496,11 @@ def build_goal_completion_audit(
                 f"H1-H2-H3 Drafting Checklist: {h1_h2_h3_drafting_rows} Checks; "
                 f"bounded-draft-ready: {h1_h2_h3_drafting_draft_ready}; "
                 f"final-ready: {h1_h2_h3_drafting_final_ready}; "
-                f"final-blocked: {h1_h2_h3_drafting_final_blocked}."
+                f"final-blocked: {h1_h2_h3_drafting_final_blocked}. "
+                f"H1-H2-H3 Bounded Chapter Draft: {h1_h2_h3_bounded_draft_rows} "
+                f"Bausteine ({h1_h2_h3_bounded_draft_areas}); bounded-draft-ready: "
+                f"{h1_h2_h3_bounded_draft_ready}; final-ready: "
+                f"{h1_h2_h3_bounded_draft_final_ready}."
             ),
             remaining_gap_de="Finale Nummerierung und Layout folgen erst im Thesis-Dokument.",
             next_action_de="Tabellen/Figuren in H1-H3 Kapitel integrieren.",

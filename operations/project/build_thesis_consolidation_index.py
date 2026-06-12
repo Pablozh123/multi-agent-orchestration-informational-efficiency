@@ -174,6 +174,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Vor finaler Abgabe Quellenreview und Wording Guard anwenden.",
         ),
         _index_row(
+            artifact_id="index_13_h1_h2_h3_bounded_chapter_draft",
+            artifact_type="bounded_chapter_draft",
+            path="docs/research/THESIS_H1_H2_H3_BOUNDED_CHAPTER_DRAFT.md; data/results/thesis_h1_h2_h3_bounded_chapter_draft.csv",
+            purpose_de="Geordnete H1-H2-H3 Prosa-Bausteine fuer Methode, Resultat, Interpretation, Tabelle/Figur, Source-Gate und Future-Agent-Grenze.",
+            use_now_de="Direkt als bounded Schreibvorlage fuer den empirischen BA-Kern nutzen.",
+            gate_or_limit_de="Keine finale Zitation, keine Rohartefakt-Dumps, keine neuen Kennzahlen und keine Runtime-Agenten.",
+        ),
+        _index_row(
             artifact_id="index_13_source_review_plan",
             artifact_type="source_review",
             path="docs/research/THESIS_SOURCE_REVIEW_PLAN.md",
@@ -448,7 +456,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "H1-H2-H3 Source Review Notes, Source Review Progress Ledger, "
         "Source Review Progress Protocol, Source Review Chapter Handoff, "
         "Chapter Source Review Checklist, H1-H2-H3 Drafting Checklist, "
-        "Thesis Final Gate Board, Traceability Audit, H1-H2-H3 Core Sections, Agent Pipeline Upgrade "
+        "H1-H2-H3 Bounded Chapter Draft, Thesis Final Gate Board, Traceability Audit, H1-H2-H3 Core Sections, Agent Pipeline Upgrade "
         "Plan, Goal Completion Audit, Agent Future-Work Handoff, Agent Pipeline Control Audit, Tabellen/Figuren und "
         "Future-Work-Agenten relevant sind.\n\n"
         "## Counts\n\n"
@@ -472,7 +480,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "und Future-Agent-Grenzen. Nutze das Source Review Chapter Handoff "
         "als kapitelweise Uebergabe fuer H1-H2-H3 und die Chapter Source "
         "Review Checklist als Abhakliste. Nutze die H1-H2-H3 Drafting Checklist "
-        "als konkrete Schreibreihenfolge. Nutze das Thesis Final Gate Board als Highlevel-Stop-/Go-Kontrolle. Nutze den Traceability Audit als BA-Schreibkontrolle. "
+        "als konkrete Schreibreihenfolge und den H1-H2-H3 Bounded Chapter Draft als Prosa-Bausteine fuer den empirischen Kern. Nutze das Thesis Final Gate Board als Highlevel-Stop-/Go-Kontrolle. Nutze den Traceability Audit als BA-Schreibkontrolle. "
         "Nutze die H1-H2-H3 Core Sections als Schreibkern und den Agent "
         "Pipeline Upgrade Plan nur als Future-Work-Gedanke. Nutze das Goal Completion Audit als Stop- und "
         "Weiterarbeitskontrolle. Nutze danach Execution Checklist, Source "

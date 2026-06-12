@@ -149,6 +149,10 @@ acceptance_criteria:
   drafted in a fixed order: method setup, result statement, interpretation
   boundary, table/figure integration, Source Review citation gate, and
   future-agent boundary.
+- A bounded H1-H2-H3 chapter draft exists so the empirical core has ordered
+  prose blocks for method setup, result statement, interpretation boundary,
+  table/figure integration, Source Review citation gate, and future-agent
+  boundary without new metrics, raw artifact dumps, or final citation claims.
 - A future agent-pipeline upgrade plan exists so later source-review,
   evidence-drafting, wording, table/figure, advisor, monitor, and bounded MCP
   improvements are documented without activating runtime agents.
@@ -160,7 +164,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: begin bounded h1 h2 h3 chapter draft
+next_commit: docs: integrate bounded h1 h2 h3 draft into advisor report
 
 ## Running Side Goal
 

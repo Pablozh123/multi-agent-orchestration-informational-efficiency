@@ -133,6 +133,10 @@ acceptance_criteria:
 - A source-review progress ledger exists so H1-H2-H3 manual review decisions
   can be preserved across regenerations without automatic source-status
   promotion or final citation claims.
+- A source-review progress protocol exists so thesis-facing method coverage,
+  interpretation coverage, compact result-package use, manual ledger flow,
+  final citation gates, H1-H2-H3 drafting, and future-agent boundaries are
+  ordered before continued BA writing.
 - A future agent-pipeline upgrade plan exists so later source-review,
   evidence-drafting, wording, table/figure, advisor, monitor, and bounded MCP
   improvements are documented without activating runtime agents.
@@ -140,7 +144,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: draft source review progress protocol
+next_commit: docs: prepare source review chapter handoff
 
 ## Running Side Goal
 

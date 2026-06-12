@@ -778,6 +778,14 @@ Current implemented consolidation:
   pending, with manual fields preserved by `note_id` across regenerations.
   The ledger allows no automatic Quellenstatus-Hochstufung, no final citation
   claim, no Review-Access expansion, and no runtime-agent interpretation.
+- `data/results/thesis_source_review_progress_protocol.csv` and
+  `docs/project/THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md` turn the highlevel
+  Source Review path into six ordered gates: method/interpretation coverage,
+  compact result package, ledger review flow, final citation gate,
+  H1-H2-H3 drafting sequence, and future-agent boundary. The protocol verifies
+  that 4 thesis-facing methods and 4 thesis-facing interpretations have
+  deterministic coverage, keeps the package to 5 tables and 4 figures, and
+  keeps future agents at 0 active rows.
 - `data/results/thesis_method_interpretation_traceability.csv`,
   `data/results/thesis_result_package_traceability.csv`, and
   `docs/project/THESIS_TRACEABILITY_AUDIT.md` audit the draft traceability of
@@ -803,11 +811,11 @@ Current implemented consolidation:
   highlevel view, work plan, execution checklist, source worksheet, source
   advisor handoff package, review execution guide, source access audit, source
   structure inventory, source review decision packets, source review progress
-  ledger, traceability audit, chapter source bindings, agent future-work
-  handoff, advisor handoff note, advisor feedback log, submission readiness
-  board, drafting sequence, wording guard, table/figure captions, chapter
-  draft, source review plan, agent protocol, status, and work log are easy to
-  navigate.
+  ledger, source review progress protocol, traceability audit, chapter source
+  bindings, agent future-work handoff, advisor handoff note, advisor feedback
+  log, submission readiness board, drafting sequence, wording guard,
+  table/figure captions, chapter draft, source review plan, agent protocol,
+  status, and work log are easy to navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,

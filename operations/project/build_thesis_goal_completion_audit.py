@@ -67,6 +67,7 @@ def generate_goal_completion_audit(
     source_decisions = _read_csv(results_dir / "thesis_source_review_decision_packets.csv")
     h1_h2_h3_source_notes = _read_csv(results_dir / "thesis_h1_h2_h3_source_review_notes.csv")
     source_progress_ledger = _read_csv(results_dir / "thesis_source_review_progress_ledger.csv")
+    source_progress_protocol = _read_csv(results_dir / "thesis_source_review_progress_protocol.csv")
     method_traceability = _read_csv(results_dir / "thesis_method_interpretation_traceability.csv")
     result_package_traceability = _read_csv(results_dir / "thesis_result_package_traceability.csv")
     core_sections = _read_csv(results_dir / "thesis_h1_h2_h3_core_sections.csv")
@@ -86,6 +87,7 @@ def generate_goal_completion_audit(
         source_decisions=source_decisions,
         h1_h2_h3_source_notes=h1_h2_h3_source_notes,
         source_progress_ledger=source_progress_ledger,
+        source_progress_protocol=source_progress_protocol,
         method_traceability=method_traceability,
         result_package_traceability=result_package_traceability,
         core_sections=core_sections,
@@ -122,6 +124,7 @@ def build_goal_completion_audit(
     source_decisions: pd.DataFrame,
     h1_h2_h3_source_notes: pd.DataFrame,
     source_progress_ledger: pd.DataFrame,
+    source_progress_protocol: pd.DataFrame,
     method_traceability: pd.DataFrame,
     result_package_traceability: pd.DataFrame,
     core_sections: pd.DataFrame,
@@ -175,6 +178,11 @@ def build_goal_completion_audit(
             "source_status_change_allowed",
         ),
         "source review progress ledger",
+    )
+    _require_columns(
+        source_progress_protocol,
+        ("protocol_id", "protocol_area", "current_state", "deterministic_evidence_de"),
+        "source review progress protocol",
     )
     _require_columns(
         method_traceability,
@@ -266,6 +274,8 @@ def build_goal_completion_audit(
     ledger_status_change_allowed = int(
         source_progress_ledger["source_status_change_allowed"].astype(bool).sum()
     )
+    protocol_rows = int(len(source_progress_protocol))
+    protocol_areas = int(source_progress_protocol["protocol_area"].nunique())
     traceable_thesis_facing = method_traceability[
         method_traceability["thesis_readiness"] == "thesis_facing_ready"
     ]
@@ -309,7 +319,7 @@ def build_goal_completion_audit(
             audit_id="goal_audit_02_evidence_map",
             goal_requirement_de="Methoden und Interpretationen sind auf Artefakte und Quellen gemappt.",
             current_status="draft_ready_final_source_review_pending",
-            evidence_artifacts="data/results/thesis_evidence_map.csv; data/results/thesis_citation_readiness.csv; data/results/thesis_source_access_audit.csv; data/results/thesis_source_structure_inventory.csv; data/results/thesis_source_review_decision_packets.csv; data/results/thesis_h1_h2_h3_source_review_notes.csv; docs/project/THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md; data/results/thesis_source_review_progress_ledger.csv; docs/project/THESIS_SOURCE_REVIEW_PROGRESS_LEDGER.md; data/results/thesis_method_interpretation_traceability.csv",
+            evidence_artifacts="data/results/thesis_evidence_map.csv; data/results/thesis_citation_readiness.csv; data/results/thesis_source_access_audit.csv; data/results/thesis_source_structure_inventory.csv; data/results/thesis_source_review_decision_packets.csv; data/results/thesis_h1_h2_h3_source_review_notes.csv; docs/project/THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md; data/results/thesis_source_review_progress_ledger.csv; docs/project/THESIS_SOURCE_REVIEW_PROGRESS_LEDGER.md; data/results/thesis_source_review_progress_protocol.csv; docs/project/THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md; data/results/thesis_method_interpretation_traceability.csv",
             key_evidence_de=(
                 f"Thesis-facing Evidence: {len(thesis_facing)} Zeilen; "
                 f"Methoden: {method_rows}; Interpretationen: {interpretation_rows}; "
@@ -328,6 +338,7 @@ def build_goal_completion_audit(
                 f"Source Progress Ledger: {ledger_rows} Zeilen; pending: {ledger_pending}; "
                 f"final-ready: {ledger_final_ready}; "
                 f"source-status changes erlaubt: {ledger_status_change_allowed}. "
+                f"Source Progress Protocol: {protocol_rows} Zeilen in {protocol_areas} Bereichen. "
                 f"Traceability: {traceable_methods} Methoden, {traceable_interpretations} Interpretationen, "
                 f"{traceability_gap_count} Gaps."
             ),

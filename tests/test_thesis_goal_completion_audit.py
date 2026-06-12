@@ -30,6 +30,8 @@ def test_generate_goal_completion_audit_writes_remaining_gates(tmp_path: Path) -
     assert "THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md" in doc
     assert "thesis_source_review_progress_ledger.csv" in doc
     assert "THESIS_SOURCE_REVIEW_PROGRESS_LEDGER.md" in doc
+    assert "thesis_source_review_progress_protocol.csv" in doc
+    assert "THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md" in doc
     assert "thesis_method_interpretation_traceability.csv" in doc
     assert "thesis_result_package_traceability.csv" in doc
     assert "thesis_h1_h2_h3_core_sections.csv" in doc
@@ -63,6 +65,7 @@ def test_goal_completion_audit_keeps_open_gates_visible(tmp_path: Path) -> None:
     assert "h1-h2-h3 source notes: 3 zeilen; h1: 1; h2: 1; h3: 1; pending: 3" in joined
     assert "source progress ledger: 3 zeilen; pending: 3; final-ready: 0" in joined
     assert "source-status changes erlaubt: 0" in joined
+    assert "source progress protocol: 6 zeilen in 6 bereichen" in joined
     assert "traceability: 1 methoden, 1 interpretationen, 0 gaps" in joined
     assert "traceability-kernpaket: 5 tabellen, 4 figuren, 0 gaps" in joined
     assert "h1-h2-h3 core sections: 3 zeilen (h1; h2; h3)" in joined
@@ -166,6 +169,16 @@ def _write_fixture(root: Path) -> None:
     ).to_csv(results / "thesis_source_review_progress_ledger.csv", index=False)
     pd.DataFrame(
         [
+            _protocol("protocol_01", "evidence_mapping"),
+            _protocol("protocol_02", "result_package"),
+            _protocol("protocol_03", "source_review_ledger"),
+            _protocol("protocol_04", "final_citation_gate"),
+            _protocol("protocol_05", "h1_h2_h3_drafting"),
+            _protocol("protocol_06", "future_agents"),
+        ]
+    ).to_csv(results / "thesis_source_review_progress_protocol.csv", index=False)
+    pd.DataFrame(
+        [
             {
                 "item_type": "method",
                 "thesis_readiness": "thesis_facing_ready",
@@ -266,6 +279,7 @@ def _write_fixture(root: Path) -> None:
         "docs/project/THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md",
         "docs/project/THESIS_H1_H2_H3_SOURCE_REVIEW_NOTES.md",
         "docs/project/THESIS_SOURCE_REVIEW_PROGRESS_LEDGER.md",
+        "docs/project/THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md",
         "docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md",
         "docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md",
     ]:
@@ -308,4 +322,13 @@ def _ledger(ledger_id: str, area: str) -> dict[str, object]:
         "review_progress_state": "pending_manual_review",
         "final_citation_ready": False,
         "source_status_change_allowed": False,
+    }
+
+
+def _protocol(protocol_id: str, area: str) -> dict[str, str]:
+    return {
+        "protocol_id": protocol_id,
+        "protocol_area": area,
+        "current_state": "fixture_state",
+        "deterministic_evidence_de": "Fixture evidence.",
     }

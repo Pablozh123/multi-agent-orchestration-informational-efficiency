@@ -10051,3 +10051,53 @@ Verification:
   -> PASS, generated 31 indexed artifacts.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 548 passed in 50.73s.
+
+## 2026-06-12 - Source review progress protocol
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Converted the highlevel Source Review path into an ordered protocol for
+  literature/artifact coverage, compact result-package use, manual ledger
+  flow, final citation gating, H1-H2-H3 drafting, and future-agent boundaries.
+- Did not inspect source contents, promote source status, activate agents,
+  call MCP tools, route models, calculate LLM metrics, expose wallet
+  addresses, or create trading paths.
+
+Changes:
+
+- Added `operations/project/build_source_review_progress_protocol.py`.
+- Generated `data/results/thesis_source_review_progress_protocol.csv`.
+- Generated `docs/project/THESIS_SOURCE_REVIEW_PROGRESS_PROTOCOL.md`.
+- Added `tests/test_source_review_progress_protocol.py`.
+- Updated the goal-completion audit and consolidation index to include the
+  protocol.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Protocol rows: 6.
+- Thesis-facing methods covered by deterministic artifact plus source: 4/4.
+- Thesis-facing interpretations covered by deterministic artifact, source,
+  and limitation: 4/4.
+- Curated core result package: 5 tables and 4 figures.
+- Source Review ledger: 23 rows, all pending, 0 final-ready rows.
+- Future agent upgrade rows: 7; active rows: 0.
+- The protocol keeps future agents documentation-only and requires a separate
+  later goal, tests, bounded inputs, max 50 rows, and `llm_audit_log` before
+  any activation.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_source_review_progress_protocol.py operations/project/build_thesis_goal_completion_audit.py operations/project/build_thesis_consolidation_index.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_source_review_progress_protocol.py tests/test_thesis_goal_completion_audit.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 6 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_source_review_progress_protocol`
+  -> PASS, generated 6 protocol rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
+  -> PASS, generated 10 audit rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 32 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 550 passed in 56.27s.

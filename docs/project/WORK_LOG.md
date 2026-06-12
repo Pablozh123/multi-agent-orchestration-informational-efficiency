@@ -10590,3 +10590,65 @@ Verification:
   -> PASS, generated 10 audit rows.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 569 passed in 60.17s.
+
+## 2026-06-12 - Source-gated H1-H2-H3 integration in thesis chapter draft
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Integrated the source-gated H1-H2-H3 writing pass into the main
+  `docs/research/THESIS_CHAPTER_DRAFT.md`.
+- Kept the work deterministic and bounded: no new metrics, no source-content
+  interpretation, no source-status promotion, no final citation claims, no
+  runtime agents, no MCP, no LLM metrics, and no trading paths.
+
+Changes:
+
+- Updated `operations/analysis/thesis_consolidation.py` so the consolidation
+  generator optionally reads
+  `data/results/thesis_h1_h2_h3_source_gated_writing_pass.csv`.
+- Added Source-Gated Integration blocks for H1, H2, and H3 to the generated
+  `docs/research/THESIS_CHAPTER_DRAFT.md`.
+- Added regression coverage in `tests/test_thesis_consolidation.py`.
+- Updated and regenerated the consolidation index so the chapter draft is
+  labelled as the H1-H2-H3 source-gated BA main draft.
+- Updated and regenerated the goal-completion audit so table/figure
+  integration is no longer listed as the next open action after the
+  Source-Gated Integration blocks were added.
+- Regenerated the thesis consolidation outputs; Swiss remains descriptive and
+  now reflects the already collected 42 running snapshots.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Source-Gated Integration blocks in the main chapter draft: 3.
+- H1 source coverage shown in draft: 10 links, 4 unique source IDs, 0 gaps.
+- H2 source coverage shown in draft: 5 links, 3 unique source IDs, 0 gaps.
+- H3 source coverage shown in draft: 8 links, 4 unique source IDs, 0 gaps.
+- Selected result package remains compact: T2/F1, T3/F2, and T4/F3.
+- Final submission status remains blocked by manual Source Review.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/analysis/thesis_consolidation.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_thesis_consolidation.py -q`
+  -> PASS, 16 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`
+  -> PASS, regenerated thesis consolidation artifacts.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_thesis_consolidation.py tests/test_thesis_consolidation_index.py tests/test_thesis_goal_completion_audit.py -q`
+  -> PASS, 20 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 40 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_thesis_consolidation.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 18 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
+  -> PASS, generated 10 audit rows.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_thesis_goal_completion_audit.py -q`
+  -> PASS, 2 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 570 passed in 55.71s.
+- `git diff --check`
+  -> PASS, only CRLF normalization warnings.
+- Sharp-s scan over changed thesis-facing files
+  -> PASS, no matches.

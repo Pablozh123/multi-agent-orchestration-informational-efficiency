@@ -173,6 +173,11 @@ acceptance_criteria:
   connected chapter drafts that preserve Evidence IDs, source coverage,
   deterministic artifacts, compact table/figure choices, limitations,
   blocked wording, Source Review gates, and inactive future-agent boundaries.
+- The main thesis chapter draft contains Source-Gated Integration blocks for
+  H1, H2, and H3, so each empirical chapter now shows method binding,
+  interpretation binding, literature IDs, deterministic artifacts, source
+  coverage counts, selected table/figure IDs, final citation blockers, and
+  inactive future-agent boundaries in the BA prose draft.
 - A future agent-pipeline upgrade plan exists so later source-review,
   evidence-drafting, wording, table/figure, advisor, monitor, and bounded MCP
   improvements are documented without activating runtime agents.
@@ -184,7 +189,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: integrate source-gated h1 h2 h3 pass into thesis chapter draft
+next_commit: docs: refine documentation-only agent pipeline improvement plan
 
 ## Running Side Goal
 

@@ -405,6 +405,30 @@ def test_chapter_draft_is_traceable_and_uses_swiss_spelling(tmp_path: Path) -> N
     assert "keine universelle Aussage" in draft
 
 
+def test_chapter_draft_integrates_source_gated_h1_h2_h3_pass(tmp_path: Path) -> None:
+    _write_fixture(tmp_path)
+    _write_source_gated_writing_pass_fixture(tmp_path)
+
+    result = generate_thesis_consolidation(repo_root=tmp_path)
+
+    draft = result.chapter_draft_path.read_text(encoding="utf-8")
+
+    assert "Source-Gated Integration fuer H1" in draft
+    assert "Source-Gated Integration fuer H2" in draft
+    assert "Source-Gated Integration fuer H3" in draft
+    assert "Methodenbindung: `method_h1_brier_dm`" in draft
+    assert "Interpretationsbindung: `interpretation_h3_top_tier_signal`" in draft
+    assert "Literatur `lit_brier_001; lit_dm_001" in draft
+    assert "deterministischen Artefakten `data/results/thesis_h1_summary.csv" in draft
+    assert "nur Tabelle `T2` und Abbildung `F1`" in draft
+    assert "wenige gute Tabellen/Figuren statt Rohartefakt-Dumps" in draft
+    assert "0 Coverage-Gaps" in draft
+    assert "nicht final-submission-ready" in draft
+    assert "max 50 rows" in draft
+    assert "keine Runtime-Agenten" in draft
+    assert chr(223) not in draft
+
+
 def test_missing_source_artifact_fails_clearly(tmp_path: Path) -> None:
     with pytest.raises(FileNotFoundError, match="Required thesis consolidation source artifact"):
         generate_thesis_consolidation(repo_root=tmp_path)
@@ -567,6 +591,86 @@ def _write_fixture(root: Path) -> None:
         }
     ).to_csv(results / "swiss_referendum_10mio_latest_source_comparison.csv", index=False)
     _write_binary(results / "swiss_referendum_10mio_efficiency.png")
+
+
+def _write_source_gated_writing_pass_fixture(root: Path) -> None:
+    results = root / "data/results"
+    rows = []
+    for area, title, methods, interpretations, literature, artifacts, table, figure in [
+        (
+            "H1",
+            "H1: Prognosequalitaet",
+            "method_h1_brier_dm",
+            "interpretation_h1_bounded_advantage",
+            "lit_brier_001; lit_dm_001; zotero_poly_002",
+            "data/results/thesis_h1_summary.csv; data/results/h1_brier_scores.csv",
+            "T2",
+            "F1",
+        ),
+        (
+            "H2",
+            "H2: Tagesbasierte Ereignisfenster",
+            "method_h2_event_window",
+            "interpretation_h2_daily_response",
+            "lit_eventstudy_001; lit_emh_001",
+            "data/results/h2_event_window_summary.csv; data/events_timeline_seed.csv",
+            "T3",
+            "F2",
+        ),
+        (
+            "H3",
+            "H3: Wallet-Timing-Diagnostik",
+            "method_h3_wallet_tiers; method_h3_granger_timing",
+            "interpretation_h3_top_tier_signal",
+            "lit_granger_001; zotero_poly_001; zotero_poly_005",
+            "data/results/thesis_h3_summary.csv; data/results/h3_granger_results.csv",
+            "T4",
+            "F3",
+        ),
+    ]:
+        rows.append(
+            {
+                "writing_pass_id": f"writing_pass_{area.lower()}_source_gated",
+                "thesis_area": area,
+                "chapter_title_de": title,
+                "method_evidence_ids": methods,
+                "interpretation_evidence_ids": interpretations,
+                "literature_source_ids": literature,
+                "deterministic_artifacts": artifacts,
+                "source_coverage_links": 3,
+                "source_coverage_unique_sources": 2,
+                "source_coverage_gap_rows": 0,
+                "selected_tables": table,
+                "selected_figures": figure,
+                "method_paragraph_de": f"{area} Methode ist source-gated gemappt.",
+                "result_paragraph_de": (
+                    f"{area} Resultat nutzt wenige gute Tabellen und Figuren."
+                ),
+                "interpretation_paragraph_de": (
+                    f"{area} Interpretation bleibt bounded und an Artefakte gebunden."
+                ),
+                "table_figure_paragraph_de": (
+                    f"{area} nutzt wenige gute Tabellen/Figuren statt Rohartefakt-Dumps."
+                ),
+                "source_gate_paragraph_de": (
+                    f"{area}: keine finale Zitation ohne Source Review."
+                ),
+                "future_agent_boundary_de": (
+                    "keine Runtime-Agenten; llm_audit_log und bounded inputs vor spaeterer Nutzung."
+                ),
+                "blocked_wording_de": "keine finale Zitation | keine Rohartefakt-Dumps",
+                "full_chapter_draft_de": f"{area} source-gated Kapitelentwurf.",
+                "writing_pass_status": (
+                    "source_gated_bounded_draft_ready_final_source_review_pending"
+                ),
+                "ready_for_bounded_draft": True,
+                "ready_for_final_submission": False,
+            }
+        )
+    pd.DataFrame(rows).to_csv(
+        results / "thesis_h1_h2_h3_source_gated_writing_pass.csv",
+        index=False,
+    )
 
 
 def _write_literature(path: Path) -> None:

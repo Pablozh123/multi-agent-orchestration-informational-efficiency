@@ -48,6 +48,7 @@ def test_generate_goal_completion_audit_writes_remaining_gates(tmp_path: Path) -
     assert "THESIS_H1_H2_H3_BOUNDED_CHAPTER_DRAFT.md" in doc
     assert "thesis_h1_h2_h3_source_gated_writing_pass.csv" in doc
     assert "THESIS_H1_H2_H3_SOURCE_GATED_WRITING_PASS.md" in doc
+    assert "THESIS_CHAPTER_DRAFT.md" in doc
     assert "thesis_agent_pipeline_control_audit.csv" in doc
     assert "THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md" in doc
     assert "thesis_agent_pipeline_upgrade_plan.csv" in doc
@@ -90,6 +91,8 @@ def test_goal_completion_audit_keeps_open_gates_visible(tmp_path: Path) -> None:
     assert "h1-h2-h3 bounded chapter draft: 18 bausteine (h1; h2; h3)" in joined
     assert "bounded-draft-ready: 18; final-ready: 0" in joined
     assert "source-gated writing pass: 3 kapitel; bounded-draft-ready: 3; final-ready: 0; coverage gaps: 0" in joined
+    assert "main chapter draft: source-gated integration fuer h1, h2 und h3" in joined
+    assert "h1-h3 kapitel gegen source review, wording guard" in joined
     assert "agent control: 2 rollen; documentation-only: 1; deferred: 1; aktiv: 0" in joined
     assert "agent upgrade plan: 2 reihen; aktive upgrade-reihen: 0" in joined
     assert "final gate board: 8 gates; draft-allowed 8; final-ready 1" in joined
@@ -103,6 +106,11 @@ def _write_fixture(root: Path) -> None:
     results.mkdir(parents=True)
     docs_project.mkdir(parents=True)
     docs_research.mkdir(parents=True)
+
+    (docs_research / "THESIS_CHAPTER_DRAFT.md").write_text(
+        "Source-Gated Integration fuer H1, H2 und H3\n",
+        encoding="utf-8",
+    )
 
     pd.DataFrame(
         [

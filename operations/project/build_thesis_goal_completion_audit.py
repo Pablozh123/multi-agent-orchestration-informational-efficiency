@@ -536,7 +536,7 @@ def build_goal_completion_audit(
             audit_id="goal_audit_03_curated_package",
             goal_requirement_de="Ergebnisdarstellung nutzt wenige starke Tabellen und Figuren.",
             current_status="proved_current_artifact",
-            evidence_artifacts="data/results/thesis_curated_result_package.csv; data/results/thesis_table_figure_captions.csv; data/results/thesis_result_package_traceability.csv; data/results/thesis_h1_h2_h3_core_sections.csv; docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md; data/results/thesis_source_review_chapter_handoff.csv; docs/project/THESIS_SOURCE_REVIEW_CHAPTER_HANDOFF.md; data/results/thesis_chapter_source_review_checklist.csv; docs/project/THESIS_CHAPTER_SOURCE_REVIEW_CHECKLIST.md; data/results/thesis_h1_h2_h3_drafting_checklist.csv; docs/project/THESIS_H1_H2_H3_DRAFTING_CHECKLIST.md; data/results/thesis_h1_h2_h3_bounded_chapter_draft.csv; docs/research/THESIS_H1_H2_H3_BOUNDED_CHAPTER_DRAFT.md; data/results/thesis_h1_h2_h3_source_gated_writing_pass.csv; docs/research/THESIS_H1_H2_H3_SOURCE_GATED_WRITING_PASS.md",
+            evidence_artifacts="data/results/thesis_curated_result_package.csv; data/results/thesis_table_figure_captions.csv; data/results/thesis_result_package_traceability.csv; data/results/thesis_h1_h2_h3_core_sections.csv; docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md; data/results/thesis_source_review_chapter_handoff.csv; docs/project/THESIS_SOURCE_REVIEW_CHAPTER_HANDOFF.md; data/results/thesis_chapter_source_review_checklist.csv; docs/project/THESIS_CHAPTER_SOURCE_REVIEW_CHECKLIST.md; data/results/thesis_h1_h2_h3_drafting_checklist.csv; docs/project/THESIS_H1_H2_H3_DRAFTING_CHECKLIST.md; data/results/thesis_h1_h2_h3_bounded_chapter_draft.csv; docs/research/THESIS_H1_H2_H3_BOUNDED_CHAPTER_DRAFT.md; data/results/thesis_h1_h2_h3_source_gated_writing_pass.csv; docs/research/THESIS_H1_H2_H3_SOURCE_GATED_WRITING_PASS.md; docs/research/THESIS_CHAPTER_DRAFT.md",
             key_evidence_de=(
                 f"Kernpaket: {core_tables} Tabellen und {core_figures} Figuren. "
                 f"Traceability-Kernpaket: {traceable_core_tables} Tabellen, "
@@ -563,10 +563,12 @@ def build_goal_completion_audit(
                 f"Source-gated Writing Pass: {source_gated_writing_rows} Kapitel; "
                 f"bounded-draft-ready: {source_gated_writing_draft_ready}; "
                 f"final-ready: {source_gated_writing_final_ready}; "
-                f"coverage gaps: {source_gated_writing_coverage_gaps}."
+                f"coverage gaps: {source_gated_writing_coverage_gaps}. "
+                "Main Chapter Draft: Source-Gated Integration fuer H1, H2 und H3 "
+                "ist im BA-Draft sichtbar."
             ),
-            remaining_gap_de="Finale Nummerierung und Layout folgen erst im Thesis-Dokument.",
-            next_action_de="Tabellen/Figuren in H1-H3 Kapitel integrieren.",
+            remaining_gap_de="Finale Nummerierung, Layout und finale Zitation folgen erst nach Source Review.",
+            next_action_de="H1-H3 Kapitel gegen Source Review, Wording Guard und finale Tabellen-/Figurenplatzierung pruefen.",
         ),
         _audit_row(
             audit_id="goal_audit_04_readiness_labels",

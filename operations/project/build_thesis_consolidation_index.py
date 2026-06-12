@@ -169,9 +169,9 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             artifact_id="index_12_chapter_draft",
             artifact_type="chapter_draft",
             path="docs/research/THESIS_CHAPTER_DRAFT.md",
-            purpose_de="Erster deutschsprachiger Kapitelentwurf aus der Konsolidierung.",
-            use_now_de="Als Rohfassung fuer BA-Kapitel nutzen.",
-            gate_or_limit_de="Vor finaler Abgabe Quellenreview und Wording Guard anwenden.",
+            purpose_de="Deutschsprachiger BA-Kapitelentwurf mit Source-Gated Integration fuer H1, H2 und H3.",
+            use_now_de="Als Hauptentwurf fuer die empirischen BA-Kapitel nutzen.",
+            gate_or_limit_de="Bounded Draft ja; finale Source Review, Zitation und Wording Guard bleiben offen.",
         ),
         _index_row(
             artifact_id="index_13_h1_h2_h3_bounded_chapter_draft",

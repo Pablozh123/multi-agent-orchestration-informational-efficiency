@@ -833,6 +833,12 @@ Current implemented consolidation:
   counts, selected table/figure IDs, blocked wording, final Source Review
   gates, and future-agent boundaries while remaining bounded-draft-ready but
   not final-submission-ready.
+- `docs/research/THESIS_CHAPTER_DRAFT.md` now integrates that source-gated
+  pass directly into the empirical BA draft. H1, H2, and H3 each show
+  `Source-Gated Integration` blocks with method binding, interpretation
+  binding, literature IDs, deterministic artifacts, source coverage counts,
+  selected table/figure IDs, final citation blockers, and documentation-only
+  future-agent boundaries.
 - `data/results/thesis_final_gate_board.csv` and
   `docs/project/THESIS_FINAL_GATE_BOARD.md` provide the current highlevel
   Stop-/Go view over the project: 8 gates, 8 draft-allowed rows,

@@ -62,6 +62,7 @@ SOURCE_REVIEW_PLAN_OUTPUT = "thesis_source_review_plan.csv"
 AGENT_ASSISTANCE_PROTOCOL_OUTPUT = "thesis_agent_assistance_protocol.csv"
 NEXT_WORK_PLAN_OUTPUT = "thesis_next_work_plan.csv"
 PROJECT_HIGHLEVEL_VIEW_OUTPUT = "thesis_project_highlevel_view.csv"
+SOURCE_GATED_WRITING_PASS_INPUT = "thesis_h1_h2_h3_source_gated_writing_pass.csv"
 METADATA_OUTPUT = "thesis_consolidation_metadata.json"
 DOC_OUTPUT = "THESIS_CONSOLIDATION.md"
 AGENT_DOC_OUTPUT = "THESIS_AGENT_PIPELINE_ROADMAP.md"
@@ -248,6 +249,32 @@ PROJECT_HIGHLEVEL_VIEW_COLUMNS: tuple[str, ...] = (
     "next_gate",
     "guardrail",
     "thesis_use",
+)
+
+SOURCE_GATED_WRITING_PASS_COLUMNS: tuple[str, ...] = (
+    "writing_pass_id",
+    "thesis_area",
+    "chapter_title_de",
+    "method_evidence_ids",
+    "interpretation_evidence_ids",
+    "literature_source_ids",
+    "deterministic_artifacts",
+    "source_coverage_links",
+    "source_coverage_unique_sources",
+    "source_coverage_gap_rows",
+    "selected_tables",
+    "selected_figures",
+    "method_paragraph_de",
+    "result_paragraph_de",
+    "interpretation_paragraph_de",
+    "table_figure_paragraph_de",
+    "source_gate_paragraph_de",
+    "future_agent_boundary_de",
+    "blocked_wording_de",
+    "full_chapter_draft_de",
+    "writing_pass_status",
+    "ready_for_bounded_draft",
+    "ready_for_final_submission",
 )
 
 
@@ -447,6 +474,10 @@ def generate_thesis_consolidation(
         next_work_plan=next_work_plan,
     )
     _validate_project_highlevel_view(project_highlevel_view, repo_root=repo_root)
+    source_gated_writing_pass = _read_optional_source_gated_writing_pass(
+        results_dir / SOURCE_GATED_WRITING_PASS_INPUT,
+        repo_root=repo_root,
+    )
 
     results_dir.mkdir(parents=True, exist_ok=True)
     docs_dir.mkdir(parents=True, exist_ok=True)
@@ -540,6 +571,7 @@ def generate_thesis_consolidation(
             curated_package=curated_package,
             citation_readiness=citation_readiness,
             chapter_plan=chapter_plan,
+            source_gated_writing_pass=source_gated_writing_pass,
         ),
         encoding="utf-8",
     )
@@ -3517,6 +3549,7 @@ def _render_chapter_draft(
     curated_package: pd.DataFrame,
     citation_readiness: pd.DataFrame,
     chapter_plan: pd.DataFrame,
+    source_gated_writing_pass: pd.DataFrame | None,
 ) -> str:
     evidence = evidence_map.set_index("evidence_id").to_dict(orient="index")
     package = curated_package.set_index("package_id").to_dict(orient="index")
@@ -3544,6 +3577,9 @@ def _render_chapter_draft(
         evidence_map=evidence_map,
         curated_package=curated_package,
     )
+    h1_source_gated = _source_gated_chapter_insert("H1", source_gated_writing_pass)
+    h2_source_gated = _source_gated_chapter_insert("H2", source_gated_writing_pass)
+    h3_source_gated = _source_gated_chapter_insert("H3", source_gated_writing_pass)
 
     return "\n".join(
         [
@@ -3642,6 +3678,7 @@ def _render_chapter_draft(
             "Brier-Verluste, aber die Gesamtevidenz bleibt gemischt und "
             "kontextabhaengig.\n",
             h1_core_mapping,
+            h1_source_gated,
             f"Empfohlene Darstellung: Tabelle `{package['T2']['primary_artifact']}` "
             f"und Abbildung `{package['F1']['primary_artifact']}`. Die "
             "Limitation ist explizit zu nennen: unterschiedliche "
@@ -3663,6 +3700,7 @@ def _render_chapter_draft(
             "fuer beobachtbare Tagesreaktionen geschrieben werden, nicht als "
             "Beweis fuer unmittelbare Informationsverarbeitung.\n",
             h2_core_mapping,
+            h2_source_gated,
             f"Empfohlene Darstellung: Tabelle `{package['T3']['primary_artifact']}` "
             f"und Abbildung `{package['F2']['primary_artifact']}`.\n",
             "## 6. H3: Wallet-Timing\n",
@@ -3684,6 +3722,7 @@ def _render_chapter_draft(
             "Mehrfachtests und moegliche Upstream-Filter gehoeren direkt in den "
             "Ergebnistext.\n",
             h3_core_mapping,
+            h3_source_gated,
             f"Empfohlene Darstellung: Tabelle `{package['T4']['primary_artifact']}` "
             f"und Abbildung `{package['F3']['primary_artifact']}`.\n",
             "## 7. Erweiterungen: Monitor und Schweizer Abstimmung\n",
@@ -3727,6 +3766,110 @@ def _render_chapter_draft(
             "keine Kennzahlen berechnen. MCP-Zugriff waere erst nach separatem "
             "Ziel, Tests, Access Contract und Audit-Logging vertretbar. "
             "Order- oder Tradingpfade bleiben ausgeschlossen.\n",
+        ]
+    )
+
+
+def _read_optional_source_gated_writing_pass(
+    path: Path,
+    *,
+    repo_root: Path,
+) -> pd.DataFrame | None:
+    if not path.exists():
+        return None
+    source_gated = _read_csv(path)
+    _require_columns(
+        source_gated,
+        SOURCE_GATED_WRITING_PASS_COLUMNS,
+        str(path),
+    )
+    if len(source_gated) != 3:
+        raise ValueError("Source-gated writing pass must contain exactly three H1-H2-H3 rows.")
+    if set(source_gated["thesis_area"].astype(str)) != {"H1", "H2", "H3"}:
+        raise ValueError("Source-gated writing pass must cover H1, H2, and H3.")
+    if not _bool_series(source_gated["ready_for_bounded_draft"]).all():
+        raise ValueError("Source-gated writing pass must be bounded-draft-ready.")
+    if _bool_series(source_gated["ready_for_final_submission"]).any():
+        raise ValueError("Source-gated writing pass must remain final-submission blocked.")
+    if (source_gated["source_coverage_gap_rows"].astype(int) != 0).any():
+        raise ValueError("Source-gated writing pass must not contain source coverage gaps.")
+    if source_gated["writing_pass_id"].duplicated().any():
+        raise ValueError("Source-gated writing pass contains duplicate writing_pass_id values.")
+    for artifacts in source_gated["deterministic_artifacts"].astype(str):
+        _validate_artifact_list(repo_root, _split_list(artifacts))
+    joined = "\n".join(source_gated.fillna("").astype(str).agg(" ".join, axis=1).tolist())
+    if chr(223) in joined:
+        raise ValueError("Source-gated writing pass must use Swiss spelling without sharp-s.")
+    lower_joined = joined.lower()
+    required_terms = (
+        "source-gated",
+        "keine finale zitation",
+        "keine runtime-agenten",
+        "llm_audit_log",
+        "wenige gute tabellen",
+    )
+    missing = [term for term in required_terms if term not in lower_joined]
+    if missing:
+        raise ValueError("Source-gated writing pass missing required terms: " + ", ".join(missing))
+    return source_gated
+
+
+def _source_gated_chapter_insert(
+    hypothesis: str,
+    source_gated_writing_pass: pd.DataFrame | None,
+) -> str:
+    if source_gated_writing_pass is None:
+        return (
+            f"**Source-Gated Integration fuer {hypothesis}:** Noch kein "
+            "separater Source-Gated Writing Pass im Konsolidierungslauf "
+            "gefunden. Der Abschnitt bleibt am Core-Mapping, der Evidence Map "
+            "und dem Source Review Gate gebunden.\n"
+        )
+    match = source_gated_writing_pass[
+        source_gated_writing_pass["thesis_area"].astype(str) == hypothesis
+    ]
+    if len(match) != 1:
+        raise ValueError(f"Source-gated writing pass missing unique row for {hypothesis}.")
+    record = match.iloc[0].to_dict()
+    return "\n".join(
+        [
+            f"**Source-Gated Integration fuer {hypothesis}:**",
+            (
+                f"Methodenbindung: `{record['method_evidence_ids']}` mit "
+                f"Literatur `{record['literature_source_ids']}` und "
+                f"deterministischen Artefakten `{record['deterministic_artifacts']}`."
+            ),
+            (
+                f"Interpretationsbindung: `{record['interpretation_evidence_ids']}` "
+                f"bleibt an dieselben Source-Review-Gates gebunden; "
+                f"{int(record['source_coverage_links'])} Source-Coverage-Links, "
+                f"{int(record['source_coverage_unique_sources'])} eindeutige Source-IDs "
+                f"und {int(record['source_coverage_gap_rows'])} Coverage-Gaps sind "
+                "im Source-Coverage-Audit sichtbar."
+            ),
+            (
+                f"Thesis-ready Resultatpaket: nur Tabelle `{record['selected_tables']}` "
+                f"und Abbildung `{record['selected_figures']}` im Haupttext nutzen; "
+                "wenige gute Tabellen/Figuren statt Rohartefakt-Dumps."
+            ),
+            (
+                "Kapitelprosa aus dem Source-Gated Pass: "
+                f"{record['result_paragraph_de']} {record['interpretation_paragraph_de']}"
+            ),
+            (
+                f"Quellengate: {record['source_gate_paragraph_de']} "
+                "Der Abschnitt bleibt bounded-draft-ready, aber nicht "
+                "final-submission-ready; keine finale Zitation ohne manuelle "
+                "Page-/Section-Notes und Claim-Support-Entscheide."
+            ),
+            (
+                f"Agentengrenze: {record['future_agent_boundary_de']} "
+                "Pipeline-Verbesserungen bleiben documentation-only, mit "
+                "bounded inputs, max 50 rows und `llm_audit_log`; keine "
+                "Runtime-Agenten, kein MCP, kein Model Routing und keine "
+                "LLM-Metriken."
+            ),
+            f"Nicht schreiben: {record['blocked_wording_de']}\n",
         ]
     )
 

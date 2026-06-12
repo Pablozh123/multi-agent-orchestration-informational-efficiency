@@ -9356,6 +9356,32 @@ Verification:
 - `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
   -> PASS, generated 10 audit rows.
 
+## 2026-06-12 - Final project control after source-gated thesis drafting pass
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Refreshed project control after committing
+  `bd917ec docs: continue source-gated h1 h2 h3 thesis drafting`.
+
+Changes:
+
+- Updated `STATUS.md` so the automation snapshot reflects the new
+  source-gated thesis drafting pass and latest commit.
+- Kept the next recommended commit as
+  `docs: integrate source-gated drafting into thesis chapter draft`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 574 passed in 59.15s.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> PASS, 574 passed in 56.47s.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+  -> PASS, suggested `docs: update project control workflow`.
+- `git diff --stat`
+  -> PASS, 2 project-control files changed.
+
 ## 2026-06-12 - Swiss referendum running snapshot update
 
 Goal context:

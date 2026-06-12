@@ -12,6 +12,7 @@ from operations.analysis.thesis_consolidation import (
     CITATION_READINESS_COLUMNS,
     CITATION_REVIEW_PACKET_COLUMNS,
     EVIDENCE_COLUMNS,
+    TABLE_FIGURE_CAPTION_COLUMNS,
     generate_thesis_consolidation,
 )
 
@@ -26,6 +27,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     package = pd.read_csv(result.curated_package_path)
     citations = pd.read_csv(result.citation_readiness_path)
     citation_packets = pd.read_csv(result.citation_review_packets_path)
+    captions = pd.read_csv(result.table_figure_captions_path)
     chapters = pd.read_csv(result.chapter_plan_path)
     agents = pd.read_csv(result.agent_pipeline_path)
     metadata = json.loads(result.metadata_path.read_text(encoding="utf-8"))
@@ -34,16 +36,19 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     writing_blueprint = result.writing_blueprint_path.read_text(encoding="utf-8")
     chapter_draft = result.chapter_draft_path.read_text(encoding="utf-8")
     citation_packet_doc = result.citation_review_docs_path.read_text(encoding="utf-8")
+    caption_doc = result.table_figure_captions_docs_path.read_text(encoding="utf-8")
 
     assert tuple(evidence.columns) == EVIDENCE_COLUMNS
     assert tuple(citations.columns) == CITATION_READINESS_COLUMNS
     assert tuple(citation_packets.columns) == CITATION_REVIEW_PACKET_COLUMNS
+    assert tuple(captions.columns) == TABLE_FIGURE_CAPTION_COLUMNS
     assert tuple(chapters.columns) == CHAPTER_PLAN_COLUMNS
     assert tuple(agents.columns) == AGENT_PIPELINE_COLUMNS
     assert result.evidence_rows == 13
     assert result.core_result_rows == 6
     assert result.citation_rows == 12
     assert result.citation_review_packet_rows == 33
+    assert result.table_figure_caption_rows == 10
     assert result.chapter_rows == 8
     assert result.agent_stage_rows == 6
     assert metadata["method"]["does_not_use_llms"] is True
@@ -56,7 +61,11 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert metadata["outputs"]["writing_blueprint_generated"] is True
     assert metadata["outputs"]["chapter_draft_generated"] is True
     assert metadata["outputs"]["citation_review_packet_rows"] == 33
+    assert metadata["outputs"]["table_figure_caption_rows"] == 10
+    assert metadata["table_figure_caption_counts"]["core_table_captions"] == 5
+    assert metadata["table_figure_caption_counts"]["core_figure_captions"] == 4
     assert metadata["guardrails"]["citation_review_packets_are_pending_human_review"] is True
+    assert metadata["guardrails"]["table_figure_captions_use_curated_package_only"] is True
     assert "Deferred Agent Pipeline Idea" in doc
     assert "Citation Readiness" in doc
     assert "Citation Review Packets" in doc
@@ -66,6 +75,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert "Thesis Chapter Draft" in chapter_draft
     assert "keine neuen Kennzahlen" in chapter_draft
     assert "Thesis Citation Review Packets" in citation_packet_doc
+    assert "Thesis Table And Figure Captions" in caption_doc
     assert core["bounded_interpretation"].str.len().gt(0).all()
     assert package["main_limitation"].str.len().gt(0).all()
 
@@ -160,6 +170,31 @@ def test_chapter_plan_uses_curated_package_ids(tmp_path: Path) -> None:
     assert chapters["main_limitation_to_state"].str.len().gt(0).all()
 
 
+def test_table_figure_captions_cover_curated_core_package(tmp_path: Path) -> None:
+    _write_fixture(tmp_path)
+
+    result = generate_thesis_consolidation(repo_root=tmp_path)
+
+    package = pd.read_csv(result.curated_package_path)
+    captions = pd.read_csv(result.table_figure_captions_path)
+    core_package = package[package["include_in_core_package"].astype(bool)]
+    core_captions = captions[captions["include_in_core_package"].astype(bool)]
+
+    assert set(captions["package_id"]) == set(package["package_id"])
+    assert set(core_captions["package_id"]) == set(core_package["package_id"])
+    assert captions["thesis_label"].is_unique
+    assert (core_captions["package_type"] == "table").sum() == 5
+    assert (core_captions["package_type"] == "figure").sum() == 4
+    for column in (
+        "caption_de",
+        "source_note_de",
+        "interpretation_note_de",
+        "limitation_note_de",
+    ):
+        assert captions[column].astype(str).str.len().gt(0).all()
+        assert not captions[column].astype(str).str.contains(chr(195) + chr(376), regex=False).any()
+
+
 def test_agent_pipeline_is_documentation_only_and_audited(tmp_path: Path) -> None:
     _write_fixture(tmp_path)
 
@@ -197,8 +232,8 @@ def test_chapter_draft_is_traceable_and_uses_swiss_spelling(tmp_path: Path) -> N
 
     draft = result.chapter_draft_path.read_text(encoding="utf-8")
 
-    assert "ß" not in draft
-    assert "ÃŸ" not in draft
+    assert chr(223) not in draft
+    assert chr(195) + chr(376) not in draft
     assert "Forecast quality is evaluated" not in draft
     assert "interpretation_h1_bounded_advantage" in draft
     assert "data/results/h2_event_window_summary.csv" in draft

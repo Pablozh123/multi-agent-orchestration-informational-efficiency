@@ -30,12 +30,14 @@ GENERATED_ARTIFACTS: frozenset[str] = frozenset(
         "data/results/thesis_chapter_plan.csv",
         "data/results/thesis_agent_pipeline_roadmap.csv",
         "data/results/thesis_citation_review_packets.csv",
+        "data/results/thesis_table_figure_captions.csv",
         "data/results/thesis_consolidation_metadata.json",
         "docs/research/THESIS_CONSOLIDATION.md",
         "docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md",
         "docs/research/THESIS_WRITING_BLUEPRINT.md",
         "docs/research/THESIS_CHAPTER_DRAFT.md",
         "docs/research/THESIS_CITATION_REVIEW_PACKETS.md",
+        "docs/research/THESIS_TABLE_FIGURE_CAPTIONS.md",
     }
 )
 
@@ -47,12 +49,14 @@ CITATION_READINESS_OUTPUT = "thesis_citation_readiness.csv"
 CHAPTER_PLAN_OUTPUT = "thesis_chapter_plan.csv"
 AGENT_PIPELINE_OUTPUT = "thesis_agent_pipeline_roadmap.csv"
 CITATION_REVIEW_PACKETS_OUTPUT = "thesis_citation_review_packets.csv"
+TABLE_FIGURE_CAPTIONS_OUTPUT = "thesis_table_figure_captions.csv"
 METADATA_OUTPUT = "thesis_consolidation_metadata.json"
 DOC_OUTPUT = "THESIS_CONSOLIDATION.md"
 AGENT_DOC_OUTPUT = "THESIS_AGENT_PIPELINE_ROADMAP.md"
 WRITING_BLUEPRINT_OUTPUT = "THESIS_WRITING_BLUEPRINT.md"
 CHAPTER_DRAFT_OUTPUT = "THESIS_CHAPTER_DRAFT.md"
 CITATION_REVIEW_DOC_OUTPUT = "THESIS_CITATION_REVIEW_PACKETS.md"
+TABLE_FIGURE_CAPTIONS_DOC_OUTPUT = "THESIS_TABLE_FIGURE_CAPTIONS.md"
 
 EVIDENCE_COLUMNS: tuple[str, ...] = (
     "evidence_id",
@@ -160,6 +164,22 @@ CITATION_REVIEW_PACKET_COLUMNS: tuple[str, ...] = (
     "reviewer_notes",
 )
 
+TABLE_FIGURE_CAPTION_COLUMNS: tuple[str, ...] = (
+    "package_id",
+    "package_type",
+    "thesis_label",
+    "caption_de",
+    "primary_artifact",
+    "supporting_artifacts",
+    "evidence_ids",
+    "source_note_de",
+    "interpretation_note_de",
+    "limitation_note_de",
+    "recommended_placement",
+    "include_in_core_package",
+    "thesis_readiness",
+)
+
 
 @dataclass(frozen=True)
 class ThesisConsolidationResult:
@@ -173,12 +193,14 @@ class ThesisConsolidationResult:
     chapter_plan_path: Path
     agent_pipeline_path: Path
     citation_review_packets_path: Path
+    table_figure_captions_path: Path
     metadata_path: Path
     docs_path: Path
     agent_docs_path: Path
     writing_blueprint_path: Path
     chapter_draft_path: Path
     citation_review_docs_path: Path
+    table_figure_captions_docs_path: Path
     evidence_rows: int
     core_result_rows: int
     package_rows: int
@@ -186,6 +208,7 @@ class ThesisConsolidationResult:
     chapter_rows: int
     agent_stage_rows: int
     citation_review_packet_rows: int
+    table_figure_caption_rows: int
 
     def to_dict(self) -> dict[str, str | int]:
         return {
@@ -197,12 +220,14 @@ class ThesisConsolidationResult:
             "chapter_plan_path": str(self.chapter_plan_path),
             "agent_pipeline_path": str(self.agent_pipeline_path),
             "citation_review_packets_path": str(self.citation_review_packets_path),
+            "table_figure_captions_path": str(self.table_figure_captions_path),
             "metadata_path": str(self.metadata_path),
             "docs_path": str(self.docs_path),
             "agent_docs_path": str(self.agent_docs_path),
             "writing_blueprint_path": str(self.writing_blueprint_path),
             "chapter_draft_path": str(self.chapter_draft_path),
             "citation_review_docs_path": str(self.citation_review_docs_path),
+            "table_figure_captions_docs_path": str(self.table_figure_captions_docs_path),
             "evidence_rows": self.evidence_rows,
             "core_result_rows": self.core_result_rows,
             "package_rows": self.package_rows,
@@ -210,6 +235,7 @@ class ThesisConsolidationResult:
             "chapter_rows": self.chapter_rows,
             "agent_stage_rows": self.agent_stage_rows,
             "citation_review_packet_rows": self.citation_review_packet_rows,
+            "table_figure_caption_rows": self.table_figure_caption_rows,
         }
 
 
@@ -300,6 +326,8 @@ def generate_thesis_consolidation(
         literature=literature,
     )
     _validate_citation_review_packets(citation_review_packets, evidence_map)
+    table_figure_captions = build_table_figure_captions(curated_package=curated_package)
+    _validate_table_figure_captions(table_figure_captions, repo_root=repo_root)
 
     results_dir.mkdir(parents=True, exist_ok=True)
     docs_dir.mkdir(parents=True, exist_ok=True)
@@ -311,12 +339,14 @@ def generate_thesis_consolidation(
     chapter_plan_path = results_dir / CHAPTER_PLAN_OUTPUT
     agent_pipeline_path = results_dir / AGENT_PIPELINE_OUTPUT
     citation_review_packets_path = results_dir / CITATION_REVIEW_PACKETS_OUTPUT
+    table_figure_captions_path = results_dir / TABLE_FIGURE_CAPTIONS_OUTPUT
     metadata_path = results_dir / METADATA_OUTPUT
     docs_path = docs_dir / DOC_OUTPUT
     agent_docs_path = docs_dir / AGENT_DOC_OUTPUT
     writing_blueprint_path = docs_dir / WRITING_BLUEPRINT_OUTPUT
     chapter_draft_path = docs_dir / CHAPTER_DRAFT_OUTPUT
     citation_review_docs_path = docs_dir / CITATION_REVIEW_DOC_OUTPUT
+    table_figure_captions_docs_path = docs_dir / TABLE_FIGURE_CAPTIONS_DOC_OUTPUT
 
     evidence_map.to_csv(evidence_map_path, index=False)
     core_results.to_csv(core_results_path, index=False)
@@ -325,6 +355,7 @@ def generate_thesis_consolidation(
     chapter_plan.to_csv(chapter_plan_path, index=False)
     agent_pipeline.to_csv(agent_pipeline_path, index=False)
     citation_review_packets.to_csv(citation_review_packets_path, index=False)
+    table_figure_captions.to_csv(table_figure_captions_path, index=False)
     evidence_map_md_path.write_text(
         _render_evidence_markdown(evidence_map),
         encoding="utf-8",
@@ -338,6 +369,7 @@ def generate_thesis_consolidation(
         chapter_plan=chapter_plan,
         agent_pipeline=agent_pipeline,
         citation_review_packets=citation_review_packets,
+        table_figure_captions=table_figure_captions,
     )
     metadata_path.write_text(json.dumps(metadata, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     docs_path.write_text(
@@ -382,6 +414,13 @@ def generate_thesis_consolidation(
         ),
         encoding="utf-8",
     )
+    table_figure_captions_docs_path.write_text(
+        _render_table_figure_captions_doc(
+            table_figure_captions=table_figure_captions,
+            metadata=metadata,
+        ),
+        encoding="utf-8",
+    )
 
     return ThesisConsolidationResult(
         evidence_map_path=evidence_map_path,
@@ -392,12 +431,14 @@ def generate_thesis_consolidation(
         chapter_plan_path=chapter_plan_path,
         agent_pipeline_path=agent_pipeline_path,
         citation_review_packets_path=citation_review_packets_path,
+        table_figure_captions_path=table_figure_captions_path,
         metadata_path=metadata_path,
         docs_path=docs_path,
         agent_docs_path=agent_docs_path,
         writing_blueprint_path=writing_blueprint_path,
         chapter_draft_path=chapter_draft_path,
         citation_review_docs_path=citation_review_docs_path,
+        table_figure_captions_docs_path=table_figure_captions_docs_path,
         evidence_rows=len(evidence_map),
         core_result_rows=len(core_results),
         package_rows=len(curated_package),
@@ -405,6 +446,7 @@ def generate_thesis_consolidation(
         chapter_rows=len(chapter_plan),
         agent_stage_rows=len(agent_pipeline),
         citation_review_packet_rows=len(citation_review_packets),
+        table_figure_caption_rows=len(table_figure_captions),
     )
 
 
@@ -1348,6 +1390,100 @@ def build_citation_review_packets(
     return pd.DataFrame(rows, columns=CITATION_REVIEW_PACKET_COLUMNS)
 
 
+def build_table_figure_captions(*, curated_package: pd.DataFrame) -> pd.DataFrame:
+    """Build thesis-ready captions and source notes for curated package rows."""
+
+    caption_overrides = {
+        "T1": (
+            "Methoden-, Quellen- und Evidenzkarte der Thesis",
+            "Diese Tabelle verknuepft zentrale Methoden und Interpretationen mit Evidence-IDs, Artefakten und Quellenstatus.",
+            "Die Tabelle zeigt die Nachvollziehbarkeit der Argumentation, nicht neue empirische Ergebnisse.",
+            "Einige Quellen sind noch nicht final zitierbereit und muessen gemaess Citation-Review-Paketen geprueft werden.",
+        ),
+        "T2": (
+            "H1: Prognosequalitaet und Poll-Vergleich",
+            "Diese Tabelle fasst den begrenzten H1-Support und die Grenze der breiten Ueberlegenheitsbehauptung zusammen.",
+            "Polymarket wird nur fuer klar definierte Vergleichsscopes als unterstuetzt beschrieben.",
+            "Vergleichseinheiten und Poll-Transformationen bleiben heterogen.",
+        ),
+        "T3": (
+            "H2: Tagesbasierte Ereignisfenster um kuratierte oeffentliche Ereignisse",
+            "Diese Tabelle berichtet die deterministischen H2-Ereignisfensterwerte aus den vorab kuratierten Events.",
+            "Die Werte zeigen Tagesbewegungen um Ereignisse, keine Intraday-Reaktionsgeschwindigkeit.",
+            "Eventauswahl und Tagesfrequenz begrenzen die Interpretation.",
+        ),
+        "T4": (
+            "H3: Wallet-Tiers und Timingdiagnostik",
+            "Diese Tabelle fasst dataset-relative Wallet-Tiers, Korrelationen und Granger-Diagnostik zusammen.",
+            "Die Tabelle unterstuetzt eine vorsichtige Timingdiagnostik fuer das oberste Tier.",
+            "BUY-only-Quelle, taegliche Aggregation und Mehrfachtests begrenzen die Aussage.",
+        ),
+        "T5": (
+            "Statusgrenzen fuer Monitor-Prototyp und Schweizer Abstimmungstrack",
+            "Diese Tabelle trennt Appendix-/Prototypmaterial und pending Swiss-Ergebnisse vom H1-H3-Kern.",
+            "Monitor und Swiss sind nuetzliche Erweiterungen, aber noch keine finalen Kernergebnisse.",
+            "Monitor-Faelle brauchen Human Review; Swiss braucht das offizielle Resultat.",
+        ),
+        "F1": (
+            "H1: Claim-Readiness des Poll-Vergleichs",
+            "Die Abbildung zeigt den unterstuetzten begrenzten H1-Scope und Gegenbeispiele zur breiten Behauptung.",
+            "Die Abbildung hilft, die H1-Aussage begrenzt statt pauschal zu formulieren.",
+            "Die Darstellung ersetzt keine finale Quellenpruefung und keine Erweiterung auf mehrere Wahlen.",
+        ),
+        "F2": (
+            "H2: Tagesbewegungen in kuratierten Ereignisfenstern",
+            "Die Abbildung visualisiert die H2-Bewegungen aus `h2_event_window_summary.csv`.",
+            "Sie zeigt, welche Ereignisfenster im Tagesraster die groessten Bewegungen aufweisen.",
+            "Die Abbildung darf nicht als Intraday-Reaktionsnachweis gelesen werden.",
+        ),
+        "F3": (
+            "H3: Granger-Diagnostik nach Wallet-Tier und Lag",
+            "Die Abbildung visualisiert p-Werte der H3-Granger-Diagnostik fuer erfolgreiche Tests.",
+            "Sie macht sichtbar, wo die Timingdiagnostik am staerksten ausfaellt.",
+            "Granger-Diagnostik ist kein Kausalitaets-, private-information- oder Profitabilitaetsnachweis.",
+        ),
+        "F4": (
+            "Schweizer 10-Millionen-Initiative: laufender Poll-Proxy-Vergleich",
+            "Die Abbildung zeigt den laufenden Vergleich von Polymarket-Snapshots mit kuratierten Poll-Proxies.",
+            "Sie dient als beschreibender Side-Track bis zum offiziellen Abstimmungsresultat.",
+            "Poll-Anteile sind keine echten Gewinnwahrscheinlichkeiten und erlauben vor dem Resultat keine finale Effizienzaussage.",
+        ),
+    }
+    label_prefix = {"table": "tab", "figure": "fig", "appendix_artifact": "app"}
+    rows: list[dict[str, object]] = []
+    for row in curated_package.sort_values("package_id").to_dict(orient="records"):
+        package_id = str(row["package_id"])
+        caption, source_note, interpretation_note, limitation_note = caption_overrides.get(
+            package_id,
+            (
+                str(row["title"]),
+                f"Quelle: `{row['primary_artifact']}`.",
+                str(row["thesis_message"]),
+                str(row["main_limitation"]),
+            ),
+        )
+        package_type = str(row["package_type"])
+        label = f"{label_prefix.get(package_type, 'art')}:{package_id.lower()}"
+        rows.append(
+            {
+                "package_id": package_id,
+                "package_type": package_type,
+                "thesis_label": label,
+                "caption_de": caption,
+                "primary_artifact": str(row["primary_artifact"]),
+                "supporting_artifacts": str(row["supporting_artifacts"]),
+                "evidence_ids": str(row["evidence_ids"]),
+                "source_note_de": source_note,
+                "interpretation_note_de": interpretation_note,
+                "limitation_note_de": limitation_note,
+                "recommended_placement": str(row["recommended_placement"]),
+                "include_in_core_package": bool(row["include_in_core_package"]),
+                "thesis_readiness": str(row["thesis_readiness"]),
+            }
+        )
+    return pd.DataFrame(rows, columns=TABLE_FIGURE_CAPTION_COLUMNS)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """CLI entry point."""
 
@@ -1710,6 +1846,36 @@ def _validate_citation_review_packets(
         raise ValueError("Citation review packets require check instructions.")
 
 
+def _validate_table_figure_captions(
+    captions: pd.DataFrame,
+    *,
+    repo_root: Path,
+) -> None:
+    _require_columns(captions, TABLE_FIGURE_CAPTION_COLUMNS, "table and figure captions")
+    if captions["package_id"].duplicated().any():
+        raise ValueError("Table and figure captions contain duplicate package_id values.")
+    core = captions[captions["include_in_core_package"].astype(bool)]
+    if (core["package_type"] == "table").sum() > 5:
+        raise ValueError("Caption registry has more than five core tables.")
+    if (core["package_type"] == "figure").sum() > 4:
+        raise ValueError("Caption registry has more than four core figures.")
+    for row in captions.to_dict(orient="records"):
+        _validate_artifact_list(repo_root, [str(row["primary_artifact"])])
+        _validate_artifact_list(repo_root, _split_list(str(row["supporting_artifacts"])))
+        for column in (
+            "thesis_label",
+            "caption_de",
+            "source_note_de",
+            "interpretation_note_de",
+            "limitation_note_de",
+        ):
+            if not str(row[column]).strip():
+                raise ValueError(f"{row['package_id']} is missing {column}.")
+        joined = " ".join(str(row[column]) for column in TABLE_FIGURE_CAPTION_COLUMNS)
+        if chr(223) in joined:
+            raise ValueError(f"{row['package_id']} caption contains German sharp-s.")
+
+
 def _validate_artifact_list(repo_root: Path, artifacts: Iterable[str]) -> None:
     for artifact in artifacts:
         if not artifact:
@@ -1728,6 +1894,7 @@ def _build_metadata(
     chapter_plan: pd.DataFrame,
     agent_pipeline: pd.DataFrame,
     citation_review_packets: pd.DataFrame,
+    table_figure_captions: pd.DataFrame,
 ) -> dict[str, object]:
     core = curated_package[curated_package["include_in_core_package"].astype(bool)]
     return {
@@ -1747,6 +1914,7 @@ def _build_metadata(
             "chapter_rows": int(len(chapter_plan)),
             "agent_stage_rows": int(len(agent_pipeline)),
             "citation_review_packet_rows": int(len(citation_review_packets)),
+            "table_figure_caption_rows": int(len(table_figure_captions)),
             "writing_blueprint_generated": True,
             "chapter_draft_generated": True,
             "core_table_count": int((core["package_type"] == "table").sum()),
@@ -1787,10 +1955,26 @@ def _build_metadata(
                 ).sum()
             ),
         },
+        "table_figure_caption_counts": {
+            "core_table_captions": int(
+                (
+                    table_figure_captions["include_in_core_package"].astype(bool)
+                    & (table_figure_captions["package_type"] == "table")
+                ).sum()
+            ),
+            "core_figure_captions": int(
+                (
+                    table_figure_captions["include_in_core_package"].astype(bool)
+                    & (table_figure_captions["package_type"] == "figure")
+                ).sum()
+            ),
+            "total_caption_rows": int(len(table_figure_captions)),
+        },
         "guardrails": {
             "every_method_and_interpretation_has_artifact": True,
             "citation_readiness_is_status_mapping_not_source_promotion": True,
             "citation_review_packets_are_pending_human_review": True,
+            "table_figure_captions_use_curated_package_only": True,
             "chapter_plan_uses_curated_package": True,
             "thesis_facing_rows_avoid_candidate_or_rejected_sources": True,
             "swiss_final_efficiency_interpretation_pending": True,
@@ -2037,6 +2221,41 @@ def _render_citation_review_packets_doc(
         "Candidate sources remain future-work or question-framing material only. "
         "Do not use packet rows to strengthen a claim beyond the linked "
         "deterministic artifact and allowed wording.\n"
+    )
+
+
+def _render_table_figure_captions_doc(
+    *,
+    table_figure_captions: pd.DataFrame,
+    metadata: dict[str, object],
+) -> str:
+    display = table_figure_captions[
+        [
+            "package_id",
+            "package_type",
+            "thesis_label",
+            "caption_de",
+            "primary_artifact",
+            "recommended_placement",
+            "thesis_readiness",
+        ]
+    ]
+    return (
+        "# Thesis Table And Figure Captions\n\n"
+        "This register turns the curated result package into thesis-ready table "
+        "and figure captions. It uses only the selected core package rows and "
+        "keeps source notes, interpretation notes, and limitations separate.\n\n"
+        "## Counts\n\n"
+        f"- Total caption rows: {metadata['table_figure_caption_counts']['total_caption_rows']}\n"
+        f"- Core table captions: {metadata['table_figure_caption_counts']['core_table_captions']}\n"
+        f"- Core figure captions: {metadata['table_figure_caption_counts']['core_figure_captions']}\n\n"
+        "## Caption Register\n\n"
+        + _markdown_table(display)
+        + "\n\n"
+        "## Usage Rule\n\n"
+        "Use these captions with the exact linked artifacts. Do not replace the "
+        "curated package with additional raw result files unless the evidence map "
+        "and chapter plan are updated first.\n"
     )
 
 

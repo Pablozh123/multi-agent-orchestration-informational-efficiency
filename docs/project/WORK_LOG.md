@@ -8309,3 +8309,41 @@ Verification:
   -> PASS, 17 passed.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 498 passed in 49.06s.
+
+## 2026-06-12 - Thesis table and figure captions
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Left review-access work paused and focused on the high-level thesis view:
+  the curated result package now has thesis-ready labels, captions, source
+  notes, interpretation notes, and limitation notes.
+
+Changes:
+
+- Extended `operations/analysis/thesis_consolidation.py` with generated
+  `data/results/thesis_table_figure_captions.csv`.
+- Added `docs/research/THESIS_TABLE_FIGURE_CAPTIONS.md`.
+- Updated `ROADMAP.md`, `GOAL.md`, and `docs/research/LITERATURE_MAP.md` to
+  include the caption registry in the Phase 12 consolidation layer.
+- Extended `tests/test_thesis_consolidation.py` to validate caption columns,
+  core table/figure counts, unique thesis labels, non-empty source and
+  limitation notes, and Swiss spelling guards.
+
+Key output:
+
+- Caption registry rows: 10.
+- Core table captions: 5.
+- Core figure captions: 4.
+- Appendix/future-work captions: 1.
+- The registry is generated only from `thesis_curated_result_package.csv`; it
+  does not add additional raw result files to the thesis core package.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`
+  -> PASS, generated the table and figure caption registry.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_consolidation.py -q`
+  -> PASS, 11 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 499 passed in 50.24s.

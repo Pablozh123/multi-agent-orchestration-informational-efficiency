@@ -81,7 +81,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: create thesis citation review packets
+next_commit: docs: add thesis table figure captions
 
 ## Running Side Goal
 

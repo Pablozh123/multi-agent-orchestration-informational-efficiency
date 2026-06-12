@@ -71,11 +71,13 @@ Current generated consolidation artifacts:
 - `data/results/thesis_evidence_map.md`
 - `data/results/thesis_core_results_table.csv`
 - `data/results/thesis_curated_result_package.csv`
+- `data/results/thesis_table_figure_captions.csv`
 - `data/results/thesis_citation_readiness.csv`
 - `data/results/thesis_citation_review_packets.csv`
 - `data/results/thesis_chapter_plan.csv`
 - `data/results/thesis_agent_pipeline_roadmap.csv`
 - `docs/research/THESIS_CONSOLIDATION.md`
+- `docs/research/THESIS_TABLE_FIGURE_CAPTIONS.md`
 - `docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md`
 - `docs/research/THESIS_CITATION_REVIEW_PACKETS.md`
 
@@ -101,6 +103,9 @@ Current mapping rule:
 - `thesis_citation_review_packets.csv` is the row-level review worklist. It
   links one source to one Evidence ID and requires a human page or section note
   before any final thesis citation status is upgraded.
+- `thesis_table_figure_captions.csv` is the current table and figure registry.
+  It keeps caption text, source notes, interpretation notes, and limitations
+  linked to the curated result package.
 - Monitor and Swiss rows must keep their status labels visible:
   prototype/appendix for monitor outputs and descriptive-pending-result for the
   Swiss referendum track.

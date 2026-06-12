@@ -134,7 +134,15 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Quellenstatus nicht automatisch hochstufen.",
         ),
         _index_row(
-            artifact_id="index_08_wording_guard",
+            artifact_id="index_08_source_review_execution",
+            artifact_type="source_review_execution",
+            path="docs/project/THESIS_SOURCE_REVIEW_EXECUTION.md; data/results/thesis_source_review_execution.csv",
+            purpose_de="Manuelle Reihenfolge fuer Quellenreview, Output und Completion Gates.",
+            use_now_de="Priority-1-Quellen source-by-source abarbeiten.",
+            gate_or_limit_de="Quellenstatus nicht automatisch hochstufen; blocked Quellen nicht fuer thesis-facing Claims nutzen.",
+        ),
+        _index_row(
+            artifact_id="index_09_wording_guard",
             artifact_type="drafting_guard",
             path="docs/research/THESIS_WORDING_GUARD.md",
             purpose_de="Erlaubtes und blockiertes deutsches Thesis-Wording je Evidence ID.",
@@ -142,7 +150,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine Formulierung ohne Artefakt und Limitation uebernehmen.",
         ),
         _index_row(
-            artifact_id="index_09_table_figure_captions",
+            artifact_id="index_10_table_figure_captions",
             artifact_type="result_package",
             path="docs/research/THESIS_TABLE_FIGURE_CAPTIONS.md",
             purpose_de="Beschriftungen, Quellen- und Limitationstexte fuer Tabellen/Figuren.",
@@ -150,7 +158,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine Rohartefakt-Dumps in den Haupttext.",
         ),
         _index_row(
-            artifact_id="index_10_chapter_draft",
+            artifact_id="index_11_chapter_draft",
             artifact_type="chapter_draft",
             path="docs/research/THESIS_CHAPTER_DRAFT.md",
             purpose_de="Erster deutschsprachiger Kapitelentwurf aus der Konsolidierung.",
@@ -158,7 +166,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Vor finaler Abgabe Quellenreview und Wording Guard anwenden.",
         ),
         _index_row(
-            artifact_id="index_11_source_review_plan",
+            artifact_id="index_12_source_review_plan",
             artifact_type="source_review",
             path="docs/research/THESIS_SOURCE_REVIEW_PLAN.md",
             purpose_de="Priorisierte Quellenreview-Planung nach Quelle.",
@@ -166,7 +174,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Candidate/rejected Quellen nicht fuer thesis-facing Claims nutzen.",
         ),
         _index_row(
-            artifact_id="index_12_agent_protocol",
+            artifact_id="index_13_agent_protocol",
             artifact_type="future_work",
             path="docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md",
             purpose_de="Dokumentations-only Agenten-Ausblick mit erlaubten Rollen und Gates.",
@@ -174,7 +182,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade.",
         ),
         _index_row(
-            artifact_id="index_13_status_and_log",
+            artifact_id="index_14_status_and_log",
             artifact_type="project_control",
             path="STATUS.md; docs/project/WORK_LOG.md",
             purpose_de="Automatisierter Projektstatus und append-only Arbeitslog.",
@@ -257,8 +265,8 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "# Thesis Consolidation Index\n\n"
         "Dieser Index zeigt, welche Artefakte fuer den aktuellen Highlevel-"
         "Projektstand, den Dozentenbericht, Source Review, Wording Guard, "
-        "Execution Checklist, Tabellen/Figuren und Future-Work-Agenten relevant "
-        "sind.\n\n"
+        "Execution Checklist, Source Review Execution, Tabellen/Figuren und "
+        "Future-Work-Agenten relevant sind.\n\n"
         "## Counts\n\n"
         f"- Indexed artifacts: {len(index)}\n\n"
         "## Artifact Index\n\n"
@@ -266,10 +274,10 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         + "\n\n"
         "## Use Rule\n\n"
         "Nutze zuerst den Dozentenbericht und die Absprache-Checklist fuer die "
-        "Betreuung. Nutze danach Execution Checklist, Source Worksheet, Wording "
-        "Guard und Next Work Plan fuer das Schreiben. Review-Access, "
-        "Runtime-Agenten, MCP, Model Routing, Rohdatenzugriff und Trading-Pfade "
-        "bleiben deaktiviert.\n"
+        "Betreuung. Nutze danach Execution Checklist, Source Worksheet, Source "
+        "Review Execution, Wording Guard und Next Work Plan fuer das Schreiben. "
+        "Review-Access, Runtime-Agenten, MCP, Model Routing, Rohdatenzugriff und "
+        "Trading-Pfade bleiben deaktiviert.\n"
     )
 
 

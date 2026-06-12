@@ -636,6 +636,11 @@ Current implemented consolidation:
   manual worksheet with one row per source, linked Evidence IDs, bounded
   wording to confirm, wording not to claim, locator information, and pending
   reviewer fields.
+- `data/results/thesis_source_review_execution.csv` and
+  `docs/project/THESIS_SOURCE_REVIEW_EXECUTION.md` turn the worksheet into a
+  manual execution order: 11 priority-1 sources to review now, 1
+  blocked/future-only source for metadata only, and 3 deferred sources until
+  they are mapped to an Evidence ID.
 - `data/results/thesis_chapter_plan.csv` maps the BA chapter structure to
   curated tables, figures, evidence IDs, artifacts, limitations, and next
   writing actions.
@@ -697,9 +702,10 @@ Current implemented consolidation:
 - `data/results/thesis_consolidation_index.csv` and
   `docs/project/THESIS_CONSOLIDATION_INDEX.md` index the current
   consolidation deliverables so the Dozentenbericht, advisor checklist,
-  highlevel view, work plan, execution checklist, source worksheet, wording
-  guard, table/figure captions, chapter draft, source review plan, agent
-  protocol, status, and work log are easy to navigate.
+  highlevel view, work plan, execution checklist, source worksheet, source
+  review execution guide, wording guard, table/figure captions, chapter draft,
+  source review plan, agent protocol, status, and work log are easy to
+  navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,

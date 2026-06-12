@@ -8856,6 +8856,47 @@ Verification:
 - `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
   -> PASS, recommends reviewing one coherent report/update slice.
 
+## 2026-06-12 - Source review execution guide
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Turned the source-review worksheet into a concrete manual execution order
+  without changing any source status.
+
+Changes:
+
+- Added `operations/project/build_source_review_execution_guide.py`.
+- Generated `data/results/thesis_source_review_execution.csv`.
+- Added `docs/project/THESIS_SOURCE_REVIEW_EXECUTION.md`.
+- Added `tests/test_source_review_execution_guide.py`.
+- Updated the thesis consolidation index to include the new guide.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Source review tasks: 15.
+- Review now priority 1: 11.
+- Metadata only blocked: 1.
+- Defer until mapped: 3.
+- Completion gates require Human Review before final citation or source-status
+  promotion.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_source_review_execution_guide.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_source_review_execution_guide`
+  -> PASS, generated 15 source-review tasks.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 14 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 515 passed in 49.83s.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> PASS, 515 passed in 48.96s.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+  -> PASS, recommends reviewing one coherent docs/data/automation slice.
+
 ## 2026-06-12 - Thesis execution checklist
 
 Goal context:

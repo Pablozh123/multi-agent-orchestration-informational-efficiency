@@ -19,12 +19,13 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     doc = result.docs_path.read_text(encoding="utf-8")
 
     assert tuple(index.columns) == INDEX_COLUMNS
-    assert result.index_rows == 20
+    assert result.index_rows == 21
     assert "Thesis Consolidation Index" in doc
-    assert "Indexed artifacts: 20" in doc
+    assert "Indexed artifacts: 21" in doc
     assert "dozentenbericht_ba_thesis.docx" in doc
     assert "THESIS_ADVISOR_HANDOFF_PACKAGE.md" in doc
     assert "DOZENTEN_UEBERGABE_TEXT.md" in doc
+    assert "DOZENTEN_FEEDBACK_LOG.md" in doc
     assert "THESIS_SUBMISSION_READINESS_BOARD.md" in doc
     assert "THESIS_DRAFTING_SEQUENCE.md" in doc
     assert "THESIS_EXECUTION_CHECKLIST.md" in doc
@@ -75,6 +76,8 @@ def _write_fixture(root: Path) -> None:
         "data/results/thesis_advisor_handoff_package.csv",
         "docs/project/DOZENTEN_UEBERGABE_TEXT.md",
         "data/results/thesis_advisor_handoff_note.csv",
+        "docs/project/DOZENTEN_FEEDBACK_LOG.md",
+        "data/results/thesis_advisor_feedback_log_template.csv",
         "docs/project/THESIS_SUBMISSION_READINESS_BOARD.md",
         "data/results/thesis_submission_readiness_board.csv",
         "docs/project/THESIS_DRAFTING_SEQUENCE.md",

@@ -9315,3 +9315,50 @@ Verification:
   -> PASS, 527 passed in 49.29s.
 - `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
   -> PASS, recommends reviewing one coherent docs/data/automation slice.
+
+## 2026-06-12 - Advisor feedback log
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Added a pending feedback log so the next advisor response can be translated
+  into small scoped follow-up commits.
+
+Changes:
+
+- Added `operations/project/build_advisor_feedback_log.py`.
+- Generated `data/results/thesis_advisor_feedback_log_template.csv`.
+- Added `docs/project/DOZENTEN_FEEDBACK_LOG.md`.
+- Added `tests/test_advisor_feedback_log.py`.
+- Updated the thesis consolidation index to include the feedback log.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Feedback rows: 8.
+- All rows remain `pending_advisor_feedback`.
+- The log keeps advisor answers, resulting actions, commit scope, and
+  guardrails separate.
+- Review-Access, runtime agents, MCP, model routing, LLM metrics, and trading
+  paths remain inactive.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_advisor_feedback_log.py operations/project/build_thesis_consolidation_index.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_advisor_feedback_log.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_advisor_feedback_log`
+  -> PASS, generated 8 feedback rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 21 indexed artifacts.
+- `git diff --check`
+  -> PASS, no whitespace errors; CRLF warnings only.
+- `rg -n "sharp-s|\\u00df" GOAL.md ROADMAP.md docs/project/DOZENTEN_FEEDBACK_LOG.md docs/project/THESIS_CONSOLIDATION_INDEX.md operations/project/build_advisor_feedback_log.py tests/test_advisor_feedback_log.py operations/project/build_thesis_consolidation_index.py tests/test_thesis_consolidation_index.py`
+  -> PASS, no matches.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 529 passed in 49.57s.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> PASS, 529 passed in 51.98s.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+  -> PASS, recommends reviewing one coherent docs/data/automation slice.

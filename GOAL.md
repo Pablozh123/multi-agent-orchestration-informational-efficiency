@@ -90,11 +90,13 @@ acceptance_criteria:
   sequence view so the high-level next steps are visible in the Word update.
 - A short advisor handoff note exists so the Word update can be sent with a
   clear subject, attachment order, questions, and scope boundaries.
+- A pending advisor feedback log exists so later feedback can be translated
+  into small scoped follow-up commits.
 - Tests cover the generated evidence map and curated result package where
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add advisor handoff note
+next_commit: docs: add advisor feedback log
 
 ## Running Side Goal
 

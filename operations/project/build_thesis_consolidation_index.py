@@ -214,7 +214,15 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Zwischenstand, kein finales Abgabe- oder Quellenreview-Signal.",
         ),
         _index_row(
-            artifact_id="index_18_submission_readiness",
+            artifact_id="index_18_advisor_feedback_log",
+            artifact_type="advisor_feedback_log",
+            path="docs/project/DOZENTEN_FEEDBACK_LOG.md; data/results/thesis_advisor_feedback_log_template.csv",
+            purpose_de="Pending-Log fuer Dozentenfeedback, Entscheidungen und Folgecommits.",
+            use_now_de="Nach der Betreuung Feedback, Entscheidung und kleine Folgeaktion eintragen.",
+            gate_or_limit_de="Alle Eintraege bleiben pending, bis der Dozent Feedback gegeben hat.",
+        ),
+        _index_row(
+            artifact_id="index_19_submission_readiness",
             artifact_type="submission_readiness",
             path="docs/project/THESIS_SUBMISSION_READINESS_BOARD.md; data/results/thesis_submission_readiness_board.csv",
             purpose_de="Gate-Board fuer draft-ready, final-blocked und deferred Thesis-Schritte.",
@@ -222,7 +230,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Finale Abgabe bleibt blockiert, solange Source Review, Swiss-Gate oder Render-QA offen sind.",
         ),
         _index_row(
-            artifact_id="index_19_drafting_sequence",
+            artifact_id="index_20_drafting_sequence",
             artifact_type="drafting_sequence",
             path="docs/project/THESIS_DRAFTING_SEQUENCE.md; data/results/thesis_drafting_sequence.csv",
             purpose_de="Konkrete Schreibreihenfolge aus Work Plan, Readiness Board und Kapitelbindungen.",
@@ -230,7 +238,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Trennt Draft-Arbeit von Source Review, Swiss-Gate, DOCX-Render-QA und Future-Work-Agenten.",
         ),
         _index_row(
-            artifact_id="index_20_status_and_log",
+            artifact_id="index_21_status_and_log",
             artifact_type="project_control",
             path="STATUS.md; docs/project/WORK_LOG.md",
             purpose_de="Automatisierter Projektstatus und append-only Arbeitslog.",
@@ -313,10 +321,10 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "# Thesis Consolidation Index\n\n"
         "Dieser Index zeigt, welche Artefakte fuer den aktuellen Highlevel-"
         "Projektstand, den Dozentenbericht, Source Review, Wording Guard, "
-        "Advisor Handoff Package, Advisor Handoff Note, Submission Readiness "
-        "Board, Drafting Sequence, Execution Checklist, Chapter Source "
-        "Bindings, Source Review Execution, Agent Future-Work Handoff, "
-        "Tabellen/Figuren und "
+        "Advisor Handoff Package, Advisor Handoff Note, Advisor Feedback Log, "
+        "Submission Readiness Board, Drafting Sequence, Execution Checklist, "
+        "Chapter Source Bindings, Source Review Execution, Agent Future-Work "
+        "Handoff, Tabellen/Figuren und "
         "Future-Work-Agenten relevant sind.\n\n"
         "## Counts\n\n"
         f"- Indexed artifacts: {len(index)}\n\n"
@@ -327,7 +335,8 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Nutze zuerst den Dozentenbericht und die Absprache-Checklist fuer die "
         "Betreuung. Nutze das Advisor Handoff Package als Abgabe- und "
         "Gespraechsreihenfolge. Nutze den Uebergabetext als kurze Mail- oder "
-        "Chat-Vorlage. Nutze das Submission Readiness Board fuer die "
+        "Chat-Vorlage. Nutze das Feedback-Log nach der Betreuung. Nutze das "
+        "Submission Readiness Board fuer die "
         "finalen Gates. Nutze die Drafting Sequence fuer die naechste "
         "Schreibreihenfolge. Nutze danach Execution Checklist, Source "
         "Worksheet, Chapter Source Bindings, Source Review Execution, Agent "

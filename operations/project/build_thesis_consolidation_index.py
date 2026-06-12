@@ -182,6 +182,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine finale Zitation, keine Rohartefakt-Dumps, keine neuen Kennzahlen und keine Runtime-Agenten.",
         ),
         _index_row(
+            artifact_id="index_13_h1_h2_h3_source_gated_writing_pass",
+            artifact_type="source_gated_writing_pass",
+            path="docs/research/THESIS_H1_H2_H3_SOURCE_GATED_WRITING_PASS.md; data/results/thesis_h1_h2_h3_source_gated_writing_pass.csv",
+            purpose_de="Zusammenhaengender H1-H2-H3 Schreibpass aus bounded Draft, Source Coverage, wenigen Tabellen/Figuren und Source Review Gates.",
+            use_now_de="Als unmittelbare Grundlage fuer die H1-H2-H3 Ergebniskapitel nutzen.",
+            gate_or_limit_de="Bounded Draft ja; keine finale Zitation, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.",
+        ),
+        _index_row(
             artifact_id="index_13_source_review_plan",
             artifact_type="source_review",
             path="docs/research/THESIS_SOURCE_REVIEW_PLAN.md",
@@ -473,7 +481,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "H1-H2-H3 Source Review Notes, Source Review Progress Ledger, "
         "Source Review Progress Protocol, Source Review Chapter Handoff, "
         "Chapter Source Review Checklist, H1-H2-H3 Drafting Checklist, "
-        "H1-H2-H3 Bounded Chapter Draft, Thesis Final Gate Board, Traceability Audit, Method/Interpretation Source Coverage, "
+        "H1-H2-H3 Bounded Chapter Draft, H1-H2-H3 Source-Gated Writing Pass, Thesis Final Gate Board, Traceability Audit, Method/Interpretation Source Coverage, "
         "H1-H2-H3 Core Sections, Agent Pipeline Upgrade Plan, Goal Completion Audit, Agent Future-Work Handoff, Agent Pipeline Control Audit, Tabellen/Figuren und "
         "Future-Work-Agenten relevant sind.\n\n"
         "## Counts\n\n"
@@ -499,7 +507,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "und Future-Agent-Grenzen. Nutze das Source Review Chapter Handoff "
         "als kapitelweise Uebergabe fuer H1-H2-H3 und die Chapter Source "
         "Review Checklist als Abhakliste. Nutze die H1-H2-H3 Drafting Checklist "
-        "als konkrete Schreibreihenfolge und den H1-H2-H3 Bounded Chapter Draft als Prosa-Bausteine fuer den empirischen Kern. Nutze das Thesis Final Gate Board als Highlevel-Stop-/Go-Kontrolle. Nutze den Traceability Audit als BA-Schreibkontrolle. "
+        "als konkrete Schreibreihenfolge, den H1-H2-H3 Bounded Chapter Draft als Prosa-Bausteine und den H1-H2-H3 Source-Gated Writing Pass als zusammenhaengenden Schreibstand fuer den empirischen Kern. Nutze das Thesis Final Gate Board als Highlevel-Stop-/Go-Kontrolle. Nutze den Traceability Audit als BA-Schreibkontrolle. "
         "Nutze die Method/Interpretation Source Coverage als flachen Literaturindex- und Artefaktcheck vor jedem H1-H3-Schreibpass. "
         "Nutze die H1-H2-H3 Core Sections als Schreibkern und den Agent "
         "Pipeline Upgrade Plan nur als Future-Work-Gedanke. Nutze das Goal Completion Audit als Stop- und "

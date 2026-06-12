@@ -46,6 +46,8 @@ def test_generate_goal_completion_audit_writes_remaining_gates(tmp_path: Path) -
     assert "THESIS_H1_H2_H3_DRAFTING_CHECKLIST.md" in doc
     assert "thesis_h1_h2_h3_bounded_chapter_draft.csv" in doc
     assert "THESIS_H1_H2_H3_BOUNDED_CHAPTER_DRAFT.md" in doc
+    assert "thesis_h1_h2_h3_source_gated_writing_pass.csv" in doc
+    assert "THESIS_H1_H2_H3_SOURCE_GATED_WRITING_PASS.md" in doc
     assert "thesis_agent_pipeline_control_audit.csv" in doc
     assert "THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md" in doc
     assert "thesis_agent_pipeline_upgrade_plan.csv" in doc
@@ -87,6 +89,7 @@ def test_goal_completion_audit_keeps_open_gates_visible(tmp_path: Path) -> None:
     assert "h1-h2-h3 drafting checklist: 18 checks; bounded-draft-ready: 18; final-ready: 0; final-blocked: 3" in joined
     assert "h1-h2-h3 bounded chapter draft: 18 bausteine (h1; h2; h3)" in joined
     assert "bounded-draft-ready: 18; final-ready: 0" in joined
+    assert "source-gated writing pass: 3 kapitel; bounded-draft-ready: 3; final-ready: 0; coverage gaps: 0" in joined
     assert "agent control: 2 rollen; documentation-only: 1; deferred: 1; aktiv: 0" in joined
     assert "agent upgrade plan: 2 reihen; aktive upgrade-reihen: 0" in joined
     assert "final gate board: 8 gates; draft-allowed 8; final-ready 1" in joined
@@ -279,6 +282,9 @@ def _write_fixture(root: Path) -> None:
         ]
     ).to_csv(results / "thesis_h1_h2_h3_bounded_chapter_draft.csv", index=False)
     pd.DataFrame(
+        [_source_gated_writing_pass(area) for area in ("H1", "H2", "H3")]
+    ).to_csv(results / "thesis_h1_h2_h3_source_gated_writing_pass.csv", index=False)
+    pd.DataFrame(
         [
             {
                 "control_id": "agent_control_01",
@@ -353,6 +359,7 @@ def _write_fixture(root: Path) -> None:
         "docs/project/THESIS_CHAPTER_SOURCE_REVIEW_CHECKLIST.md",
         "docs/project/THESIS_H1_H2_H3_DRAFTING_CHECKLIST.md",
         "docs/research/THESIS_H1_H2_H3_BOUNDED_CHAPTER_DRAFT.md",
+        "docs/research/THESIS_H1_H2_H3_SOURCE_GATED_WRITING_PASS.md",
         "docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md",
         "docs/project/THESIS_FINAL_GATE_BOARD.md",
     ]:
@@ -492,6 +499,34 @@ def _bounded_chapter_draft(check_idx: int, area: str) -> dict[str, object]:
         "deterministic_artifacts": "data/results/thesis_core_results_table.csv",
         "selected_tables": "T2",
         "selected_figures": "F1",
+        "ready_for_bounded_draft": True,
+        "ready_for_final_submission": False,
+    }
+
+
+def _source_gated_writing_pass(area: str) -> dict[str, object]:
+    return {
+        "writing_pass_id": f"writing_pass_{area.lower()}_source_gated",
+        "thesis_area": area,
+        "chapter_title_de": f"{area}: Fixture",
+        "method_evidence_ids": f"method_{area.lower()}",
+        "interpretation_evidence_ids": f"interpretation_{area.lower()}",
+        "literature_source_ids": "lit_a",
+        "deterministic_artifacts": "data/results/thesis_core_results_table.csv",
+        "source_coverage_links": 1,
+        "source_coverage_unique_sources": 1,
+        "source_coverage_gap_rows": 0,
+        "selected_tables": "T2",
+        "selected_figures": "F1",
+        "method_paragraph_de": "Method paragraph.",
+        "result_paragraph_de": "Result paragraph.",
+        "interpretation_paragraph_de": "Interpretation paragraph.",
+        "table_figure_paragraph_de": "Table figure paragraph.",
+        "source_gate_paragraph_de": "Source gate paragraph.",
+        "future_agent_boundary_de": "Future-agent boundary.",
+        "blocked_wording_de": "Blocked wording.",
+        "full_chapter_draft_de": "Full chapter draft.",
+        "writing_pass_status": "source_gated_bounded_draft_ready_final_source_review_pending",
         "ready_for_bounded_draft": True,
         "ready_for_final_submission": False,
     }

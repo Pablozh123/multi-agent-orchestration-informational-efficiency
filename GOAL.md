@@ -169,6 +169,10 @@ acceptance_criteria:
 - The H1-H2-H3 bounded chapter draft carries source-coverage counts per
   chapter so each writing pass sees source links, unique source IDs, zero
   coverage gaps, and final Source Review blockers before prose is expanded.
+- A H1-H2-H3 source-gated writing pass exists so the empirical core has three
+  connected chapter drafts that preserve Evidence IDs, source coverage,
+  deterministic artifacts, compact table/figure choices, limitations,
+  blocked wording, Source Review gates, and inactive future-agent boundaries.
 - A future agent-pipeline upgrade plan exists so later source-review,
   evidence-drafting, wording, table/figure, advisor, monitor, and bounded MCP
   improvements are documented without activating runtime agents.
@@ -180,7 +184,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: start h1 h2 h3 source-gated writing pass
+next_commit: docs: integrate source-gated h1 h2 h3 pass into thesis chapter draft
 
 ## Running Side Goal
 

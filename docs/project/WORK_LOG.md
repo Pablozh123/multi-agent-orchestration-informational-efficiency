@@ -10542,3 +10542,51 @@ Verification:
   -> PASS, generated 18 bounded draft rows.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 566 passed in 53.96s.
+
+## 2026-06-12 - H1-H2-H3 source-gated writing pass
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Started the source-gated H1-H2-H3 writing pass from the bounded chapter
+  draft, method/interpretation source coverage, compact table/figure package,
+  and Source Review gates.
+- Kept the work deterministic: no new metrics, no source-content
+  interpretation, no automatic source-status promotion, no final citation
+  claims, no runtime agents, no MCP, no LLM metrics, and no trading paths.
+
+Changes:
+
+- Added `operations/project/build_h1_h2_h3_source_gated_writing_pass.py`.
+- Generated `data/results/thesis_h1_h2_h3_source_gated_writing_pass.csv`.
+- Generated `docs/research/THESIS_H1_H2_H3_SOURCE_GATED_WRITING_PASS.md`.
+- Added `tests/test_h1_h2_h3_source_gated_writing_pass.py`.
+- Updated the consolidation index and goal-completion audit to include the
+  source-gated writing pass.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Writing pass rows: 3.
+- Bounded draft ready rows: 3.
+- Final submission ready rows: 0.
+- Source coverage gap rows: 0.
+- H1 carries 10 source links, 4 unique source IDs, 0 coverage gaps.
+- H2 carries 5 source links, 3 unique source IDs, 0 coverage gaps.
+- H3 carries 8 source links, 4 unique source IDs, 0 coverage gaps.
+- The pass keeps selected tables/figures to T2/F1, T3/F2, and T4/F3.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_h1_h2_h3_source_gated_writing_pass.py operations/project/build_thesis_consolidation_index.py operations/project/build_thesis_goal_completion_audit.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_h1_h2_h3_source_gated_writing_pass.py tests/test_thesis_consolidation_index.py tests/test_thesis_goal_completion_audit.py -q`
+  -> PASS, 7 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_h1_h2_h3_source_gated_writing_pass`
+  -> PASS, generated 3 source-gated writing pass rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 40 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
+  -> PASS, generated 10 audit rows.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 569 passed in 60.17s.

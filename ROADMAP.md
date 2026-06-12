@@ -826,6 +826,13 @@ Current implemented consolidation:
   H1 has 10 source links and 4 unique source IDs, H2 has 5 and 3, H3 has
   8 and 4, and all three chapters have 0 coverage gaps while final citation
   remains blocked by Source Review.
+- `data/results/thesis_h1_h2_h3_source_gated_writing_pass.csv` and
+  `docs/research/THESIS_H1_H2_H3_SOURCE_GATED_WRITING_PASS.md` collapse those
+  18 blocks into three connected H1-H2-H3 chapter drafts. Each chapter keeps
+  Evidence IDs, literature IDs, deterministic artifacts, source-coverage
+  counts, selected table/figure IDs, blocked wording, final Source Review
+  gates, and future-agent boundaries while remaining bounded-draft-ready but
+  not final-submission-ready.
 - `data/results/thesis_final_gate_board.csv` and
   `docs/project/THESIS_FINAL_GATE_BOARD.md` provide the current highlevel
   Stop-/Go view over the project: 8 gates, 8 draft-allowed rows,

@@ -90,6 +90,9 @@ def generate_source_review_chapter_handoff(
     package = _read_csv(results_dir / "thesis_result_package_traceability.csv")
     ledger = _read_csv(results_dir / "thesis_source_review_progress_ledger.csv")
     protocol = _read_csv(results_dir / "thesis_source_review_progress_protocol.csv")
+    manual_followup_overview = _read_csv(
+        results_dir / "thesis_manual_source_review_followup_overview.csv"
+    )
 
     handoff = build_source_review_chapter_handoff(
         core_sections=core_sections,
@@ -97,6 +100,7 @@ def generate_source_review_chapter_handoff(
         package=package,
         ledger=ledger,
         protocol=protocol,
+        manual_followup_overview=manual_followup_overview,
     )
     _validate_handoff(handoff)
 
@@ -124,6 +128,7 @@ def build_source_review_chapter_handoff(
     package: pd.DataFrame,
     ledger: pd.DataFrame,
     protocol: pd.DataFrame,
+    manual_followup_overview: pd.DataFrame,
 ) -> pd.DataFrame:
     """Return one handoff row per empirical core chapter."""
 
@@ -176,10 +181,23 @@ def build_source_review_chapter_handoff(
         "source review progress ledger",
     )
     _require_columns(protocol, ("protocol_id", "current_state"), "source review progress protocol")
+    _require_columns(
+        manual_followup_overview,
+        (
+            "slice_id",
+            "review_rows",
+            "pending_rows",
+            "final_ready_rows",
+            "followup_doc",
+            "followup_csv",
+        ),
+        "manual source-review follow-up overview",
+    )
 
     evidence_by_id = traceability.set_index("evidence_id").to_dict(orient="index")
     package_by_id = package.set_index("package_id").to_dict(orient="index")
     protocol_by_id = protocol.set_index("protocol_id").to_dict(orient="index")
+    overview_by_area = manual_followup_overview.set_index("slice_id").to_dict(orient="index")
     future_agent_state = str(
         protocol_by_id.get("protocol_06_future_agent_upgrade_boundary", {}).get(
             "current_state", "future_documentation_only"
@@ -219,6 +237,16 @@ def build_source_review_chapter_handoff(
         source_review_rows = int(len(ledger_rows))
         pending_review_rows = int((ledger_rows["review_progress_state"] == "pending_manual_review").sum())
         final_ready_rows = int(ledger_rows["final_citation_ready"].map(_bool_value).sum())
+        overview_row = overview_by_area.get(area)
+        if overview_row is None:
+            raise ValueError(f"Chapter handoff missing manual follow-up overview row for {area}.")
+        _validate_overview_match(
+            area=area,
+            overview_row=overview_row,
+            source_review_rows=source_review_rows,
+            pending_review_rows=pending_review_rows,
+            final_ready_rows=final_ready_rows,
+        )
         coverage_status = _coverage_status(
             method_ids=method_ids,
             interpretation_ids=interpretation_ids,
@@ -252,9 +280,12 @@ def build_source_review_chapter_handoff(
                 "coverage_status": coverage_status,
                 "chapter_write_status": chapter_write_status,
                 "required_source_review_de": (
-                    f"{area}: {source_review_rows} Source-Review-Zeilen im Ledger; "
+                    f"{area}: {source_review_rows} Source-Review-Zeilen im Ledger "
+                    "und in der Manual Source Review Follow-up Overview; "
                     f"{pending_review_rows} pending; {final_ready_rows} final-ready. "
                     "Keine finale Zitation ohne abgeschlossene manuelle Review. "
+                    f"Detailstart: {overview_row['followup_doc']} und "
+                    f"{overview_row['followup_csv']}. "
                     "Vor finaler Zitation Page-/Section-Note, Claim-Support, "
                     "Blocked-Wording und Citation-Use je Quelle dokumentieren."
                 ),
@@ -265,7 +296,8 @@ def build_source_review_chapter_handoff(
                 "next_chapter_action_de": (
                     f"{area}: Kapitel mit Evidence IDs, Literatur IDs, "
                     f"{'; '.join(package_ids)} und sichtbarem Source-Review-Gate "
-                    "schreiben; keine Rohartefakt-Dumps."
+                    "schreiben; vorher Manual Source Review Follow-up Overview "
+                    "pruefen; keine Rohartefakt-Dumps."
                 ),
                 "future_agent_boundary_de": (
                     f"Agentenstatus bleibt `{future_agent_state}`: keine Runtime-Agenten, "
@@ -329,6 +361,7 @@ def _validate_handoff(handoff: pd.DataFrame) -> None:
         "evidence ids",
         "literatur ids",
         "source-review-gate",
+        "manual source review follow-up overview",
         "keine rohartefakt-dumps",
         "keine runtime-agenten",
         "llm_audit_log",
@@ -340,6 +373,25 @@ def _validate_handoff(handoff: pd.DataFrame) -> None:
         raise ValueError("Source review chapter handoff missing required terms: " + ", ".join(missing))
 
 
+def _validate_overview_match(
+    *,
+    area: str,
+    overview_row: dict[str, object],
+    source_review_rows: int,
+    pending_review_rows: int,
+    final_ready_rows: int,
+) -> None:
+    overview_review_rows = int(overview_row["review_rows"])
+    overview_pending_rows = int(overview_row["pending_rows"])
+    overview_final_ready_rows = int(overview_row["final_ready_rows"])
+    if overview_review_rows != source_review_rows:
+        raise ValueError(f"{area} overview review rows do not match ledger rows.")
+    if overview_pending_rows != pending_review_rows:
+        raise ValueError(f"{area} overview pending rows do not match ledger rows.")
+    if overview_final_ready_rows != final_ready_rows:
+        raise ValueError(f"{area} overview final-ready rows do not match ledger rows.")
+
+
 def _render_handoff_doc(handoff: pd.DataFrame) -> str:
     return (
         "# Source Review Chapter Handoff\n\n"
@@ -347,6 +399,9 @@ def _render_handoff_doc(handoff: pd.DataFrame) -> str:
         "drei empirischen BA-Kapitel H1, H2 und H3. Es zeigt pro Kapitel die "
         "gemappten Methoden, Interpretationen, Literaturquellen, deterministischen "
         "Artefakte, wenigen Tabellen/Figuren und offenen Source-Review-Zeilen. "
+        "Die Manual Source Review Follow-up Overview bleibt pro Kapitel der "
+        "Pre-Ledger-Kontrollpunkt fuer Detailstart, Pending-Zeilen und finale "
+        "Zitierblockade. "
         "Es liest keine Quelleninhalte, promotet keinen Quellenstatus und "
         "aktiviert keine Runtime-Agenten.\n\n"
         "## Counts\n\n"

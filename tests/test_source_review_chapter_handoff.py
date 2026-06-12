@@ -32,6 +32,8 @@ def test_generate_source_review_chapter_handoff_writes_h1_h2_h3_rows(tmp_path: P
     assert "Source Review Chapter Handoff" in doc
     assert "Chapter handoff rows: 3" in doc
     assert "Selected result items: T2; F1; T3; F2; T4; F3" in doc
+    assert "Manual Source Review Follow-up Overview" in doc
+    assert "Pre-Ledger-Kontrollpunkt" in doc
     assert "Keine finale Zitation" in doc
     assert "Runtime-Agenten" in doc
     assert chr(223) not in doc
@@ -89,6 +91,13 @@ def _write_fixture(root: Path) -> None:
             _ledger("H3", "ledger_h3_b"),
         ]
     ).to_csv(results / "thesis_source_review_progress_ledger.csv", index=False)
+    pd.DataFrame(
+        [
+            _overview("H1", 2, 2, 0, "docs/project/THESIS_H1_MANUAL_SOURCE_REVIEW_FOLLOWUP.md"),
+            _overview("H2", 2, 2, 0, "docs/project/THESIS_H2_MANUAL_SOURCE_REVIEW_FOLLOWUP.md"),
+            _overview("H3", 2, 2, 0, "docs/project/THESIS_H3_MANUAL_SOURCE_REVIEW_FOLLOWUP.md"),
+        ]
+    ).to_csv(results / "thesis_manual_source_review_followup_overview.csv", index=False)
     pd.DataFrame(
         [
             {
@@ -153,4 +162,21 @@ def _ledger(area: str, ledger_id: str) -> dict[str, object]:
         "review_progress_state": "pending_manual_review",
         "source_status_change_allowed": False,
         "final_citation_ready": False,
+    }
+
+
+def _overview(
+    area: str,
+    review_rows: int,
+    pending_rows: int,
+    final_ready_rows: int,
+    followup_doc: str,
+) -> dict[str, object]:
+    return {
+        "slice_id": area,
+        "review_rows": review_rows,
+        "pending_rows": pending_rows,
+        "final_ready_rows": final_ready_rows,
+        "followup_doc": followup_doc,
+        "followup_csv": f"data/results/thesis_{area.lower()}_manual_source_review_followup.csv",
     }

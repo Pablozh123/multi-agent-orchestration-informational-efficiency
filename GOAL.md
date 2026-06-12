@@ -199,7 +199,10 @@ acceptance_criteria:
 - A source-review chapter handoff exists so H1-H2-H3 can be written chapter by
   chapter with Evidence IDs, literature IDs, deterministic artifacts, selected
   tables/figures, open Source Review rows, blocked wording, limitations, and
-  future-agent boundaries visible before final citation.
+  future-agent boundaries visible before final citation. It now validates each
+  chapter against the Manual Source Review Follow-up Overview before Ledger
+  updates, keeping H1/H2/H3 detail-start files, pending rows, final-ready rows,
+  and no source-status promotion visible.
 - A chapter-level source-review checklist exists so H1-H2-H3 writing can be
   checked against coverage, literature review, result-package integration,
   limitations, blocked wording, final citation gates, and future-agent
@@ -249,7 +252,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: refresh source review chapter handoff after overview
+next_commit: docs: refresh chapter source review checklist after overview
 
 ## Running Side Goal
 

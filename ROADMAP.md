@@ -844,7 +844,10 @@ Current implemented consolidation:
   into three chapter rows for H1, H2, and H3. Each row binds method Evidence
   IDs, interpretation Evidence IDs, literature IDs, deterministic artifacts,
   selected table/figure IDs, Source Review row counts, limitations, blocked
-  wording, and the future-agent boundary before chapter drafting.
+  wording, and the future-agent boundary before chapter drafting. Each chapter
+  row now also validates against the Manual Source Review Follow-up Overview,
+  so H1/H2/H3 detail-start files, pending rows and final-ready rows remain
+  visible before Ledger updates.
 - `data/results/thesis_chapter_source_review_checklist.csv` and
   `docs/project/THESIS_CHAPTER_SOURCE_REVIEW_CHECKLIST.md` turn the chapter
   handoff into 18 manual check rows: six checks per H1-H2-H3 chapter for

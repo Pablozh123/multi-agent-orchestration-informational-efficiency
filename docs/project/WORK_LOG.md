@@ -8590,3 +8590,43 @@ Verification:
   -> PASS, generated 10 high-level project rows.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 503 passed in 51.38s.
+
+## 2026-06-12 - Advisor project matrix
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Moved the generated project highlevel view into the advisor-facing
+  Dozentenbericht so the next discussion has a direct status, decision, and
+  gate matrix.
+
+Changes:
+
+- Extended `operations/project/build_dozenten_report.py` to read
+  `data/results/thesis_project_highlevel_view.csv`.
+- Added `Projektmatrix fuer die naechste Abstimmung` to
+  `docs/project/dozentenbericht_ba_thesis.md`,
+  `docs/project/dozentenbericht_ba_thesis.html`, and
+  `docs/project/dozentenbericht_ba_thesis.docx`.
+- Updated `tests/test_dozenten_report.py`, `GOAL.md`, and `ROADMAP.md`.
+
+Key output:
+
+- The advisor report now shows 10 project layers with German labels, status,
+  current decision, and next gate.
+- The matrix explicitly keeps Monitor Review-Access paused, Swiss pending the
+  official result, and agents documentation-only with `llm_audit_log` as a
+  future activation gate.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_dozenten_report.py -q`
+  -> PASS, 1 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_dozenten_report.py tests\test_thesis_consolidation.py -q`
+  -> PASS, 16 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown, HTML, and DOCX; figure_count=43.
+- DOCX render QA with the Documents `render_docx.py` helper -> BLOCKED by
+  `WinError 2`, consistent with missing local LibreOffice/`soffice`.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 503 passed in 49.07s.

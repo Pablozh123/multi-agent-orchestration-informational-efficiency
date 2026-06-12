@@ -212,6 +212,7 @@ def collect_report_data() -> dict[str, Any]:
     thesis_metadata = _read_json("data/results/thesis_consolidation_metadata.json")
     thesis_captions = _read_csv("data/results/thesis_table_figure_captions.csv")
     thesis_next_work = _read_csv("data/results/thesis_next_work_plan.csv")
+    thesis_project_highlevel = _read_csv("data/results/thesis_project_highlevel_view.csv")
 
     return {
         "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
@@ -273,6 +274,7 @@ def collect_report_data() -> dict[str, Any]:
         ),
         "literature": _literature_data(literature),
         "thesis_highlevel": _thesis_highlevel_data(thesis_metadata, thesis_captions),
+        "project_highlevel": _project_highlevel_report_data(thesis_project_highlevel),
         "next_work": _next_work_report_data(thesis_next_work),
         "source_counts": {
             "curated_events": len(event_seed),
@@ -293,6 +295,7 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
     swiss = data["swiss"]
     literature = data["literature"]
     highlevel = data["thesis_highlevel"]
+    project_highlevel = data["project_highlevel"]
     next_work = data["next_work"]
     db = data["project"]["database"]
     folders = data["project"]["folder_inventory"]
@@ -336,6 +339,16 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
     for row in next_work["rows"]:
         next_work_rows.append(
             "| {priority_order} | {workstream} | {next_action} | {guardrail} |".format(
+                **{key: str(value).replace("|", ",") for key, value in row.items()}
+            )
+        )
+    project_highlevel_rows = [
+        "| Projektteil | Status | Entscheidung | Naechstes Gate |",
+        "| --- | --- | --- | --- |",
+    ]
+    for row in project_highlevel["rows"]:
+        project_highlevel_rows.append(
+            "| {project_layer} | {status_de} | {current_decision_de} | {next_gate_de} |".format(
                 **{key: str(value).replace("|", ",") for key, value in row.items()}
             )
         )
@@ -404,6 +417,17 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
             f"| {row[0]} | {row[1]} | {row[2]} |"
             for row in highlevel["rows"]
         ],
+        "",
+        "## Projektmatrix fuer die naechste Abstimmung",
+        "",
+        (
+            f"Die Projektmatrix fasst {project_highlevel['row_count']} Ebenen "
+            "als Status-, Entscheidungs- und Gate-Sicht zusammen. Sie zeigt "
+            "explizit, dass Review-Access pausiert bleibt und Agenten nur "
+            "dokumentierter Ausblick sind."
+        ),
+        "",
+        *project_highlevel_rows,
         "",
         "## Naechste Arbeitsschritte",
         "",
@@ -1065,6 +1089,7 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
     swiss = data["swiss"]
     literature = data["literature"]
     highlevel = data["thesis_highlevel"]
+    project_highlevel = data["project_highlevel"]
     next_work = data["next_work"]
     figures = "\n".join(
         _figure_html(figure, html_output=html_output)
@@ -1115,6 +1140,15 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
         f"<td>{escape(row['guardrail'])}</td>"
         "</tr>"
         for row in next_work["rows"]
+    )
+    project_highlevel_rows = "\n".join(
+        "<tr>"
+        f"<td>{escape(row['project_layer'])}</td>"
+        f"<td>{escape(row['status_de'])}</td>"
+        f"<td>{escape(row['current_decision_de'])}</td>"
+        f"<td>{escape(row['next_gate_de'])}</td>"
+        "</tr>"
+        for row in project_highlevel["rows"]
     )
     h2_rows = "\n".join(
         f"<tr><td>{escape(row['event'])}</td><td>{row['change_pp']:+.1f} pp</td></tr>"
@@ -1178,6 +1212,10 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
   </div>
   <p>Aktive Phase: {escape(highlevel['active_phase'])}. Das Thesis-Paket umfasst {highlevel['caption_rows']} Caption-Zeilen und wird aus <code>data/results/thesis_table_figure_captions.csv</code> gespeist.</p>
   <table><tr><th>Ebene</th><th>Stand</th><th>Konsequenz fuer die Thesis</th></tr>{highlevel_rows}</table>
+
+  <h2>Projektmatrix fuer die naechste Abstimmung</h2>
+  <p>Die Projektmatrix fasst {project_highlevel['row_count']} Ebenen als Status-, Entscheidungs- und Gate-Sicht zusammen. Sie zeigt explizit, dass Review-Access pausiert bleibt und Agenten nur dokumentierter Ausblick sind.</p>
+  <table><tr><th>Projektteil</th><th>Status</th><th>Entscheidung</th><th>Naechstes Gate</th></tr>{project_highlevel_rows}</table>
 
   <h2>Naechste Arbeitsschritte</h2>
   <p>Der Next-Work-Plan ordnet {next_work['row_count']} Workstreams. Erste Prioritaet ist <code>{escape(next_work['first_workstream'])}</code>, letzte QA-Prioritaet ist <code>{escape(next_work['final_workstream'])}</code>.</p>
@@ -1296,6 +1334,7 @@ def write_docx(data: dict[str, Any], output_path: Path) -> None:
     _add_cover(doc, data)
     _add_toc_note(doc)
     _add_highlevel_status_section(doc, data["thesis_highlevel"])
+    _add_project_highlevel_matrix_section(doc, data["project_highlevel"])
     _add_next_work_section(doc, data["next_work"])
     _add_research_design_section(doc, data)
     _add_literature_section(doc, data["literature"])
@@ -1425,6 +1464,75 @@ def _thesis_highlevel_data(
                 "Keine Runtime-Agenten, kein MCP, keine Modell-Router und keine LLM-Metriken vor stabilem deterministic core.",
             ),
         ],
+    }
+
+
+def _project_highlevel_report_data(project_highlevel: pd.DataFrame) -> dict[str, Any]:
+    """Translate the generated project matrix into concise advisor-facing rows."""
+
+    status_labels = {
+        "active_thesis_core": "Aktiver Thesis-Kern",
+        "thesis_facing_ready": "Thesis-ready",
+        "thesis_facing_ready_with_limits": "Thesis-ready mit Grenzen",
+        "active_gate": "Aktives Gate",
+        "thesis_facing_package": "Thesis-Paket",
+        "paused_appendix_only": "Pausiert / Appendix",
+        "descriptive_pending_result": "Beschreibend bis Resultat",
+        "documentation_only_deferred": "Nur Ausblick",
+        "project_management_ready": "Advisor-Abstimmung",
+    }
+    layer_labels = {
+        "project_00_current_frame": "Gesamtrahmen",
+        "project_01_h1_forecast_quality": "H1 Forecast-Qualitaet",
+        "project_02_h2_event_windows": "H2 Event-Windows",
+        "project_03_h3_wallet_timing": "H3 Wallet-Timing",
+        "project_04_source_review_gate": "Quellen und Zitation",
+        "project_05_table_figure_package": "Tabellen/Figuren-Paket",
+        "project_06_monitor_review_access": "Monitor Review-Access",
+        "project_07_swiss_referendum": "Swiss Referendum",
+        "project_08_future_agents": "Agenten-Ausblick",
+        "project_09_advisor_iteration": "Dozentenabstimmung",
+    }
+    decision_labels = {
+        "project_00_current_frame": "H1-H3 als Kern schreiben; Monitor und Swiss klar begrenzen.",
+        "project_01_h1_forecast_quality": "H1 als begrenzte Polymarket-Stuetze schreiben, nicht als Universalclaim.",
+        "project_02_h2_event_windows": "H2 als taegliche Event-Window-Evidenz schreiben, nicht als Intraday-Speed.",
+        "project_03_h3_wallet_timing": "H3 als Timingdiagnostik schreiben, nicht als Kausalitaet oder Profitabilitaet.",
+        "project_04_source_review_gate": "11 Quellen brauchen Full Review; Status wird nicht automatisch hochgestuft.",
+        "project_05_table_figure_package": "5 Kern-Tabellen und 4 Kern-Figuren mit Captions verwenden.",
+        "project_06_monitor_review_access": "Review-Access bleibt pausiert; Monitor bleibt Appendix/Prototype.",
+        "project_07_swiss_referendum": "Bis zum offiziellen Ergebnis nur beschreibend verwenden.",
+        "project_08_future_agents": "Agenten bleiben Dokumentationsausblick, keine Runtime-Implementierung.",
+        "project_09_advisor_iteration": "Dozent soll H1-Wording, Quellenreview-Tiefe, Swiss und Appendix-Scope absegnen.",
+    }
+    gate_labels = {
+        "project_00_current_frame": "Source Review und Kapiteldraft.",
+        "project_01_h1_forecast_quality": "Finales Wording nach Quellenreview.",
+        "project_02_h2_event_windows": "Event-Kuration und Tageslimit im Text sichtbar machen.",
+        "project_03_h3_wallet_timing": "BUY-only, Tagesaggregation und Multiple Testing sichtbar machen.",
+        "project_04_source_review_gate": "Seiten- oder Abschnittsnotizen und Human Decisions eintragen.",
+        "project_05_table_figure_package": "In Thesis-Layout integrieren; Nummerierung spaeter finalisieren.",
+        "project_06_monitor_review_access": "Nur mit Human Review oder separatem freigegebenem Goal fortsetzen.",
+        "project_07_swiss_referendum": "Nach offiziellem 14. Juni 2026 Resultat Artefakte neu generieren.",
+        "project_08_future_agents": "Separates Goal, Tests und llm_audit_log vor Aktivierung.",
+        "project_09_advisor_iteration": "Feedback loggen und in kleinen Commit-Plan uebersetzen.",
+    }
+    rows = []
+    for row in project_highlevel.sort_values("view_id").to_dict(orient="records"):
+        view_id = str(row["view_id"])
+        rows.append(
+            {
+                "view_id": view_id,
+                "project_layer": layer_labels.get(view_id, str(row["project_layer"])),
+                "status_de": status_labels.get(str(row["status"]), str(row["status"])),
+                "current_decision_de": decision_labels.get(view_id, str(row["current_decision"])),
+                "next_gate_de": gate_labels.get(view_id, str(row["next_gate"])),
+                "thesis_use": str(row["thesis_use"]),
+            }
+        )
+    return {
+        "row_count": len(rows),
+        "rows": rows,
     }
 
 
@@ -1748,6 +1856,7 @@ def _add_toc_note(doc: Document) -> None:
         doc,
         [
             "Der Highlevel-Block fasst den aktuellen Projektstand fuer den Dozenten zusammen.",
+            "Die Projektmatrix zeigt Status, Entscheidung und Gate je Projektteil.",
             "Der Abschnitt Naechste Arbeitsschritte ordnet die kommenden Thesis-Workstreams.",
             "Abschnitt 1 formuliert Forschungsfrage, Hypothesen und BA-Aufbau.",
             "Abschnitt 2 ordnet die hinterlegten wissenschaftlichen Quellen ein.",
@@ -1803,6 +1912,44 @@ def _add_highlevel_status_section(doc: Document, highlevel: dict[str, Any]) -> N
             "Basis, Monitor und Swiss bleiben abgegrenzt, und die Thesis soll "
             "mit wenigen guten Tabellen/Figuren statt vielen Rohartefakten "
             "geschrieben werden."
+        ),
+    )
+
+
+def _add_project_highlevel_matrix_section(
+    doc: Document,
+    project_highlevel: dict[str, Any],
+) -> None:
+    doc.add_heading("Projektmatrix fuer die naechste Abstimmung", level=1)
+    doc.add_paragraph(
+        f"Die Projektmatrix fasst {project_highlevel['row_count']} Ebenen als "
+        "Status-, Entscheidungs- und Gate-Sicht zusammen. Sie zeigt explizit, "
+        "dass Review-Access pausiert bleibt und Agenten nur dokumentierter "
+        "Ausblick sind."
+    )
+    rows = [
+        (
+            row["project_layer"],
+            row["status_de"],
+            row["current_decision_de"],
+            row["next_gate_de"],
+        )
+        for row in project_highlevel["rows"]
+    ]
+    table = _add_table(
+        doc,
+        rows,
+        ["Projektteil", "Status", "Entscheidung", "Naechstes Gate"],
+        [1900, 1700, 3360, 2400],
+    )
+    _shade_table_header(table)
+    _add_callout(
+        doc,
+        "Highlevel-Entscheidung",
+        (
+            "Fuer die naechste Abstimmung reicht diese Matrix als Leitlinie: "
+            "H1-H3 schreiben, Quellen reviewen, Monitor und Swiss begrenzen, "
+            "Agenten erst nach separatem Goal aktivieren."
         ),
     )
 

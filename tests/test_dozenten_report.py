@@ -47,6 +47,11 @@ def test_build_dozenten_report_outputs_readable_artifacts(tmp_path):
     assert "5 Kern-Tabellen" in html_text
     assert "4 Kern-Figuren" in html_text
     assert "thesis_table_figure_captions.csv" in html_text
+    assert "Projektmatrix fuer die naechste Abstimmung" in html_text
+    assert "Monitor Review-Access" in html_text
+    assert "Review-Access bleibt pausiert" in html_text
+    assert "Agenten bleiben Dokumentationsausblick" in html_text
+    assert "llm_audit_log" in html_text
     assert "Naechste Arbeitsschritte" in html_text
     assert "work_01_source_review" in html_text
     assert "work_10_final_qa" in html_text

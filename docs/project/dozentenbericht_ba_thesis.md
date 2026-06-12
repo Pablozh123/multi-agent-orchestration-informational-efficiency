@@ -1,6 +1,6 @@
 # Dozentenbericht zur Bachelorarbeit
 
-Erstellt: 2026-06-12T01:12:54+00:00
+Erstellt: 2026-06-12T01:30:59+00:00
 
 **Arbeitstitel:** Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen.
 
@@ -42,6 +42,23 @@ Der Review-Access bleibt pausiert. Der aktuelle Fortschritt liegt in der Thesis-
 | Quellen und Zitation | Die Citation-Review-Pakete verknuepfen Quellen mit Evidence-IDs, erlaubtem Wording und Review-Gates. | Finale Thesis-Zitate brauchen noch Seiten- oder Abschnittsnachweise; candidate Quellen bleiben blockiert. |
 | Monitor und Swiss | Monitor bleibt Prototype/Appendix; Swiss bleibt bis zum offiziellen Ergebnis beschreibender Side-Track. | Beide Teile duerfen die H1-H3-Kernaussage nicht staerker machen als die deterministischen Artefakte erlauben. |
 | Agenten-Ausblick | Agenten koennen spaeter bei Source Review, Drafting und Guardrail-Checks helfen, bleiben aber jetzt deaktiviert. | Keine Runtime-Agenten, kein MCP, keine Modell-Router und keine LLM-Metriken vor stabilem deterministic core. |
+
+## Projektmatrix fuer die naechste Abstimmung
+
+Die Projektmatrix fasst 10 Ebenen als Status-, Entscheidungs- und Gate-Sicht zusammen. Sie zeigt explizit, dass Review-Access pausiert bleibt und Agenten nur dokumentierter Ausblick sind.
+
+| Projektteil | Status | Entscheidung | Naechstes Gate |
+| --- | --- | --- | --- |
+| Gesamtrahmen | Aktiver Thesis-Kern | H1-H3 als Kern schreiben; Monitor und Swiss klar begrenzen. | Source Review und Kapiteldraft. |
+| H1 Forecast-Qualitaet | Thesis-ready | H1 als begrenzte Polymarket-Stuetze schreiben, nicht als Universalclaim. | Finales Wording nach Quellenreview. |
+| H2 Event-Windows | Thesis-ready | H2 als taegliche Event-Window-Evidenz schreiben, nicht als Intraday-Speed. | Event-Kuration und Tageslimit im Text sichtbar machen. |
+| H3 Wallet-Timing | Thesis-ready mit Grenzen | H3 als Timingdiagnostik schreiben, nicht als Kausalitaet oder Profitabilitaet. | BUY-only, Tagesaggregation und Multiple Testing sichtbar machen. |
+| Quellen und Zitation | Aktives Gate | 11 Quellen brauchen Full Review; Status wird nicht automatisch hochgestuft. | Seiten- oder Abschnittsnotizen und Human Decisions eintragen. |
+| Tabellen/Figuren-Paket | Thesis-Paket | 5 Kern-Tabellen und 4 Kern-Figuren mit Captions verwenden. | In Thesis-Layout integrieren; Nummerierung spaeter finalisieren. |
+| Monitor Review-Access | Pausiert / Appendix | Review-Access bleibt pausiert; Monitor bleibt Appendix/Prototype. | Nur mit Human Review oder separatem freigegebenem Goal fortsetzen. |
+| Swiss Referendum | Beschreibend bis Resultat | Bis zum offiziellen Ergebnis nur beschreibend verwenden. | Nach offiziellem 14. Juni 2026 Resultat Artefakte neu generieren. |
+| Agenten-Ausblick | Nur Ausblick | Agenten bleiben Dokumentationsausblick, keine Runtime-Implementierung. | Separates Goal, Tests und llm_audit_log vor Aktivierung. |
+| Dozentenabstimmung | Advisor-Abstimmung | Dozent soll H1-Wording, Quellenreview-Tiefe, Swiss und Appendix-Scope absegnen. | Feedback loggen und in kleinen Commit-Plan uebersetzen. |
 
 ## Naechste Arbeitsschritte
 
@@ -121,10 +138,10 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Projektstruktur
 
 - SQLite-Datenbank: 9 Tabellen.
-- Ergebnisartefakte: 321 Dateien unter `data/results`.
+- Ergebnisartefakte: 322 Dateien unter `data/results`.
 - Analyse-Module: 76 Dateien.
 - Collector-Module: 10 Dateien.
-- Tests: 95 Testdateien; letzter Status: 502 passed in 50.46s.
+- Tests: 95 Testdateien; letzter Status: 503 passed in 51.38s.
 
 ## H1 - Forecast-Qualitaet
 

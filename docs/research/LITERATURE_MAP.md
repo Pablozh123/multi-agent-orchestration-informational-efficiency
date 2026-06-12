@@ -72,10 +72,12 @@ Current generated consolidation artifacts:
 - `data/results/thesis_core_results_table.csv`
 - `data/results/thesis_curated_result_package.csv`
 - `data/results/thesis_citation_readiness.csv`
+- `data/results/thesis_citation_review_packets.csv`
 - `data/results/thesis_chapter_plan.csv`
 - `data/results/thesis_agent_pipeline_roadmap.csv`
 - `docs/research/THESIS_CONSOLIDATION.md`
 - `docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md`
+- `docs/research/THESIS_CITATION_REVIEW_PACKETS.md`
 
 These artifacts are the current thesis-draft bridge from deterministic outputs
 to written argumentation. They do not replace final citation review. A row can
@@ -96,6 +98,9 @@ Current mapping rule:
   not promote sources automatically; it records whether a source is unused,
   draft-only, blocked from thesis-facing claims, or ready only after full
   review.
+- `thesis_citation_review_packets.csv` is the row-level review worklist. It
+  links one source to one Evidence ID and requires a human page or section note
+  before any final thesis citation status is upgraded.
 - Monitor and Swiss rows must keep their status labels visible:
   prototype/appendix for monitor outputs and descriptive-pending-result for the
   Swiss referendum track.

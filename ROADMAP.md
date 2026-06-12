@@ -638,6 +638,11 @@ Current implemented consolidation:
   in German/Swiss spelling from the deterministic consolidation artifacts,
   including artifact references, Evidence IDs, bounded result wording,
   limitations, and a documentation-only agent outlook.
+- `data/results/thesis_citation_review_packets.csv` and
+  `docs/research/THESIS_CITATION_REVIEW_PACKETS.md` break citation readiness
+  into source-evidence review packets with review questions, required checks,
+  allowed wording, blocked wording, final citation gates, and pending reviewer
+  fields.
 
 Blockers:
 

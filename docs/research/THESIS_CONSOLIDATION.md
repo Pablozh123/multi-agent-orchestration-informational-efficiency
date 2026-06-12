@@ -53,6 +53,10 @@ This table is a source-control view, not a promotion of source status. Sources m
 | zotero_poly_009 | skimmed | monitor_prototype | needs_full_source_review_before_final_citation | medium |
 | zotero_poly_010 | candidate | future_agents | not_allowed_for_thesis_facing_claims | high |
 
+## Citation Review Packets
+
+`data/results/thesis_citation_review_packets.csv` breaks the source review into source-evidence packets. Each row links one source to one Evidence ID, the deterministic artifact, allowed wording, blocked wording, review question, and final citation gate. The packet file is a worklist, not a source-status promotion.
+
 ## Chapter Plan
 
 | chapter_id | chapter_title | writing_status | recommended_tables | recommended_figures | next_action |

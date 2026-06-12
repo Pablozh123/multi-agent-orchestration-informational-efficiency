@@ -29,11 +29,13 @@ GENERATED_ARTIFACTS: frozenset[str] = frozenset(
         "data/results/thesis_citation_readiness.csv",
         "data/results/thesis_chapter_plan.csv",
         "data/results/thesis_agent_pipeline_roadmap.csv",
+        "data/results/thesis_citation_review_packets.csv",
         "data/results/thesis_consolidation_metadata.json",
         "docs/research/THESIS_CONSOLIDATION.md",
         "docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md",
         "docs/research/THESIS_WRITING_BLUEPRINT.md",
         "docs/research/THESIS_CHAPTER_DRAFT.md",
+        "docs/research/THESIS_CITATION_REVIEW_PACKETS.md",
     }
 )
 
@@ -44,11 +46,13 @@ CURATED_PACKAGE_OUTPUT = "thesis_curated_result_package.csv"
 CITATION_READINESS_OUTPUT = "thesis_citation_readiness.csv"
 CHAPTER_PLAN_OUTPUT = "thesis_chapter_plan.csv"
 AGENT_PIPELINE_OUTPUT = "thesis_agent_pipeline_roadmap.csv"
+CITATION_REVIEW_PACKETS_OUTPUT = "thesis_citation_review_packets.csv"
 METADATA_OUTPUT = "thesis_consolidation_metadata.json"
 DOC_OUTPUT = "THESIS_CONSOLIDATION.md"
 AGENT_DOC_OUTPUT = "THESIS_AGENT_PIPELINE_ROADMAP.md"
 WRITING_BLUEPRINT_OUTPUT = "THESIS_WRITING_BLUEPRINT.md"
 CHAPTER_DRAFT_OUTPUT = "THESIS_CHAPTER_DRAFT.md"
+CITATION_REVIEW_DOC_OUTPUT = "THESIS_CITATION_REVIEW_PACKETS.md"
 
 EVIDENCE_COLUMNS: tuple[str, ...] = (
     "evidence_id",
@@ -132,6 +136,30 @@ AGENT_PIPELINE_COLUMNS: tuple[str, ...] = (
     "thesis_value",
 )
 
+CITATION_REVIEW_PACKET_COLUMNS: tuple[str, ...] = (
+    "packet_id",
+    "source_id",
+    "source_status",
+    "source_title",
+    "final_citation_readiness",
+    "citation_risk",
+    "evidence_id",
+    "thesis_area",
+    "item_type",
+    "claim_or_decision",
+    "primary_artifact",
+    "allowed_wording",
+    "blocked_wording",
+    "main_limitation",
+    "review_question",
+    "required_check",
+    "draft_use_allowed",
+    "final_citation_gate",
+    "reviewer_page_or_section_note",
+    "reviewer_decision",
+    "reviewer_notes",
+)
+
 
 @dataclass(frozen=True)
 class ThesisConsolidationResult:
@@ -144,17 +172,20 @@ class ThesisConsolidationResult:
     citation_readiness_path: Path
     chapter_plan_path: Path
     agent_pipeline_path: Path
+    citation_review_packets_path: Path
     metadata_path: Path
     docs_path: Path
     agent_docs_path: Path
     writing_blueprint_path: Path
     chapter_draft_path: Path
+    citation_review_docs_path: Path
     evidence_rows: int
     core_result_rows: int
     package_rows: int
     citation_rows: int
     chapter_rows: int
     agent_stage_rows: int
+    citation_review_packet_rows: int
 
     def to_dict(self) -> dict[str, str | int]:
         return {
@@ -165,17 +196,20 @@ class ThesisConsolidationResult:
             "citation_readiness_path": str(self.citation_readiness_path),
             "chapter_plan_path": str(self.chapter_plan_path),
             "agent_pipeline_path": str(self.agent_pipeline_path),
+            "citation_review_packets_path": str(self.citation_review_packets_path),
             "metadata_path": str(self.metadata_path),
             "docs_path": str(self.docs_path),
             "agent_docs_path": str(self.agent_docs_path),
             "writing_blueprint_path": str(self.writing_blueprint_path),
             "chapter_draft_path": str(self.chapter_draft_path),
+            "citation_review_docs_path": str(self.citation_review_docs_path),
             "evidence_rows": self.evidence_rows,
             "core_result_rows": self.core_result_rows,
             "package_rows": self.package_rows,
             "citation_rows": self.citation_rows,
             "chapter_rows": self.chapter_rows,
             "agent_stage_rows": self.agent_stage_rows,
+            "citation_review_packet_rows": self.citation_review_packet_rows,
         }
 
 
@@ -260,6 +294,12 @@ def generate_thesis_consolidation(
     _validate_chapter_plan(chapter_plan, curated_package)
     agent_pipeline = build_agent_pipeline_roadmap()
     _validate_agent_pipeline(agent_pipeline)
+    citation_review_packets = build_citation_review_packets(
+        evidence_map=evidence_map,
+        citation_readiness=citation_readiness,
+        literature=literature,
+    )
+    _validate_citation_review_packets(citation_review_packets, evidence_map)
 
     results_dir.mkdir(parents=True, exist_ok=True)
     docs_dir.mkdir(parents=True, exist_ok=True)
@@ -270,11 +310,13 @@ def generate_thesis_consolidation(
     citation_readiness_path = results_dir / CITATION_READINESS_OUTPUT
     chapter_plan_path = results_dir / CHAPTER_PLAN_OUTPUT
     agent_pipeline_path = results_dir / AGENT_PIPELINE_OUTPUT
+    citation_review_packets_path = results_dir / CITATION_REVIEW_PACKETS_OUTPUT
     metadata_path = results_dir / METADATA_OUTPUT
     docs_path = docs_dir / DOC_OUTPUT
     agent_docs_path = docs_dir / AGENT_DOC_OUTPUT
     writing_blueprint_path = docs_dir / WRITING_BLUEPRINT_OUTPUT
     chapter_draft_path = docs_dir / CHAPTER_DRAFT_OUTPUT
+    citation_review_docs_path = docs_dir / CITATION_REVIEW_DOC_OUTPUT
 
     evidence_map.to_csv(evidence_map_path, index=False)
     core_results.to_csv(core_results_path, index=False)
@@ -282,6 +324,7 @@ def generate_thesis_consolidation(
     citation_readiness.to_csv(citation_readiness_path, index=False)
     chapter_plan.to_csv(chapter_plan_path, index=False)
     agent_pipeline.to_csv(agent_pipeline_path, index=False)
+    citation_review_packets.to_csv(citation_review_packets_path, index=False)
     evidence_map_md_path.write_text(
         _render_evidence_markdown(evidence_map),
         encoding="utf-8",
@@ -294,6 +337,7 @@ def generate_thesis_consolidation(
         citation_readiness=citation_readiness,
         chapter_plan=chapter_plan,
         agent_pipeline=agent_pipeline,
+        citation_review_packets=citation_review_packets,
     )
     metadata_path.write_text(json.dumps(metadata, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     docs_path.write_text(
@@ -331,6 +375,13 @@ def generate_thesis_consolidation(
         ),
         encoding="utf-8",
     )
+    citation_review_docs_path.write_text(
+        _render_citation_review_packets_doc(
+            citation_review_packets=citation_review_packets,
+            metadata=metadata,
+        ),
+        encoding="utf-8",
+    )
 
     return ThesisConsolidationResult(
         evidence_map_path=evidence_map_path,
@@ -340,17 +391,20 @@ def generate_thesis_consolidation(
         citation_readiness_path=citation_readiness_path,
         chapter_plan_path=chapter_plan_path,
         agent_pipeline_path=agent_pipeline_path,
+        citation_review_packets_path=citation_review_packets_path,
         metadata_path=metadata_path,
         docs_path=docs_path,
         agent_docs_path=agent_docs_path,
         writing_blueprint_path=writing_blueprint_path,
         chapter_draft_path=chapter_draft_path,
+        citation_review_docs_path=citation_review_docs_path,
         evidence_rows=len(evidence_map),
         core_result_rows=len(core_results),
         package_rows=len(curated_package),
         citation_rows=len(citation_readiness),
         chapter_rows=len(chapter_plan),
         agent_stage_rows=len(agent_pipeline),
+        citation_review_packet_rows=len(citation_review_packets),
     )
 
 
@@ -1221,6 +1275,79 @@ def build_agent_pipeline_roadmap() -> pd.DataFrame:
     return pd.DataFrame(rows, columns=AGENT_PIPELINE_COLUMNS)
 
 
+def build_citation_review_packets(
+    *,
+    evidence_map: pd.DataFrame,
+    citation_readiness: pd.DataFrame,
+    literature: pd.DataFrame,
+) -> pd.DataFrame:
+    """Build source-evidence packets for final citation review."""
+
+    literature_by_id = literature.set_index("source_id").to_dict(orient="index")
+    readiness_by_id = citation_readiness.set_index("source_id").to_dict(orient="index")
+    rows: list[dict[str, object]] = []
+    for evidence_row in evidence_map.sort_values(["thesis_area", "evidence_id"]).to_dict(orient="records"):
+        evidence_id = str(evidence_row["evidence_id"])
+        for source_id in _split_list(str(evidence_row["literature_sources"])):
+            source = literature_by_id[source_id]
+            readiness = readiness_by_id[source_id]
+            source_status = str(source["status"])
+            thesis_readiness = str(evidence_row["thesis_readiness"])
+            if source_status in {"reviewed", "cited"}:
+                draft_use_allowed = True
+                final_gate = "citation_format_and_page_note_check"
+                required_check = "Confirm page or section note and final citation formatting."
+            elif source_status == "skimmed":
+                draft_use_allowed = True
+                final_gate = "full_source_review_required_before_final_citation"
+                required_check = (
+                    "Read the source against this evidence row, record page or section support, "
+                    "and confirm the source supports the allowed wording without blocked claims."
+                )
+            elif source_status == "candidate" and thesis_readiness == "future_work_deferred":
+                draft_use_allowed = False
+                final_gate = "metadata_and_relevance_review_before_future_work_use"
+                required_check = (
+                    "Verify metadata, source quality, and relevance before using this source beyond "
+                    "future-work question framing."
+                )
+            elif source_status == "candidate":
+                draft_use_allowed = False
+                final_gate = "not_allowed_for_thesis_facing_claims"
+                required_check = "Do not use for thesis-facing claims unless re-reviewed under a new status."
+            else:
+                draft_use_allowed = False
+                final_gate = "do_not_cite"
+                required_check = "Do not cite this source for the mapped evidence row."
+
+            rows.append(
+                {
+                    "packet_id": f"{source_id}__{evidence_id}",
+                    "source_id": source_id,
+                    "source_status": source_status,
+                    "source_title": str(source["title"]),
+                    "final_citation_readiness": str(readiness["final_citation_readiness"]),
+                    "citation_risk": str(readiness["citation_risk"]),
+                    "evidence_id": evidence_id,
+                    "thesis_area": str(evidence_row["thesis_area"]),
+                    "item_type": str(evidence_row["item_type"]),
+                    "claim_or_decision": str(evidence_row["claim_or_decision"]),
+                    "primary_artifact": str(evidence_row["primary_artifact"]),
+                    "allowed_wording": str(evidence_row["allowed_wording"]),
+                    "blocked_wording": str(evidence_row["blocked_wording"]),
+                    "main_limitation": str(evidence_row["main_limitation"]),
+                    "review_question": _citation_review_question(evidence_row),
+                    "required_check": required_check,
+                    "draft_use_allowed": draft_use_allowed,
+                    "final_citation_gate": final_gate,
+                    "reviewer_page_or_section_note": "",
+                    "reviewer_decision": "pending",
+                    "reviewer_notes": "",
+                }
+            )
+    return pd.DataFrame(rows, columns=CITATION_REVIEW_PACKET_COLUMNS)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """CLI entry point."""
 
@@ -1554,6 +1681,35 @@ def _validate_agent_pipeline(agent_pipeline: pd.DataFrame) -> None:
         raise ValueError("Agent pipeline contains an active implementation status.")
 
 
+def _validate_citation_review_packets(
+    packets: pd.DataFrame,
+    evidence_map: pd.DataFrame,
+) -> None:
+    _require_columns(packets, CITATION_REVIEW_PACKET_COLUMNS, "citation review packets")
+    if packets["packet_id"].duplicated().any():
+        raise ValueError("Citation review packets contain duplicate packet_id values.")
+    known_evidence = set(evidence_map["evidence_id"])
+    unknown = sorted(set(packets["evidence_id"]).difference(known_evidence))
+    if unknown:
+        raise ValueError(f"Citation review packets reference unknown evidence ids: {unknown}")
+    thesis_facing_candidate = packets[
+        (packets["source_status"].isin({"candidate", "rejected"}))
+        & (packets["thesis_area"].isin({"H1", "H2", "H3"}))
+    ]
+    if not thesis_facing_candidate.empty:
+        raise ValueError("Candidate or rejected sources appear in H1-H3 citation packets.")
+    risky_allowed = packets[
+        (packets["source_status"].isin({"candidate", "rejected"}))
+        & (packets["draft_use_allowed"].astype(bool))
+    ]
+    if not risky_allowed.empty:
+        raise ValueError("Candidate or rejected sources cannot be draft-use allowed.")
+    if packets["review_question"].astype(str).str.len().eq(0).any():
+        raise ValueError("Citation review packets require review questions.")
+    if packets["required_check"].astype(str).str.len().eq(0).any():
+        raise ValueError("Citation review packets require check instructions.")
+
+
 def _validate_artifact_list(repo_root: Path, artifacts: Iterable[str]) -> None:
     for artifact in artifacts:
         if not artifact:
@@ -1571,6 +1727,7 @@ def _build_metadata(
     citation_readiness: pd.DataFrame,
     chapter_plan: pd.DataFrame,
     agent_pipeline: pd.DataFrame,
+    citation_review_packets: pd.DataFrame,
 ) -> dict[str, object]:
     core = curated_package[curated_package["include_in_core_package"].astype(bool)]
     return {
@@ -1589,6 +1746,7 @@ def _build_metadata(
             "citation_readiness_rows": int(len(citation_readiness)),
             "chapter_rows": int(len(chapter_plan)),
             "agent_stage_rows": int(len(agent_pipeline)),
+            "citation_review_packet_rows": int(len(citation_review_packets)),
             "writing_blueprint_generated": True,
             "chapter_draft_generated": True,
             "core_table_count": int((core["package_type"] == "table").sum()),
@@ -1618,9 +1776,21 @@ def _build_metadata(
             .sort_index()
             .items()
         },
+        "citation_review_packet_counts": {
+            "pending_packets": int((citation_review_packets["reviewer_decision"] == "pending").sum()),
+            "draft_use_allowed_packets": int(citation_review_packets["draft_use_allowed"].astype(bool).sum()),
+            "blocked_or_future_only_packets": int((~citation_review_packets["draft_use_allowed"].astype(bool)).sum()),
+            "full_review_required_packets": int(
+                (
+                    citation_review_packets["final_citation_gate"]
+                    == "full_source_review_required_before_final_citation"
+                ).sum()
+            ),
+        },
         "guardrails": {
             "every_method_and_interpretation_has_artifact": True,
             "citation_readiness_is_status_mapping_not_source_promotion": True,
+            "citation_review_packets_are_pending_human_review": True,
             "chapter_plan_uses_curated_package": True,
             "thesis_facing_rows_avoid_candidate_or_rejected_sources": True,
             "swiss_final_efficiency_interpretation_pending": True,
@@ -1733,6 +1903,12 @@ def _render_consolidation_doc(
         "wording still needs source-by-source review.\n\n"
         + _markdown_table(citation_display)
         + "\n\n"
+        "## Citation Review Packets\n\n"
+        "`data/results/thesis_citation_review_packets.csv` breaks the source "
+        "review into source-evidence packets. Each row links one source to one "
+        "Evidence ID, the deterministic artifact, allowed wording, blocked wording, "
+        "review question, and final citation gate. The packet file is a worklist, "
+        "not a source-status promotion.\n\n"
         "## Chapter Plan\n\n"
         + _markdown_table(
             chapter_plan[
@@ -1812,6 +1988,55 @@ def _render_agent_pipeline_doc(
         f"- Current required disabled stages: {metadata['agent_stage_status_counts'].get('current_required_state', 0)}\n"
         f"- Future documentation-only stages: {metadata['agent_stage_status_counts'].get('future_documentation_only', 0)}\n"
         f"- Future deferred stages: {metadata['agent_stage_status_counts'].get('future_deferred', 0)}\n"
+    )
+
+
+def _render_citation_review_packets_doc(
+    *,
+    citation_review_packets: pd.DataFrame,
+    metadata: dict[str, object],
+) -> str:
+    focus = citation_review_packets[
+        citation_review_packets["source_status"].isin({"skimmed", "candidate"})
+    ][
+        [
+            "source_id",
+            "evidence_id",
+            "thesis_area",
+            "item_type",
+            "citation_risk",
+            "final_citation_gate",
+            "review_question",
+        ]
+    ].head(50)
+    source_summary = (
+        citation_review_packets.groupby(["source_id", "source_status", "citation_risk"], dropna=False)
+        .agg(packet_count=("packet_id", "count"))
+        .reset_index()
+        .sort_values(["citation_risk", "source_id"])
+    )
+    return (
+        "# Thesis Citation Review Packets\n\n"
+        "This document is generated from the evidence map, literature index, and "
+        "citation-readiness table. It is a human-review worklist. It does not "
+        "promote any source to `reviewed` or `cited`.\n\n"
+        "## Packet Counts\n\n"
+        f"- Total packets: {metadata['outputs']['citation_review_packet_rows']}\n"
+        f"- Pending packets: {metadata['citation_review_packet_counts']['pending_packets']}\n"
+        f"- Draft-use allowed packets: {metadata['citation_review_packet_counts']['draft_use_allowed_packets']}\n"
+        f"- Blocked or future-only packets: {metadata['citation_review_packet_counts']['blocked_or_future_only_packets']}\n"
+        f"- Full source review required packets: {metadata['citation_review_packet_counts']['full_review_required_packets']}\n\n"
+        "## Source Summary\n\n"
+        + _markdown_table(source_summary)
+        + "\n\n"
+        "## Review Worklist\n\n"
+        + _markdown_table(focus)
+        + "\n\n"
+        "## Manual Review Rule\n\n"
+        "For each packet, record page or section evidence before final citation. "
+        "Candidate sources remain future-work or question-framing material only. "
+        "Do not use packet rows to strengthen a claim beyond the linked "
+        "deterministic artifact and allowed wording.\n"
     )
 
 
@@ -2146,6 +2371,28 @@ def _de_key_value(value: object) -> str:
     for old, new in replacements.items():
         text = text.replace(old, new)
     return text
+
+
+def _citation_review_question(evidence_row: dict[str, object]) -> str:
+    item_type = str(evidence_row["item_type"])
+    thesis_area = str(evidence_row["thesis_area"])
+    claim = str(evidence_row["claim_or_decision"])
+    allowed = str(evidence_row["allowed_wording"])
+    blocked = str(evidence_row["blocked_wording"])
+    if item_type == "method":
+        return (
+            f"Does this source justify the {thesis_area} method choice '{claim}' "
+            f"and support the allowed wording '{allowed}' without implying '{blocked}'?"
+        )
+    if item_type == "interpretation":
+        return (
+            f"Does this source support the interpretation boundary for {thesis_area} "
+            f"without extending beyond deterministic artifact evidence or implying '{blocked}'?"
+        )
+    return (
+        f"Is this source suitable only for the planned {thesis_area} future-work framing, "
+        "without supporting active thesis metrics or runtime agents?"
+    )
 
 
 def _require_columns(frame: pd.DataFrame, columns: Sequence[str], name: str) -> None:

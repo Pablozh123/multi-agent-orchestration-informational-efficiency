@@ -8269,3 +8269,43 @@ Verification:
   -> PASS, 16 passed.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 497 passed in 48.49s.
+
+## 2026-06-12 - Thesis citation review packets
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Moved from source-status mapping to row-level citation review packets so
+  every source used by a method, interpretation, or future-work row is linked
+  to the exact Evidence ID, artifact, wording boundary, and human review gate.
+
+Changes:
+
+- Extended `operations/analysis/thesis_consolidation.py` with generated
+  `data/results/thesis_citation_review_packets.csv`.
+- Added `docs/research/THESIS_CITATION_REVIEW_PACKETS.md`.
+- Updated `docs/research/THESIS_CONSOLIDATION.md` to explain the packet
+  worklist.
+- Updated `docs/research/LITERATURE_MAP.md`, `ROADMAP.md`, and `GOAL.md`.
+- Extended `tests/test_thesis_consolidation.py` to validate packet columns,
+  packet uniqueness, pending reviewer state, H1-H3 candidate-source exclusion,
+  and the future-work-only gate for `zotero_poly_010`.
+
+Key output:
+
+- Citation review packets: 33.
+- Pending reviewer packets: 33.
+- Draft-use allowed packets: 32.
+- Blocked or future-only packets: 1.
+- Full source review required packets: 32.
+- `zotero_poly_010` remains candidate/future-work only and cannot support
+  thesis-facing claims.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`
+  -> PASS, generated citation review packets and documentation.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_consolidation.py tests\test_thesis_result_summaries.py tests\test_thesis_figures.py`
+  -> PASS, 17 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 498 passed in 49.06s.

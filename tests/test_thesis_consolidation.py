@@ -10,6 +10,7 @@ from operations.analysis.thesis_consolidation import (
     AGENT_PIPELINE_COLUMNS,
     CHAPTER_PLAN_COLUMNS,
     CITATION_READINESS_COLUMNS,
+    CITATION_REVIEW_PACKET_COLUMNS,
     EVIDENCE_COLUMNS,
     generate_thesis_consolidation,
 )
@@ -24,6 +25,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     core = pd.read_csv(result.core_results_path)
     package = pd.read_csv(result.curated_package_path)
     citations = pd.read_csv(result.citation_readiness_path)
+    citation_packets = pd.read_csv(result.citation_review_packets_path)
     chapters = pd.read_csv(result.chapter_plan_path)
     agents = pd.read_csv(result.agent_pipeline_path)
     metadata = json.loads(result.metadata_path.read_text(encoding="utf-8"))
@@ -31,14 +33,17 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     agent_doc = result.agent_docs_path.read_text(encoding="utf-8")
     writing_blueprint = result.writing_blueprint_path.read_text(encoding="utf-8")
     chapter_draft = result.chapter_draft_path.read_text(encoding="utf-8")
+    citation_packet_doc = result.citation_review_docs_path.read_text(encoding="utf-8")
 
     assert tuple(evidence.columns) == EVIDENCE_COLUMNS
     assert tuple(citations.columns) == CITATION_READINESS_COLUMNS
+    assert tuple(citation_packets.columns) == CITATION_REVIEW_PACKET_COLUMNS
     assert tuple(chapters.columns) == CHAPTER_PLAN_COLUMNS
     assert tuple(agents.columns) == AGENT_PIPELINE_COLUMNS
     assert result.evidence_rows == 13
     assert result.core_result_rows == 6
     assert result.citation_rows == 12
+    assert result.citation_review_packet_rows == 33
     assert result.chapter_rows == 8
     assert result.agent_stage_rows == 6
     assert metadata["method"]["does_not_use_llms"] is True
@@ -50,13 +55,17 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert metadata["outputs"]["core_figure_count"] <= metadata["outputs"]["max_core_figures"]
     assert metadata["outputs"]["writing_blueprint_generated"] is True
     assert metadata["outputs"]["chapter_draft_generated"] is True
+    assert metadata["outputs"]["citation_review_packet_rows"] == 33
+    assert metadata["guardrails"]["citation_review_packets_are_pending_human_review"] is True
     assert "Deferred Agent Pipeline Idea" in doc
     assert "Citation Readiness" in doc
+    assert "Citation Review Packets" in doc
     assert "Thesis Agent Pipeline Roadmap" in agent_doc
     assert "Thesis Writing Blueprint" in writing_blueprint
     assert "Agent-Assisted Pipeline Outlook" in writing_blueprint
     assert "Thesis Chapter Draft" in chapter_draft
     assert "keine neuen Kennzahlen" in chapter_draft
+    assert "Thesis Citation Review Packets" in citation_packet_doc
     assert core["bounded_interpretation"].str.len().gt(0).all()
     assert package["main_limitation"].str.len().gt(0).all()
 
@@ -109,6 +118,28 @@ def test_citation_readiness_blocks_candidate_sources_from_thesis_claims(
     assert candidate["final_citation_readiness"] == "not_allowed_for_thesis_facing_claims"
     assert candidate["citation_risk"] == "high"
     assert not thesis_sources["status"].isin({"candidate", "rejected"}).any()
+
+
+def test_citation_review_packets_link_sources_to_evidence_and_keep_pending(
+    tmp_path: Path,
+) -> None:
+    _write_fixture(tmp_path)
+
+    result = generate_thesis_consolidation(repo_root=tmp_path)
+
+    packets = pd.read_csv(result.citation_review_packets_path)
+    metadata = json.loads(result.metadata_path.read_text(encoding="utf-8"))
+    candidate = packets[packets["source_id"] == "zotero_poly_010"].iloc[0]
+    h_rows = packets[packets["thesis_area"].isin(["H1", "H2", "H3"])]
+
+    assert packets["packet_id"].is_unique
+    assert packets["reviewer_decision"].eq("pending").all()
+    assert packets["review_question"].str.len().gt(0).all()
+    assert packets["primary_artifact"].str.len().gt(0).all()
+    assert not h_rows["source_status"].isin({"candidate", "rejected"}).any()
+    assert candidate["draft_use_allowed"] in {False, "False", "false"}
+    assert candidate["final_citation_gate"] == "metadata_and_relevance_review_before_future_work_use"
+    assert metadata["citation_review_packet_counts"]["pending_packets"] == len(packets)
 
 
 def test_chapter_plan_uses_curated_package_ids(tmp_path: Path) -> None:
@@ -167,6 +198,7 @@ def test_chapter_draft_is_traceable_and_uses_swiss_spelling(tmp_path: Path) -> N
     draft = result.chapter_draft_path.read_text(encoding="utf-8")
 
     assert "ß" not in draft
+    assert "ÃŸ" not in draft
     assert "Forecast quality is evaluated" not in draft
     assert "interpretation_h1_bounded_advantage" in draft
     assert "data/results/h2_event_window_summary.csv" in draft

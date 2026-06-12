@@ -12045,3 +12045,60 @@ Verification:
   sharp-s found.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `593 passed in 70.75s (0:01:10)`.
+
+## 2026-06-13 - Highlevel project view refreshed after H1-H2-H3 queues
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Kept Review-Access paused and kept runtime agents inactive.
+- Moved the highlevel project view from a general Source Review gate to the
+  completed H1/H2/H3 Source Review Decision Queues as the operative manual
+  review path.
+
+Changes:
+
+- Updated `operations/analysis/thesis_consolidation.py` so
+  `thesis_project_highlevel_view.csv` and
+  `THESIS_PROJECT_HIGHLEVEL_VIEW.md` carry the H1/H2/H3 decision queues.
+- Regenerated `data/results/thesis_project_highlevel_view.csv`,
+  `docs/research/THESIS_PROJECT_HIGHLEVEL_VIEW.md`, and
+  `docs/research/THESIS_CONSOLIDATION.md`.
+- Updated `operations/project/build_dozenten_report.py` so the advisor-facing
+  project matrix names the queue counts directly.
+- Regenerated `docs/project/dozentenbericht_ba_thesis.md`,
+  `docs/project/dozentenbericht_ba_thesis.html`, and
+  `docs/project/dozentenbericht_ba_thesis.docx`.
+- Updated `tests/test_thesis_consolidation.py` and
+  `tests/test_dozenten_report.py`.
+- Updated `GOAL.md` and `ROADMAP.md`.
+- Committed the slice as
+  `0f54358 docs: refresh highlevel project view after h1 h2 h3 queues`.
+
+Key output:
+
+- Highlevel view rows: 10.
+- H1/H2/H3 Source Review Decision Queues are now the operative next path:
+  10/5/8 rows, 23 total rows, 0 final-ready rows.
+- Table/figure bindings remain T2/F1, T3/F2, and T4/F3.
+- Source Review remains manual: Page-/Section-Notes, Claim-Support,
+  Blocked-Wording, Citation-Use, H2 Kausalclaim-Grenze, and H3
+  Granger-/Wallet-Grenzen must be filled before final citation.
+- Review-Access remains paused; no source-status promotion, no runtime
+  agents, no MCP, no model routing, no raw table access, no order/trading
+  paths, and no LLM metric calculation.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_consolidation.py tests\test_dozenten_report.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 19 passed.
+- `.\.venv\Scripts\python.exe -m py_compile operations\analysis\thesis_consolidation.py operations\project\build_dozenten_report.py tests\test_thesis_consolidation.py tests\test_dozenten_report.py`
+  -> PASS.
+- `rg -n "<sharp-s>"` on touched thesis-facing files -> PASS, no Swiss
+  sharp-s found.
+- `git diff --check` -> PASS, with expected CRLF warnings only.
+- DOCX structural report tests -> PASS via `tests\test_dozenten_report.py`.
+- DOCX render QA via Documents `render_docx.py` -> BLOCKED locally because
+  LibreOffice/`soffice` is not installed (`FileNotFoundError: [WinError 2]`).
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `593 passed in 67.09s (0:01:07)`.

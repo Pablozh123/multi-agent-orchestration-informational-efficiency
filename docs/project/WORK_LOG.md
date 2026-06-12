@@ -10705,3 +10705,43 @@ Verification:
   -> PASS, 7 passed.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 570 passed in 53.53s.
+
+## 2026-06-12 - Highlevel project path without review access
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Kept Review-Access paused and used the existing highlevel project view as
+  the steering layer.
+- Clarified the next path as advisor feedback, manual Source Review,
+  H1-H2-H3 writing, compact table/figure integration, Swiss result gate, and
+  final QA.
+
+Changes:
+
+- Refreshed `STATUS.md` so the automation snapshot reflects the clean current
+  repository state after commit `255c61b`.
+- Did not add new empirical metrics, Review-Access implementation, runtime
+  agents, MCP tools, model routing, raw table access, wallet-address exposure,
+  or trading paths.
+
+Key output:
+
+- Current highlevel project matrix remains in
+  `docs/research/THESIS_PROJECT_HIGHLEVEL_VIEW.md`.
+- Current final Stop-/Go view remains in
+  `docs/project/THESIS_FINAL_GATE_BOARD.md`.
+- Bounded draft work is allowed; final submission remains blocked by manual
+  Source Review, Swiss official-result mapping, DOCX render QA, and final
+  project checks.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 570 passed in 55.43s.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> PASS, 570 passed in 53.79s.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+  -> PASS, suggested `docs: update project control workflow`.
+- `git diff --stat`
+  -> PASS, 2 project-control files changed.

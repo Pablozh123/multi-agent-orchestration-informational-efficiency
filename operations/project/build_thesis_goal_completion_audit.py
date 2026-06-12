@@ -76,6 +76,7 @@ def generate_goal_completion_audit(
     core_sections = _read_csv(results_dir / "thesis_h1_h2_h3_core_sections.csv")
     agent_control = _read_csv(results_dir / "thesis_agent_pipeline_control_audit.csv")
     agent_upgrade = _read_csv(results_dir / "thesis_agent_pipeline_upgrade_plan.csv")
+    final_gate_board = _read_csv(results_dir / "thesis_final_gate_board.csv")
     handoff_package = _read_csv(results_dir / "thesis_advisor_handoff_package.csv")
     handoff_note = _read_csv(results_dir / "thesis_advisor_handoff_note.csv")
     feedback_log = _read_csv(results_dir / "thesis_advisor_feedback_log_template.csv")
@@ -99,6 +100,7 @@ def generate_goal_completion_audit(
         core_sections=core_sections,
         agent_control=agent_control,
         agent_upgrade=agent_upgrade,
+        final_gate_board=final_gate_board,
         handoff_package=handoff_package,
         handoff_note=handoff_note,
         feedback_log=feedback_log,
@@ -139,6 +141,7 @@ def build_goal_completion_audit(
     core_sections: pd.DataFrame,
     agent_control: pd.DataFrame,
     agent_upgrade: pd.DataFrame,
+    final_gate_board: pd.DataFrame,
     handoff_package: pd.DataFrame,
     handoff_note: pd.DataFrame,
     feedback_log: pd.DataFrame,
@@ -263,6 +266,16 @@ def build_goal_completion_audit(
         ("upgrade_id", "current_status"),
         "agent pipeline upgrade plan",
     )
+    _require_columns(
+        final_gate_board,
+        (
+            "final_gate_id",
+            "draft_use_allowed",
+            "final_submission_ready",
+            "blocking_count",
+        ),
+        "thesis final gate board",
+    )
     _require_columns(handoff_package, ("deliverable_id", "path"), "handoff package")
     _require_columns(handoff_note, ("section_id",), "handoff note")
     _require_columns(feedback_log, ("feedback_id", "advisor_feedback_status"), "feedback log")
@@ -382,6 +395,11 @@ def build_goal_completion_audit(
     agent_active = int(agent_control["current_activation_state"].astype(str).str.contains("active").sum())
     agent_upgrade_rows = int(len(agent_upgrade))
     agent_upgrade_active = int(agent_upgrade["current_status"].astype(str).str.contains("active").sum())
+    final_gate_rows = int(len(final_gate_board))
+    final_gate_draft_allowed = int(final_gate_board["draft_use_allowed"].astype(bool).sum())
+    final_gate_ready = int(final_gate_board["final_submission_ready"].astype(bool).sum())
+    final_gate_not_ready = int((~final_gate_board["final_submission_ready"].astype(bool)).sum())
+    final_gate_blocking_count = int(final_gate_board["blocking_count"].astype(int).sum())
 
     rows = [
         _audit_row(
@@ -521,9 +539,15 @@ def build_goal_completion_audit(
             audit_id="goal_audit_10_final_qa",
             goal_requirement_de="Projektchecks, Status und Work Log bleiben vor Stopp aktuell.",
             current_status="project_control_ready",
-            evidence_artifacts="STATUS.md; docs/project/WORK_LOG.md",
-            key_evidence_de="Status, Review-Check und Work Log werden vor jedem Commit aktualisiert.",
-            remaining_gap_de="DOCX-Render-QA bleibt lokal blockiert, solange LibreOffice/soffice fehlt.",
+            evidence_artifacts="STATUS.md; docs/project/WORK_LOG.md; data/results/thesis_final_gate_board.csv; docs/project/THESIS_FINAL_GATE_BOARD.md",
+            key_evidence_de=(
+                "Status, Review-Check und Work Log werden vor jedem Commit aktualisiert. "
+                f"Final Gate Board: {final_gate_rows} gates; draft-allowed "
+                f"{final_gate_draft_allowed}; final-ready {final_gate_ready}; "
+                f"final-not-ready {final_gate_not_ready}; blocking-count "
+                f"{final_gate_blocking_count}."
+            ),
+            remaining_gap_de="DOCX-Render-QA bleibt lokal blockiert, solange LibreOffice/soffice fehlt; Final Gate Board bleibt vor finaler Abgabe erneut zu pruefen.",
             next_action_de="Vor finalem Export Tests, review_check, Source Review, Swiss-Spelling und DOCX-Render-QA wiederholen.",
         ),
     ]

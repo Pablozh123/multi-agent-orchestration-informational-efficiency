@@ -152,11 +152,15 @@ acceptance_criteria:
 - A future agent-pipeline upgrade plan exists so later source-review,
   evidence-drafting, wording, table/figure, advisor, monitor, and bounded MCP
   improvements are documented without activating runtime agents.
+- A thesis final gate board exists so bounded draft permission, final
+  submission readiness, evidence counts, blockers, Source Review, Swiss
+  official result, DOCX render QA, project checks, and future-agent boundaries
+  are separated in one highlevel artifact.
 - Tests cover the generated evidence map and curated result package where
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add thesis final gate board
+next_commit: docs: begin bounded h1 h2 h3 chapter draft
 
 ## Running Side Goal
 

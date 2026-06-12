@@ -318,7 +318,15 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Bounded Draft ja; keine neue Kennzahl, keine Rohartefakt-Dumps und keine finale Zitation vor Source Review.",
         ),
         _index_row(
-            artifact_id="index_31_traceability_audit",
+            artifact_id="index_31_thesis_final_gate_board",
+            artifact_type="final_gate_board",
+            path="docs/project/THESIS_FINAL_GATE_BOARD.md; data/results/thesis_final_gate_board.csv",
+            purpose_de="Highlevel-Stop-/Go-Board fuer bounded Draft, finale Abgabereife, Evidenzzaehlung und offene Finalgates.",
+            use_now_de="Vor weiteren Completion-Claims pruefen: Source Review, Swiss Resultat, DOCX Render-QA, Projektchecks und Agentengrenzen.",
+            gate_or_limit_de="Draft ja; finale Abgabe nein, solange Source Review, Swiss official result, DOCX-Render-QA oder finale Projektchecks offen sind.",
+        ),
+        _index_row(
+            artifact_id="index_32_traceability_audit",
             artifact_type="traceability_audit",
             path="docs/project/THESIS_TRACEABILITY_AUDIT.md; data/results/thesis_method_interpretation_traceability.csv; data/results/thesis_result_package_traceability.csv",
             purpose_de="Draft-Kontrolle fuer Methoden, Interpretationen, Tabellen und Figuren.",
@@ -326,7 +334,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine finalen Zitationen ohne manuelle Quellenreview und keine neuen Kennzahlen.",
         ),
         _index_row(
-            artifact_id="index_32_h1_h2_h3_core_sections",
+            artifact_id="index_33_h1_h2_h3_core_sections",
             artifact_type="core_writing_package",
             path="docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md; data/results/thesis_h1_h2_h3_core_sections.csv",
             purpose_de="Thesis-ready Kernfassung fuer H1, H2 und H3 mit Evidence-IDs, Quellen, Artefakten, Tabellen und Figuren.",
@@ -334,7 +342,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine finale Zitation ohne Source Review; keine Rohartefakt-Dumps und keine neuen Kennzahlen.",
         ),
         _index_row(
-            artifact_id="index_33_agent_pipeline_upgrade_plan",
+            artifact_id="index_34_agent_pipeline_upgrade_plan",
             artifact_type="future_agent_upgrade_plan",
             path="docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md; data/results/thesis_agent_pipeline_upgrade_plan.csv",
             purpose_de="Dokumentations-only Plan, wie spaetere Agenten Source Review, Drafting, Wording und Tabellen/Figuren pruefen koennten.",
@@ -342,7 +350,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken, bounded inputs und llm_audit_log vor jeder Aktivierung.",
         ),
         _index_row(
-            artifact_id="index_34_goal_completion_audit",
+            artifact_id="index_35_goal_completion_audit",
             artifact_type="goal_completion_audit",
             path="docs/project/THESIS_GOAL_COMPLETION_AUDIT.md; data/results/thesis_goal_completion_audit.csv",
             purpose_de="Belegbarer Audit des aktiven Goals mit erreichten Punkten und offenen Gates.",
@@ -350,7 +358,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Kein Zielabschluss, solange Source Review, Swiss Resultat-Gate oder DOCX-Render-QA offen sind.",
         ),
         _index_row(
-            artifact_id="index_35_status_and_log",
+            artifact_id="index_36_status_and_log",
             artifact_type="project_control",
             path="STATUS.md; docs/project/WORK_LOG.md",
             purpose_de="Automatisierter Projektstatus und append-only Arbeitslog.",
@@ -440,7 +448,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "H1-H2-H3 Source Review Notes, Source Review Progress Ledger, "
         "Source Review Progress Protocol, Source Review Chapter Handoff, "
         "Chapter Source Review Checklist, H1-H2-H3 Drafting Checklist, "
-        "Traceability Audit, H1-H2-H3 Core Sections, Agent Pipeline Upgrade "
+        "Thesis Final Gate Board, Traceability Audit, H1-H2-H3 Core Sections, Agent Pipeline Upgrade "
         "Plan, Goal Completion Audit, Agent Future-Work Handoff, Agent Pipeline Control Audit, Tabellen/Figuren und "
         "Future-Work-Agenten relevant sind.\n\n"
         "## Counts\n\n"
@@ -464,7 +472,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "und Future-Agent-Grenzen. Nutze das Source Review Chapter Handoff "
         "als kapitelweise Uebergabe fuer H1-H2-H3 und die Chapter Source "
         "Review Checklist als Abhakliste. Nutze die H1-H2-H3 Drafting Checklist "
-        "als konkrete Schreibreihenfolge. Nutze den Traceability Audit als BA-Schreibkontrolle. "
+        "als konkrete Schreibreihenfolge. Nutze das Thesis Final Gate Board als Highlevel-Stop-/Go-Kontrolle. Nutze den Traceability Audit als BA-Schreibkontrolle. "
         "Nutze die H1-H2-H3 Core Sections als Schreibkern und den Agent "
         "Pipeline Upgrade Plan nur als Future-Work-Gedanke. Nutze das Goal Completion Audit als Stop- und "
         "Weiterarbeitskontrolle. Nutze danach Execution Checklist, Source "

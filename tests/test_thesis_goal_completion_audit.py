@@ -46,6 +46,8 @@ def test_generate_goal_completion_audit_writes_remaining_gates(tmp_path: Path) -
     assert "THESIS_AGENT_PIPELINE_CONTROL_AUDIT.md" in doc
     assert "thesis_agent_pipeline_upgrade_plan.csv" in doc
     assert "THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md" in doc
+    assert "thesis_final_gate_board.csv" in doc
+    assert "THESIS_FINAL_GATE_BOARD.md" in doc
     assert "Source Review" in doc
     assert chr(223) not in doc
 
@@ -80,6 +82,8 @@ def test_goal_completion_audit_keeps_open_gates_visible(tmp_path: Path) -> None:
     assert "h1-h2-h3 drafting checklist: 18 checks; bounded-draft-ready: 18; final-ready: 0; final-blocked: 3" in joined
     assert "agent control: 2 rollen; documentation-only: 1; deferred: 1; aktiv: 0" in joined
     assert "agent upgrade plan: 2 reihen; aktive upgrade-reihen: 0" in joined
+    assert "final gate board: 8 gates; draft-allowed 8; final-ready 1" in joined
+    assert "final-not-ready 7; blocking-count 10" in joined
 
 
 def _write_fixture(root: Path) -> None:
@@ -271,6 +275,18 @@ def _write_fixture(root: Path) -> None:
             {"upgrade_id": "agent_upgrade_02", "current_status": "future_deferred"},
         ]
     ).to_csv(results / "thesis_agent_pipeline_upgrade_plan.csv", index=False)
+    pd.DataFrame(
+        [
+            _final_gate("final_gate_01_source_review", True, False, 3),
+            _final_gate("final_gate_02_h1_h2_h3_drafting", True, False, 3),
+            _final_gate("final_gate_03_result_package", True, False, 1),
+            _final_gate("final_gate_04_swiss_result_mapping", True, False, 1),
+            _final_gate("final_gate_05_monitor_appendix", True, False, 1),
+            _final_gate("final_gate_06_future_agents", True, True, 0),
+            _final_gate("final_gate_07_docx_render_qa", True, False, 1),
+            _final_gate("final_gate_08_project_control", True, False, 0),
+        ]
+    ).to_csv(results / "thesis_final_gate_board.csv", index=False)
 
     pd.DataFrame(
         [
@@ -315,6 +331,7 @@ def _write_fixture(root: Path) -> None:
         "docs/project/THESIS_CHAPTER_SOURCE_REVIEW_CHECKLIST.md",
         "docs/project/THESIS_H1_H2_H3_DRAFTING_CHECKLIST.md",
         "docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md",
+        "docs/project/THESIS_FINAL_GATE_BOARD.md",
     ]:
         path = root / relative
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -355,6 +372,20 @@ def _ledger(ledger_id: str, area: str) -> dict[str, object]:
         "review_progress_state": "pending_manual_review",
         "final_citation_ready": False,
         "source_status_change_allowed": False,
+    }
+
+
+def _final_gate(
+    final_gate_id: str,
+    draft_use_allowed: bool,
+    final_submission_ready: bool,
+    blocking_count: int,
+) -> dict[str, object]:
+    return {
+        "final_gate_id": final_gate_id,
+        "draft_use_allowed": draft_use_allowed,
+        "final_submission_ready": final_submission_ready,
+        "blocking_count": blocking_count,
     }
 
 

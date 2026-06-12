@@ -1859,9 +1859,9 @@ def build_project_highlevel_view(
                     "data/literature/literature_index.csv",
                 ],
                 evidence_or_workstream_ids=["work_01_source_review"],
-                current_decision=f"Treat {full_source_review_count} sources as requiring full review, including {priority_source_count} priority-1 method-foundation rows.",
-                next_gate="Record page or section notes and human decisions before final thesis citation.",
-                guardrail="Source review is manual; do not promote skimmed or candidate sources automatically.",
+                current_decision=f"Treat {full_source_review_count} sources as requiring full review, including {priority_source_count} priority-1 method-foundation rows. Use access and structure inventories only to prepare manual review.",
+                next_gate="Record page or section notes, structure checks, and human decisions before final thesis citation.",
+                guardrail="Source review is manual; do not promote skimmed or candidate sources automatically and do not infer support claims from file structure.",
                 thesis_use="theory_methods_citation_gate",
             ),
             _project_view_row(
@@ -3398,6 +3398,9 @@ def _render_project_highlevel_view_doc(
         "- Zuerst Dozentenpaket senden und Feedback im Log festhalten.\n"
         "- Danach Source Review prioritaer abarbeiten, H1-H3 Kapitel schreiben "
         "und Tabellen/Figuren integrieren.\n"
+        "- Access Audit und Source Structure Inventory nur als Vorbereitung "
+        "nutzen: keine Quellenstatus-Hochstufung und keine Support-Claims aus "
+        "Dateistruktur.\n"
         "- Swiss bleibt bis zum offiziellen Resultat am 14. Juni 2026 "
         "beschreibend.\n"
         "- Agenten bleiben Future Work; keine Runtime-Agenten, MCP, Model "

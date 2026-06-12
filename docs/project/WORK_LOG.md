@@ -9316,6 +9316,52 @@ Verification:
 - `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
   -> PASS, recommends reviewing one coherent docs/data/automation slice.
 
+## 2026-06-12 - Source structure inventory and high-level path
+
+Goal:
+
+- Keep Review-Access paused and clarify the next high-level project path with
+  a deterministic source-structure inventory for manual Source Review.
+
+Changes:
+
+- Added `operations/project/build_source_structure_inventory.py`.
+- Generated `data/results/thesis_source_structure_inventory.csv`.
+- Added `docs/project/THESIS_SOURCE_STRUCTURE_INVENTORY.md`.
+- Added `tests/test_source_structure_inventory.py`.
+- Updated the thesis high-level view so Access Audit and Source Structure
+  Inventory are preparation only, not content review.
+- Updated the goal-completion audit and consolidation index to include the
+  source-structure inventory.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Inventory rows: 15.
+- Local PDF structure rows: 7.
+- Local HTML structure rows: 3.
+- External-only rows: 5.
+- The inventory records file structure only and forbids content
+  interpretation, source-status promotion, automatic Page Notes, and
+  thesis-facing claims from file structure.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_source_structure_inventory.py operations/project/build_thesis_goal_completion_audit.py operations/project/build_thesis_consolidation_index.py operations/analysis/thesis_consolidation.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_source_structure_inventory.py tests/test_thesis_goal_completion_audit.py tests/test_thesis_consolidation_index.py tests/test_thesis_consolidation.py -q`
+  -> PASS, 21 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_source_structure_inventory`
+  -> PASS, generated 15 inventory rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
+  -> PASS, generated 10 audit rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 24 indexed artifacts.
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`
+  -> PASS, regenerated 10 high-level project rows.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 535 passed in 52.77s.
+
 ## 2026-06-12 - Advisor handoff package 11-file order
 
 Goal context:

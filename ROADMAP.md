@@ -745,15 +745,20 @@ Current implemented consolidation:
   `docs/project/THESIS_SOURCE_ACCESS_AUDIT.md` audit source-review access
   routes before manual Source Review: local PDFs/HTML files, external
   DOI/JSTOR/URL locator reviews, and blocked/candidate source limits.
+- `data/results/thesis_source_structure_inventory.csv` and
+  `docs/project/THESIS_SOURCE_STRUCTURE_INVENTORY.md` inventory local PDF/HTML
+  structure for manual Source Review without extracting support claims,
+  promoting source status, or making thesis-facing source claims.
 - `data/results/thesis_consolidation_index.csv` and
   `docs/project/THESIS_CONSOLIDATION_INDEX.md` index the current
   consolidation deliverables so the Dozentenbericht, advisor checklist,
   highlevel view, work plan, execution checklist, source worksheet, source
-  advisor handoff package, review execution guide, chapter source bindings,
-  agent future-work handoff, advisor handoff note, advisor feedback log,
-  submission readiness board, drafting sequence, wording guard, table/figure
-  captions, chapter draft, source review plan, agent protocol, status, and
-  work log are easy to navigate.
+  advisor handoff package, review execution guide, source access audit, source
+  structure inventory, chapter source bindings, agent future-work handoff,
+  advisor handoff note, advisor feedback log, submission readiness board,
+  drafting sequence, wording guard, table/figure captions, chapter draft,
+  source review plan, agent protocol, status, and work log are easy to
+  navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,

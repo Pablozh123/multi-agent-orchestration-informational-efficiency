@@ -105,11 +105,14 @@ acceptance_criteria:
   gates are separated before any completion claim.
 - A source-access audit exists so local PDF/HTML sources and external
   locator-review sources are separated before manual Source Review.
+- A source-structure inventory exists so local source files can be prepared
+  for manual Source Review without content interpretation, source-status
+  promotion, or thesis-facing claims.
 - Tests cover the generated evidence map and curated result package where
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add source access audit
+next_commit: docs: add source structure inventory
 
 ## Running Side Goal
 

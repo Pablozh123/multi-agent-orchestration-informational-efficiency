@@ -246,7 +246,15 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine Quellenstatus-Hochstufung, keine automatischen Page Notes und keine finale Zitation.",
         ),
         _index_row(
-            artifact_id="index_22_goal_completion_audit",
+            artifact_id="index_22_source_structure_inventory",
+            artifact_type="source_structure_inventory",
+            path="docs/project/THESIS_SOURCE_STRUCTURE_INVENTORY.md; data/results/thesis_source_structure_inventory.csv",
+            purpose_de="Lokales Strukturinventar fuer PDF/HTML-Quellen vor manueller Quellenpruefung.",
+            use_now_de="Zeigt Seiten- und Strukturhinweise, ohne Quelleninhalte zu interpretieren.",
+            gate_or_limit_de="Keine Inhaltsinterpretation, keine Quellenstatus-Hochstufung und keine thesis-facing Claims.",
+        ),
+        _index_row(
+            artifact_id="index_23_goal_completion_audit",
             artifact_type="goal_completion_audit",
             path="docs/project/THESIS_GOAL_COMPLETION_AUDIT.md; data/results/thesis_goal_completion_audit.csv",
             purpose_de="Belegbarer Audit des aktiven Goals mit erreichten Punkten und offenen Gates.",
@@ -254,7 +262,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Kein Zielabschluss, solange Source Review, Swiss Resultat-Gate oder DOCX-Render-QA offen sind.",
         ),
         _index_row(
-            artifact_id="index_23_status_and_log",
+            artifact_id="index_24_status_and_log",
             artifact_type="project_control",
             path="STATUS.md; docs/project/WORK_LOG.md",
             purpose_de="Automatisierter Projektstatus und append-only Arbeitslog.",
@@ -340,7 +348,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Advisor Handoff Package, Advisor Handoff Note, Advisor Feedback Log, "
         "Submission Readiness Board, Drafting Sequence, Execution Checklist, "
         "Chapter Source Bindings, Source Review Execution, Source Access "
-        "Audit, Goal Completion Audit, Agent Future-Work Handoff, Tabellen/Figuren und "
+        "Audit, Source Structure Inventory, Goal Completion Audit, Agent Future-Work Handoff, Tabellen/Figuren und "
         "Future-Work-Agenten relevant sind.\n\n"
         "## Counts\n\n"
         f"- Indexed artifacts: {len(index)}\n\n"
@@ -354,8 +362,8 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Chat-Vorlage. Nutze das Feedback-Log nach der Betreuung. Nutze das "
         "Submission Readiness Board fuer die "
         "finalen Gates. Nutze die Drafting Sequence fuer die naechste "
-        "Schreibreihenfolge. Nutze das Source Access Audit vor der manuellen "
-        "Quellenpruefung. Nutze das Goal Completion Audit als Stop- und "
+        "Schreibreihenfolge. Nutze das Source Access Audit und Source Structure "
+        "Inventory vor der manuellen Quellenpruefung. Nutze das Goal Completion Audit als Stop- und "
         "Weiterarbeitskontrolle. Nutze danach Execution Checklist, Source "
         "Worksheet, Chapter Source Bindings, Source Review Execution, Agent "
         "Future-Work Handoff, Wording Guard und Next Work Plan fuer das "

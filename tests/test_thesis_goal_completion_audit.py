@@ -24,6 +24,7 @@ def test_generate_goal_completion_audit_writes_remaining_gates(tmp_path: Path) -
     assert "Audit rows: 10" in doc
     assert "keine finale Zielerreichung" in doc
     assert "thesis_source_access_audit.csv" in doc
+    assert "thesis_source_structure_inventory.csv" in doc
     assert "Source Review" in doc
     assert chr(223) not in doc
 
@@ -44,6 +45,7 @@ def test_goal_completion_audit_keeps_open_gates_visible(tmp_path: Path) -> None:
     assert "review-access bleibt pausiert" in joined
     assert "runtime-agenten" in joined
     assert "llm_audit_log" in joined
+    assert "source structure: 1 pdf, 1 html, 1 external-only zeilen" in joined
 
 
 def _write_fixture(root: Path) -> None:
@@ -105,6 +107,13 @@ def _write_fixture(root: Path) -> None:
             for idx in range(3)
         ]
     ).to_csv(results / "thesis_source_access_audit.csv", index=False)
+    pd.DataFrame(
+        [
+            {"source_id": "source_0", "structure_inventory_status": "local_pdf_structure_available"},
+            {"source_id": "source_1", "structure_inventory_status": "local_html_structure_available"},
+            {"source_id": "source_2", "structure_inventory_status": "external_only"},
+        ]
+    ).to_csv(results / "thesis_source_structure_inventory.csv", index=False)
 
     pd.DataFrame(
         [

@@ -63,6 +63,7 @@ def generate_goal_completion_audit(
     readiness = _read_csv(results_dir / "thesis_submission_readiness_board.csv")
     drafting = _read_csv(results_dir / "thesis_drafting_sequence.csv")
     source_access = _read_csv(results_dir / "thesis_source_access_audit.csv")
+    source_structure = _read_csv(results_dir / "thesis_source_structure_inventory.csv")
     handoff_package = _read_csv(results_dir / "thesis_advisor_handoff_package.csv")
     handoff_note = _read_csv(results_dir / "thesis_advisor_handoff_note.csv")
     feedback_log = _read_csv(results_dir / "thesis_advisor_feedback_log_template.csv")
@@ -73,6 +74,7 @@ def generate_goal_completion_audit(
         readiness=readiness,
         drafting=drafting,
         source_access=source_access,
+        source_structure=source_structure,
         handoff_package=handoff_package,
         handoff_note=handoff_note,
         feedback_log=feedback_log,
@@ -100,6 +102,7 @@ def build_goal_completion_audit(
     readiness: pd.DataFrame,
     drafting: pd.DataFrame,
     source_access: pd.DataFrame,
+    source_structure: pd.DataFrame,
     handoff_package: pd.DataFrame,
     handoff_note: pd.DataFrame,
     feedback_log: pd.DataFrame,
@@ -122,6 +125,11 @@ def build_goal_completion_audit(
         source_access,
         ("source_id", "priority_band", "local_file_exists", "access_route"),
         "source access audit",
+    )
+    _require_columns(
+        source_structure,
+        ("source_id", "structure_inventory_status"),
+        "source structure inventory",
     )
     _require_columns(handoff_package, ("deliverable_id", "path"), "handoff package")
     _require_columns(handoff_note, ("section_id",), "handoff note")
@@ -150,6 +158,15 @@ def build_goal_completion_audit(
     external_access = int(
         (priority_1_access["access_route"] == "external_locator_review").sum()
     )
+    local_pdf_structures = int(
+        (source_structure["structure_inventory_status"] == "local_pdf_structure_available").sum()
+    )
+    local_html_structures = int(
+        (source_structure["structure_inventory_status"] == "local_html_structure_available").sum()
+    )
+    external_only_structures = int(
+        (source_structure["structure_inventory_status"] == "external_only").sum()
+    )
 
     rows = [
         _audit_row(
@@ -165,13 +182,15 @@ def build_goal_completion_audit(
             audit_id="goal_audit_02_evidence_map",
             goal_requirement_de="Methoden und Interpretationen sind auf Artefakte und Quellen gemappt.",
             current_status="draft_ready_final_source_review_pending",
-            evidence_artifacts="data/results/thesis_evidence_map.csv; data/results/thesis_citation_readiness.csv; data/results/thesis_source_access_audit.csv",
+            evidence_artifacts="data/results/thesis_evidence_map.csv; data/results/thesis_citation_readiness.csv; data/results/thesis_source_access_audit.csv; data/results/thesis_source_structure_inventory.csv",
             key_evidence_de=(
                 f"Thesis-facing Evidence: {len(thesis_facing)} Zeilen; "
                 f"Methoden: {method_rows}; Interpretationen: {interpretation_rows}; "
                 f"Artefaktverweise: {artifact_rows}; Quellenverweise: {source_rows}. "
                 f"Priority-1 Source Access: {len(priority_1_access)} Quellen; "
-                f"lokal verfuegbar: {local_access}; extern zu pruefen: {external_access}."
+                f"lokal verfuegbar: {local_access}; extern zu pruefen: {external_access}. "
+                f"Source Structure: {local_pdf_structures} PDF, {local_html_structures} HTML, "
+                f"{external_only_structures} external-only Zeilen."
             ),
             remaining_gap_de="Finale Zitationsreife bleibt vom manuellen Source Review abhaengig.",
             next_action_de="Priority-1-Quellen mit Seiten- oder Abschnittsnotizen pruefen.",

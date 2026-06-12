@@ -392,6 +392,15 @@ def test_chapter_draft_is_traceable_and_uses_swiss_spelling(tmp_path: Path) -> N
     assert "Forecast quality is evaluated" not in draft
     assert "interpretation_h1_bounded_advantage" in draft
     assert "data/results/h2_event_window_summary.csv" in draft
+    assert "Core-Mapping fuer H1" in draft
+    assert "Core-Mapping fuer H2" in draft
+    assert "Core-Mapping fuer H3" in draft
+    assert "Methode `method_h1_brier_dm`" in draft
+    assert "Interpretation `interpretation_h1_bounded_advantage" in draft
+    assert "Literatur `lit_brier_001" in draft
+    assert "Tabelle `T2`" in draft
+    assert "Abbildung `F1`" in draft
+    assert "Source Review bleibt vor finaler Zitation" in draft
     assert "llm_audit_log" in draft
     assert "keine universelle Aussage" in draft
 

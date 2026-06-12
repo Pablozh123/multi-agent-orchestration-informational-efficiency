@@ -30,7 +30,7 @@ This document is the high-level consolidation layer for the bachelor thesis. It 
 | core_h2_largest_daily_event_window | H2 | The largest primary daily event-window move is the Trump shooting window. | evt_2024_07_13_trump_shooting 7.2 pp | thesis_facing_ready |
 | core_h3_top_tier_timing | H3 | The top wallet tier has the clearest current timing diagnostic. | tier_1_top_1pct lag 1 correlation 0.1858; tier_1_top_1pct lag 1 Granger p=0.0012; 1216 aligned rows | thesis_facing_ready |
 | core_monitor_review_queue_boundary | monitor_prototype | The monitor review queue is useful as workflow evidence, not empirical proof. | 3 review cases; 1 high; 2 medium; source_check_pending=3 | appendix_prototype_only |
-| core_swiss_running_gap_pending | swiss_referendum | Swiss referendum market-poll divergence is descriptive until the result is known. | 32 snapshots; latest SRG/gfs.bern Polymarket Yes 21.5%, poll Yes 45.0%, raw gap -23.5 pp | descriptive_pending_result |
+| core_swiss_running_gap_pending | swiss_referendum | Swiss referendum market-poll divergence is descriptive until the result is known. | 33 snapshots; latest SRG/gfs.bern Polymarket Yes 22.0%, poll Yes 45.0%, raw gap -23.0 pp | descriptive_pending_result |
 
 ## Recommended Tables
 

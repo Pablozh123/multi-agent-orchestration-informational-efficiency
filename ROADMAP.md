@@ -697,6 +697,11 @@ Current implemented consolidation:
   in German/Swiss spelling from the deterministic consolidation artifacts,
   including artifact references, Evidence IDs, bounded result wording,
   limitations, and a documentation-only agent outlook.
+- The same chapter draft now integrates the H1-H2-H3 core mapping directly:
+  each empirical chapter names method Evidence IDs, interpretation Evidence
+  IDs, literature IDs, deterministic artifacts, selected table, selected
+  figure, limitations, blocked wording, and the Source Review gate before
+  final citation.
 - `docs/project/dozentenbericht_ba_thesis.md`,
   `docs/project/dozentenbericht_ba_thesis.html`, and
   `docs/project/dozentenbericht_ba_thesis.docx` now start with a Phase 12

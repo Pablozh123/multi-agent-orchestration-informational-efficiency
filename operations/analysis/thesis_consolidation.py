@@ -3529,6 +3529,21 @@ def _render_chapter_draft(
     h3_result = core["core_h3_top_tier_timing"]
     monitor_result = core["core_monitor_review_queue_boundary"]
     swiss_result = core["core_swiss_running_gap_pending"]
+    h1_core_mapping = _chapter_core_mapping_block(
+        hypothesis="H1",
+        evidence_map=evidence_map,
+        curated_package=curated_package,
+    )
+    h2_core_mapping = _chapter_core_mapping_block(
+        hypothesis="H2",
+        evidence_map=evidence_map,
+        curated_package=curated_package,
+    )
+    h3_core_mapping = _chapter_core_mapping_block(
+        hypothesis="H3",
+        evidence_map=evidence_map,
+        curated_package=curated_package,
+    )
 
     return "\n".join(
         [
@@ -3626,6 +3641,7 @@ def _render_chapter_draft(
             "in definierten spaeten und kompatiblen Vergleichsfenstern bessere "
             "Brier-Verluste, aber die Gesamtevidenz bleibt gemischt und "
             "kontextabhaengig.\n",
+            h1_core_mapping,
             f"Empfohlene Darstellung: Tabelle `{package['T2']['primary_artifact']}` "
             f"und Abbildung `{package['F1']['primary_artifact']}`. Die "
             "Limitation ist explizit zu nennen: unterschiedliche "
@@ -3646,6 +3662,7 @@ def _render_chapter_draft(
             "Orderbuchdaten noetig. In der Thesis sollte H2 daher als Evidenz "
             "fuer beobachtbare Tagesreaktionen geschrieben werden, nicht als "
             "Beweis fuer unmittelbare Informationsverarbeitung.\n",
+            h2_core_mapping,
             f"Empfohlene Darstellung: Tabelle `{package['T3']['primary_artifact']}` "
             f"und Abbildung `{package['F2']['primary_artifact']}`.\n",
             "## 6. H3: Wallet-Timing\n",
@@ -3666,6 +3683,7 @@ def _render_chapter_draft(
             "Strategie. Die Limitationen BUY-only, taegliche Frequenz, "
             "Mehrfachtests und moegliche Upstream-Filter gehoeren direkt in den "
             "Ergebnistext.\n",
+            h3_core_mapping,
             f"Empfohlene Darstellung: Tabelle `{package['T4']['primary_artifact']}` "
             f"und Abbildung `{package['F3']['primary_artifact']}`.\n",
             "## 7. Erweiterungen: Monitor und Schweizer Abstimmung\n",
@@ -3711,6 +3729,136 @@ def _render_chapter_draft(
             "Order- oder Tradingpfade bleiben ausgeschlossen.\n",
         ]
     )
+
+
+def _chapter_core_mapping_block(
+    *,
+    hypothesis: str,
+    evidence_map: pd.DataFrame,
+    curated_package: pd.DataFrame,
+) -> str:
+    section_evidence = evidence_map[
+        (evidence_map["thesis_area"] == hypothesis)
+        & (evidence_map["thesis_readiness"] == "thesis_facing_ready")
+        & evidence_map["item_type"].isin(["method", "interpretation"])
+    ].copy()
+    if section_evidence.empty:
+        raise ValueError(f"No thesis-facing evidence rows found for {hypothesis} chapter mapping.")
+    methods = section_evidence[section_evidence["item_type"] == "method"]
+    interpretations = section_evidence[section_evidence["item_type"] == "interpretation"]
+    if methods.empty or interpretations.empty:
+        raise ValueError(f"{hypothesis} chapter mapping needs method and interpretation evidence rows.")
+
+    section_package = curated_package[
+        curated_package["include_in_core_package"].astype(bool)
+        & (curated_package["thesis_section"] == hypothesis)
+    ].copy()
+    if section_package.empty:
+        raise ValueError(f"No curated package rows found for {hypothesis} chapter mapping.")
+
+    method_ids = "; ".join(methods["evidence_id"].astype(str).tolist())
+    interpretation_ids = "; ".join(interpretations["evidence_id"].astype(str).tolist())
+    sources = "; ".join(_unique_from_series(section_evidence["literature_sources"]))
+    artifacts = "; ".join(
+        _unique_from_series(
+            pd.concat(
+                [
+                    section_evidence["primary_artifact"],
+                    section_evidence["supporting_artifacts"],
+                    section_package["primary_artifact"],
+                    section_package["supporting_artifacts"],
+                ],
+                ignore_index=True,
+            )
+        )
+    )
+    tables = "; ".join(
+        section_package[section_package["package_type"] == "table"]["package_id"].astype(str).tolist()
+    )
+    figures = "; ".join(
+        section_package[section_package["package_type"] == "figure"]["package_id"].astype(str).tolist()
+    )
+    limitations = " | ".join(
+        _translate_chapter_known_phrase(item)
+        for item in _unique_from_series(section_evidence["main_limitation"])
+    )
+    blocked = " | ".join(
+        _translate_chapter_known_phrase(item)
+        for item in _unique_from_series(section_evidence["blocked_wording"])
+    )
+    return (
+        f"**Core-Mapping fuer {hypothesis}:** Methode `{method_ids}`; "
+        f"Interpretation `{interpretation_ids}`; Literatur `{sources}`; "
+        f"deterministische Artefakte `{artifacts}`; Tabelle `{tables}`; "
+        f"Abbildung `{figures}`. Limitation: {limitations}. "
+        f"Nicht schreiben: {blocked}. Source Review bleibt vor finaler "
+        "Zitation mit Page-/Section-Notes und Claim-Support-Entscheid offen.\n"
+    )
+
+
+def _unique_from_series(values: Iterable[object]) -> list[str]:
+    result: list[str] = []
+    seen: set[str] = set()
+    for value in values:
+        if pd.isna(value):
+            continue
+        for item in _split_list(str(value)):
+            if item and item.lower() != "nan" and item not in seen:
+                seen.add(item)
+                result.append(item)
+    return result
+
+
+def _translate_chapter_known_phrase(text: str) -> str:
+    translations = {
+        "Repeated daily rows and one election context limit generalisation.": (
+            "Wiederholte Tageszeilen und ein Wahlkontext begrenzen die Generalisierbarkeit"
+        ),
+        "The full state-date panel and other scopes remain counterexamples to the broad claim.": (
+            "das volle State-Date-Panel und weitere Scopes bleiben Gegenbeispiele zur breiten Behauptung"
+        ),
+        "The available evidence mixes daily rows, state outcomes, transformed polls, and source-specific scopes.": (
+            "die Evidenz mischt Tageszeilen, State-Outcomes, transformierte Poll-Signale und quellenspezifische Scopes"
+        ),
+        "Daily prices cannot identify intraday reaction timing.": (
+            "Tagespreise koennen Intraday-Reaktionstiming nicht identifizieren"
+        ),
+        "Direction and magnitude are event-window diagnostics, not intraday causal estimates.": (
+            "Richtung und Groesse sind Ereignisfensterdiagnostik, keine Intraday-Kausalschaetzung"
+        ),
+        "Observed wallet data are BUY-only and source-filtered.": (
+            "die beobachteten Walletdaten sind BUY-only und quellengefiltert"
+        ),
+        "Daily alignment, multiple testing, and BUY-only extraction limit conclusion strength.": (
+            "taegliche Ausrichtung, Mehrfachtests und BUY-only-Extraktion begrenzen die Schlussstaerke"
+        ),
+        "Signal strength is diagnostic and needs sensitivity/multiple-testing caution.": (
+            "die Signalstaerke ist diagnostisch und braucht Sensitivitaets- und Mehrfachtest-Vorsicht"
+        ),
+        "reaction speed proof": "Reaktionsgeschwindigkeitsbeweis",
+        "broad market superiority proof": "allgemeiner Marktueberlegenheitsbeweis",
+        "RCP probability claim without transformation": (
+            "RCP-Wahrscheinlichkeitsaussage ohne dokumentierte Transformation"
+        ),
+        "Polymarket is always better": "Polymarket ist immer besser",
+        "many-election proof": "Mehrwahl-Beweis",
+        "causal explanation": "kausale Erklaerung",
+        "general superiority": "allgemeine Ueberlegenheit",
+        "universal forecast dominance": "universelle Prognosedominanz",
+        "intraday speed claim": "Intraday-Geschwindigkeitsaussage",
+        "post-hoc event selection": "post-hoc Ereignisauswahl",
+        "instant market reaction": "sofortige Marktreaktion",
+        "causal event proof": "kausaler Ereignisbeweis",
+        "arbitrary whale threshold": "willkuerliche Whale-Schwelle",
+        "identified private-information wallets": "identifizierte Private-Information-Wallets",
+        "causality proof": "Kausalitaetsbeweis",
+        "private information proof": "Private-Information-Beweis",
+        "profitability proof": "Profitabilitaetsbeweis",
+        "private-information proof": "Private-Information-Beweis",
+        "causal misconduct": "kausales Fehlverhalten",
+        "tradable strategy": "handelbare Strategie",
+    }
+    return translations.get(text, text)
 
 
 def _areas_for_evidence_ids(evidence_ids: list[str]) -> list[str]:

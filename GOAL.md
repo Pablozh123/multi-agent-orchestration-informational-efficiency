@@ -121,6 +121,11 @@ acceptance_criteria:
   methods, interpretations, literature IDs, deterministic artifacts, selected
   tables, selected figures, limitations, blocked wording, and Source Review
   gates before BA drafting.
+- The thesis chapter draft integrates the H1-H2-H3 core mapping directly, so
+  each empirical chapter shows method Evidence IDs, interpretation Evidence
+  IDs, literature IDs, deterministic artifacts, selected table, selected
+  figure, limitations, blocked wording, and Source Review gate in the prose
+  draft.
 - A future agent-pipeline upgrade plan exists so later source-review,
   evidence-drafting, wording, table/figure, advisor, monitor, and bounded MCP
   improvements are documented without activating runtime agents.
@@ -128,7 +133,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: integrate h1 h2 h3 core sections into thesis draft
+next_commit: docs: prepare bounded source review notes for h1 h2 h3
 
 ## Running Side Goal
 

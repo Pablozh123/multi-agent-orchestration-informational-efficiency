@@ -9904,3 +9904,51 @@ Verification:
   -> PASS, generated 29 indexed artifacts.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 544 passed in 51.88s after the Swiss split commit.
+
+## 2026-06-12 - Integrate H1-H2-H3 core mapping into thesis draft
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Integrated the H1-H2-H3 core writing package into the generated thesis
+  chapter draft rather than leaving it only as a separate control artifact.
+- Kept agents, MCP, model routing, LLM metric calculation, raw artifact dumps,
+  wallet-address exposure, and trading paths disabled.
+
+Changes:
+
+- Updated `operations/analysis/thesis_consolidation.py` so
+  `THESIS_CHAPTER_DRAFT.md` includes a Core-Mapping block for H1, H2, and H3.
+- Each Core-Mapping block lists method Evidence IDs, interpretation Evidence
+  IDs, literature IDs, deterministic artifacts, selected table, selected
+  figure, limitations, blocked wording, and the Source Review gate.
+- Updated `tests/test_thesis_consolidation.py` to assert the core mapping is
+  present in the generated draft.
+- Regenerated `docs/research/THESIS_CHAPTER_DRAFT.md`.
+- Regenerated consolidation outputs that reflect the latest Swiss running
+  snapshot from commit `9c8b8e3`.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- H1 draft now explicitly maps to `method_h1_brier_dm`,
+  `interpretation_h1_bounded_advantage`,
+  `interpretation_h1_broad_claim_not_proven`, T2, and F1.
+- H2 draft now explicitly maps to `method_h2_event_window`,
+  `interpretation_h2_daily_response`, T3, and F2.
+- H3 draft now explicitly maps to `method_h3_wallet_tiers`,
+  `method_h3_granger_timing`, `interpretation_h3_top_tier_signal`, T4, and
+  F3.
+- Swiss side-track remains descriptive pending result; the generated
+  consolidation rows now show 33 snapshots and latest Polymarket-Yes 22.0%.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/analysis/thesis_consolidation.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_thesis_consolidation.py -q`
+  -> PASS, 15 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`
+  -> PASS, regenerated the chapter draft and consolidation artifacts.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 544 passed in 55.38s.

@@ -736,6 +736,11 @@ Current implemented consolidation:
   `docs/project/THESIS_DRAFTING_SEQUENCE.md` translate the current work plan
   and readiness gates into ten ordered BA writing steps, separating bounded
   draft work from final blockers, appendix-only material, and future work.
+- `data/results/thesis_goal_completion_audit.csv` and
+  `docs/project/THESIS_GOAL_COMPLETION_AUDIT.md` audit the active goal against
+  current evidence, achieved control artifacts, and remaining final gates
+  without claiming final completion while Source Review, Swiss result mapping,
+  or DOCX render QA remain open.
 - `data/results/thesis_consolidation_index.csv` and
   `docs/project/THESIS_CONSOLIDATION_INDEX.md` index the current
   consolidation deliverables so the Dozentenbericht, advisor checklist,

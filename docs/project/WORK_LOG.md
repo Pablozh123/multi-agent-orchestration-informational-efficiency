@@ -9491,6 +9491,50 @@ Verification:
 - `.\.venv\Scripts\python.exe -m operations.project.build_advisor_handoff_note`
   -> PASS, regenerated 6 handoff-note sections.
 
+## 2026-06-12 - Goal completion audit
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Added a deterministic audit that separates achieved thesis-consolidation
+  evidence from remaining final gates.
+- Did not mark the active goal complete because Source Review, Swiss result
+  mapping, and DOCX render QA remain open.
+
+Changes:
+
+- Added `operations/project/build_thesis_goal_completion_audit.py`.
+- Generated `data/results/thesis_goal_completion_audit.csv`.
+- Generated `docs/project/THESIS_GOAL_COMPLETION_AUDIT.md`.
+- Added `tests/test_thesis_goal_completion_audit.py`.
+- Updated `operations/project/build_thesis_consolidation_index.py`.
+- Regenerated `data/results/thesis_consolidation_index.csv`.
+- Regenerated `docs/project/THESIS_CONSOLIDATION_INDEX.md`.
+- Updated `tests/test_thesis_consolidation_index.py`.
+- Updated `GOAL.md` and `ROADMAP.md`.
+
+Key output:
+
+- Goal audit rows: 10.
+- Thesis-facing evidence audit: 8 rows, 4 method rows, 4 interpretation rows,
+  8 artifact references, and 8 source-reference rows.
+- Curated core package remains 5 tables and 4 figures.
+- Remaining final gates remain visible: manual Source Review, Swiss official
+  result mapping, and DOCX render QA.
+- Review-Access remains paused; no runtime agents, MCP, model routing, or
+  trading paths were added.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_thesis_goal_completion_audit.py operations/project/build_thesis_consolidation_index.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_thesis_goal_completion_audit.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit`
+  -> PASS, generated 10 audit rows.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 22 indexed artifacts.
+
 ## 2026-06-12 - Advisor feedback log
 
 Goal context:

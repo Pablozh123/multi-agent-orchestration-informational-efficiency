@@ -238,7 +238,15 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Trennt Draft-Arbeit von Source Review, Swiss-Gate, DOCX-Render-QA und Future-Work-Agenten.",
         ),
         _index_row(
-            artifact_id="index_21_status_and_log",
+            artifact_id="index_21_goal_completion_audit",
+            artifact_type="goal_completion_audit",
+            path="docs/project/THESIS_GOAL_COMPLETION_AUDIT.md; data/results/thesis_goal_completion_audit.csv",
+            purpose_de="Belegbarer Audit des aktiven Goals mit erreichten Punkten und offenen Gates.",
+            use_now_de="Als Stop-/Weiterarbeitskontrolle vor finalen Abschlussclaims nutzen.",
+            gate_or_limit_de="Kein Zielabschluss, solange Source Review, Swiss Resultat-Gate oder DOCX-Render-QA offen sind.",
+        ),
+        _index_row(
+            artifact_id="index_22_status_and_log",
             artifact_type="project_control",
             path="STATUS.md; docs/project/WORK_LOG.md",
             purpose_de="Automatisierter Projektstatus und append-only Arbeitslog.",
@@ -323,8 +331,8 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Projektstand, den Dozentenbericht, Source Review, Wording Guard, "
         "Advisor Handoff Package, Advisor Handoff Note, Advisor Feedback Log, "
         "Submission Readiness Board, Drafting Sequence, Execution Checklist, "
-        "Chapter Source Bindings, Source Review Execution, Agent Future-Work "
-        "Handoff, Tabellen/Figuren und "
+        "Chapter Source Bindings, Source Review Execution, Goal Completion "
+        "Audit, Agent Future-Work Handoff, Tabellen/Figuren und "
         "Future-Work-Agenten relevant sind.\n\n"
         "## Counts\n\n"
         f"- Indexed artifacts: {len(index)}\n\n"
@@ -338,7 +346,8 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Chat-Vorlage. Nutze das Feedback-Log nach der Betreuung. Nutze das "
         "Submission Readiness Board fuer die "
         "finalen Gates. Nutze die Drafting Sequence fuer die naechste "
-        "Schreibreihenfolge. Nutze danach Execution Checklist, Source "
+        "Schreibreihenfolge. Nutze das Goal Completion Audit als Stop- und "
+        "Weiterarbeitskontrolle. Nutze danach Execution Checklist, Source "
         "Worksheet, Chapter Source Bindings, Source Review Execution, Agent "
         "Future-Work Handoff, Wording Guard und Next Work Plan fuer das "
         "Schreiben. "

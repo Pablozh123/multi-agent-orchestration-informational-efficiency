@@ -1,0 +1,394 @@
+"""Build a goal-completion and remaining-gates audit for thesis consolidation."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Sequence
+
+import pandas as pd
+
+
+DEFAULT_REPO_ROOT = Path(".")
+DEFAULT_RESULTS_DIR = Path("data/results")
+DEFAULT_DOCS_DIR = Path("docs/project")
+
+AUDIT_OUTPUT = "thesis_goal_completion_audit.csv"
+AUDIT_DOC_OUTPUT = "THESIS_GOAL_COMPLETION_AUDIT.md"
+
+AUDIT_COLUMNS: tuple[str, ...] = (
+    "audit_id",
+    "goal_requirement_de",
+    "current_status",
+    "evidence_artifacts",
+    "key_evidence_de",
+    "remaining_gap_de",
+    "next_action_de",
+)
+
+
+@dataclass(frozen=True)
+class GoalCompletionAuditResult:
+    """Generated audit paths and counts."""
+
+    audit_path: Path
+    docs_path: Path
+    audit_rows: int
+
+    def to_dict(self) -> dict[str, str | int]:
+        return {
+            "audit_path": str(self.audit_path),
+            "docs_path": str(self.docs_path),
+            "audit_rows": self.audit_rows,
+        }
+
+
+def generate_goal_completion_audit(
+    *,
+    repo_root: Path = DEFAULT_REPO_ROOT,
+    results_dir: Path = DEFAULT_RESULTS_DIR,
+    docs_dir: Path = DEFAULT_DOCS_DIR,
+) -> GoalCompletionAuditResult:
+    """Generate the goal-completion audit CSV and Markdown."""
+
+    repo_root = Path(repo_root)
+    results_dir = _resolve_under(repo_root, results_dir)
+    docs_dir = _resolve_under(repo_root, docs_dir)
+
+    evidence_map = _read_csv(results_dir / "thesis_evidence_map.csv")
+    curated_package = _read_csv(results_dir / "thesis_curated_result_package.csv")
+    readiness = _read_csv(results_dir / "thesis_submission_readiness_board.csv")
+    drafting = _read_csv(results_dir / "thesis_drafting_sequence.csv")
+    handoff_package = _read_csv(results_dir / "thesis_advisor_handoff_package.csv")
+    handoff_note = _read_csv(results_dir / "thesis_advisor_handoff_note.csv")
+    feedback_log = _read_csv(results_dir / "thesis_advisor_feedback_log_template.csv")
+
+    audit = build_goal_completion_audit(
+        evidence_map=evidence_map,
+        curated_package=curated_package,
+        readiness=readiness,
+        drafting=drafting,
+        handoff_package=handoff_package,
+        handoff_note=handoff_note,
+        feedback_log=feedback_log,
+    )
+    _validate_audit(audit, repo_root=repo_root)
+
+    results_dir.mkdir(parents=True, exist_ok=True)
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    audit_path = results_dir / AUDIT_OUTPUT
+    docs_path = docs_dir / AUDIT_DOC_OUTPUT
+    audit.to_csv(audit_path, index=False)
+    docs_path.write_text(_render_audit_doc(audit), encoding="utf-8")
+
+    return GoalCompletionAuditResult(
+        audit_path=audit_path,
+        docs_path=docs_path,
+        audit_rows=len(audit),
+    )
+
+
+def build_goal_completion_audit(
+    *,
+    evidence_map: pd.DataFrame,
+    curated_package: pd.DataFrame,
+    readiness: pd.DataFrame,
+    drafting: pd.DataFrame,
+    handoff_package: pd.DataFrame,
+    handoff_note: pd.DataFrame,
+    feedback_log: pd.DataFrame,
+) -> pd.DataFrame:
+    """Return a bounded audit of current goal evidence and remaining gates."""
+
+    _require_columns(
+        evidence_map,
+        ("item_type", "thesis_readiness", "primary_artifact", "literature_sources"),
+        "evidence map",
+    )
+    _require_columns(
+        curated_package,
+        ("package_type", "include_in_core_package", "thesis_readiness"),
+        "curated package",
+    )
+    _require_columns(readiness, ("gate_area", "current_status"), "submission readiness")
+    _require_columns(drafting, ("draft_permission", "sequence_id"), "drafting sequence")
+    _require_columns(handoff_package, ("deliverable_id", "path"), "handoff package")
+    _require_columns(handoff_note, ("section_id",), "handoff note")
+    _require_columns(feedback_log, ("feedback_id", "advisor_feedback_status"), "feedback log")
+
+    thesis_facing = evidence_map[evidence_map["thesis_readiness"] == "thesis_facing_ready"]
+    method_rows = int((thesis_facing["item_type"] == "method").sum())
+    interpretation_rows = int((thesis_facing["item_type"] == "interpretation").sum())
+    artifact_rows = int(thesis_facing["primary_artifact"].astype(str).str.len().gt(0).sum())
+    source_rows = int(thesis_facing["literature_sources"].astype(str).str.len().gt(0).sum())
+    core_package = curated_package[curated_package["include_in_core_package"].astype(bool)]
+    core_tables = int((core_package["package_type"] == "table").sum())
+    core_figures = int((core_package["package_type"] == "figure").sum())
+    final_blocked = int(
+        readiness["current_status"].astype(str).str.startswith("final_blocked").sum()
+    )
+    write_now = int((drafting["draft_permission"] == "write_now_bounded").sum())
+    future_only = int((drafting["draft_permission"] == "future_work_only").sum())
+    feedback_pending = int(
+        (feedback_log["advisor_feedback_status"] == "pending_advisor_feedback").sum()
+    )
+
+    rows = [
+        _audit_row(
+            audit_id="goal_audit_01_active_goal",
+            goal_requirement_de="Genau ein aktives Konsolidierungsziel bleibt fuehrend.",
+            current_status="proved_current_artifact",
+            evidence_artifacts="GOAL.md",
+            key_evidence_de="GOAL.md fuehrt goal-thesis-consolidation-001 als einziges aktives Ziel.",
+            remaining_gap_de="Kein fachlicher Gap; Ziel bleibt aktiv, weil finale Gates offen sind.",
+            next_action_de="Weiter nur im Phase-12-Scope arbeiten.",
+        ),
+        _audit_row(
+            audit_id="goal_audit_02_evidence_map",
+            goal_requirement_de="Methoden und Interpretationen sind auf Artefakte und Quellen gemappt.",
+            current_status="draft_ready_final_source_review_pending",
+            evidence_artifacts="data/results/thesis_evidence_map.csv; data/results/thesis_citation_readiness.csv",
+            key_evidence_de=(
+                f"Thesis-facing Evidence: {len(thesis_facing)} Zeilen; "
+                f"Methoden: {method_rows}; Interpretationen: {interpretation_rows}; "
+                f"Artefaktverweise: {artifact_rows}; Quellenverweise: {source_rows}."
+            ),
+            remaining_gap_de="Finale Zitationsreife bleibt vom manuellen Source Review abhaengig.",
+            next_action_de="Priority-1-Quellen mit Seiten- oder Abschnittsnotizen pruefen.",
+        ),
+        _audit_row(
+            audit_id="goal_audit_03_curated_package",
+            goal_requirement_de="Ergebnisdarstellung nutzt wenige starke Tabellen und Figuren.",
+            current_status="proved_current_artifact",
+            evidence_artifacts="data/results/thesis_curated_result_package.csv; data/results/thesis_table_figure_captions.csv",
+            key_evidence_de=f"Kernpaket: {core_tables} Tabellen und {core_figures} Figuren.",
+            remaining_gap_de="Finale Nummerierung und Layout folgen erst im Thesis-Dokument.",
+            next_action_de="Tabellen/Figuren in H1-H3 Kapitel integrieren.",
+        ),
+        _audit_row(
+            audit_id="goal_audit_04_readiness_labels",
+            goal_requirement_de="Outputs sind thesis-facing, descriptive, blocked oder future-only markiert.",
+            current_status="proved_current_artifact",
+            evidence_artifacts="data/results/thesis_submission_readiness_board.csv; data/results/thesis_drafting_sequence.csv",
+            key_evidence_de=(
+                f"Readiness Gates: {len(readiness)}; final blockiert: {final_blocked}; "
+                f"write-now Schritte: {write_now}; future-only Schritte: {future_only}."
+            ),
+            remaining_gap_de="Final blockierte Gates muessen sichtbar bleiben.",
+            next_action_de="Draft schreiben, aber Source Review, Swiss-Gate und Render-QA nicht ueberspringen.",
+        ),
+        _audit_row(
+            audit_id="goal_audit_05_h1_h2_h3_boundaries",
+            goal_requirement_de="H1-H2-H3 Interpretationen bleiben an deterministische Outputs gebunden.",
+            current_status="proved_current_artifact",
+            evidence_artifacts="data/results/thesis_core_results_table.csv; docs/research/THESIS_WORDING_GUARD.md",
+            key_evidence_de="Wording Guard blockiert Universal-, Intraday-, Kausalitaets-, Private-Information- und Profitabilitaetsclaims.",
+            remaining_gap_de="Finale Formulierungen muessen beim Schreiben gegen den Wording Guard geprueft werden.",
+            next_action_de="H1-H3 Kapitel mit Evidence IDs und Limitationen schreiben.",
+        ),
+        _audit_row(
+            audit_id="goal_audit_06_swiss_gate",
+            goal_requirement_de="Swiss Referendum bleibt bis zum offiziellen Resultat beschreibend.",
+            current_status="final_blocked_official_result",
+            evidence_artifacts="data/results/swiss_referendum_10mio_latest_source_comparison.csv; docs/research/THESIS_PROJECT_HIGHLEVEL_VIEW.md",
+            key_evidence_de="Swiss ist als descriptive_pending_result markiert.",
+            remaining_gap_de="Offizielles Resultat vom 14. Juni 2026 und Post-Resultat-Mapping fehlen.",
+            next_action_de="Nach offiziellem Resultat Swiss-Artefakte neu generieren und Wording pruefen.",
+        ),
+        _audit_row(
+            audit_id="goal_audit_07_monitor_boundary",
+            goal_requirement_de="Monitor bleibt Prototype/Appendix, solange Human Review fehlt.",
+            current_status="appendix_only_pending_human_review",
+            evidence_artifacts="data/results/monitor_anomaly_review_summary.csv; data/results/thesis_project_highlevel_view.csv",
+            key_evidence_de="Monitor Review-Access bleibt pausiert und thesis-facing Alert-Evidenz ist blockiert.",
+            remaining_gap_de="Human Source Review der Monitor-Cases fehlt.",
+            next_action_de="Monitor hoechstens als read-only Prototype und Review Workflow erwaehnen.",
+        ),
+        _audit_row(
+            audit_id="goal_audit_08_future_agents",
+            goal_requirement_de="Agentenpipeline ist nur Highlevel-Future-Work.",
+            current_status="deferred_future_work_only",
+            evidence_artifacts="data/results/thesis_agent_assistance_protocol.csv; docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md",
+            key_evidence_de="Agenten sind documentation-only; llm_audit_log, bounded prompts und Tests bleiben Vorbedingungen.",
+            remaining_gap_de="Keine Aktivierung im aktuellen Goal erlaubt.",
+            next_action_de="Nur Future-Work-Abschnitt schreiben, keine Runtime-Agenten implementieren.",
+        ),
+        _audit_row(
+            audit_id="goal_audit_09_advisor_package",
+            goal_requirement_de="Dozentenpaket, Uebergabetext, Checklist und Feedbacklog sind vorhanden.",
+            current_status="proved_current_artifact",
+            evidence_artifacts="data/results/thesis_advisor_handoff_package.csv; docs/project/DOZENTEN_UEBERGABE_TEXT.md; docs/project/DOZENTEN_ABSPRACHE_CHECKLIST.md; docs/project/DOZENTEN_FEEDBACK_LOG.md",
+            key_evidence_de=(
+                f"Handoff Package: {len(handoff_package)} Dateien; "
+                f"Handoff Note: {len(handoff_note)} Abschnitte; "
+                f"Feedback pending: {feedback_pending} Zeilen."
+            ),
+            remaining_gap_de="Echtes Dozentenfeedback fehlt noch.",
+            next_action_de="Nach Betreuung Feedback in DOZENTEN_FEEDBACK_LOG eintragen.",
+        ),
+        _audit_row(
+            audit_id="goal_audit_10_final_qa",
+            goal_requirement_de="Projektchecks, Status und Work Log bleiben vor Stopp aktuell.",
+            current_status="project_control_ready",
+            evidence_artifacts="STATUS.md; docs/project/WORK_LOG.md",
+            key_evidence_de="Status, Review-Check und Work Log werden vor jedem Commit aktualisiert.",
+            remaining_gap_de="DOCX-Render-QA bleibt lokal blockiert, solange LibreOffice/soffice fehlt.",
+            next_action_de="Vor finalem Export Tests, review_check, Source Review, Swiss-Spelling und DOCX-Render-QA wiederholen.",
+        ),
+    ]
+    return pd.DataFrame(rows, columns=AUDIT_COLUMNS)
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """CLI entry point."""
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--repo-root", type=Path, default=DEFAULT_REPO_ROOT)
+    parser.add_argument("--results-dir", type=Path, default=DEFAULT_RESULTS_DIR)
+    parser.add_argument("--docs-dir", type=Path, default=DEFAULT_DOCS_DIR)
+    args = parser.parse_args(argv)
+
+    try:
+        result = generate_goal_completion_audit(
+            repo_root=args.repo_root,
+            results_dir=args.results_dir,
+            docs_dir=args.docs_dir,
+        )
+    except (FileNotFoundError, ValueError, KeyError) as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 2
+
+    print(json.dumps(result.to_dict(), indent=2, sort_keys=True))
+    return 0
+
+
+def _audit_row(
+    *,
+    audit_id: str,
+    goal_requirement_de: str,
+    current_status: str,
+    evidence_artifacts: str,
+    key_evidence_de: str,
+    remaining_gap_de: str,
+    next_action_de: str,
+) -> dict[str, object]:
+    return {
+        "audit_id": audit_id,
+        "goal_requirement_de": goal_requirement_de,
+        "current_status": current_status,
+        "evidence_artifacts": evidence_artifacts,
+        "key_evidence_de": key_evidence_de,
+        "remaining_gap_de": remaining_gap_de,
+        "next_action_de": next_action_de,
+    }
+
+
+def _validate_audit(audit: pd.DataFrame, *, repo_root: Path) -> None:
+    _require_columns(audit, AUDIT_COLUMNS, "goal completion audit")
+    if audit["audit_id"].duplicated().any():
+        raise ValueError("Goal completion audit contains duplicate audit_id values.")
+    if len(audit) != 10:
+        raise ValueError("Goal completion audit must contain exactly 10 rows.")
+    for column in (
+        "goal_requirement_de",
+        "current_status",
+        "evidence_artifacts",
+        "key_evidence_de",
+        "remaining_gap_de",
+        "next_action_de",
+    ):
+        if audit[column].astype(str).str.len().eq(0).any():
+            raise ValueError(f"Goal completion audit contains empty {column}.")
+    for artifacts in audit["evidence_artifacts"].astype(str):
+        for artifact in _split_semicolon(artifacts):
+            if not (repo_root / artifact).exists():
+                raise FileNotFoundError(f"Goal completion audit artifact missing: {artifact}")
+    joined = "\n".join(audit.astype(str).agg(" ".join, axis=1).tolist())
+    if chr(223) in joined:
+        raise ValueError("Goal completion audit must use Swiss spelling without sharp-s.")
+    lower_joined = joined.lower()
+    required_terms = (
+        "final_blocked_official_result",
+        "finale zitation",
+        "soffice",
+        "review-access bleibt pausiert",
+        "runtime-agenten",
+        "llm_audit_log",
+    )
+    missing = [term for term in required_terms if term not in lower_joined]
+    if missing:
+        raise ValueError("Goal completion audit missing required terms: " + ", ".join(missing))
+
+
+def _render_audit_doc(audit: pd.DataFrame) -> str:
+    status_counts = audit["current_status"].value_counts().to_dict()
+    return (
+        "# Thesis Goal Completion Audit\n\n"
+        "Dieses Audit prueft den aktuellen Stand des aktiven "
+        "Konsolidierungsziels gegen belegbare Artefakte. Es ist kein neues "
+        "empirisches Resultat und behauptet keine finale Zielerreichung, solange "
+        "Source Review, Swiss Resultat-Gate oder DOCX-Render-QA offen sind.\n\n"
+        "## Counts\n\n"
+        f"- Audit rows: {len(audit)}\n"
+        f"- Proved current artifacts: {int(status_counts.get('proved_current_artifact', 0))}\n"
+        f"- Final blocked official result: {int(status_counts.get('final_blocked_official_result', 0))}\n"
+        f"- Deferred future work: {int(status_counts.get('deferred_future_work_only', 0))}\n\n"
+        "## Audit Rows\n\n"
+        + _markdown_table(audit)
+        + "\n\n"
+        "## Use Rule\n\n"
+        "Nutze dieses Audit als Stop-/Weiterarbeitskontrolle. Es darf nicht "
+        "genutzt werden, um Source Review, Swiss Resultat-Gate, DOCX-Render-QA, "
+        "Review-Access, Runtime-Agenten, MCP, Model Routing oder Trading-Pfade "
+        "zu ueberspringen.\n"
+    )
+
+
+def _read_csv(path: Path) -> pd.DataFrame:
+    if not path.exists():
+        raise FileNotFoundError(f"Required goal completion audit input missing: {path}")
+    return pd.read_csv(path)
+
+
+def _resolve_under(repo_root: Path, path: Path) -> Path:
+    if path.is_absolute():
+        return path
+    return repo_root / path
+
+
+def _require_columns(frame: pd.DataFrame, columns: Sequence[str], name: str) -> None:
+    missing = [column for column in columns if column not in frame.columns]
+    if missing:
+        raise ValueError(f"{name} missing required columns: {missing}")
+
+
+def _split_semicolon(value: str) -> list[str]:
+    if value.lower() == "nan":
+        return []
+    return [item.strip() for item in value.split(";") if item.strip()]
+
+
+def _markdown_table(frame: pd.DataFrame) -> str:
+    columns = [str(column) for column in frame.columns]
+    header = "| " + " | ".join(_escape_markdown_cell(column) for column in columns) + " |"
+    separator = "| " + " | ".join("---" for _ in columns) + " |"
+    rows = []
+    for record in frame.to_dict(orient="records"):
+        rows.append(
+            "| "
+            + " | ".join(_escape_markdown_cell(record.get(column, "")) for column in columns)
+            + " |"
+        )
+    return "\n".join([header, separator, *rows])
+
+
+def _escape_markdown_cell(value: object) -> str:
+    text = str(value).replace("\n", " ").strip()
+    return text.replace("|", "\\|")
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

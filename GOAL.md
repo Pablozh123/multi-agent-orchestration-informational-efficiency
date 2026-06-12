@@ -101,11 +101,13 @@ acceptance_criteria:
   table/figure integration, Swiss result gate, and final QA.
 - The advisor checklist contains a recommended discussion order for the next
   Betreuung so the high-level path can be discussed quickly.
+- A goal-completion audit exists so achieved evidence and remaining final
+  gates are separated before any completion claim.
 - Tests cover the generated evidence map and curated result package where
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: update advisor handoff note order
+next_commit: docs: add goal completion audit
 
 ## Running Side Goal
 

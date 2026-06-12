@@ -91,6 +91,11 @@ acceptance_criteria:
   bounded draft work, final blockers, appendix-only content, and future work.
 - The advisor report contains the current submission-readiness and drafting
   sequence view so the high-level next steps are visible in the Word update.
+- The advisor report includes the bounded H1-H2-H3 chapter draft view so the
+  Word update shows the 18 prose blocks, method and interpretation mapping,
+  literature/source gates, deterministic artifacts, compact table/figure
+  package, limitations, and final blockers without claiming Source Review
+  completion.
 - A short advisor handoff note exists so the Word update can be sent with a
   clear subject, attachment order, discussion-order pointer, questions, and
   scope boundaries.
@@ -164,7 +169,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: integrate bounded h1 h2 h3 draft into advisor report
+next_commit: docs: prepare advisor feedback integration checklist
 
 ## Running Side Goal
 

@@ -712,6 +712,11 @@ Current implemented consolidation:
   Gates` plus `Schreibsequenz fuer den naechsten Entwurf`, so the advisor can
   see draft-ready steps, final blockers, and the next ordered BA writing
   sequence directly in the Word update.
+- The Dozentenbericht now includes `Bounded H1-H2-H3 Kapitelentwurf`, a
+  compact advisor view over 18 ordered prose blocks: six each for H1, H2, and
+  H3; 18 bounded-draft-ready rows; 0 final-submission-ready rows; linked
+  method/interpretation IDs, literature IDs, deterministic artifacts, selected
+  table/figure IDs, limitations, blocked wording, and Source Review gates.
 - The Dozentenbericht now includes a `Projektmatrix fuer die naechste
   Abstimmung` section generated from `thesis_project_highlevel_view.csv`, so
   the advisor can see status, decision, and next gate for each project layer.

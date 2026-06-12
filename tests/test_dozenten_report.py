@@ -60,6 +60,14 @@ def test_build_dozenten_report_outputs_readable_artifacts(tmp_path):
     assert "draft_01_01_source_review" in html_text
     assert "draft_10_10_final_qa" in html_text
     assert "Future-work-only: 1" in html_text
+    assert "Bounded H1-H2-H3 Kapitelentwurf" in html_text
+    assert "18 geordnete Prosa-Bausteine" in html_text
+    assert "Bounded-draft-ready: 18" in html_text
+    assert "final-submission-ready: 0" in html_text
+    assert "method_h1_brier_dm" in html_text
+    assert "interpretation_h3_top_tier_signal" in html_text
+    assert "T2 / F1" in html_text
+    assert "keine Rohartefakt-Dumps" in html_text
     assert "Dozentenpaket und Uebergabereihenfolge" in html_text
     assert "advisor_handoff_note" in html_text
     assert "DOZENTEN_UEBERGABE_TEXT.md" in html_text

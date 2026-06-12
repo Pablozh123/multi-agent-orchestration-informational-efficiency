@@ -1,6 +1,6 @@
 # Dozentenbericht zur Bachelorarbeit
 
-Erstellt: 2026-06-12T04:12:10+00:00
+Erstellt: 2026-06-12T07:58:40+00:00
 
 **Arbeitstitel:** Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen.
 
@@ -111,6 +111,19 @@ Die Drafting Sequence ordnet 10 Schritte vom Quellenreview bis zur finalen QA. E
 | 9 | project_management | advisor_discussion_now | Ask the advisor to approve the bounded H1 wording, source-review depth, Swiss placement, and appendix scope. Gate-Aktion: Dozentenbericht und Absprache-Checklist zuerst verwenden. | Keinen Scope-Ausbau starten, bevor der H1-H2-H3-Kern geschrieben und abgestimmt ist. |
 | 10 | whole_thesis | qa_after_draft | Run full tests, review checks, citation checks, table/figure checks, and Swiss spelling scan before export. Gate-Aktion: Nach Draft: Tests, review_check, citation review, spelling scan und DOCX render gate wiederholen. | Keine finale Abgabebereitschaft behaupten, solange Source Review, Swiss-Gate oder DOCX-Render-QA offen sind. |
 
+## Bounded H1-H2-H3 Kapitelentwurf
+
+Der neue H1-H2-H3 Bounded Chapter Draft liefert 18 geordnete Prosa-Bausteine: 6 je H1, H2 und H3. Bounded-draft-ready: 18; final-submission-ready: 0.
+Der Dozent sieht damit direkt, dass jede empirische Methode und jede Interpretation eine Evidence-ID, Literatur-IDs, deterministische Artefakte, ein kuratiertes Tabellen-/Figurenpaar, Limitationen und ein Source-Review-Gate hat.
+
+| Kapitel | Methoden | Interpretationen | Literatur/Artefakte | Tabelle/Figur | Gate |
+| --- | --- | --- | --- | --- | --- |
+| H1 | `method_h1_brier_dm` | `interpretation_h1_bounded_advantage; interpretation_h1_broad_claim_not_proven` | Literatur `lit_brier_001; lit_dm_001; lit_emh_001; zotero_poly_002`; Artefakte `data/results/thesis_h1_summary.csv; data/results/h1_poll_claim_readiness_summary.csv; plus 7 weitere`. | T2 / F1 | H1: 10 Source-Review-Zeilen im Ledger; 10 pending; 0 final-ready. |
+| H2 | `method_h2_event_window` | `interpretation_h2_daily_response` | Literatur `lit_eventstudy_001; lit_emh_001; zotero_poly_001`; Artefakte `data/results/h2_event_window_summary.csv; data/events_timeline_seed.csv; plus 3 weitere`. | T3 / F2 | H2: 5 Source-Review-Zeilen im Ledger; 5 pending; 0 final-ready. |
+| H3 | `method_h3_wallet_tiers; method_h3_granger_timing` | `interpretation_h3_top_tier_signal` | Literatur `zotero_poly_001; zotero_poly_005; zotero_poly_007; lit_granger_001`; Artefakte `data/results/h3_wallet_distribution_inventory.json; data/results/h3_granger_results.csv; plus 5 weitere`. | T4 / F3 | H3: 8 Source-Review-Zeilen im Ledger; 8 pending; 0 final-ready. |
+
+Diese Sektion ist eine Schreibvorlage, kein finaler Zitations- oder Abgabeclaim. Keine neuen Kennzahlen, keine Rohartefakt-Dumps, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.
+
 ## Naechste Arbeitsschritte
 
 Der Next-Work-Plan ordnet 10 Workstreams. Erste Prioritaet ist `work_01_source_review`, letzte QA-Prioritaet ist `work_10_final_qa`.
@@ -192,7 +205,7 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 | H2 Event-Windows | Polymarket bewegt sich um mehrere kuratierte politische Ereignisse sichtbar in der Tagesauflosung. | 7 kuratierte Ereignisse; groesstes Primaerfenster nach Betrag: 07_13_trump_shooting +7.2 Prozentpunkte. | Das stuetzt eine These, dass oeffentliche Ereignisse in den Marktpreisen sichtbar werden koennen. | Taegliche Daten zeigen Reaktionsrichtung und Groessenordnung, aber keine intraday Reaktionsgeschwindigkeit. |
 | H3 Wallet-Timing | Top-Wallet-Tier-Aktivitaet zeigt eine messbare, aber vorsichtig zu formulierende Timing-Struktur. | 1216 alignierte Modellzeilen; staerkste Korrelation tier_1_top_1pct lag 1 = 0.1858; kleinster Granger-p-Wert 0.0012. | Das ist als Vorhersage-/Timingdiagnostik verwendbar und motiviert weitere Sensitivitaetschecks. | BUY-only Quelle, Tagesaggregation und Multiple-Testing-Risiko begrenzen die Aussage. |
 | Monitor und Review-Queue | Der Monitor hat die richtige Rolle als Kontroll- und Review-Infrastruktur, nicht als Ergebnisgenerator fuer starke Claims. | 3 aktuelle Review-Cases, davon 1 high und 2 medium; Status source_check_pending=3. | Die Review-Queue ist methodisch wichtig, weil sie auffaellige Faelle von thesis-faehiger Evidenz trennt. | Die Queue ist kein Nachweis fuer Ursachen, Regelverstoss, Handelbarkeit, Profitabilitaet oder zukuenftige Entwicklung. |
-| Swiss-Referendum Side-Track | Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen. | 7 Umfragen, 31 Polymarket-Snapshots; latest Polymarket Yes 21.5%, latest poll Yes 45.0%, raw gap -23.5 pp. | Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen. | Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung. |
+| Swiss-Referendum Side-Track | Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen. | 7 Umfragen, 34 Polymarket-Snapshots; latest Polymarket Yes 22.0%, latest poll Yes 45.0%, raw gap -23.0 pp. | Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen. | Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung. |
 
 ## Warum dieses Vorgehen methodisch sinnvoll ist
 
@@ -207,10 +220,10 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Projektstruktur
 
 - SQLite-Datenbank: 9 Tabellen.
-- Ergebnisartefakte: 335 Dateien unter `data/results`.
+- Ergebnisartefakte: 352 Dateien unter `data/results`.
 - Analyse-Module: 78 Dateien.
 - Collector-Module: 10 Dateien.
-- Tests: 108 Testdateien; letzter Status: 529 passed in 50.31s.
+- Tests: 123 Testdateien; letzter Status: 562 passed in 51.69s.
 
 ## H1 - Forecast-Qualitaet
 
@@ -288,12 +301,12 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Schweizer Referendum
 
 - Kuratierte Umfragen: 7.
-- Polymarket snapshots: 31.
+- Polymarket snapshots: 34.
 - Bounded price-history rows: 504.
-- Latest Polymarket Yes: 21.5 Prozent.
+- Latest Polymarket Yes: 22.0 Prozent.
 - Latest matched poll Yes: 45.0 Prozent.
-- Raw gap: -23.5 Prozentpunkte.
-- Decided-voter gap: -24.9 Prozentpunkte.
+- Raw gap: -23.0 Prozentpunkte.
+- Decided-voter gap: -24.4 Prozentpunkte.
 
 ## Abbildungen
 

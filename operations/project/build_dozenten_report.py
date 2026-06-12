@@ -220,6 +220,9 @@ def collect_report_data() -> dict[str, Any]:
         "data/results/thesis_submission_readiness_board.csv"
     )
     thesis_drafting_sequence = _read_csv("data/results/thesis_drafting_sequence.csv")
+    thesis_h1_h2_h3_bounded_chapter_draft = _read_csv(
+        "data/results/thesis_h1_h2_h3_bounded_chapter_draft.csv"
+    )
 
     return {
         "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
@@ -290,6 +293,9 @@ def collect_report_data() -> dict[str, Any]:
             thesis_submission_readiness
         ),
         "drafting_sequence": _drafting_sequence_report_data(thesis_drafting_sequence),
+        "bounded_chapter_draft": _bounded_chapter_draft_report_data(
+            thesis_h1_h2_h3_bounded_chapter_draft
+        ),
         "source_counts": {
             "curated_events": len(event_seed),
             "literature_rows": len(literature),
@@ -316,6 +322,8 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
     advisor_handoff = data["advisor_handoff"]
     submission_readiness = data["submission_readiness"]
     drafting_sequence = data["drafting_sequence"]
+    bounded_chapter_draft = data["bounded_chapter_draft"]
+    bounded_chapter_draft = data["bounded_chapter_draft"]
     db = data["project"]["database"]
     folders = data["project"]["folder_inventory"]
     insight_rows = [
@@ -408,6 +416,16 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
     for row in drafting_sequence["rows"]:
         drafting_rows.append(
             "| {priority_order} | {thesis_section} | {draft_permission} | {writing_action_de} | {must_not_claim_de} |".format(
+                **{key: str(value).replace("|", ",") for key, value in row.items()}
+            )
+        )
+    bounded_chapter_rows = [
+        "| Kapitel | Methoden | Interpretationen | Literatur/Artefakte | Tabelle/Figur | Gate |",
+        "| --- | --- | --- | --- | --- | --- |",
+    ]
+    for row in bounded_chapter_draft["chapter_rows"]:
+        bounded_chapter_rows.append(
+            "| {thesis_area} | `{method_evidence_ids}` | `{interpretation_evidence_ids}` | {literature_artifact_summary_de} | {table_figure_de} | {source_review_gate_summary_de} |".format(
                 **{key: str(value).replace("|", ",") for key, value in row.items()}
             )
         )
@@ -528,6 +546,30 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
         ),
         "",
         *drafting_rows,
+        "",
+        "## Bounded H1-H2-H3 Kapitelentwurf",
+        "",
+        (
+            f"Der neue H1-H2-H3 Bounded Chapter Draft liefert "
+            f"{bounded_chapter_draft['row_count']} geordnete Prosa-Bausteine: "
+            f"{bounded_chapter_draft['rows_per_chapter']} je H1, H2 und H3. "
+            f"Bounded-draft-ready: {bounded_chapter_draft['bounded_ready_count']}; "
+            f"final-submission-ready: {bounded_chapter_draft['final_ready_count']}."
+        ),
+        (
+            "Der Dozent sieht damit direkt, dass jede empirische Methode und "
+            "jede Interpretation eine Evidence-ID, Literatur-IDs, "
+            "deterministische Artefakte, ein kuratiertes Tabellen-/Figurenpaar, "
+            "Limitationen und ein Source-Review-Gate hat."
+        ),
+        "",
+        *bounded_chapter_rows,
+        "",
+        (
+            "Diese Sektion ist eine Schreibvorlage, kein finaler Zitations- "
+            "oder Abgabeclaim. Keine neuen Kennzahlen, keine Rohartefakt-Dumps, "
+            "keine Quellenstatus-Hochstufung und keine Runtime-Agenten."
+        ),
         "",
         "## Naechste Arbeitsschritte",
         "",
@@ -1220,6 +1262,7 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
     advisor_handoff = data["advisor_handoff"]
     submission_readiness = data["submission_readiness"]
     drafting_sequence = data["drafting_sequence"]
+    bounded_chapter_draft = data["bounded_chapter_draft"]
     figures = "\n".join(
         _figure_html(figure, html_output=html_output)
         for figure in data["figures"]
@@ -1319,6 +1362,17 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
         "</tr>"
         for row in drafting_sequence["rows"]
     )
+    bounded_chapter_rows = "\n".join(
+        "<tr>"
+        f"<td>{escape(row['thesis_area'])}</td>"
+        f"<td><code>{escape(row['method_evidence_ids'])}</code></td>"
+        f"<td><code>{escape(row['interpretation_evidence_ids'])}</code></td>"
+        f"<td>{escape(row['literature_artifact_summary_de'])}</td>"
+        f"<td>{escape(row['table_figure_de'])}</td>"
+        f"<td>{escape(row['source_review_gate_summary_de'])}</td>"
+        "</tr>"
+        for row in bounded_chapter_draft["chapter_rows"]
+    )
     h2_rows = "\n".join(
         f"<tr><td>{escape(row['event'])}</td><td>{row['change_pp']:+.1f} pp</td></tr>"
         for row in h2["primary_examples"]
@@ -1397,6 +1451,12 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
   <h2>Schreibsequenz fuer den naechsten Entwurf</h2>
   <p>Die Drafting Sequence ordnet {drafting_sequence['row_count']} Schritte vom Quellenreview bis zur finalen QA. Erste Sequenz ist <code>{escape(drafting_sequence['first_step'])}</code>, letzte Sequenz ist <code>{escape(drafting_sequence['final_step'])}</code>. Bounded write-now: {drafting_sequence['bounded_write_now_count']}; final blockiert: {drafting_sequence['final_blocked_count']}; Future-work-only: {drafting_sequence['future_work_only_count']}.</p>
   <table><tr><th>Prioritaet</th><th>Thesis-Abschnitt</th><th>Erlaubnis</th><th>Schreibaktion</th><th>Nicht behaupten</th></tr>{drafting_rows}</table>
+
+  <h2>Bounded H1-H2-H3 Kapitelentwurf</h2>
+  <p>Der H1-H2-H3 Bounded Chapter Draft liefert {bounded_chapter_draft['row_count']} geordnete Prosa-Bausteine: {bounded_chapter_draft['rows_per_chapter']} je H1, H2 und H3. Bounded-draft-ready: {bounded_chapter_draft['bounded_ready_count']}; final-submission-ready: {bounded_chapter_draft['final_ready_count']}.</p>
+  <p>Jede empirische Methode und jede Interpretation bleibt an Evidence-IDs, Literatur-IDs, deterministische Artefakte, kuratierte Tabellen/Figuren, Limitationen und Source-Review-Gates gebunden.</p>
+  <table><tr><th>Kapitel</th><th>Methoden</th><th>Interpretationen</th><th>Literatur/Artefakte</th><th>Tabelle/Figur</th><th>Gate</th></tr>{bounded_chapter_rows}</table>
+  <p class="small">Schreibvorlage, kein finaler Zitations- oder Abgabeclaim: keine neuen Kennzahlen, keine Rohartefakt-Dumps, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.</p>
 
   <h2>Naechste Arbeitsschritte</h2>
   <p>Der Next-Work-Plan ordnet {next_work['row_count']} Workstreams. Erste Prioritaet ist <code>{escape(next_work['first_workstream'])}</code>, letzte QA-Prioritaet ist <code>{escape(next_work['final_workstream'])}</code>.</p>
@@ -1524,6 +1584,7 @@ def write_docx(data: dict[str, Any], output_path: Path) -> None:
     _add_project_highlevel_matrix_section(doc, data["project_highlevel"])
     _add_submission_readiness_section(doc, data["submission_readiness"])
     _add_drafting_sequence_section(doc, data["drafting_sequence"])
+    _add_bounded_chapter_draft_section(doc, data["bounded_chapter_draft"])
     _add_next_work_section(doc, data["next_work"])
     _add_execution_checklist_section(doc, data["execution_checklist"])
     _add_research_design_section(doc, data)
@@ -1962,6 +2023,87 @@ def _drafting_sequence_report_data(sequence: pd.DataFrame) -> dict[str, Any]:
         ),
         "rows": rows,
     }
+
+
+def _bounded_chapter_draft_report_data(draft: pd.DataFrame) -> dict[str, Any]:
+    """Translate H1-H2-H3 bounded chapter draft rows into advisor-facing rows."""
+
+    required_columns = {
+        "thesis_area",
+        "draft_order",
+        "draft_step",
+        "method_evidence_ids",
+        "interpretation_evidence_ids",
+        "literature_source_ids",
+        "deterministic_artifacts",
+        "selected_tables",
+        "selected_figures",
+        "source_review_gate_de",
+        "ready_for_bounded_draft",
+        "ready_for_final_submission",
+    }
+    missing = sorted(required_columns.difference(draft.columns))
+    if missing:
+        raise ValueError(f"H1-H2-H3 bounded chapter draft missing required columns: {missing}")
+
+    ordered = draft.sort_values(["thesis_area", "draft_order"])
+    rows = ordered.to_dict(orient="records")
+    chapter_rows: list[dict[str, Any]] = []
+    for area in ("H1", "H2", "H3"):
+        area_rows = [row for row in rows if str(row["thesis_area"]) == area]
+        if not area_rows:
+            raise ValueError(f"H1-H2-H3 bounded chapter draft missing area: {area}")
+        first = area_rows[0]
+        source_gate = str(first["source_review_gate_de"])
+        chapter_rows.append(
+            {
+                "thesis_area": area,
+                "method_evidence_ids": str(first["method_evidence_ids"]),
+                "interpretation_evidence_ids": str(first["interpretation_evidence_ids"]),
+                "literature_artifact_summary_de": (
+                    f"Literatur `{first['literature_source_ids']}`; Artefakte "
+                    f"`{_first_items(str(first['deterministic_artifacts']), max_items=2)}`."
+                ),
+                "table_figure_de": f"{first['selected_tables']} / {first['selected_figures']}",
+                "source_review_gate_summary_de": _first_sentence(source_gate),
+                "step_count": len(area_rows),
+            }
+        )
+
+    ready_for_bounded = sum(
+        _bool_text(row["ready_for_bounded_draft"]) for row in rows
+    )
+    ready_for_final = sum(
+        _bool_text(row["ready_for_final_submission"]) for row in rows
+    )
+    return {
+        "row_count": len(rows),
+        "rows_per_chapter": int(len(rows) / 3) if rows else 0,
+        "bounded_ready_count": ready_for_bounded,
+        "final_ready_count": ready_for_final,
+        "chapter_rows": chapter_rows,
+    }
+
+
+def _first_items(value: str, *, max_items: int) -> str:
+    items = [item.strip() for item in value.split(";") if item.strip()]
+    selected = items[:max_items]
+    if len(items) > max_items:
+        selected.append(f"plus {len(items) - max_items} weitere")
+    return "; ".join(selected)
+
+
+def _first_sentence(value: str) -> str:
+    sentence = value.split(".", maxsplit=1)[0].strip()
+    if sentence:
+        return sentence + "."
+    return value.strip()
+
+
+def _bool_text(value: object) -> bool:
+    if isinstance(value, bool):
+        return value
+    return str(value).strip().lower() in {"true", "1", "yes", "ja"}
 
 
 def _status_for_gate(rows: Sequence[dict[str, Any]], gate_area: str) -> str:
@@ -2442,6 +2584,52 @@ def _add_drafting_sequence_section(
             "H1-H2-H3-Ergebnisse mit kompakten Tabellen/Figuren, danach Monitor "
             "nur als Appendix, Swiss nur beschreibend und Agenten nur als "
             "Future-Work-Ausblick."
+        ),
+    )
+
+
+def _add_bounded_chapter_draft_section(
+    doc: Document,
+    bounded_chapter_draft: dict[str, Any],
+) -> None:
+    doc.add_heading("Bounded H1-H2-H3 Kapitelentwurf", level=1)
+    doc.add_paragraph(
+        f"Der H1-H2-H3 Bounded Chapter Draft liefert "
+        f"{bounded_chapter_draft['row_count']} geordnete Prosa-Bausteine: "
+        f"{bounded_chapter_draft['rows_per_chapter']} je H1, H2 und H3. "
+        f"Bounded-draft-ready: {bounded_chapter_draft['bounded_ready_count']}; "
+        f"final-submission-ready: {bounded_chapter_draft['final_ready_count']}."
+    )
+    doc.add_paragraph(
+        "Jede empirische Methode und jede Interpretation bleibt an Evidence-IDs, "
+        "Literatur-IDs, deterministische Artefakte, kuratierte Tabellen/Figuren, "
+        "Limitationen und Source-Review-Gates gebunden."
+    )
+    rows = [
+        (
+            row["thesis_area"],
+            row["method_evidence_ids"],
+            row["interpretation_evidence_ids"],
+            row["literature_artifact_summary_de"],
+            row["table_figure_de"],
+            row["source_review_gate_summary_de"],
+        )
+        for row in bounded_chapter_draft["chapter_rows"]
+    ]
+    table = _add_table(
+        doc,
+        rows,
+        ["Kapitel", "Methode", "Interpretation", "Quelle/Artefakt", "Tabelle/Figur", "Gate"],
+        [620, 1450, 1750, 2450, 1180, 1910],
+    )
+    _shade_table_header(table)
+    _add_callout(
+        doc,
+        "Schreibvorlage, nicht Abgabeclaim",
+        (
+            "Die Bausteine duerfen direkt in den empirischen BA-Kern "
+            "ueberfuehrt werden. Sie ersetzen keine finale Zitation, "
+            "keine Quellenpruefung und keine DOCX-Render-QA."
         ),
     )
 

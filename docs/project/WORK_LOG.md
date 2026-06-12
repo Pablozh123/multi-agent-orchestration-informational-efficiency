@@ -10351,3 +10351,54 @@ Verification:
   -> PASS, generated 37 indexed artifacts.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 562 passed in 52.22s.
+
+## 2026-06-12 - Advisor report bounded H1-H2-H3 chapter view
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Left Review-Access paused and kept the work at the high-level project view
+  plus advisor-report layer.
+- Did not inspect source contents, promote source status, activate agents,
+  call MCP tools, route models, calculate LLM metrics, expose wallet
+  addresses, or create trading paths.
+
+Changes:
+
+- Extended `operations/project/build_dozenten_report.py` so the generated
+  Markdown, HTML, and DOCX advisor report includes a bounded H1-H2-H3 chapter
+  draft section.
+- Regenerated `docs/project/dozentenbericht_ba_thesis.md`,
+  `docs/project/dozentenbericht_ba_thesis.html`, and
+  `docs/project/dozentenbericht_ba_thesis.docx`.
+- Added focused report-test assertions for the new bounded chapter draft
+  summary.
+- Updated `GOAL.md` and `ROADMAP.md` to record the Word-update handoff state
+  and the next advisor-feedback integration step.
+
+Key output:
+
+- Advisor report section: `Bounded H1-H2-H3 Kapitelentwurf`.
+- Bounded chapter draft rows shown in the report: 18.
+- H1 rows: 6.
+- H2 rows: 6.
+- H3 rows: 6.
+- Bounded draft ready rows: 18.
+- Final submission ready rows: 0.
+- The section maps each empirical core chapter to method and interpretation
+  IDs, literature IDs, deterministic artifacts, selected table/figure IDs,
+  limitations, blocked wording, and Source Review gates.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_dozenten_report.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_dozenten_report.py -q`
+  -> PASS, 1 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`
+  -> PASS, regenerated Markdown, HTML, and DOCX report outputs.
+- Structural MD/HTML/DOCX check for the new section and key terms -> PASS.
+- DOCX PNG render QA with `render_docx.py` could not be completed because
+  LibreOffice/`soffice` is not available in PATH on this machine.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 562 passed in 52.17s.

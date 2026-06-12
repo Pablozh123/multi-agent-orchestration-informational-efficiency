@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-06-12T06:04:21+00:00",
+  "generated_at_utc": "2026-06-12T07:04:19+00:00",
   "limitations": {
     "manual_or_scheduler_invoked_refresh": true,
     "no_causal_claim_from_refresh": true,
@@ -27,7 +27,7 @@
     "contains_wallet_addresses": false,
     "efficiency_result": {
       "comparison_path": "data\\results\\swiss_referendum_10mio_comparison.csv",
-      "comparison_row_count": 33,
+      "comparison_row_count": 34,
       "dashboard_path": "data\\results\\swiss_referendum_10mio_dashboard.html",
       "figure_path": "data\\results\\swiss_referendum_10mio_efficiency.png",
       "information_response_figure_path": "data\\results\\swiss_referendum_10mio_information_response.png",
@@ -53,7 +53,7 @@
     },
     "running_status": {
       "auto_refresh_command": ".\\.venv\\Scripts\\python.exe -m operations.collectors.swiss_referendum_auto_refresh --source live --until-utc 2026-06-14T10:00:00Z --min-spacing-minutes 55",
-      "generated_at_utc": "2026-06-12T06:04:21+00:00",
+      "generated_at_utc": "2026-06-12T07:04:19+00:00",
       "limitations": {
         "does_not_identify_causality_or_tradeability": true,
         "does_not_imply_market_data_completeness": true,
@@ -132,11 +132,11 @@
       },
       "status": {
         "all_outputs_exist": true,
-        "latest_snapshot_at_utc": "2026-06-12T06:04:17Z",
+        "latest_snapshot_at_utc": "2026-06-12T07:04:17Z",
         "ready_for_running_view": true,
-        "snapshot_age_minutes": 0.067,
+        "snapshot_age_minutes": 0.033,
         "snapshot_recency_status": "fresh",
-        "snapshot_row_count": 33
+        "snapshot_row_count": 34
       }
     },
     "snapshot_result": {
@@ -144,7 +144,7 @@
       "latest_yes_probability": 0.22,
       "market_id": "1845700",
       "metadata_path": "data\\results\\swiss_referendum_10mio_polymarket_snapshot_metadata.json",
-      "row_count": 33,
+      "row_count": 34,
       "snapshots_path": "data\\results\\swiss_referendum_10mio_polymarket_snapshots.csv"
     }
   }

@@ -11349,3 +11349,95 @@ Verification:
   -> PASS, no Swiss sharp-s found.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `582 passed in 60.67s`, clean after the content commit.
+
+## 2026-06-12 - H1-H2-H3 manual source-review follow-up overview consolidated
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Consolidated the three empirical-core source-review slices without
+  activating Review-Access, runtime agents, MCP, model routing, LLM metrics,
+  raw artifact dumps, or trading paths.
+
+Changes:
+
+- Added `operations/project/build_manual_source_review_followup_overview.py`.
+- Generated `data/results/thesis_manual_source_review_followup_overview.csv`
+  and `docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md`.
+- Updated the thesis consolidation index so the H1-H2-H3 overview is part of
+  the thesis-ready navigation package.
+- Added tests for the overview and the expanded consolidation index.
+- Updated `GOAL.md` and `ROADMAP.md` so the next recommended content step is
+  updating the advisor handoff package with the new overview.
+
+Key output:
+
+- Overview rows: 3.
+- Total manual review rows: 23.
+- Unique sources across H1-H2-H3: 9.
+- Method rows: 12.
+- Interpretation rows: 11.
+- External locator rows: 13.
+- Local PDF rows: 10.
+- Pending rows: 23.
+- Final-ready rows: 0.
+- Consolidation index rows: 47.
+- Latest content commit:
+  `32ab675 docs: consolidate h1 h2 h3 manual source review follow-ups`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations\project\build_manual_source_review_followup_overview.py operations\project\build_thesis_consolidation_index.py tests\test_manual_source_review_followup_overview.py tests\test_thesis_consolidation_index.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_manual_source_review_followup_overview.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_manual_source_review_followup_overview`
+  -> PASS, generated overview CSV/Markdown.
+- `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, index rows now 47.
+- `git diff --check` -> PASS.
+- `rg -n "<sharp-s>" docs\project\THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md data\results\thesis_manual_source_review_followup_overview.csv operations\project\build_manual_source_review_followup_overview.py tests\test_manual_source_review_followup_overview.py`
+  -> PASS, no Swiss sharp-s found.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `584 passed in 58.40s`, clean after the content commit.
+
+## 2026-06-12 - Swiss referendum running snapshot updated
+
+Goal context:
+
+- Continued the running Swiss referendum data-collection side track.
+- Kept the output descriptive because the official 14 June 2026 result is not
+  yet available and final efficiency interpretation remains blocked.
+
+Changes:
+
+- Committed refreshed `data/results/swiss_referendum_10mio_*` outputs from
+  the bounded running snapshot track.
+- Kept the update separate from thesis Source Review commits.
+
+Key output:
+
+- Latest snapshot: 2026-06-12T18:04:17Z.
+- Polymarket snapshot rows: 44.
+- Comparison rows: 44.
+- Bounded price-history rows: 504.
+- Polymarket Yes probability: 27.0%.
+- Latest matched poll: `srg_gfs_bern_2026_w2`.
+- Latest poll Yes share: 45.0%.
+- Latest decided Yes share: 46.4%.
+- Raw Yes gap: -18.0 pp.
+- Decided Yes gap: -19.4 pp.
+- Latest data commit:
+  `3c43c94 data: update swiss referendum running snapshot`.
+
+Bounded interpretation:
+
+- The latest local Polymarket Yes probability remains below the latest curated
+  poll proxy. This is descriptive only and does not identify causality,
+  efficiency, tradeability, or mispricing.
+
+Main limitation:
+
+- Poll shares are survey shares, not model-implied win probabilities. The
+  official vote result is still unavailable, so no final referendum efficiency
+  conclusion is allowed.

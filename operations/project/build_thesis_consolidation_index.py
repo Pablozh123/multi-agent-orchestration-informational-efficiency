@@ -278,6 +278,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine finale Zitation, keine Quellenstatus-Hochstufung, keine Rohartefakt-Dumps und keine Runtime-Agenten.",
         ),
         _index_row(
+            artifact_id="index_19_h1_source_review_decision_queue",
+            artifact_type="h1_source_review_decision_queue",
+            path="docs/project/THESIS_H1_SOURCE_REVIEW_DECISION_QUEUE.md; data/results/thesis_h1_source_review_decision_queue.csv",
+            purpose_de="Verdichtet H1 auf 10 konkrete Review-Entscheidungszeilen mit Quelle, Evidence ID, Artefakt, T2/F1, Zugriffspfad und manuellen Entscheidungsfeldern.",
+            use_now_de="Als direkte H1-Review-Queue nutzen, bevor H1 final zitiert oder in finale BA-Prosa ueberfuehrt wird.",
+            gate_or_limit_de="Keine Quelleninhaltsinterpretation, keine finale Zitation, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.",
+        ),
+        _index_row(
             artifact_id="index_19_h2_manual_source_review_followup",
             artifact_type="h2_manual_source_review_followup",
             path="docs/project/THESIS_H2_MANUAL_SOURCE_REVIEW_FOLLOWUP.md; data/results/thesis_h2_manual_source_review_followup.csv",

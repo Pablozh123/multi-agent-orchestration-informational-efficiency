@@ -780,6 +780,12 @@ Current implemented consolidation:
   concrete H1 review slice: 10 H1 rows, 4 H1 sources, 4 method rows, 6
   interpretation rows, 7 external locator rows, 3 local PDF rows, 10 pending
   Page-/Section-Note rows, and 0 final-ready rows.
+- `data/results/thesis_h1_source_review_decision_queue.csv` and
+  `docs/project/THESIS_H1_SOURCE_REVIEW_DECISION_QUEUE.md` turn that H1 slice
+  into a direct decision queue: 10 H1 decision rows, 4 sources, 4 method rows,
+  6 interpretation rows, T2/F1 binding, Page-/Section-Note, Claim-Support,
+  Blocked-Wording, Citation-Use, 0 final-ready rows, no source-status
+  promotion, and inactive future-agent boundaries.
 - `data/results/thesis_submission_readiness_board.csv` and
   `docs/project/THESIS_SUBMISSION_READINESS_BOARD.md` provide a nine-gate
   submission-readiness board: advisor handoff, chapter/source mapping, source

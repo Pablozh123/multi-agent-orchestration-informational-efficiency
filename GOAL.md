@@ -131,6 +131,12 @@ acceptance_criteria:
   interpretation Evidence IDs, deterministic artifacts, Page-/Section-Note,
   Claim-Support, Blocked-Wording, Citation-Use, and no automatic source-status
   promotion.
+- A H1 source-review decision queue exists so the first empirical-core review
+  slice is directly actionable with 10 H1 decision rows, 4 H1 sources, 4 method
+  rows, 6 interpretation rows, 7 external locator rows, 3 local PDF rows, T2/F1
+  table/figure binding, manual Page-/Section-Note, Claim-Support,
+  Blocked-Wording, Citation-Use fields, 0 final-ready rows, no source-status
+  promotion, and inactive future-agent boundaries.
 - A H2 manual source-review follow-up exists so the second empirical-core
   review slice is startable with 5 H2 source rows, 3 H2 sources, method and
   interpretation Evidence IDs, deterministic artifacts, Page-/Section-Note,
@@ -277,7 +283,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: refresh highlevel evidence mapping after swiss update
+next_commit: docs: add h1 source review decision queue
 
 ## Running Side Goal
 

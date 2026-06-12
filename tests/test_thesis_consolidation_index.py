@@ -19,9 +19,9 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     doc = result.docs_path.read_text(encoding="utf-8")
 
     assert tuple(index.columns) == INDEX_COLUMNS
-    assert result.index_rows == 51
+    assert result.index_rows == 52
     assert "Thesis Consolidation Index" in doc
-    assert "Indexed artifacts: 51" in doc
+    assert "Indexed artifacts: 52" in doc
     assert "dozentenbericht_ba_thesis.docx" in doc
     assert "THESIS_ADVISOR_HANDOFF_PACKAGE.md" in doc
     assert "DOZENTEN_UEBERGABE_TEXT.md" in doc
@@ -34,6 +34,7 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     assert "THESIS_H2_SOURCE_REVIEW_DECISION_QUEUE.md" in doc
     assert "THESIS_H3_MANUAL_SOURCE_REVIEW_FOLLOWUP.md" in doc
     assert "THESIS_H3_SOURCE_REVIEW_DECISION_QUEUE.md" in doc
+    assert "THESIS_H1_H2_H3_DECISION_QUEUE_OVERVIEW.md" in doc
     assert "THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md" in doc
     assert "THESIS_SUBMISSION_READINESS_BOARD.md" in doc
     assert "THESIS_DRAFTING_SEQUENCE.md" in doc
@@ -108,6 +109,8 @@ def test_thesis_consolidation_index_keeps_deferred_boundaries(tmp_path: Path) ->
     assert "h2_source_review_decision_queue" in joined
     assert "h3_manual_source_review_followup" in joined
     assert "h3_source_review_decision_queue" in joined
+    assert "h1_h2_h3_decision_queue_overview" in joined
+    assert "0 final-ready rows" in joined
     assert "manual_source_review_followup_overview" in joined
     assert "keine runtime-agenten" in joined
 
@@ -163,6 +166,8 @@ def _write_fixture(root: Path) -> None:
         "data/results/thesis_h3_manual_source_review_followup.csv",
         "docs/project/THESIS_H3_SOURCE_REVIEW_DECISION_QUEUE.md",
         "data/results/thesis_h3_source_review_decision_queue.csv",
+        "docs/project/THESIS_H1_H2_H3_DECISION_QUEUE_OVERVIEW.md",
+        "data/results/thesis_h1_h2_h3_decision_queue_overview.csv",
         "docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md",
         "data/results/thesis_manual_source_review_followup_overview.csv",
         "docs/project/THESIS_SUBMISSION_READINESS_BOARD.md",

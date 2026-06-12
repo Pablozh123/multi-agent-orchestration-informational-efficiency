@@ -318,6 +318,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine Kausalclaims, keine Private-Information-Beweise, keine willkuerlichen Whale-Schwellen, keine Wallet-Adressen, keine Trading- oder Profitabilitaetsclaims, keine finale Zitation, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.",
         ),
         _index_row(
+            artifact_id="index_19_h1_h2_h3_decision_queue_overview",
+            artifact_type="h1_h2_h3_decision_queue_overview",
+            path="docs/project/THESIS_H1_H2_H3_DECISION_QUEUE_OVERVIEW.md; data/results/thesis_h1_h2_h3_decision_queue_overview.csv",
+            purpose_de="Konsolidiert die H1/H2/H3 Source Review Decision Queues in 3 Steuerungszeilen mit 23 Decision Rows, Quellen, Methodik-/Interpretationszeilen und offenen Finalgates.",
+            use_now_de="Als operative H1-H2-H3 Decision-Queue-Uebersicht nutzen, bevor Ledger, bounded BA-Prosa oder finale Zitation aktualisiert werden.",
+            gate_or_limit_de="Alle 23 Decision Rows bleiben final blockiert; 0 final-ready rows, 0 Quellenstatus-Aenderungen, keine Runtime-Agenten, max 50 rows und llm_audit_log fuer spaetere Agentenhilfe.",
+        ),
+        _index_row(
             artifact_id="index_19_manual_source_review_followup_overview",
             artifact_type="manual_source_review_followup_overview",
             path="docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md; data/results/thesis_manual_source_review_followup_overview.csv",
@@ -566,6 +574,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Follow-up, H1 Manual Source Review Follow-up, H1 Source Review Decision Queue, "
         "H2 Manual Source Review Follow-up, H2 Source Review Decision Queue, "
         "H3 Manual Source Review Follow-up, H3 Source Review Decision Queue, "
+        "H1-H2-H3 Decision Queue Overview, "
         "Manual Source Review Follow-up Overview, Submission Readiness Board, "
         "Drafting Sequence, Execution Checklist, Chapter Source Bindings, "
         "Source Review Execution, Source Access "
@@ -605,6 +614,9 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Nutze die H1/H2/H3 Source Review Decision Queues als direkte "
         "Entscheidungslisten, bevor eine empirische Kernstelle final zitiert "
         "oder in finale BA-Prosa ueberfuehrt wird. "
+        "Nutze die H1-H2-H3 Decision Queue Overview als operative "
+        "Kontrollsicht ueber 23 Decision Rows, T2/F1, T3/F2, T4/F3, "
+        "0 final-ready rows und 0 Quellenstatus-Aenderungen. "
         "Nutze die Manual Source Review Follow-up Overview als kompakte "
         "H1-H2-H3 Steuerungsuebersicht fuer die 23 offenen Review-Zeilen. "
         "Nutze das Submission Readiness Board fuer die "

@@ -161,6 +161,12 @@ acceptance_criteria:
   Blocked-Wording, Citation-Use, Granger-Grenze, Wallet-Grenze fields, 0
   final-ready rows, no source-status promotion, and inactive future-agent
   boundaries.
+- A consolidated H1-H2-H3 decision queue overview exists so the operative
+  review path is visible in one compact control artifact: 3 overview rows,
+  23 decision rows, 9 unique sources, 12 method rows, 11 interpretation rows,
+  13 external locator rows, 10 local PDF rows, 23 pending queue rows, 0
+  final-ready rows, 0 source-status change rows, T2/F1, T3/F2, T4/F3 bindings,
+  and inactive future-agent boundaries.
 - A consolidated H1-H2-H3 manual source-review follow-up overview exists so
   the 23 open empirical-core review rows are visible in one compact control
   artifact with 9 unique sources, method/interpretation counts, access-route

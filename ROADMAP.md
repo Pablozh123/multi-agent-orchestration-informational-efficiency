@@ -802,6 +802,12 @@ Current implemented consolidation:
   3 interpretation rows, T4/F3 binding, Page-/Section-Note, Claim-Support,
   Blocked-Wording, Citation-Use, Granger-Grenze, Wallet-Grenze, 0 final-ready
   rows, no source-status promotion, and inactive future-agent boundaries.
+- `data/results/thesis_h1_h2_h3_decision_queue_overview.csv` and
+  `docs/project/THESIS_H1_H2_H3_DECISION_QUEUE_OVERVIEW.md` consolidate the
+  three direct Decision Queues into 3 overview rows over 23 decision rows,
+  9 unique sources, 12 method rows, 11 interpretation rows, 13 external
+  locator rows, 10 local PDF rows, 23 pending queue rows, 0 final-ready rows,
+  0 source-status change rows, and T2/F1, T3/F2, T4/F3 bindings.
 - `data/results/thesis_submission_readiness_board.csv` and
   `docs/project/THESIS_SUBMISSION_READINESS_BOARD.md` provide a nine-gate
   submission-readiness board: advisor handoff, chapter/source mapping, source
@@ -980,6 +986,13 @@ Current implemented consolidation:
   rows, 9 unique sources, 12 method rows, 11 interpretation rows,
   13 external locator rows, 10 local PDF rows, 23 pending rows, and
   0 final-citation-ready rows.
+- `data/results/thesis_h1_h2_h3_decision_queue_overview.csv` and
+  `docs/project/THESIS_H1_H2_H3_DECISION_QUEUE_OVERVIEW.md` consolidate the
+  H1-H2-H3 direct Decision Queues into one operative control view: 3 overview
+  rows, 23 decision rows, 9 unique sources, 12 method rows,
+  11 interpretation rows, 13 external locator rows, 10 local PDF rows,
+  23 pending queue rows, 0 final-ready rows, 0 source-status change rows,
+  and T2/F1, T3/F2, T4/F3 bindings.
 - `data/results/thesis_h1_h2_h3_core_sections.csv` and
   `docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md` translate the H1-H2-H3
   empirical core into three thesis-ready section rows: each row binds

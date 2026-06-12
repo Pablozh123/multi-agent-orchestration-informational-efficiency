@@ -61,6 +61,10 @@ This table is a source-control view, not a promotion of source status. Sources m
 
 `data/results/thesis_source_review_plan.csv` groups the citation packets by source and assigns manual review bands. It has 15 source rows and remains a human review queue, not an automatic source-status promotion.
 
+## Agent Assistance Protocol
+
+`data/results/thesis_agent_assistance_protocol.csv` documents how future agents could help with source review, wording checks, advisor updates, and bounded summaries. It is documentation-only and does not activate runtime agents, MCP tools, model routing, or unlogged LLM interpretation.
+
 ## Chapter Plan
 
 | chapter_id | chapter_title | writing_status | recommended_tables | recommended_figures | next_action |

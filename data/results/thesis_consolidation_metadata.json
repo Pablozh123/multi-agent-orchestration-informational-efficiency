@@ -1,4 +1,8 @@
 {
+  "agent_assistance_protocol_counts": {
+    "future_deferred": 1,
+    "future_documentation_only": 6
+  },
   "agent_stage_status_counts": {
     "current_required_state": 1,
     "future_deferred": 1,
@@ -23,6 +27,7 @@
     "pending_packets": 33
   },
   "guardrails": {
+    "agent_assistance_protocol_is_documentation_only": true,
     "chapter_plan_uses_curated_package": true,
     "citation_readiness_is_status_mapping_not_source_promotion": true,
     "citation_review_packets_are_pending_human_review": true,
@@ -48,6 +53,7 @@
     "name": "thesis_consolidation_evidence_mapping"
   },
   "outputs": {
+    "agent_assistance_protocol_rows": 7,
     "agent_stage_rows": 6,
     "chapter_draft_generated": true,
     "chapter_rows": 8,

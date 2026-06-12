@@ -8431,3 +8431,42 @@ Verification:
   -> PASS, 13 passed.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, 500 passed in 48.97s.
+
+## 2026-06-12 - Thesis agent assistance protocol
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Turned the future-agent idea into a concrete documentation-only protocol
+  while keeping runtime agents, MCP tools, model routing, and unlogged LLM
+  interpretation inactive.
+
+Changes:
+
+- Extended `operations/analysis/thesis_consolidation.py` with generated
+  `data/results/thesis_agent_assistance_protocol.csv`.
+- Added `docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md`.
+- Updated `docs/research/THESIS_CONSOLIDATION.md`,
+  `docs/research/LITERATURE_MAP.md`, `ROADMAP.md`, and `GOAL.md`.
+- Extended `tests/test_thesis_consolidation.py` to validate activation
+  statuses, protocol uniqueness, `llm_audit_log` gates, no raw table access,
+  no metric calculation, no order/trading paths, and no automatic source
+  status changes.
+
+Key output:
+
+- Agent assistance protocol rows: 7.
+- Future-documentation-only rows: 6.
+- Future-deferred rows: 1.
+- Covered future helper roles: source review, evidence-to-prose drafting,
+  wording guard, table/figure checking, advisor updates, monitor appendix
+  review, and bounded MCP summary interface.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.analysis.thesis_consolidation`
+  -> PASS, generated agent assistance protocol and documentation.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_thesis_consolidation.py tests\test_dozenten_report.py -q`
+  -> PASS, 14 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, 501 passed in 49.23s.

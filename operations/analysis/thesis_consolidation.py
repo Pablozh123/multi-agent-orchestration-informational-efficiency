@@ -32,6 +32,7 @@ GENERATED_ARTIFACTS: frozenset[str] = frozenset(
         "data/results/thesis_citation_review_packets.csv",
         "data/results/thesis_table_figure_captions.csv",
         "data/results/thesis_source_review_plan.csv",
+        "data/results/thesis_agent_assistance_protocol.csv",
         "data/results/thesis_consolidation_metadata.json",
         "docs/research/THESIS_CONSOLIDATION.md",
         "docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md",
@@ -40,6 +41,7 @@ GENERATED_ARTIFACTS: frozenset[str] = frozenset(
         "docs/research/THESIS_CITATION_REVIEW_PACKETS.md",
         "docs/research/THESIS_TABLE_FIGURE_CAPTIONS.md",
         "docs/research/THESIS_SOURCE_REVIEW_PLAN.md",
+        "docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md",
     }
 )
 
@@ -53,6 +55,7 @@ AGENT_PIPELINE_OUTPUT = "thesis_agent_pipeline_roadmap.csv"
 CITATION_REVIEW_PACKETS_OUTPUT = "thesis_citation_review_packets.csv"
 TABLE_FIGURE_CAPTIONS_OUTPUT = "thesis_table_figure_captions.csv"
 SOURCE_REVIEW_PLAN_OUTPUT = "thesis_source_review_plan.csv"
+AGENT_ASSISTANCE_PROTOCOL_OUTPUT = "thesis_agent_assistance_protocol.csv"
 METADATA_OUTPUT = "thesis_consolidation_metadata.json"
 DOC_OUTPUT = "THESIS_CONSOLIDATION.md"
 AGENT_DOC_OUTPUT = "THESIS_AGENT_PIPELINE_ROADMAP.md"
@@ -61,6 +64,7 @@ CHAPTER_DRAFT_OUTPUT = "THESIS_CHAPTER_DRAFT.md"
 CITATION_REVIEW_DOC_OUTPUT = "THESIS_CITATION_REVIEW_PACKETS.md"
 TABLE_FIGURE_CAPTIONS_DOC_OUTPUT = "THESIS_TABLE_FIGURE_CAPTIONS.md"
 SOURCE_REVIEW_PLAN_DOC_OUTPUT = "THESIS_SOURCE_REVIEW_PLAN.md"
+AGENT_ASSISTANCE_PROTOCOL_DOC_OUTPUT = "THESIS_AGENT_ASSISTANCE_PROTOCOL.md"
 
 EVIDENCE_COLUMNS: tuple[str, ...] = (
     "evidence_id",
@@ -200,6 +204,19 @@ SOURCE_REVIEW_PLAN_COLUMNS: tuple[str, ...] = (
     "next_action",
 )
 
+AGENT_ASSISTANCE_PROTOCOL_COLUMNS: tuple[str, ...] = (
+    "protocol_id",
+    "pipeline_step",
+    "current_artifact_boundary",
+    "future_agent_help",
+    "allowed_inputs",
+    "allowed_outputs",
+    "audit_gate",
+    "blocked_behaviour",
+    "activation_status",
+    "thesis_value",
+)
+
 
 @dataclass(frozen=True)
 class ThesisConsolidationResult:
@@ -215,6 +232,7 @@ class ThesisConsolidationResult:
     citation_review_packets_path: Path
     table_figure_captions_path: Path
     source_review_plan_path: Path
+    agent_assistance_protocol_path: Path
     metadata_path: Path
     docs_path: Path
     agent_docs_path: Path
@@ -223,6 +241,7 @@ class ThesisConsolidationResult:
     citation_review_docs_path: Path
     table_figure_captions_docs_path: Path
     source_review_plan_docs_path: Path
+    agent_assistance_protocol_docs_path: Path
     evidence_rows: int
     core_result_rows: int
     package_rows: int
@@ -232,6 +251,7 @@ class ThesisConsolidationResult:
     citation_review_packet_rows: int
     table_figure_caption_rows: int
     source_review_plan_rows: int
+    agent_assistance_protocol_rows: int
 
     def to_dict(self) -> dict[str, str | int]:
         return {
@@ -245,6 +265,7 @@ class ThesisConsolidationResult:
             "citation_review_packets_path": str(self.citation_review_packets_path),
             "table_figure_captions_path": str(self.table_figure_captions_path),
             "source_review_plan_path": str(self.source_review_plan_path),
+            "agent_assistance_protocol_path": str(self.agent_assistance_protocol_path),
             "metadata_path": str(self.metadata_path),
             "docs_path": str(self.docs_path),
             "agent_docs_path": str(self.agent_docs_path),
@@ -253,6 +274,7 @@ class ThesisConsolidationResult:
             "citation_review_docs_path": str(self.citation_review_docs_path),
             "table_figure_captions_docs_path": str(self.table_figure_captions_docs_path),
             "source_review_plan_docs_path": str(self.source_review_plan_docs_path),
+            "agent_assistance_protocol_docs_path": str(self.agent_assistance_protocol_docs_path),
             "evidence_rows": self.evidence_rows,
             "core_result_rows": self.core_result_rows,
             "package_rows": self.package_rows,
@@ -262,6 +284,7 @@ class ThesisConsolidationResult:
             "citation_review_packet_rows": self.citation_review_packet_rows,
             "table_figure_caption_rows": self.table_figure_caption_rows,
             "source_review_plan_rows": self.source_review_plan_rows,
+            "agent_assistance_protocol_rows": self.agent_assistance_protocol_rows,
         }
 
 
@@ -359,6 +382,8 @@ def generate_thesis_consolidation(
         citation_review_packets=citation_review_packets,
     )
     _validate_source_review_plan(source_review_plan)
+    agent_assistance_protocol = build_agent_assistance_protocol()
+    _validate_agent_assistance_protocol(agent_assistance_protocol)
 
     results_dir.mkdir(parents=True, exist_ok=True)
     docs_dir.mkdir(parents=True, exist_ok=True)
@@ -372,6 +397,7 @@ def generate_thesis_consolidation(
     citation_review_packets_path = results_dir / CITATION_REVIEW_PACKETS_OUTPUT
     table_figure_captions_path = results_dir / TABLE_FIGURE_CAPTIONS_OUTPUT
     source_review_plan_path = results_dir / SOURCE_REVIEW_PLAN_OUTPUT
+    agent_assistance_protocol_path = results_dir / AGENT_ASSISTANCE_PROTOCOL_OUTPUT
     metadata_path = results_dir / METADATA_OUTPUT
     docs_path = docs_dir / DOC_OUTPUT
     agent_docs_path = docs_dir / AGENT_DOC_OUTPUT
@@ -380,6 +406,7 @@ def generate_thesis_consolidation(
     citation_review_docs_path = docs_dir / CITATION_REVIEW_DOC_OUTPUT
     table_figure_captions_docs_path = docs_dir / TABLE_FIGURE_CAPTIONS_DOC_OUTPUT
     source_review_plan_docs_path = docs_dir / SOURCE_REVIEW_PLAN_DOC_OUTPUT
+    agent_assistance_protocol_docs_path = docs_dir / AGENT_ASSISTANCE_PROTOCOL_DOC_OUTPUT
 
     evidence_map.to_csv(evidence_map_path, index=False)
     core_results.to_csv(core_results_path, index=False)
@@ -390,6 +417,7 @@ def generate_thesis_consolidation(
     citation_review_packets.to_csv(citation_review_packets_path, index=False)
     table_figure_captions.to_csv(table_figure_captions_path, index=False)
     source_review_plan.to_csv(source_review_plan_path, index=False)
+    agent_assistance_protocol.to_csv(agent_assistance_protocol_path, index=False)
     evidence_map_md_path.write_text(
         _render_evidence_markdown(evidence_map),
         encoding="utf-8",
@@ -405,6 +433,7 @@ def generate_thesis_consolidation(
         citation_review_packets=citation_review_packets,
         table_figure_captions=table_figure_captions,
         source_review_plan=source_review_plan,
+        agent_assistance_protocol=agent_assistance_protocol,
     )
     metadata_path.write_text(json.dumps(metadata, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     docs_path.write_text(
@@ -463,6 +492,13 @@ def generate_thesis_consolidation(
         ),
         encoding="utf-8",
     )
+    agent_assistance_protocol_docs_path.write_text(
+        _render_agent_assistance_protocol_doc(
+            agent_assistance_protocol=agent_assistance_protocol,
+            metadata=metadata,
+        ),
+        encoding="utf-8",
+    )
 
     return ThesisConsolidationResult(
         evidence_map_path=evidence_map_path,
@@ -475,6 +511,7 @@ def generate_thesis_consolidation(
         citation_review_packets_path=citation_review_packets_path,
         table_figure_captions_path=table_figure_captions_path,
         source_review_plan_path=source_review_plan_path,
+        agent_assistance_protocol_path=agent_assistance_protocol_path,
         metadata_path=metadata_path,
         docs_path=docs_path,
         agent_docs_path=agent_docs_path,
@@ -483,6 +520,7 @@ def generate_thesis_consolidation(
         citation_review_docs_path=citation_review_docs_path,
         table_figure_captions_docs_path=table_figure_captions_docs_path,
         source_review_plan_docs_path=source_review_plan_docs_path,
+        agent_assistance_protocol_docs_path=agent_assistance_protocol_docs_path,
         evidence_rows=len(evidence_map),
         core_result_rows=len(core_results),
         package_rows=len(curated_package),
@@ -492,6 +530,7 @@ def generate_thesis_consolidation(
         citation_review_packet_rows=len(citation_review_packets),
         table_figure_caption_rows=len(table_figure_captions),
         source_review_plan_rows=len(source_review_plan),
+        agent_assistance_protocol_rows=len(agent_assistance_protocol),
     )
 
 
@@ -1362,6 +1401,98 @@ def build_agent_pipeline_roadmap() -> pd.DataFrame:
     return pd.DataFrame(rows, columns=AGENT_PIPELINE_COLUMNS)
 
 
+def build_agent_assistance_protocol() -> pd.DataFrame:
+    """Build documentation-only protocol rows for later agent-assisted workflow."""
+
+    rows = [
+        _agent_protocol_row(
+            protocol_id="agent_protocol_01_source_review",
+            pipeline_step="Manual source review",
+            current_artifact_boundary="thesis_source_review_plan.csv; thesis_citation_review_packets.csv; literature_index.csv",
+            future_agent_help="Prepare a checklist of page or section evidence still missing for each source.",
+            allowed_inputs="source_id; evidence_id; required_check; source metadata; reviewer notes selected by a human",
+            allowed_outputs="bounded checklist; missing-page-note warnings; no status changes",
+            audit_gate="llm_audit_log entry with source_ids, evidence_ids, prompt hash, model, and output path",
+            blocked_behaviour="promoting source status; inventing page numbers; citing candidate sources as thesis evidence",
+            activation_status="future_documentation_only",
+            thesis_value="Accelerates literature review while keeping final citation approval human-owned.",
+        ),
+        _agent_protocol_row(
+            protocol_id="agent_protocol_02_evidence_reader",
+            pipeline_step="Evidence-to-prose drafting",
+            current_artifact_boundary="thesis_evidence_map.csv; thesis_core_results_table.csv; thesis_curated_result_package.csv",
+            future_agent_help="Summarise allowed wording and limitations for a selected Evidence ID.",
+            allowed_inputs="one selected evidence_id plus bounded linked artifact summaries",
+            allowed_outputs="short draft note tied to the same evidence_id and primary_artifact",
+            audit_gate="llm_audit_log entry with evidence_id, artifact versions, prompt hash, model, and output path",
+            blocked_behaviour="calculating metrics; reading raw table dumps; adding claims outside allowed wording",
+            activation_status="future_documentation_only",
+            thesis_value="Turns deterministic evidence into draftable notes without weakening traceability.",
+        ),
+        _agent_protocol_row(
+            protocol_id="agent_protocol_03_wording_guard",
+            pipeline_step="Claim and wording review",
+            current_artifact_boundary="draft paragraph; thesis_evidence_map.csv; thesis_chapter_plan.csv",
+            future_agent_help="Compare draft wording against allowed and blocked wording.",
+            allowed_inputs="human-selected paragraph; linked evidence rows; chapter id",
+            allowed_outputs="bounded overclaim warnings and safer wording suggestions",
+            audit_gate="llm_audit_log entry with draft hash, evidence_ids checked, prompt hash, model, and warnings path",
+            blocked_behaviour="relaxing blocked wording; making causal, private-information, profitability, or tradeability claims",
+            activation_status="future_documentation_only",
+            thesis_value="Reduces overclaiming in H1, H2, H3, Monitor, Swiss, and agent-outlook text.",
+        ),
+        _agent_protocol_row(
+            protocol_id="agent_protocol_04_table_figure_checker",
+            pipeline_step="Table and figure package review",
+            current_artifact_boundary="thesis_table_figure_captions.csv; thesis_curated_result_package.csv",
+            future_agent_help="Check whether each draft table or figure caption names a source artifact, interpretation, and limitation.",
+            allowed_inputs="caption registry rows; selected draft caption text",
+            allowed_outputs="missing-artifact, missing-limitation, or extra-raw-artifact warnings",
+            audit_gate="llm_audit_log entry with package_ids, draft hash, prompt hash, model, and warnings path",
+            blocked_behaviour="adding new tables or figures beyond the curated package without updating deterministic maps",
+            activation_status="future_documentation_only",
+            thesis_value="Keeps the thesis result presentation compact and source-linked.",
+        ),
+        _agent_protocol_row(
+            protocol_id="agent_protocol_05_advisor_update",
+            pipeline_step="Advisor update summarisation",
+            current_artifact_boundary="dozentenbericht_ba_thesis.md; THESIS_CONSOLIDATION.md; STATUS.md",
+            future_agent_help="Summarise the current project state for a meeting agenda.",
+            allowed_inputs="existing advisor report; consolidation docs; project status snapshot",
+            allowed_outputs="meeting bullets, open questions, and next-step checklist",
+            audit_gate="llm_audit_log entry with artifact paths, prompt hash, model, and summary path",
+            blocked_behaviour="changing empirical claims; hiding unresolved source-review or Swiss-result gates",
+            activation_status="future_documentation_only",
+            thesis_value="Makes supervisor communication faster without changing evidence.",
+        ),
+        _agent_protocol_row(
+            protocol_id="agent_protocol_06_monitor_review_helper",
+            pipeline_step="Monitor appendix review",
+            current_artifact_boundary="bounded monitor review packets; human review notes; no wallet addresses by default",
+            future_agent_help="Summarise reviewed monitor cases after human source checks exist.",
+            allowed_inputs="bounded case_id summaries; reviewed source notes; aggregate tier labels",
+            allowed_outputs="appendix review summary and unresolved-evidence checklist",
+            audit_gate="llm_audit_log entry with case_ids, artifact versions, prompt hash, model, and output path",
+            blocked_behaviour="declaring misconduct; exposing wallet addresses by default; creating trading signals",
+            activation_status="future_documentation_only",
+            thesis_value="Keeps monitor material useful as appendix workflow, not core proof.",
+        ),
+        _agent_protocol_row(
+            protocol_id="agent_protocol_07_bounded_mcp",
+            pipeline_step="Bounded MCP summary interface",
+            current_artifact_boundary="reviewed summary CSV/JSON only; max 50 rows unless justified",
+            future_agent_help="Expose reviewed summaries to assistants through read-only tools.",
+            allowed_inputs="reviewed summary artifacts; explicit row limits; no raw SQL by default",
+            allowed_outputs="bounded read-only summaries with row counts and artifact paths",
+            audit_gate="separate approved goal, access contract tests, and llm_audit_log integration",
+            blocked_behaviour="raw table access; SELECT star; wallet-address exposure; order or trading paths",
+            activation_status="future_deferred",
+            thesis_value="Provides a later safe interface after the deterministic core and review gates are stable.",
+        ),
+    ]
+    return pd.DataFrame(rows, columns=AGENT_ASSISTANCE_PROTOCOL_COLUMNS)
+
+
 def build_citation_review_packets(
     *,
     evidence_map: pd.DataFrame,
@@ -1750,6 +1881,33 @@ def _agent_stage_row(
     }
 
 
+def _agent_protocol_row(
+    *,
+    protocol_id: str,
+    pipeline_step: str,
+    current_artifact_boundary: str,
+    future_agent_help: str,
+    allowed_inputs: str,
+    allowed_outputs: str,
+    audit_gate: str,
+    blocked_behaviour: str,
+    activation_status: str,
+    thesis_value: str,
+) -> dict[str, object]:
+    return {
+        "protocol_id": protocol_id,
+        "pipeline_step": pipeline_step,
+        "current_artifact_boundary": current_artifact_boundary,
+        "future_agent_help": future_agent_help,
+        "allowed_inputs": allowed_inputs,
+        "allowed_outputs": allowed_outputs,
+        "audit_gate": audit_gate,
+        "blocked_behaviour": blocked_behaviour,
+        "activation_status": activation_status,
+        "thesis_value": thesis_value,
+    }
+
+
 def _read_csv(path: Path) -> pd.DataFrame:
     _required_file(path)
     return pd.read_csv(path)
@@ -1917,6 +2075,30 @@ def _validate_agent_pipeline(agent_pipeline: pd.DataFrame) -> None:
         raise ValueError("Agent pipeline contains an active implementation status.")
 
 
+def _validate_agent_assistance_protocol(protocol: pd.DataFrame) -> None:
+    _require_columns(protocol, AGENT_ASSISTANCE_PROTOCOL_COLUMNS, "agent assistance protocol")
+    if protocol["protocol_id"].duplicated().any():
+        raise ValueError("Agent assistance protocol contains duplicate protocol_id values.")
+    allowed_statuses = {"future_documentation_only", "future_deferred"}
+    if not set(protocol["activation_status"]).issubset(allowed_statuses):
+        raise ValueError("Agent assistance protocol contains active activation status.")
+    joined = "\n".join(protocol.astype(str).agg(" ".join, axis=1).tolist()).lower()
+    required_terms = (
+        "llm_audit_log",
+        "raw table",
+        "wallet",
+        "order or trading paths",
+        "calculating metrics",
+        "no status changes",
+    )
+    missing_terms = [term for term in required_terms if term not in joined]
+    if missing_terms:
+        raise ValueError("Agent assistance protocol missing guardrail terms: " + ", ".join(missing_terms))
+    blocked = protocol["blocked_behaviour"].astype(str).str.len().eq(0)
+    if blocked.any():
+        raise ValueError("Agent assistance protocol requires blocked_behaviour for every row.")
+
+
 def _validate_citation_review_packets(
     packets: pd.DataFrame,
     evidence_map: pd.DataFrame,
@@ -2029,6 +2211,7 @@ def _build_metadata(
     citation_review_packets: pd.DataFrame,
     table_figure_captions: pd.DataFrame,
     source_review_plan: pd.DataFrame,
+    agent_assistance_protocol: pd.DataFrame,
 ) -> dict[str, object]:
     core = curated_package[curated_package["include_in_core_package"].astype(bool)]
     return {
@@ -2050,6 +2233,7 @@ def _build_metadata(
             "citation_review_packet_rows": int(len(citation_review_packets)),
             "table_figure_caption_rows": int(len(table_figure_captions)),
             "source_review_plan_rows": int(len(source_review_plan)),
+            "agent_assistance_protocol_rows": int(len(agent_assistance_protocol)),
             "writing_blueprint_generated": True,
             "chapter_draft_generated": True,
             "core_table_count": int((core["package_type"] == "table").sum()),
@@ -2112,12 +2296,20 @@ def _build_metadata(
             .sort_index()
             .items()
         },
+        "agent_assistance_protocol_counts": {
+            str(key): int(value)
+            for key, value in agent_assistance_protocol["activation_status"]
+            .value_counts()
+            .sort_index()
+            .items()
+        },
         "guardrails": {
             "every_method_and_interpretation_has_artifact": True,
             "citation_readiness_is_status_mapping_not_source_promotion": True,
             "citation_review_packets_are_pending_human_review": True,
             "table_figure_captions_use_curated_package_only": True,
             "source_review_plan_is_manual_review_queue": True,
+            "agent_assistance_protocol_is_documentation_only": True,
             "chapter_plan_uses_curated_package": True,
             "thesis_facing_rows_avoid_candidate_or_rejected_sources": True,
             "swiss_final_efficiency_interpretation_pending": True,
@@ -2241,6 +2433,11 @@ def _render_consolidation_doc(
         "by source and assigns manual review bands. It has "
         f"{metadata['outputs']['source_review_plan_rows']} source rows and remains "
         "a human review queue, not an automatic source-status promotion.\n\n"
+        "## Agent Assistance Protocol\n\n"
+        "`data/results/thesis_agent_assistance_protocol.csv` documents how future "
+        "agents could help with source review, wording checks, advisor updates, "
+        "and bounded summaries. It is documentation-only and does not activate "
+        "runtime agents, MCP tools, model routing, or unlogged LLM interpretation.\n\n"
         "## Chapter Plan\n\n"
         + _markdown_table(
             chapter_plan[
@@ -2449,6 +2646,44 @@ def _render_source_review_plan_doc(
         "citation. Candidate or blocked sources remain unavailable for "
         "thesis-facing claims unless their metadata and status are reviewed "
         "under a separate source update.\n"
+    )
+
+
+def _render_agent_assistance_protocol_doc(
+    *,
+    agent_assistance_protocol: pd.DataFrame,
+    metadata: dict[str, object],
+) -> str:
+    display = agent_assistance_protocol[
+        [
+            "protocol_id",
+            "pipeline_step",
+            "current_artifact_boundary",
+            "allowed_inputs",
+            "allowed_outputs",
+            "audit_gate",
+            "activation_status",
+        ]
+    ]
+    return (
+        "# Thesis Agent Assistance Protocol\n\n"
+        "This protocol documents how future agents could improve the thesis "
+        "pipeline after deterministic artifacts and human review gates are stable. "
+        "It does not activate runtime agents, MCP tools, model routing, or LLM "
+        "interpretation.\n\n"
+        "## Counts\n\n"
+        f"- Protocol rows: {metadata['outputs']['agent_assistance_protocol_rows']}\n"
+        f"- Documentation-only rows: {metadata['agent_assistance_protocol_counts'].get('future_documentation_only', 0)}\n"
+        f"- Deferred rows: {metadata['agent_assistance_protocol_counts'].get('future_deferred', 0)}\n\n"
+        "## Protocol Rows\n\n"
+        + _markdown_table(display)
+        + "\n\n"
+        "## Activation Rule\n\n"
+        "No row may be implemented until a separate approved goal exists, "
+        "`llm_audit_log` integration is tested, allowed inputs are bounded, and "
+        "blocked behaviours remain enforced. Agents must not calculate thesis "
+        "metrics, read raw table dumps, expose wallet addresses by default, or "
+        "touch order or trading paths.\n"
     )
 
 

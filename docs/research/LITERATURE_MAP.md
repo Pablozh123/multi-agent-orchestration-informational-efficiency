@@ -77,10 +77,12 @@ Current generated consolidation artifacts:
 - `data/results/thesis_citation_review_packets.csv`
 - `data/results/thesis_chapter_plan.csv`
 - `data/results/thesis_agent_pipeline_roadmap.csv`
+- `data/results/thesis_agent_assistance_protocol.csv`
 - `docs/research/THESIS_CONSOLIDATION.md`
 - `docs/research/THESIS_TABLE_FIGURE_CAPTIONS.md`
 - `docs/research/THESIS_SOURCE_REVIEW_PLAN.md`
 - `docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md`
+- `docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md`
 - `docs/research/THESIS_CITATION_REVIEW_PACKETS.md`
 
 These artifacts are the current thesis-draft bridge from deterministic outputs
@@ -116,6 +118,9 @@ Current mapping rule:
   prototype/appendix for monitor outputs and descriptive-pending-result for the
   Swiss referendum track.
 - Agent-related rows remain future-work architecture only.
+- `thesis_agent_assistance_protocol.csv` documents possible future helper
+  roles over bounded artifacts. It does not activate runtime agents, MCP
+  tools, model routing, or unlogged LLM interpretation.
 
 ## Initial Literature Synthesis
 

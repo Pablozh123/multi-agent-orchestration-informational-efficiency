@@ -7,6 +7,7 @@ import pandas as pd
 import pytest
 
 from operations.analysis.thesis_consolidation import (
+    AGENT_ASSISTANCE_PROTOCOL_COLUMNS,
     AGENT_PIPELINE_COLUMNS,
     CHAPTER_PLAN_COLUMNS,
     CITATION_READINESS_COLUMNS,
@@ -30,6 +31,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     citation_packets = pd.read_csv(result.citation_review_packets_path)
     captions = pd.read_csv(result.table_figure_captions_path)
     source_review_plan = pd.read_csv(result.source_review_plan_path)
+    agent_protocol = pd.read_csv(result.agent_assistance_protocol_path)
     chapters = pd.read_csv(result.chapter_plan_path)
     agents = pd.read_csv(result.agent_pipeline_path)
     metadata = json.loads(result.metadata_path.read_text(encoding="utf-8"))
@@ -40,12 +42,14 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     citation_packet_doc = result.citation_review_docs_path.read_text(encoding="utf-8")
     caption_doc = result.table_figure_captions_docs_path.read_text(encoding="utf-8")
     source_review_doc = result.source_review_plan_docs_path.read_text(encoding="utf-8")
+    agent_protocol_doc = result.agent_assistance_protocol_docs_path.read_text(encoding="utf-8")
 
     assert tuple(evidence.columns) == EVIDENCE_COLUMNS
     assert tuple(citations.columns) == CITATION_READINESS_COLUMNS
     assert tuple(citation_packets.columns) == CITATION_REVIEW_PACKET_COLUMNS
     assert tuple(captions.columns) == TABLE_FIGURE_CAPTION_COLUMNS
     assert tuple(source_review_plan.columns) == SOURCE_REVIEW_PLAN_COLUMNS
+    assert tuple(agent_protocol.columns) == AGENT_ASSISTANCE_PROTOCOL_COLUMNS
     assert tuple(chapters.columns) == CHAPTER_PLAN_COLUMNS
     assert tuple(agents.columns) == AGENT_PIPELINE_COLUMNS
     assert result.evidence_rows == 13
@@ -54,6 +58,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert result.citation_review_packet_rows == 33
     assert result.table_figure_caption_rows == 10
     assert result.source_review_plan_rows == 12
+    assert result.agent_assistance_protocol_rows == 7
     assert result.chapter_rows == 8
     assert result.agent_stage_rows == 6
     assert metadata["method"]["does_not_use_llms"] is True
@@ -68,11 +73,13 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert metadata["outputs"]["citation_review_packet_rows"] == 33
     assert metadata["outputs"]["table_figure_caption_rows"] == 10
     assert metadata["outputs"]["source_review_plan_rows"] == 12
+    assert metadata["outputs"]["agent_assistance_protocol_rows"] == 7
     assert metadata["table_figure_caption_counts"]["core_table_captions"] == 5
     assert metadata["table_figure_caption_counts"]["core_figure_captions"] == 4
     assert metadata["guardrails"]["citation_review_packets_are_pending_human_review"] is True
     assert metadata["guardrails"]["table_figure_captions_use_curated_package_only"] is True
     assert metadata["guardrails"]["source_review_plan_is_manual_review_queue"] is True
+    assert metadata["guardrails"]["agent_assistance_protocol_is_documentation_only"] is True
     assert "Deferred Agent Pipeline Idea" in doc
     assert "Citation Readiness" in doc
     assert "Citation Review Packets" in doc
@@ -84,6 +91,7 @@ def test_generate_thesis_consolidation_writes_traceable_outputs(tmp_path: Path) 
     assert "Thesis Citation Review Packets" in citation_packet_doc
     assert "Thesis Table And Figure Captions" in caption_doc
     assert "Thesis Source Review Plan" in source_review_doc
+    assert "Thesis Agent Assistance Protocol" in agent_protocol_doc
     assert core["bounded_interpretation"].str.len().gt(0).all()
     assert package["main_limitation"].str.len().gt(0).all()
 
@@ -255,6 +263,28 @@ def test_agent_pipeline_is_documentation_only_and_audited(tmp_path: Path) -> Non
     assert "raw table" in joined
     assert "wallet-address" in joined
     assert "order or trading paths" in joined
+
+
+def test_agent_assistance_protocol_is_documentation_only(tmp_path: Path) -> None:
+    _write_fixture(tmp_path)
+
+    result = generate_thesis_consolidation(repo_root=tmp_path)
+
+    protocol = pd.read_csv(result.agent_assistance_protocol_path)
+    joined = "\n".join(protocol.fillna("").astype(str).agg(" ".join, axis=1).tolist()).lower()
+    metadata = json.loads(result.metadata_path.read_text(encoding="utf-8"))
+
+    assert set(protocol["activation_status"]).issubset(
+        {"future_documentation_only", "future_deferred"}
+    )
+    assert protocol["protocol_id"].is_unique
+    assert "llm_audit_log" in joined
+    assert "raw table" in joined
+    assert "order or trading paths" in joined
+    assert "calculating metrics" in joined
+    assert "no status changes" in joined
+    assert metadata["agent_assistance_protocol_counts"]["future_documentation_only"] == 6
+    assert metadata["agent_assistance_protocol_counts"]["future_deferred"] == 1
 
 
 def test_writing_blueprint_keeps_front_matter_method_focused(tmp_path: Path) -> None:

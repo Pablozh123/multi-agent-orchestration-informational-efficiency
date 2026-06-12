@@ -632,6 +632,12 @@ Current implemented consolidation:
   writing actions.
 - `data/results/thesis_agent_pipeline_roadmap.csv` defines documentation-only
   future agent stages and their activation gates.
+- `data/results/thesis_agent_assistance_protocol.csv` and
+  `docs/research/THESIS_AGENT_ASSISTANCE_PROTOCOL.md` translate the agent
+  outlook into seven documentation-only assistance protocols for source
+  review, evidence drafting, wording guardrails, table/figure checks, advisor
+  updates, monitor appendix review, and a deferred bounded MCP summary
+  interface.
 - `data/results/thesis_consolidation_metadata.json` records guardrails:
   no LLM use, no agents or MCP, no database writes, no external API calls,
   no raw table dumps, max future tool rows of 50, no wallet-address exposure

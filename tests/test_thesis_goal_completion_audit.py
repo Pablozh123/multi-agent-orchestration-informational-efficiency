@@ -23,6 +23,7 @@ def test_generate_goal_completion_audit_writes_remaining_gates(tmp_path: Path) -
     assert "Thesis Goal Completion Audit" in doc
     assert "Audit rows: 10" in doc
     assert "keine finale Zielerreichung" in doc
+    assert "thesis_source_access_audit.csv" in doc
     assert "Source Review" in doc
     assert chr(223) not in doc
 
@@ -93,6 +94,17 @@ def _write_fixture(root: Path) -> None:
         ]
         + [{"sequence_id": "draft_future", "draft_permission": "future_work_only"}]
     ).to_csv(results / "thesis_drafting_sequence.csv", index=False)
+    pd.DataFrame(
+        [
+            {
+                "source_id": f"source_{idx}",
+                "priority_band": "priority_1_method_foundation_review",
+                "local_file_exists": idx < 2,
+                "access_route": "local_pdf_review" if idx < 2 else "external_locator_review",
+            }
+            for idx in range(3)
+        ]
+    ).to_csv(results / "thesis_source_access_audit.csv", index=False)
 
     pd.DataFrame(
         [

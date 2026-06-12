@@ -9535,6 +9535,56 @@ Verification:
 - `.\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
   -> PASS, generated 22 indexed artifacts.
 
+## 2026-06-12 - Source access audit
+
+Goal context:
+
+- Continued `goal-thesis-consolidation-001`.
+- Worked on the open Source Review gate without promoting any source status.
+- Kept Review-Access, runtime agents, MCP, model routing, LLM metric
+  calculation, and trading paths deferred.
+
+Changes:
+
+- Added `operations/project/build_source_access_audit.py`.
+- Generated `data/results/thesis_source_access_audit.csv`.
+- Generated `docs/project/THESIS_SOURCE_ACCESS_AUDIT.md`.
+- Added `tests/test_source_access_audit.py`.
+- Updated `operations/project/build_thesis_goal_completion_audit.py` so the
+  goal audit includes Source Access counts.
+- Regenerated `data/results/thesis_goal_completion_audit.csv` and
+  `docs/project/THESIS_GOAL_COMPLETION_AUDIT.md`.
+- Updated `operations/project/build_thesis_consolidation_index.py`.
+- Regenerated `data/results/thesis_consolidation_index.csv` and
+  `docs/project/THESIS_CONSOLIDATION_INDEX.md`.
+- Updated `GOAL.md`, `ROADMAP.md`, and affected tests.
+
+Key output:
+
+- Source access rows: 15.
+- Priority-1 method-foundation rows: 11.
+- Local files available: 10 across all indexed sources.
+- Priority-1 access in the goal audit: 6 local files available and 5 external
+  locator reviews.
+- Candidate/blocked source use remains blocked from thesis-facing claims.
+- The audit reads access metadata only; it does not inspect source contents,
+  create page notes, or make sources final-citation-ready.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_source_access_audit.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_source_access_audit.py -q`
+  -> PASS, 2 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_source_access_audit`
+  -> PASS, generated 15 source-access rows.
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_source_access_audit.py operations/project/build_thesis_goal_completion_audit.py operations/project/build_thesis_consolidation_index.py`
+  -> PASS.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_source_access_audit.py tests/test_thesis_goal_completion_audit.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 6 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.build_source_access_audit; .\.venv\Scripts\python.exe -m operations.project.build_thesis_goal_completion_audit; .\.venv\Scripts\python.exe -m operations.project.build_thesis_consolidation_index`
+  -> PASS, generated 15 source-access rows, 10 goal-audit rows, and 23 indexed artifacts.
+
 ## 2026-06-12 - Advisor feedback log
 
 Goal context:

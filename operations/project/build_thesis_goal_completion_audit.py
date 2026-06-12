@@ -62,6 +62,7 @@ def generate_goal_completion_audit(
     curated_package = _read_csv(results_dir / "thesis_curated_result_package.csv")
     readiness = _read_csv(results_dir / "thesis_submission_readiness_board.csv")
     drafting = _read_csv(results_dir / "thesis_drafting_sequence.csv")
+    source_access = _read_csv(results_dir / "thesis_source_access_audit.csv")
     handoff_package = _read_csv(results_dir / "thesis_advisor_handoff_package.csv")
     handoff_note = _read_csv(results_dir / "thesis_advisor_handoff_note.csv")
     feedback_log = _read_csv(results_dir / "thesis_advisor_feedback_log_template.csv")
@@ -71,6 +72,7 @@ def generate_goal_completion_audit(
         curated_package=curated_package,
         readiness=readiness,
         drafting=drafting,
+        source_access=source_access,
         handoff_package=handoff_package,
         handoff_note=handoff_note,
         feedback_log=feedback_log,
@@ -97,6 +99,7 @@ def build_goal_completion_audit(
     curated_package: pd.DataFrame,
     readiness: pd.DataFrame,
     drafting: pd.DataFrame,
+    source_access: pd.DataFrame,
     handoff_package: pd.DataFrame,
     handoff_note: pd.DataFrame,
     feedback_log: pd.DataFrame,
@@ -115,6 +118,11 @@ def build_goal_completion_audit(
     )
     _require_columns(readiness, ("gate_area", "current_status"), "submission readiness")
     _require_columns(drafting, ("draft_permission", "sequence_id"), "drafting sequence")
+    _require_columns(
+        source_access,
+        ("source_id", "priority_band", "local_file_exists", "access_route"),
+        "source access audit",
+    )
     _require_columns(handoff_package, ("deliverable_id", "path"), "handoff package")
     _require_columns(handoff_note, ("section_id",), "handoff note")
     _require_columns(feedback_log, ("feedback_id", "advisor_feedback_status"), "feedback log")
@@ -135,6 +143,13 @@ def build_goal_completion_audit(
     feedback_pending = int(
         (feedback_log["advisor_feedback_status"] == "pending_advisor_feedback").sum()
     )
+    priority_1_access = source_access[
+        source_access["priority_band"] == "priority_1_method_foundation_review"
+    ]
+    local_access = int(priority_1_access["local_file_exists"].astype(bool).sum())
+    external_access = int(
+        (priority_1_access["access_route"] == "external_locator_review").sum()
+    )
 
     rows = [
         _audit_row(
@@ -150,11 +165,13 @@ def build_goal_completion_audit(
             audit_id="goal_audit_02_evidence_map",
             goal_requirement_de="Methoden und Interpretationen sind auf Artefakte und Quellen gemappt.",
             current_status="draft_ready_final_source_review_pending",
-            evidence_artifacts="data/results/thesis_evidence_map.csv; data/results/thesis_citation_readiness.csv",
+            evidence_artifacts="data/results/thesis_evidence_map.csv; data/results/thesis_citation_readiness.csv; data/results/thesis_source_access_audit.csv",
             key_evidence_de=(
                 f"Thesis-facing Evidence: {len(thesis_facing)} Zeilen; "
                 f"Methoden: {method_rows}; Interpretationen: {interpretation_rows}; "
-                f"Artefaktverweise: {artifact_rows}; Quellenverweise: {source_rows}."
+                f"Artefaktverweise: {artifact_rows}; Quellenverweise: {source_rows}. "
+                f"Priority-1 Source Access: {len(priority_1_access)} Quellen; "
+                f"lokal verfuegbar: {local_access}; extern zu pruefen: {external_access}."
             ),
             remaining_gap_de="Finale Zitationsreife bleibt vom manuellen Source Review abhaengig.",
             next_action_de="Priority-1-Quellen mit Seiten- oder Abschnittsnotizen pruefen.",

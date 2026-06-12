@@ -103,11 +103,13 @@ acceptance_criteria:
   Betreuung so the high-level path can be discussed quickly.
 - A goal-completion audit exists so achieved evidence and remaining final
   gates are separated before any completion claim.
+- A source-access audit exists so local PDF/HTML sources and external
+  locator-review sources are separated before manual Source Review.
 - Tests cover the generated evidence map and curated result package where
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add goal completion audit
+next_commit: docs: add source access audit
 
 ## Running Side Goal
 

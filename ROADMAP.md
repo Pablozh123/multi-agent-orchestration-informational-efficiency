@@ -741,6 +741,10 @@ Current implemented consolidation:
   current evidence, achieved control artifacts, and remaining final gates
   without claiming final completion while Source Review, Swiss result mapping,
   or DOCX render QA remain open.
+- `data/results/thesis_source_access_audit.csv` and
+  `docs/project/THESIS_SOURCE_ACCESS_AUDIT.md` audit source-review access
+  routes before manual Source Review: local PDFs/HTML files, external
+  DOI/JSTOR/URL locator reviews, and blocked/candidate source limits.
 - `data/results/thesis_consolidation_index.csv` and
   `docs/project/THESIS_CONSOLIDATION_INDEX.md` index the current
   consolidation deliverables so the Dozentenbericht, advisor checklist,

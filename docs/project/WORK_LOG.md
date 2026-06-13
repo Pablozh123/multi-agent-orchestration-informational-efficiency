@@ -12420,3 +12420,68 @@ Verification:
 Next recommended action:
 
 - `docs: add highlevel next-step control summary`.
+
+## 2026-06-13 - Highlevel Summary And H1 Worksheet
+
+Context:
+
+- Active goal: `goal-thesis-consolidation-001`.
+- The user asked to keep pushing the thesis-ready literature/artifact mapping,
+  compact result package, and documentation-only agent pipeline plan.
+- Review-Access remains paused; no source content was interpreted, no
+  final citation was released, and no runtime agent path was activated.
+
+Changes:
+
+- Added `operations.project.build_highlevel_next_step_control_summary`.
+- Generated `data/results/thesis_highlevel_next_step_control_summary.csv`.
+- Generated `docs/project/THESIS_HIGHLEVEL_NEXT_STEP_CONTROL_SUMMARY.md`.
+- Rebuilt `thesis_final_gate_board` and `thesis_agent_pipeline_safety_case`
+  after the latest Swiss snapshot so both now carry 50 Swiss running snapshot
+  rows.
+- Extended the consolidation index to 57 artifacts and committed the slice as
+  `f096df9 docs: add highlevel next-step control summary`.
+- Added `operations.project.build_h1_source_review_batch_worksheet`.
+- Generated `data/results/thesis_h1_source_review_batch_worksheet.csv`.
+- Generated `docs/project/THESIS_H1_SOURCE_REVIEW_BATCH_WORKSHEET.md`.
+- Extended the consolidation index to 58 artifacts and committed the slice as
+  `1285f00 docs: add h1 source review batch worksheet`.
+
+Key output:
+
+- Highlevel summary rows: 7.
+- Thesis-facing methods: 4.
+- Thesis-facing interpretations: 4.
+- H1-H2-H3 Source-Links: 23.
+- Total method/interpretation Source-Links: 31.
+- Core tables: 5.
+- Core figures: 4.
+- Future-agent safety rows: 7.
+- Active runtime-agent rows: 0.
+- H1 worksheet rows: 10.
+- H1 sources: 4.
+- H1 method rows: 4.
+- H1 interpretation rows: 6.
+- H1 pending citation rows: 10.
+- H1 final-release-ready rows: 0.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_highlevel_next_step_control_summary.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_highlevel_next_step_control_summary.py tests\test_thesis_consolidation_index.py tests\test_method_interpretation_source_coverage.py tests\test_thesis_traceability_audit.py tests\test_thesis_final_gate_board.py tests\test_agent_pipeline_safety_case.py tests\test_source_review_batch_execution_plan.py -q`
+  -> PASS, 18 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_source_review_batch_worksheet.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h1_source_review_batch_worksheet.py tests\test_source_review_batch_execution_plan.py tests\test_highlevel_next_step_control_summary.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 11 passed.
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_highlevel_next_step_control_summary.py operations/project/build_h1_source_review_batch_worksheet.py operations/project/build_thesis_consolidation_index.py tests/test_highlevel_next_step_control_summary.py tests/test_h1_source_review_batch_worksheet.py tests/test_thesis_consolidation_index.py`
+  -> PASS.
+- `rg -n "<sharp-s>" ...` on touched files -> PASS, no matches.
+- `git diff --check` -> PASS, CRLF warnings only.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `612 passed in 71.54s (0:01:11)`, clean Git status, no blockers.
+
+Next recommended action:
+
+- `docs: add h2 source review batch worksheet`.

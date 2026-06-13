@@ -823,6 +823,14 @@ Current implemented consolidation:
   Page-/Section-Note, Claim-Support, Blocked-Wording, Citation-Use,
   Kausalclaim-Grenze, reviewer metadata, 5 pending citation rows,
   0 final-release rows, and no source-status promotion.
+- `data/results/thesis_h2_source_review_ledger_fill_guide.csv` and
+  `docs/project/THESIS_H2_SOURCE_REVIEW_LEDGER_FILL_GUIDE.md` map the 5 H2
+  worksheet rows to 5 Source Review Progress Ledger rows: 3 sources, 3 method
+  rows, 2 interpretation rows, 4 external locator rows, 1 local PDF row,
+  T3/F2, Kausalclaim-Grenze, allowed Ledger fields, preserved_manual_fields
+  regeneration check, 0 final-release rows, no Kausalclaims, no final
+  citation, no source-status promotion, no runtime agents, max 50 rows, and
+  `llm_audit_log`.
 - `data/results/thesis_h3_source_review_decision_queue.csv` and
   `docs/project/THESIS_H3_SOURCE_REVIEW_DECISION_QUEUE.md` turn the H3 slice
   into a direct decision queue: 8 H3 decision rows, 4 sources, 5 method rows,
@@ -1166,6 +1174,7 @@ Current implemented consolidation:
   feedback log, advisor source-review follow-up, H1 manual source-review
   follow-up, H1 source-review batch worksheet, H1 source-review ledger fill
   guide, H2 manual source-review follow-up, H2 source-review batch worksheet,
+  H2 source-review ledger fill guide,
   H3 manual source-review follow-up, H3 source-review batch worksheet,
   source-review worksheet
   overview, H1-H2-H3 worksheet drafting bridge, manual source-review update

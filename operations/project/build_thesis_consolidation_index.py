@@ -342,6 +342,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="5 H2 worksheet rows, 3 Quellen, 3 method rows, 2 interpretation rows, T3/F2, 5 pending citation rows, 0 final-release rows; keine Kausalclaims, keine finale Zitation, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.",
         ),
         _index_row(
+            artifact_id="index_19_h2_source_review_ledger_fill_guide",
+            artifact_type="h2_source_review_ledger_fill_guide",
+            path="docs/project/THESIS_H2_SOURCE_REVIEW_LEDGER_FILL_GUIDE.md; data/results/thesis_h2_source_review_ledger_fill_guide.csv",
+            purpose_de="Fuehrt die 5 H2 Worksheet-Zeilen auf die passenden Source Review Progress Ledger-Zeilen und macht die Kausalclaim-Grenze vor manueller Ledger-Pflege sichtbar.",
+            use_now_de="Als konkrete H2-Ledger-Fill-Anleitung nutzen: Page-/Section-Note, Claim-Support, Blocked-Wording, Kausalclaim-Grenze, Citation-Use und Reviewer-Metadaten eintragen, danach Regeneration und preserved_manual_fields pruefen.",
+            gate_or_limit_de="5 H2 guide rows, 5 matched ledger rows, 3 Quellen, 3 method rows, 2 interpretation rows, T3/F2, 0 final-release rows; keine Kausalclaims, keine finale Zitation, keine Quellenstatus-Hochstufung, keine Runtime-Agenten, max 50 rows und llm_audit_log.",
+        ),
+        _index_row(
             artifact_id="index_19_h3_manual_source_review_followup",
             artifact_type="h3_manual_source_review_followup",
             path="docs/project/THESIS_H3_MANUAL_SOURCE_REVIEW_FOLLOWUP.md; data/results/thesis_h3_manual_source_review_followup.csv",
@@ -674,6 +682,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "H1 Source Review Ledger Fill Guide, "
         "H2 Manual Source Review Follow-up, H2 Source Review Decision Queue, "
         "H2 Source Review Batch Worksheet, "
+        "H2 Source Review Ledger Fill Guide, "
         "H3 Manual Source Review Follow-up, H3 Source Review Decision Queue, "
         "H3 Source Review Batch Worksheet, "
         "Source Review Worksheet Overview, "
@@ -741,6 +750,13 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Nutze das H2 Source Review Batch Worksheet als unmittelbare "
         "5-zeilige H2-Arbeitsliste fuer Page-/Section-Note, Claim-Support, "
         "Blocked-Wording, Kausalclaim-Grenze, Citation-Use und Reviewer-Metadaten. "
+        "Nutze den H2 Source Review Ledger Fill Guide danach als konkrete "
+        "Uebertragungsregel vom H2 Worksheet in den Source Review Progress "
+        "Ledger: 5 Guide-Zeilen muessen 5 Ledger-Zeilen matchen, die "
+        "Kausalclaim-Grenze bleibt sichtbar, und nur review_status, "
+        "page_or_section_note, claim_support_decision, blocked_wording_check, "
+        "citation_use_decision, reviewed_by, reviewed_at und review_comment_de "
+        "duerfen manuell gepflegt werden. "
         "Nutze das H3 Source Review Batch Worksheet als unmittelbare "
         "8-zeilige H3-Arbeitsliste fuer Page-/Section-Note, Claim-Support, "
         "Blocked-Wording, Granger-Grenze, Wallet-Grenze, Citation-Use und "

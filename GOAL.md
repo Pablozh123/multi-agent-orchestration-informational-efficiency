@@ -183,6 +183,17 @@ acceptance_criteria:
   `reviewed_at`, `review_comment_de`, 5 pending citation rows,
   0 final-release-ready rows, no Kausalclaims, and no source-status
   promotion.
+- A H2 source-review ledger fill guide exists so the 5 H2 worksheet rows can
+  be mapped into the Source Review Progress Ledger without Review-Access or
+  automation: 5 guide rows, 5 matched ledger rows, 3 sources, 3 method rows,
+  2 interpretation rows, 4 external locator rows, 1 local PDF row, T3/F2,
+  Kausalclaim-Grenze, allowed Ledger fields `review_status`,
+  `page_or_section_note`, `claim_support_decision`,
+  `blocked_wording_check`, `citation_use_decision`, `reviewed_by`,
+  `reviewed_at`, `review_comment_de`, preserved_manual_fields regeneration
+  check, 0 final-release-ready rows, no Kausalclaims, no final citation,
+  no source-status promotion, no runtime agents, max 50 rows, and
+  `llm_audit_log` before later agent help.
 - A H3 manual source-review follow-up exists so the third empirical-core
   review slice is startable with 8 H3 source rows, 4 H3 sources, wallet and
   Granger method Evidence IDs, interpretation Evidence IDs, deterministic

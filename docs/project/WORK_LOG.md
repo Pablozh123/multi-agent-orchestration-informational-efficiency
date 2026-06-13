@@ -12343,3 +12343,54 @@ Verification:
 - `git diff --check` -> PASS.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `603 passed in 73.49s (0:01:13)`.
+
+## 2026-06-13 - Source Review Batch Execution Plan
+
+Context:
+
+- Active goal: `goal-thesis-consolidation-001`.
+- Review-Access remains paused; this is a high-level manual execution plan for
+  the existing H1-H2-H3 Source Review gates.
+- No source content was interpreted, no Source Review row was promoted, and no
+  runtime agent path was activated.
+
+Changes:
+
+- Added `operations.project.build_source_review_batch_execution_plan`.
+- Generated `data/results/thesis_source_review_batch_execution_plan.csv`.
+- Generated `docs/project/THESIS_SOURCE_REVIEW_BATCH_EXECUTION_PLAN.md`.
+- Extended the consolidation index to 56 artifacts.
+- Updated `GOAL.md` and `ROADMAP.md` with the four-batch manual review order.
+- Committed the content slice as
+  `485aac3 docs: add source review batch execution plan`.
+
+Key output:
+
+- Batch plan rows: 4.
+- Source review rows: 23.
+- H1/H2/H3 rows: 10 / 5 / 8.
+- Unique sources: 9.
+- Method rows: 12.
+- Interpretation rows: 11.
+- External locator rows: 13.
+- Local PDF rows: 10.
+- Pending citation rows: 23.
+- Final ready rows: 0.
+- Source-status change rows: 0.
+- Final release ready rows: 0.
+- Update checklist steps: 8.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_source_review_batch_execution_plan.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_source_review_batch_execution_plan.py tests\test_manual_source_review_update_checklist.py tests\test_ledger_citation_gate_summary.py tests\test_h1_h2_h3_manual_source_review_execution_pass.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 13 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_source_review_batch_execution_plan.py tests\test_h1_h2_h3_decision_queue_overview.py tests\test_h1_h2_h3_decision_queue_ledger_alignment.py tests\test_manual_source_review_update_checklist.py tests\test_ledger_citation_gate_summary.py tests\test_h1_h2_h3_manual_source_review_execution_pass.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 17 passed.
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_source_review_batch_execution_plan.py operations/project/build_thesis_consolidation_index.py tests/test_source_review_batch_execution_plan.py tests/test_thesis_consolidation_index.py`
+  -> PASS.
+- `rg -n "<sharp-s>" ...` on touched files -> PASS, no matches.
+- `git diff --check` on touched files -> PASS, CRLF warnings only.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `606 passed in 67.95s (0:01:07)`.

@@ -19,11 +19,12 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     doc = result.docs_path.read_text(encoding="utf-8")
 
     assert tuple(index.columns) == INDEX_COLUMNS
-    assert result.index_rows == 56
+    assert result.index_rows == 57
     assert "Thesis Consolidation Index" in doc
-    assert "Indexed artifacts: 56" in doc
+    assert "Indexed artifacts: 57" in doc
     assert "dozentenbericht_ba_thesis.docx" in doc
     assert "THESIS_ADVISOR_HANDOFF_PACKAGE.md" in doc
+    assert "THESIS_HIGHLEVEL_NEXT_STEP_CONTROL_SUMMARY.md" in doc
     assert "DOZENTEN_UEBERGABE_TEXT.md" in doc
     assert "DOZENTEN_FEEDBACK_LOG.md" in doc
     assert "DOZENTEN_FEEDBACK_INTEGRATION_CHECKLIST.md" in doc
@@ -106,6 +107,13 @@ def test_thesis_consolidation_index_keeps_deferred_boundaries(tmp_path: Path) ->
     assert "agent_pipeline_control" in joined
     assert "goal_completion_audit" in joined
     assert "advisor_feedback_integration" in joined
+    assert "highlevel_next_step_control_summary" in joined
+    assert "7 control rows" in joined
+    assert "4 thesis-facing methoden" in joined
+    assert "4 thesis-facing interpretationen" in joined
+    assert "5 kern-tabellen" in joined
+    assert "4 kern-figuren" in joined
+    assert "0 aktive runtime-agenten" in joined
     assert "advisor_source_review_followup" in joined
     assert "h1_manual_source_review_followup" in joined
     assert "h1_source_review_decision_queue" in joined
@@ -139,6 +147,8 @@ def _write_fixture(root: Path) -> None:
         "docs/project/DOZENTEN_ABSPRACHE_CHECKLIST.md",
         "docs/research/THESIS_PROJECT_HIGHLEVEL_VIEW.md",
         "docs/research/THESIS_NEXT_WORK_PLAN.md",
+        "docs/project/THESIS_HIGHLEVEL_NEXT_STEP_CONTROL_SUMMARY.md",
+        "data/results/thesis_highlevel_next_step_control_summary.csv",
         "docs/project/THESIS_EXECUTION_CHECKLIST.md",
         "data/results/thesis_execution_checklist.csv",
         "docs/project/THESIS_CHAPTER_SOURCE_BINDINGS.md",

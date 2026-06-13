@@ -835,6 +835,14 @@ Current implemented consolidation:
   rows, 13 external locator rows, 10 local PDF rows, 23 pending citation
   rows, 0 final-ready rows, 0 source-status change rows, 8 update checklist
   steps, and 0 final-release rows.
+- `data/results/thesis_highlevel_next_step_control_summary.csv` and
+  `docs/project/THESIS_HIGHLEVEL_NEXT_STEP_CONTROL_SUMMARY.md` provide the
+  operative high-level path after Review-Access remains paused: 7 control
+  rows, 4 thesis-facing methods, 4 thesis-facing interpretations, 23
+  H1-H2-H3 Source-Links, 31 total method/interpretation Source-Links, 5 core
+  tables, 4 core figures, 4 source-review batch rows, 23 pending citation
+  rows, 0 final-release rows, 7 future-agent safety rows, and 0 active
+  runtime-agent rows.
 - `data/results/thesis_submission_readiness_board.csv` and
   `docs/project/THESIS_SUBMISSION_READINESS_BOARD.md` provide a nine-gate
   submission-readiness board: advisor handoff, chapter/source mapping, source
@@ -1043,6 +1051,12 @@ Current implemented consolidation:
   rebuild/finalgate, with 23 Source Review rows, 23 pending citation rows,
   0 final-ready rows, 0 source-status change rows, 0 final-release rows,
   and inactive future-agent boundaries.
+- `data/results/thesis_highlevel_next_step_control_summary.csv` and
+  `docs/project/THESIS_HIGHLEVEL_NEXT_STEP_CONTROL_SUMMARY.md` connect the
+  mapped evidence, compact result package, Source Review batch plan, H1-H3
+  writing path, Swiss/Monitor gates, future-agent safety case, and final QA
+  into one 7-row control artifact. It keeps 0 final-release rows and 0 active
+  runtime-agent rows visible while bounded BA drafting continues.
 - `data/results/thesis_h1_h2_h3_core_sections.csv` and
   `docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md` translate the H1-H2-H3
   empirical core into three thesis-ready section rows: each row binds
@@ -1067,7 +1081,7 @@ Current implemented consolidation:
   methods, 4 thesis-facing interpretations, 23 H1-H2-H3 Source-Links, 31
   total method/interpretation Source-Links including Monitor/Swiss, 23 open
   Manual Source Review rows, 5 core tables, 4 core figures, the refreshed
-  Swiss gate with 48 running snapshot rows, DOCX-QA, bounded read-only access,
+  Swiss gate with 50 running snapshot rows, DOCX-QA, bounded read-only access,
   max 50 rows, `llm_audit_log`, and 0 active runtime rows.
 - `data/results/thesis_consolidation_index.csv` and
   `docs/project/THESIS_CONSOLIDATION_INDEX.md` index the current
@@ -1082,7 +1096,8 @@ Current implemented consolidation:
   feedback log, advisor source-review follow-up, H1 manual source-review
   follow-up, H2 manual source-review follow-up, H3 manual source-review
   follow-up, manual source-review update checklist, source review batch
-  execution plan, manual source-review follow-up overview, submission
+  execution plan, highlevel next-step control summary, manual
+  source-review follow-up overview, submission
   readiness board, drafting sequence, wording guard, table/figure captions,
   chapter draft, source review plan, agent protocol, status, and work log are
   easy to navigate.

@@ -118,6 +118,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Kein Scope-Ausbau vor geschriebenem H1-H3-Kern.",
         ),
         _index_row(
+            artifact_id="index_05_highlevel_next_step_control_summary",
+            artifact_type="highlevel_next_step_control_summary",
+            path="docs/project/THESIS_HIGHLEVEL_NEXT_STEP_CONTROL_SUMMARY.md; data/results/thesis_highlevel_next_step_control_summary.csv",
+            purpose_de="Verdichtet Evidence-/Source-Mapping, kompaktes Tabellen-/Figurenpaket, Source-Review-Batches, H1-H3-Schreibpfad, Swiss/Monitor-Gates, Agent-Future-Work und finale QA in 7 Steuerungszeilen.",
+            use_now_de="Als naechste High-Level-Navigation nutzen, bevor H1-H3-Prosa, manuelle Source Review, Tabellen/Figuren-Integration oder Agent-Future-Work weitergefuehrt werden.",
+            gate_or_limit_de="7 control rows, 4 thesis-facing Methoden, 4 thesis-facing Interpretationen, 5 Kern-Tabellen, 4 Kern-Figuren, 23 pending citation rows, 0 final-release rows und 0 aktive Runtime-Agenten.",
+        ),
+        _index_row(
             artifact_id="index_06_execution_checklist",
             artifact_type="execution_plan",
             path="docs/project/THESIS_EXECUTION_CHECKLIST.md; data/results/thesis_execution_checklist.csv",
@@ -601,6 +609,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "# Thesis Consolidation Index\n\n"
         "Dieser Index zeigt, welche Artefakte fuer den aktuellen Highlevel-"
         "Projektstand, den Dozentenbericht, Source Review, Wording Guard, "
+        "Highlevel Next-Step Control Summary, "
         "Advisor Handoff Package, Advisor Handoff Note, Advisor Feedback Log, "
         "Advisor Feedback Integration Checklist, Advisor Source Review "
         "Follow-up, H1 Manual Source Review Follow-up, H1 Source Review Decision Queue, "
@@ -634,6 +643,10 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Chat-Vorlage. Nutze das Feedback-Log nach der Betreuung und die "
         "Feedback-Integration-Checklist, um daraus kleine Folgecommits mit "
         "Quellen-, Artefakt-, Tabellen/Figuren- und Agent-Gates abzuleiten. "
+        "Nutze die Highlevel Next-Step Control Summary als operative "
+        "7-Zeilen-Navigation ueber Evidence-/Source-Mapping, kompaktes "
+        "Tabellen-/Figurenpaket, Source-Review-Batches, H1-H3-Schreibpfad, "
+        "Swiss/Monitor-Gates, Agent-Future-Work und finale QA. "
         "Nutze das Advisor Source Review Follow-up als direkte Reihenfolge "
         "fuer Feedback-Erfassung, Source-Review-Tiefe, H1-H2-H3 Manual Source "
         "Review, bounded Draft, Final-Gates und Agent-Future-Work-Grenze. "

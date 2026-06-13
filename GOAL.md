@@ -194,6 +194,14 @@ acceptance_criteria:
   13 external locator rows, 10 local PDF rows, 23 pending citation rows,
   0 final-ready rows, 0 source-status change rows, 0 final-release-ready
   rows, 8 update checklist steps, and inactive future-agent boundaries.
+- A high-level next-step control summary exists so the project can move from
+  mapped evidence to BA writing without Review-Access: 7 control rows, 4
+  thesis-facing methods, 4 thesis-facing interpretations, 23 H1-H2-H3
+  Source-Links, 31 total method/interpretation Source-Links, 5 core tables,
+  4 core figures, 4 source-review batch rows, 23 pending citation rows,
+  0 final-release-ready rows, 7 future-agent safety rows, 0 active runtime
+  agent rows, Swiss/Monitor gates, DOCX-QA, max 50 rows, and `llm_audit_log`
+  boundaries.
 - A consolidated H1-H2-H3 manual source-review follow-up overview exists so
   the 23 open empirical-core review rows are visible in one compact control
   artifact with 9 unique sources, method/interpretation counts, access-route
@@ -333,7 +341,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add highlevel next-step control summary
+next_commit: docs: add h1 source review batch worksheet
 
 ## Running Side Goal
 

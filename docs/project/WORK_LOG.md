@@ -12394,3 +12394,29 @@ Verification:
 - `git diff --check` on touched files -> PASS, CRLF warnings only.
 - `.\.venv\Scripts\python.exe -m operations.project.update_status`
   -> PASS, `606 passed in 67.95s (0:01:07)`.
+
+## 2026-06-13 - Final Control Snapshot After Batch Plan
+
+Context:
+
+- Active goal: `goal-thesis-consolidation-001`.
+- The Source Review Batch Execution Plan content commit was already recorded as
+  `485aac3 docs: add source review batch execution plan`.
+- A background Swiss referendum auto-refresh added one bounded read-only
+  snapshot; it was committed separately as
+  `b231c5c data: update swiss referendum auto refresh snapshot`.
+- Swiss referendum interpretation remains blocked until the official result is
+  available.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> PASS, `606 passed in 62.80s (0:01:02)`.
+- `.\.venv\Scripts\python.exe -m operations.project.commit_plan`
+  -> PASS, separated project control docs from Swiss data files.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `606 passed in 64.56s (0:01:04)`, clean Git status, no blockers.
+
+Next recommended action:
+
+- `docs: add highlevel next-step control summary`.

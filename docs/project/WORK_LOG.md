@@ -12617,3 +12617,55 @@ DOCX QA note:
 Next recommended action:
 
 - `docs: update project control workflow`.
+
+## 2026-06-13 - Highlevel Thesis Writing Handoff Without Review Access
+
+Context:
+
+- Active goal: `goal-thesis-consolidation-001`.
+- Review-Access remains paused.
+- This slice turns the existing high-level controls into a direct BA writing
+  handoff, without reading source contents, calculating new metrics, promoting
+  source status, or activating runtime agents.
+
+Changes:
+
+- Added `operations.project.build_highlevel_thesis_writing_handoff`.
+- Generated `data/results/thesis_highlevel_thesis_writing_handoff.csv`.
+- Generated `docs/project/THESIS_HIGHLEVEL_THESIS_WRITING_HANDOFF.md`.
+- Updated the thesis consolidation index to 63 artifacts.
+- Updated `GOAL.md` and `ROADMAP.md` so the new handoff is part of the
+  accepted high-level project view.
+- Committed the slice as
+  `a50a07b docs: add highlevel thesis writing handoff without review access`.
+
+Key output:
+
+- Handoff rows: 7.
+- Bounded-draft-ready rows: 7.
+- Final-submission-ready rows: 0.
+- Project handoff areas: project frame, H1, H2, H3, compact
+  table/figure integration, manual Source Review/Citation Gate, and
+  Agent/Swiss/Final-QA boundary.
+- Source/Draft controls preserved: 23 worksheet rows, 12 method rows,
+  11 interpretation rows, 0 source/artifact gaps, 15 drafting steps,
+  23 pending citation rows, and 0 final-release rows.
+- Compact result controls preserved: 5 core tables, 4 core figures,
+  T2/F1, T3/F2, and T4/F3 for H1-H2-H3.
+- Agent controls preserved: 7 future-agent rows, 6 documentation-only rows,
+  1 deferred row, and 0 active runtime rows.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_highlevel_thesis_writing_handoff.py tests/test_thesis_consolidation_index.py tests/test_highlevel_next_step_control_summary.py tests/test_h1_h2_h3_source_gated_thesis_drafting_pass.py tests/test_h1_h2_h3_worksheet_drafting_bridge.py -q`
+  -> PASS, 13 passed.
+- `.\.venv\Scripts\python.exe -m py_compile ...` on touched generator and
+  test files -> PASS.
+- `rg -n "<sharp-s>" ...` on touched thesis-facing files -> PASS, no matches.
+- `git diff --check` -> PASS, CRLF warnings only.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `627 passed in 70.56s (0:01:10)`.
+
+Next recommended action:
+
+- `docs: update project control workflow`.

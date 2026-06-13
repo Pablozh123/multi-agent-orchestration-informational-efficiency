@@ -12618,6 +12618,60 @@ Next recommended action:
 
 - `docs: update project control workflow`.
 
+## 2026-06-13 - H1 Source Review Ledger Fill Guide
+
+Context:
+
+- Active goal: `goal-thesis-consolidation-001`.
+- Review-Access remains paused.
+- This slice makes the first H1 manual Source Review batch directly usable for
+  Ledger entry without reading source contents, calculating metrics, promoting
+  source status, or activating runtime agents.
+
+Changes:
+
+- Added `operations.project.build_h1_source_review_ledger_fill_guide`.
+- Generated `data/results/thesis_h1_source_review_ledger_fill_guide.csv`.
+- Generated `docs/project/THESIS_H1_SOURCE_REVIEW_LEDGER_FILL_GUIDE.md`.
+- Updated the thesis consolidation index to 64 artifacts.
+- Updated `GOAL.md` and `ROADMAP.md` so the H1 ledger-fill guide is part of
+  the accepted manual Source Review path.
+- Committed the slice as
+  `aac5c55 docs: add h1 source review ledger fill guide`.
+
+Key output:
+
+- H1 guide rows: 10.
+- Matched H1 ledger rows: 10.
+- H1 unique sources: 4.
+- H1 method rows: 4.
+- H1 interpretation rows: 6.
+- External locator rows: 7.
+- Local PDF rows: 3.
+- Selected table/figure: T2/F1.
+- Final-release-ready rows: 0.
+- Allowed manual Ledger fields: `review_status`, `page_or_section_note`,
+  `claim_support_decision`, `blocked_wording_check`,
+  `citation_use_decision`, `reviewed_by`, `reviewed_at`,
+  `review_comment_de`.
+- Regeneration guard: check `preserved_manual_fields=True` after Ledger
+  rebuild.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_h1_source_review_ledger_fill_guide.py tests/test_h1_source_review_batch_worksheet.py tests/test_manual_source_review_update_checklist.py tests/test_h1_h2_h3_decision_queue_ledger_alignment.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 13 passed.
+- `.\.venv\Scripts\python.exe -m py_compile ...` on touched generator and
+  test files -> PASS.
+- `rg -n "<sharp-s>" ...` on touched thesis-facing files -> PASS, no matches.
+- `git diff --check` -> PASS, CRLF warnings only.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `630 passed in 64.33s (0:01:04)`.
+
+Next recommended action:
+
+- `docs: update project control workflow`.
+
 ## 2026-06-13 - Highlevel Thesis Writing Handoff Without Review Access
 
 Context:

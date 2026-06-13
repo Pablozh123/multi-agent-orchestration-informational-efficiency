@@ -153,6 +153,16 @@ acceptance_criteria:
   `blocked_wording_check`, `citation_use_decision`, `reviewed_by`,
   `reviewed_at`, `review_comment_de`, 10 pending citation rows,
   0 final-release-ready rows, and no source-status promotion.
+- A H1 source-review ledger fill guide exists so the 10 H1 worksheet rows can
+  be mapped into the Source Review Progress Ledger without Review-Access or
+  automation: 10 guide rows, 10 matched ledger rows, 4 sources, 4 method rows,
+  6 interpretation rows, 7 external locator rows, 3 local PDF rows, T2/F1,
+  allowed Ledger fields `review_status`, `page_or_section_note`,
+  `claim_support_decision`, `blocked_wording_check`,
+  `citation_use_decision`, `reviewed_by`, `reviewed_at`,
+  `review_comment_de`, preserved_manual_fields regeneration check,
+  0 final-release-ready rows, no final citation, no source-status promotion,
+  no runtime agents, max 50 rows, and `llm_audit_log` before later agent help.
 - A H2 manual source-review follow-up exists so the second empirical-core
   review slice is startable with 5 H2 source rows, 3 H2 sources, method and
   interpretation Evidence IDs, deterministic artifacts, Page-/Section-Note,

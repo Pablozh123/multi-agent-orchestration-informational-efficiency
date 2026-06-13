@@ -802,6 +802,14 @@ Current implemented consolidation:
   Page-/Section-Note, Claim-Support, Blocked-Wording, Citation-Use,
   reviewer metadata, 10 pending citation rows, 0 final-release rows, and no
   source-status promotion.
+- `data/results/thesis_h1_source_review_ledger_fill_guide.csv` and
+  `docs/project/THESIS_H1_SOURCE_REVIEW_LEDGER_FILL_GUIDE.md` map those
+  10 H1 worksheet rows into the Source Review Progress Ledger: 10 guide rows,
+  10 matched ledger rows, 4 sources, 4 method rows, 6 interpretation rows,
+  7 external locator rows, 3 local PDF rows, T2/F1, allowed Ledger fields,
+  preserved_manual_fields regeneration check, 0 final-release rows,
+  no final citation, no source-status promotion, no runtime agents,
+  max 50 rows, and `llm_audit_log`.
 - `data/results/thesis_h2_source_review_decision_queue.csv` and
   `docs/project/THESIS_H2_SOURCE_REVIEW_DECISION_QUEUE.md` turn the H2 slice
   into a direct decision queue: 5 H2 decision rows, 3 sources, 3 method rows,
@@ -1156,9 +1164,10 @@ Current implemented consolidation:
   bounded chapter draft, thesis final gate board, traceability audit, chapter
   source bindings, agent future-work handoff, advisor handoff note, advisor
   feedback log, advisor source-review follow-up, H1 manual source-review
-  follow-up, H1 source-review batch worksheet, H2 manual source-review
-  follow-up, H2 source-review batch worksheet, H3 manual source-review
-  follow-up, H3 source-review batch worksheet, source-review worksheet
+  follow-up, H1 source-review batch worksheet, H1 source-review ledger fill
+  guide, H2 manual source-review follow-up, H2 source-review batch worksheet,
+  H3 manual source-review follow-up, H3 source-review batch worksheet,
+  source-review worksheet
   overview, H1-H2-H3 worksheet drafting bridge, manual source-review update
   checklist, source review batch execution plan, highlevel next-step control
   summary, highlevel thesis writing handoff, manual

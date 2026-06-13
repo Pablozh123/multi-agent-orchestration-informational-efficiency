@@ -187,6 +187,13 @@ acceptance_criteria:
   `reviewed_at`, `review_comment_de`, 8 pending citation rows,
   0 final-release-ready rows, no Kausalclaims, no Wallet-Adressen, no Trading
   or Profitabilitaetsclaims, and no source-status promotion.
+- A consolidated source-review worksheet overview exists so the H1, H2, H3
+  manual worksheets are visible in one H1/H2/H3/TOTAL control artifact:
+  4 overview rows, 23 worksheet rows, 9 unique sources, 12 method rows,
+  11 interpretation rows, 13 external locator rows, 10 local PDF rows,
+  23 pending citation rows, 0 final-release-ready rows, T2/F1, T3/F2,
+  T4/F3 bindings, H2 Kausalclaim-Grenze, H3 Granger-Grenze and
+  Wallet-Grenze, and no source-status promotion.
 - A consolidated H1-H2-H3 decision queue overview exists so the operative
   review path is visible in one compact control artifact: 3 overview rows,
   23 decision rows, 9 unique sources, 12 method rows, 11 interpretation rows,
@@ -367,7 +374,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add source review worksheet overview
+next_commit: docs: add h1 h2 h3 worksheet to drafting bridge
 
 ## Running Side Goal
 

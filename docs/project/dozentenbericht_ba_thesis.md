@@ -1,6 +1,6 @@
 # Dozentenbericht zur Bachelorarbeit
 
-Erstellt: 2026-06-12T22:59:12+00:00
+Erstellt: 2026-06-13T01:15:34+00:00
 
 **Arbeitstitel:** Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen.
 
@@ -157,6 +157,21 @@ Review-Access bleibt pausiert; auf Projektebene geht es jetzt ueber Advisor-Feed
 
 Auch diese Sequenz ist kein finaler Zitations- oder Abgabeclaim: Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use bleiben manuelle Gates; Agenten bleiben documentation-only Future Work.
 
+## Worksheet-to-Drafting Bridge fuer H1-H2-H3
+
+Die Worksheet-Drafting-Bridge verbindet 23 manuelle H1-H2-H3 Worksheet-Zeilen mit 15 source-gated Schreibschritten. Method rows: 12; Interpretation rows: 11; Source/artifact gaps: 0; final-release rows: 0.
+Jede Methode und jede Interpretation muss eine Source ID, eine Evidence ID, ein deterministisches Artefakt, eine Limitation und ein Source-Review-Gate behalten. Keine finale Zitation und keine Quellenstatus-Hochstufung ohne vollstaendige manuelle Source Review.
+Damit sieht der Dozent in einer kleinen Bruecke, welche Quellen- und Artefaktpflicht vor jedem Absatz gilt und warum der Haupttext bei T2/F1, T3/F2 und T4/F3 bleibt.
+
+| Kapitel | Worksheets | Drafting | Tabelle/Figur | Gate |
+| --- | --- | --- | --- | --- |
+| H1 | 10 rows; 4 Quellen; 4 method / 6 interpretation | 5 steps; 5 bounded; 0 final-ready | T2 / F1 | H1 bleibt final blockiert, bis die 10 Worksheet-Zeilen manuell mit Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use entschieden sind; keine allgemeine Marktueberlegenheit behaupten. |
+| H2 | 5 rows; 3 Quellen; 3 method / 2 interpretation | 5 steps; 5 bounded; 0 final-ready | T3 / F2 | H2 bleibt final blockiert, bis die 5 Worksheet-Zeilen inklusive Kausalclaim-Grenze entschieden sind; keine Intraday- oder Kausalclaims. |
+| H3 | 8 rows; 4 Quellen; 5 method / 3 interpretation | 5 steps; 5 bounded; 0 final-ready | T4 / F3 | H3 bleibt final blockiert, bis die 8 Worksheet-Zeilen inklusive Granger-Grenze und Wallet-Grenze entschieden sind; keine Wallet-Adressen, Trading-Claims oder Profitabilitaetsclaims. |
+| TOTAL | 23 rows; 9 Quellen; 12 method / 11 interpretation | 15 steps; 15 bounded; 0 final-ready | T2, T3, T4 / F1, F2, F3 | TOTAL bleibt final blockiert, bis alle 23 H1-H2-H3 Worksheet-Zeilen manuell entschieden und Ledger, Citation Gate Summary, Batch Plan, Worksheet Overview und Index regeneriert sind. |
+
+Agenten bleiben documentation-only Future Work: keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken, keine Rohdatenprompts, max 50 rows und llm_audit_log vor jeder spaeteren Nutzung.
+
 ## Naechste Arbeitsschritte
 
 Der Next-Work-Plan ordnet 10 Workstreams. Erste Prioritaet ist `work_01_source_review`, letzte QA-Prioritaet ist `work_10_final_qa`.
@@ -238,7 +253,7 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 | H2 Event-Windows | Polymarket bewegt sich um mehrere kuratierte politische Ereignisse sichtbar in der Tagesauflosung. | 7 kuratierte Ereignisse; groesstes Primaerfenster nach Betrag: 07_13_trump_shooting +7.2 Prozentpunkte. | Das stuetzt eine These, dass oeffentliche Ereignisse in den Marktpreisen sichtbar werden koennen. | Taegliche Daten zeigen Reaktionsrichtung und Groessenordnung, aber keine intraday Reaktionsgeschwindigkeit. |
 | H3 Wallet-Timing | Top-Wallet-Tier-Aktivitaet zeigt eine messbare, aber vorsichtig zu formulierende Timing-Struktur. | 1216 alignierte Modellzeilen; staerkste Korrelation tier_1_top_1pct lag 1 = 0.1858; kleinster Granger-p-Wert 0.0012. | Das ist als Vorhersage-/Timingdiagnostik verwendbar und motiviert weitere Sensitivitaetschecks. | BUY-only Quelle, Tagesaggregation und Multiple-Testing-Risiko begrenzen die Aussage. |
 | Monitor und Review-Queue | Der Monitor hat die richtige Rolle als Kontroll- und Review-Infrastruktur, nicht als Ergebnisgenerator fuer starke Claims. | 3 aktuelle Review-Cases, davon 1 high und 2 medium; Status source_check_pending=3. | Die Review-Queue ist methodisch wichtig, weil sie auffaellige Faelle von thesis-faehiger Evidenz trennt. | Die Queue ist kein Nachweis fuer Ursachen, Regelverstoss, Handelbarkeit, Profitabilitaet oder zukuenftige Entwicklung. |
-| Swiss-Referendum Side-Track | Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen. | 7 Umfragen, 48 Polymarket-Snapshots; latest Polymarket Yes 26.0%, latest poll Yes 45.0%, raw gap -19.0 pp. | Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen. | Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung. |
+| Swiss-Referendum Side-Track | Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen. | 7 Umfragen, 51 Polymarket-Snapshots; latest Polymarket Yes 27.5%, latest poll Yes 45.0%, raw gap -17.5 pp. | Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen. | Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung. |
 
 ## Warum dieses Vorgehen methodisch sinnvoll ist
 
@@ -253,10 +268,10 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Projektstruktur
 
 - SQLite-Datenbank: 9 Tabellen.
-- Ergebnisartefakte: 366 Dateien unter `data/results`.
+- Ergebnisartefakte: 377 Dateien unter `data/results`.
 - Analyse-Module: 78 Dateien.
 - Collector-Module: 10 Dateien.
-- Tests: 137 Testdateien; letzter Status: 593 passed in 70.75s (0:01:10).
+- Tests: 148 Testdateien; letzter Status: 621 passed in 70.88s (0:01:10).
 
 ## H1 - Forecast-Qualitaet
 
@@ -334,12 +349,12 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Schweizer Referendum
 
 - Kuratierte Umfragen: 7.
-- Polymarket snapshots: 48.
+- Polymarket snapshots: 51.
 - Bounded price-history rows: 504.
-- Latest Polymarket Yes: 26.0 Prozent.
+- Latest Polymarket Yes: 27.5 Prozent.
 - Latest matched poll Yes: 45.0 Prozent.
-- Raw gap: -19.0 Prozentpunkte.
-- Decided-voter gap: -20.4 Prozentpunkte.
+- Raw gap: -17.5 Prozentpunkte.
+- Decided-voter gap: -18.9 Prozentpunkte.
 
 ## Abbildungen
 

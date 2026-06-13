@@ -25,7 +25,7 @@
 <body>
   <h1>Dozentenbericht zur Bachelorarbeit</h1>
   <p class="subtitle">Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen</p>
-  <p class="small">Erstellt aus lokalen deterministischen Artefakten: 2026-06-12T22:59:12+00:00</p>
+  <p class="small">Erstellt aus lokalen deterministischen Artefakten: 2026-06-13T01:15:34+00:00</p>
   <div class="callout"><strong>Kurzfazit.</strong> Das Projekt prueft informationelle Effizienz ueber drei reproduzierbare Analyseebenen: H1 Forecast-Qualitaet, H2 taegliche Event-Window-Reaktion und H3 Wallet-Tier-Timing. Der Monitor ist ein read-only Forschungsprototyp mit deterministischer Anomaly-Review-Queue; der Swiss-Referendum-Vergleich laeuft als separater Datensammlungs-Track.</div>
 
   <h2>Aufbau wie in der Bachelorarbeit</h2>
@@ -137,6 +137,16 @@
 <tr><td>15</td><td>H3</td><td>Finalgate und Future-Agent-Grenze setzen</td><td>H3: Finalgate sichtbar lassen und Agenten nur als Future-Work-Grenze mit llm_audit_log-Vorbedingung erwaehnen.</td><td>H3: Source-Coverage-Gaps 0; final-ready Manual-Execution rows 0. Manual Source Review Follow-up Overview-/Ledger-Abgleich vor Citation Gate sichtbar halten.</td></tr></table>
   <p class="small">Auch diese Sequenz ist kein finaler Zitations- oder Abgabeclaim: Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use bleiben manuelle Gates; Agenten bleiben documentation-only Future Work.</p>
 
+  <h2>Worksheet-to-Drafting Bridge fuer H1-H2-H3</h2>
+  <p>Die Worksheet-Drafting-Bridge verbindet 23 manuelle H1-H2-H3 Worksheet-Zeilen mit 15 source-gated Schreibschritten. Method rows: 12; Interpretation rows: 11; Source/artifact gaps: 0; final-release rows: 0.</p>
+  <p>Jede Methode und jede Interpretation muss eine Source ID, eine Evidence ID, ein deterministisches Artefakt, eine Limitation und ein Source-Review-Gate behalten. Keine finale Zitation und keine Quellenstatus-Hochstufung ohne vollstaendige manuelle Source Review.</p>
+  <p>Damit sieht der Dozent in einer kleinen Bruecke, welche Quellen- und Artefaktpflicht vor jedem Absatz gilt und warum der Haupttext bei T2/F1, T3/F2 und T4/F3 bleibt.</p>
+  <table><tr><th>Kapitel</th><th>Worksheets</th><th>Drafting</th><th>Tabelle/Figur</th><th>Gate</th></tr><tr><td>H1</td><td>10 rows; 4 Quellen; 4 method / 6 interpretation</td><td>5 steps; 5 bounded; 0 final-ready</td><td>T2 / F1</td><td>H1 bleibt final blockiert, bis die 10 Worksheet-Zeilen manuell mit Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use entschieden sind; keine allgemeine Marktueberlegenheit behaupten.</td></tr>
+<tr><td>H2</td><td>5 rows; 3 Quellen; 3 method / 2 interpretation</td><td>5 steps; 5 bounded; 0 final-ready</td><td>T3 / F2</td><td>H2 bleibt final blockiert, bis die 5 Worksheet-Zeilen inklusive Kausalclaim-Grenze entschieden sind; keine Intraday- oder Kausalclaims.</td></tr>
+<tr><td>H3</td><td>8 rows; 4 Quellen; 5 method / 3 interpretation</td><td>5 steps; 5 bounded; 0 final-ready</td><td>T4 / F3</td><td>H3 bleibt final blockiert, bis die 8 Worksheet-Zeilen inklusive Granger-Grenze und Wallet-Grenze entschieden sind; keine Wallet-Adressen, Trading-Claims oder Profitabilitaetsclaims.</td></tr>
+<tr><td>TOTAL</td><td>23 rows; 9 Quellen; 12 method / 11 interpretation</td><td>15 steps; 15 bounded; 0 final-ready</td><td>T2, T3, T4 / F1, F2, F3</td><td>TOTAL bleibt final blockiert, bis alle 23 H1-H2-H3 Worksheet-Zeilen manuell entschieden und Ledger, Citation Gate Summary, Batch Plan, Worksheet Overview und Index regeneriert sind.</td></tr></table>
+  <p class="small">Agenten bleiben documentation-only Future Work: keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken, keine Rohdatenprompts, max 50 rows und llm_audit_log vor jeder spaeteren Nutzung.</p>
+
   <h2>Naechste Arbeitsschritte</h2>
   <p>Der Next-Work-Plan ordnet 10 Workstreams. Erste Prioritaet ist <code>work_01_source_review</code>, letzte QA-Prioritaet ist <code>work_10_final_qa</code>.</p>
   <table><tr><th>Prioritaet</th><th>Workstream</th><th>Naechste Aktion</th><th>Guardrail</th></tr><tr><td>1</td><td>Quellenreview Kernquellen</td><td>Die 11 Priority-1-Quellen mit Seiten- oder Abschnittsnotizen pruefen.</td><td>Quellenstatus nicht automatisch hochstufen.</td></tr>
@@ -186,7 +196,7 @@
 <tr><td>H2 Event-Windows</td><td>Polymarket bewegt sich um mehrere kuratierte politische Ereignisse sichtbar in der Tagesauflosung.</td><td>7 kuratierte Ereignisse; groesstes Primaerfenster nach Betrag: 07_13_trump_shooting +7.2 Prozentpunkte.</td><td>Das stuetzt eine These, dass oeffentliche Ereignisse in den Marktpreisen sichtbar werden koennen.</td><td>Taegliche Daten zeigen Reaktionsrichtung und Groessenordnung, aber keine intraday Reaktionsgeschwindigkeit.</td></tr>
 <tr><td>H3 Wallet-Timing</td><td>Top-Wallet-Tier-Aktivitaet zeigt eine messbare, aber vorsichtig zu formulierende Timing-Struktur.</td><td>1216 alignierte Modellzeilen; staerkste Korrelation tier_1_top_1pct lag 1 = 0.1858; kleinster Granger-p-Wert 0.0012.</td><td>Das ist als Vorhersage-/Timingdiagnostik verwendbar und motiviert weitere Sensitivitaetschecks.</td><td>BUY-only Quelle, Tagesaggregation und Multiple-Testing-Risiko begrenzen die Aussage.</td></tr>
 <tr><td>Monitor und Review-Queue</td><td>Der Monitor hat die richtige Rolle als Kontroll- und Review-Infrastruktur, nicht als Ergebnisgenerator fuer starke Claims.</td><td>3 aktuelle Review-Cases, davon 1 high und 2 medium; Status source_check_pending=3.</td><td>Die Review-Queue ist methodisch wichtig, weil sie auffaellige Faelle von thesis-faehiger Evidenz trennt.</td><td>Die Queue ist kein Nachweis fuer Ursachen, Regelverstoss, Handelbarkeit, Profitabilitaet oder zukuenftige Entwicklung.</td></tr>
-<tr><td>Swiss-Referendum Side-Track</td><td>Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen.</td><td>7 Umfragen, 48 Polymarket-Snapshots; latest Polymarket Yes 26.0%, latest poll Yes 45.0%, raw gap -19.0 pp.</td><td>Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen.</td><td>Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung.</td></tr></table>
+<tr><td>Swiss-Referendum Side-Track</td><td>Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen.</td><td>7 Umfragen, 51 Polymarket-Snapshots; latest Polymarket Yes 27.5%, latest poll Yes 45.0%, raw gap -17.5 pp.</td><td>Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen.</td><td>Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung.</td></tr></table>
 
   <h2>Warum dieses Vorgehen methodisch sinnvoll ist</h2>
   <table><tr><th>Entscheidung</th><th>Begruendung</th><th>Konsequenz</th></tr><tr><td>Brier Score und DM-Test</td><td>H1 vergleicht Probability-Forecasts, deshalb braucht es einen Verlustscore und einen Test auf Verlustserien.</td><td>Die Aussage bleibt Forecast-Qualitaet, nicht Reaktionsgeschwindigkeit oder Mechanismus.</td></tr>
@@ -198,11 +208,11 @@
   <h2>Projektstruktur</h2>
   <div class="grid">
     <div class="metric"><strong>9</strong>Datenbanktabellen</div>
-    <div class="metric"><strong>366</strong>Result-Artefakte</div>
+    <div class="metric"><strong>377</strong>Result-Artefakte</div>
     <div class="metric"><strong>78</strong>Analyse-Module</div>
-    <div class="metric"><strong>137</strong>Testdateien</div>
+    <div class="metric"><strong>148</strong>Testdateien</div>
   </div>
-  <p>Letzter Teststatus: <code>593 passed in 70.75s (0:01:10)</code>.</p>
+  <p>Letzter Teststatus: <code>621 passed in 70.88s (0:01:10)</code>.</p>
 
   <h2>H1 - Forecast-Qualitaet</h2>
   <table><tr><th>Aspekt</th><th>Wert</th></tr>
@@ -269,11 +279,11 @@
   <p>Der Monitor bleibt read-only und ist keine Trading- oder Profitabilitaetskomponente.</p>
 
   <h2>Schweizer Referendum</h2>
-  <p>7 Umfragen, 48 Polymarket-Snapshots und 504 bounded price-history rows.</p>
-  <table><tr><th>Quelle</th><th>Neuester Poll</th><th>Poll Yes</th><th>Raw Gap</th></tr><tr><td>SRG/gfs.bern</td><td>srg_gfs_bern_2026_w2</td><td>45.0%</td><td>-19.0 pp</td></tr>
-<tr><td>Tamedia/20 Minuten/LeeWas</td><td>tamedia_leewas_2026_w2</td><td>47.0%</td><td>-21.0 pp</td></tr>
-<tr><td>YouGov Schweiz</td><td>yougov_2026_w2_final</td><td>38.0%</td><td>-12.0 pp</td></tr></table>
-  <p>Latest result: Polymarket Yes 26.0%, latest matched poll Yes 45.0%, raw gap -19.0 pp, decided-voter gap -20.4 pp.</p>
+  <p>7 Umfragen, 51 Polymarket-Snapshots und 504 bounded price-history rows.</p>
+  <table><tr><th>Quelle</th><th>Neuester Poll</th><th>Poll Yes</th><th>Raw Gap</th></tr><tr><td>SRG/gfs.bern</td><td>srg_gfs_bern_2026_w2</td><td>45.0%</td><td>-17.5 pp</td></tr>
+<tr><td>Tamedia/20 Minuten/LeeWas</td><td>tamedia_leewas_2026_w2</td><td>47.0%</td><td>-19.5 pp</td></tr>
+<tr><td>YouGov Schweiz</td><td>yougov_2026_w2_final</td><td>38.0%</td><td>-10.5 pp</td></tr></table>
+  <p>Latest result: Polymarket Yes 27.5%, latest matched poll Yes 45.0%, raw gap -17.5 pp, decided-voter gap -18.9 pp.</p>
 
   <h2>Visualisierungen</h2>
   <figure><img src="dozentenbericht_assets/project_pipeline_overview.png" alt="Projektlogik: deterministische Analyse vor Interpretation."><figcaption><strong>Projektlogik: deterministische Analyse vor Interpretation.</strong><br>Die Abbildung zeigt die einfache Lesart fuer die Praesentation: Daten werden validiert, in Python analysiert und erst danach als Bericht, Dashboard oder spaeter als bounded Interpretation verwendet.</figcaption></figure>

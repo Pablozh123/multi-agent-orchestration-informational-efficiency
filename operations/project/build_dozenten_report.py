@@ -226,6 +226,9 @@ def collect_report_data() -> dict[str, Any]:
     thesis_h1_h2_h3_source_gated_drafting = _read_csv(
         "data/results/thesis_h1_h2_h3_source_gated_thesis_drafting_pass.csv"
     )
+    thesis_h1_h2_h3_worksheet_drafting_bridge = _read_csv(
+        "data/results/thesis_h1_h2_h3_worksheet_drafting_bridge.csv"
+    )
 
     return {
         "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
@@ -302,6 +305,9 @@ def collect_report_data() -> dict[str, Any]:
         "source_gated_drafting": _source_gated_drafting_report_data(
             thesis_h1_h2_h3_source_gated_drafting
         ),
+        "worksheet_drafting_bridge": _worksheet_drafting_bridge_report_data(
+            thesis_h1_h2_h3_worksheet_drafting_bridge
+        ),
         "source_counts": {
             "curated_events": len(event_seed),
             "literature_rows": len(literature),
@@ -330,6 +336,8 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
     drafting_sequence = data["drafting_sequence"]
     bounded_chapter_draft = data["bounded_chapter_draft"]
     source_gated_drafting = data["source_gated_drafting"]
+    worksheet_drafting_bridge = data["worksheet_drafting_bridge"]
+    worksheet_drafting_bridge = data["worksheet_drafting_bridge"]
     db = data["project"]["database"]
     folders = data["project"]["folder_inventory"]
     insight_rows = [
@@ -452,6 +460,16 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
     for row in source_gated_drafting["step_rows"]:
         source_gated_step_rows.append(
             "| {draft_sequence_order} | {thesis_area} | {draft_section_de} | {writer_action_de} | {final_gate_short_de} |".format(
+                **{key: str(value).replace("|", ",") for key, value in row.items()}
+            )
+        )
+    worksheet_bridge_rows = [
+        "| Kapitel | Worksheets | Drafting | Tabelle/Figur | Gate |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+    for row in worksheet_drafting_bridge["chapter_rows"]:
+        worksheet_bridge_rows.append(
+            "| {thesis_area} | {worksheet_summary_de} | {drafting_summary_de} | {table_figure_de} | {gate_short_de} |".format(
                 **{key: str(value).replace("|", ",") for key, value in row.items()}
             )
         )
@@ -627,6 +645,28 @@ def render_markdown(data: dict[str, Any], *, markdown_output: Path) -> str:
             "Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use "
             "bleiben manuelle Gates; Agenten bleiben documentation-only Future Work."
         ),
+        "",
+        "## Worksheet-to-Drafting Bridge fuer H1-H2-H3",
+        "",
+        (
+            f"Die Worksheet-Drafting-Bridge verbindet {worksheet_drafting_bridge['worksheet_rows']} "
+            "manuelle H1-H2-H3 Worksheet-Zeilen mit "
+            f"{worksheet_drafting_bridge['drafting_steps']} source-gated Schreibschritten. "
+            f"Method rows: {worksheet_drafting_bridge['method_rows']}; "
+            f"Interpretation rows: {worksheet_drafting_bridge['interpretation_rows']}; "
+            f"Source/artifact gaps: {worksheet_drafting_bridge['source_artifact_gap_rows']}; "
+            f"final-release rows: {worksheet_drafting_bridge['final_release_ready_rows']}."
+        ),
+        worksheet_drafting_bridge["source_artifact_rule_de"],
+        (
+            "Damit sieht der Dozent in einer kleinen Bruecke, welche Quellen- "
+            "und Artefaktpflicht vor jedem Absatz gilt und warum der Haupttext "
+            "bei T2/F1, T3/F2 und T4/F3 bleibt."
+        ),
+        "",
+        *worksheet_bridge_rows,
+        "",
+        worksheet_drafting_bridge["future_agent_boundary_de"],
         "",
         "## Naechste Arbeitsschritte",
         "",
@@ -1321,6 +1361,7 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
     drafting_sequence = data["drafting_sequence"]
     bounded_chapter_draft = data["bounded_chapter_draft"]
     source_gated_drafting = data["source_gated_drafting"]
+    worksheet_drafting_bridge = data["worksheet_drafting_bridge"]
     figures = "\n".join(
         _figure_html(figure, html_output=html_output)
         for figure in data["figures"]
@@ -1451,6 +1492,16 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
         "</tr>"
         for row in source_gated_drafting["step_rows"]
     )
+    worksheet_bridge_rows = "\n".join(
+        "<tr>"
+        f"<td>{escape(row['thesis_area'])}</td>"
+        f"<td>{escape(row['worksheet_summary_de'])}</td>"
+        f"<td>{escape(row['drafting_summary_de'])}</td>"
+        f"<td>{escape(row['table_figure_de'])}</td>"
+        f"<td>{escape(row['gate_short_de'])}</td>"
+        "</tr>"
+        for row in worksheet_drafting_bridge["chapter_rows"]
+    )
     h2_rows = "\n".join(
         f"<tr><td>{escape(row['event'])}</td><td>{row['change_pp']:+.1f} pp</td></tr>"
         for row in h2["primary_examples"]
@@ -1543,6 +1594,13 @@ def render_html(data: dict[str, Any], *, html_output: Path) -> str:
   <table><tr><th>Kapitel</th><th>Schritte</th><th>Manual Source Review</th><th>Tabelle/Figur</th><th>Status</th></tr>{source_gated_chapter_rows}</table>
   <table><tr><th>Ordnung</th><th>Kapitel</th><th>Schreibschritt</th><th>Writer Action</th><th>Finalgate</th></tr>{source_gated_step_rows}</table>
   <p class="small">Auch diese Sequenz ist kein finaler Zitations- oder Abgabeclaim: Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use bleiben manuelle Gates; Agenten bleiben documentation-only Future Work.</p>
+
+  <h2>Worksheet-to-Drafting Bridge fuer H1-H2-H3</h2>
+  <p>Die Worksheet-Drafting-Bridge verbindet {worksheet_drafting_bridge['worksheet_rows']} manuelle H1-H2-H3 Worksheet-Zeilen mit {worksheet_drafting_bridge['drafting_steps']} source-gated Schreibschritten. Method rows: {worksheet_drafting_bridge['method_rows']}; Interpretation rows: {worksheet_drafting_bridge['interpretation_rows']}; Source/artifact gaps: {worksheet_drafting_bridge['source_artifact_gap_rows']}; final-release rows: {worksheet_drafting_bridge['final_release_ready_rows']}.</p>
+  <p>{escape(worksheet_drafting_bridge['source_artifact_rule_de'])}</p>
+  <p>Damit sieht der Dozent in einer kleinen Bruecke, welche Quellen- und Artefaktpflicht vor jedem Absatz gilt und warum der Haupttext bei T2/F1, T3/F2 und T4/F3 bleibt.</p>
+  <table><tr><th>Kapitel</th><th>Worksheets</th><th>Drafting</th><th>Tabelle/Figur</th><th>Gate</th></tr>{worksheet_bridge_rows}</table>
+  <p class="small">{escape(worksheet_drafting_bridge['future_agent_boundary_de'])}</p>
 
   <h2>Naechste Arbeitsschritte</h2>
   <p>Der Next-Work-Plan ordnet {next_work['row_count']} Workstreams. Erste Prioritaet ist <code>{escape(next_work['first_workstream'])}</code>, letzte QA-Prioritaet ist <code>{escape(next_work['final_workstream'])}</code>.</p>
@@ -1672,6 +1730,7 @@ def write_docx(data: dict[str, Any], output_path: Path) -> None:
     _add_drafting_sequence_section(doc, data["drafting_sequence"])
     _add_bounded_chapter_draft_section(doc, data["bounded_chapter_draft"])
     _add_source_gated_drafting_section(doc, data["source_gated_drafting"])
+    _add_worksheet_drafting_bridge_section(doc, data["worksheet_drafting_bridge"])
     _add_next_work_section(doc, data["next_work"])
     _add_execution_checklist_section(doc, data["execution_checklist"])
     _add_research_design_section(doc, data)
@@ -2277,6 +2336,86 @@ def _source_gated_drafting_report_data(drafting: pd.DataFrame) -> dict[str, Any]
         "review_control_de": review_control_de,
         "chapter_rows": chapter_rows,
         "step_rows": step_rows,
+    }
+
+
+def _worksheet_drafting_bridge_report_data(bridge: pd.DataFrame) -> dict[str, Any]:
+    """Translate worksheet-to-drafting bridge rows for the advisor report."""
+
+    required_columns = {
+        "thesis_area",
+        "worksheet_rows",
+        "method_rows",
+        "interpretation_rows",
+        "unique_sources",
+        "method_interpretation_source_artifact_gap_rows",
+        "pending_citation_rows",
+        "final_release_ready_rows",
+        "drafting_steps",
+        "bounded_draft_ready_steps",
+        "final_submission_ready_steps",
+        "selected_tables",
+        "selected_figures",
+        "source_artifact_rule_de",
+        "final_blocker_de",
+        "future_agent_boundary_de",
+        "ready_for_bounded_drafting",
+        "ready_for_final_release",
+    }
+    missing = sorted(required_columns.difference(bridge.columns))
+    if missing:
+        raise ValueError(f"worksheet drafting bridge missing columns: {missing}")
+
+    ordered = bridge.sort_values("bridge_order")
+    rows = ordered.to_dict(orient="records")
+    if len(rows) != 4:
+        raise ValueError("worksheet drafting bridge must have 4 rows for the report")
+    total_rows = [row for row in rows if str(row["thesis_area"]) == "TOTAL"]
+    if len(total_rows) != 1:
+        raise ValueError("worksheet drafting bridge must contain one TOTAL row")
+    total = total_rows[0]
+    if int(total["method_interpretation_source_artifact_gap_rows"]) != 0:
+        raise ValueError("worksheet drafting bridge has source/artifact gaps")
+    if int(total["final_release_ready_rows"]) != 0:
+        raise ValueError("worksheet drafting bridge must not be final-release-ready")
+
+    chapter_rows: list[dict[str, Any]] = []
+    for row in rows:
+        area = str(row["thesis_area"])
+        chapter_rows.append(
+            {
+                "thesis_area": area,
+                "worksheet_summary_de": (
+                    f"{int(row['worksheet_rows'])} rows; "
+                    f"{int(row['unique_sources'])} Quellen; "
+                    f"{int(row['method_rows'])} method / "
+                    f"{int(row['interpretation_rows'])} interpretation"
+                ),
+                "drafting_summary_de": (
+                    f"{int(row['drafting_steps'])} steps; "
+                    f"{int(row['bounded_draft_ready_steps'])} bounded; "
+                    f"{int(row['final_submission_ready_steps'])} final-ready"
+                ),
+                "table_figure_de": f"{row['selected_tables']} / {row['selected_figures']}",
+                "gate_short_de": _first_sentence(str(row["final_blocker_de"])),
+            }
+        )
+
+    return {
+        "row_count": len(rows),
+        "worksheet_rows": int(total["worksheet_rows"]),
+        "method_rows": int(total["method_rows"]),
+        "interpretation_rows": int(total["interpretation_rows"]),
+        "unique_sources": int(total["unique_sources"]),
+        "source_artifact_gap_rows": int(
+            total["method_interpretation_source_artifact_gap_rows"]
+        ),
+        "pending_citation_rows": int(total["pending_citation_rows"]),
+        "drafting_steps": int(total["drafting_steps"]),
+        "final_release_ready_rows": int(total["final_release_ready_rows"]),
+        "source_artifact_rule_de": str(total["source_artifact_rule_de"]),
+        "future_agent_boundary_de": str(total["future_agent_boundary_de"]),
+        "chapter_rows": chapter_rows,
     }
 
 
@@ -2903,6 +3042,52 @@ def _add_source_gated_drafting_section(
             "Page-/Section-Note, Claim-Support, Blocked-Wording und Citation-Use "
             "bleiben manuelle Gates; Agenten bleiben documentation-only Future Work."
         ),
+    )
+
+
+def _add_worksheet_drafting_bridge_section(
+    doc: Document,
+    worksheet_drafting_bridge: dict[str, Any],
+) -> None:
+    doc.add_heading("Worksheet-to-Drafting Bridge fuer H1-H2-H3", level=1)
+    doc.add_paragraph(
+        "Die Worksheet-Drafting-Bridge verbindet "
+        f"{worksheet_drafting_bridge['worksheet_rows']} manuelle H1-H2-H3 "
+        "Worksheet-Zeilen mit "
+        f"{worksheet_drafting_bridge['drafting_steps']} source-gated "
+        "Schreibschritten. "
+        f"Method rows: {worksheet_drafting_bridge['method_rows']}; "
+        f"Interpretation rows: {worksheet_drafting_bridge['interpretation_rows']}; "
+        f"Source/artifact gaps: {worksheet_drafting_bridge['source_artifact_gap_rows']}; "
+        f"final-release rows: {worksheet_drafting_bridge['final_release_ready_rows']}."
+    )
+    doc.add_paragraph(worksheet_drafting_bridge["source_artifact_rule_de"])
+    doc.add_paragraph(
+        "Damit sieht der Dozent in einer kleinen Bruecke, welche Quellen- und "
+        "Artefaktpflicht vor jedem Absatz gilt und warum der Haupttext bei "
+        "T2/F1, T3/F2 und T4/F3 bleibt."
+    )
+    rows = [
+        (
+            row["thesis_area"],
+            row["worksheet_summary_de"],
+            row["drafting_summary_de"],
+            row["table_figure_de"],
+            row["gate_short_de"],
+        )
+        for row in worksheet_drafting_bridge["chapter_rows"]
+    ]
+    table = _add_table(
+        doc,
+        rows,
+        ["Kapitel", "Worksheets", "Drafting", "Tabelle/Figur", "Gate"],
+        [650, 2150, 1700, 1200, 3660],
+    )
+    _shade_table_header(table)
+    _add_callout(
+        doc,
+        "Agenten-Grenze",
+        worksheet_drafting_bridge["future_agent_boundary_de"],
     )
 
 

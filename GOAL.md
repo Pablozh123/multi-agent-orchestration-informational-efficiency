@@ -100,6 +100,14 @@ acceptance_criteria:
   the Word update shows 15 paragraph-level writing steps, 23 linked Manual
   Source Review rows, 0 final-ready rows, compact table/figure actions,
   final blockers, and inactive future-agent boundaries.
+- The advisor report includes the H1-H2-H3 Worksheet-to-Drafting Bridge so the
+  Word update shows 23 manual worksheet rows, 12 method rows, 11
+  interpretation rows, 9 unique sources, 0 source/artifact gaps, 15
+  source-gated writing steps, T2/F1, T3/F2, T4/F3 bindings, and the rule that
+  every method and interpretation keeps Source ID, Evidence ID,
+  deterministic artifact, Source Review gate, compact table/figure binding,
+  inactive future-agent boundary, max 50 rows, and `llm_audit_log` before
+  later agent help.
 - A short advisor handoff note exists so the Word update can be sent with a
   clear subject, attachment order, discussion-order pointer, questions, and
   scope boundaries.
@@ -383,7 +391,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: update advisor report with worksheet drafting bridge
+next_commit: docs: update post bridge agent pipeline improvement plan
 
 ## Running Side Goal
 

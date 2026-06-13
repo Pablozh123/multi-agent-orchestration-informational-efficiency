@@ -731,6 +731,11 @@ Current implemented consolidation:
   five each for H1, H2, and H3; 23 linked Manual Source Review rows; 23
   pending rows; 0 final-ready rows; T2/F1, T3/F2, and T4/F3 table/figure
   actions; final citation blockers; and inactive future-agent boundaries.
+- The Dozentenbericht now includes `Worksheet-to-Drafting Bridge fuer
+  H1-H2-H3`, a compact Word/HTML/Markdown bridge from 23 manual worksheet rows
+  to 15 source-gated writing steps: 12 method rows, 11 interpretation rows,
+  9 unique sources, 0 source/artifact gaps, T2/F1, T3/F2, T4/F3 bindings,
+  final citation blockers, and inactive future-agent boundaries.
 - The Dozentenbericht now includes a `Projektmatrix fuer die naechste
   Abstimmung` section generated from `thesis_project_highlevel_view.csv`, so
   the advisor can see status, decision, and next gate for each project layer.

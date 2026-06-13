@@ -78,6 +78,14 @@ def test_build_dozenten_report_outputs_readable_artifacts(tmp_path):
     assert "Methode und Resultat setzen" in html_text
     assert "Finalgate und Future-Agent-Grenze sichtbar lassen" in html_text
     assert "Manual Source Review Follow-up Overview-/Ledger-Abgleich" in html_text
+    assert "Worksheet-to-Drafting Bridge fuer H1-H2-H3" in html_text
+    assert "23 manuelle H1-H2-H3 Worksheet-Zeilen" in html_text
+    assert "15 source-gated Schreibschritten" in html_text
+    assert "Method rows: 12" in html_text
+    assert "Interpretation rows: 11" in html_text
+    assert "Source/artifact gaps: 0" in html_text
+    assert "Jede Methode und jede Interpretation muss eine Source ID" in html_text
+    assert "T2/F1, T3/F2 und T4/F3" in html_text
     assert "Review-Access bleibt pausiert; auf Projektebene geht es jetzt ueber Advisor-Feedback" in html_text
     assert "Swiss-Result-Gate" in html_text
     assert "keine finale Zitation und keine Quellenstatus-Hochstufung" in html_text
@@ -323,5 +331,9 @@ def test_build_dozenten_report_outputs_readable_artifacts(tmp_path):
     assert "H3 Queue: 8 rows, T4/F3, Granger-/Wallet-Grenze" in document_xml
     assert "Manual Source Review" in document_xml
     assert "Manual Source Review Follow-up Overview-/Ledger-Abgleich" in document_xml
+    assert "Worksheet-to-Drafting Bridge fuer H1-H2-H3" in document_xml
+    assert "23 manuelle H1-H2-H3 Worksheet-Zeilen" in document_xml
+    assert "Source/artifact gaps: 0" in document_xml
+    assert "Jede Methode und jede Interpretation muss eine Source ID" in document_xml
     assert "Review-Access bleibt pausiert" in document_xml
     assert "Swiss-Result-Gate" in document_xml

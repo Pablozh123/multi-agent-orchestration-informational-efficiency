@@ -373,9 +373,13 @@ acceptance_criteria:
   evidence-drafting, wording, table/figure, advisor, monitor, and bounded MCP
   improvements are documented without activating runtime agents.
 - The future agent-pipeline upgrade plan remains documentation-only but now
-  names the post-source-gated sequence, Human-Owner, safe value,
-  Proof-Artifact, Failure-Mode, bounded input/output limits, max 50 rows,
-  `llm_audit_log`, and blocked actions for every future assistance role.
+  anchors every future assistance role after the H1-H2-H3
+  Worksheet-Drafting Bridge: 7 rows, 6 documentation-only rows, 1 deferred
+  row, 0 active runtime rows, 23 worksheet rows, 12 method rows,
+  11 interpretation rows, 0 source/artifact gaps, 15 drafting steps,
+  tables T2-T4, figures F1-F3, Human-Owner, safe value, Proof-Artifact,
+  Failure-Mode, bounded input/output limits, max 50 rows, `llm_audit_log`,
+  and blocked actions for every future assistance role.
 - A future-agent safety case exists so later agent ideas are checked against
   the current deterministic evidence lock: 4 thesis-facing methods, 4
   thesis-facing interpretations, 23 H1-H2-H3 Source-Links, 31 total
@@ -391,7 +395,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: update post bridge agent pipeline improvement plan
+next_commit: docs: update project control workflow
 
 ## Running Side Goal
 

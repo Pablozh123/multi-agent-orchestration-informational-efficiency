@@ -100,6 +100,9 @@ def generate_thesis_core_writing_package(
     captions = _read_csv(results_dir / "thesis_table_figure_captions.csv")
     method_traceability = _read_csv(results_dir / "thesis_method_interpretation_traceability.csv")
     agent_control = _read_csv(results_dir / "thesis_agent_pipeline_control_audit.csv")
+    worksheet_drafting_bridge = _read_csv(
+        results_dir / "thesis_h1_h2_h3_worksheet_drafting_bridge.csv"
+    )
     literature = _read_csv(repo_root / "data/literature/literature_index.csv")
 
     core_sections = build_core_sections(
@@ -114,6 +117,7 @@ def generate_thesis_core_writing_package(
     agent_upgrade = build_agent_upgrade_plan(
         agent_control=agent_control,
         core_sections=core_sections,
+        worksheet_drafting_bridge=worksheet_drafting_bridge,
     )
     _validate_core_sections(core_sections, repo_root=repo_root)
     _validate_agent_upgrade_plan(agent_upgrade)
@@ -295,11 +299,29 @@ def build_agent_upgrade_plan(
     *,
     agent_control: pd.DataFrame,
     core_sections: pd.DataFrame,
+    worksheet_drafting_bridge: pd.DataFrame,
 ) -> pd.DataFrame:
     """Return a documentation-only future agent upgrade sequence."""
 
     _require_columns(agent_control, AGENT_UPGRADE_SOURCE_COLUMNS, "agent control audit")
     _require_columns(core_sections, ("section_id", "hypothesis"), "core sections")
+    _require_columns(
+        worksheet_drafting_bridge,
+        (
+            "thesis_area",
+            "worksheet_rows",
+            "method_rows",
+            "interpretation_rows",
+            "method_interpretation_source_artifact_gap_rows",
+            "pending_citation_rows",
+            "final_release_ready_rows",
+            "drafting_steps",
+            "selected_tables",
+            "selected_figures",
+        ),
+        "worksheet drafting bridge",
+    )
+    bridge_summary = _worksheet_bridge_summary(worksheet_drafting_bridge)
 
     rows: list[dict[str, object]] = []
     for index, row in enumerate(agent_control.sort_values("control_id").to_dict(orient="records"), start=1):
@@ -308,12 +330,19 @@ def build_agent_upgrade_plan(
             {
                 "upgrade_id": f"agent_upgrade_{index:02d}",
                 "future_assistance_role": role,
-                "pipeline_position_de": _agent_pipeline_position(index=index, role=role),
-                "sequence_after_core_de": _agent_sequence_text(role),
+                "pipeline_position_de": _agent_pipeline_position(
+                    index=index,
+                    role=role,
+                    bridge_summary=bridge_summary,
+                ),
+                "sequence_after_core_de": _agent_sequence_text(
+                    role,
+                    bridge_summary=bridge_summary,
+                ),
                 "uses_current_core_sections": (
                     "Ja, nur als bounded context: "
                     + "; ".join(core_sections["section_id"].astype(str).tolist())
-                    + ". Keine Rohartefakt-Dumps."
+                    + f". Bridge-Kontext: {bridge_summary}. Keine Rohartefakt-Dumps."
                 ),
                 "human_owner_de": _agent_human_owner(role),
                 "safe_value_de": _agent_safe_value(role),
@@ -441,6 +470,10 @@ def _validate_agent_upgrade_plan(agent_upgrade: pd.DataFrame) -> None:
         "proof-artifact",
         "failure-mode",
         "source-gated",
+        "worksheet-drafting bridge",
+        "23 worksheet rows",
+        "15 drafting steps",
+        "0 source/artifact gaps",
     )
     missing = [term for term in required_terms if term not in lower_joined]
     if missing:
@@ -661,11 +694,35 @@ def _blocked_wording(evidence: pd.DataFrame) -> str:
     )
 
 
-def _agent_pipeline_position(*, index: int, role: str) -> str:
+def _worksheet_bridge_summary(worksheet_drafting_bridge: pd.DataFrame) -> str:
+    rows = worksheet_drafting_bridge.loc[
+        worksheet_drafting_bridge["thesis_area"].astype(str) == "TOTAL"
+    ]
+    if len(rows) != 1:
+        raise ValueError("Worksheet-Drafting Bridge must contain one TOTAL row.")
+    total = rows.iloc[0]
+    if int(total["method_interpretation_source_artifact_gap_rows"]) != 0:
+        raise ValueError("Worksheet-Drafting Bridge must have 0 source/artifact gaps.")
+    if int(total["final_release_ready_rows"]) != 0:
+        raise ValueError("Worksheet-Drafting Bridge must have 0 final-release rows.")
     return (
-        f"Agenten-Gedanke {index} nach dem source-gated H1-H2-H3 Draft. "
+        "Worksheet-Drafting Bridge: "
+        f"{int(total['worksheet_rows'])} worksheet rows, "
+        f"{int(total['method_rows'])} method rows, "
+        f"{int(total['interpretation_rows'])} interpretation rows, "
+        f"0 source/artifact gaps, "
+        f"{int(total['drafting_steps'])} drafting steps, "
+        f"tables {total['selected_tables']}; figures {total['selected_figures']}, "
+        "0 final-release rows"
+    )
+
+
+def _agent_pipeline_position(*, index: int, role: str, bridge_summary: str) -> str:
+    return (
+        f"Agenten-Gedanke {index} nach dem source-gated H1-H2-H3 Draft "
+        "und der Worksheet-Drafting Bridge. "
         f"Rolle `{role}` bleibt documentation-only und wird erst nach manueller "
-        "Auswahl der bounded Inputs spezifiziert."
+        f"Auswahl der bounded Inputs spezifiziert. Post-Bridge-Anker: {bridge_summary}."
     )
 
 
@@ -739,23 +796,45 @@ def _agent_failure_mode(role: str) -> str:
     return "Failure-Mode: jede unklare Eingabe erzeugt nur Review-Blocker, keine Ausgabe mit Thesis-Claim."
 
 
-def _agent_sequence_text(role: str) -> str:
+def _agent_sequence_text(role: str, bridge_summary: str) -> str:
     role_lower = role.lower()
+    bridge_clause = f" Post-Bridge-Grenze: {bridge_summary}; keine Aktivierung."
     if "source" in role_lower:
-        return "Nach H1-H2-H3-Kern: fehlende Page-/Section-Notes und Claim-Support-Felder vorbereiten."
+        return (
+            "Nach H1-H2-H3-Kern und Worksheet-Drafting Bridge: fehlende "
+            f"Page-/Section-Notes und Claim-Support-Felder vorbereiten.{bridge_clause}"
+        )
     if "draft" in role_lower or "evidence" in role_lower:
-        return "Nach stabiler Core-Section-CSV: Evidence-IDs in kurze Entwurfsnotizen uebersetzen."
+        return (
+            "Nach stabiler Core-Section-CSV und Worksheet-Drafting Bridge: "
+            f"Evidence-IDs in kurze Entwurfsnotizen uebersetzen.{bridge_clause}"
+        )
     if "wording" in role_lower or "claim" in role_lower:
-        return "Nach erstem Kapiteltext: Absatzweise gegen allowed/blocked wording pruefen."
+        return (
+            "Nach erstem Kapiteltext und Worksheet-Drafting Bridge: Absatzweise "
+            f"gegen allowed/blocked wording pruefen.{bridge_clause}"
+        )
     if "table" in role_lower or "figure" in role_lower:
-        return "Nach Tabellen-/Figurenintegration: Caption, Artefakt und Limitation abgleichen."
+        return (
+            "Nach Tabellen-/Figurenintegration und Worksheet-Drafting Bridge: "
+            f"Caption, Artefakt und Limitation abgleichen.{bridge_clause}"
+        )
     if "advisor" in role_lower or "dozent" in role_lower:
-        return "Nach Dozentenfeedback: Status und offene Entscheidungen knapp zusammenfassen."
+        return (
+            "Nach Dozentenfeedback und Worksheet-Drafting Bridge: Status und "
+            f"offene Entscheidungen knapp zusammenfassen.{bridge_clause}"
+        )
     if "monitor" in role_lower:
-        return "Erst nach Human Review: Monitor-Appendix als Review-Workflow zusammenfassen."
+        return (
+            "Erst nach Human Review und Worksheet-Drafting Bridge: Monitor-Appendix "
+            f"als Review-Workflow zusammenfassen.{bridge_clause}"
+        )
     if "mcp" in role_lower:
-        return "Erst nach separatem Access-Goal: read-only Summary Interface spezifizieren."
-    return "Nur nach separatem Goal und Audit-Logging als Future-Work pruefen."
+        return (
+            "Erst nach separatem Access-Goal und Worksheet-Drafting Bridge: "
+            f"read-only Summary Interface spezifizieren.{bridge_clause}"
+        )
+    return f"Nur nach separatem Goal und Audit-Logging als Future-Work pruefen.{bridge_clause}"
 
 
 def _compact_blocked_actions(value: str) -> str:

@@ -79,6 +79,13 @@ def test_agent_upgrade_plan_stays_documentation_only(tmp_path: Path) -> None:
     assert "llm_audit_log" in joined
     assert "bounded" in joined
     assert "source-gated h1-h2-h3 draft" in joined
+    assert "worksheet-drafting bridge" in joined
+    assert "23 worksheet rows" in joined
+    assert "12 method rows" in joined
+    assert "11 interpretation rows" in joined
+    assert "0 source/artifact gaps" in joined
+    assert "15 drafting steps" in joined
+    assert "tables t2, t3, t4; figures f1, f2, f3" in joined
     assert "human-owner" in joined
     assert "proof-artifact" in joined
     assert "failure-mode" in joined
@@ -286,6 +293,14 @@ def _write_fixture(root: Path) -> None:
             ),
         ]
     ).to_csv(results / "thesis_agent_pipeline_control_audit.csv", index=False)
+    pd.DataFrame(
+        [
+            _bridge_row("H1", 10, 4, 6, 4, 10, 5, "T2", "F1"),
+            _bridge_row("H2", 5, 3, 2, 3, 5, 5, "T3", "F2"),
+            _bridge_row("H3", 8, 5, 3, 4, 8, 5, "T4", "F3"),
+            _bridge_row("TOTAL", 23, 12, 11, 9, 23, 15, "T2, T3, T4", "F1, F2, F3"),
+        ]
+    ).to_csv(results / "thesis_h1_h2_h3_worksheet_drafting_bridge.csv", index=False)
 
 
 def _evidence_row(
@@ -395,4 +410,30 @@ def _agent_row(control_id: str, role: str, status: str) -> dict[str, str]:
         "required_preconditions_de": "Vor Aktivierung: separates genehmigtes Goal und llm_audit_log.",
         "current_decision_de": "Bleibt documentation-only.",
         "next_safe_step_de": "Nur Spezifikation schreiben.",
+    }
+
+
+def _bridge_row(
+    area: str,
+    worksheet_rows: int,
+    method_rows: int,
+    interpretation_rows: int,
+    unique_sources: int,
+    pending_rows: int,
+    drafting_steps: int,
+    tables: str,
+    figures: str,
+) -> dict[str, object]:
+    return {
+        "thesis_area": area,
+        "worksheet_rows": worksheet_rows,
+        "method_rows": method_rows,
+        "interpretation_rows": interpretation_rows,
+        "unique_sources": unique_sources,
+        "method_interpretation_source_artifact_gap_rows": 0,
+        "pending_citation_rows": pending_rows,
+        "final_release_ready_rows": 0,
+        "drafting_steps": drafting_steps,
+        "selected_tables": tables,
+        "selected_figures": figures,
     }

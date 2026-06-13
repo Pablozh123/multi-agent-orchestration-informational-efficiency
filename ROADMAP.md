@@ -1109,7 +1109,9 @@ Current implemented consolidation:
   future pipeline-improvement rows for source review, evidence drafting,
   wording review, table/figure checks, advisor updates, monitor appendix
   review, and bounded MCP summaries. The plan is now sequenced after the
-  source-gated H1-H2-H3 draft and names Human-Owner, safe value,
+  source-gated H1-H2-H3 draft and the Worksheet-Drafting Bridge: 23 worksheet
+  rows, 12 method rows, 11 interpretation rows, 0 source/artifact gaps,
+  15 drafting steps, tables T2-T4, figures F1-F3, Human-Owner, safe value,
   Proof-Artifact, Failure-Mode, bounded input/output limits, max 50 rows,
   `llm_audit_log`, and blocked actions for every future role. All rows remain
   documentation-only or deferred; no runtime agents, MCP, model routing, LLM
@@ -1122,7 +1124,7 @@ Current implemented consolidation:
   methods, 4 thesis-facing interpretations, 23 H1-H2-H3 Source-Links, 31
   total method/interpretation Source-Links including Monitor/Swiss, 23 open
   Manual Source Review rows, 5 core tables, 4 core figures, the refreshed
-  Swiss gate with 50 running snapshot rows, DOCX-QA, bounded read-only access,
+  Swiss gate with 51 running snapshot rows, DOCX-QA, bounded read-only access,
   max 50 rows, `llm_audit_log`, and 0 active runtime rows.
 - `data/results/thesis_consolidation_index.csv` and
   `docs/project/THESIS_CONSOLIDATION_INDEX.md` index the current

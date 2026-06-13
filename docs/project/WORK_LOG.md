@@ -12618,6 +12618,60 @@ Next recommended action:
 
 - `docs: update project control workflow`.
 
+## 2026-06-13 - H3 Source Review Ledger Fill Guide
+
+Context:
+
+- Active goal: `goal-thesis-consolidation-001`.
+- Review-Access remains paused.
+- This slice maps the existing H3 worksheet rows to the Source Review Progress
+  Ledger without reading source contents, setting Page-/Section-Notes,
+  deciding Claim-Support, promoting source status, exposing wallet addresses,
+  or activating runtime agents.
+
+Changes:
+
+- Added `operations.project.build_h3_source_review_ledger_fill_guide`.
+- Generated `data/results/thesis_h3_source_review_ledger_fill_guide.csv`.
+- Generated `docs/project/THESIS_H3_SOURCE_REVIEW_LEDGER_FILL_GUIDE.md`.
+- Updated the thesis consolidation index to 66 artifacts.
+- Updated `GOAL.md` and `ROADMAP.md` so the H3 Ledger Fill Guide is part of
+  the operative high-level review path.
+- Committed the H3 slice as
+  `6d7c7dd docs: add h3 source review ledger fill guide`.
+
+Key output:
+
+- H3 guide rows: 8.
+- Matched H3 ledger rows: 8.
+- Unique H3 sources: 4.
+- Method rows: 5.
+- Interpretation rows: 3.
+- External locator rows: 2.
+- Local PDF rows: 6.
+- Selected table/figure: T4/F3.
+- Final-release-ready rows: 0.
+- H3 boundary preserved: Granger-Grenze, Wallet-Grenze, no Kausalclaims, no
+  Private-Information-Beweise, no arbitrary whale thresholds, no
+  Wallet-Adressen, no Trading- or Profitabilitaetsclaims, no final citation,
+  no source-status promotion, no runtime agents, max 50 rows, and
+  `llm_audit_log` before later agent help.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_h3_source_review_ledger_fill_guide.py tests/test_h3_source_review_batch_worksheet.py tests/test_h2_source_review_ledger_fill_guide.py tests/test_h1_source_review_ledger_fill_guide.py tests/test_manual_source_review_update_checklist.py tests/test_h1_h2_h3_decision_queue_ledger_alignment.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 19 passed.
+- `.\.venv\Scripts\python.exe -m py_compile ...` on touched generator and
+  test files -> PASS.
+- `rg -n "<sharp-s>" ...` on touched thesis-facing files -> PASS, no matches.
+- `git diff --check` -> PASS, CRLF warnings only.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `636 passed in 60.24s (0:01:00)`.
+
+Next recommended action:
+
+- `docs: update project control workflow`.
+
 ## 2026-06-13 - H2 Source Review Ledger Fill Guide
 
 Context:

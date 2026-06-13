@@ -126,6 +126,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="7 control rows, 4 thesis-facing Methoden, 4 thesis-facing Interpretationen, 5 Kern-Tabellen, 4 Kern-Figuren, 23 pending citation rows, 0 final-release rows und 0 aktive Runtime-Agenten.",
         ),
         _index_row(
+            artifact_id="index_05_highlevel_thesis_writing_handoff",
+            artifact_type="highlevel_thesis_writing_handoff",
+            path="docs/project/THESIS_HIGHLEVEL_THESIS_WRITING_HANDOFF.md; data/results/thesis_highlevel_thesis_writing_handoff.csv",
+            purpose_de="Operatives BA-Schreibhandoff ohne Review-Access: Projektframe, H1, H2, H3, kompaktes Tabellen-/Figurenpaket, Source-Review-Citation-Gate und Agent/Swiss/Final-QA-Grenzen.",
+            use_now_de="Als unmittelbare Schreibsteuerung nutzen: bounded BA-Prosa schreiben, aber Source IDs, Evidence IDs, deterministische Artefakte, Limitationen, T2/F1 bis T4/F3 und offene Finalgates sichtbar halten.",
+            gate_or_limit_de="7 Handoff rows, 23 worksheet rows, 12 method rows, 11 interpretation rows, 0 source/artifact gaps, 15 drafting steps, 5 Kern-Tabellen, 4 Kern-Figuren, 23 pending citation rows, 0 final-submission rows und 0 aktive Runtime-Agenten.",
+        ),
+        _index_row(
             artifact_id="index_06_execution_checklist",
             artifact_type="execution_plan",
             path="docs/project/THESIS_EXECUTION_CHECKLIST.md; data/results/thesis_execution_checklist.csv",
@@ -650,6 +658,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Dieser Index zeigt, welche Artefakte fuer den aktuellen Highlevel-"
         "Projektstand, den Dozentenbericht, Source Review, Wording Guard, "
         "Highlevel Next-Step Control Summary, "
+        "Highlevel Thesis Writing Handoff, "
         "Advisor Handoff Package, Advisor Handoff Note, Advisor Feedback Log, "
         "Advisor Feedback Integration Checklist, Advisor Source Review "
         "Follow-up, H1 Manual Source Review Follow-up, H1 Source Review Decision Queue, "
@@ -692,6 +701,10 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "7-Zeilen-Navigation ueber Evidence-/Source-Mapping, kompaktes "
         "Tabellen-/Figurenpaket, Source-Review-Batches, H1-H3-Schreibpfad, "
         "Swiss/Monitor-Gates, Agent-Future-Work und finale QA. "
+        "Nutze das Highlevel Thesis Writing Handoff als unmittelbare "
+        "BA-Schreibsteuerung ohne Review-Access: Projektframe, H1, H2, H3, "
+        "kompaktes Tabellen-/Figurenpaket, Source-Review-Citation-Gate und "
+        "Agent/Swiss/Final-QA-Grenzen bleiben in 7 Handoff rows sichtbar. "
         "Nutze das Advisor Source Review Follow-up als direkte Reihenfolge "
         "fuer Feedback-Erfassung, Source-Review-Tiefe, H1-H2-H3 Manual Source "
         "Review, bounded Draft, Final-Gates und Agent-Future-Work-Grenze. "

@@ -884,6 +884,16 @@ Current implemented consolidation:
   tables, 4 core figures, 4 source-review batch rows, 23 pending citation
   rows, 0 final-release rows, 7 future-agent safety rows, and 0 active
   runtime-agent rows.
+- `data/results/thesis_highlevel_thesis_writing_handoff.csv` and
+  `docs/project/THESIS_HIGHLEVEL_THESIS_WRITING_HANDOFF.md` turn that path
+  into a 7-row BA writing handoff without Review-Access: project frame, H1,
+  H2, H3, compact table/figure integration, Source Review/Citation Gate, and
+  Agent/Swiss/Final-QA boundary. It keeps 23 worksheet rows, 12 method rows,
+  11 interpretation rows, 0 source/artifact gaps, 15 drafting steps,
+  5 core tables, 4 core figures, T2/F1, T3/F2, T4/F3, 23 pending citation
+  rows, 0 final-submission rows, 0 active runtime-agent rows, max 50 rows,
+  `llm_audit_log`, no final citation, no source-status promotion, and no
+  runtime-agent activation visible.
 - `data/results/thesis_submission_readiness_board.csv` and
   `docs/project/THESIS_SUBMISSION_READINESS_BOARD.md` provide a nine-gate
   submission-readiness board: advisor handoff, chapter/source mapping, source
@@ -1098,6 +1108,15 @@ Current implemented consolidation:
   writing path, Swiss/Monitor gates, future-agent safety case, and final QA
   into one 7-row control artifact. It keeps 0 final-release rows and 0 active
   runtime-agent rows visible while bounded BA drafting continues.
+- `data/results/thesis_highlevel_thesis_writing_handoff.csv` and
+  `docs/project/THESIS_HIGHLEVEL_THESIS_WRITING_HANDOFF.md` provide the
+  immediate high-level BA writing handoff while Review-Access stays paused:
+  7 handoff rows for project frame, H1, H2, H3, compact table/figure
+  integration, Source Review/Citation Gate, and Agent/Swiss/Final-QA boundary.
+  The handoff preserves Source IDs, Evidence IDs, deterministic artifacts,
+  limitations, T2/F1, T3/F2, T4/F3, 23 pending citation rows, 0 final-
+  submission rows, 0 active runtime-agent rows, max 50 rows and
+  `llm_audit_log`.
 - `data/results/thesis_h1_h2_h3_core_sections.csv` and
   `docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md` translate the H1-H2-H3
   empirical core into three thesis-ready section rows: each row binds
@@ -1142,7 +1161,7 @@ Current implemented consolidation:
   follow-up, H3 source-review batch worksheet, source-review worksheet
   overview, H1-H2-H3 worksheet drafting bridge, manual source-review update
   checklist, source review batch execution plan, highlevel next-step control
-  summary, manual
+  summary, highlevel thesis writing handoff, manual
   source-review follow-up overview, submission
   readiness board, drafting sequence, wording guard, table/figure captions,
   chapter draft, source review plan, agent protocol, status, and work log are

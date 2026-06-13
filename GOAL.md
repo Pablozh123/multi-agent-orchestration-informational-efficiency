@@ -252,6 +252,15 @@ acceptance_criteria:
   0 final-release-ready rows, 7 future-agent safety rows, 0 active runtime
   agent rows, Swiss/Monitor gates, DOCX-QA, max 50 rows, and `llm_audit_log`
   boundaries.
+- A high-level thesis writing handoff exists so BA writing can continue
+  without Review-Access in one operative 7-row view: project frame, H1, H2,
+  H3, compact table/figure integration, manual Source Review/Citation Gate,
+  and Agent/Swiss/Final-QA boundary. It keeps 23 worksheet rows, 12 method
+  rows, 11 interpretation rows, 0 source/artifact gaps, 15 drafting steps,
+  5 core tables, 4 core figures, T2/F1, T3/F2, T4/F3, 23 pending citation
+  rows, 0 final-submission-ready rows, 0 active runtime-agent rows,
+  max 50 rows, `llm_audit_log`, no final citation, no source-status
+  promotion, and no runtime-agent activation visible.
 - A consolidated H1-H2-H3 manual source-review follow-up overview exists so
   the 23 open empirical-core review rows are visible in one compact control
   artifact with 9 unique sources, method/interpretation counts, access-route

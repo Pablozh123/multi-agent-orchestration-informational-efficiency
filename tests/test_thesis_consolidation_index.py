@@ -19,12 +19,13 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     doc = result.docs_path.read_text(encoding="utf-8")
 
     assert tuple(index.columns) == INDEX_COLUMNS
-    assert result.index_rows == 62
+    assert result.index_rows == 63
     assert "Thesis Consolidation Index" in doc
-    assert "Indexed artifacts: 62" in doc
+    assert "Indexed artifacts: 63" in doc
     assert "dozentenbericht_ba_thesis.docx" in doc
     assert "THESIS_ADVISOR_HANDOFF_PACKAGE.md" in doc
     assert "THESIS_HIGHLEVEL_NEXT_STEP_CONTROL_SUMMARY.md" in doc
+    assert "THESIS_HIGHLEVEL_THESIS_WRITING_HANDOFF.md" in doc
     assert "DOZENTEN_UEBERGABE_TEXT.md" in doc
     assert "DOZENTEN_FEEDBACK_LOG.md" in doc
     assert "DOZENTEN_FEEDBACK_INTEGRATION_CHECKLIST.md" in doc
@@ -113,6 +114,9 @@ def test_thesis_consolidation_index_keeps_deferred_boundaries(tmp_path: Path) ->
     assert "goal_completion_audit" in joined
     assert "advisor_feedback_integration" in joined
     assert "highlevel_next_step_control_summary" in joined
+    assert "highlevel_thesis_writing_handoff" in joined
+    assert "7 handoff rows" in joined
+    assert "final-submission rows" in joined
     assert "7 control rows" in joined
     assert "4 thesis-facing methoden" in joined
     assert "4 thesis-facing interpretationen" in joined
@@ -169,6 +173,8 @@ def _write_fixture(root: Path) -> None:
         "docs/research/THESIS_NEXT_WORK_PLAN.md",
         "docs/project/THESIS_HIGHLEVEL_NEXT_STEP_CONTROL_SUMMARY.md",
         "data/results/thesis_highlevel_next_step_control_summary.csv",
+        "docs/project/THESIS_HIGHLEVEL_THESIS_WRITING_HANDOFF.md",
+        "data/results/thesis_highlevel_thesis_writing_handoff.csv",
         "docs/project/THESIS_EXECUTION_CHECKLIST.md",
         "data/results/thesis_execution_checklist.csv",
         "docs/project/THESIS_CHAPTER_SOURCE_BINDINGS.md",

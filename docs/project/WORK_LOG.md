@@ -12485,3 +12485,67 @@ Verification:
 Next recommended action:
 
 - `docs: add h2 source review batch worksheet`.
+
+## 2026-06-13 - H2/H3 Worksheets And Consolidated Worksheet Overview
+
+Context:
+
+- Active goal: `goal-thesis-consolidation-001`.
+- The manual H1 worksheet already existed; this slice completed the remaining
+  H2 and H3 worksheet controls and then consolidated all three empirical
+  worksheets.
+- Review-Access remains paused; no source content was interpreted, no final
+  citation was released, and no runtime agent path was activated.
+
+Changes:
+
+- Added `operations.project.build_h2_source_review_batch_worksheet`.
+- Generated `data/results/thesis_h2_source_review_batch_worksheet.csv`.
+- Generated `docs/project/THESIS_H2_SOURCE_REVIEW_BATCH_WORKSHEET.md`.
+- Committed H2 as `4c6d504 docs: add h2 source review batch worksheet`.
+- Added `operations.project.build_h3_source_review_batch_worksheet`.
+- Generated `data/results/thesis_h3_source_review_batch_worksheet.csv`.
+- Generated `docs/project/THESIS_H3_SOURCE_REVIEW_BATCH_WORKSHEET.md`.
+- Committed H3 as `72abac7 docs: add h3 source review batch worksheet`.
+- Added `operations.project.build_source_review_worksheet_overview`.
+- Generated `data/results/thesis_source_review_worksheet_overview.csv`.
+- Generated `docs/project/THESIS_SOURCE_REVIEW_WORKSHEET_OVERVIEW.md`.
+- Extended the consolidation index to 61 artifacts and committed the overview
+  as `97220b9 docs: add source review worksheet overview`.
+
+Key output:
+
+- H2 worksheet rows: 5, sources: 3, method rows: 3, interpretation rows: 2,
+  pending citation rows: 5, final-release-ready rows: 0.
+- H3 worksheet rows: 8, sources: 4, method rows: 5, interpretation rows: 3,
+  pending citation rows: 8, final-release-ready rows: 0.
+- Worksheet overview rows: 4.
+- Total worksheet rows: 23.
+- Unique sources: 9.
+- Method rows: 12.
+- Interpretation rows: 11.
+- External locator rows: 13.
+- Local PDF rows: 10.
+- Pending citation rows: 23.
+- Final-release-ready rows: 0.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h2_source_review_batch_worksheet.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_h3_source_review_batch_worksheet.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_source_review_worksheet_overview.py -q`
+  -> PASS, 3 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests\test_source_review_worksheet_overview.py tests\test_h1_source_review_batch_worksheet.py tests\test_h2_source_review_batch_worksheet.py tests\test_h3_source_review_batch_worksheet.py tests\test_source_review_batch_execution_plan.py tests\test_highlevel_next_step_control_summary.py tests\test_thesis_consolidation_index.py -q`
+  -> PASS, 20 passed.
+- `.\.venv\Scripts\python.exe -m py_compile operations/project/build_source_review_worksheet_overview.py operations/project/build_h1_source_review_batch_worksheet.py operations/project/build_h2_source_review_batch_worksheet.py operations/project/build_h3_source_review_batch_worksheet.py operations/project/build_thesis_consolidation_index.py tests/test_source_review_worksheet_overview.py tests/test_thesis_consolidation_index.py`
+  -> PASS.
+- `rg -n "<sharp-s>" ...` on touched files -> PASS, no matches.
+- `git diff --check` -> PASS, CRLF warnings only.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `621 passed in 70.88s (0:01:10)`, clean Git status, no blockers.
+
+Next recommended action:
+
+- `docs: add h1 h2 h3 worksheet to drafting bridge`.

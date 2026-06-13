@@ -19,9 +19,9 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     doc = result.docs_path.read_text(encoding="utf-8")
 
     assert tuple(index.columns) == INDEX_COLUMNS
-    assert result.index_rows == 57
+    assert result.index_rows == 58
     assert "Thesis Consolidation Index" in doc
-    assert "Indexed artifacts: 57" in doc
+    assert "Indexed artifacts: 58" in doc
     assert "dozentenbericht_ba_thesis.docx" in doc
     assert "THESIS_ADVISOR_HANDOFF_PACKAGE.md" in doc
     assert "THESIS_HIGHLEVEL_NEXT_STEP_CONTROL_SUMMARY.md" in doc
@@ -31,6 +31,7 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     assert "THESIS_ADVISOR_SOURCE_REVIEW_FOLLOWUP.md" in doc
     assert "THESIS_H1_MANUAL_SOURCE_REVIEW_FOLLOWUP.md" in doc
     assert "THESIS_H1_SOURCE_REVIEW_DECISION_QUEUE.md" in doc
+    assert "THESIS_H1_SOURCE_REVIEW_BATCH_WORKSHEET.md" in doc
     assert "THESIS_H2_MANUAL_SOURCE_REVIEW_FOLLOWUP.md" in doc
     assert "THESIS_H2_SOURCE_REVIEW_DECISION_QUEUE.md" in doc
     assert "THESIS_H3_MANUAL_SOURCE_REVIEW_FOLLOWUP.md" in doc
@@ -117,6 +118,9 @@ def test_thesis_consolidation_index_keeps_deferred_boundaries(tmp_path: Path) ->
     assert "advisor_source_review_followup" in joined
     assert "h1_manual_source_review_followup" in joined
     assert "h1_source_review_decision_queue" in joined
+    assert "h1_source_review_batch_worksheet" in joined
+    assert "10 h1 worksheet rows" in joined
+    assert "0 final-release rows" in joined
     assert "h2_manual_source_review_followup" in joined
     assert "h2_source_review_decision_queue" in joined
     assert "h3_manual_source_review_followup" in joined
@@ -185,6 +189,8 @@ def _write_fixture(root: Path) -> None:
         "data/results/thesis_h1_manual_source_review_followup.csv",
         "docs/project/THESIS_H1_SOURCE_REVIEW_DECISION_QUEUE.md",
         "data/results/thesis_h1_source_review_decision_queue.csv",
+        "docs/project/THESIS_H1_SOURCE_REVIEW_BATCH_WORKSHEET.md",
+        "data/results/thesis_h1_source_review_batch_worksheet.csv",
         "docs/project/THESIS_H2_MANUAL_SOURCE_REVIEW_FOLLOWUP.md",
         "data/results/thesis_h2_manual_source_review_followup.csv",
         "docs/project/THESIS_H2_SOURCE_REVIEW_DECISION_QUEUE.md",

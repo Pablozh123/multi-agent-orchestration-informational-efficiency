@@ -137,6 +137,14 @@ acceptance_criteria:
   table/figure binding, manual Page-/Section-Note, Claim-Support,
   Blocked-Wording, Citation-Use fields, 0 final-ready rows, no source-status
   promotion, and inactive future-agent boundaries.
+- A H1 source-review batch worksheet exists so the first H1 manual batch can
+  be filled row-by-row without Review-Access or runtime agents: 10 worksheet
+  rows, 4 sources, 4 method rows, 6 interpretation rows, 7 external locator
+  rows, 3 local PDF rows, T2/F1 binding, required manual fields
+  `review_status`, `page_or_section_note`, `claim_support_decision`,
+  `blocked_wording_check`, `citation_use_decision`, `reviewed_by`,
+  `reviewed_at`, `review_comment_de`, 10 pending citation rows,
+  0 final-release-ready rows, and no source-status promotion.
 - A H2 manual source-review follow-up exists so the second empirical-core
   review slice is startable with 5 H2 source rows, 3 H2 sources, method and
   interpretation Evidence IDs, deterministic artifacts, Page-/Section-Note,
@@ -341,7 +349,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add h1 source review batch worksheet
+next_commit: docs: add h2 source review batch worksheet
 
 ## Running Side Goal
 

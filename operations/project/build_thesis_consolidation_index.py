@@ -318,6 +318,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine Intraday- oder Kausalclaims, keine Quelleninhaltsinterpretation, keine finale Zitation, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.",
         ),
         _index_row(
+            artifact_id="index_19_h2_source_review_batch_worksheet",
+            artifact_type="h2_source_review_batch_worksheet",
+            path="docs/project/THESIS_H2_SOURCE_REVIEW_BATCH_WORKSHEET.md; data/results/thesis_h2_source_review_batch_worksheet.csv",
+            purpose_de="Macht den H2 Source-Review-Batch als 5-zeiliges manuelles Worksheet fuer Page-/Section-Note, Claim-Support, Blocked-Wording, Kausalclaim-Grenze, Citation-Use und Reviewer-Metadaten startbar.",
+            use_now_de="Als unmittelbare H2-Arbeitsliste nutzen, nachdem H1 oder die H2-Review-Reihenfolge freigegeben wurde.",
+            gate_or_limit_de="5 H2 worksheet rows, 3 Quellen, 3 method rows, 2 interpretation rows, T3/F2, 5 pending citation rows, 0 final-release rows; keine Kausalclaims, keine finale Zitation, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.",
+        ),
+        _index_row(
             artifact_id="index_19_h3_manual_source_review_followup",
             artifact_type="h3_manual_source_review_followup",
             path="docs/project/THESIS_H3_MANUAL_SOURCE_REVIEW_FOLLOWUP.md; data/results/thesis_h3_manual_source_review_followup.csv",
@@ -623,6 +631,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Follow-up, H1 Manual Source Review Follow-up, H1 Source Review Decision Queue, "
         "H1 Source Review Batch Worksheet, "
         "H2 Manual Source Review Follow-up, H2 Source Review Decision Queue, "
+        "H2 Source Review Batch Worksheet, "
         "H3 Manual Source Review Follow-up, H3 Source Review Decision Queue, "
         "H1-H2-H3 Decision Queue Overview, H1-H2-H3 Decision Queue Ledger Alignment, "
         "Ledger Citation Gate Summary, "
@@ -674,6 +683,9 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Nutze das H1 Source Review Batch Worksheet als unmittelbare "
         "10-zeilige H1-Arbeitsliste fuer Page-/Section-Note, Claim-Support, "
         "Blocked-Wording, Citation-Use und Reviewer-Metadaten. "
+        "Nutze das H2 Source Review Batch Worksheet als unmittelbare "
+        "5-zeilige H2-Arbeitsliste fuer Page-/Section-Note, Claim-Support, "
+        "Blocked-Wording, Kausalclaim-Grenze, Citation-Use und Reviewer-Metadaten. "
         "Nutze die H1-H2-H3 Decision Queue Overview als operative "
         "Kontrollsicht ueber 23 Decision Rows, T2/F1, T3/F2, T4/F3, "
         "0 final-ready rows und 0 Quellenstatus-Aenderungen. "

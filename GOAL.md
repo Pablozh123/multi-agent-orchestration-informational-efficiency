@@ -156,6 +156,15 @@ acceptance_criteria:
   table/figure binding, manual Page-/Section-Note, Claim-Support,
   Blocked-Wording, Citation-Use, Kausalclaim-Grenze fields, 0 final-ready
   rows, no source-status promotion, and inactive future-agent boundaries.
+- A H2 source-review batch worksheet exists so the second manual batch can be
+  filled row-by-row with the H2 Kausalclaim-Grenze visible: 5 worksheet rows,
+  3 sources, 3 method rows, 2 interpretation rows, 4 external locator rows,
+  1 local PDF row, T3/F2 binding, required manual fields
+  `review_status`, `page_or_section_note`, `claim_support_decision`,
+  `blocked_wording_check`, `citation_use_decision`, `reviewed_by`,
+  `reviewed_at`, `review_comment_de`, 5 pending citation rows,
+  0 final-release-ready rows, no Kausalclaims, and no source-status
+  promotion.
 - A H3 manual source-review follow-up exists so the third empirical-core
   review slice is startable with 8 H3 source rows, 4 H3 sources, wallet and
   Granger method Evidence IDs, interpretation Evidence IDs, deterministic
@@ -349,7 +358,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add h2 source review batch worksheet
+next_commit: docs: add h3 source review batch worksheet
 
 ## Running Side Goal
 

@@ -216,6 +216,19 @@ acceptance_criteria:
   `reviewed_at`, `review_comment_de`, 8 pending citation rows,
   0 final-release-ready rows, no Kausalclaims, no Wallet-Adressen, no Trading
   or Profitabilitaetsclaims, and no source-status promotion.
+- A H3 source-review ledger fill guide exists so the 8 H3 worksheet rows can
+  be mapped into the Source Review Progress Ledger without Review-Access or
+  automation: 8 guide rows, 8 matched ledger rows, 4 sources, 5 method rows,
+  3 interpretation rows, 2 external locator rows, 6 local PDF rows, T4/F3,
+  Granger-Grenze, Wallet-Grenze, allowed Ledger fields `review_status`,
+  `page_or_section_note`, `claim_support_decision`,
+  `blocked_wording_check`, `citation_use_decision`, `reviewed_by`,
+  `reviewed_at`, `review_comment_de`, preserved_manual_fields regeneration
+  check, 0 final-release-ready rows, no Kausalclaims, no
+  Private-Information-Beweise, no arbitrary whale thresholds, no
+  Wallet-Adressen, no Trading- or Profitabilitaetsclaims, no final citation,
+  no source-status promotion, no runtime agents, max 50 rows, and
+  `llm_audit_log` before later agent help.
 - A consolidated source-review worksheet overview exists so the H1, H2, H3
   manual worksheets are visible in one H1/H2/H3/TOTAL control artifact:
   4 overview rows, 23 worksheet rows, 9 unique sources, 12 method rows,

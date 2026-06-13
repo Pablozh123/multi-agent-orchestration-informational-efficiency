@@ -19,9 +19,9 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     doc = result.docs_path.read_text(encoding="utf-8")
 
     assert tuple(index.columns) == INDEX_COLUMNS
-    assert result.index_rows == 65
+    assert result.index_rows == 66
     assert "Thesis Consolidation Index" in doc
-    assert "Indexed artifacts: 65" in doc
+    assert "Indexed artifacts: 66" in doc
     assert "dozentenbericht_ba_thesis.docx" in doc
     assert "THESIS_ADVISOR_HANDOFF_PACKAGE.md" in doc
     assert "THESIS_HIGHLEVEL_NEXT_STEP_CONTROL_SUMMARY.md" in doc
@@ -41,6 +41,7 @@ def test_generate_thesis_consolidation_index_writes_artifact_map(tmp_path: Path)
     assert "THESIS_H3_MANUAL_SOURCE_REVIEW_FOLLOWUP.md" in doc
     assert "THESIS_H3_SOURCE_REVIEW_DECISION_QUEUE.md" in doc
     assert "THESIS_H3_SOURCE_REVIEW_BATCH_WORKSHEET.md" in doc
+    assert "THESIS_H3_SOURCE_REVIEW_LEDGER_FILL_GUIDE.md" in doc
     assert "THESIS_SOURCE_REVIEW_WORKSHEET_OVERVIEW.md" in doc
     assert "THESIS_H1_H2_H3_WORKSHEET_DRAFTING_BRIDGE.md" in doc
     assert "THESIS_H1_H2_H3_DECISION_QUEUE_OVERVIEW.md" in doc
@@ -147,6 +148,11 @@ def test_thesis_consolidation_index_keeps_deferred_boundaries(tmp_path: Path) ->
     assert "h3_source_review_decision_queue" in joined
     assert "h3_source_review_batch_worksheet" in joined
     assert "8 h3 worksheet rows" in joined
+    assert "h3_source_review_ledger_fill_guide" in joined
+    assert "8 h3 guide rows" in joined
+    assert "8 matched ledger rows" in joined
+    assert "granger-grenze" in joined
+    assert "wallet-grenze" in joined
     assert "source_review_worksheet_overview" in joined
     assert "4 overview rows" in joined
     assert "23 worksheet rows" in joined
@@ -239,6 +245,8 @@ def _write_fixture(root: Path) -> None:
         "data/results/thesis_h3_source_review_decision_queue.csv",
         "docs/project/THESIS_H3_SOURCE_REVIEW_BATCH_WORKSHEET.md",
         "data/results/thesis_h3_source_review_batch_worksheet.csv",
+        "docs/project/THESIS_H3_SOURCE_REVIEW_LEDGER_FILL_GUIDE.md",
+        "data/results/thesis_h3_source_review_ledger_fill_guide.csv",
         "docs/project/THESIS_SOURCE_REVIEW_WORKSHEET_OVERVIEW.md",
         "data/results/thesis_source_review_worksheet_overview.csv",
         "docs/project/THESIS_H1_H2_H3_WORKSHEET_DRAFTING_BRIDGE.md",

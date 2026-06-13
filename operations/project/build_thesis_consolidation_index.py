@@ -374,6 +374,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="8 H3 worksheet rows, 4 Quellen, 5 method rows, 3 interpretation rows, T4/F3, 8 pending citation rows, 0 final-release rows; keine Kausalclaims, keine Wallet-Adressen, keine Trading- oder Profitabilitaetsclaims, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.",
         ),
         _index_row(
+            artifact_id="index_19_h3_source_review_ledger_fill_guide",
+            artifact_type="h3_source_review_ledger_fill_guide",
+            path="docs/project/THESIS_H3_SOURCE_REVIEW_LEDGER_FILL_GUIDE.md; data/results/thesis_h3_source_review_ledger_fill_guide.csv",
+            purpose_de="Fuehrt die 8 H3 Worksheet-Zeilen auf die passenden Source Review Progress Ledger-Zeilen und haelt Granger-Grenze und Wallet-Grenze vor manueller Ledger-Pflege sichtbar.",
+            use_now_de="Als konkrete H3-Ledger-Fill-Anleitung nutzen: Page-/Section-Note, Claim-Support, Blocked-Wording, Granger-Grenze, Wallet-Grenze, Citation-Use und Reviewer-Metadaten eintragen, danach Regeneration und preserved_manual_fields pruefen.",
+            gate_or_limit_de="8 H3 guide rows, 8 matched ledger rows, 4 Quellen, 5 method rows, 3 interpretation rows, T4/F3, 0 final-release rows; keine Kausalclaims, keine Private-Information-Beweise, keine Wallet-Adressen, keine Trading- oder Profitabilitaetsclaims, keine Runtime-Agenten, max 50 rows und llm_audit_log.",
+        ),
+        _index_row(
             artifact_id="index_19_source_review_worksheet_overview",
             artifact_type="source_review_worksheet_overview",
             path="docs/project/THESIS_SOURCE_REVIEW_WORKSHEET_OVERVIEW.md; data/results/thesis_source_review_worksheet_overview.csv",
@@ -685,6 +693,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "H2 Source Review Ledger Fill Guide, "
         "H3 Manual Source Review Follow-up, H3 Source Review Decision Queue, "
         "H3 Source Review Batch Worksheet, "
+        "H3 Source Review Ledger Fill Guide, "
         "Source Review Worksheet Overview, "
         "H1-H2-H3 Worksheet Drafting Bridge, "
         "H1-H2-H3 Decision Queue Overview, H1-H2-H3 Decision Queue Ledger Alignment, "
@@ -761,6 +770,13 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "8-zeilige H3-Arbeitsliste fuer Page-/Section-Note, Claim-Support, "
         "Blocked-Wording, Granger-Grenze, Wallet-Grenze, Citation-Use und "
         "Reviewer-Metadaten. "
+        "Nutze den H3 Source Review Ledger Fill Guide danach als konkrete "
+        "Uebertragungsregel vom H3 Worksheet in den Source Review Progress "
+        "Ledger: 8 Guide-Zeilen muessen 8 Ledger-Zeilen matchen, Granger- "
+        "und Wallet-Grenze bleiben sichtbar, und nur review_status, "
+        "page_or_section_note, claim_support_decision, blocked_wording_check, "
+        "citation_use_decision, reviewed_by, reviewed_at und review_comment_de "
+        "duerfen manuell gepflegt werden. "
         "Nutze die Source Review Worksheet Overview als H1-H2-H3/TOTAL "
         "Gesamtuebersicht ueber 23 Worksheet Rows, bevor Ledger-Felder "
         "uebernommen und Gates regeneriert werden. "

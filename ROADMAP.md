@@ -845,6 +845,16 @@ Current implemented consolidation:
   Granger-Grenze, Wallet-Grenze, reviewer metadata, 8 pending citation rows,
   0 final-release rows, no Wallet-Adressen, no Trading- or
   Profitabilitaetsclaims, and no source-status promotion.
+- `data/results/thesis_h3_source_review_ledger_fill_guide.csv` and
+  `docs/project/THESIS_H3_SOURCE_REVIEW_LEDGER_FILL_GUIDE.md` map the 8 H3
+  worksheet rows to 8 Source Review Progress Ledger rows: 4 sources, 5 method
+  rows, 3 interpretation rows, 2 external locator rows, 6 local PDF rows,
+  T4/F3, Granger-Grenze, Wallet-Grenze, allowed Ledger fields,
+  preserved_manual_fields regeneration check, 0 final-release rows, no
+  Kausalclaims, no Private-Information-Beweise, no arbitrary whale
+  thresholds, no Wallet-Adressen, no Trading or Profitabilitaetsclaims, no
+  final citation, no source-status promotion, no runtime agents, max 50 rows,
+  and `llm_audit_log`.
 - `data/results/thesis_source_review_worksheet_overview.csv` and
   `docs/project/THESIS_SOURCE_REVIEW_WORKSHEET_OVERVIEW.md` consolidate the
   H1/H2/H3 worksheets into 4 overview rows: 23 worksheet rows, 9 unique
@@ -1176,6 +1186,7 @@ Current implemented consolidation:
   guide, H2 manual source-review follow-up, H2 source-review batch worksheet,
   H2 source-review ledger fill guide,
   H3 manual source-review follow-up, H3 source-review batch worksheet,
+  H3 source-review ledger fill guide,
   source-review worksheet
   overview, H1-H2-H3 worksheet drafting bridge, manual source-review update
   checklist, source review batch execution plan, highlevel next-step control

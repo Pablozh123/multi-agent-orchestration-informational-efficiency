@@ -828,6 +828,13 @@ Current implemented consolidation:
   8 update steps, 23 Ledger rows, 9 unique sources, 13 external locator rows,
   10 local PDF rows, 23 pending citation rows, 0 final-ready rows, and
   0 final-release-ready checklist rows.
+- `data/results/thesis_source_review_batch_execution_plan.csv` and
+  `docs/project/THESIS_SOURCE_REVIEW_BATCH_EXECUTION_PLAN.md` order the
+  manual review path into 4 batches: H1 10 rows, H2 5 rows, H3 8 rows, and
+  TOTAL 23 rows, with 9 unique sources, 12 method rows, 11 interpretation
+  rows, 13 external locator rows, 10 local PDF rows, 23 pending citation
+  rows, 0 final-ready rows, 0 source-status change rows, 8 update checklist
+  steps, and 0 final-release rows.
 - `data/results/thesis_submission_readiness_board.csv` and
   `docs/project/THESIS_SUBMISSION_READINESS_BOARD.md` provide a nine-gate
   submission-readiness board: advisor handoff, chapter/source mapping, source
@@ -1030,6 +1037,12 @@ Current implemented consolidation:
   eight-step manual update rule for the Ledger: preflight, source access,
   Page-/Section-Note, Claim-Support, Blocked-Wording, Citation-Use, reviewer
   metadata, regeneration/preservation, and final-release guard.
+- `data/results/thesis_source_review_batch_execution_plan.csv` and
+  `docs/project/THESIS_SOURCE_REVIEW_BATCH_EXECUTION_PLAN.md` add the
+  high-level execution order for that rule: H1, H2, H3, then TOTAL
+  rebuild/finalgate, with 23 Source Review rows, 23 pending citation rows,
+  0 final-ready rows, 0 source-status change rows, 0 final-release rows,
+  and inactive future-agent boundaries.
 - `data/results/thesis_h1_h2_h3_core_sections.csv` and
   `docs/research/THESIS_H1_H2_H3_CORE_SECTIONS.md` translate the H1-H2-H3
   empirical core into three thesis-ready section rows: each row binds
@@ -1068,10 +1081,11 @@ Current implemented consolidation:
   source bindings, agent future-work handoff, advisor handoff note, advisor
   feedback log, advisor source-review follow-up, H1 manual source-review
   follow-up, H2 manual source-review follow-up, H3 manual source-review
-  follow-up, manual source-review follow-up overview, submission readiness
-  board, drafting sequence, wording guard, table/figure captions, chapter
-  draft, source review plan, agent protocol, status, and work log are easy to
-  navigate.
+  follow-up, manual source-review update checklist, source review batch
+  execution plan, manual source-review follow-up overview, submission
+  readiness board, drafting sequence, wording guard, table/figure captions,
+  chapter draft, source review plan, agent protocol, status, and work log are
+  easy to navigate.
 - The same Dozentenbericht now includes `Naechste Arbeitsschritte`, a concise
   German rendering of the ten workstreams from `thesis_next_work_plan.csv`.
 - The Dozentenbericht now also includes `Kapitelweise Umsetzungscheckliste`,

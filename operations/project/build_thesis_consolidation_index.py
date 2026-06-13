@@ -350,6 +350,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="8 Update-Schritte, 23 Ledger Rows, 23 pending citation rows, 0 final-ready rows, 0 final-release rows; keine finale Zitation, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.",
         ),
         _index_row(
+            artifact_id="index_19_source_review_batch_execution_plan",
+            artifact_type="source_review_batch_execution_plan",
+            path="docs/project/THESIS_SOURCE_REVIEW_BATCH_EXECUTION_PLAN.md; data/results/thesis_source_review_batch_execution_plan.csv",
+            purpose_de="Ordnet die 23 H1-H2-H3 Source-Review-Zeilen in manuelle Arbeitsbatches und einen Rebuild-/Finalgate-Batch.",
+            use_now_de="Als Batch-Reihenfolge H1, H2, H3 und TOTAL nutzen, nachdem die Manual Source Review Update Checklist geprueft wurde.",
+            gate_or_limit_de="4 Batch rows, 23 Source Review rows, 23 pending citation rows, 0 final-ready rows, 0 final-release rows; keine finale Zitation, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.",
+        ),
+        _index_row(
             artifact_id="index_19_manual_source_review_followup_overview",
             artifact_type="manual_source_review_followup_overview",
             path="docs/project/THESIS_MANUAL_SOURCE_REVIEW_FOLLOWUP_OVERVIEW.md; data/results/thesis_manual_source_review_followup_overview.csv",
@@ -601,6 +609,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "H1-H2-H3 Decision Queue Overview, H1-H2-H3 Decision Queue Ledger Alignment, "
         "Ledger Citation Gate Summary, "
         "Manual Source Review Update Checklist, "
+        "Source Review Batch Execution Plan, "
         "Manual Source Review Follow-up Overview, Submission Readiness Board, "
         "Drafting Sequence, Execution Checklist, Chapter Source Bindings, "
         "Source Review Execution, Source Access "
@@ -655,6 +664,10 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Arbeitsregel, bevor erlaubte Ledger-Felder wie Page-/Section-Note, "
         "Claim-Support, Blocked-Wording, Citation-Use oder Reviewer-Metadaten "
         "geaendert werden. "
+        "Nutze den Source Review Batch Execution Plan als konkrete "
+        "Batch-Reihenfolge H1, H2, H3 und TOTAL Rebuild/Finalgate: 4 batch "
+        "rows, 23 Source Review rows, 23 pending citation rows und "
+        "0 final-release rows muessen sichtbar bleiben. "
         "Nutze die Manual Source Review Follow-up Overview als kompakte "
         "H1-H2-H3 Steuerungsuebersicht fuer die 23 offenen Review-Zeilen. "
         "Nutze das Submission Readiness Board fuer die "

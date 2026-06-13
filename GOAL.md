@@ -188,6 +188,12 @@ acceptance_criteria:
   `review_status`, `page_or_section_note`, `claim_support_decision`,
   `blocked_wording_check`, `citation_use_decision`, `reviewed_by`,
   `reviewed_at`, and `review_comment_de`.
+- A source review batch execution plan exists so the 23 H1-H2-H3 manual
+  review rows are ordered into 4 batches: H1 10 rows, H2 5 rows, H3 8 rows,
+  TOTAL 23 rows, 9 unique sources, 12 method rows, 11 interpretation rows,
+  13 external locator rows, 10 local PDF rows, 23 pending citation rows,
+  0 final-ready rows, 0 source-status change rows, 0 final-release-ready
+  rows, 8 update checklist steps, and inactive future-agent boundaries.
 - A consolidated H1-H2-H3 manual source-review follow-up overview exists so
   the 23 open empirical-core review rows are visible in one compact control
   artifact with 9 unique sources, method/interpretation counts, access-route
@@ -327,7 +333,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add source review batch execution plan
+next_commit: docs: add highlevel next-step control summary
 
 ## Running Side Goal
 

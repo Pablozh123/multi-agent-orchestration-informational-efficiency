@@ -816,6 +816,14 @@ Current implemented consolidation:
   3 interpretation rows, T4/F3 binding, Page-/Section-Note, Claim-Support,
   Blocked-Wording, Citation-Use, Granger-Grenze, Wallet-Grenze, 0 final-ready
   rows, no source-status promotion, and inactive future-agent boundaries.
+- `data/results/thesis_h3_source_review_batch_worksheet.csv` and
+  `docs/project/THESIS_H3_SOURCE_REVIEW_BATCH_WORKSHEET.md` make the third
+  H3 manual batch fillable as an 8-row worksheet: 4 sources, 5 method rows,
+  3 interpretation rows, 2 external locator rows, 6 local PDF rows, T4/F3,
+  Page-/Section-Note, Claim-Support, Blocked-Wording, Citation-Use,
+  Granger-Grenze, Wallet-Grenze, reviewer metadata, 8 pending citation rows,
+  0 final-release rows, no Wallet-Adressen, no Trading- or
+  Profitabilitaetsclaims, and no source-status promotion.
 - `data/results/thesis_h1_h2_h3_decision_queue_overview.csv` and
   `docs/project/THESIS_H1_H2_H3_DECISION_QUEUE_OVERVIEW.md` consolidate the
   three direct Decision Queues into 3 overview rows over 23 decision rows,
@@ -1110,8 +1118,9 @@ Current implemented consolidation:
   feedback log, advisor source-review follow-up, H1 manual source-review
   follow-up, H1 source-review batch worksheet, H2 manual source-review
   follow-up, H2 source-review batch worksheet, H3 manual source-review
-  follow-up, manual source-review update checklist, source review batch
-  execution plan, highlevel next-step control summary, manual
+  follow-up, H3 source-review batch worksheet, manual source-review update
+  checklist, source review batch execution plan, highlevel next-step control
+  summary, manual
   source-review follow-up overview, submission
   readiness board, drafting sequence, wording guard, table/figure captions,
   chapter draft, source review plan, agent protocol, status, and work log are

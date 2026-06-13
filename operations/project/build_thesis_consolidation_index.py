@@ -342,6 +342,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="Keine Kausalclaims, keine Private-Information-Beweise, keine willkuerlichen Whale-Schwellen, keine Wallet-Adressen, keine Trading- oder Profitabilitaetsclaims, keine finale Zitation, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.",
         ),
         _index_row(
+            artifact_id="index_19_h3_source_review_batch_worksheet",
+            artifact_type="h3_source_review_batch_worksheet",
+            path="docs/project/THESIS_H3_SOURCE_REVIEW_BATCH_WORKSHEET.md; data/results/thesis_h3_source_review_batch_worksheet.csv",
+            purpose_de="Macht den H3 Source-Review-Batch als 8-zeiliges manuelles Worksheet fuer Page-/Section-Note, Claim-Support, Blocked-Wording, Granger-Grenze, Wallet-Grenze, Citation-Use und Reviewer-Metadaten startbar.",
+            use_now_de="Als unmittelbare H3-Arbeitsliste nutzen, nachdem H2 oder die H3-Review-Reihenfolge freigegeben wurde.",
+            gate_or_limit_de="8 H3 worksheet rows, 4 Quellen, 5 method rows, 3 interpretation rows, T4/F3, 8 pending citation rows, 0 final-release rows; keine Kausalclaims, keine Wallet-Adressen, keine Trading- oder Profitabilitaetsclaims, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.",
+        ),
+        _index_row(
             artifact_id="index_19_h1_h2_h3_decision_queue_overview",
             artifact_type="h1_h2_h3_decision_queue_overview",
             path="docs/project/THESIS_H1_H2_H3_DECISION_QUEUE_OVERVIEW.md; data/results/thesis_h1_h2_h3_decision_queue_overview.csv",
@@ -633,6 +641,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "H2 Manual Source Review Follow-up, H2 Source Review Decision Queue, "
         "H2 Source Review Batch Worksheet, "
         "H3 Manual Source Review Follow-up, H3 Source Review Decision Queue, "
+        "H3 Source Review Batch Worksheet, "
         "H1-H2-H3 Decision Queue Overview, H1-H2-H3 Decision Queue Ledger Alignment, "
         "Ledger Citation Gate Summary, "
         "Manual Source Review Update Checklist, "
@@ -686,6 +695,10 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Nutze das H2 Source Review Batch Worksheet als unmittelbare "
         "5-zeilige H2-Arbeitsliste fuer Page-/Section-Note, Claim-Support, "
         "Blocked-Wording, Kausalclaim-Grenze, Citation-Use und Reviewer-Metadaten. "
+        "Nutze das H3 Source Review Batch Worksheet als unmittelbare "
+        "8-zeilige H3-Arbeitsliste fuer Page-/Section-Note, Claim-Support, "
+        "Blocked-Wording, Granger-Grenze, Wallet-Grenze, Citation-Use und "
+        "Reviewer-Metadaten. "
         "Nutze die H1-H2-H3 Decision Queue Overview als operative "
         "Kontrollsicht ueber 23 Decision Rows, T2/F1, T3/F2, T4/F3, "
         "0 final-ready rows und 0 Quellenstatus-Aenderungen. "

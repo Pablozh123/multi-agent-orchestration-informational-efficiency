@@ -178,6 +178,15 @@ acceptance_criteria:
   Blocked-Wording, Citation-Use, Granger-Grenze, Wallet-Grenze fields, 0
   final-ready rows, no source-status promotion, and inactive future-agent
   boundaries.
+- A H3 source-review batch worksheet exists so the third manual batch can be
+  filled row-by-row with Granger-Grenze and Wallet-Grenze visible: 8 worksheet
+  rows, 4 sources, 5 method rows, 3 interpretation rows, 2 external locator
+  rows, 6 local PDF rows, T4/F3 binding, required manual fields
+  `review_status`, `page_or_section_note`, `claim_support_decision`,
+  `blocked_wording_check`, `citation_use_decision`, `reviewed_by`,
+  `reviewed_at`, `review_comment_de`, 8 pending citation rows,
+  0 final-release-ready rows, no Kausalclaims, no Wallet-Adressen, no Trading
+  or Profitabilitaetsclaims, and no source-status promotion.
 - A consolidated H1-H2-H3 decision queue overview exists so the operative
   review path is visible in one compact control artifact: 3 overview rows,
   23 decision rows, 9 unique sources, 12 method rows, 11 interpretation rows,
@@ -358,7 +367,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add h3 source review batch worksheet
+next_commit: docs: add source review worksheet overview
 
 ## Running Side Goal
 

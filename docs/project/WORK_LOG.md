@@ -12549,3 +12549,71 @@ Verification:
 Next recommended action:
 
 - `docs: add h1 h2 h3 worksheet to drafting bridge`.
+
+## 2026-06-13 - Worksheet Bridge, Advisor Report, Swiss Refresh, And Post-Bridge Agent Plan
+
+Context:
+
+- Active goal: `goal-thesis-consolidation-001`.
+- Review-Access remains paused; Source Review is still manual and no final
+  citation status was promoted.
+- Runtime agents, MCP, model routing, LLM metrics, raw artifact dumps,
+  wallet-address exposure, and trading paths remain inactive.
+- Swiss referendum work remains descriptive data collection until the official
+  14 June 2026 result is available.
+
+Changes:
+
+- Added the H1-H2-H3 Worksheet-to-Drafting Bridge and committed it as
+  `78b5a5a docs: add h1 h2 h3 worksheet drafting bridge`.
+- Refreshed the read-only Swiss referendum snapshot and committed it as
+  `bedf286 data: update swiss referendum auto refresh snapshot`.
+- Updated the Dozentenbericht Markdown, HTML, and DOCX with the
+  Worksheet-to-Drafting Bridge and committed it as
+  `53b848e docs: update advisor report with worksheet drafting bridge`.
+- Updated the future agent-pipeline upgrade plan after the Bridge and
+  committed it as
+  `a6dc692 docs: update post bridge agent pipeline improvement plan`.
+
+Key output:
+
+- Worksheet Bridge rows: 4.
+- H1-H2-H3 worksheet rows: 23.
+- Method rows: 12.
+- Interpretation rows: 11.
+- Unique sources: 9.
+- Source/artifact gap rows: 0.
+- Source-gated drafting steps: 15.
+- Pending citation rows: 23.
+- Final-release-ready rows: 0.
+- Selected empirical-core bindings: T2/F1, T3/F2, T4/F3.
+- Future agent upgrade rows: 7, with 6 documentation-only rows, 1 deferred
+  row, and 0 active runtime rows.
+- Swiss auto-refresh snapshot rows: 51; latest Polymarket Yes price 27.5%,
+  latest poll Yes 45.0%, raw gap -17.5pp, decided gap -18.9pp.
+
+Verification:
+
+- Worksheet Bridge related tests -> PASS, 10 passed.
+- Swiss referendum refresh tests -> PASS, 32 passed.
+- Dozentenbericht and Bridge tests -> PASS, 4 passed.
+- Agent-plan and high-level control tests:
+  `.\.venv\Scripts\python.exe -m pytest tests/test_thesis_core_writing_package.py tests/test_agent_pipeline_safety_case.py tests/test_highlevel_next_step_control_summary.py tests/test_thesis_final_gate_board.py tests/test_thesis_consolidation_index.py -q`
+  -> PASS, 14 passed.
+- `.\.venv\Scripts\python.exe -m py_compile ...` on touched generator and
+  test files -> PASS.
+- `rg -n "<sharp-s>" ...` on touched thesis-facing files -> PASS, no matches.
+- `git diff --check` -> PASS, CRLF warnings only.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `624 passed in 70.06s (0:01:10)`.
+
+DOCX QA note:
+
+- Structural DOCX generation and tests passed.
+- Visual DOCX render QA was attempted with the Documents render tool but could
+  not run because no local LibreOffice/`soffice` converter was available.
+  Therefore no visual DOCX render pass is claimed.
+
+Next recommended action:
+
+- `docs: update project control workflow`.

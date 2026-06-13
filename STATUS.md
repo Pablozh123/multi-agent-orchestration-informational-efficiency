@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-06-13 02:54
+Generated: 2026-06-13 03:26
 
 Current goal: `goal-thesis-consolidation-001` - Consolidate thesis-ready evidence, results, and future agent design
 
@@ -11,11 +11,11 @@ Current roadmap phase: Phase 12: Thesis Consolidation And Evidence Mapping
 
 Test status: PASS
 
-Pytest summary: `621 passed in 70.88s (0:01:10)`
+Pytest summary: `624 passed in 70.06s (0:01:10)`
 
 Git branch: `main`
 
-Latest commit: `97220b9`
+Latest commit: `a6dc692`
 
 Git status:
 
@@ -35,7 +35,7 @@ Blockers:
 
 Next recommended action:
 
-- docs: add h1 h2 h3 worksheet to drafting bridge
+- docs: update project control workflow
 <!-- PROJECT_STATUS:END -->
 
 ## Current Status

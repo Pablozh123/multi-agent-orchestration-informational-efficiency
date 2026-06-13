@@ -831,6 +831,13 @@ Current implemented consolidation:
   10 local PDF rows, T2/F1, T3/F2, T4/F3, 23 pending citation rows,
   0 final-release rows, H2 Kausalclaim-Grenze, H3 Granger-Grenze and
   Wallet-Grenze, and no source-status promotion.
+- `data/results/thesis_h1_h2_h3_worksheet_drafting_bridge.csv` and
+  `docs/project/THESIS_H1_H2_H3_WORKSHEET_DRAFTING_BRIDGE.md` connect the
+  H1/H2/H3 worksheets to the source-gated BA writing sequence: 4 bridge rows,
+  23 worksheet rows, 12 method rows, 11 interpretation rows, 9 unique sources,
+  0 source/artifact gap rows, 23 pending citation rows, 15 drafting steps,
+  0 final-release rows, T2/F1, T3/F2, T4/F3 bindings, few core tables/figures,
+  and inactive future-agent boundaries.
 - `data/results/thesis_h1_h2_h3_decision_queue_overview.csv` and
   `docs/project/THESIS_H1_H2_H3_DECISION_QUEUE_OVERVIEW.md` consolidate the
   three direct Decision Queues into 3 overview rows over 23 decision rows,
@@ -1126,8 +1133,9 @@ Current implemented consolidation:
   follow-up, H1 source-review batch worksheet, H2 manual source-review
   follow-up, H2 source-review batch worksheet, H3 manual source-review
   follow-up, H3 source-review batch worksheet, source-review worksheet
-  overview, manual source-review update checklist, source review batch
-  execution plan, highlevel next-step control summary, manual
+  overview, H1-H2-H3 worksheet drafting bridge, manual source-review update
+  checklist, source review batch execution plan, highlevel next-step control
+  summary, manual
   source-review follow-up overview, submission
   readiness board, drafting sequence, wording guard, table/figure captions,
   chapter draft, source review plan, agent protocol, status, and work log are

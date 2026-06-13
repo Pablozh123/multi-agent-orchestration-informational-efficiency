@@ -194,6 +194,15 @@ acceptance_criteria:
   23 pending citation rows, 0 final-release-ready rows, T2/F1, T3/F2,
   T4/F3 bindings, H2 Kausalclaim-Grenze, H3 Granger-Grenze and
   Wallet-Grenze, and no source-status promotion.
+- A H1-H2-H3 worksheet drafting bridge exists so the manual worksheets now
+  feed the bounded BA writing sequence directly: 4 bridge rows, 23 worksheet
+  rows, 12 method rows, 11 interpretation rows, 9 unique sources,
+  0 source/artifact gap rows, 23 pending citation rows, 15 source-gated
+  drafting steps, 0 final-release-ready rows, T2/F1, T3/F2, T4/F3 bindings,
+  and the rule that every method and interpretation keeps Source ID, Evidence
+  ID, deterministic artifact, compact table/figure binding, Source Review
+  gate, inactive future-agent boundary, max 50 rows, and `llm_audit_log`
+  before later agent help.
 - A consolidated H1-H2-H3 decision queue overview exists so the operative
   review path is visible in one compact control artifact: 3 overview rows,
   23 decision rows, 9 unique sources, 12 method rows, 11 interpretation rows,
@@ -374,7 +383,7 @@ acceptance_criteria:
   reasonable.
 - `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
 - Review checks pass before recommending a commit.
-next_commit: docs: add h1 h2 h3 worksheet to drafting bridge
+next_commit: docs: update advisor report with worksheet drafting bridge
 
 ## Running Side Goal
 

@@ -358,6 +358,14 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             gate_or_limit_de="4 overview rows, 23 worksheet rows, 9 Quellen, 12 method rows, 11 interpretation rows, 23 pending citation rows, 0 final-release rows; keine finale Zitation, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.",
         ),
         _index_row(
+            artifact_id="index_19_h1_h2_h3_worksheet_drafting_bridge",
+            artifact_type="h1_h2_h3_worksheet_drafting_bridge",
+            path="docs/project/THESIS_H1_H2_H3_WORKSHEET_DRAFTING_BRIDGE.md; data/results/thesis_h1_h2_h3_worksheet_drafting_bridge.csv",
+            purpose_de="Verbindet die H1/H2/H3 Source-Review-Worksheets mit der source-gated BA-Schreibsequenz.",
+            use_now_de="Als unmittelbare Schreibsteuerung nutzen: jede Methode und jede Interpretation muss Source ID, Evidence ID, deterministisches Artefakt, Tabelle/Figur und Source-Review-Gate behalten.",
+            gate_or_limit_de="4 bridge rows, 23 worksheet rows, 12 method rows, 11 interpretation rows, 15 drafting steps, 0 source/artifact gaps, 0 final-release rows; wenige gute Tabellen/Figuren, keine finale Zitation, keine Quellenstatus-Hochstufung und keine Runtime-Agenten.",
+        ),
+        _index_row(
             artifact_id="index_19_h1_h2_h3_decision_queue_overview",
             artifact_type="h1_h2_h3_decision_queue_overview",
             path="docs/project/THESIS_H1_H2_H3_DECISION_QUEUE_OVERVIEW.md; data/results/thesis_h1_h2_h3_decision_queue_overview.csv",
@@ -651,6 +659,7 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "H3 Manual Source Review Follow-up, H3 Source Review Decision Queue, "
         "H3 Source Review Batch Worksheet, "
         "Source Review Worksheet Overview, "
+        "H1-H2-H3 Worksheet Drafting Bridge, "
         "H1-H2-H3 Decision Queue Overview, H1-H2-H3 Decision Queue Ledger Alignment, "
         "Ledger Citation Gate Summary, "
         "Manual Source Review Update Checklist, "
@@ -711,6 +720,13 @@ def _render_index_doc(index: pd.DataFrame) -> str:
         "Nutze die Source Review Worksheet Overview als H1-H2-H3/TOTAL "
         "Gesamtuebersicht ueber 23 Worksheet Rows, bevor Ledger-Felder "
         "uebernommen und Gates regeneriert werden. "
+        "Nutze die H1-H2-H3 Worksheet Drafting Bridge als direkte "
+        "Schreibsteuerung zwischen 23 Worksheet Rows und 15 source-gated "
+        "Drafting Steps: jede Methode und jede Interpretation braucht "
+        "Source ID, Evidence ID, deterministisches Artefakt, T2/F1 bis "
+        "T4/F3 und Source-Review-Gate; 0 source/artifact gaps, "
+        "0 final-release rows und wenige gute Tabellen/Figuren muessen "
+        "sichtbar bleiben. "
         "Nutze die H1-H2-H3 Decision Queue Overview als operative "
         "Kontrollsicht ueber 23 Decision Rows, T2/F1, T3/F2, T4/F3, "
         "0 final-ready rows und 0 Quellenstatus-Aenderungen. "

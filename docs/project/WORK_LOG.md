@@ -12618,6 +12618,58 @@ Next recommended action:
 
 - `docs: update project control workflow`.
 
+## 2026-06-15 - Swiss Final Case Study And Highlevel Project View
+
+Context:
+
+- Active goal: `goal-thesis-consolidation-001`.
+- Review-Access remains paused.
+- The official 14 June 2026 Swiss referendum result is now available and was
+  mapped into a bounded post-result side case without efficiency, mispricing,
+  tradeability, or vote-share-superiority claims.
+
+Changes:
+
+- Added deterministic Swiss final-case generator
+  `operations.analysis.swiss_referendum_final_case_study`.
+- Added official result input, final-case CSVs, metadata, figure, and research
+  note for the 10-million initiative.
+- Updated thesis consolidation, final-gate, source-coverage, traceability,
+  drafting, advisor, highlevel handoff, and Dozentenbericht builders to treat
+  Swiss as `post_result_mapped_source_review_pending`.
+- Refreshed GOAL and ROADMAP so Swiss is no longer a live data-collection
+  track for this case.
+- Regenerated the Dozentenbericht Markdown, HTML, and DOCX.
+- Committed the main slice as
+  `f28aebf analysis: add swiss referendum final case study`.
+
+Key output:
+
+- Official result: 45.21% Yes, rejected, 58.86% turnout.
+- Latest live Polymarket Yes: 21.50%.
+- Live vote-share comparison: Polymarket beats matched poll in 0/74 rows.
+- Live binary-proxy comparison: Polymarket beats matched poll proxy in
+  74/74 rows.
+- Historical raw vote-share comparison: Polymarket closer than matched poll in
+  36/504 rows.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests\test_swiss_referendum_final_case_study.py tests\test_thesis_consolidation.py tests\test_submission_readiness_board.py tests\test_thesis_final_gate_board.py tests\test_thesis_goal_completion_audit.py tests\test_thesis_drafting_sequence.py tests\test_highlevel_next_step_control_summary.py tests\test_agent_pipeline_safety_case.py tests\test_advisor_handoff_note.py tests\test_dozenten_report.py tests\test_thesis_traceability_audit.py -q -p no:cacheprovider --basetemp .tmp_pytest_swiss_final`
+  -> PASS, 40 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> STATUS updated, but repo-wide pytest summary is FAIL:
+  `265 passed, 2 warnings, 375 errors in 15.75s`.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> Guardrail checks PASS, pytest check FAIL with the same repo-wide summary.
+- DOCX render QA could not be completed because LibreOffice/`soffice` is not
+  installed or not on PATH (`WinError 2`). DOCX generation itself is covered by
+  the Dozentenbericht test.
+
+Next recommended action:
+
+- `docs: update project control workflow`.
+
 ## 2026-06-13 - H3 Source Review Ledger Fill Guide
 
 Context:

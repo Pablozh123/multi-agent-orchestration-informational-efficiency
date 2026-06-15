@@ -1,0 +1,48 @@
+{
+  "generated_at_utc": "2026-06-15T18:09:47+00:00",
+  "limitations": {
+    "binary_poll_brier_is_proxy_only": true,
+    "no_causal_claim_from_history_windows": true,
+    "no_mispricing_claim": true,
+    "no_tradeability_or_profitability_claim": true,
+    "poll_shares_are_not_true_win_probabilities": true,
+    "polymarket_prices_are_not_vote_share_forecasts": true
+  },
+  "method": {
+    "binary_brier_formula": "(yes_probability_or_proxy - official_market_yes_outcome)^2",
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "decided_share_formula": "yes_share / (yes_share + no_share)",
+    "does_not_collect_external_data": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true,
+    "name": "swiss_referendum_final_case_study",
+    "official_market_yes_outcome": 0.0,
+    "official_result_mapped": true,
+    "poll_probability_transform": "none_for_vote_share; proxy_only_for_binary_outcome",
+    "vote_share_error_formula": "abs(predicted_yes_share_or_price - official_yes_share)"
+  },
+  "outputs": {
+    "history_observation_rows": 504,
+    "history_raw_vote_share_beats": 36,
+    "live_observation_rows": 74,
+    "live_raw_binary_proxy_beats": 74,
+    "live_raw_vote_share_beats": 0,
+    "official_outcome": "rejected",
+    "official_yes_share": 0.4521,
+    "poll_rows": 7
+  },
+  "source_paths": {
+    "comparison": "data\\results\\swiss_referendum_10mio_comparison.csv",
+    "docs": "docs\\research\\SWISS_REFERENDUM_FINAL_CASE_STUDY.md",
+    "figure": "data\\results\\swiss_referendum_10mio_final_case_study.png",
+    "final_case_study": "data\\results\\swiss_referendum_10mio_final_case_study.csv",
+    "history_accuracy": "data\\results\\swiss_referendum_10mio_history_accuracy_windows.csv",
+    "latest_source_comparison": "data\\results\\swiss_referendum_10mio_latest_source_comparison.csv",
+    "live_accuracy": "data\\results\\swiss_referendum_10mio_live_accuracy_windows.csv",
+    "official_result": "data\\swiss_referendum_10mio_official_result.csv",
+    "poll_accuracy": "data\\results\\swiss_referendum_10mio_poll_accuracy.csv",
+    "poll_input": "data\\swiss_referendum_10mio_polls.csv",
+    "price_history": "data\\results\\swiss_referendum_10mio_polymarket_price_history.csv"
+  }
+}

@@ -78,6 +78,7 @@ def generate_thesis_final_gate_board(
     drafting = _read_csv(results_dir / "thesis_h1_h2_h3_drafting_checklist.csv")
     result_package = _read_csv(results_dir / "thesis_result_package_traceability.csv")
     swiss_latest = _read_csv(results_dir / "swiss_referendum_10mio_latest_source_comparison.csv")
+    swiss_final_case = _read_csv(results_dir / "swiss_referendum_10mio_final_case_study.csv")
     swiss_status = _read_json(results_dir / "swiss_referendum_10mio_running_status.json")
     agent_upgrade = _read_csv(results_dir / "thesis_agent_pipeline_upgrade_plan.csv")
 
@@ -87,6 +88,7 @@ def generate_thesis_final_gate_board(
         drafting=drafting,
         result_package=result_package,
         swiss_latest=swiss_latest,
+        swiss_final_case=swiss_final_case,
         swiss_status=swiss_status,
         agent_upgrade=agent_upgrade,
         docx_exists=(repo_root / "docs/project/dozentenbericht_ba_thesis.docx").exists(),
@@ -118,6 +120,7 @@ def build_thesis_final_gate_board(
     drafting: pd.DataFrame,
     result_package: pd.DataFrame,
     swiss_latest: pd.DataFrame,
+    swiss_final_case: pd.DataFrame,
     swiss_status: dict[str, object],
     agent_upgrade: pd.DataFrame,
     docx_exists: bool = True,
@@ -144,6 +147,19 @@ def build_thesis_final_gate_board(
         swiss_latest,
         ("polymarket_snapshot_at_utc", "polymarket_yes_probability", "valuation_scope"),
         "Swiss latest source comparison",
+    )
+    _require_columns(
+        swiss_final_case,
+        (
+            "official_yes_share",
+            "latest_live_polymarket_yes_probability",
+            "live_observation_rows",
+            "live_polymarket_beats_raw_vote_share_count",
+            "live_polymarket_beats_raw_binary_proxy_count",
+            "history_polymarket_beats_raw_vote_share_count",
+            "history_observation_rows",
+        ),
+        "Swiss final case study",
     )
     _require_columns(agent_upgrade, ("current_status",), "agent pipeline upgrade plan")
 
@@ -183,6 +199,7 @@ def build_thesis_final_gate_board(
     )
     snapshot_recency_status = str(swiss_status_block.get("snapshot_recency_status", "unknown"))
     docx_evidence_count = 1 if docx_exists else 0
+    swiss_final_row = swiss_final_case.iloc[0]
 
     rows = [
         _gate_row(
@@ -254,25 +271,34 @@ def build_thesis_final_gate_board(
         _gate_row(
             final_gate_id="final_gate_04_swiss_result_mapping",
             gate_area="swiss_result_gate",
-            current_status=str(readiness_status.get("swiss_result_gate", "final_blocked_official_result")),
+            current_status=str(readiness_status.get("swiss_result_gate", "post_result_mapped_source_review_pending")),
             draft_use_allowed=True,
             final_submission_ready=False,
             blocking_scope="final_submission_for_swiss_claims",
-            evidence_count=snapshot_row_count,
+            evidence_count=int(swiss_final_row["live_observation_rows"]),
             blocking_count=1,
             evidence_artifacts=(
-                "data/results/swiss_referendum_10mio_latest_source_comparison.csv; "
-                "data/results/swiss_referendum_10mio_running_status.json"
+                "data/results/swiss_referendum_10mio_final_case_study.csv; "
+                "data/results/swiss_referendum_10mio_final_case_study.png; "
+                "docs/research/SWISS_REFERENDUM_FINAL_CASE_STUDY.md"
             ),
             key_evidence_de=(
-                f"Latest Swiss snapshot: {latest_snapshot}; Polymarket-Yes: {latest_yes:.3f}; "
-                f"valuation scope: {valuation_scopes}; snapshot rows: {snapshot_row_count}; "
-                f"recency: {snapshot_recency_status}."
+                f"Offizielles Resultat vom 14. Juni 2026 gemappt: Ja-Anteil "
+                f"{float(swiss_final_row['official_yes_share']):.3f}; latest live "
+                f"Polymarket-Yes {float(swiss_final_row['latest_live_polymarket_yes_probability']):.3f}; "
+                f"vote-share beats "
+                f"{int(swiss_final_row['live_polymarket_beats_raw_vote_share_count'])}/"
+                f"{int(swiss_final_row['live_observation_rows'])}; binary-proxy beats "
+                f"{int(swiss_final_row['live_polymarket_beats_raw_binary_proxy_count'])}/"
+                f"{int(swiss_final_row['live_observation_rows'])}; history raw beats "
+                f"{int(swiss_final_row['history_polymarket_beats_raw_vote_share_count'])}/"
+                f"{int(swiss_final_row['history_observation_rows'])}. "
+                f"Latest running snapshot audit: {latest_snapshot}; recency: {snapshot_recency_status}."
             ),
-            draft_permission_de="Draft erlaubt nur als beschreibender Side Track.",
-            final_submission_rule_de="Keine finale Effizienzaussage vor offiziellem Resultat und Post-Resultat-Mapping.",
-            required_next_action_de="Nach dem offiziellen Resultat Swiss-Artefakte neu generieren und Wording pruefen.",
-            blocked_actions_de="Keine finale Swiss-Effizienz-, Mispricing- oder Tradeability-Claims vor Resultat.",
+            draft_permission_de="Draft erlaubt als bounded Post-Resultat-Side-Track.",
+            final_submission_rule_de="Finale Swiss-Zitation erst nach Source Review und sichtbarer Poll-Proxy-Limitation.",
+            required_next_action_de="Swiss-Abschnitt mit Stimmenanteils- und Binaer-Proxy-Trennung schreiben.",
+            blocked_actions_de="Keine Swiss-Effizienz-, Mispricing-, Tradeability- oder Polymarket-Stimmenanteilsueberlegenheitsclaims.",
         ),
         _gate_row(
             final_gate_id="final_gate_05_monitor_appendix",
@@ -415,7 +441,7 @@ def _validate_board(board: pd.DataFrame, *, repo_root: Path) -> None:
         "source review",
         "keine finale zitation",
         "swiss",
-        "offiziellem resultat",
+        "offizielles resultat",
         "docx",
         "review_check",
         "keine runtime-agenten",
@@ -438,7 +464,7 @@ def _render_board_doc(board: pd.DataFrame) -> str:
         "Dieses Board ist die Stop-/Go-Kontrolle vor finaler BA-Abgabe. Es "
         "fasst die vorhandenen deterministischen Artefakte zusammen und macht "
         "sichtbar, dass Draft-Arbeit weitergehen darf, die finale Abgabe aber "
-        "durch Source Review, Swiss Resultat-Mapping, DOCX-Render-QA und finale "
+        "durch Source Review, Swiss Source-/Citation-Gate, DOCX-Render-QA und finale "
         "Projektchecks blockiert bleibt. Es liest keine Quelleninhalte, "
         "berechnet keine Kennzahlen und aktiviert keine Runtime-Agenten.\n\n"
         "## Counts\n\n"
@@ -452,7 +478,7 @@ def _render_board_doc(board: pd.DataFrame) -> str:
         + "\n\n"
         "## Use Rule\n\n"
         "Nutze dieses Board vor jedem Claim zur Abgabebereitschaft. Solange "
-        "Source Review, Swiss Resultat-Gate, DOCX-Render-QA oder finale "
+        "Source Review, Swiss Source-/Citation-Gate, DOCX-Render-QA oder finale "
         "Projektchecks offen sind, darf nur bounded draft readiness behauptet "
         "werden. Keine finale Zitation, keine Rohartefakt-Dumps, keine "
         "Quellenstatus-Hochstufung, keine Runtime-Agenten, kein MCP, kein "

@@ -359,8 +359,10 @@ def test_project_highlevel_view_keeps_paused_and_deferred_boundaries(tmp_path: P
     assert "review access remains paused" in monitor["current_decision"].lower()
     assert "draft writing" in monitor["current_decision"].lower()
     assert "no order or trading paths" in monitor["guardrail"].lower()
-    assert swiss["status"] == "descriptive_pending_result"
-    assert "official 14 june 2026 vote result" in swiss["current_decision"].lower()
+    assert swiss["status"] == "post_result_mapped_bounded"
+    assert "post-result side case" in swiss["current_decision"].lower()
+    assert "0/74" in swiss["current_decision"]
+    assert "74/74" in swiss["current_decision"]
     assert agents["status"] == "documentation_only_deferred"
     assert "7 assistance protocol rows" in agents["current_decision"]
     assert "1 deferred" in agents["current_decision"]
@@ -517,6 +519,27 @@ def _write_fixture(root: Path) -> None:
         root / "data/swiss_referendum_10mio_polls.csv",
         index=False,
     )
+    pd.DataFrame(
+        {
+            "referendum_id": ["swiss_2026_06_14_10mio"],
+            "proposal_id": ["6860"],
+            "vote_number": ["686"],
+            "vote_date": ["2026-06-14"],
+            "official_title": ["Swiss fixture"],
+            "outcome": ["rejected"],
+            "official_yes_share": [0.4521],
+            "official_no_share": [0.5479],
+            "no_share_derivation": ["derived_as_1_minus_official_yes_share"],
+            "yes_cantonal_votes": [10.0],
+            "no_cantonal_votes": [13.0],
+            "turnout": [0.5886],
+            "official_dashboard_url": [
+                "https://abstimmungen.admin.ch/details/2026-06-14?proposalId=6860"
+            ],
+            "result_reference_url": ["https://swissvotes.ch/vote/686.00"],
+            "source_note": ["fixture"],
+        }
+    ).to_csv(root / "data/swiss_referendum_10mio_official_result.csv", index=False)
 
     pd.DataFrame({"summary_id": ["h1"], "value": [1]}).to_csv(
         results / "thesis_h1_summary.csv",
@@ -659,9 +682,84 @@ def _write_fixture(root: Path) -> None:
             "polymarket_yes_probability": [0.22],
             "poll_yes_share": [0.45],
             "raw_yes_gap": [-0.23],
+            "polymarket_snapshot_at_utc": ["2026-06-14T00:04:17Z"],
+            "valuation_scope": ["fixture"],
         }
     ).to_csv(results / "swiss_referendum_10mio_latest_source_comparison.csv", index=False)
     _write_binary(results / "swiss_referendum_10mio_efficiency.png")
+    pd.DataFrame(
+        [
+            {
+                "referendum_id": "swiss_2026_06_14_10mio",
+                "vote_date": "2026-06-14",
+                "official_title": "Swiss final fixture",
+                "official_outcome": "rejected",
+                "official_yes_share": 0.4521,
+                "official_no_share": 0.5479,
+                "turnout": 0.5886,
+                "yes_cantonal_votes": 10.0,
+                "no_cantonal_votes": 13.0,
+                "official_dashboard_url": "https://abstimmungen.admin.ch/details/2026-06-14?proposalId=6860",
+                "result_reference_url": "https://swissvotes.ch/vote/686.00",
+                "poll_rows": 7,
+                "live_observation_rows": 74,
+                "history_observation_rows": 504,
+                "latest_live_observed_at_utc": "2026-06-14T00:04:17Z",
+                "latest_live_polymarket_yes_probability": 0.215,
+                "latest_live_polymarket_vote_share_abs_error": 0.2371,
+                "latest_live_matched_poll_id": "srg_gfs_bern_2026_w2",
+                "latest_live_matched_poll_source": "SRG/gfs.bern",
+                "latest_live_poll_yes_share": 0.45,
+                "latest_live_poll_raw_vote_share_abs_error": 0.0021,
+                "latest_live_poll_yes_decided_share": 0.4639175258,
+                "latest_live_poll_decided_vote_share_abs_error": 0.0118175258,
+                "latest_live_polymarket_binary_brier": 0.046225,
+                "latest_live_poll_raw_binary_brier_proxy": 0.2025,
+                "latest_live_poll_decided_binary_brier_proxy": 0.2152194707,
+                "live_polymarket_beats_raw_vote_share_count": 0,
+                "live_polymarket_beats_raw_vote_share_share": 0.0,
+                "live_polymarket_beats_decided_vote_share_count": 0,
+                "live_polymarket_beats_decided_vote_share_share": 0.0,
+                "live_polymarket_beats_raw_binary_proxy_count": 74,
+                "live_polymarket_beats_raw_binary_proxy_share": 1.0,
+                "live_polymarket_beats_decided_binary_proxy_count": 74,
+                "live_polymarket_beats_decided_binary_proxy_share": 1.0,
+                "history_polymarket_beats_raw_vote_share_count": 36,
+                "history_polymarket_beats_raw_vote_share_share": 36 / 504,
+                "history_polymarket_beats_decided_vote_share_count": 108,
+                "history_polymarket_beats_decided_vote_share_share": 108 / 504,
+                "history_first_raw_vote_share_beat_at_utc": "2026-04-28T10:00:06Z",
+                "history_last_raw_vote_share_beat_at_utc": "2026-06-01T12:00:07Z",
+                "history_first_decided_vote_share_beat_at_utc": "2026-04-28T10:00:06Z",
+                "history_last_decided_vote_share_beat_at_utc": "2026-05-09T20:00:07Z",
+                "best_history_vote_share_observed_at_utc": "2026-04-29T17:00:05Z",
+                "best_history_polymarket_yes_probability": 0.445,
+                "best_history_polymarket_vote_share_abs_error": 0.0071,
+                "best_live_vote_share_observed_at_utc": "2026-06-13T13:04:20Z",
+                "best_live_polymarket_yes_probability": 0.315,
+                "best_live_polymarket_vote_share_abs_error": 0.1371,
+                "bounded_conclusion_de": "Swiss fixture bounded conclusion.",
+                "main_limitation_de": "Swiss fixture poll proxy limitation.",
+            }
+        ]
+    ).to_csv(results / "swiss_referendum_10mio_final_case_study.csv", index=False)
+    pd.DataFrame({"observation_id": ["live_1"]}).to_csv(
+        results / "swiss_referendum_10mio_live_accuracy_windows.csv",
+        index=False,
+    )
+    pd.DataFrame({"observation_id": ["hist_1"]}).to_csv(
+        results / "swiss_referendum_10mio_history_accuracy_windows.csv",
+        index=False,
+    )
+    pd.DataFrame({"poll_id": ["poll_1"]}).to_csv(
+        results / "swiss_referendum_10mio_poll_accuracy.csv",
+        index=False,
+    )
+    _write_binary(results / "swiss_referendum_10mio_final_case_study.png")
+    (docs / "SWISS_REFERENDUM_FINAL_CASE_STUDY.md").write_text(
+        "swiss final case\n",
+        encoding="utf-8",
+    )
 
 
 def _write_source_gated_writing_pass_fixture(root: Path) -> None:

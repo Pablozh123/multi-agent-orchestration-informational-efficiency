@@ -24,8 +24,8 @@ Dieses Audit prueft deterministisch, ob Methoden, Interpretationen, Tabellen und
 | method_h3_wallet_tiers | H3 | method | thesis_facing_ready | True | 3 | 3 | 3 | draft_traceable_final_source_review_pending | Draft nutzbar; keine finale Zitation ohne manuelle Quellenreview mit Page-/Section-Notes. |
 | interpretation_monitor_review_queue | monitor_prototype | interpretation | appendix_prototype_only | True | 2 | 2 | 2 | appendix_traceable_pending_human_review | Nur Appendix/Prototype; keine finale Zitation ohne Human Review. |
 | method_monitor_prototype | monitor_prototype | method | appendix_prototype_only | True | 3 | 3 | 3 | appendix_traceable_pending_human_review | Nur Appendix/Prototype; keine finale Zitation ohne Human Review. |
-| interpretation_swiss_gap_pending | swiss_referendum | interpretation | descriptive_pending_result | True | 1 | 1 | 1 | descriptive_traceable_result_pending | Nur beschreibend nutzen; keine finale Zitation bis Resultat- oder Review-Gate geklaert ist. |
-| method_swiss_running_comparison | swiss_referendum | method | descriptive_pending_result | True | 2 | 2 | 2 | descriptive_traceable_result_pending | Nur beschreibend nutzen; keine finale Zitation bis Resultat- oder Review-Gate geklaert ist. |
+| interpretation_swiss_gap_pending | swiss_referendum | interpretation | post_result_mapped_bounded | True | 1 | 1 | 1 | post_result_traceable_review_pending | Post-result bounded nutzen; keine finale Zitation ohne Source Review und Poll-Proxy-Limitation. |
+| method_swiss_running_comparison | swiss_referendum | method | post_result_mapped_bounded | True | 2 | 2 | 2 | post_result_traceable_review_pending | Post-result bounded nutzen; keine finale Zitation ohne Source Review und Poll-Proxy-Limitation. |
 
 ## Result Package Traceability
 
@@ -35,12 +35,12 @@ Dieses Audit prueft deterministisch, ob Methoden, Interpretationen, Tabellen und
 | F1 | figure | H1 | True | True | 2 | 2 | core_package_ready_for_draft | In BA-Entwurf nutzbar; keine finale Zitation ohne manuelle Review und sichtbare Quellen-/Resultat-Gates. |
 | F2 | figure | H2 | True | True | 2 | 2 | core_package_ready_for_draft | In BA-Entwurf nutzbar; keine finale Zitation ohne manuelle Review und sichtbare Quellen-/Resultat-Gates. |
 | F3 | figure | H3 | True | True | 2 | 2 | core_package_ready_for_draft | In BA-Entwurf nutzbar; keine finale Zitation ohne manuelle Review und sichtbare Quellen-/Resultat-Gates. |
-| F4 | figure | swiss_referendum | True | True | 2 | 2 | core_package_descriptive_pending_result | Nur beschreibend integrieren; keine finale Zitation bis Resultat-Gate und manuelle Review geschlossen sind. |
+| F4 | figure | swiss_referendum | True | True | 2 | 2 | core_package_post_result_bounded | Als bounded Swiss-Fallstudie integrieren; keine finale Zitation ohne Source Review und keine Effizienzbeweise. |
 | T1 | table | method_and_evidence | True | True | 4 | 4 | core_package_ready_for_draft | In BA-Entwurf nutzbar; keine finale Zitation ohne manuelle Review und sichtbare Quellen-/Resultat-Gates. |
 | T2 | table | H1 | True | True | 3 | 3 | core_package_ready_for_draft | In BA-Entwurf nutzbar; keine finale Zitation ohne manuelle Review und sichtbare Quellen-/Resultat-Gates. |
 | T3 | table | H2 | True | True | 2 | 2 | core_package_ready_for_draft | In BA-Entwurf nutzbar; keine finale Zitation ohne manuelle Review und sichtbare Quellen-/Resultat-Gates. |
 | T4 | table | H3 | True | True | 3 | 3 | core_package_ready_for_draft | In BA-Entwurf nutzbar; keine finale Zitation ohne manuelle Review und sichtbare Quellen-/Resultat-Gates. |
-| T5 | table | appendix_or_side_track | True | True | 4 | 4 | core_package_mixed_appendix_pending | Als Status-/Grenztabelle nutzbar; keine finale Zitation ohne manuelle Review und sichtbare Monitor-/Swiss-Limits. |
+| T5 | table | appendix_or_side_track | True | True | 4 | 4 | core_package_mixed_appendix_bounded | Als Status-/Grenztabelle nutzbar; Monitor bleibt Human-Review-pending und Swiss bleibt bounded post-result. |
 
 ## Use Rule
 

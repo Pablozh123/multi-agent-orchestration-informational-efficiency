@@ -89,9 +89,9 @@ CHAPTER_DETAILS: dict[str, dict[str, str]] = {
     },
     "ch_07_extensions": {
         "execution_phase": "appendix_or_discussion_gate",
-        "source_gate_de": "Monitor bleibt Review-pending; Swiss bleibt bis zum offiziellen Resultat vom 14. Juni 2026 beschreibend.",
-        "draft_action_de": "Monitor als Prototyp und Swiss als Side-Track knapp platzieren.",
-        "done_when_de": "Review-Access bleibt pausiert und Swiss traegt keine finale Effizienzaussage.",
+        "source_gate_de": "Monitor bleibt Review-pending; Swiss ist mit offiziellem Resultat vom 14. Juni 2026 bounded gemappt.",
+        "draft_action_de": "Monitor als Prototyp und Swiss als Post-Resultat-Side-Track knapp platzieren.",
+        "done_when_de": "Review-Access bleibt pausiert und Swiss traegt keine Effizienz-, Mispricing- oder Tradeability-Aussage.",
         "advisor_question_ids": "advisor_q05_monitor_appendix; advisor_q06_swiss_gate",
     },
     "ch_08_discussion_conclusion": {

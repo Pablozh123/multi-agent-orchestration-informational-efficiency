@@ -39,12 +39,12 @@ def test_thesis_drafting_sequence_keeps_final_and_future_gates_visible(
     joined = "\n".join(sequence.fillna("").astype(str).agg(" ".join, axis=1).tolist()).lower()
 
     assert "review_now_final_blocked" in joined
-    assert "descriptive_only_final_blocked" in joined
+    assert "post_result_mapped_source_review_pending" in joined
     assert "future_work_only" in joined
     assert "keine runtime-agenten" in joined
     assert "keine roh" in joined
     assert "review-access bleibt pausiert" in joined
-    assert "14. juni 2026" in joined
+    assert "swiss_result_gate" in joined
 
 
 def _write_fixture(root: Path) -> None:
@@ -62,7 +62,7 @@ def _write_fixture(root: Path) -> None:
             _work_row(4, "work_04_h2_h3_results", "h2_h3_results", "data/results/thesis_core_results_table.csv"),
             _work_row(5, "work_05_table_figure_integration", "results_and_appendix", "data/results/thesis_table_figure_captions.csv"),
             _work_row(6, "work_06_monitor_appendix", "appendix_or_discussion", "data/results/monitor_anomaly_review_summary.csv"),
-            _work_row(7, "work_07_swiss_result_gate", "discussion_pending_final_result", "data/results/swiss_referendum_10mio_latest_source_comparison.csv"),
+            _work_row(7, "work_07_swiss_result_gate", "discussion_bounded_final_case", "data/results/swiss_referendum_10mio_final_case_study.csv"),
             _work_row(8, "work_08_agent_outlook", "future_work", "data/results/thesis_agent_future_work_handoff.csv"),
             _work_row(9, "work_09_advisor_iteration", "project_management", "data/results/thesis_advisor_handoff_package.csv"),
             _work_row(10, "work_10_final_qa", "whole_thesis", "STATUS.md; docs/project/WORK_LOG.md"),
@@ -77,7 +77,7 @@ def _write_fixture(root: Path) -> None:
             _gate("h1_h2_h3_results", "ready_for_bounded_result_draft", "data/results/thesis_core_results_table.csv", 3),
             _gate("table_figure_package", "ready_for_draft_integration", "data/results/thesis_table_figure_captions.csv", 9),
             _gate("monitor_appendix", "appendix_only_pending_human_review", "data/results/monitor_anomaly_review_summary.csv", 1),
-            _gate("swiss_result_gate", "final_blocked_official_result", "data/results/swiss_referendum_10mio_latest_source_comparison.csv", 1),
+            _gate("swiss_result_gate", "post_result_mapped_source_review_pending", "data/results/swiss_referendum_10mio_final_case_study.csv", 1),
             _gate("agent_future_work", "deferred_future_work_only", "data/results/thesis_agent_future_work_handoff.csv", 7),
             _gate("final_qa", "pending_after_draft", "STATUS.md; docs/project/WORK_LOG.md", 2),
         ]
@@ -114,7 +114,7 @@ def _write_required_artifacts(root: Path) -> None:
         "data/results/thesis_core_results_table.csv",
         "data/results/thesis_table_figure_captions.csv",
         "data/results/monitor_anomaly_review_summary.csv",
-        "data/results/swiss_referendum_10mio_latest_source_comparison.csv",
+        "data/results/swiss_referendum_10mio_final_case_study.csv",
         "data/results/thesis_agent_future_work_handoff.csv",
         "data/results/thesis_advisor_handoff_package.csv",
         "STATUS.md",

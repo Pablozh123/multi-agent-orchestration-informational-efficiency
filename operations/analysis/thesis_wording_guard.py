@@ -215,14 +215,14 @@ _WORDING_BY_EVIDENCE_ID: dict[str, dict[str, str]] = {
         "limitation": "Alle aktuellen Cases brauchen manuelle Quellen- und Thesis-Use-Pruefung.",
     },
     "method_swiss_running_comparison": {
-        "allowed": "Der Swiss-Track vergleicht Polymarket-Snapshots und kuratierte Poll-Anteile bis zum Ergebnis beschreibend.",
-        "blocked": "Nicht schreiben: Mispricing-Beweis, finale Effizienzaussage oder Handelssignal.",
-        "limitation": "Poll-Anteile sind keine echten Gewinnwahrscheinlichkeiten und das offizielle Resultat ist noch nicht gemappt.",
+        "allowed": "Der Swiss-Track trennt nach dem offiziellen Resultat Stimmenanteilsnaehe und binaere Ablehnungs-Proxy-Signale.",
+        "blocked": "Nicht schreiben: Mispricing-Beweis, Effizienzbeweis, Handelssignal oder Polymarket-Stimmenanteilsprognose.",
+        "limitation": "Polymarket-Preise sind Annahmewahrscheinlichkeiten, Umfragen sind Stimmenanteile.",
     },
     "interpretation_swiss_gap_pending": {
-        "allowed": "Aktuelle Swiss-Divergenzen sind beschreibend und entscheiden die Informationseffizienz vor dem Ergebnis nicht.",
-        "blocked": "Nicht schreiben: finaler Accuracy-Befund oder Effizienzbeweis vor dem Abstimmungsergebnis.",
-        "limitation": "Finales Outcome und source-gepruefte Post-Vote-Interpretation fehlen.",
+        "allowed": "Im Swiss-Fall waren finale Umfragen naeher am Ja-Stimmenanteil, waehrend Polymarket das Ablehnungssignal klarer zeigte.",
+        "blocked": "Nicht schreiben: Polymarket war in jeder Hinsicht besser, Effizienzbeweis oder Tradeability.",
+        "limitation": "Die binaere Poll-Brier-Zeile ist nur ein Proxy und keine echte Win-Probability-Kalibrierung.",
     },
     "future_agent_pipeline_guarded": {
         "allowed": "Agenten werden nur als spaeterer, auditierter Workflow ueber bounded summaries beschrieben.",
@@ -317,7 +317,11 @@ def _fallback_wording(
 def _final_use_gate(thesis_readiness: str) -> str:
     if thesis_readiness == "thesis_facing_ready":
         return "thesis_text_allowed_after_source_review"
-    if thesis_readiness in {"appendix_prototype_only", "descriptive_pending_result"}:
+    if thesis_readiness in {
+        "appendix_prototype_only",
+        "descriptive_pending_result",
+        "post_result_mapped_bounded",
+    }:
         return "draft_allowed_with_explicit_source_review_gate"
     return "future_work_or_appendix_only"
 
@@ -328,7 +332,7 @@ def _thesis_section(thesis_area: str) -> str:
         "H2": "H2 event-window chapter",
         "H3": "H3 wallet-timing chapter",
         "monitor_prototype": "appendix_or_discussion",
-        "swiss_referendum": "discussion_pending_final_result",
+        "swiss_referendum": "discussion_bounded_final_case",
         "future_agents": "future_work",
     }.get(thesis_area, "general_thesis_text")
 

@@ -179,8 +179,8 @@ def _coverage_rows() -> list[dict[str, object]]:
         ("interpretation_h3", "H3", "interpretation", "thesis_facing_ready", ["lit_a", "lit_g", "lit_i", "lit_h"]),
         ("method_monitor", "monitor_prototype", "method", "appendix_prototype_only", ["lit_a", "lit_i", "lit_e"]),
         ("interpretation_monitor", "monitor_prototype", "interpretation", "appendix_prototype_only", ["lit_i", "lit_e"]),
-        ("method_swiss", "swiss_referendum", "method", "descriptive_pending_result", ["lit_b", "lit_c"]),
-        ("interpretation_swiss", "swiss_referendum", "interpretation", "descriptive_pending_result", ["lit_b"]),
+        ("method_swiss", "swiss_referendum", "method", "post_result_mapped_bounded", ["lit_b", "lit_c"]),
+        ("interpretation_swiss", "swiss_referendum", "interpretation", "post_result_mapped_bounded", ["lit_b"]),
     ]
     rows: list[dict[str, object]] = []
     idx = 1
@@ -306,7 +306,7 @@ def _final_gate_rows() -> list[dict[str, object]]:
             {
                 "gate_area": gate_area,
                 "current_status": (
-                    "final_blocked_official_result"
+                    "post_result_mapped_source_review_pending"
                     if gate_area == "swiss_result_gate"
                     else "deferred_future_work_only"
                     if gate_area == "future_agents"

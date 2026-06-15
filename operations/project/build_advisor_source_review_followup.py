@@ -327,7 +327,7 @@ def build_advisor_source_review_followup(
             bounded_draft_allowed=True,
             final_submission_ready=False,
             required_next_action_de=(
-                "Source Review, Swiss Resultat-Gate, DOCX-Render-QA, "
+                "Source Review, Swiss Source-/Citation-Gate, DOCX-Render-QA, "
                 "review_check und commit_plan vor jedem Abschlussclaim erneut laufen lassen."
             ),
             done_when_de=(

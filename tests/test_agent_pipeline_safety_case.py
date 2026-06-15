@@ -58,8 +58,8 @@ def test_agent_pipeline_safety_case_binds_mapping_package_and_gates(tmp_path: Pa
     assert "Coverage-Gaps: 0" in evidence_lock["current_evidence_anchor_de"]
     assert "5 Tabellen und 4 Figuren" in package_guard["current_evidence_anchor_de"]
     assert "Package-Gaps: 0" in package_guard["current_evidence_anchor_de"]
-    assert "final_blocked_official_result" in swiss_boundary["current_evidence_anchor_de"]
-    assert "45 laufenden Snapshot-Zeilen" in swiss_boundary["current_evidence_anchor_de"]
+    assert "post_result_mapped_source_review_pending" in swiss_boundary["current_evidence_anchor_de"]
+    assert "45 Final-Case-Live-Zeilen" in swiss_boundary["current_evidence_anchor_de"]
     assert access_contract["current_status"] == "future_deferred"
     assert "no SELECT star" in access_contract["proof_before_activation_de"]
 
@@ -118,7 +118,7 @@ def _write_fixture(root: Path) -> None:
         [
             {
                 "gate_area": "swiss_result_gate",
-                "current_status": "final_blocked_official_result",
+                "current_status": "post_result_mapped_source_review_pending",
                 "final_submission_ready": False,
                 "evidence_count": 45,
             },
@@ -174,8 +174,8 @@ def _coverage_rows() -> list[dict[str, object]]:
         ("interpretation_h3", "H3", "interpretation", "thesis_facing_ready", ["lit_a", "lit_g", "lit_i", "lit_h"]),
         ("method_monitor", "monitor_prototype", "method", "appendix_prototype_only", ["lit_a", "lit_i", "lit_e"]),
         ("interpretation_monitor", "monitor_prototype", "interpretation", "appendix_prototype_only", ["lit_i", "lit_e"]),
-        ("method_swiss", "swiss_referendum", "method", "descriptive_pending_result", ["lit_b", "lit_c"]),
-        ("interpretation_swiss", "swiss_referendum", "interpretation", "descriptive_pending_result", ["lit_b"]),
+        ("method_swiss", "swiss_referendum", "method", "post_result_mapped_bounded", ["lit_b", "lit_c"]),
+        ("interpretation_swiss", "swiss_referendum", "interpretation", "post_result_mapped_bounded", ["lit_b"]),
     ]
     rows: list[dict[str, object]] = []
     idx = 1

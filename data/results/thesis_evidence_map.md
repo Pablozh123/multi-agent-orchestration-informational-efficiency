@@ -14,6 +14,6 @@ This map links thesis-facing methods and interpretations to deterministic artifa
 | interpretation_h3_top_tier_signal | H3 | interpretation | data/results/thesis_h3_summary.csv | lit_granger_001; zotero_poly_005; zotero_poly_001 | thesis_facing_ready |
 | method_monitor_prototype | monitor_prototype | method | data/results/monitor_anomaly_review_summary.csv | zotero_poly_001; zotero_poly_006; zotero_poly_009 | appendix_prototype_only |
 | interpretation_monitor_review_queue | monitor_prototype | interpretation | data/results/monitor_anomaly_review_summary.csv | zotero_poly_006; zotero_poly_009 | appendix_prototype_only |
-| method_swiss_running_comparison | swiss_referendum | method | data/results/swiss_referendum_10mio_comparison.csv | zotero_poly_002; lit_brier_001 | descriptive_pending_result |
-| interpretation_swiss_gap_pending | swiss_referendum | interpretation | data/results/swiss_referendum_10mio_latest_source_comparison.csv | zotero_poly_002 | descriptive_pending_result |
+| method_swiss_running_comparison | swiss_referendum | method | data/results/swiss_referendum_10mio_final_case_study.csv | zotero_poly_002; lit_brier_001 | post_result_mapped_bounded |
+| interpretation_swiss_gap_pending | swiss_referendum | interpretation | data/results/swiss_referendum_10mio_final_case_study.csv | zotero_poly_002 | post_result_mapped_bounded |
 | future_agent_pipeline_guarded | future_agents | future_work | docs/research/STRATEGY_AGENT_ARCHITECTURE.md | zotero_poly_006; zotero_poly_010 | future_work_deferred |

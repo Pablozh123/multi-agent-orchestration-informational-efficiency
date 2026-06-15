@@ -133,7 +133,7 @@ def _write_fixture(root: Path) -> None:
                 "interpretation_swiss_fixture",
                 "swiss",
                 "interpretation",
-                "descriptive_pending_result",
+                "post_result_mapped_bounded",
                 "data/results/support.csv",
                 "data/results/support.csv",
                 "source_interpretation",

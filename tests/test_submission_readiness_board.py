@@ -35,7 +35,7 @@ def test_submission_readiness_board_keeps_final_blockers_visible(tmp_path: Path)
     joined = "\n".join(board.fillna("").astype(str).agg(" ".join, axis=1).tolist()).lower()
 
     assert "final_blocked_source_review" in joined
-    assert "final_blocked_official_result" in joined
+    assert "post_result_mapped_source_review_pending" in joined
     assert "keine runtime-agenten" in joined
     assert "soffice" in joined
     assert "keine roh" in joined
@@ -83,7 +83,7 @@ def _write_required_artifacts(root: Path) -> None:
         "data/results/thesis_core_results_table.csv",
         "data/results/thesis_table_figure_captions.csv",
         "data/results/monitor_anomaly_review_summary.csv",
-        "data/results/swiss_referendum_10mio_latest_source_comparison.csv",
+        "data/results/swiss_referendum_10mio_final_case_study.csv",
         "data/results/thesis_agent_future_work_handoff.csv",
         "STATUS.md",
         "docs/project/WORK_LOG.md",

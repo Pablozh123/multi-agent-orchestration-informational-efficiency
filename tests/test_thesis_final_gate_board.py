@@ -76,7 +76,7 @@ def _write_fixture(root: Path) -> None:
 
     pd.DataFrame(
         [
-            {"gate_area": "swiss_result_gate", "current_status": "final_blocked_official_result"},
+            {"gate_area": "swiss_result_gate", "current_status": "post_result_mapped_source_review_pending"},
             {"gate_area": "monitor_appendix", "current_status": "appendix_only_pending_human_review"},
             {"gate_area": "agent_future_work", "current_status": "deferred_future_work_only"},
             {"gate_area": "final_qa", "current_status": "pending_after_draft"},
@@ -109,6 +109,19 @@ def _write_fixture(root: Path) -> None:
             },
         ]
     ).to_csv(results / "swiss_referendum_10mio_latest_source_comparison.csv", index=False)
+    pd.DataFrame(
+        [
+            {
+                "official_yes_share": 0.4521,
+                "latest_live_polymarket_yes_probability": 0.215,
+                "live_observation_rows": 4,
+                "live_polymarket_beats_raw_vote_share_count": 0,
+                "live_polymarket_beats_raw_binary_proxy_count": 4,
+                "history_polymarket_beats_raw_vote_share_count": 1,
+                "history_observation_rows": 10,
+            }
+        ]
+    ).to_csv(results / "swiss_referendum_10mio_final_case_study.csv", index=False)
     (results / "swiss_referendum_10mio_running_status.json").write_text(
         json.dumps(
             {
@@ -135,6 +148,8 @@ def _write_fixture(root: Path) -> None:
         "docs/project/THESIS_H1_H2_H3_DRAFTING_CHECKLIST.md",
         "docs/research/THESIS_TABLE_FIGURE_CAPTIONS.md",
         "docs/research/THESIS_AGENT_PIPELINE_UPGRADE_PLAN.md",
+        "docs/research/SWISS_REFERENDUM_FINAL_CASE_STUDY.md",
+        "data/results/swiss_referendum_10mio_final_case_study.png",
         "data/results/monitor_anomaly_review_summary.csv",
     ]:
         path = root / relative

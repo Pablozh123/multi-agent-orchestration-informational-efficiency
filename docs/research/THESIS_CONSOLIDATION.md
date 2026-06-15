@@ -17,7 +17,7 @@ This document is the high-level consolidation layer for the bachelor thesis. It 
 | project_04_source_review_gate | Sources and citations | active_gate | Treat 11 sources as requiring full review, including 11 priority-1 method-foundation rows. Use H1/H2/H3 decision queues as the operative 23-row manual Source Review path; access, structure, and traceability audits only prepare manual review and BA drafting. | Record Page-/Section-Notes, Claim-Support, Blocked-Wording, Citation-Use, H2 Kausalclaim-Grenze, and H3 Granger-/Wallet-Grenzen before final thesis citation. | theory_methods_citation_gate |
 | project_05_table_figure_package | Compact tables and figures | thesis_facing_package | Use 5 core tables and 4 core figures, with generated captions and limitation notes. | Integrate the selected package into draft chapters and appendix placement. | main_text_and_appendix |
 | project_06_monitor_review_access | Monitor prototype and review access | paused_appendix_only | Review access remains paused; continue with advisor feedback, source review, and draft writing instead of access work. | Human source review of monitor cases and a separate approved goal before any renewed access work. | appendix_or_discussion_only |
-| project_07_swiss_referendum | Swiss referendum side track | descriptive_pending_result | Keep the Swiss material descriptive until the official 14 June 2026 vote result is available. | Regenerate Swiss artifacts after official result mapping. | discussion_pending_final_result |
+| project_07_swiss_referendum | Swiss referendum side track | post_result_mapped_bounded | Use Swiss only as a bounded post-result side case after the official 14 June 2026 vote result: Official Yes 45.21%; latest live Polymarket Yes 21.5%; live vote-share beats 0/74; live binary-proxy beats 74/74; history raw vote-share beats 36/504. Review-Access remains paused. | Manual Source Review and final citation wording before using the Swiss case in final thesis prose. | discussion_bounded_final_case |
 | project_08_future_agents | Future agent-assisted pipeline | documentation_only_deferred | Keep 6 roadmap stages and 7 assistance protocol rows inactive (6 documentation-only, 1 deferred). Treat later upgrade and safety-case artifacts only as Future-Work controls. | Separate approved goal with bounded prompts, tests, llm_audit_log integration, and a refreshed safety case. | future_work_only |
 | project_09_advisor_iteration | Advisor communication | project_management_ready | Use the Dozentenbericht with the Source-Gated H1-H2-H3 Drafting Sequence and the completed H1/H2/H3 Decision Queues to align on bounded H1 wording, source-review depth, Swiss placement, and appendix scope. | Advisor feedback is received, logged in DOZENTEN_FEEDBACK_LOG, and translated into the next small commit plan. | advisor_update |
 
@@ -30,7 +30,7 @@ This document is the high-level consolidation layer for the bachelor thesis. It 
 | core_h2_largest_daily_event_window | H2 | The largest primary daily event-window move is the Trump shooting window. | evt_2024_07_13_trump_shooting 7.2 pp | thesis_facing_ready |
 | core_h3_top_tier_timing | H3 | The top wallet tier has the clearest current timing diagnostic. | tier_1_top_1pct lag 1 correlation 0.1858; tier_1_top_1pct lag 1 Granger p=0.0012; 1216 aligned rows | thesis_facing_ready |
 | core_monitor_review_queue_boundary | monitor_prototype | The monitor review queue is useful as workflow evidence, not empirical proof. | 3 review cases; 1 high; 2 medium; source_check_pending=3 | appendix_prototype_only |
-| core_swiss_running_gap_pending | swiss_referendum | Swiss referendum market-poll divergence is descriptive until the result is known. | 48 snapshots; latest SRG/gfs.bern Polymarket Yes 26.0%, poll Yes 45.0%, raw gap -19.0 pp | descriptive_pending_result |
+| core_swiss_final_case_study | swiss_referendum | Swiss referendum result is mapped as a bounded side case. | Official Yes 45.21%; latest live Polymarket Yes 21.5%; live vote-share beats 0/74; live binary-proxy beats 74/74; history raw vote-share beats 36/504 | post_result_mapped_bounded |
 
 ## Recommended Tables
 
@@ -40,7 +40,7 @@ This document is the high-level consolidation layer for the bachelor thesis. It 
 | T2 | H1 forecast-quality and poll-comparison result | data/results/thesis_core_results_table.csv | main_text | thesis_facing_ready |
 | T3 | H2 daily event-window result | data/results/h2_event_window_summary.csv | main_text | thesis_facing_ready |
 | T4 | H3 wallet-tier timing diagnostics | data/results/thesis_h3_summary.csv | main_text | thesis_facing_ready |
-| T5 | Prototype and Swiss side-track boundary table | data/results/thesis_core_results_table.csv | appendix_or_discussion | mixed_appendix_and_pending |
+| T5 | Prototype and Swiss side-track boundary table | data/results/thesis_core_results_table.csv | appendix_or_discussion | mixed_appendix_and_bounded |
 
 ## Recommended Figures
 
@@ -49,7 +49,7 @@ This document is the high-level consolidation layer for the bachelor thesis. It 
 | F1 | H1 poll-claim readiness | data/results/h1_poll_claim_readiness.png | main_text | thesis_facing_ready |
 | F2 | H2 daily event-window movements | data/results/thesis_h2_event_window_car.png | main_text | thesis_facing_ready |
 | F3 | H3 Granger diagnostic p-values | data/results/thesis_h3_granger_pvalues.png | main_text | thesis_facing_ready |
-| F4 | Swiss referendum running poll-proxy comparison | data/results/swiss_referendum_10mio_efficiency.png | discussion_pending_final_result | descriptive_pending_result |
+| F4 | Swiss referendum final case study error view | data/results/swiss_referendum_10mio_final_case_study.png | discussion_bounded_final_case | post_result_mapped_bounded |
 
 ## Citation Readiness
 
@@ -96,7 +96,7 @@ This table is a source-control view, not a promotion of source status. Sources m
 | ch_04_h1_results | H1: Prognosequalitaet | result_ready_with_limits | T2 | F1 | Write H1 result as bounded support plus explicit counterexample paragraph. |
 | ch_05_h2_results | H2: Ereignisfenster | result_ready_with_limits | T3 | F2 | Write event-by-event result table narrative and daily-resolution limitation. |
 | ch_06_h3_results | H3: Wallet-Timing | result_ready_with_limits | T4 | F3 | Write H3 as timing diagnostics, not causality or private-information evidence. |
-| ch_07_extensions | Erweiterungen: Monitor und Schweizer Abstimmung | appendix_or_discussion_ready | T5 | F4 | Keep both as bounded discussion or appendix until final gates change. |
+| ch_07_extensions | Erweiterungen: Monitor und Schweizer Abstimmung | appendix_or_discussion_ready | T5 | F4 | Write Swiss as a bounded final case paragraph and keep Monitor as appendix workflow. |
 | ch_08_discussion_conclusion | Diskussion, Limitationen und Fazit | outline_ready |  |  | Write final answer around bounded evidence, limitations, and future agent-assisted workflow. |
 
 ## Interpretation Discipline
@@ -107,7 +107,7 @@ This table is a source-control view, not a promotion of source status. Sources m
 - H2 can be written as daily event-window response, not intraday speed.
 - H3 can be written as predictive timing diagnostics, not causality or private-information evidence.
 - Monitor outputs stay prototype or appendix material until human review gates approve them.
-- Swiss referendum outputs stay descriptive until the official result is available.
+- Swiss referendum outputs are post-result mapped but remain a bounded side case, not a final efficiency proof.
 
 ## Deferred Agent Pipeline Idea
 

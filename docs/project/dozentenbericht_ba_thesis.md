@@ -1,6 +1,6 @@
 # Dozentenbericht zur Bachelorarbeit
 
-Erstellt: 2026-06-13T01:15:34+00:00
+Erstellt: 2026-06-15T18:32:46+00:00
 
 **Arbeitstitel:** Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen.
 
@@ -40,7 +40,7 @@ Der Review-Access bleibt pausiert. Der aktuelle Fortschritt liegt in der Thesis-
 | Empirischer Kern | H1 Forecast-Qualitaet, H2 Event-Windows und H3 Wallet-Timing sind die zentrale Ergebnisbasis. | Die Bachelorarbeit sollte diese drei Strukturen zuerst schreiben und erst danach Monitor, Swiss und Agenten einordnen. |
 | Tabellen und Figuren | 5 Kern-Tabellen und 4 Kern-Figuren sind ueber `thesis_table_figure_captions.csv` beschriftet. | Der Dozent bekommt eine fokussierte Ergebnisdarstellung statt einer Rohartefakt-Sammlung. |
 | Quellen und Zitation | Die Citation-Review-Pakete verknuepfen Quellen mit Evidence-IDs, erlaubtem Wording und Review-Gates. | Finale Thesis-Zitate brauchen noch Seiten- oder Abschnittsnachweise; candidate Quellen bleiben blockiert. |
-| Monitor und Swiss | Monitor bleibt Prototype/Appendix; Swiss bleibt bis zum offiziellen Ergebnis beschreibender Side-Track. | Beide Teile duerfen die H1-H3-Kernaussage nicht staerker machen als die deterministischen Artefakte erlauben. |
+| Monitor und Swiss | Monitor bleibt Prototype/Appendix; Swiss ist nach offiziellem Ergebnis als bounded Side-Track gemappt. | Beide Teile duerfen die H1-H3-Kernaussage nicht staerker machen als die deterministischen Artefakte erlauben. |
 | Agenten-Ausblick | Agenten koennen spaeter bei Source Review, Drafting und Guardrail-Checks helfen, bleiben aber jetzt deaktiviert. | Keine Runtime-Agenten, kein MCP, keine Modell-Router und keine LLM-Metriken vor stabilem deterministic core. |
 
 ## Dozentenpaket und Uebergabereihenfolge
@@ -75,13 +75,13 @@ Die Projektmatrix fasst 10 Ebenen als Status-, Entscheidungs- und Gate-Sicht zus
 | Quellen und Zitation | Aktives Gate | H1/H2/H3 Decision Queues bilden den 23-row Manual Source Review Pfad; Status wird nicht automatisch hochgestuft. | Page-/Section-Notes, Claim-Support, Blocked-Wording und Citation-Use eintragen. |
 | Tabellen/Figuren-Paket | Thesis-Paket | 5 Kern-Tabellen und 4 Kern-Figuren mit Captions verwenden. | In Thesis-Layout integrieren; Nummerierung spaeter finalisieren. |
 | Monitor Review-Access | Pausiert / Appendix | Review-Access bleibt pausiert; Monitor bleibt Appendix/Prototype. | Nur mit Human Review oder separatem freigegebenem Goal fortsetzen. |
-| Swiss Referendum | Beschreibend bis Resultat | Bis zum offiziellen Ergebnis nur beschreibend verwenden. | Nach offiziellem 14. Juni 2026 Resultat Artefakte neu generieren. |
+| Swiss Referendum | Post-Resultat bounded | Als bounded Post-Resultat-Fallstudie verwenden; keine Effizienz- oder Tradeability-Claims. | Source Review und finale Zitierformulierung vor finalem Swiss-Abschnitt klaeren. |
 | Agenten-Ausblick | Nur Ausblick | Agenten bleiben Dokumentationsausblick, keine Runtime-Implementierung. | Separates Goal, Tests und llm_audit_log vor Aktivierung. |
 | Dozentenabstimmung | Advisor-Abstimmung | Dozent soll H1-Wording, Quellenreview-Tiefe, Swiss und Appendix-Scope absegnen. | Feedback loggen und in kleinen Commit-Plan uebersetzen. |
 
 ## Submission Readiness und finale Gates
 
-Das Submission Readiness Board trennt 9 Gates in Draft-Arbeit, finale Blocker und Future Work. Draft-ready Gates: 4; final blockierte Gates: 2. Source Review steht auf `final_blocked_source_review`, Swiss steht auf `final_blocked_official_result`, Agenten stehen auf `deferred_future_work_only`.
+Das Submission Readiness Board trennt 9 Gates in Draft-Arbeit, finale Blocker und Future Work. Draft-ready Gates: 4; final blockierte Gates: 1. Source Review steht auf `final_blocked_source_review`, Swiss steht auf `post_result_mapped_source_review_pending`, Agenten stehen auf `deferred_future_work_only`.
 
 | Gate | Status | Naechste Aktion | Grenze | Thesis-Nutzung |
 | --- | --- | --- | --- | --- |
@@ -91,13 +91,13 @@ Das Submission Readiness Board trennt 9 Gates in Draft-Arbeit, finale Blocker un
 | h1_h2_h3_results | ready_for_bounded_result_draft | H1 bounded, H2 daily event-window, H3 timing diagnostics schreiben. | Keine universelle Effizienz-, Intraday-, Kausalitaets- oder Profitabilitaetsclaims. | Empirischer Kern der BA-Arbeit. |
 | table_figure_package | ready_for_draft_integration | 5 Kern-Tabellen und 4 Kern-Figuren mit Captions integrieren. | Keine Rohartefakt-Dumps in den Haupttext aufnehmen. | Kompakte Ergebnisdarstellung. |
 | monitor_appendix | appendix_only_pending_human_review | Monitor nur als read-only Prototyp und Review-Workflow erwaehnen. | Keine Wallet-Adress-Exposition, keine Order-/Trading-Pfade, keine Kausalclaims. | Appendix oder Diskussion, nicht empirischer Kern. |
-| swiss_result_gate | final_blocked_official_result | Bis zum offiziellen 14. Juni 2026 Resultat beschreibend bleiben. | Poll-Anteile sind keine Gewinnwahrscheinlichkeiten und tragen keine finale Effizienzaussage. | Diskussion oder Side-Track nach Resultat-Gate. |
+| swiss_result_gate | post_result_mapped_source_review_pending | Swiss-Fallstudie als begrenzten Post-Resultat-Side-Track schreiben. | Poll-Anteile sind keine Gewinnwahrscheinlichkeiten; finale Zitation wartet auf Source Review. | Diskussion oder Side-Track mit sichtbarer Poll-Proxy-Limitation. |
 | agent_future_work | deferred_future_work_only | Nur als Future-Work-Ausblick verwenden. | Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade. | Ausblick auf spaetere Pipeline-Verbesserung. |
 | final_qa | pending_after_draft | Nach Draft: Tests, review_check, citation review, spelling scan und DOCX render gate wiederholen. | Repository nicht als final abgabebereit markieren, solange Source Review oder Render-QA offen sind. | Abgabe-Checkliste nach fertigem Entwurf. |
 
 ## Schreibsequenz fuer den naechsten Entwurf
 
-Die Drafting Sequence ordnet 10 Schritte vom Quellenreview bis zur finalen QA. Erste Sequenz ist `draft_01_01_source_review`, letzte Sequenz ist `draft_10_10_final_qa`. Bounded write-now: 4; final blockiert: 2; Future-work-only: 1.
+Die Drafting Sequence ordnet 10 Schritte vom Quellenreview bis zur finalen QA. Erste Sequenz ist `draft_01_01_source_review`, letzte Sequenz ist `draft_10_10_final_qa`. Bounded write-now: 5; final blockiert: 1; Future-work-only: 1.
 
 | Prioritaet | Thesis-Abschnitt | Erlaubnis | Schreibaktion | Nicht behaupten |
 | --- | --- | --- | --- | --- |
@@ -107,7 +107,7 @@ Die Drafting Sequence ordnet 10 Schritte vom Quellenreview bis zur finalen QA. E
 | 4 | h2_h3_results | write_now_bounded | Draft H2 as daily event-window response and H3 as wallet-tier timing diagnostics. Gate-Aktion: H1 bounded, H2 daily event-window, H3 timing diagnostics schreiben. | Keine Intraday-Speed-, Granger-Kausalitaets-, Private-Information- oder Profitabilitaetsclaims. |
 | 5 | results_and_appendix | write_now_bounded | Use 5 core tables and 4 core figures with the generated captions and limitation notes. Gate-Aktion: 5 Kern-Tabellen und 4 Kern-Figuren mit Captions integrieren. | Keine Rohartefakt-Dumps und keine neuen Tabellen/Figuren ohne Evidence-Map-Update. |
 | 6 | appendix_or_discussion | appendix_only_pending_review | Mention monitor only as read-only prototype and review workflow. Gate-Aktion: Monitor nur als read-only Prototyp und Review-Workflow erwaehnen. | Review-Access bleibt pausiert; keine Wallet-Adress-Exposition, keine Order-/Trading-Pfade und keine thesis-facing Alert-Evidenz. |
-| 7 | discussion_pending_final_result | descriptive_only_final_blocked | Keep the Swiss comparison descriptive until the official vote result is available and mapped. Gate-Aktion: Bis zum offiziellen 14. Juni 2026 Resultat beschreibend bleiben. | Keine finale Effizienzinterpretation vor offizieller Resultatzuordnung vom 14. Juni 2026. |
+| 7 | discussion_bounded_final_case | write_now_bounded | Use the official 14 June 2026 vote result and deterministic final-case metrics for a bounded Swiss side-case paragraph. Gate-Aktion: Swiss-Fallstudie als begrenzten Post-Resultat-Side-Track schreiben. | Offizielles Resultat vom 14. Juni 2026 ist gemappt; keine Effizienz-, Mispricing-, Tradeability- oder Vote-Share-Superiority-Claims. |
 | 8 | future_work | future_work_only | Use the 7 protocol rows only as a future-work design section. Gate-Aktion: Nur als Future-Work-Ausblick verwenden. | Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade. |
 | 9 | project_management | advisor_discussion_now | Ask the advisor to approve the bounded H1 wording, source-review depth, Swiss placement, and appendix scope. Gate-Aktion: Dozentenbericht und Absprache-Checklist zuerst verwenden. | Keinen Scope-Ausbau starten, bevor der H1-H2-H3-Kern geschrieben und abgestimmt ist. |
 | 10 | whole_thesis | qa_after_draft | Run full tests, review checks, citation checks, table/figure checks, and Swiss spelling scan before export. Gate-Aktion: Nach Draft: Tests, review_check, citation review, spelling scan und DOCX render gate wiederholen. | Keine finale Abgabebereitschaft behaupten, solange Source Review, Swiss-Gate oder DOCX-Render-QA offen sind. |
@@ -201,7 +201,7 @@ Die Execution-Checkliste uebersetzt die Highlevel-View in 8 Kapitelaufgaben. Ers
 | exec_04_04_h1_results | H1: Prognosequalitaet | H1 als begrenzte Polymarket-Stuetze plus klare Grenze der breiten Behauptung schreiben. | Bounded H1-Claim, Gegenbeispiel und Limitation stehen direkt nebeneinander. | advisor_q01_h1_wording; advisor_q04_table_figure_package |
 | exec_05_05_h2_results | H2: Ereignisfenster | H2 als Tagesfensterdiagnostik schreiben und Intraday-Speed ausschliessen. | Ereignisse, Tagesfenster und Tagesfrequenz-Limitation sind transparent. | advisor_q03_h2_h3_scope; advisor_q04_table_figure_package |
 | exec_06_06_h3_results | H3: Wallet-Timing | H3 als dataset-relative Timingdiagnostik schreiben, nicht als Kausal- oder Private-Information-Claim. | BUY-only, Tagesaggregation, Mehrfachtests und Nicht-Profitabilitaet sind genannt. | advisor_q03_h2_h3_scope; advisor_q04_table_figure_package |
-| exec_07_07_extensions | Erweiterungen: Monitor und Schweizer Abstimmung | Monitor als Prototyp und Swiss als Side-Track knapp platzieren. | Review-Access bleibt pausiert und Swiss traegt keine finale Effizienzaussage. | advisor_q05_monitor_appendix; advisor_q06_swiss_gate |
+| exec_07_07_extensions | Erweiterungen: Monitor und Schweizer Abstimmung | Monitor als Prototyp und Swiss als Post-Resultat-Side-Track knapp platzieren. | Review-Access bleibt pausiert und Swiss traegt keine Effizienz-, Mispricing- oder Tradeability-Aussage. | advisor_q05_monitor_appendix; advisor_q06_swiss_gate |
 | exec_08_08_discussion_conclusion | Diskussion, Limitationen und Fazit | Fazit als begrenzte Evidenz fuer H1-H3 schreiben und Agenten nur als Future Work fuehren. | Keine finale Aussage geht ueber deterministische Artefakte und reviewte Quellen hinaus. | advisor_q07_agent_outlook; advisor_q08_final_qa |
 
 Die Liste ist kein neues empirisches Ergebnis. Sie zeigt nur, welche Kapitel mit welchen Inputs, Done-Kriterien und Advisor-Fragen abgearbeitet werden sollen.
@@ -253,7 +253,7 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 | H2 Event-Windows | Polymarket bewegt sich um mehrere kuratierte politische Ereignisse sichtbar in der Tagesauflosung. | 7 kuratierte Ereignisse; groesstes Primaerfenster nach Betrag: 07_13_trump_shooting +7.2 Prozentpunkte. | Das stuetzt eine These, dass oeffentliche Ereignisse in den Marktpreisen sichtbar werden koennen. | Taegliche Daten zeigen Reaktionsrichtung und Groessenordnung, aber keine intraday Reaktionsgeschwindigkeit. |
 | H3 Wallet-Timing | Top-Wallet-Tier-Aktivitaet zeigt eine messbare, aber vorsichtig zu formulierende Timing-Struktur. | 1216 alignierte Modellzeilen; staerkste Korrelation tier_1_top_1pct lag 1 = 0.1858; kleinster Granger-p-Wert 0.0012. | Das ist als Vorhersage-/Timingdiagnostik verwendbar und motiviert weitere Sensitivitaetschecks. | BUY-only Quelle, Tagesaggregation und Multiple-Testing-Risiko begrenzen die Aussage. |
 | Monitor und Review-Queue | Der Monitor hat die richtige Rolle als Kontroll- und Review-Infrastruktur, nicht als Ergebnisgenerator fuer starke Claims. | 3 aktuelle Review-Cases, davon 1 high und 2 medium; Status source_check_pending=3. | Die Review-Queue ist methodisch wichtig, weil sie auffaellige Faelle von thesis-faehiger Evidenz trennt. | Die Queue ist kein Nachweis fuer Ursachen, Regelverstoss, Handelbarkeit, Profitabilitaet oder zukuenftige Entwicklung. |
-| Swiss-Referendum Side-Track | Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen. | 7 Umfragen, 51 Polymarket-Snapshots; latest Polymarket Yes 27.5%, latest poll Yes 45.0%, raw gap -17.5 pp. | Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen. | Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung. |
+| Swiss-Referendum Side-Track | Der laufende Referendumsvergleich zeigt aktuell eine grosse Divergenz zwischen Marktpreis und Umfrageanteilen. | 7 Umfragen, 74 Polymarket-Snapshots; latest Polymarket Yes 21.5%, latest poll Yes 45.0%, raw gap -23.5 pp. | Das ist ein anschauliches aktuelles Beispiel fuer die Trennung von Marktpreisen und traditionellen Umfragesignalen. | Umfrageanteile sind keine Gewinnwahrscheinlichkeiten; vor dem Abstimmungsergebnis gibt es keine finale Effizienzbewertung. |
 
 ## Warum dieses Vorgehen methodisch sinnvoll ist
 
@@ -268,10 +268,10 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Projektstruktur
 
 - SQLite-Datenbank: 9 Tabellen.
-- Ergebnisartefakte: 377 Dateien unter `data/results`.
-- Analyse-Module: 78 Dateien.
+- Ergebnisartefakte: 387 Dateien unter `data/results`.
+- Analyse-Module: 79 Dateien.
 - Collector-Module: 10 Dateien.
-- Tests: 148 Testdateien; letzter Status: 621 passed in 70.88s (0:01:10).
+- Tests: 153 Testdateien; letzter Status: 636 passed in 60.24s (0:01:00).
 
 ## H1 - Forecast-Qualitaet
 
@@ -349,12 +349,12 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Schweizer Referendum
 
 - Kuratierte Umfragen: 7.
-- Polymarket snapshots: 51.
+- Polymarket snapshots: 74.
 - Bounded price-history rows: 504.
-- Latest Polymarket Yes: 27.5 Prozent.
+- Latest Polymarket Yes: 21.5 Prozent.
 - Latest matched poll Yes: 45.0 Prozent.
-- Raw gap: -17.5 Prozentpunkte.
-- Decided-voter gap: -18.9 Prozentpunkte.
+- Raw gap: -23.5 Prozentpunkte.
+- Decided-voter gap: -24.9 Prozentpunkte.
 
 ## Abbildungen
 

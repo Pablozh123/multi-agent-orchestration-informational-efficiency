@@ -209,7 +209,7 @@ def _review_focus_de(thesis_area_focus: str, priority_band: str) -> str:
     if "H3" in areas:
         parts.append("H3: Wallet-Tiers, Timingdiagnostik und keine Kausalclaims.")
     if "swiss_referendum" in areas:
-        parts.append("Swiss: nur beschreibender Poll-Proxy-Vergleich bis zum offiziellen Resultat.")
+        parts.append("Swiss: begrenzte Post-Resultat-Fallstudie; Source Review und Poll-Proxy-Limitation pruefen.")
     if "monitor_prototype" in areas:
         parts.append("Monitor: nur Review-Workflow oder Appendix-Prototyp.")
     if "future_agents" in areas:
@@ -263,7 +263,8 @@ def _validate_guide(guide: pd.DataFrame) -> None:
         "human review",
         "nicht fuer thesis-facing claims",
         "keine kausalclaims",
-        "offiziellen resultat",
+        "post-resultat",
+        "poll-proxy-limitation",
     )
     missing = [term for term in required_terms if term not in lower_joined]
     if missing:

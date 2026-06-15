@@ -874,31 +874,38 @@ def build_evidence_map() -> pd.DataFrame:
             evidence_id="method_swiss_running_comparison",
             thesis_area="swiss_referendum",
             item_type="method",
-            claim_or_decision="Swiss referendum snapshots compare Polymarket prices with curated poll shares descriptively until the vote result is known.",
-            primary_artifact="data/results/swiss_referendum_10mio_comparison.csv",
+            claim_or_decision="Swiss referendum final case study maps the official result to Polymarket prices and poll shares with separate vote-share and binary proxy comparison modes.",
+            primary_artifact="data/results/swiss_referendum_10mio_final_case_study.csv",
             supporting_artifacts=[
+                "data/results/swiss_referendum_10mio_live_accuracy_windows.csv",
+                "data/results/swiss_referendum_10mio_history_accuracy_windows.csv",
+                "data/results/swiss_referendum_10mio_poll_accuracy.csv",
+                "data/swiss_referendum_10mio_official_result.csv",
                 "data/results/swiss_referendum_10mio_latest_source_comparison.csv",
                 "data/swiss_referendum_10mio_polls.csv",
-                "docs/research/SWISS_REFERENDUM_EFFICIENCY.md",
+                "docs/research/SWISS_REFERENDUM_FINAL_CASE_STUDY.md",
             ],
             literature_sources=["zotero_poly_002", "lit_brier_001"],
-            allowed_wording="descriptive poll-proxy comparison before final result",
-            blocked_wording="mispricing proof; final efficiency conclusion; trade signal",
-            main_limitation="Poll shares are not true win probabilities and the official result is still pending.",
-            thesis_readiness="descriptive_pending_result",
+            allowed_wording="post-result bounded vote-share comparison; binary outcome proxy with limitation",
+            blocked_wording="mispricing proof; final efficiency proof; trade signal; Polymarket vote-share forecast",
+            main_limitation="Polymarket prices are not vote-share forecasts and poll shares are not true win probabilities.",
+            thesis_readiness="post_result_mapped_bounded",
         ),
         _evidence_row(
             evidence_id="interpretation_swiss_gap_pending",
             thesis_area="swiss_referendum",
             item_type="interpretation",
-            claim_or_decision="Current Swiss divergence values are descriptive and cannot decide informational efficiency before the official result.",
-            primary_artifact="data/results/swiss_referendum_10mio_latest_source_comparison.csv",
-            supporting_artifacts=["data/results/swiss_referendum_10mio_efficiency.png"],
+            claim_or_decision="In the Swiss final case, final polls are closer to the official Yes share, while Polymarket carries the clearer rejection signal in the binary proxy view.",
+            primary_artifact="data/results/swiss_referendum_10mio_final_case_study.csv",
+            supporting_artifacts=[
+                "data/results/swiss_referendum_10mio_final_case_study.png",
+                "docs/research/SWISS_REFERENDUM_FINAL_CASE_STUDY.md",
+            ],
             literature_sources=["zotero_poly_002"],
-            allowed_wording="running descriptive divergence against poll proxy",
-            blocked_wording="final accuracy result; efficiency proof before the vote result",
-            main_limitation="Final outcome and source-checked post-vote interpretation are missing.",
-            thesis_readiness="descriptive_pending_result",
+            allowed_wording="polls closer on vote share; Polymarket stronger rejection signal",
+            blocked_wording="Polymarket predicted the vote share better; efficiency proof; tradeable signal",
+            main_limitation="The binary comparison treats poll shares only as transparent proxies, not as true win-probability forecasts.",
+            thesis_readiness="post_result_mapped_bounded",
         ),
         _evidence_row(
             evidence_id="future_agent_pipeline_guarded",
@@ -931,6 +938,7 @@ def build_core_results_table(*, results_dir: Path) -> pd.DataFrame:
     monitor = _read_csv(results_dir / "monitor_anomaly_review_summary.csv")
     swiss_comparison = _read_csv(results_dir / "swiss_referendum_10mio_comparison.csv")
     swiss_latest = _read_csv(results_dir / "swiss_referendum_10mio_latest_source_comparison.csv")
+    swiss_final_case = _read_csv(results_dir / "swiss_referendum_10mio_final_case_study.csv")
 
     primary_support_count = int(_summary_value(h1_claim, "primary_polymarket_support_count"))
     primary_comparison_count = int(_summary_value(h1_claim, "primary_comparison_count"))
@@ -953,6 +961,7 @@ def build_core_results_table(*, results_dir: Path) -> pd.DataFrame:
 
     monitor_row = monitor.iloc[0]
     swiss_latest_row = swiss_latest.iloc[0]
+    swiss_final_row = swiss_final_case.iloc[0]
 
     rows = [
         _core_result_row(
@@ -1051,25 +1060,37 @@ def build_core_results_table(*, results_dir: Path) -> pd.DataFrame:
             thesis_readiness="appendix_prototype_only",
         ),
         _core_result_row(
-            result_id="core_swiss_running_gap_pending",
+            result_id="core_swiss_final_case_study",
             thesis_area="swiss_referendum",
-            recommended_table="T5 Swiss running comparison pending final result",
-            headline_result="Swiss referendum market-poll divergence is descriptive until the result is known.",
+            recommended_table="T5 Swiss final case study",
+            headline_result="Swiss referendum result is mapped as a bounded side case.",
             key_value=(
-                f"{len(swiss_comparison)} snapshots; latest {swiss_latest_row['source_name']} "
-                f"Polymarket Yes {float(swiss_latest_row['polymarket_yes_probability']):.1%}, "
-                f"poll Yes {float(swiss_latest_row['poll_yes_share']):.1%}, "
-                f"raw gap {float(swiss_latest_row['raw_yes_gap']) * 100:.1f} pp"
+                f"Official Yes {float(swiss_final_row['official_yes_share']):.2%}; "
+                f"latest live Polymarket Yes "
+                f"{float(swiss_final_row['latest_live_polymarket_yes_probability']):.1%}; "
+                f"live vote-share beats "
+                f"{int(swiss_final_row['live_polymarket_beats_raw_vote_share_count'])}/"
+                f"{int(swiss_final_row['live_observation_rows'])}; "
+                f"live binary-proxy beats "
+                f"{int(swiss_final_row['live_polymarket_beats_raw_binary_proxy_count'])}/"
+                f"{int(swiss_final_row['live_observation_rows'])}; "
+                f"history raw vote-share beats "
+                f"{int(swiss_final_row['history_polymarket_beats_raw_vote_share_count'])}/"
+                f"{int(swiss_final_row['history_observation_rows'])}"
             ),
-            primary_artifact="data/results/swiss_referendum_10mio_latest_source_comparison.csv",
-            supporting_artifacts=["data/results/swiss_referendum_10mio_comparison.csv"],
+            primary_artifact="data/results/swiss_referendum_10mio_final_case_study.csv",
+            supporting_artifacts=[
+                "data/results/swiss_referendum_10mio_live_accuracy_windows.csv",
+                "data/results/swiss_referendum_10mio_history_accuracy_windows.csv",
+                "data/results/swiss_referendum_10mio_poll_accuracy.csv",
+            ],
             evidence_ids=[
                 "method_swiss_running_comparison",
                 "interpretation_swiss_gap_pending",
             ],
-            bounded_interpretation="Use only as running descriptive context before the official vote result.",
-            main_limitation="Poll shares are not true probabilities and final outcome is pending.",
-            thesis_readiness="descriptive_pending_result",
+            bounded_interpretation=str(swiss_final_row["bounded_conclusion_de"]),
+            main_limitation=str(swiss_final_row["main_limitation_de"]),
+            thesis_readiness="post_result_mapped_bounded",
         ),
     ]
     return pd.DataFrame(rows, columns=CORE_RESULT_COLUMNS)
@@ -1165,7 +1186,7 @@ def build_curated_result_package() -> pd.DataFrame:
             primary_artifact="data/results/thesis_core_results_table.csv",
             supporting_artifacts=[
                 "data/results/monitor_anomaly_review_summary.csv",
-                "data/results/swiss_referendum_10mio_latest_source_comparison.csv",
+                "data/results/swiss_referendum_10mio_final_case_study.csv",
             ],
             evidence_ids=[
                 "method_monitor_prototype",
@@ -1176,8 +1197,8 @@ def build_curated_result_package() -> pd.DataFrame:
             recommended_placement="appendix_or_discussion",
             include_in_core_package=True,
             thesis_message="Monitor and Swiss material are useful but need clear status labels.",
-            main_limitation="Monitor cases need human review; Swiss needs the official result.",
-            thesis_readiness="mixed_appendix_and_pending",
+            main_limitation="Monitor cases need human review; Swiss is post-result mapped but remains a bounded side case.",
+            thesis_readiness="mixed_appendix_and_bounded",
         ),
         _package_row(
             package_id="F1",
@@ -1228,21 +1249,23 @@ def build_curated_result_package() -> pd.DataFrame:
             package_id="F4",
             package_type="figure",
             thesis_section="swiss_referendum",
-            title="Swiss referendum running poll-proxy comparison",
-            primary_artifact="data/results/swiss_referendum_10mio_efficiency.png",
+            title="Swiss referendum final case study error view",
+            primary_artifact="data/results/swiss_referendum_10mio_final_case_study.png",
             supporting_artifacts=[
-                "data/results/swiss_referendum_10mio_latest_source_comparison.csv",
-                "data/results/swiss_referendum_10mio_comparison.csv",
+                "data/results/swiss_referendum_10mio_final_case_study.csv",
+                "data/results/swiss_referendum_10mio_live_accuracy_windows.csv",
+                "data/results/swiss_referendum_10mio_history_accuracy_windows.csv",
+                "data/results/swiss_referendum_10mio_poll_accuracy.csv",
             ],
             evidence_ids=[
                 "method_swiss_running_comparison",
                 "interpretation_swiss_gap_pending",
             ],
-            recommended_placement="discussion_pending_final_result",
+            recommended_placement="discussion_bounded_final_case",
             include_in_core_package=True,
-            thesis_message="Shows the running divergence as descriptive context before the vote result.",
-            main_limitation="No final efficiency claim before official result.",
-            thesis_readiness="descriptive_pending_result",
+            thesis_message="Shows final vote-share error and the bounded Polymarket-vs-poll timing view.",
+            main_limitation="Polymarket prices are not vote-share forecasts; binary poll scores are proxy-only.",
+            thesis_readiness="post_result_mapped_bounded",
         ),
         _package_row(
             package_id="A1",
@@ -1461,8 +1484,8 @@ def build_chapter_plan(*, curated_package: pd.DataFrame) -> pd.DataFrame:
                 str(package_by_id.loc["F4", "primary_artifact"]),
             ],
             writing_status="appendix_or_discussion_ready",
-            main_limitation_to_state="Monitor cases need human review; Swiss interpretation needs official result.",
-            next_action="Keep both as bounded discussion or appendix until final gates change.",
+            main_limitation_to_state="Monitor cases need human review; Swiss is post-result mapped but remains a bounded side case, not a core proof.",
+            next_action="Write Swiss as a bounded final case paragraph and keep Monitor as appendix workflow.",
         ),
         _chapter_row(
             chapter_id="ch_08_discussion_conclusion",
@@ -1758,13 +1781,13 @@ def build_next_work_plan(
             _next_work_row(
                 workstream_id="work_07_swiss_result_gate",
                 priority_order=7,
-                workstream="Finalize Swiss side track after result",
-                thesis_section="discussion_pending_final_result",
-                current_artifact="data/results/swiss_referendum_10mio_latest_source_comparison.csv",
-                next_action="Keep the Swiss comparison descriptive until the official vote result is available and mapped.",
-                done_when="Official result is recorded, deterministic Swiss artifacts are regenerated, and wording remains bounded.",
-                blocked_until="Official 14 June 2026 vote result is available.",
-                guardrail="Poll shares are not win probabilities and cannot support a final efficiency claim before result mapping.",
+                workstream="Write bounded Swiss final case paragraph",
+                thesis_section="discussion_bounded_final_case",
+                current_artifact="data/results/swiss_referendum_10mio_final_case_study.csv; docs/research/SWISS_REFERENDUM_FINAL_CASE_STUDY.md",
+                next_action="Use the official 14 June 2026 vote result and deterministic final-case metrics for a bounded Swiss side-case paragraph.",
+                done_when="The paragraph separates vote-share accuracy, binary outcome proxy, and the poll-share limitation.",
+                blocked_until="Manual Source Review and final citation wording are complete.",
+                guardrail="Poll shares are not win probabilities; no final efficiency, mispricing, tradeability, or universal Polymarket-superiority claim from the Swiss case.",
             ),
             _next_work_row(
                 workstream_id="work_08_agent_outlook",
@@ -1842,6 +1865,7 @@ def build_project_highlevel_view(
     )
     agent_protocol_rows = int(len(agent_assistance_protocol))
     agent_stage_rows = int(len(agent_pipeline))
+    swiss_core = core_results[core_results["thesis_area"] == "swiss_referendum"].iloc[0]
 
     return pd.DataFrame(
         [
@@ -1987,20 +2011,24 @@ def build_project_highlevel_view(
             _project_view_row(
                 view_id="project_07_swiss_referendum",
                 project_layer="Swiss referendum side track",
-                status="descriptive_pending_result",
-                role_in_thesis="Provides a bounded side comparison until the official vote outcome can be mapped.",
+                status="post_result_mapped_bounded",
+                role_in_thesis="Provides a bounded final side comparison after the official vote outcome was mapped.",
                 primary_artifacts=[
-                    "data/results/swiss_referendum_10mio_latest_source_comparison.csv",
-                    "data/results/swiss_referendum_10mio_efficiency.png",
+                    "data/results/swiss_referendum_10mio_final_case_study.csv",
+                    "data/results/swiss_referendum_10mio_final_case_study.png",
+                    "docs/research/SWISS_REFERENDUM_FINAL_CASE_STUDY.md",
                 ],
                 evidence_or_workstream_ids=[
                     "interpretation_swiss_gap_pending",
                     "work_07_swiss_result_gate",
                 ],
-                current_decision="Keep the Swiss material descriptive until the official 14 June 2026 vote result is available.",
-                next_gate="Regenerate Swiss artifacts after official result mapping.",
-                guardrail="Poll shares are not win probabilities and cannot support final efficiency claims before result mapping.",
-                thesis_use="discussion_pending_final_result",
+                current_decision=(
+                    "Use Swiss only as a bounded post-result side case after the official 14 June 2026 vote result: "
+                    f"{swiss_core['key_value']}. Review-Access remains paused."
+                ),
+                next_gate="Manual Source Review and final citation wording before using the Swiss case in final thesis prose.",
+                guardrail="Poll shares are not win probabilities; no final efficiency, mispricing, tradeability, or vote-share-superiority claim from the Swiss case.",
+                thesis_use="discussion_bounded_final_case",
             ),
             _project_view_row(
                 view_id="project_08_future_agents",
@@ -2750,6 +2778,7 @@ def _validate_project_highlevel_view(
         "thesis_facing_package",
         "paused_appendix_only",
         "descriptive_pending_result",
+        "post_result_mapped_bounded",
         "documentation_only_deferred",
         "project_management_ready",
     }
@@ -2804,6 +2833,7 @@ def _validate_project_highlevel_view(
         "source review is manual",
         "llm_audit_log",
         "official 14 june 2026 vote result",
+        "post-result side case",
         "no order or trading paths",
         "deterministic python artifacts",
     )
@@ -3221,7 +3251,7 @@ def _render_consolidation_doc(
         "- H2 can be written as daily event-window response, not intraday speed.\n"
         "- H3 can be written as predictive timing diagnostics, not causality or private-information evidence.\n"
         "- Monitor outputs stay prototype or appendix material until human review gates approve them.\n"
-        "- Swiss referendum outputs stay descriptive until the official result is available.\n\n"
+        "- Swiss referendum outputs are post-result mapped but remain a bounded side case, not a final efficiency proof.\n\n"
         "## Deferred Agent Pipeline Idea\n\n"
         f"Primary evidence: `{agent_row['primary_artifact']}`.\n\n"
         "Later agents can improve the workflow only after the thesis-ready deterministic "
@@ -3508,8 +3538,9 @@ def _render_project_highlevel_view_doc(
         "# Thesis Project Highlevel View\n\n"
         "This generated status matrix gives the project-level answer to what "
         "happens next: the thesis core is H1-H3, review access remains paused, "
-        "monitor material stays appendix/prototype only, Swiss remains pending "
-        "until the official result, and future agents stay documentation-only.\n\n"
+        "monitor material stays appendix/prototype only, Swiss is now mapped as "
+        "a bounded post-result side case, and future agents stay "
+        "documentation-only.\n\n"
         "## Kurzantwort: Weiter Ohne Review-Access\n\n"
         "- Review-Access bleibt pausiert; der naechste Fortschritt kommt aus "
         "Schreiben und Review-Gates.\n"
@@ -3522,8 +3553,9 @@ def _render_project_highlevel_view_doc(
         "- Access Audit, Source Structure Inventory und Traceability Audit nur "
         "als Vorbereitung nutzen: keine Quellenstatus-Hochstufung und keine "
         "Support-Claims aus Dateistruktur.\n"
-        "- Swiss bleibt bis zum offiziellen Resultat am 14. Juni 2026 "
-        "beschreibend.\n"
+        "- Swiss ist nach dem offiziellen Resultat vom 14. Juni 2026 gemappt; "
+        "die Fallstudie bleibt ein begrenzter Side-Track mit getrenntem "
+        "Stimmenanteils- und Binaer-Proxy-Vergleich.\n"
         "- Agenten bleiben Future Work; keine Runtime-Agenten, MCP, Model "
         "Routing oder LLM-Metriken.\n\n"
         "## Counts\n\n"
@@ -3659,7 +3691,7 @@ def _render_chapter_draft(
     h2_result = core["core_h2_largest_daily_event_window"]
     h3_result = core["core_h3_top_tier_timing"]
     monitor_result = core["core_monitor_review_queue_boundary"]
-    swiss_result = core["core_swiss_running_gap_pending"]
+    swiss_result = core["core_swiss_final_case_study"]
     h1_core_mapping = _chapter_core_mapping_block(
         hypothesis="H1",
         evidence_map=evidence_map,
@@ -3845,13 +3877,13 @@ def _render_chapter_draft(
             "Artefakte bleiben reviewgebunden und sind keine thesis-facing "
             "Evidenz fuer Ursachen, Regelverstoesse, Marktineffizienz, "
             "Handelbarkeit oder Gewinne.\n",
-            "Der Schweizer Abstimmungstrack bleibt bis zum offiziellen "
-            "Resultat beschreibend. "
+            "Der Schweizer Abstimmungstrack ist nach dem offiziellen "
+            "Resultat vom 14. Juni 2026 als begrenzte Post-Resultat-Fallstudie gemappt. "
             f"Kernwert: {_de_key_value(swiss_result['key_value'])}. Die aktuelle Figur "
-            f"`{package['F4']['primary_artifact']}` darf als laufender "
-            "Poll-Proxy-Vergleich genutzt werden, aber nicht als finaler "
-            "Effizienzbefund. Poll-Anteile sind keine echten "
-            "Modellwahrscheinlichkeiten.\n",
+            f"`{package['F4']['primary_artifact']}` darf als begrenzter "
+            "Poll-Proxy-Vergleich genutzt werden, aber nicht als Effizienz-, "
+            "Mispricing-, Tradeability- oder Vote-Share-Superiority-Befund. "
+            "Poll-Anteile sind keine echten Modellwahrscheinlichkeiten.\n",
             "## 8. Diskussion und Fazit\n",
             "Die bisherigen Ergebnisse sprechen fuer eine differenzierte "
             "Antwort. H1 liefert in einem abgegrenzten Vergleichsscope starke "

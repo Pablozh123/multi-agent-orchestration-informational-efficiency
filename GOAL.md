@@ -35,9 +35,9 @@ deliverables:
   final submission blockers, and deferred future-work/agent items.
 - Create a thesis drafting sequence that turns the current gates into the next
   ordered BA writing steps.
-- Keep the Swiss referendum track in data-collection mode until the 14 June
-  2026 vote result is available; do not add a final efficiency interpretation
-  before the official result.
+- Keep the Swiss referendum track as a bounded post-result side case after the
+  14 June 2026 vote result has been mapped; do not add efficiency,
+  mispricing, tradeability, or vote-share-superiority claims.
 - Keep monitor anomaly review outputs as prototype/appendix material unless
   human review and thesis-use gates later approve them.
 scope:
@@ -75,8 +75,9 @@ acceptance_criteria:
   tables and figures, not a raw dump of every generated artifact.
 - H1/H2/H3 interpretations remain bounded to the deterministic outputs and do
   not rely on LLM-calculated metrics.
-- Swiss referendum outputs remain descriptive until the official result is
-  available.
+- Swiss referendum outputs map the official 14 June 2026 result in a bounded
+  final case study and keep vote-share proximity, binary outcome proxy, Source
+  Review, and poll-proxy limitations visibly separated.
 - Monitor and agent content is framed as prototype, appendix, or future work
   unless deterministic thesis-use gates approve it.
 - Future agent pipeline design remains documentation-only and does not activate
@@ -442,9 +443,11 @@ next_commit: docs: update project control workflow
 
 ## Running Side Goal
 
-- `goal-swiss-referendum-efficiency-001` remains a running data-collection
-  track until the 14 June 2026 vote. Do not add final referendum efficiency
-  interpretation before the official result is available.
+- `goal-swiss-referendum-efficiency-001` is no longer a live data-collection
+  track. The official 14 June 2026 result is mapped in a bounded final case
+  study; final thesis use still waits on Source Review and careful citation
+  wording. Do not add efficiency, mispricing, tradeability, or
+  vote-share-superiority claims from this side case.
 
 ## Paused Previous Goal
 

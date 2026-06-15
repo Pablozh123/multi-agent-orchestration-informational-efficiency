@@ -88,8 +88,8 @@
   },
   "readiness_counts": {
     "appendix_prototype_only": 2,
-    "descriptive_pending_result": 2,
     "future_work_deferred": 1,
+    "post_result_mapped_bounded": 2,
     "thesis_facing_ready": 8
   },
   "source_review_plan_counts": {

@@ -169,12 +169,12 @@ def build_submission_readiness_board(
         _readiness_row(
             gate_id="readiness_07_swiss_result_gate",
             gate_area="swiss_result_gate",
-            current_status="final_blocked_official_result",
-            primary_artifact="data/results/swiss_referendum_10mio_latest_source_comparison.csv",
+            current_status="post_result_mapped_source_review_pending",
+            primary_artifact="data/results/swiss_referendum_10mio_final_case_study.csv",
             evidence_or_control_count=1,
-            next_action_de="Bis zum offiziellen 14. Juni 2026 Resultat beschreibend bleiben.",
-            blocker_or_limit_de="Poll-Anteile sind keine Gewinnwahrscheinlichkeiten und tragen keine finale Effizienzaussage.",
-            thesis_use_de="Diskussion oder Side-Track nach Resultat-Gate.",
+            next_action_de="Swiss-Fallstudie als begrenzten Post-Resultat-Side-Track schreiben.",
+            blocker_or_limit_de="Poll-Anteile sind keine Gewinnwahrscheinlichkeiten; finale Zitation wartet auf Source Review.",
+            thesis_use_de="Diskussion oder Side-Track mit sichtbarer Poll-Proxy-Limitation.",
         ),
         _readiness_row(
             gate_id="readiness_08_agent_future_work",
@@ -263,7 +263,7 @@ def _validate_board(board: pd.DataFrame, *, repo_root: Path) -> None:
     lower_joined = joined.lower()
     required_terms = (
         "final_blocked_source_review",
-        "final_blocked_official_result",
+        "post_result_mapped_source_review_pending",
         "keine runtime-agenten",
         "soffice",
         "keine roh",
@@ -284,7 +284,7 @@ def _render_board_doc(board: pd.DataFrame) -> str:
         "## Counts\n\n"
         f"- Readiness gates: {len(board)}\n"
         f"- Final blocked source review: {int(status_counts.get('final_blocked_source_review', 0))}\n"
-        f"- Final blocked official result: {int(status_counts.get('final_blocked_official_result', 0))}\n"
+        f"- Swiss post-result mapped: {int(status_counts.get('post_result_mapped_source_review_pending', 0))}\n"
         f"- Deferred future-work only: {int(status_counts.get('deferred_future_work_only', 0))}\n\n"
         "## Readiness Gates\n\n"
         + _markdown_table(board)
@@ -292,7 +292,7 @@ def _render_board_doc(board: pd.DataFrame) -> str:
         "## Use Rule\n\n"
         "Nutze dieses Board vor einem finalen Thesis-Export. Drafts koennen "
         "weitergeschrieben werden; finale Abgabe bleibt blockiert, solange "
-        "Source Review, Swiss Resultat-Gate oder DOCX-Render-QA offen sind.\n"
+        "Source Review, Swiss Source-/Citation-Gate oder DOCX-Render-QA offen sind.\n"
     )
 
 

@@ -144,17 +144,17 @@ Recommended package items:
 
 - `Prototype and Swiss side-track boundary table` from `data/results/thesis_core_results_table.csv` (appendix_or_discussion).
 
-- `Swiss referendum running poll-proxy comparison` from `data/results/swiss_referendum_10mio_efficiency.png` (discussion_pending_final_result).
+- `Swiss referendum final case study error view` from `data/results/swiss_referendum_10mio_final_case_study.png` (discussion_bounded_final_case).
 
 Result statements to use:
 
 - The monitor review queue is useful as workflow evidence, not empirical proof. Key value: 3 review cases; 1 high; 2 medium; source_check_pending=3 Source: `data/results/monitor_anomaly_review_summary.csv`.
 
-- Swiss referendum market-poll divergence is descriptive until the result is known. Key value: 48 snapshots; latest SRG/gfs.bern Polymarket Yes 26.0%, poll Yes 45.0%, raw gap -19.0 pp Source: `data/results/swiss_referendum_10mio_latest_source_comparison.csv`.
+- Swiss referendum result is mapped as a bounded side case. Key value: Official Yes 45.21%; latest live Polymarket Yes 21.5%; live vote-share beats 0/74; live binary-proxy beats 74/74; history raw vote-share beats 36/504 Source: `data/results/swiss_referendum_10mio_final_case_study.csv`.
 
-Limitation to state: Monitor cases need human review; Swiss interpretation needs official result.
+Limitation to state: Monitor cases need human review; Swiss is post-result mapped but remains a bounded side case, not a core proof.
 
-Next writing action: Keep both as bounded discussion or appendix until final gates change.
+Next writing action: Write Swiss as a bounded final case paragraph and keep Monitor as appendix workflow.
 
 ## Diskussion, Limitationen und Fazit
 

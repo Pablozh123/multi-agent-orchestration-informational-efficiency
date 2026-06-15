@@ -73,7 +73,7 @@ def test_goal_completion_audit_keeps_open_gates_visible(tmp_path: Path) -> None:
     audit = pd.read_csv(result.audit_path)
     joined = "\n".join(audit.fillna("").astype(str).agg(" ".join, axis=1).tolist()).lower()
 
-    assert "final_blocked_official_result" in set(audit["current_status"])
+    assert "post_result_mapped_source_review_pending" in set(audit["current_status"])
     assert "appendix_only_pending_human_review" in set(audit["current_status"])
     assert "deferred_future_work_only" in set(audit["current_status"])
     assert "finale zitation" in joined
@@ -153,7 +153,7 @@ def _write_fixture(root: Path) -> None:
             _gate("h1_h2_h3_results", "ready_for_bounded_result_draft"),
             _gate("table_figure_package", "ready_for_draft_integration"),
             _gate("monitor_appendix", "appendix_only_pending_human_review"),
-            _gate("swiss_result_gate", "final_blocked_official_result"),
+            _gate("swiss_result_gate", "post_result_mapped_source_review_pending"),
             _gate("agent_future_work", "deferred_future_work_only"),
             _gate("final_qa", "pending_after_draft"),
             _gate("chapter_source_mapping", "ready_for_draft"),
@@ -403,6 +403,8 @@ def _write_fixture(root: Path) -> None:
         "data/results/thesis_table_figure_captions.csv",
         "data/results/thesis_core_results_table.csv",
         "data/results/swiss_referendum_10mio_latest_source_comparison.csv",
+        "data/results/swiss_referendum_10mio_final_case_study.csv",
+        "docs/research/SWISS_REFERENDUM_FINAL_CASE_STUDY.md",
         "data/results/monitor_anomaly_review_summary.csv",
         "data/results/thesis_project_highlevel_view.csv",
         "data/results/thesis_agent_assistance_protocol.csv",

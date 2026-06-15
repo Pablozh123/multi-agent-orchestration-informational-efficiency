@@ -595,7 +595,7 @@ def build_thesis_consolidation_index() -> pd.DataFrame:
             path="docs/project/THESIS_GOAL_COMPLETION_AUDIT.md; data/results/thesis_goal_completion_audit.csv",
             purpose_de="Belegbarer Audit des aktiven Goals mit erreichten Punkten und offenen Gates.",
             use_now_de="Als Stop-/Weiterarbeitskontrolle vor finalen Abschlussclaims nutzen.",
-            gate_or_limit_de="Kein Zielabschluss, solange Source Review, Swiss Resultat-Gate oder DOCX-Render-QA offen sind.",
+            gate_or_limit_de="Kein Zielabschluss, solange Source Review, Swiss Source-/Citation-Gate oder DOCX-Render-QA offen sind.",
         ),
         _index_row(
             artifact_id="index_36_status_and_log",

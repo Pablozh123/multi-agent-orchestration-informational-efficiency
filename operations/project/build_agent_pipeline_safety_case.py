@@ -306,23 +306,23 @@ def build_agent_pipeline_safety_case(
             future_agent_scope="Monitor and Swiss boundary",
             current_evidence_anchor_de=(
                 "Monitor bleibt Appendix/Prototype pending human review; Swiss "
-                f"bleibt Gate `{context['swiss_gate_status']}` mit "
-                f"{context['swiss_evidence_count']} laufenden Snapshot-Zeilen."
+                f"steht auf `{context['swiss_gate_status']}` mit "
+                f"{context['swiss_evidence_count']} Final-Case-Live-Zeilen."
             ),
             allowed_later_help_de=(
                 "Spaeter darf ein Agent nur bounded Statuszusammenfassungen fuer "
                 "Appendix- oder Side-Track-Text vorbereiten."
             ),
             required_human_gate_de=(
-                "Monitor-Cases brauchen Human Review; Swiss braucht offizielles "
-                "Resultat und Post-Resultat-Mapping."
+                "Monitor-Cases brauchen Human Review; Swiss braucht Source Review "
+                "und sichtbare Poll-Proxy-Limitation vor finaler Zitation."
             ),
             blocked_runtime_action_de=(
                 "Keine Mispricing-, Effizienz-, Misconduct-, Wallet-Adress-, "
                 "Trading- oder Profitabilitaetsclaims."
             ),
             proof_before_activation_de=(
-                "Human-Review-Status oder offizielles Swiss-Resultat plus "
+                "Human-Review-Status oder Swiss-Source-Review plus "
                 "neugenerierte deterministische Artefakte und llm_audit_log."
             ),
             current_status="future_documentation_only",

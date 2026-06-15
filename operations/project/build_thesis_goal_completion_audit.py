@@ -722,12 +722,12 @@ def build_goal_completion_audit(
         ),
         _audit_row(
             audit_id="goal_audit_06_swiss_gate",
-            goal_requirement_de="Swiss Referendum bleibt bis zum offiziellen Resultat beschreibend.",
-            current_status="final_blocked_official_result",
-            evidence_artifacts="data/results/swiss_referendum_10mio_latest_source_comparison.csv; docs/research/THESIS_PROJECT_HIGHLEVEL_VIEW.md",
-            key_evidence_de="Swiss ist als descriptive_pending_result markiert.",
-            remaining_gap_de="Offizielles Resultat vom 14. Juni 2026 und Post-Resultat-Mapping fehlen.",
-            next_action_de="Nach offiziellem Resultat Swiss-Artefakte neu generieren und Wording pruefen.",
+            goal_requirement_de="Swiss Referendum ist nach offiziellem Resultat als bounded Side-Track gemappt.",
+            current_status="post_result_mapped_source_review_pending",
+            evidence_artifacts="data/results/swiss_referendum_10mio_final_case_study.csv; docs/research/SWISS_REFERENDUM_FINAL_CASE_STUDY.md; docs/research/THESIS_PROJECT_HIGHLEVEL_VIEW.md",
+            key_evidence_de="Offizielles Resultat vom 14. Juni 2026 ist gemappt; Swiss ist als post_result_mapped_bounded markiert.",
+            remaining_gap_de="Finale Swiss-Zitation und Quellenstuetzung bleiben vom manuellen Source Review abhaengig.",
+            next_action_de="Swiss-Abschnitt mit Stimmenanteils- und Binaer-Proxy-Trennung schreiben.",
         ),
         _audit_row(
             audit_id="goal_audit_07_monitor_boundary",
@@ -857,7 +857,7 @@ def _validate_audit(audit: pd.DataFrame, *, repo_root: Path) -> None:
         raise ValueError("Goal completion audit must use Swiss spelling without sharp-s.")
     lower_joined = joined.lower()
     required_terms = (
-        "final_blocked_official_result",
+        "post_result_mapped_source_review_pending",
         "finale zitation",
         "soffice",
         "review-access bleibt pausiert",
@@ -876,18 +876,18 @@ def _render_audit_doc(audit: pd.DataFrame) -> str:
         "Dieses Audit prueft den aktuellen Stand des aktiven "
         "Konsolidierungsziels gegen belegbare Artefakte. Es ist kein neues "
         "empirisches Resultat und behauptet keine finale Zielerreichung, solange "
-        "Source Review, Swiss Resultat-Gate oder DOCX-Render-QA offen sind.\n\n"
+        "Source Review, Swiss Source-/Citation-Gate oder DOCX-Render-QA offen sind.\n\n"
         "## Counts\n\n"
         f"- Audit rows: {len(audit)}\n"
         f"- Proved current artifacts: {int(status_counts.get('proved_current_artifact', 0))}\n"
-        f"- Final blocked official result: {int(status_counts.get('final_blocked_official_result', 0))}\n"
+        f"- Swiss post-result mapped: {int(status_counts.get('post_result_mapped_source_review_pending', 0))}\n"
         f"- Deferred future work: {int(status_counts.get('deferred_future_work_only', 0))}\n\n"
         "## Audit Rows\n\n"
         + _markdown_table(audit)
         + "\n\n"
         "## Use Rule\n\n"
         "Nutze dieses Audit als Stop-/Weiterarbeitskontrolle. Es darf nicht "
-        "genutzt werden, um Source Review, Swiss Resultat-Gate, DOCX-Render-QA, "
+        "genutzt werden, um Source Review, Swiss Source-/Citation-Gate, DOCX-Render-QA, "
         "Review-Access, Runtime-Agenten, MCP, Model Routing oder Trading-Pfade "
         "zu ueberspringen.\n"
     )

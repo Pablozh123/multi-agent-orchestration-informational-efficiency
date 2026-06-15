@@ -48,7 +48,7 @@ def test_advisor_handoff_note_keeps_boundaries_visible(tmp_path: Path) -> None:
     assert "keine runtime-agenten" in joined
     assert "keine llm-metriken" in joined
     assert "keine trading-pfade" in joined
-    assert "offiziellen resultat" in joined
+    assert "swiss" in joined
 
 
 def _write_fixture(root: Path) -> None:
@@ -75,7 +75,7 @@ def _write_fixture(root: Path) -> None:
             _gate("h1_h2_h3_results", "ready_for_bounded_result_draft"),
             _gate("table_figure_package", "ready_for_draft_integration"),
             _gate("monitor_appendix", "appendix_only_pending_human_review"),
-            _gate("swiss_result_gate", "final_blocked_official_result"),
+            _gate("swiss_result_gate", "post_result_mapped_source_review_pending"),
             _gate("agent_future_work", "deferred_future_work_only"),
             _gate("final_qa", "pending_after_draft"),
         ]

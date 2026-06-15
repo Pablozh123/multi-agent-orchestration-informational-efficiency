@@ -510,6 +510,8 @@ def _traceability_status(*, thesis_readiness: str, has_gap: bool) -> str:
         return "appendix_traceable_pending_human_review"
     if thesis_readiness == "descriptive_pending_result":
         return "descriptive_traceable_result_pending"
+    if thesis_readiness == "post_result_mapped_bounded":
+        return "post_result_traceable_review_pending"
     return "noncore_traceable"
 
 
@@ -520,8 +522,12 @@ def _package_status(*, include_in_core: bool, thesis_readiness: str, has_gap: bo
         return "deferred_package_documentation_only"
     if thesis_readiness == "descriptive_pending_result":
         return "core_package_descriptive_pending_result"
+    if thesis_readiness == "post_result_mapped_bounded":
+        return "core_package_post_result_bounded"
     if thesis_readiness == "mixed_appendix_and_pending":
         return "core_package_mixed_appendix_pending"
+    if thesis_readiness == "mixed_appendix_and_bounded":
+        return "core_package_mixed_appendix_bounded"
     return "core_package_ready_for_draft"
 
 
@@ -530,6 +536,8 @@ def _method_gate(*, thesis_readiness: str, pending_review_count: int) -> str:
         return "Nur Appendix/Prototype; keine finale Zitation ohne Human Review."
     if thesis_readiness == "descriptive_pending_result":
         return "Nur beschreibend nutzen; keine finale Zitation bis Resultat- oder Review-Gate geklaert ist."
+    if thesis_readiness == "post_result_mapped_bounded":
+        return "Post-result bounded nutzen; keine finale Zitation ohne Source Review und Poll-Proxy-Limitation."
     if pending_review_count > 0:
         return "Draft nutzbar; keine finale Zitation ohne manuelle Quellenreview mit Page-/Section-Notes."
     return "Draft nutzbar; keine finale Zitation ohne bestaetigte Quellenreview."
@@ -540,8 +548,12 @@ def _package_gate(*, include_in_core: bool, thesis_readiness: str) -> str:
         return "Nur Future Work oder Appendix; keine finale Zitation als BA-Kernpaket ohne manuelle Review."
     if thesis_readiness == "descriptive_pending_result":
         return "Nur beschreibend integrieren; keine finale Zitation bis Resultat-Gate und manuelle Review geschlossen sind."
+    if thesis_readiness == "post_result_mapped_bounded":
+        return "Als bounded Swiss-Fallstudie integrieren; keine finale Zitation ohne Source Review und keine Effizienzbeweise."
     if thesis_readiness == "mixed_appendix_and_pending":
         return "Als Status-/Grenztabelle nutzbar; keine finale Zitation ohne manuelle Review und sichtbare Monitor-/Swiss-Limits."
+    if thesis_readiness == "mixed_appendix_and_bounded":
+        return "Als Status-/Grenztabelle nutzbar; Monitor bleibt Human-Review-pending und Swiss bleibt bounded post-result."
     return "In BA-Entwurf nutzbar; keine finale Zitation ohne manuelle Review und sichtbare Quellen-/Resultat-Gates."
 
 

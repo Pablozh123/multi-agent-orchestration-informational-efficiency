@@ -313,6 +313,8 @@ def _coverage_status(*, thesis_readiness: str, has_gap: bool) -> str:
         return "appendix_source_mapped_human_review_pending"
     if thesis_readiness == "descriptive_pending_result":
         return "descriptive_source_mapped_result_pending"
+    if thesis_readiness == "post_result_mapped_bounded":
+        return "post_result_source_mapped_review_pending"
     return "source_mapped_noncore"
 
 
@@ -321,6 +323,8 @@ def _thesis_use_gate(*, thesis_readiness: str, readiness: str) -> str:
         return "Nur Appendix/Prototype; keine finale Zitation ohne Human Review und Source Review."
     if thesis_readiness == "descriptive_pending_result":
         return "Nur beschreibend; keine finale Zitation bis Resultat-Gate und Source Review geschlossen sind."
+    if thesis_readiness == "post_result_mapped_bounded":
+        return "Post-result mapped; keine finale Zitation ohne Source Review und sichtbare Poll-Proxy-Limitation."
     if readiness == "not_allowed_for_thesis_facing_claims":
         return "Nicht fuer thesis-facing Claims nutzen; Quelle bleibt blockiert oder future-only."
     return "Draft nutzbar; keine finale Zitation ohne manuelle Source Review und deterministische Artefaktbindung."

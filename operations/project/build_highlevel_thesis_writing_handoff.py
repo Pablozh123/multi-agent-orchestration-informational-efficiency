@@ -380,14 +380,14 @@ def build_highlevel_thesis_writing_handoff(
                     "data/results/thesis_final_gate_board.csv"
                 ),
                 allowed_ba_action_de=(
-                    "Agenten nur als Pipeline-Ausblick beschreiben; Swiss bleibt "
-                    "deskriptiver Side Track bis zum offiziellen Resultat; Monitor "
+                    "Agenten nur als Pipeline-Ausblick beschreiben; Swiss ist "
+                    "post-result gemappt und bleibt bounded Side Track; Monitor "
                     "bleibt Appendix/Prototype pending human review."
                 ),
                 required_binding_de=(
                     "Spaetere Agentenhilfe braucht separates Goal, bounded inputs, "
                     "Proof-Artefakt, max 50 rows und llm_audit_log. Swiss braucht "
-                    "offizielles Resultat; DOCX braucht Render-QA."
+                    "Source Review und Poll-Proxy-Limitation; DOCX braucht Render-QA."
                 ),
                 compact_output_de=(
                     f"Agentenplan: {context['agent_upgrade_rows']} rows, "
@@ -396,7 +396,7 @@ def build_highlevel_thesis_writing_handoff(
                     f"{context['active_agent_rows']} active runtime rows."
                 ),
                 open_gate_de=(
-                    "Offen bleiben Source Review, Swiss Resultat-Mapping, "
+                    "Offen bleiben Source Review, Swiss Source-/Citation-Gate, "
                     "Monitor Human Review, DOCX-Render-QA und finale Projektchecks."
                 ),
                 forbidden_action_de=(

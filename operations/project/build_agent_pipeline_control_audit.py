@@ -290,7 +290,7 @@ def _required_preconditions(*, activation_gate: str, agent_gate_status: str) -> 
     return (
         f"Aktueller Agent-Gate-Status: {agent_gate_status}. "
         f"Vor Aktivierung: {activation_gate} "
-        "Zusaetzlich Source Review, Swiss Resultat-Gate und finaler QA-Status pruefen."
+        "Zusaetzlich Source Review, Swiss Source-/Citation-Gate und finaler QA-Status pruefen."
     )
 
 

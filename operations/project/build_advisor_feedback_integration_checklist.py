@@ -177,12 +177,12 @@ def _integration_spec_for_question(question_id: str) -> dict[str, str]:
             "guardrail_de": "Review-Access bleibt pausiert; keine Wallet-Adress-Exposition, keine Order- oder Trading-Pfade und keine Kausalclaims.",
         },
         "advisor_q06_swiss_gate": {
-            "decision_to_capture_de": "Swiss-Platzierung erfassen und nach offiziellem Resultat getrennt neu bewerten.",
-            "affected_artifacts": "data/results/swiss_referendum_10mio_latest_summary.md; data/results/swiss_referendum_10mio_latest_source_comparison.csv; docs/project/THESIS_FINAL_GATE_BOARD.md",
-            "required_evidence_check_de": "Swiss bleibt bis zum offiziellen Resultat beschreibend; nach Resultat nur deterministisch generierte Artefakte und klare Poll-Proxy-Limitationen nutzen.",
+            "decision_to_capture_de": "Swiss-Platzierung als bounded Post-Resultat-Fallstudie erfassen.",
+            "affected_artifacts": "data/results/swiss_referendum_10mio_final_case_study.csv; docs/research/SWISS_REFERENDUM_FINAL_CASE_STUDY.md; docs/project/THESIS_FINAL_GATE_BOARD.md",
+            "required_evidence_check_de": "Swiss nutzt nur deterministisch generierte Final-Case-Artefakte und klare Poll-Proxy-Limitationen.",
             "small_commit_scope_de": "docs: integrate advisor swiss placement feedback",
-            "final_gate_de": "Keine finale Swiss-Effizienzinterpretation vor offizieller Resultatzuordnung.",
-            "guardrail_de": "Poll-Anteile sind keine Gewinnwahrscheinlichkeiten; keine finale Accuracy- oder Effizienzbehauptung vor Resultat.",
+            "final_gate_de": "Keine finale Swiss-Zitation ohne Source Review und Poll-Proxy-Limitation.",
+            "guardrail_de": "Poll-Anteile sind keine Gewinnwahrscheinlichkeiten; keine Effizienz-, Mispricing- oder Tradeability-Behauptung.",
         },
         "advisor_q07_agent_outlook": {
             "decision_to_capture_de": "Entscheid erfassen, ob Agenten nur als Future-Work-Ausblick oder als spaeterer separater Track beschrieben werden.",

@@ -199,16 +199,16 @@ def build_advisor_alignment_checklist(
         ),
         _checklist_row(
             question_id="advisor_q06_swiss_gate",
-            topic="Swiss result gate",
-            advisor_question_de="Wie soll der Swiss-Referendum-Track platziert werden, solange das finale Resultat noch Gate ist?",
-            current_project_position_de="Swiss bleibt bis zur offiziellen Resultatzuordnung beschreibend und darf keine finale Effizienzaussage tragen.",
+            topic="Swiss final case",
+            advisor_question_de="Wie soll der Swiss-Referendum-Track als Post-Resultat-Fallstudie platziert werden?",
+            current_project_position_de="Swiss ist mit offiziellem Resultat gemappt und bleibt bounded Side-Track ohne Effizienz- oder Tradeability-Claim.",
             decision_needed_de="Entscheiden, ob Swiss in Diskussion, Appendix oder als aktuelles Side-Example steht.",
             source_artifacts=[
-                "data/results/swiss_referendum_10mio_latest_source_comparison.csv",
+                "data/results/swiss_referendum_10mio_final_case_study.csv",
                 "docs/research/THESIS_WORDING_GUARD.md",
             ],
-            guardrail="Poll-Anteile sind keine Gewinnwahrscheinlichkeiten; keine finale Accuracy- oder Effizienzbehauptung vor Resultat.",
-            next_action_after_feedback="Nach dem offiziellen 14. Juni 2026 Resultat Artefakte neu generieren und Wording pruefen.",
+            guardrail="Poll-Anteile sind keine Gewinnwahrscheinlichkeiten; keine Effizienz-, Mispricing- oder Stimmenanteilsueberlegenheitsbehauptung.",
+            next_action_after_feedback="Swiss-Abschnitt nach Dozentenentscheid als bounded Fallstudienabsatz schreiben.",
         ),
         _checklist_row(
             question_id="advisor_q07_agent_outlook",

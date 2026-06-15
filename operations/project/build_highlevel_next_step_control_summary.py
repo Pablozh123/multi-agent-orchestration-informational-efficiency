@@ -390,21 +390,21 @@ def build_highlevel_next_step_control_summary(
                 "data/results/monitor_anomaly_review_summary.csv"
             ),
             key_counts_de=(
-                f"Swiss Gate Status {context['swiss_gate_status']}, Swiss Snapshot "
-                f"Rows {context['swiss_snapshot_rows']}, Monitor Gate Status "
+                f"Swiss Gate Status {context['swiss_gate_status']}, Swiss Final-Case "
+                f"Live Rows {context['swiss_snapshot_rows']}, Monitor Gate Status "
                 f"{context['monitor_gate_status']}."
             ),
             current_state_de=(
-                "Swiss bleibt beschreibender Side Track bis zum offiziellen Resultat; "
+                "Swiss ist post-result gemappt und bleibt bounded Side Track; "
                 "Monitor bleibt Appendix/Prototype pending human review."
             ),
             next_action_de=(
-                "Swiss nach offiziellem Resultat neu mappen; Monitor nur als "
-                "Review-Workflow oder Appendix-Grenze erwaehnen."
+                "Swiss als begrenzten Fallstudienabsatz schreiben; Monitor nur "
+                "als Review-Workflow oder Appendix-Grenze erwaehnen."
             ),
             final_blocker_de=(
-                "Keine finale Swiss-Effizienz-, Mispricing-, Tradeability- oder "
-                "Monitor-Effizienzbehauptung vor Gate-Schluss."
+                "Keine Swiss-Effizienz-, Mispricing-, Tradeability-, "
+                "Stimmenanteilsueberlegenheits- oder Monitor-Effizienzbehauptung."
             ),
             agent_boundary_de=(
                 "Keine Wallet-Adressen, keine Trading-Claims, keine "

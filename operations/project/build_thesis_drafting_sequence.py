@@ -55,7 +55,7 @@ MUST_NOT_CLAIM: dict[str, str] = {
     "work_04_h2_h3_results": "Keine Intraday-Speed-, Granger-Kausalitaets-, Private-Information- oder Profitabilitaetsclaims.",
     "work_05_table_figure_integration": "Keine Rohartefakt-Dumps und keine neuen Tabellen/Figuren ohne Evidence-Map-Update.",
     "work_06_monitor_appendix": "Review-Access bleibt pausiert; keine Wallet-Adress-Exposition, keine Order-/Trading-Pfade und keine thesis-facing Alert-Evidenz.",
-    "work_07_swiss_result_gate": "Keine finale Effizienzinterpretation vor offizieller Resultatzuordnung vom 14. Juni 2026.",
+    "work_07_swiss_result_gate": "Offizielles Resultat vom 14. Juni 2026 ist gemappt; keine Effizienz-, Mispricing-, Tradeability- oder Vote-Share-Superiority-Claims.",
     "work_08_agent_outlook": "Keine Runtime-Agenten, kein MCP, kein Model Routing, keine LLM-Metriken und keine Trading-Pfade.",
     "work_09_advisor_iteration": "Keinen Scope-Ausbau starten, bevor der H1-H2-H3-Kern geschrieben und abgestimmt ist.",
     "work_10_final_qa": "Keine finale Abgabebereitschaft behaupten, solange Source Review, Swiss-Gate oder DOCX-Render-QA offen sind.",
@@ -276,6 +276,8 @@ def _draft_permission(status: str) -> str:
         return "appendix_only_pending_review"
     if status == "final_blocked_official_result":
         return "descriptive_only_final_blocked"
+    if status == "post_result_mapped_source_review_pending":
+        return "write_now_bounded"
     if status == "deferred_future_work_only":
         return "future_work_only"
     if status == "pending_after_draft":
@@ -326,7 +328,7 @@ def _validate_sequence(*, sequence: pd.DataFrame, repo_root: Path) -> None:
     lower_joined = joined.lower()
     required_terms = (
         "review_now_final_blocked",
-        "descriptive_only_final_blocked",
+        "post_result_mapped_source_review_pending",
         "future_work_only",
         "keine runtime-agenten",
         "keine roh",
@@ -370,7 +372,7 @@ def _render_sequence_doc(sequence: pd.DataFrame) -> str:
         "## Use Rule\n\n"
         "Nutze diese Sequenz als naechste Arbeitsreihenfolge nach dem "
         "Dozenten-Handoff. Review-Access bleibt pausiert. Source Review, Swiss "
-        "Resultat-Gate und DOCX-Render-QA bleiben finale Gates; Runtime-Agenten, "
+        "Source-/Citation-Gate und DOCX-Render-QA bleiben finale Gates; Runtime-Agenten, "
         "MCP, Model Routing, Rohartefakt-Dumps und Trading-Pfade bleiben "
         "ausserhalb des aktiven Thesis-Kerns.\n"
     )

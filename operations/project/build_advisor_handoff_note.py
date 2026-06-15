@@ -204,7 +204,8 @@ def build_advisor_handoff_note(
             section_title_de="Nicht-Ziele",
             content_de=(
                 "Bitte den Bericht als Zwischenstand lesen: keine finale "
-                "Effizienzbehauptung aus Swiss vor dem offiziellen Resultat, "
+                "Effizienz-, Mispricing-, Tradeability- oder "
+                "Vote-Share-Superiority-Behauptung aus Swiss, "
                 "kein Monitor als Kernbeweis, keine Runtime-Agenten, kein MCP, "
                 "kein Model Routing, keine LLM-Metriken und keine Trading-Pfade."
             ),
@@ -340,7 +341,7 @@ def _validate_note(*, note: pd.DataFrame, repo_root: Path) -> None:
         "keine runtime-agenten",
         "keine llm-metriken",
         "keine trading-pfade",
-        "offiziellen resultat",
+        "vote-share-superiority",
     )
     missing = [term for term in required_terms if term not in lower_joined]
     if missing:

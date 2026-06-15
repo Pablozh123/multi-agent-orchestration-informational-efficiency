@@ -533,14 +533,14 @@ Blockers:
 
 ## Phase 11: Swiss Referendum Efficiency Comparison
 
-Status: running data collection until the 14 June 2026 vote; final analysis
-pending after the official result
+Status: official 14 June 2026 result mapped as a bounded post-result side
+case; final thesis use waits on Source Review and careful citation wording
 
 Done criteria:
 
 - The Swiss referendum comparison is separate from the politics/geo wallet
-  anomaly monitor and remains in data-collection mode until the vote result is
-  available.
+  anomaly monitor and is now a bounded post-result side case after the vote
+  result was mapped.
 - A curated poll catalog exists for the 10-million initiative and records
   source URLs, fieldwork windows, publication timestamps, timestamp precision,
   Yes/No/undecided shares, sample sizes, and uncertainty metadata.
@@ -560,24 +560,23 @@ Done criteria:
 - A scheduler-safe one-shot auto-refresh wrapper can be called periodically
   until the 2026-06-14 voting-day cutoff, respects minimum snapshot spacing and
   a lock file, collects at most one bounded snapshot per invocation, and exits.
+- A deterministic final case study maps the official result: official Yes
+  45.21%, rejected, latest live Polymarket Yes 21.50%, live vote-share beats
+  0/74, live binary-proxy beats 74/74, history raw vote-share beats 36/504.
 - Tests cover poll validation, Polymarket snapshot extraction, comparison
   matching, divergence labels, impact rows, refresh behavior, auto-refresh
-  schedule gates, and output generation.
+  schedule gates, final case-study generation, and output generation.
 
 Blockers:
 
-- Chrome automation is unavailable until the Codex Chrome Extension/native host
-  setup is repaired; current source verification uses public web access and
-  official/source pages instead.
-- More bounded Polymarket snapshots are required before poll-release impact
-  timing can be interpreted.
-- Scheduled local collection is allowed only as a time-bounded one-shot command
-  runner; it must not become a resident daemon, agent, trading surface,
-  authenticated collector, or database writer.
+- Final thesis citation of the Swiss side case waits on manual Source Review
+  and explicit poll-proxy wording.
+- No further live collection is required for the 14 June 2026 case; historical
+  collectors remain read-only and bounded if reused later.
 - BFS/admin.ch is context evidence only unless a future source-checked BFS poll
   table exists.
-- No causal, profitability, tradeability, or mispricing proof may be claimed
-  from the current descriptive divergence labels.
+- No causal, profitability, tradeability, efficiency, vote-share-superiority,
+  or mispricing proof may be claimed from this side case.
 
 ## Phase 12: Thesis Consolidation And Evidence Mapping
 
@@ -595,8 +594,9 @@ Done criteria:
 - H1, H2, and H3 remain the empirical core.
 - Monitor outputs are labelled as prototype or appendix material unless human
   review gates later approve them for thesis-facing use.
-- The Swiss referendum side track remains descriptive until the official
-  14 June 2026 vote result is available.
+- The Swiss referendum side track is mapped after the official 14 June 2026
+  result as a bounded post-result side case with separate vote-share and binary
+  proxy interpretation.
 - Future agent improvements are documented only as a guarded architecture over
   bounded deterministic summaries; no runtime agents, MCP tools, model
   routing, autonomous collectors, trading paths, or unlogged LLM interpretation
@@ -1169,7 +1169,8 @@ Current implemented consolidation:
   methods, 4 thesis-facing interpretations, 23 H1-H2-H3 Source-Links, 31
   total method/interpretation Source-Links including Monitor/Swiss, 23 open
   Manual Source Review rows, 5 core tables, 4 core figures, the refreshed
-  Swiss gate with 51 running snapshot rows, DOCX-QA, bounded read-only access,
+  Swiss gate with the official 14 June 2026 result, 74 live final-case rows,
+  504 history rows, DOCX-QA, bounded read-only access,
   max 50 rows, `llm_audit_log`, and 0 active runtime rows.
 - `data/results/thesis_consolidation_index.csv` and
   `docs/project/THESIS_CONSOLIDATION_INDEX.md` index the current
@@ -1212,8 +1213,9 @@ Blockers:
 
 - Some literature entries remain `skimmed` or `candidate`; final thesis
   citation status still needs source-by-source review before submission.
-- Swiss referendum efficiency cannot be interpreted finally before the
-  official result is available and mapped to the collected snapshots.
+- Swiss referendum thesis use remains blocked on Source Review and citation
+  wording; the mapped final case does not support efficiency, mispricing,
+  tradeability, or vote-share-superiority claims.
 - The monitor review queue remains blocked from thesis-facing use while cases
   are only `source_check_pending`.
 - Future agent support requires a separate approved goal, bounded prompt

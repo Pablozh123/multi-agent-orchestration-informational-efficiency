@@ -53,9 +53,9 @@ def test_build_dozenten_report_outputs_readable_artifacts(tmp_path):
     assert "Agenten bleiben Dokumentationsausblick" in html_text
     assert "Submission Readiness und finale Gates" in html_text
     assert "Draft-ready Gates: 4" in html_text
-    assert "final blockierte Gates: 2" in html_text
+    assert "final blockierte Gates: 1" in html_text
     assert "final_blocked_source_review" in html_text
-    assert "final_blocked_official_result" in html_text
+    assert "post_result_mapped_source_review_pending" in html_text
     assert "Schreibsequenz fuer den naechsten Entwurf" in html_text
     assert "draft_01_01_source_review" in html_text
     assert "draft_10_10_final_qa" in html_text

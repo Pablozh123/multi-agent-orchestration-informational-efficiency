@@ -141,11 +141,4 @@ for H2 outputs.
    - Commit the empirical baseline review and next active thesis-summary goal.
    - Acceptance: thesis-ready result tables and sensitivity gaps are explicit.
 
-2. `docs: prepare h1 h2 h3 thesis result summaries`
-   - Prepare compact, traceable result summaries for thesis drafting.
-   - Acceptance: each summary maps to deterministic source artifacts.
-
-3. `docs: document h2 thesis interpretation limits`
-   - Document daily-window interpretation, event timing limitations, and
-     accepted wording for H2.
-   - Acceptance: thesis-facing text stays aligned with deterministic outputs.
+2. `docs: prepare h1 h2 h3 thesis result summaries

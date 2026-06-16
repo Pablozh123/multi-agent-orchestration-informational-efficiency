@@ -1,0 +1,8 @@
+event_id,title,active_wallets,new_wallets,new_share_pct,window_volume_usd,top1_concentration_pct,baseline_active_per_day
+evt_2024_05_30_trump_conviction,Trump convicted in New York hu,23,12,52.2,1241642.0,57.2,2.3
+evt_2024_06_28_biden_trump_debate,Biden-Trump CNN presidential d,62,42,67.7,4282740.0,61.2,4.7
+evt_2024_07_13_trump_shooting,Trump injured in Butler rally ,67,38,56.7,5071675.0,67.4,6.91
+evt_2024_07_15_vance_vp_pick,Trump selects JD Vance as runn,82,44,53.7,7589408.0,69.4,7.09
+evt_2024_07_21_biden_withdrawal,Biden withdraws and backs Harr,193,139,72.0,20999562.0,63.7,7.43
+evt_2024_08_06_walz_vp_pick,Harris selects Tim Walz as run,126,69,54.8,23442964.0,81.4,16.26
+evt_2024_09_11_harris_trump_debate,Harris-Trump ABC presidential ,168,97,57.7,21125600.0,54.1,18.0

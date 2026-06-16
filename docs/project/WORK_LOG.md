@@ -12618,6 +12618,55 @@ Next recommended action:
 
 - `docs: update project control workflow`.
 
+## 2026-06-16 - H3 Informed-Trading Signature Diagnostic
+
+Context:
+
+- Active goal: `goal-h3-informed-trading-signature-001`.
+- This slice turns the exploratory H3 event-wallet profile into a tested,
+  deterministic event-window diagnostic.
+- The output remains aggregate and descriptive only: no wallet-address output,
+  no causal claim, no private-information claim, no trading or profitability
+  claim, and no runtime agents or MCP tools.
+
+Changes:
+
+- Added `operations.analysis.informed_trading_signature`.
+- Added `tests/test_informed_trading_signature.py`.
+- Generated `data/results/h3_informed_trading_signature.csv`.
+- Generated `data/results/h3_informed_trading_signature_metadata.json`.
+- Generated `data/results/h3_informed_trading_signature.png`.
+- Updated `GOAL.md` to set the active goal to
+  `goal-h3-informed-trading-signature-001`.
+- Updated `STATUS.md` with the project automation snapshot.
+
+Key output:
+
+- Event-window rows: 7.
+- Output columns: 30 aggregate columns.
+- Score range: 0.095238 to 0.809524.
+- Feature set: `new_wallet_share`, `top1_concentration`, `hhi`,
+  `abnormal_trade_size_z`, `active_wallet_z`, `volume_z`, `tier1_lead`.
+- Source-filter minimum amount: 10000.0 USD, recorded as source metadata only,
+  not as an analytical threshold or wallet-tier definition.
+- Wallet-address guard: CSV contains no `0x` values and no `wallet_address`
+  column.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_informed_trading_signature.py -q`
+  -> PASS, 4 passed.
+- `.\.venv\Scripts\python.exe -m pytest tests/test_informed_trading_signature.py tests/test_h3_event_wallet_anomalies.py tests/test_h3_granger_baseline.py -q`
+  -> PASS, 16 passed.
+- `.\.venv\Scripts\python.exe -m operations.analysis.informed_trading_signature`
+  -> PASS, wrote 7 rows plus metadata and figure.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `644 passed in 62.51s (0:01:02)`.
+
+Next recommended action:
+
+- `feat: add h3 informed trading signature diagnostics`.
+
 ## 2026-06-16 - Stabilize Project Pytest Control Checks
 
 Context:

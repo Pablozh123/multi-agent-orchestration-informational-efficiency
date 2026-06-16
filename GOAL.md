@@ -2,9 +2,70 @@
 
 ## Active Goal
 
+goal_id: goal-h3-informed-trading-signature-001
+title: Build tested H3 informed-trading signature diagnostics
+status: active
+phase: Phase 13: H3 Informed-Trading Signature Diagnostics
+why:
+- Exploratory H3 event-wallet profile artifacts exist, but the informed-trading
+  signature is not yet implemented as a deterministic, tested module.
+- H3 needs an aggregate, distribution-based diagnostic that keeps wallet
+  addresses private and preserves the thesis guardrails against causal,
+  private-information, misconduct, trading, or profitability claims.
+- The 10k source filter must remain metadata only, while all analytical
+  scoring remains derived from observed distributions.
+deliverables:
+- Create `operations/analysis/informed_trading_signature.py`.
+- Compute event-window features from `whale_trades`, `polymarket_prices`, and
+  `data/events_timeline_seed.csv`: `new_wallet_share`,
+  `top1_concentration`, `hhi`, `abnormal_trade_size_z`, `active_wallet_z`,
+  `volume_z`, `tier1_lead`, and `suspicion_score`.
+- Combine feature ranks with percentile normalization, without arbitrary
+  suspicion thresholds.
+- Write `data/results/h3_informed_trading_signature.csv`,
+  `data/results/h3_informed_trading_signature_metadata.json`, and a figure.
+- Add focused tests in `tests/test_informed_trading_signature.py` for value
+  ranges, determinism, wallet-address exclusion, and monotonic score response
+  to a synthetic activity spike.
+scope:
+- `operations/analysis/informed_trading_signature.py`.
+- `tests/test_informed_trading_signature.py`.
+- `data/results/h3_informed_trading_signature.csv`.
+- `data/results/h3_informed_trading_signature_metadata.json`.
+- `data/results/h3_informed_trading_signature.png`.
+- Project workflow docs/status/log updates required before stopping.
+out_of_scope:
+- Runtime agents, MCP tools, model routing, self-consistency runs, cloud
+  deployment, or LLM-calculated metrics.
+- Wallet-address output, raw transaction dumps, unrestricted SQL, or default
+  prompt-facing raw rows.
+- Insider, causal, private-information, misconduct, trading, order-execution,
+  or profitability claims.
+- New live data collection, authenticated channels, order placement, order
+  cancellation, trading credentials, or autonomous execution.
+acceptance_criteria:
+- Exactly one active goal remains in this file.
+- The H3 signature module is deterministic, testable, and runnable from the
+  command line.
+- Output rows are event-window aggregates only and contain no wallet-address
+  column or wallet-address-like values.
+- `suspicion_score` is based on distributional percentile ranks of the
+  deterministic features, not on fixed thresholds.
+- Metadata states the source-filter minimum amount as source metadata only and
+  explicitly blocks insider, causality, private-information, trading, and
+  profitability interpretations.
+- Tests cover value ranges, deterministic repeatability, wallet-address
+  exclusion, and monotonic score increase for a synthetic spike.
+- `STATUS.md` and `docs/project/WORK_LOG.md` are updated before stopping work.
+- `python -m operations.project.review_check` and
+  `python -m operations.project.commit_plan` run before final reporting.
+next_commit: feat: add h3 informed trading signature diagnostics
+
+## Previous Active Goal
+
 goal_id: goal-thesis-consolidation-001
 title: Consolidate thesis-ready evidence, results, and future agent design
-status: active
+status: paused
 phase: Phase 12: Thesis Consolidation And Evidence Mapping
 why:
 - H1-H3 deterministic baseline outputs exist and pass project tests.

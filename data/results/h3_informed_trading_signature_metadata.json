@@ -1,0 +1,118 @@
+{
+  "guardrails": {
+    "blocked_claims": [
+      "insider trading",
+      "private information proof",
+      "causal proof",
+      "profitability claim",
+      "misconduct finding"
+    ],
+    "does_not_claim_private_information": true,
+    "does_not_claim_trading_profitability": true,
+    "does_not_claim_true_causality": true,
+    "does_not_output_wallet_addresses": true,
+    "does_not_send_orders": true,
+    "does_not_use_agents_or_mcp": true,
+    "does_not_use_llms": true
+  },
+  "input": {
+    "db_path": "data\\thesis.db",
+    "event_count": 7,
+    "events_csv_path": "data\\events_timeline_seed.csv",
+    "input_tables": [
+      "whale_trades",
+      "polymarket_prices"
+    ],
+    "price_row_count": 305,
+    "trade_row_count": 25113
+  },
+  "limitations": {
+    "daily_event_windows_only": true,
+    "not_a_computed_insider_label": true,
+    "observed_filtered_trade_extract_only": true,
+    "percentile_score_is_relative_to_current_event_set": true,
+    "wallet_tiers_are_dataset_relative": true
+  },
+  "method": {
+    "baseline_window_days": {
+      "end": -8,
+      "label": "baseline_minus_30d_to_minus_8d",
+      "start": -30
+    },
+    "event_window_days": {
+      "end": 3,
+      "label": "event_minus_1d_to_plus_3d",
+      "start": -1
+    },
+    "max_lag_days": 7,
+    "min_baseline_windows": 3,
+    "name": "deterministic_h3_informed_trading_signature",
+    "score_policy": {
+      "combination": "mean_of_available_feature_percentiles",
+      "feature_columns": [
+        "new_wallet_share",
+        "top1_concentration",
+        "hhi",
+        "abnormal_trade_size_z",
+        "active_wallet_z",
+        "volume_z",
+        "tier1_lead"
+      ],
+      "fixed_thresholds_used": false,
+      "normalization": "within-run percentile ranks per feature"
+    },
+    "tier1_lead_source": "existing_h3_daily_lead_lag_granger_diagnostic",
+    "tier_policy": "wallet_cumulative_amount_usd_percentiles"
+  },
+  "output": {
+    "claim_scope": "aggregate_descriptive_suspicion_diagnostic_only",
+    "columns": [
+      "event_id",
+      "event_date",
+      "title",
+      "event_type",
+      "event_window_label",
+      "baseline_window_label",
+      "event_window_days",
+      "baseline_window_count",
+      "trade_rows",
+      "active_wallets",
+      "total_amount_usd",
+      "new_wallet_share",
+      "top1_concentration",
+      "hhi",
+      "abnormal_trade_size_z",
+      "active_wallet_z",
+      "volume_z",
+      "tier1_lead",
+      "new_wallet_share_percentile",
+      "top1_concentration_percentile",
+      "hhi_percentile",
+      "abnormal_trade_size_z_percentile",
+      "active_wallet_z_percentile",
+      "volume_z_percentile",
+      "tier1_lead_percentile",
+      "suspicion_score",
+      "score_feature_count",
+      "tier1_lead_lag_days",
+      "claim_scope",
+      "limitation"
+    ],
+    "contains_wallet_addresses": false,
+    "figure_path": "data\\results\\h3_informed_trading_signature.png",
+    "output_path": "data\\results\\h3_informed_trading_signature.csv",
+    "row_count": 7,
+    "score_max": 0.8095238095238094,
+    "score_min": 0.09523809523809523
+  },
+  "source_filter_metadata": {
+    "direction_distribution": {
+      "BUY": {
+        "active_wallets": 3006,
+        "trade_rows": 25113
+      }
+    },
+    "minimum_observed_amount_note": "Observed source-filter metadata only; not an analytical threshold or whale definition.",
+    "minimum_observed_amount_usd": 10000.0
+  }
+}

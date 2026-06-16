@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime
+import os
 from pathlib import Path
+import shutil
 import sys
 from typing import Sequence
 
@@ -47,7 +49,30 @@ def _git_diff_stat(repo_root: Path) -> str:
 def _pytest_result(repo_root: Path, skip_reason: str | None = None) -> CommandResult:
     if skip_reason:
         return CommandResult(("pytest", "skipped"), 0, f"skipped: {skip_reason}", "")
-    return run_command((_project_python(), "-m", "pytest", "-q"), repo_root, 180)
+    basetemp = repo_root / ".tmp_project_pytest"
+    shutil.rmtree(basetemp, ignore_errors=True)
+    basetemp.mkdir(parents=True, exist_ok=True)
+    env = os.environ.copy()
+    env["TEMP"] = str(basetemp)
+    env["TMP"] = str(basetemp)
+    try:
+        return run_command(
+            (
+                _project_python(),
+                "-m",
+                "pytest",
+                "-q",
+                "-p",
+                "no:cacheprovider",
+                "--basetemp",
+                ".tmp_project_pytest",
+            ),
+            repo_root,
+            180,
+            env=env,
+        )
+    finally:
+        shutil.rmtree(basetemp, ignore_errors=True)
 
 
 def _derive_blockers(git_status: str, pytest_result: CommandResult, goal: ActiveGoal) -> list[str]:

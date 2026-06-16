@@ -39,7 +39,8 @@ def test_advisor_alignment_checklist_preserves_scope_guardrails(tmp_path: Path) 
 
     assert "keine runtime-agenten" in joined
     assert "keine wallet-adress-exposition" in joined
-    assert "keine finale accuracy- oder effizienzbehauptung" in joined
+    assert "mispricing" in joined
+    assert "stimmenanteilsueberlegenheitsbehauptung" in joined
     assert "source review" in joined
     assert "thesis_wording_guard.csv" in joined
     assert chr(223) not in joined

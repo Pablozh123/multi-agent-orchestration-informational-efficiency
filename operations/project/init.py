@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from pathlib import Path
 import re
 import subprocess
-from typing import Iterable, Sequence
+from typing import Iterable, Mapping, Sequence
 
 
 STATUS_BLOCK_START = "<!-- PROJECT_STATUS:START -->"
@@ -75,6 +75,7 @@ def run_command(
     args: Sequence[str],
     cwd: Path,
     timeout_seconds: int = 120,
+    env: Mapping[str, str] | None = None,
 ) -> CommandResult:
     """Run a command and capture text output without raising."""
 
@@ -86,6 +87,7 @@ def run_command(
             capture_output=True,
             timeout=timeout_seconds,
             check=False,
+            env=dict(env) if env is not None else None,
         )
     except FileNotFoundError as exc:
         return CommandResult(tuple(args), 127, "", str(exc))

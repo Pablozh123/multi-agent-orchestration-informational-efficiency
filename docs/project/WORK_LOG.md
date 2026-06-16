@@ -12618,6 +12618,38 @@ Next recommended action:
 
 - `docs: update project control workflow`.
 
+## 2026-06-16 - Stabilize Project Pytest Control Checks
+
+Context:
+
+- Follow-up after the Swiss final-case commit and project-control update.
+- The targeted Swiss/Highlevel tests passed, but the default project-control
+  Pytest invocation initially failed because it used the ambient system temp
+  location.
+
+Changes:
+
+- Updated `operations.project.update_status` and
+  `operations.project.review_check` so their Pytest calls use an internal
+  `.tmp_project_pytest` basetemp with `TEMP` and `TMP` scoped to that folder.
+- Added cleanup before and after the Pytest call so no temp directories remain
+  in the worktree.
+- Updated the two remaining tests that still expected the old Swiss
+  pre-result wording.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp .tmp_pytest_full`
+  -> PASS, 640 passed.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, STATUS updated, Pytest summary `640 passed in 65.00s (0:01:05)`.
+- `.\.venv\Scripts\python.exe -m operations.project.review_check`
+  -> PASS, including Pytest summary `640 passed in 60.31s (0:01:00)`.
+
+Next recommended action:
+
+- `docs: update project control workflow`.
+
 ## 2026-06-15 - Swiss Final Case Study And Highlevel Project View
 
 Context:

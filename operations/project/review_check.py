@@ -5,8 +5,10 @@ import argparse
 import csv
 from dataclasses import dataclass
 import json
+import os
 from pathlib import Path
 import re
+import shutil
 import sys
 from typing import Callable, Sequence
 
@@ -606,7 +608,30 @@ def _check_active_prompt_metric_scope(repo_root: Path) -> CheckResult:
 def _check_pytest(repo_root: Path, skip_reason: str | None) -> CheckResult:
     if skip_reason:
         return CheckResult("pytest", True, f"skipped with reason: {skip_reason}")
-    result = run_command((sys.executable, "-m", "pytest", "-q"), repo_root, 180)
+    basetemp = repo_root / ".tmp_project_pytest"
+    shutil.rmtree(basetemp, ignore_errors=True)
+    basetemp.mkdir(parents=True, exist_ok=True)
+    env = os.environ.copy()
+    env["TEMP"] = str(basetemp)
+    env["TMP"] = str(basetemp)
+    try:
+        result = run_command(
+            (
+                sys.executable,
+                "-m",
+                "pytest",
+                "-q",
+                "-p",
+                "no:cacheprovider",
+                "--basetemp",
+                ".tmp_project_pytest",
+            ),
+            repo_root,
+            180,
+            env=env,
+        )
+    finally:
+        shutil.rmtree(basetemp, ignore_errors=True)
     if not result.ok:
         output = result.stdout or result.stderr or "pytest failed without output"
         return CheckResult("pytest", False, output.splitlines()[-1])

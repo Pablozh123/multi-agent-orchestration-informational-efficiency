@@ -42,7 +42,8 @@ def test_source_review_execution_guide_keeps_manual_review_gates(tmp_path: Path)
     assert "human review" in joined
     assert "nicht fuer thesis-facing claims" in joined
     assert "keine kausalclaims" in joined
-    assert "offiziellen resultat" in joined
+    assert "post-resultat" in joined
+    assert "poll-proxy-limitation" in joined
 
 
 def _write_fixture(root: Path) -> None:

@@ -1,0 +1,47 @@
+% Status: draft (aus Outline ausgeschrieben). Finale Zitation nach Quellenreview.
+% Evidence: method_h1_brier_dm; method_h2_event_window; method_h3_wallet_tiers
+\chapter{Einleitung und Forschungsfrage}
+\label{ch:intro}
+
+\section{Problemstellung}
+Prognosemärkte bündeln verteiltes Wissen vieler Teilnehmer in einem einzigen,
+laufend aktualisierten Preis, der als Wahrscheinlichkeit für ein künftiges
+Ereignis gelesen werden kann. Im US-Wahljahr 2024 wurde der dezentrale, auf der
+Blockchain abgewickelte Markt Polymarket zum sichtbarsten Beispiel dieser Idee
+und stand wiederholt in Spannung zu traditionellen Umfragen und Forecast-Modellen
+\citep{zotero_poly_001,zotero_poly_009}. Damit stellt sich die Frage, wie gut ein
+solcher Markt Information tatsächlich verarbeitet --- und ob seine Preise
+traditionellen Quellen überlegen sind oder nur anders.
+
+\section{Forschungsfrage und Hypothesen}
+Die Arbeit fragt: \emph{In welchem Mass verarbeitet Polymarket während der
+US-Präsidentschaftswahl 2024 Information, verglichen mit traditionellen
+Prognosequellen?} Informationelle Effizienz \citep{lit_emh_001} wird dabei nicht
+direkt behauptet, sondern über drei reproduzierbare Proxy-Hypothesen geprüft:
+
+\begin{itemize}
+  \item \textbf{H1 (Prognosequalität):} Polymarket liefert besser oder
+  gleich kalibrierte Wahrscheinlichkeiten wie vergleichbare traditionelle
+  Forecasts, gemessen am Brier-Verlust.
+  \item \textbf{H2 (Ereignisreaktion):} Polymarket-Wahrscheinlichkeiten bewegen
+  sich um vorab kuratierte öffentliche Ereignisse in plausibler Richtung.
+  \item \textbf{H3 (Wallet-Timing):} Dataset-relative Wallet-Tiers zeigen
+  zeitliche Aktivitätsmuster um Preisbewegungen.
+\end{itemize}
+
+\section{Abgrenzung und Beitrag}
+Untersucht wird die US-Wahl 2024 als Fallkontext, Polymarket bildet die primäre
+Zeitreihe. Die Arbeit erhebt keine Ansprüche auf universelle Markteffizienz,
+Intraday-Reaktionsgeschwindigkeit, kausale Insider-Effekte oder handelbare
+Profitabilität. Der empirische Kern ist ein vollständig deterministischer,
+getesteter Python-Analysepfad. Als Sekundärbeiträge dokumentiert die Arbeit ein
+aus der Untersuchung hervorgegangenes Monitoring-Werkzeug sowie die
+Multiagenten-Methodik seiner Entwicklung (Kapitel~\ref{ch:erweiterungen}).
+
+\section{Aufbau}
+Kapitel~\ref{ch:theorie} ordnet Theorie und Literatur ein,
+Kapitel~\ref{ch:methodik} Daten und Methodik. Die
+Kapitel~\ref{ch:h1}--\ref{ch:h3} berichten H1--H3. Kapitel~\ref{ch:erweiterungen}
+behandelt Monitor, Schweizer Fallstudie und den praktischen Beitrag,
+Kapitel~\ref{ch:diskussion} Diskussion und Fazit, Kapitel~\ref{ch:ausblick} den
+Agenten-gestützten Ausblick.

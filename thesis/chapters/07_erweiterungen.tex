@@ -1,0 +1,71 @@
+% Status: appendix_or_discussion_ready (Monitor/Swiss) + Narrativ-Entscheide.
+\chapter{Erweiterungen: Monitor, Schweizer Abstimmung und praktischer Beitrag}
+\label{ch:erweiterungen}
+
+Dieses Kapitel ordnet vier Erweiterungen ausserhalb des empirischen Kerns ein.
+Sie stützen die Forschungsfrage, ersetzen aber nicht den H1--H3-Beleg.
+
+\section{Schweizer Referendum als begrenzte Fallstudie}
+Als aktueller, eigenständiger Vergleich dient die eidgenössische Abstimmung vom
+14.~Juni 2026. Beim offiziellen Ja-Anteil von 45.21\% lag die finale Umfrage als
+Stimmenanteil näher am Resultat, während Polymarket im lokalen Live-Fenster (Ja
+zuletzt 21.5\%) als binäre Ablehnungswahrscheinlichkeit klarer auf der richtigen
+Seite lag \citep{zotero_poly_002}. Wichtig: Polymarket-Preise sind
+Annahmewahrscheinlichkeiten, Umfragen sind Stimmenanteile. Der Binärvergleich
+ist nur ein transparenter Proxy und kein Mispricing-, Effizienz- oder
+Tradeability-Beweis (Abbildung~\ref{fig:swiss}).
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.82\textwidth]{swiss_referendum_10mio_final_case_study.png}
+\caption{Schweizer Referendum 14.~Juni 2026: offizielles Resultat gegen
+Polymarket-Preise und Umfrage-Proxy (begrenzte Post-Resultat-Fallstudie).
+Quelle: \texttt{data/results/swiss\_referendum\_10mio\_final\_case\_study.png}.}
+\label{fig:swiss}
+\end{figure}
+
+\section{Anomalie-Review-Queue als Prüf-Workflow}
+Die deterministische Anomalie-Diagnostik aus Abschnitt~\ref{sec:anomalie} liefert
+Hinweise, die eine nachgelagerte Review-Schicht einordnet. Die aktuelle
+Review-Queue enthält drei Fälle: einen mit hoher Priorität, der als
+Prüf-Kandidat markiert ist, und zwei mit mittlerer Priorität als Beobachtungs-Hinweis.
+Alle drei stehen auf Quellenprüfung ausstehend. Bei der Überlappung mit den
+kuratierten Referenzfällen ergeben sich ein Treffer, eine teilweise und eine
+fehlende Überlappung.
+
+Diese Queue ist ausdrücklich ein menschlicher Prüf-Workflow über begrenzte,
+bereits berechnete Monitor-Artefakte. Die Risiko-Etiketten sind Beobachtungs-Marker,
+keine Befunde. Die Queue beweist weder private Information noch Fehlverhalten,
+Kausalität, Handelbarkeit, Profitabilität oder künftige Performance.
+
+\section{Politik-/Geo-Monitor als Read-only-Prototyp}
+Der Monitor kombiniert Marktbewegung, aggregierte Wallet-Tier-Aktivität,
+Konzentration und Ereigniskontext zu deterministischen Prüf-Hinweisen
+\citep{zotero_poly_006,zotero_poly_009}. Er bleibt read-only, erzeugt keine
+Order- oder Trading-Pfade und liefert Prüf-Hinweise, keine kausale oder
+Effizienz-Evidenz. Im Haupttext erscheint er nur als Workflow, Fälle bleiben bis
+zur manuellen Prüfung im Anhang.
+
+\section{Agenten-gestützte Pipeline als dokumentierter Vertrag}
+Die ursprünglich angestrebte Multiagenten-Pipeline ist hier als bewusst
+begrenzter, dokumentierter Vertrag verankert. Künftige Agenten dürfen Hinweise
+sichten und einordnen, aber keine Kennzahlen berechnen. Der Vertrag definiert
+vier Rollen: einen EventScout, der Ereigniskandidaten sammelt, einen
+CaseNarrative, der Fälle aus begrenzten Zusammenfassungen beschreibt, einen
+SkepticReviewer, der gegenprüft, und einen Orchestrator, der entscheidet. Eine
+spätere, ebenfalls vertraglich begrenzte MCP-Schicht stellt nur lesende Werkzeuge
+bereit (Anomalie-Review-Summary, Einzelfall, Artefaktliste, Methodengrenzen), mit
+maximal 50 Zeilen je Abfrage, ohne rohes SQL, ohne standardmässige
+Wallet-Adress-Ausgabe und mit Pflicht zur Protokollierung jeder LLM-Interaktion.
+Beide Verträge sind als nicht implementiert markiert und bleiben Future Work, bis
+der deterministische Kern und die Audit-Grenzen vollständig stehen.
+
+\section{Praktischer Beitrag: Monitoring-Werkzeug und Bau-Methodik}
+Während der Untersuchung wurde Bedarf an einem praktischen Analyse-Werkzeug für
+Prognosemärkte erkennbar. Als Gestaltungsbeitrag wurde daraus ein laufendes,
+read-only Webprodukt entwickelt, das die Effizienz-Perspektive der Arbeit
+operationalisiert. Die Umsetzung selbst nutzte eine Multiagenten-Orchestrierung
+als Entwicklungsmethode, dokumentiert wird diese als Prozessbeitrag. Die Agenten
+erzeugten Software, berechneten aber keine thesis-relevanten Kennzahlen. Beide
+Punkte sind Sekundärbeiträge und dürfen die Forschungsfrage nicht überlagern.
+Umfang und Einordnung sind mit der Betreuung abzustimmen.

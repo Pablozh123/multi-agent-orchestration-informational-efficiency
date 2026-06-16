@@ -1,0 +1,136 @@
+% =====================================================================
+% Bachelorarbeit — HSW FHNW. Angepasst an FHNW-Vorgaben (APA 7 dt.,
+% Pflichtstruktur). Kompiliert mit pdfLaTeX + Biber.
+% Vorgaben dokumentiert in docs/project/FHNW_VORGABEN.md.
+% Schweizer Orthografie: ss statt scharfem s.
+% =====================================================================
+\documentclass[11pt,a4paper]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[ngerman]{babel}
+\usepackage[a4paper,left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{booktabs}
+\usepackage{microtype}
+
+% --- Zitierstil: APA (deutsch) via apacite, natbibapa-Modus ---
+% apacite ist bibtex-basiert (kompiliert zuverlässig auf Overleaf-Gratisplan).
+% natbibapa lädt natbib: bestehende \citep/\citet funktionieren weiter.
+\usepackage[natbibapa]{apacite}
+\usepackage[hidelinks]{hyperref}
+\AtBeginDocument{\renewcommand{\bibname}{Literaturverzeichnis}}
+
+\begin{document}
+
+% ====================== Titelseite ======================
+\begin{titlepage}
+\centering
+{\large Fachhochschule Nordwestschweiz FHNW\\
+Hochschule für Wirtschaft\par}
+\vspace{0.3cm}
+{\large Bachelor of Science FHNW in Business Artificial Intelligence\par}% Studiengang prüfen
+\vspace{2.2cm}
+{\large Bachelor Thesis\par}
+\vspace{1.2cm}
+{\huge\bfseries Informationelle Effizienz dezentraler Prognosemärkte\par}
+\vspace{0.5cm}
+{\Large am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen\par}
+\vspace{2.5cm}
+\begin{tabular}{rl}
+Verfasser: & Pablo Cruz\\[2pt]
+Matrikelnummer: & [Matrikelnummer einfügen]\\[2pt]
+Betreuende Person: & [Dozent/in einfügen]\\[2pt]
+Auftraggeberschaft: & Neutralnews\\[2pt]
+Standort: & [Basel/Brugg/Olten]\\[2pt]
+Abgabedatum: & [TT.MM.2026]\\
+\end{tabular}
+\vfill
+\end{titlepage}
+
+\pagenumbering{roman}
+\setcounter{page}{2}
+
+% ====================== Eigenständigkeitserklärung ======================
+\chapter*{Eigenständigkeitserklärung}
+Ich erkläre hiermit, dass ich die vorliegende Bachelor Thesis selbständig und
+ohne Benutzung anderer als der angegebenen Quellen und Hilfsmittel verfasst habe.
+Alle Stellen, die wörtlich oder sinngemäss aus Quellen entnommen wurden, sind als
+solche kenntlich gemacht und im Literaturverzeichnis aufgeführt. Sämtliche bei der
+Erstellung dieser Arbeit verwendeten Hilfsmittel --- insbesondere Lektorate und
+KI-Tools --- sind im Hilfsmittelverzeichnis vollständig deklariert.
+
+\vspace{1.5cm}
+\noindent Ort, Datum: \rule{5cm}{0.4pt} \hfill Unterschrift: \rule{5cm}{0.4pt}
+
+% ====================== Hilfsmittelverzeichnis ======================
+\chapter*{Hilfsmittelverzeichnis}
+\addcontentsline{toc}{chapter}{Hilfsmittelverzeichnis}
+Folgende Hilfsmittel wurden bei der Erstellung dieser Arbeit eingesetzt. Massgebend
+ist das Merkblatt ``Einsatz von KI-Tools'' der HSW FHNW. Alle inhaltlichen Aussagen
+wurden von der Verfasserin/dem Verfasser geprüft und verantwortet.
+
+\begin{itemize}
+  \item \textbf{KI-Tools:} [z.B. ChatGPT, Claude] --- eingesetzt für [z.B.
+  Strukturierung, Recherche-Unterstützung, Code-Hilfe, sprachliche Überarbeitung].
+  Keine Übernahme unüberprüfter Inhalte.
+  \item \textbf{Statistik/Code:} Python (pandas, numpy, scipy, statsmodels,
+  matplotlib), SQLite, DuckDB --- sämtliche statistischen Kennzahlen wurden
+  deterministisch berechnet und getestet.
+  \item \textbf{Literaturverwaltung:} Zotero mit Better BibTeX.
+  \item \textbf{Lektorat:} [falls zutreffend: Person/Tool].
+\end{itemize}
+
+% ====================== Management Summary ======================
+\chapter*{Management Summary}
+\addcontentsline{toc}{chapter}{Management Summary}
+% Entwurf — vor Abgabe verdichten. Das öffentliche Management Summary
+% (Moodle-Formular, 300/600/600/1200 Zeichen) ist separat.
+\textbf{Ausgangslage.} Dezentrale Prognosemärkte wie Polymarket bündeln
+verteiltes Wissen zu Wahrscheinlichkeiten und standen während der US-Wahl 2024 in
+Spannung zu traditionellen Umfragen. Die Arbeit untersucht, wie effizient
+Polymarket Information verarbeitet.
+
+\textbf{Vorgehen.} Informationelle Effizienz wird über drei deterministisch in
+Python berechnete Proxy-Hypothesen geprüft: Prognosequalität (Brier/Diebold-Mariano,
+H1), tägliche Ereignisreaktion (H2) und Wallet-Tier-Timing (Granger, H3), ergänzt
+um einen read-only Anomalie-Monitor und eine Schweizer Referendums-Fallstudie.
+
+\textbf{Ergebnisse.} Polymarket zeigt in einem klar abgegrenzten Vergleichsfenster
+bessere Prognosequalität (262 von 285 State-Date-Zeilen), aber keine universelle
+Überlegenheit, die Tagesreaktion auf kuratierte Ereignisse ist plausibel, das
+oberste Wallet-Tier zeigt das klarste prädiktive Timing-Muster. Die Befunde
+stützen begrenzte, reproduzierbare Diagnosen, keine pauschale Effizienz- oder
+Handelsaussage.
+
+% ====================== Verzeichnisse ======================
+\tableofcontents
+\clearpage
+\listoffigures
+\addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
+\listoftables
+\addcontentsline{toc}{chapter}{Tabellenverzeichnis}
+
+% ====================== Hauptteil ======================
+\clearpage
+\pagenumbering{arabic}
+\input{chapters/01_einleitung}
+\input{chapters/02_theorie}
+\input{chapters/03_methodik}
+\input{chapters/04_h1}
+\input{chapters/05_h2}
+\input{chapters/06_h3}
+\input{chapters/07_erweiterungen}
+\input{chapters/08_diskussion}
+\input{chapters/09_ausblick}
+
+% ====================== Literaturverzeichnis ======================
+\bibliographystyle{apacite}
+\addcontentsline{toc}{chapter}{Literaturverzeichnis}
+\bibliography{references}
+
+\end{document}

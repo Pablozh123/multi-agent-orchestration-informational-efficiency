@@ -1,0 +1,172 @@
+% Status: result_ready_with_limits. Bounded-draft-ready.
+\chapter{H3: Wallet-Timing}
+\label{ch:h3}
+
+H3 untersucht, ob dataset-relative Wallet-Tiers zeitliche Aktivitätsmuster vor
+oder um Polymarket-Preisbewegungen zeigen. Die Tiers werden aus den beobachteten
+kumulierten Betragsperzentilen der Wallet-Verteilung abgeleitet, nicht über eine
+willkürliche USD-Schwelle \citep{zotero_poly_001,zotero_poly_007}. Die
+Timing-Diagnostik nutzt Lead-Lag-Korrelationen und Granger-Tests
+\citep{lit_granger_001}.
+
+\paragraph{Wallet-Tiers.}
+Abbildung~\ref{fig:h3tiers} zeigt die verteilungsbasierten Tiers und ihre
+Besetzung. Das oberste Tier umfasst das oberste eine Prozent der Wallets
+(32 Adressen im beobachteten, BUY-seitigen Datensatz). Die Tiers sind damit
+relativ zum Datensatz definiert und tragen keine externe Schwelle.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.78\textwidth]{thesis_h3_wallet_tier_counts.png}
+\caption{Dataset-relative Wallet-Tiers und ihre Besetzung. Quelle:
+\texttt{data/results/thesis\_h3\_wallet\_tier\_counts.png}.}
+\label{fig:h3tiers}
+\end{figure}
+
+\paragraph{Klarstes Muster im obersten Tier.}
+Das oberste Tier zeigt die deutlichste deterministische Timing-Struktur: eine
+Lag-1-Korrelation von $0.186$ zwischen Tier-Aktivität und nachfolgenden
+Preisänderungen und einen minimalen Granger-$p$-Wert von $0.0012$ über 1216
+ausgerichtete Tageszeilen (Abbildung~\ref{fig:h3granger}). Das ist ein
+prädiktives Timing-Signal unter den getesteten Modellannahmen, kein Nachweis
+von Kausalität oder privater Information \citep{zotero_poly_005}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.78\textwidth]{thesis_h3_granger_pvalues.png}
+\caption{Granger-Diagnostik je Tier (minimale $p$-Werte). Quelle:
+\texttt{data/results/thesis\_h3\_granger\_pvalues.png}.}
+\label{fig:h3granger}
+\end{figure}
+
+\paragraph{Deskriptives Lead-Time-Profil.}
+Abbildung~\ref{fig:h3lead} stellt die Lead-Time der Tier-Aktivität relativ zu
+ausgewählten Bewegungen dar. Das Profil ist rein deskriptiv und beschreibt, wie
+sich beobachtete Aktivität zeitlich um Preisänderungen verteilt, ohne eine
+Wirkungsrichtung zu behaupten.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.78\textwidth]{thesis_h3_lead_time_amount.png}
+\caption{Deskriptives Lead-Time-Profil der Tier-Aktivität. Quelle:
+\texttt{data/results/thesis\_h3\_lead\_time\_amount.png}.}
+\label{fig:h3lead}
+\end{figure}
+
+\begin{table}[ht]
+\centering
+\caption{H3 --- Wallet-Tier-Timing-Diagnostik (T4)}
+\label{tab:t4}
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Tier & Lag-1-Korrelation & Granger-$p$ (min) & ausgerichtete Zeilen \\
+\midrule
+Oberstes 1\%-Tier & $0.186$ & $0.0012$ & 1216 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Ereignis-Wallet-Anomalien als deskriptive Diagnostik}
+\label{sec:anomalie}
+Auf derselben Datenbasis prüft eine deterministische Anomalie-Diagnostik, ob sich
+um die kuratierten Ereignisse auffällige Aktivitäts-, Bewegungs- oder
+Konzentrationsmuster zeigen. Eine Tagesbeobachtung gilt als auffällig, wenn ihr
+robuster $z$-Wert mindestens $2.0$ erreicht oder ihr Perzentilrang mindestens
+$0.95$ beträgt, gemessen gegen ein Basisfenster von 30 bis 8 Tagen vor dem
+Ereignis und ein Ereignisfenster von einem Tag davor bis drei Tage danach. Die
+Diagnostik betrachtet vier Familien: aktive Wallets je Tier, absolute
+Marktbewegung, Top-Tier-Konzentration und Tier-Betragssumme.
+
+Als Beispiel zeigt die Verurteilung im Schweigegeld-Prozess vom 30.~Mai 2024 im
+Basis-Tier eine deutliche Aktiv-Wallet-Auffälligkeit ($z = 3.5$, Perzentilrang
+$1.0$, zwei auffällige Tage) sowie eine auffällige Marktbewegung
+(Perzentilrang $0.96$, ein Tag). Abbildung~\ref{fig:h3anom} fasst über alle
+sieben Ereignisse zusammen, welche Familien an welchen Ereignissen auffällige
+Tage aufweisen.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.82\textwidth]{thesis_h3_event_wallet_anomalies.png}
+\caption{Ereignis-Wallet-Anomalien je Ereignis und Anomalie-Familie
+(deskriptiv). Quelle: \texttt{data/results/thesis\_h3\_event\_wallet\_anomalies.png}.}
+\label{fig:h3anom}
+\end{figure}
+
+\paragraph{Was die Diagnostik nicht ist.}
+Die Diagnostik arbeitet ausschliesslich mit aggregierten Tier-Zählungen und gibt
+keine Wallet-Adressen aus. Sie ist als historische, deskriptive
+Auffälligkeits-Diagnostik zu lesen und liefert Prüf-Hinweise, kein Beweis von
+privater Information, Insiderhandel, Fehlverhalten, Kausalität oder
+Profitabilität. Die spätere Review-Schicht, die solche Hinweise einordnet, wird
+in Kapitel~\ref{ch:erweiterungen} beschrieben.
+
+\paragraph{Limitation.}
+Die Wallet-Daten enthalten nur Kauftransaktionen und sind quellseitig gefiltert,
+die Ausrichtung erfolgt auf Tagesebene, und über mehrere Tiers und Lags hinweg
+besteht ein Multiple-Testing-Problem. Die Granger- und Anomalie-Ausgaben sind
+deshalb als prädiktive Timing- und Auffälligkeits-Diagnostik zu lesen, nicht als
+Beweis von Kausalität, privater Information oder Profitabilität.
+
+\section{Signaturen informierten Handels und ein Verdachts-Profil}
+\label{sec:verdacht}
+Forschung und Praxis nennen wiederkehrende Signaturen informierten oder
+Insider-Handels: frische Wallets mit wenigen Lebenstransaktionen, die grosse
+Positionen eingehen, ungewöhnliche Positionsgrösse vor noch nicht angekündigten
+Ausgängen, abnormale Handelsgrösse und Volumen, hohe Konzentration und
+einseitiger Fluss sowie Aktivität, die sich gegen die Marktauflösung verdichtet.
+Akademisch zeigt \citet{zotero_delvecchio_001} für Kalshi-Märkte, dass
+informierter Handel real und über eine Abnormal-Trade-Size-Kennzahl detektierbar
+ist und sich gegen die Auflösung verstärkt, im Einklang mit dem Insider-Modell
+von \citet{lit_kyle_001}. Praktisch setzt Polymarket eine On-Chain-Überwachung
+ein, die unter anderem ungewöhnliche Positionsgrösse vor Ergebnissen und
+auffällige Wallets flaggt \citep{news_polymarket_integrity_001}, gestützt auf
+forensische Heuristiken wie Funding-Quellen und Wallet-Clustering
+\citep{news_chainalysis_forensics_001}. Konzeptionell rahmt
+\citet{zotero_poly_005} Insiderhandel in Prognosemärkten.
+
+\paragraph{Profil aus dem getesteten Signatur-Modul.}
+Dieselben Signaturen werden in einem deterministischen, getesteten Modul (\texttt{informed\_trading\_signature}) auf den BUY-seitigen Whale-Datensatz
+(ab 10\,000 USD) anwenden. In den sieben Ereignisfenstern dominieren neu
+erscheinende Wallets. Im Median traten 54\% der aktiven Wallets erst um das
+Ereignis herum erstmals auf (Spanne 48--69\%), bei einer Top-1-Konzentration von
+im Median 64\% (54--81\%) und gegenüber der Vorperiode erhöhter
+Aktivität und erhöhtem Volumen (Abbildung~\ref{fig:h3profile}). Das Modul fasst die Einzel-Signaturen perzentil-normalisiert zu einem \texttt{suspicion\_score} zusammen (Spanne 0.10--0.81, Median 0.55). Dieses Muster
+deckt sich mit der Literatur-Signatur aus frischen Wallets, grosser
+Positionsgrösse und Konzentration.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.86\textwidth]{h3_informed_trading_profile.png}
+\caption{Ereignisfenster-Profil aus dem getesteten Signatur-Modul: Anteil neuer Wallets,
+Top-1-Konzentration und Fenster-Volumen je Ereignis (BUY-only, ab 10\,000 USD).
+Quelle: \texttt{data/results/h3\_informed\_trading\_signature.csv}.}
+\label{fig:h3profile}
+\end{figure}
+
+\paragraph{Verdachts-Profil als Hypothese.}
+Daraus folgt ein Verdachts-Profil, das als Hypothese und Prüf-Filter dient. Ein
+Ereignisfenster ist prüfwürdig, wenn mehrere Signaturen gemeinsam auftreten --
+ein hoher Anteil neuer Wallets, hohe Konzentration, abnormale Aktiv-Wallet- und
+Volumen-Werte aus Abschnitt~\ref{sec:anomalie} sowie ein Vorlauf der
+Tier-Aktivität vor der Preisbewegung aus der Lead-Lag- und Granger-Diagnostik.
+Genau diese Kombination speist die Review-Queue in
+Kapitel~\ref{ch:erweiterungen}.
+
+\paragraph{Was das Profil nicht beweist.}
+Ein hoher Anteil neuer Wallets ist kein Insider-Nachweis. Aufmerksamkeitsstarke
+Ereignisse ziehen allgemein neue Teilnehmer an, frische Adressen entstehen auch
+aus Datenschutz- oder Komfortgründen, und der Datensatz ist BUY-only und ab
+10\,000 USD gefiltert, was den Anteil neuer Wallets mechanisch erhöht. Zudem
+zeigen \citet{zotero_poly_001} für die Oktober-Episode 2024, dass Kapital auf
+beide Marktseiten floss, vereinbar mit heterogenen Erwartungen statt
+Manipulation. Das Profil bleibt damit eine Verdachts-Hypothese und ein
+Prüf-Filter, kein Nachweis privater Information.
+
+\paragraph{Was die Diagnostik härten würde.}
+Zur Härtung fehlen deterministische, getestete Merkmale: die Funding-Quelle der
+Wallets (zentrale Börse oder Mixer), Wallet-Lebensdauer und Transaktionszahl,
+einseitiger Fluss je Markt, der Vorlauf gegenüber verifizierten
+Nachrichten-Zeitstempeln und ein Out-of-Sample-Test gegen die wenigen
+dokumentierten Insider-Fälle. Diese Erweiterungen sind als Spezifikation
+vermerkt und bleiben an die Audit- und Wallet-Adress-Grenzen gebunden.

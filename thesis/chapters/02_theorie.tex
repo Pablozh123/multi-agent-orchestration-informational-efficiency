@@ -1,0 +1,66 @@
+% Status: draft (aus Outline ausgeschrieben). Finale Zitation nach Quellenreview
+% gemäss docs/project/SOURCE_REVIEW_LOG.md.
+\chapter{Theorie und Literatur}
+\label{ch:theorie}
+
+\section{Markteffizienz und Informationsaggregation}
+Der theoretische Ausgangspunkt ist die Markteffizienzhypothese
+\citep{lit_emh_001}, nach der Preise verfügbare Information widerspiegeln, üblich
+ist die Unterscheidung in schwache, halbstrenge und strenge Form. Auf
+Prognosemärkte übertragen heisst das: Wenn genügend Teilnehmer ihre
+Erwartungen laufend an neue Evidenz anpassen, sollte der Marktpreis als
+Wahrscheinlichkeit die verfügbare Information bündeln. \citet{zotero_poly_005}
+beschreibt diesen Aggregationsmechanismus konzeptionell und verweist auf
+Vergleiche, in denen spekulative Märkte Experten und Umfragen erreichen oder
+schlagen. Diese Aggregationsidee motiviert, Polymarket-Preise überhaupt als
+Forecast zu behandeln.
+
+\section{Prognosemärkte versus Umfragen}
+Ob Märkte Umfragen tatsächlich überlegen sind, ist empirisch umstritten.
+\citet{zotero_poly_002} finden für die US-Wahl 2024 einen Vorteil von Polymarket
+gegenüber Umfragen, besonders in Swing States, und ordnen ihn der
+Wisdom-of-Crowds-Idee zu, zugleich betonen sie ausdrücklich, dass die Ergebnisse
+weiterer Untersuchung und einer Prüfung auf Übertragbarkeit bedürfen. Dem steht
+eine kritische Sicht gegenüber: \citet{zotero_poly_009} argumentiert, dass
+Prognosemärkte keine ``Truth Machine'' sind, sondern reflexiv sein können ---
+Vertrauen in den Marktpreis kann die laufende Informationsaktualisierung
+schwächen und so die Genauigkeit untergraben. Diese Spannung begründet, warum
+die vorliegende Arbeit nur \emph{begrenzte}, scope-spezifische Aussagen anstrebt.
+
+\section{Prognosequalität messen}
+Zur Messung von Forecast-Qualität dient der Brier-Score
+\citep{lit_brier_001} als mittlere quadratische Abweichung zwischen
+Wahrscheinlichkeitsprognose und Ausgang. Der Vergleich zweier Verlustreihen
+erfolgt mit dem Diebold-Mariano-Test \citep{lit_dm_001}, der auf gleiche
+Prognosegenauigkeit prüft, ohne Mechanismen zu unterstellen. Beide Verfahren
+sind etablierte, deterministisch berechenbare Masse und bilden die Grundlage von
+H1.
+
+\section{Ereignisstudien}
+Die Reaktion eines Marktes auf Information lässt sich mit Ereignisstudien
+untersuchen \citep{lit_eventstudy_001}: ein Schätzfenster definiert das normale
+Verhalten, ein Ereignisfenster misst abnormale und kumulierte abnormale
+Bewegungen. H2 nutzt dieses Design auf Tagesebene mit vorab fixierten Ereignissen.
+
+\section{On-Chain-Signale und gebotene Vorsicht}
+Die Blockchain-Abwicklung macht Wallet-Aktivität sichtbar und eröffnet die
+Frage, ob bestimmte Adressen Preisbewegungen zeitlich vorauslaufen. Methodisch
+nutzt H3 Lead-Lag-Korrelationen und Granger-Tests \citep{lit_granger_001}, deren
+Ergebnisse ausdrücklich als prädiktive Timing-Diagnostik, nicht als
+strukturelle Kausalität zu lesen sind. Diese Vorsicht ist literaturgestützt:
+\citet{zotero_poly_001} zeigen für die Oktober-Grosskonto-Episode 2024, dass
+Kapital gleichzeitig auf beide Marktseiten floss --- ein Muster, das mit
+heterogenen Erwartungen und nicht mit einseitiger Manipulation vereinbar ist, und
+\citet{zotero_poly_005} rahmt Insider-Trading konzeptionell und regulatorisch,
+nicht als Nachweis konkreter Akteure. \citet{zotero_poly_007} ergänzt
+Verhaltensverzerrungen (etwa die Überschätzung kleiner Wahrscheinlichkeiten) und
+eine im Vergleich zu traditionellen Instrumenten höhere Volatilität als
+Limitationskontext.
+
+\section{Forschungslücke}
+Die Literatur liefert Theorie (Aggregation, Effizienz), Methodik (Brier,
+Diebold-Mariano, Ereignisstudien, Granger) und gemischte Evidenz zu Polymarket.
+Was fehlt, ist eine reproduzierbare, deterministisch geprüfte Zusammenführung
+von Prognosequalität, Ereignisreaktion und On-Chain-Timing für denselben
+Marktkontext --- genau die Lücke, die diese Arbeit für die US-Wahl 2024
+schliesst.

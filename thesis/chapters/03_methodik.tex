@@ -1,0 +1,106 @@
+% Status: bounded-draft-ready. Inhaltlich vollständig, finale Zitation
+% nach Quellenreview. Quelle: docs/research/THESIS_KAPITEL_03_METHODIK_DRAFT.md
+\chapter{Daten und Methodik}
+\label{ch:methodik}
+
+\section{Forschungsdesign: deterministischer Kern vor Interpretation}
+
+Die Arbeit prüft informationelle Effizienz nicht als direkt beobachtbare
+Eigenschaft, sondern über drei reproduzierbare Proxy-Tests: Prognosequalität
+(H1), Ereignisreaktion (H2) und Wallet-Timing (H3). Diese Operationalisierung
+folgt dem Effizienzbegriff der Markteffizienzhypothese \citep{lit_emh_001} und
+überträgt ihn auf einen dezentralen Prognosemarkt, dessen Preispfad als
+primäre Zeitreihe behandelt wird.
+
+Methodisch gilt eine strikte Trennung: Alle statistischen Kennzahlen werden
+deterministisch in Python berechnet, versioniert und als Artefakt (CSV, JSON,
+PNG) abgelegt. Sprachmodelle oder Agenten berechnen keine Metriken, sie dürfen
+ausschliesslich bereits berechnete, begrenzte Ergebnisse interpretieren, und
+auch das erst nach dokumentierter Freigabe und Audit-Protokollierung. Diese
+Reihenfolge --- Datenvalidierung, deterministische Analyse, danach Interpretation
+--- sichert Nachvollziehbarkeit und schützt vor versteckten Berechnungen im
+Fliesstext.
+
+\section{Datenbasis}
+
+Die empirische Basis liegt in einer lokalen SQLite-Datenbank
+(\texttt{data/thesis.db}). Tabelle~\ref{tab:t1} fasst Quellen, Zeilenzahlen und
+bekannte Einschränkungen zusammen.
+
+\begin{table}[ht]
+\centering
+\caption{Daten- und Quelleninventar (T1)}
+\label{tab:t1}
+\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+Quelle & Tabelle & Umfang & Rolle / Einschränkung \\
+\midrule
+Polymarket CLOB/Gamma & \texttt{polymarket\_prices} & 307 Tagespreise & primäre Marktzeitreihe \\
+FiveThirtyEight & \texttt{poll\_forecasts} & 245 Zeilen & Vergleichsquelle H1 \\
+RealClearPolitics & \texttt{poll\_forecasts} & 0 Zeilen & standardmässig ausgeschlossen \\
+On-Chain-Wallets & \texttt{whale\_trades} & 25\,113 Zeilen & H3, BUY-only, Filter $\geq$10\,000 USD \\
+GDELT & \texttt{sentiment\_scores} & 310 Zeilen & Kontext, kein Kernparameter \\
+Ereigniskatalog (Seed) & \texttt{events\_timeline} & 7 kuratierte Ereignisse & H2-Eingabe, vorab fixiert \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Die Vergleichsquellen sind bewusst restriktiv gewählt. FiveThirtyEight liefert
+native Wahrscheinlichkeiten und ist deshalb direkt vergleichbar
+\citep{zotero_poly_002}. RealClearPolitics liefert Umfragedurchschnitte, keine
+Prognosewahrscheinlichkeiten, diese Quelle bleibt aus allen Wahrscheinlichkeits-
+und Kalibrierungsmetriken ausgeschlossen, solange die in der Methodiknote
+(\texttt{docs/research/RCP\_TRANSFORMATION.md}) beschriebene Logit-Transformation
+nicht freigegeben ist. Die Wallet-Daten tragen die methodisch wichtigste
+Datenlimitation: Sie enthalten nur Kauftransaktionen und sind quellseitig ab
+10\,000 USD gefiltert, beides bleibt Metadaten-Eigenschaft der Rohquelle und ist
+keine analytische Schwellendefinition.
+
+\section{Operationalisierung der Hypothesen}
+
+\subsection{H1 --- Prognosequalität}
+H1 bewertet, ob Polymarket im überlappenden Vergleichsfenster bessere
+Prognosequalität zeigt als vergleichbare traditionelle
+Wahrscheinlichkeitsprognosen. Als Verlustmass dient der Brier-Score
+\citep{lit_brier_001}, der paarweise Vergleich der Verlustreihen erfolgt mit dem
+Diebold-Mariano-Test \citep{lit_dm_001}, ergänzt um Kalibrierungsdiagnostik,
+soweit Stichprobengrösse und Methodik es zulassen. Erlaubt ist ausschliesslich
+die Aussage eines Prognosequalitäts-Vergleichs, ein Beweis höherer
+Reaktionsgeschwindigkeit, eine allgemeine Marktüberlegenheit oder eine
+RCP-Wahrscheinlichkeitsaussage ohne dokumentierte Transformation sind
+ausgeschlossen.
+
+\subsection{H2 --- Ereignisfenster}
+H2 prüft, ob sich Polymarket-Wahrscheinlichkeiten um vorab kuratierte
+öffentliche Ereignisse in plausibler Richtung und innerhalb fester Tagesfenster
+bewegen. Die Ereignisse werden vor der Analyse mit Zeitstempel, Quelle und
+erwarteter Richtung fixiert und nach Sichtung der Marktreaktion weder
+hinzugefügt noch entfernt. Das Design folgt der Ereignisstudien-Methodik
+\citep{lit_eventstudy_001}. Erlaubt ist die Aussage einer täglichen
+Ereignisfenster-Reaktion, ein Intraday-Geschwindigkeitsanspruch oder eine
+nachträgliche Ereignisauswahl sind ausgeschlossen.
+
+\subsection{H3 --- Wallet-Timing}
+H3 untersucht, ob dataset-relative Wallet-Tiers zeitliche Aktivitätsmuster vor
+oder um Polymarket-Preisbewegungen zeigen. Die Tiers werden nicht über eine
+willkürliche USD-Schwelle definiert, sondern aus den beobachteten kumulierten
+Betragsperzentilen der Wallet-Verteilung abgeleitet. Die Diagnostik kombiniert
+deskriptive Lead-Time-Histogramme, Lead-Lag-Korrelationen und Granger-Tests
+\citep{lit_granger_001}. Die Granger-Ausgaben werden als prädiktive
+Timing-Diagnostik unter Modellannahmen gelesen, nicht als Kausalitätsbeweis,
+die Vorsicht gegenüber Insider-Interpretationen stützt sich auf
+\citet{zotero_poly_005}. Ausgeschlossen bleiben Aussagen zu Kausalität, privater
+Information, Fehlverhalten oder Profitabilität.
+
+\section{Reproduzierbarkeit und Guardrails}
+
+Quelldaten liegen portabel in SQLite, analytische Abfragen nutzen zusätzlich
+DuckDB. Jede Datenbankschreiboperation wird, wo sinnvoll, validiert
+(pydantic/pandera). Der deterministische Kern ist getestet: zum Stand dieses
+Entwurfs bestehen 640 Tests. Der Datenzugriff für spätere
+Interpretationsschichten ist begrenzt (kein \texttt{SELECT *} ohne
+\texttt{LIMIT}, maximal 50 Zeilen pro Abfrage), und jeder spätere
+Sprachmodell-Aufruf muss protokolliert werden. Diese Disziplin macht jede
+thesis-relevante Kennzahl rerunnbar und prüfbar und ist damit selbst ein
+methodischer Beitrag.

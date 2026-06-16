@@ -1,0 +1,86 @@
+% Status: result_ready_with_limits. Bounded-draft-ready.
+\chapter{H1: Prognosequalität}
+\label{ch:h1}
+
+H1 prüft, ob Polymarket bessere Prognosequalität zeigt als vergleichbare
+traditionelle Wahrscheinlichkeitsprognosen, gemessen über den Brier-Verlust
+\citep{lit_brier_001} und den Diebold-Mariano-Vergleich der Verlustreihen
+\citep{lit_dm_001,zotero_poly_002}. Das Ergebnis ist zweigeteilt: begrenzte
+Stützung in einem klar definierten Vergleichsscope, aber kein Beweis einer
+breiten Überlegenheit.
+
+\paragraph{Begrenzte Stützung.}
+Im primären Scope --- Prognosehorizont $\leq$90 Tage und geringe bis mittlere
+Poll-Distanz --- hat Polymarket in 262 von 285 State-Date-Zeilen (91.9\%) den
+niedrigeren Brier-Verlust. Behandelt man jeden Bundesstaat als diagnostische
+Einheit, stützen 9 von 9 States Polymarket (exakter einseitiger Binomialtest
+$p = 0.0020$). Abbildung~\ref{fig:h1quality} fasst diesen Befund über die
+Verlustreihen zusammen und zeigt, in wie vielen direkten Vergleichen Polymarket
+den tieferen Verlust trägt.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.82\textwidth]{h1_forecast_quality.png}
+\caption{H1-Prognosequalität: Brier-Verlust von Polymarket gegen traditionelle
+Vergleichsquellen, Head-to-Head-Zählung und kumulativer Verlustvorteil. Quelle:
+\texttt{data/results/h1\_forecast\_quality.png}.}
+\label{fig:h1quality}
+\end{figure}
+
+\paragraph{Breite Behauptung nicht bewiesen.}
+Über die gesamte Evidenz bleibt die allgemeine Überlegenheit ungedeckt. Von
+neun Aggregat-Vergleichszeilen stützen sieben Polymarket im mittleren
+Brier-Verlust, aber nur drei nach Fallmehrheit, und keine einzige beweist die
+breite Mehr-Fälle-Behauptung. Fünf Audit-Zeilen widersprechen der starken
+Aussage. Das volle State-Date-Panel ist ein Gegenbeispiel: dort haben die
+poll-abgeleiteten Wahrscheinlichkeiten in 1360 von 1720 Zeilen den niedrigeren
+Verlust. Tabelle~\ref{tab:t2} und Abbildung~\ref{fig:h1poll} halten gestützten
+Scope und Gegenbeispiele nebeneinander.
+
+\begin{table}[ht]
+\centering
+\caption{H1 --- Prognosequalität und Poll-Vergleich (T2)}
+\label{tab:t2}
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+Vergleichsscope & Polymarket-Stützung & Kennzahl \\
+\midrule
+$\leq$90 Tage, geringe/mittlere Poll-Distanz & ja (begrenzt) & 262/285 Zeilen (91.9\%), 9/9 States, $p=0.0020$ \\
+Volles State-Date-Panel & nein (Gegenbeispiel) & poll-abgeleitet 1360/1720 Zeilen niedriger \\
+Breite Mehr-Fälle-Behauptung & nicht bewiesen & 0/9 Broad-Zeilen, 5 Audit-Zeilen dagegen \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.82\textwidth]{h1_poll_claim_readiness.png}
+\caption{Claim-Readiness des H1-Poll-Vergleichs: gestützter Scope gegen
+Gegenbeispiel-Scopes. Quelle: \texttt{data/results/h1\_poll\_claim\_readiness.png}.}
+\label{fig:h1poll}
+\end{figure}
+
+\paragraph{Kalibrierung.}
+Die Kalibrierungsdiagnostik in Abbildung~\ref{fig:h1calib} ergänzt den reinen
+Verlustvergleich. Über 192 aufgelöste Forecast-Fälle aus sieben Quellen ergeben
+sich fünf paarweise Vergleiche. Alle fünf stützen Polymarket im mittleren
+Brier-Verlust, aber nur zwei nach Fallmehrheit. Das bestätigt das zweigeteilte
+Bild: Polymarket ist im Mittel besser kalibriert, ohne in jedem Einzelfall zu
+führen.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.82\textwidth]{h1_calibration_diagnostic.png}
+\caption{H1-Kalibrierungsdiagnostik über aufgelöste Forecast-Fälle (Scorecard und
+Reliabilitätspunkte für Quellen mit mindestens 30 Fällen). Quelle:
+\texttt{data/results/h1\_calibration\_diagnostic.png}.}
+\label{fig:h1calib}
+\end{figure}
+
+\paragraph{Limitation.}
+Die Evidenz besteht aus wiederholten Tageszeilen innerhalb eines einzelnen
+Wahlkontexts und ersetzt keine unabhängige Mehr-Wahlen-Stichprobe. Aus H1
+folgt kein Beweis höherer Reaktionsgeschwindigkeit, keine universelle
+Marktüberlegenheit und keine kausale Erklärung. Die finale Zitation der
+Methodenquellen steht bis zum Abschluss des manuellen Quellen-Reviews aus.

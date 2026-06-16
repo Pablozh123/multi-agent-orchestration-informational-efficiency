@@ -1,0 +1,14 @@
+# LaTeX-Build-Artefakte
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+main.pdf
+
+# Test-/Hilfsdateien
+_structtest.*

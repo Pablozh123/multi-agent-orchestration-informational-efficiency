@@ -1,0 +1,54 @@
+% Status: result_ready_with_limits. Bounded-draft-ready.
+% Evidence: interpretation_h2_daily_response
+% Artefakte: h2_event_window_summary.csv; events_timeline_seed.csv
+\chapter{H2: Ereignisfenster}
+\label{ch:h2}
+
+H2 prüft, ob sich Polymarket-Wahrscheinlichkeiten um sieben vorab kuratierte
+öffentliche Ereignisse in plausibler Richtung und innerhalb fester Tagesfenster
+bewegen \citep{lit_eventstudy_001,lit_emh_001}. Die Ereignisse wurden vor der
+Analyse mit Zeitstempel und erwarteter Richtung fixiert.
+
+\paragraph{Sichtbare Tagesreaktion.}
+Die stärkste Primärfenster-Bewegung (0--1 Tag) zeigt das Attentat auf Trump am
+13.~Juli 2024 mit einer abnormalen Veränderung von $+7.2$ Prozentpunkten zugunsten
+von Trump. Die gerichtet erwarteten Ereignisse bewegen sich konsistent: die
+Verurteilung im Schweigegeld-Prozess ($-4.1$ pp) und Bidens Rückzug zugunsten
+von Harris ($-1.7$ pp für Trump) gehen in die erwartete Richtung. Die übrigen,
+als neutral kuratierten Ereignisse zeigen kleinere Bewegungen. Insgesamt
+reagieren die Polymarket-Wahrscheinlichkeiten auf Tagesebene plausibel auf die
+kuratierten Ereignisse.
+
+\begin{table}[ht]
+\centering
+\caption{H2 --- Abnormale Veränderung im Primärfenster (0--1 Tag) (T3)}
+\label{tab:t3}
+\small
+\begin{tabular}{@{}llr@{}}
+\toprule
+Ereignis (2024) & erwartete Richtung & abn. Veränderung (pp) \\
+\midrule
+Trump-Verurteilung (30.05.) & Trump runter & $-4.1$ \\
+Biden--Trump-Debatte (28.06.) & neutral & $+2.5$ \\
+Attentat auf Trump (13.07.) & Trump rauf & $+7.2$ \\
+Vance als VP (15.07.) & neutral & $+3.5$ \\
+Biden-Rückzug (21.07.) & Harris rauf & $-1.7$ \\
+Walz als VP (06.08.) & neutral & $+1.3$ \\
+Harris--Trump-Debatte (11.09.) & neutral & $-2.9$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.85\textwidth]{thesis_h2_event_window_car.png}
+\caption{Tägliche Ereignisfenster-Bewegungen (F2). Quelle:
+\texttt{data/results/thesis\_h2\_event\_window\_car.png}.}
+\label{fig:f2}
+\end{figure}
+
+\paragraph{Limitation.}
+Die Analyse beruht auf Tagespreisen und kann keine Intraday-Reaktionszeit
+identifizieren, H2 stützt damit eine Aussage über tägliche Reaktionsmuster,
+nicht über sofortige Marktreaktion. Da die Ereignisse vorab fixiert wurden,
+besteht keine nachträgliche Auswahl nach sichtbaren Preisbewegungen.

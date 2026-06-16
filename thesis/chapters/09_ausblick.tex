@@ -1,0 +1,20 @@
+% Status: future_work / methodischer Ausblick. Guarded.
+% Evidence: future_agent_pipeline_guarded
+\chapter{Ausblick: Agenten-gestützte Pipeline}
+\label{ch:ausblick}
+
+% --- Outline (ausformulieren) ---
+% Rolle: Future Work bzw. dokumentierte Bau-Methodik (vgl. Kapitel~\ref{ch:erweiterungen}).
+% Erlaubt: künftige auditierte Assistenzschicht über begrenzte Zusammenfassungen.
+% Gesperrt: agentenberechnete Metriken, Rohtabellen-Prompts, autonomer Handel,
+%           unprotokollierte LLM-Interpretation \citep{zotero_poly_006}.
+% Aktivierungs-Gates: separates Goal, Tests, bounded inputs (max 50 Zeilen),
+%           Audit-Protokollierung jeder LLM-Interaktion.
+
+Künftige Agenten dürfen Entwurfs-, Review- und Quellen-Prüf-Workflows nur aus
+begrenzten, bereits deterministisch berechneten Zusammenfassungen unterstützen.
+Sie berechnen keine Kennzahlen und greifen nicht ungefiltert auf Rohdaten zu,
+jede LLM-Interaktion wird protokolliert.
+
+% TODO: Pipeline-Rollen, Gates und Sicherheitsgrenzen ausschreiben
+% (Grundlage: docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md).

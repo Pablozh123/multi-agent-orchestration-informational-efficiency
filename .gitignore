@@ -33,3 +33,4 @@ logs/*.log
 
 # Reports (regenerierbar)
 reports/*.md
+data/results/monitor_mcp_audit_log.jsonl

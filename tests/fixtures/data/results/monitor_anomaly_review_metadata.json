@@ -1,0 +1,17 @@
+{
+  "generated_at_utc": "2026-01-01T00:00:00+00:00",
+  "future_mcp_contract": {
+    "llm_audit_log_required": true,
+    "max_rows": 50,
+    "order_or_trading_path_allowed": false,
+    "raw_sql_allowed": false,
+    "status": "contract_only_not_implemented",
+    "tools": [
+      "get_anomaly_review_summary",
+      "get_anomaly_case",
+      "list_monitor_artifacts",
+      "get_method_limits"
+    ],
+    "wallet_address_exposure_allowed_by_default": false
+  }
+}

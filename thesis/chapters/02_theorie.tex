@@ -2,7 +2,10 @@
 % Practice, Vorbefunde, Forschungslücke). Strukturvorlage angepasst an die
 % eigene Arbeit (docs/project/FHNW_ACADEMICGUIDE_RULES.md, Abschnitt 4 + 10).
 % Finale Zitation nach Quellenreview (docs/project/SOURCE_REVIEW_LOG.md).
-\chapter{Theoretischer Rahmen und Forschungsstand}
+\chapter{Analyse der Situation}
+\label{ch:analyse}
+
+\section{Bisherige Forschung}
 \label{ch:theorie}
 
 Dieses Kapitel ordnet die für die Arbeit relevanten Begriffe, Theorien,
@@ -14,7 +17,7 @@ und zu informiertem Handel diskutiert. Aus dieser Zusammenschau ergibt sich die
 Forschungslücke, welche die drei Hypothesen motiviert. Ausgewählt werden nur
 jene Konzepte und Quellen, die für die Forschungsfrage unmittelbar relevant sind.
 
-\section{Begriffsklärung}
+\subsection{Begriffsklärung}
 Ein \emph{Prognosemarkt} ist ein Markt, auf dem Kontrakte auf den Ausgang
 künftiger Ereignisse gehandelt werden und dessen Preis sich als kollektive
 Wahrscheinlichkeitsschätzung lesen lässt \citep{zotero_poly_005}. Ein binärer
@@ -37,7 +40,7 @@ kumulierten Betragsperzentilen und nicht aus einer willkürlichen
 Dollar-Schwelle. Diese Begriffe bilden die gemeinsame Grundlage der drei
 Hypothesen.
 
-\section{Markteffizienz und Informationsaggregation}
+\subsection{Markteffizienz und Informationsaggregation}
 Der theoretische Ausgangspunkt ist die Markteffizienzhypothese
 \citep{lit_emh_001}, nach der Preise verfügbare Information widerspiegeln. Üblich
 ist die Unterscheidung in eine schwache, eine halbstrenge und eine strenge Form,
@@ -61,7 +64,7 @@ Wahrscheinlichkeit nicht unbesehen gilt. Die Idee der Informationsaggregation
 (häufig als Weisheit der Vielen bezeichnet) motiviert daher, einen Marktpreis als
 Forecast zu behandeln, bleibt aber eine empirisch zu prüfende Annahme.
 
-\section{Prognosemärkte im Vergleich zu traditionellen Quellen}
+\subsection{Prognosemärkte im Vergleich zu traditionellen Quellen}
 Ob Märkte Umfragen tatsächlich überlegen sind, ist empirisch umstritten. Für die
 etablierten Iowa Electronic Markets zeigen \citet{lit_berg_2008}, dass
 Marktprognosen Umfragen über fünf Präsidentschaftswahlen hinweg in rund 74 Prozent
@@ -86,7 +89,7 @@ Marktstruktur und den Anreizen abhängt. Diese Spannung zwischen belegtem Vortei
 und berechtigter Vorsicht begründet, warum die vorliegende Arbeit nur begrenzte,
 scope-spezifische Aussagen anstrebt.
 
-\section{Messung von Prognosequalität}
+\subsection{Messung von Prognosequalität}
 Zur Messung der Forecast-Qualität dient der Brier-Score \citep{lit_brier_001},
 definiert als mittlere quadratische Abweichung zwischen Wahrscheinlichkeitsprognose
 und tatsächlichem Ausgang. Ein niedrigerer Brier-Verlust bedeutet eine bessere
@@ -100,7 +103,7 @@ einen bestimmten Entstehungsmechanismus zu unterstellen. Beide Verfahren gelten
 als etablierte, deterministisch berechenbare Masse der Forecast-Bewertung und
 bilden die methodische Grundlage von H1.
 
-\section{Ereignisstudien}
+\subsection{Ereignisstudien}
 Die Reaktion eines Marktes auf neue Information lässt sich mit Ereignisstudien
 untersuchen \citep{lit_eventstudy_001}. Das Verfahren definiert ein Schätzfenster
 für das normale Verhalten und ein Ereignisfenster, in dem abnormale und
@@ -110,7 +113,7 @@ zeitreihen übertragen. H2 nutzt dieses Design mit vorab fixierten, kuratierten
 öffentlichen Ereignissen, um die Reaktionsrichtung von Polymarket nachvollziehbar
 zu prüfen.
 
-\section{On-Chain-Aktivität und informierter Handel}
+\subsection{On-Chain-Aktivität und informierter Handel}
 Die Blockchain-Abwicklung macht Wallet-Aktivität sichtbar und eröffnet die Frage,
 ob bestimmte Adressen Preisbewegungen zeitlich vorauslaufen. Methodisch nutzt H3
 Lead-Lag-Korrelationen und Granger-Tests \citep{lit_granger_001}, deren Ergebnisse

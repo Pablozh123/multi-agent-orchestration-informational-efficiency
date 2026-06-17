@@ -1,20 +1,17 @@
-% Status: future_work / methodischer Ausblick. Guarded.
-% Evidence: future_agent_pipeline_guarded
-\chapter{Ausblick: Agenten-gestützte Pipeline}
-\label{ch:ausblick}
+% Status: Naechste Schritte / Ausblick (4b-Struktur). Guarded.
+\chapter{Nächste Schritte}
+\label{ch:naechste}
 
-% --- Outline (ausformulieren) ---
-% Rolle: Future Work bzw. dokumentierte Bau-Methodik (vgl. Kapitel~\ref{ch:erweiterungen}).
-% Erlaubt: künftige auditierte Assistenzschicht über begrenzte Zusammenfassungen.
-% Gesperrt: agentenberechnete Metriken, Rohtabellen-Prompts, autonomer Handel,
-%           unprotokollierte LLM-Interpretation \citep{zotero_poly_006}.
-% Aktivierungs-Gates: separates Goal, Tests, bounded inputs (max 50 Zeilen),
-%           Audit-Protokollierung jeder LLM-Interaktion.
+Über den empirischen Kern hinaus lässt sich die in Kapitel~\ref{ch:loesung}
+vorgestellte Lösung zu einer agentengestützten Assistenzschicht ausbauen, die
+künftig die Interpretation begrenzter, bereits berechneter Zusammenfassungen
+unterstützt, ohne selbst Kennzahlen zu berechnen.
 
 Künftige Agenten dürfen Entwurfs-, Review- und Quellen-Prüf-Workflows nur aus
 begrenzten, bereits deterministisch berechneten Zusammenfassungen unterstützen.
 Sie berechnen keine Kennzahlen und greifen nicht ungefiltert auf Rohdaten zu,
-jede LLM-Interaktion wird protokolliert.
-
-% TODO: Pipeline-Rollen, Gates und Sicherheitsgrenzen ausschreiben
-% (Grundlage: docs/research/THESIS_AGENT_PIPELINE_ROADMAP.md).
+jede LLM-Interaktion wird protokolliert. Als Aktivierungs-Gates gelten ein
+separates Goal, Tests, bounded inputs (maximal 50 Zeilen je Abfrage) und die
+Protokollierung jeder LLM-Interaktion. Weitere Schritte betreffen die Härtung der
+Verdachts-Signatur (Funding-Quellen, Wallet-Lebensdauer, Out-of-Sample-Test gegen
+dokumentierte Fälle), stets gebunden an die Audit- und Wallet-Adress-Grenzen.

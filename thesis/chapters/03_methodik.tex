@@ -1,9 +1,9 @@
 % Status: bounded-draft-ready. Inhaltlich vollständig, finale Zitation
 % nach Quellenreview. Quelle: docs/research/THESIS_KAPITEL_03_METHODIK_DRAFT.md
-\chapter{Daten und Methodik}
+\section{Daten und Methodik}
 \label{ch:methodik}
 
-\section{Forschungsdesign: deterministischer Kern vor Interpretation}
+\subsection{Forschungsdesign: deterministischer Kern vor Interpretation}
 
 Die Arbeit prüft informationelle Effizienz nicht als direkt beobachtbare
 Eigenschaft, sondern über drei reproduzierbare Proxy-Tests: Prognosequalität
@@ -21,7 +21,7 @@ Reihenfolge --- Datenvalidierung, deterministische Analyse, danach Interpretatio
 --- sichert Nachvollziehbarkeit und schützt vor versteckten Berechnungen im
 Fliesstext.
 
-\section{Datenbasis}
+\subsection{Datenbasis}
 
 Die empirische Basis liegt in einer lokalen SQLite-Datenbank
 (\texttt{data/thesis.db}). Tabelle~\ref{tab:t1} fasst Quellen, Zeilenzahlen und
@@ -57,9 +57,9 @@ Datenlimitation: Sie enthalten nur Kauftransaktionen und sind quellseitig ab
 10\,000 USD gefiltert, beides bleibt Metadaten-Eigenschaft der Rohquelle und ist
 keine analytische Schwellendefinition.
 
-\section{Operationalisierung der Hypothesen}
+\subsection{Operationalisierung der Hypothesen}
 
-\subsection{H1 --- Prognosequalität}
+\paragraph{H1 --- Prognosequalität}
 H1 bewertet, ob Polymarket im überlappenden Vergleichsfenster bessere
 Prognosequalität zeigt als vergleichbare traditionelle
 Wahrscheinlichkeitsprognosen. Als Verlustmass dient der Brier-Score
@@ -71,7 +71,7 @@ Reaktionsgeschwindigkeit, eine allgemeine Marktüberlegenheit oder eine
 RCP-Wahrscheinlichkeitsaussage ohne dokumentierte Transformation sind
 ausgeschlossen.
 
-\subsection{H2 --- Ereignisfenster}
+\paragraph{H2 --- Ereignisfenster}
 H2 prüft, ob sich Polymarket-Wahrscheinlichkeiten um vorab kuratierte
 öffentliche Ereignisse in plausibler Richtung und innerhalb fester Tagesfenster
 bewegen. Die Ereignisse werden vor der Analyse mit Zeitstempel, Quelle und
@@ -81,7 +81,7 @@ hinzugefügt noch entfernt. Das Design folgt der Ereignisstudien-Methodik
 Ereignisfenster-Reaktion, ein Intraday-Geschwindigkeitsanspruch oder eine
 nachträgliche Ereignisauswahl sind ausgeschlossen.
 
-\subsection{H3 --- Wallet-Timing}
+\paragraph{H3 --- Wallet-Timing}
 H3 untersucht, ob dataset-relative Wallet-Tiers zeitliche Aktivitätsmuster vor
 oder um Polymarket-Preisbewegungen zeigen. Die Tiers werden nicht über eine
 willkürliche USD-Schwelle definiert, sondern aus den beobachteten kumulierten
@@ -93,7 +93,7 @@ die Vorsicht gegenüber Insider-Interpretationen stützt sich auf
 \citet{zotero_poly_005}. Ausgeschlossen bleiben Aussagen zu Kausalität, privater
 Information, Fehlverhalten oder Profitabilität.
 
-\section{Reproduzierbarkeit und Guardrails}
+\subsection{Reproduzierbarkeit und Guardrails}
 
 Quelldaten liegen portabel in SQLite, analytische Abfragen nutzen zusätzlich
 DuckDB. Jede Datenbankschreiboperation wird, wo sinnvoll, validiert

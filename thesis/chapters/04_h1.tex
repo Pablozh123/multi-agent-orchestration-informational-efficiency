@@ -27,6 +27,18 @@ Vergleichsquellen, Head-to-Head-Zählung und kumulativer Verlustvorteil. Quelle:
 \label{fig:h1quality}
 \end{figure}
 
+\paragraph{Lesart der Abbildung.}
+Die Abbildung übersetzt den Befund in drei Ansichten: den paarweisen Brier-Verlust
+von Polymarket gegen die Vergleichsquellen, die Head-to-Head-Zählung der Vergleiche
+mit tieferem Verlust und den kumulierten Verlustvorteil über die Zeit. Die
+Head-to-Head-Zählung macht sichtbar, dass der Vorteil breit über die 285 Zeilen
+verteilt ist und nicht von wenigen Ausreissern stammt, während der kumulierte
+Verlauf zeigt, ob er anhält. Weil der Brier-Score eine strikt-proper Scoring Rule
+ist \citep{lit_gneiting_2007}, lässt sich der tiefere Verlust als bessere, ehrlich
+kalibrierte Wahrscheinlichkeit und nicht als blosses Skalenartefakt lesen. Das
+Muster reiht sich in die Markt-vs-Umfrage-Evidenz etablierter Prognosemärkte ein
+\citep{lit_berg_2008}, bleibt aber auf den definierten Scope beschränkt.
+
 \paragraph{Breite Behauptung nicht bewiesen.}
 Über die gesamte Evidenz bleibt die allgemeine Überlegenheit ungedeckt. Von
 neun Aggregat-Vergleichszeilen stützen sieben Polymarket im mittleren
@@ -61,6 +73,16 @@ Gegenbeispiel-Scopes. Quelle: \texttt{data/results/h1\_poll\_claim\_readiness.pn
 \label{fig:h1poll}
 \end{figure}
 
+\paragraph{Lesart der Abbildung.}
+Abbildung~\ref{fig:h1poll} stellt den gestützten Scope den Gegenbeispiel-Scopes
+gegenüber und macht damit die Kernbotschaft von H1 sichtbar: Der Polymarket-Vorteil
+ist real, aber an Bedingungen gebunden (kurzer Horizont, geringe Poll-Distanz). Im
+vollen Panel kehrt sich das Bild um. Die Abbildung dient so als
+Claim-Readiness-Prüfung, die die belegbare enge Aussage von der nicht belegbaren
+breiten Behauptung trennt. Diese Scope-Abhängigkeit deckt sich mit der gemischten,
+plattformübergreifenden Evidenz für 2024, in der Marktüberlegenheit nicht
+durchgängig auftrat \citep{lit_poly24_accuracy}.
+
 \paragraph{Kalibrierung.}
 Die Kalibrierungsdiagnostik in Abbildung~\ref{fig:h1calib} ergänzt den reinen
 Verlustvergleich. Über 192 aufgelöste Forecast-Fälle aus sieben Quellen ergeben
@@ -77,6 +99,17 @@ Reliabilitätspunkte für Quellen mit mindestens 30 Fällen). Quelle:
 \texttt{data/results/h1\_calibration\_diagnostic.png}.}
 \label{fig:h1calib}
 \end{figure}
+
+\paragraph{Lesart der Abbildung.}
+Die Kalibrierungsabbildung kombiniert eine Scorecard der paarweisen Vergleiche mit
+Reliabilitätspunkten für Quellen mit mindestens 30 Fällen, dargestellt mit gleichem
+Achsenmassstab, sodass die 45-Grad-Diagonale die perfekte Kalibrierung markiert.
+Punkte nahe dieser Diagonale stehen für gute Kalibrierung, also prognostizierte
+nahe beobachteter Häufigkeit. Dass alle fünf paarweisen Vergleiche Polymarket im
+mittleren Brier stützen, aber nur zwei nach Fallmehrheit, zeigt einen im Mittel
+besser kalibrierten, jedoch nicht durchgängig führenden Forecast. Das passt zur
+Mahnung, einen Marktpreis nicht unbesehen mit einer Wahrscheinlichkeit
+gleichzusetzen \citep{lit_manski_2006}.
 
 \paragraph{Limitation.}
 Die Evidenz besteht aus wiederholten Tageszeilen innerhalb eines einzelnen

@@ -25,7 +25,7 @@ Effizienz} bezeichnet den Grad, in dem dieser Preis die öffentlich verfügbare
 Information widerspiegelt \citep{lit_emh_001}. Die Arbeit verwendet den Begriff
 bewusst graduell und scope-spezifisch, nicht als absolute Eigenschaft.
 
-\emph{Kalibrierung} meint die Uebereinstimmung von prognostizierter
+\emph{Kalibrierung} meint die Übereinstimmung von prognostizierter
 Wahrscheinlichkeit und beobachteter relativer Häufigkeit: Ereignisse, denen ein
 Markt 70 Prozent zuweist, sollten langfristig in etwa 70 Prozent der Fälle
 eintreten. \emph{Polymarket} ist ein dezentraler, auf einer Blockchain
@@ -39,7 +39,7 @@ Hypothesen.
 
 \section{Markteffizienz und Informationsaggregation}
 Der theoretische Ausgangspunkt ist die Markteffizienzhypothese
-\citep{lit_emh_001}, nach der Preise verfügbare Information widerspiegeln. Ueblich
+\citep{lit_emh_001}, nach der Preise verfügbare Information widerspiegeln. Üblich
 ist die Unterscheidung in eine schwache, eine halbstrenge und eine strenge Form,
 je nachdem, ob historische Preise, alle öffentlichen Informationen oder auch
 private Informationen bereits eingepreist sind. Auf Prognosemärkte übertragen
@@ -49,21 +49,35 @@ Information bündeln.
 
 Diesen Aggregationsmechanismus beschreibt \citet{zotero_poly_005} konzeptionell
 und verweist auf Vergleiche, in denen spekulative Märkte Experteneinschätzungen
-und Umfragen erreichen oder schlagen. Die Idee der Informationsaggregation
-(häufig als Weisheit der Vielen bezeichnet) motiviert überhaupt erst, einen
-Marktpreis als Forecast zu behandeln. Sie ist zugleich eine Annahme, die
-empirisch zu prüfen und nicht vorauszusetzen ist.
+und Umfragen erreichen oder schlagen. Breiter zeigen \citet{lit_wolfers_2004},
+dass marktbasierte Forecasts meist treffsicher sind und einfache Benchmarks
+übertreffen, und ein interdisziplinäres Autorenkollektiv ordnet Prognosemärkte
+als legitimes, informationsaggregierendes Instrument ein \citep{lit_arrow_2008}.
+Unter welchen Bedingungen der Marktpreis tatsächlich der mittleren Erwartung der
+Teilnehmenden entspricht, präzisieren \citet{lit_wolfers_2006}. Zugleich mahnt
+\citet{lit_manski_2006} zur Vorsicht, weil Preise Erwartungen mit
+Risikopräferenzen vermengen, sodass die Gleichsetzung von Preis und
+Wahrscheinlichkeit nicht unbesehen gilt. Die Idee der Informationsaggregation
+(häufig als Weisheit der Vielen bezeichnet) motiviert daher, einen Marktpreis als
+Forecast zu behandeln, bleibt aber eine empirisch zu prüfende Annahme.
 
 \section{Prognosemärkte im Vergleich zu traditionellen Quellen}
-Ob Märkte Umfragen tatsächlich überlegen sind, ist empirisch umstritten.
-\citet{zotero_poly_002} finden für die US-Wahl 2024 einen Vorteil von Polymarket
+Ob Märkte Umfragen tatsächlich überlegen sind, ist empirisch umstritten. Für die
+etablierten Iowa Electronic Markets zeigen \citet{lit_berg_2008}, dass
+Marktprognosen Umfragen über fünf Präsidentschaftswahlen hinweg in rund 74 Prozent
+der Vergleiche näher am Ergebnis lagen, mit eher wachsendem Vorsprung bei längerem
+Horizont, und \citet{lit_iem_2024} setzen diese Markt-Perspektive für die Wahl 2024
+fort. Speziell für Polymarket finden \citet{zotero_poly_002} einen Vorteil
 gegenüber Umfragen, besonders in den umkämpften Swing States, und ordnen ihn der
 Wisdom-of-Crowds-Idee zu. Zugleich betonen sie ausdrücklich, dass die Ergebnisse
-weiterer Untersuchung und einer Prüfung auf Uebertragbarkeit bedürfen. Dem steht
+weiterer Untersuchung und einer Prüfung auf Übertragbarkeit bedürfen. Dem steht
 eine kritische Sicht gegenüber: \citet{zotero_poly_009} argumentiert, dass
 Prognosemärkte keine "Truth Machine" sind, sondern reflexiv sein können ---
 Vertrauen in den Marktpreis kann die laufende Informationsaktualisierung
-schwächen und so die Genauigkeit untergraben.
+schwächen und so die Genauigkeit untergraben. Eine plattformübergreifende
+Auswertung relativiert das Bild zusätzlich: \citet{lit_poly24_accuracy} berichten
+für 2024 stark schwankende Trefferquoten zwischen den Börsen, wobei Polymarket
+nicht durchgehend führte.
 
 Auch die Mikrostruktur solcher Märkte ist relevant. \citet{zotero_poly_006}
 analysieren am Beispiel von Kalshi das Zusammenspiel von liquiditätsgebenden und
@@ -77,6 +91,9 @@ Zur Messung der Forecast-Qualität dient der Brier-Score \citep{lit_brier_001},
 definiert als mittlere quadratische Abweichung zwischen Wahrscheinlichkeitsprognose
 und tatsächlichem Ausgang. Ein niedrigerer Brier-Verlust bedeutet eine bessere
 Prognose, und der Score belohnt sowohl Treffsicherheit als auch gute Kalibrierung.
+Formal ist der Brier-Score eine strikt-proper Scoring Rule \citep{lit_gneiting_2007},
+das heisst, die erwartete Bewertung wird genau dann minimiert, wenn die wahren
+Wahrscheinlichkeiten berichtet werden --- strategisches Verzerren lohnt sich nicht.
 Der Vergleich zweier Verlustreihen erfolgt mit dem Diebold-Mariano-Test
 \citep{lit_dm_001}, der prüft, ob zwei Prognosen im Mittel gleich genau sind, ohne
 einen bestimmten Entstehungsmechanismus zu unterstellen. Beide Verfahren gelten
@@ -108,23 +125,4 @@ die Marktauflösung verstärkt.
 Für die gebotene Vorsicht sprechen mehrere Befunde. \citet{zotero_poly_001} zeigen
 für die Oktober-Grosskonto-Episode 2024, dass Kapital gleichzeitig auf beide
 Marktseiten floss --- ein Muster, das mit heterogenen Erwartungen und nicht mit
-einseitiger Manipulation vereinbar ist. \citet{zotero_poly_007} ergänzt
-Verhaltensverzerrungen, etwa die Ueberschätzung kleiner Wahrscheinlichkeiten,
-sowie eine im Vergleich zu traditionellen Instrumenten höhere Volatilität. In der
-Praxis setzt Polymarket inzwischen eine On-Chain-Ueberwachung ein, die unter
-anderem ungewöhnliche Positionsgrössen vor Ergebnissen flaggt
-\citep{news_polymarket_integrity_001}, gestützt auf forensische Heuristiken wie
-Funding-Quellen und Wallet-Clustering \citep{news_chainalysis_forensics_001}.
-Diese Arbeiten liefern gemeinsam eine Signatur informierten Handels, ohne dass
-einzelne Adressen damit als Insider bewiesen wären.
-
-\section{Forschungslücke}
-Die Literatur liefert Theorie zur Aggregation und Effizienz, etablierte Methodik
-(Brier, Diebold-Mariano, Ereignisstudien, Granger) und gemischte Evidenz zu
-Polymarket. Diese Bausteine werden jedoch meist getrennt behandelt: Prognosequalität,
-Ereignisreaktion und On-Chain-Timing erscheinen in unterschiedlichen Arbeiten und
-selten für denselben Marktkontext. Was fehlt, ist eine reproduzierbare,
-deterministisch geprüfte Zusammenführung dieser drei Perspektiven für einen
-gemeinsamen Fall. Genau diese Lücke schliesst die vorliegende Arbeit für die
-US-Wahl 2024, indem sie H1, H2 und H3 auf derselben Datenbasis und mit
-nachvollziehbaren, vorab festgelegten Verfahren untersucht.
+einseitiger Ma

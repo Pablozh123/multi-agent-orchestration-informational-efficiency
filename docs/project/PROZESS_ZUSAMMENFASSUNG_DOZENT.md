@@ -53,6 +53,44 @@ Gebuehren und Slippage verkleinern ihn zusaetzlich. Fazit: Rohe Ineffizienzen
 erscheinen, ihre robuste, wirtschaftlich attraktive Ausnutzbarkeit ist aber
 begrenzt -- genau das motivierte den Wechsel von der Ausnutzung zur Messung.
 
+### Weitere getestete Strategien, Scanner-Lauf und Einschaetzung
+Der Cross-Venue-Fall war nur eine von mehreren systematisch katalogisierten
+Strategien. Der Scanner fuehrt einen Edge-Katalog mit Evidenz-Stufen (S =
+strukturelle Arbitrage mit garantiertem Gewinn bei sauberer Ausfuehrung, A =
+starker empirischer Edge, B = vielversprechend, C = blosse Hypothese, F = getestet
+und gescheitert) und protokolliert je Strategie, was tatsaechlich beobachtbar war.
+Forward-Replay- und Snapshot-Laeufe liefen lokal ueber rund zwei Wochen
+(20. Mai bis 2. Juni 2026) auf gespeicherten Orderbook- und Snapshot-Daten.
+
+| Strategie (Auswahl) | Evidenz | Beobachtung im Lauf |
+|---|---|---|
+| NEG_RISK Basket Sum-Arb (YES-Summe > 1) | S | meist 0 saubere Arbs (Beispiel: 42 Events gescannt, 0 Arbs); ein toter Leg macht den Basket unbaubar -- Markt grossteils effizient |
+| Within-Market (YES + NO < 1) | S | naechste Faelle typisch bei Summe ~1.001 (~10 Bps), schliessen in Sekunden, sehr selten |
+| Cross-Venue (Kalshi x Polymarket) | A | selten, nur um Katalysator-Events; Routine-Kadenz null (Somaliland-Faelle oben) |
+| Cross-Market-Monotonie | A | real, aber duenne Tiefe (< 50 USD Kapazitaet, 5-7 pp Spread frisst den Edge) |
+| Sum-Arb Lock-In | A | bester real beobachteter Edge; Baskets bei 1.025-1.030 v.a. in Wahlphasen |
+| Tail-Fade / Premium Harvest | B | konstanter Klein-Edge; Haltedisziplin noetig (duenne Buecher beim Exit) |
+| Whale-Following / Copy | B | Elite-Whales existieren (Profit-Faktor > 4 ueber 800+ Positionen); Kopieren nur als schwaches Zusatzsignal |
+| Crypto Oracle-Divergence-Fade | B | N=28: Fade-Richtung 26W/2L (~93 %), aber Out-of-Sample-Bestaetigung offen |
+| UMA-Dispute-Arb | F | verworfen: kategorie-gefilterte Backtests luegen (100 % -> ~40 % Trefferquote ohne Filter) |
+| Temporal Anchoring | F | Null-Ergebnis; scheinbare Luecken waren Artefakte fast aufgeloester Monate |
+
+Resultate des Forward-Replays: Die strukturellen Scanner fanden im
+Beobachtungsfenster keine validierte, sauber ausfuehrbare Arbitrage (typisch 0
+Arbs pro Lauf, am Schluss-Tag 0 Zeilen). Einzelne sehr grosse scheinbare Edges
+(mehrere hundert Prozent) waren im Replay ausdruecklich als experimentell und
+unverknuepft, mit unvollstaendiger Basket-Abdeckung oder veralteten Leg-Snapshots
+markiert -- also Artefakte, keine echten Chancen. Eine Verknuepfung zu
+aufgeloesten Maerkten oder echter PnL fehlt bislang; Live-Handel ist im aktuellen
+Stand bewusst nicht moeglich.
+
+Einschaetzung: Der Befund ist selbst ein Effizienz-Ergebnis. Saubere strukturelle
+Arbitragen sind selten und schliessen schnell, empirische Edges sind duenn,
+gebuehren- und tiefenlimitiert oder noch unbestaetigt, und mehrere zunaechst
+attraktive Muster fielen bei ehrlicher, kategorie-fairer Pruefung in sich zusammen.
+Genau diese begrenzte, schwer ausnutzbare Ineffizienz stuetzt die spaetere
+Mess-Perspektive der Arbeit.
+
 ## Phase 2 -- Research-Terminal: prediction-market-terminal
 
 ### 2a -- Ausgangspunkt: Polymarket-Reddit-Sentiment-Analyse
@@ -110,13 +148,34 @@ entscheidend sind Odds, Size und Umschlag.
 **Paper-Copytrading** ist bewusst nur Papier: Es beobachtet oeffentliche Trades
 einer Zielwallet, skaliert sie in ein lokales Portfolio und misst Latenz, Sizing,
 Cash-Recycling, Skips, Settlement-Mapping und Fidelity. Keine echten Orders.
-**Whale Flow und Suspicious** fuehren Kontext, Timing, Wallet-Historie und
-Verhalten zusammen (Suspicion-Scoring, Fresh-Wallet- und Louvain-Cluster,
-Co-Trading-Netzwerk). Hoeheres Insider-Risiko entsteht eher bei politischen,
-juristischen oder internen Maerkten mit asymmetrischem Informationszugang, nicht
-bei Sport- oder Wettermaerkten. Dieses Screening ist der direkte Vorlaeufer von H3
-und dem Monitoring-Werkzeug der Arbeit. Bei Kalshi fehlen oeffentliche
-Trader-Wallets, daher dort kein Wallet-Copytrading.
+
+**Whale Flow und Suspicious.** Das Suspicious-Screening setzt auf Whale-Risiko-
+Scores je Event und Wallet auf und ergaenzt Signale, die ein reiner Groessen-Score
+allein nicht sieht. Eine Wallet wird also nicht schon wegen ihrer Groesse markiert,
+sondern anhand einer Kombination konkreter Muster:
+
+- **Fresh-Wallet-Cluster:** mehrere im Datensatz kaum gesehene Wallets (z.B. bis zu
+  zwei Trades im Sample) mit Whale-Notional draengen im selben Markt auf dieselbe
+  Seite -- das klassische Muster, das oeffentliche Insider-Screens beschreiben.
+- **Konto-/Wallet-Alter:** das echte Alter einer Wallet (sofern abgefragt) fliesst
+  als Zu- oder Abschlag in den Score ein (sehr neu und zugleich sehr gross = hoeher).
+- **Co-Trading-/Louvain-Cluster:** Wallets, die wiederholt gemeinsam und zeitnah
+  dieselben Ausgaenge handeln, werden ueber ein Netzwerk als moegliche koordinierte
+  Gruppe (Syndikat) erkannt.
+- **Handelsform als Etikett:** Contrarian (Wette gegen den Markt, z.B. < 40c),
+  Trend-Follower (> 80c), Lottery-Ticket (< 20c) und Whale-Splash (sehr grosse
+  Kostenbasis) -- beschreibende Labels, die das Verhalten einordnen.
+
+Entscheidend ist die **Kontext-Gewichtung nach Marktart**: Sport, Asset-Preise und
+Wetter gelten als wenig insider-plausibel (oeffentliche Odds bzw. modellgetriebene
+Ausgaenge -> grosse Flows sind High-Roller, keine Insider), waehrend Politik, Awards
+sowie Firmen- und interne Maerkte insider-anfaellig sind (asymmetrischer
+Informationszugang; z.B. kennen Award-Jurys und Produktionsteams Resultate frueh).
+Der resultierende Score wird in Baender gefasst (>= 70 hoch, >= 55 mittel, >= 40
+erhoeht). Wichtig: Das ist ein best-effort Screen auf oeffentlichen Daten, kein
+juristischer Nachweis. Dieses Screening ist der direkte Vorlaeufer von H3 und dem
+Monitoring-Werkzeug der Arbeit. Bei Kalshi fehlen oeffentliche Trader-Wallets,
+daher dort kein Wallet-Copytrading.
 
 ## Phase 3 -- Fokussierung auf die Forschungsfrage
 Wechsel von der Ausnutzungs- zur Mess-Perspektive: Statt Chancen zu handeln, wird

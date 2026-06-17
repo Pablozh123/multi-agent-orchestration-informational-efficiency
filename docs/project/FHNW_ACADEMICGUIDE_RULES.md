@@ -248,3 +248,80 @@ gelesen werden. Bisher als ANNAHME verwendet (unbestaetigt): 11 pt,
 die .docx herunterladen und in den ba-thesis-Ordner legen (oder hochladen), dann
 werden Schrift, Schriftgroesse, Raender, Zeilenabstand und Ueberschriften-Stile
 direkt aus der Datei ausgelesen.
+
+---
+
+## 10. Exakte Layout- und Strukturvorgaben aus der Word-Dokumentvorlage 2023
+
+Direkt aus `HSW-FHNW_Dokumentvorlage-studentische-Arbeit-2023.docx` ausgelesen
+(im Repo unter `docs/project/templates/`). Diese Werte ERSETZEN die Annahmen in
+Abschnitt 9.
+
+### Seite und Raender (A4)
+- Seitenformat: A4 (21.0 x 29.7 cm).
+- Raender: oben **3.0 cm**, unten **2.8 cm**, links (Bundsteg) **2.5 cm**, rechts
+  **1.5 cm**. Kopfzeile 1.2 cm (Titelseite 0.75 cm), Fusszeile 1.8 cm.
+
+### Schrift und Absatz
+- Fliesstext (Formatvorlage «Standard»/Normal): **Arial 11 pt**, Zeilenabstand
+  **1.5**, Abstand nach Absatz **6 pt**, **Blocksatz** (justified). Die Vorlage
+  bestaetigt woertlich: "Die Schriftart fuer das gesamte Dokument (Arial 11pt)".
+- Ueberschrift 1: **13 pt fett**, nummeriert (1, 2, 3 ...), Abstand davor 18 /
+  danach 12 pt. Front-/Back-Matter nutzt "Ueberschrift 1 ohne Nummerierung".
+- Ueberschrift 3: 11 pt. Titel-Stil 12 pt fett. Beschriftung/Caption: **10 pt**.
+- Anfuehrungszeichen: typografische Guillemets «...» (Sprache Deutsch Schweiz).
+- Fussnoten nur in Ausnahmefaellen.
+
+### Seitennummerierung und Kopf-/Fusszeile
+- Front Matter (Eigenstaendigkeitserklaerung, Vorwort, Management Summary,
+  Inhaltsverzeichnis): **roemische Zahlen** (II, III, IV, V ...).
+- Ab Kapitel 1: **arabische Zahlen** (1, 2, ...).
+- Kopfzeile: Kurztitel der Arbeit. Fusszeile: Seitenzahl.
+
+### Abbildungen und Tabellen
+- Beschriftung **unter** dem Element, Formatvorlage «Beschriftung» (bzw.
+  «Beschriftung Tabelle»), Format: `Abbildung N: Titel (Autor, Jahr, S. X)` bzw.
+  `Tabelle N: Titel (Autor, Jahr, S. X)`. Quelle gehoert in die Beschriftung.
+- Abbildungs- und Tabellenverzeichnis automatisch aus den Beschriftungen
+  (Verweise -> Abbildungsverzeichnis einfuegen).
+
+### Verbindliche Dokumentstruktur (Reihenfolge der Vorlage)
+1. Titelseite (Tabelle: Titel, Untertitel, "Bachelor-Thesis 202x", Autor:in mit
+   Anschrift/Tel/E-Mail, Dozierende:r, Auftraggeberschaft, Ort/Monat 202x).
+2. **Eigenstaendigkeitserklaerung** (Wortlaut siehe unten).
+3. (Vorwort / Projekthintergrund / Danksagung).
+4. **Management Summary** (in der Arbeit; Umfang i.d.R. 1, max 2 Seiten; Aufbau:
+   Ausgangslage/Problemstellung + Ziele, Vorgehen + Methoden, Hauptergebnisse
+   [groesste Gewichtung], Fazit + Ausblick). NB: getrennt vom oeffentlichen
+   Management-Summary-Formular mit Zeichenlimits (Abschnitt 9 / Wegleitung 7.4).
+5. Inhaltsverzeichnis.
+6. Nummerierte Hauptkapitel (1, 1.1, 1.1.1 ...).
+7. Fazit.
+8. **Literaturverzeichnis** (alphabetisch, alle und nur zitierten Quellen).
+9. **Hilfsmittelverzeichnis** (siehe unten).
+10. Abbildungsverzeichnis.
+11. Tabellenverzeichnis.
+12. Abkuerzungsverzeichnis.
+13. Anhang.
+
+### Eigenstaendigkeitserklaerung (verbindlicher Wortlaut, gekuerzt)
+"Ich erklaere hiermit, dass ich saemtliche nicht von mir selbst stammenden
+Textstellen korrekt zitiert ...; dass ich in einem Verzeichnis alle verwendeten
+Hilfsmittel (z.B. KI-Assistenzsysteme wie Chatbots [z.B. ChatGPT], Uebersetzungs-,
+Paraphrasier-Tools, Programmierapplikationen [z.B. Github Copilot]) deklariert und
+ihre Verwendung bei den entsprechenden Textstellen angegeben habe; dass ich
+saemtliche immateriellen Rechte an verwendeten Materialien erworben habe oder
+diese selbst erstellt wurden; dass Thema/Arbeit nicht bei einem anderen Modul
+verwendet wurden ...; dass meine Arbeit auf Plagiate und Drittautorschaft
+(auch kuenstliche Intelligenz) geprueft werden kann; dass ein Verstoss (§ 29 Abs.
+1 lit. d StuPO) mit Note 1 bewertet wird und disziplinarische Folgen
+(Verweis/Ausschluss) haben kann." Mit Ort, Datum, Unterschrift. Gruppenarbeit:
+"Wir erklaeren ...". Vollstaendiger Wortlaut in der Vorlage-Datei.
+
+### Hilfsmittelverzeichnis (Pflicht, v.a. wegen KI-Einsatz)
+Tabelle mit drei Spalten: **Hilfsmittel | Verwendung | Betroffene Stellen**. Jede
+KI-/Tool-Nutzung ist hier UND an der betroffenen Textstelle anzugeben. Beispiele
+aus der Vorlage: privates/bezahltes Lektorat, DeepL Write, DeepL Translate,
+Zotero, Litmaps, Dream (by Wombo), ChatGPT, Github Copilot. Fuer diese Arbeit
+relevant: Claude/Codex (Code- und Textunterstuetzung), Zotero, etc. mit konkreter
+Verwendung und betroffenen Kapiteln/Stellen.

@@ -2,8 +2,8 @@
 
 Informeller Ueberblick ueber den Arbeitsverlauf seit Beginn -- vom ersten
 Explorieren bis zur fokussierten Arbeit. Bewusst ohne formale Vorlage, als
-ehrliche Darstellung des Wegs, der Werkzeuge und der Iterationen. Datierungen
-stammen aus den Git-Historien der drei Projekte.
+ehrliche Darstellung des Wegs, der Werkzeuge und der Iterationen. Die groben Zeitraeume stammen aus den Git-Historien der drei Projekte;
+es geht um den Ueberblick, nicht um eine taggenaue Dokumentation.
 
 ## Der rote Faden in einem Satz
 Die Arbeit begann mit der praktischen Frage, ob sich auf Prognosemaerkten
@@ -11,7 +11,7 @@ Ineffizienzen ausnutzen lassen, und entwickelte sich zur wissenschaftlichen
 Frage, wie informationseffizient diese Maerkte ueberhaupt sind -- die Ausnutzungs-
 Perspektive wurde zur Mess-Perspektive.
 
-## Phase 0 -- Themenfindung und Quellenrecherche (ca. [DATUM ergaenzen])
+## Phase 0 -- Themenfindung und Quellenrecherche
 - Erste Recherche zu Prognose- und Wettmaerkten, Fokus Polymarket.
 - Quellensuche unter anderem mit Perplexity, danach Aufbau einer
   Literaturbasis (spaeter in Zotero gepflegt).
@@ -80,7 +80,3 @@ Perspektive wurde zur Mess-Perspektive.
   hervorgegangen. Eine Wiederverwendung von Teilen daraus in der Bachelorarbeit
   ist nur zulaessig, wenn sie mit der Betreuung abgesprochen und in der Arbeit
   ausgewiesen wird (Eigenstaendigkeitserklaerung). [Mit Betreuung klaeren.]
-
-## Ungefaehrer Zeitaufwand
-[Pro Phase grob ergaenzen -- z.B. Recherche X h, alpha-bot Y h, terminal Z h,
-Analyse/Verschriftlichung. Die Git-Aktivitaet kann als Anhaltspunkt dienen.]

@@ -81,3 +81,44 @@ Abkuerzungsverzeichnis -> Anhang.
 2. **Erweiterungen:** als 3.4 (ergaenzende Befunde, Vorschlag) ODER Schweizer
    Fallstudie als 3.4 und Monitor/Agenten-Tool in den Anhang verschieben, damit
    Kapitel 3 rein empirisch bleibt.
+
+---
+
+## F. Variante B: Projekt-/Bachelorarbeiten-Struktur (4b) -- vom Nutzer nachgereicht
+
+Wichtig: Der FHNW-Guide kennt ZWEI Vorlagen. Variante A oben ist die
+"empirische Forschungsarbeit". Die hier ist "Projekt- und Bachelorarbeiten" --
+beratungs-/projektorientiert (man loest eine Aufgabe und liefert eine Loesung).
+
+Diese Arbeit hat BEIDES: einen empirischen Kern (H1-H3, Datenanalyse) UND einen
+Produkt-/Loesungsteil (read-only Monitoring-Werkzeug + Agenten-Orchestrierung).
+Variante B passt gut, wenn das entwickelte Werkzeug als "Loesung" in den
+Vordergrund rueckt.
+
+### Mapping der Arbeit auf 4b
+1. **Einleitung**: Ausgangssituation (Prognosemaerkte, Polymarket 2024) ·
+   Ziele und Zielsetzung (Forschungsfrage + H1-H3 + Ziel: Monitoring-Werkzeug) ·
+   Methodik (deterministischer Analyse-Kern, Ueberblick).
+2. **Analyse der Situation**
+   - 2.1 Bisherige Forschung (Literatur-Review = heutiges Kapitel 2)
+   - 2.2 Analyse (die empirische Untersuchung von Polymarket): Daten und
+     Methodik-Detail (heutiges Kapitel 3) sowie H1 Prognosequalitaet, H2
+     Ereignisreaktion, H3 Wallet-Timing als Analyse-Ergebnisse.
+3. **Schlussfolgerung (aus der Analyse)**: was H1-H3 ueber die informationelle
+   Effizienz zeigen.
+4. **Loesung**: das entwickelte read-only Monitoring-Werkzeug und die
+   Agenten-Orchestrierung (Konzept, Optionsbewertung, Entwicklung); Schweizer
+   Fallstudie als Validierung.
+5. **Allgemeine Schlussfolgerung und Einschraenkungen**: Gesamtfazit + Limitationen.
+6. **Naechste Schritte**: Ausblick (agentengestuetzte Pipeline als Future Work,
+   Haertung der Verdachts-Signatur).
+
+### A oder B? Ehrliche Einordnung
+- **4a (empirisch)** stellt die Hypothesen H1-H3 als zentrale Forschungs-Ergebnisse
+  in den Mittelpunkt -- passt, wenn die Effizienz-Analyse der Hauptbeitrag ist
+  (so legt es der Titel nahe).
+- **4b (Projekt)** rahmt das Ganze als Projekt mit dem Werkzeug als Loesung --
+  passt, wenn das entwickelte Monitoring-/Agenten-Tool als Hauptergebnis gelten soll.
+- Beide sind zulaessige FHNW-Vorlagen. Diese Wahl ist laut FHNW ausdruecklich mit
+  der Betreuungsperson abzustimmen. Inhaltlich geht beides aus demselben Material,
+  es unterscheidet sich vor allem die Rahmung und die Kapitel-Reihenfolge.

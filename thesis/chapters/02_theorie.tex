@@ -1,130 +1,130 @@
-% Status: ueberarbeitet als FHNW-Literatur-Review (Begriffe, Theorie, Best
-% Practice, Vorbefunde, Forschungsluecke). Strukturvorlage angepasst an die
+% Status: überarbeitet als FHNW-Literatur-Review (Begriffe, Theorie, Best
+% Practice, Vorbefunde, Forschungslücke). Strukturvorlage angepasst an die
 % eigene Arbeit (docs/project/FHNW_ACADEMICGUIDE_RULES.md, Abschnitt 4 + 10).
 % Finale Zitation nach Quellenreview (docs/project/SOURCE_REVIEW_LOG.md).
 \chapter{Theoretischer Rahmen und Forschungsstand}
 \label{ch:theorie}
 
-Dieses Kapitel ordnet die fuer die Arbeit relevanten Begriffe, Theorien,
+Dieses Kapitel ordnet die für die Arbeit relevanten Begriffe, Theorien,
 Messverfahren und Vorbefunde ein. Es folgt der Logik eines Literatur-Reviews.
-Zuerst werden die zentralen Begriffe geklaert, danach die theoretischen
-Grundlagen und die etablierten Verfahren zur Messung von Prognosequalitaet und
+Zuerst werden die zentralen Begriffe geklärt, danach die theoretischen
+Grundlagen und die etablierten Verfahren zur Messung von Prognosequalität und
 Marktreaktion dargestellt, anschliessend die bisherige Forschung zu Polymarket
 und zu informiertem Handel diskutiert. Aus dieser Zusammenschau ergibt sich die
-Forschungsluecke, welche die drei Hypothesen motiviert. Ausgewaehlt werden nur
-jene Konzepte und Quellen, die fuer die Forschungsfrage unmittelbar relevant sind.
+Forschungslücke, welche die drei Hypothesen motiviert. Ausgewählt werden nur
+jene Konzepte und Quellen, die für die Forschungsfrage unmittelbar relevant sind.
 
-\section{Begriffsklaerung}
+\section{Begriffsklärung}
 Ein \emph{Prognosemarkt} ist ein Markt, auf dem Kontrakte auf den Ausgang
-kuenftiger Ereignisse gehandelt werden und dessen Preis sich als kollektive
-Wahrscheinlichkeitsschaetzung lesen laesst \citep{zotero_poly_005}. Ein binaerer
+künftiger Ereignisse gehandelt werden und dessen Preis sich als kollektive
+Wahrscheinlichkeitsschätzung lesen lässt \citep{zotero_poly_005}. Ein binärer
 Kontrakt zahlt bei Eintritt des Ereignisses einen festen Betrag und sonst nichts,
 sodass der Gleichgewichtspreis zwischen null und eins der vom Markt
 eingepreisten Eintrittswahrscheinlichkeit entspricht. \emph{Informationelle
-Effizienz} bezeichnet den Grad, in dem dieser Preis die oeffentlich verfuegbare
+Effizienz} bezeichnet den Grad, in dem dieser Preis die öffentlich verfügbare
 Information widerspiegelt \citep{lit_emh_001}. Die Arbeit verwendet den Begriff
 bewusst graduell und scope-spezifisch, nicht als absolute Eigenschaft.
 
 \emph{Kalibrierung} meint die Uebereinstimmung von prognostizierter
-Wahrscheinlichkeit und beobachteter relativer Haeufigkeit: Ereignisse, denen ein
-Markt 70 Prozent zuweist, sollten langfristig in etwa 70 Prozent der Faelle
+Wahrscheinlichkeit und beobachteter relativer Häufigkeit: Ereignisse, denen ein
+Markt 70 Prozent zuweist, sollten langfristig in etwa 70 Prozent der Fälle
 eintreten. \emph{Polymarket} ist ein dezentraler, auf einer Blockchain
-abgewickelter Prognosemarkt, bei dem jede Transaktion oeffentlich einsehbar ist.
-Eine \emph{Wallet} ist die oeffentliche Adresse, ueber die eine Teilnehmerin oder
+abgewickelter Prognosemarkt, bei dem jede Transaktion öffentlich einsehbar ist.
+Eine \emph{Wallet} ist die öffentliche Adresse, über die eine Teilnehmerin oder
 ein Teilnehmer handelt. Ein \emph{Tier} ist in dieser Arbeit eine
-dataset-relative Groessenklasse von Wallets, abgeleitet aus den beobachteten
-kumulierten Betragsperzentilen und nicht aus einer willkuerlichen
+dataset-relative Grössenklasse von Wallets, abgeleitet aus den beobachteten
+kumulierten Betragsperzentilen und nicht aus einer willkürlichen
 Dollar-Schwelle. Diese Begriffe bilden die gemeinsame Grundlage der drei
 Hypothesen.
 
 \section{Markteffizienz und Informationsaggregation}
 Der theoretische Ausgangspunkt ist die Markteffizienzhypothese
-\citep{lit_emh_001}, nach der Preise verfuegbare Information widerspiegeln. Ueblich
+\citep{lit_emh_001}, nach der Preise verfügbare Information widerspiegeln. Ueblich
 ist die Unterscheidung in eine schwache, eine halbstrenge und eine strenge Form,
-je nachdem, ob historische Preise, alle oeffentlichen Informationen oder auch
-private Informationen bereits eingepreist sind. Auf Prognosemaerkte uebertragen
-heisst das: Wenn genuegend Teilnehmende ihre Erwartungen laufend an neue Evidenz
-anpassen, sollte der Marktpreis als Wahrscheinlichkeit die verfuegbare
-Information buendeln.
+je nachdem, ob historische Preise, alle öffentlichen Informationen oder auch
+private Informationen bereits eingepreist sind. Auf Prognosemärkte übertragen
+heisst das: Wenn genügend Teilnehmende ihre Erwartungen laufend an neue Evidenz
+anpassen, sollte der Marktpreis als Wahrscheinlichkeit die verfügbare
+Information bündeln.
 
 Diesen Aggregationsmechanismus beschreibt \citet{zotero_poly_005} konzeptionell
-und verweist auf Vergleiche, in denen spekulative Maerkte Experteneinschaetzungen
+und verweist auf Vergleiche, in denen spekulative Märkte Experteneinschätzungen
 und Umfragen erreichen oder schlagen. Die Idee der Informationsaggregation
-(haeufig als Weisheit der Vielen bezeichnet) motiviert ueberhaupt erst, einen
+(häufig als Weisheit der Vielen bezeichnet) motiviert überhaupt erst, einen
 Marktpreis als Forecast zu behandeln. Sie ist zugleich eine Annahme, die
-empirisch zu pruefen und nicht vorauszusetzen ist.
+empirisch zu prüfen und nicht vorauszusetzen ist.
 
-\section{Prognosemaerkte im Vergleich zu traditionellen Quellen}
-Ob Maerkte Umfragen tatsaechlich ueberlegen sind, ist empirisch umstritten.
-\citet{zotero_poly_002} finden fuer die US-Wahl 2024 einen Vorteil von Polymarket
-gegenueber Umfragen, besonders in den umkaempften Swing States, und ordnen ihn der
-Wisdom-of-Crowds-Idee zu. Zugleich betonen sie ausdruecklich, dass die Ergebnisse
-weiterer Untersuchung und einer Pruefung auf Uebertragbarkeit beduerfen. Dem steht
-eine kritische Sicht gegenueber: \citet{zotero_poly_009} argumentiert, dass
-Prognosemaerkte keine "Truth Machine" sind, sondern reflexiv sein koennen ---
+\section{Prognosemärkte im Vergleich zu traditionellen Quellen}
+Ob Märkte Umfragen tatsächlich überlegen sind, ist empirisch umstritten.
+\citet{zotero_poly_002} finden für die US-Wahl 2024 einen Vorteil von Polymarket
+gegenüber Umfragen, besonders in den umkämpften Swing States, und ordnen ihn der
+Wisdom-of-Crowds-Idee zu. Zugleich betonen sie ausdrücklich, dass die Ergebnisse
+weiterer Untersuchung und einer Prüfung auf Uebertragbarkeit bedürfen. Dem steht
+eine kritische Sicht gegenüber: \citet{zotero_poly_009} argumentiert, dass
+Prognosemärkte keine "Truth Machine" sind, sondern reflexiv sein können ---
 Vertrauen in den Marktpreis kann die laufende Informationsaktualisierung
-schwaechen und so die Genauigkeit untergraben.
+schwächen und so die Genauigkeit untergraben.
 
-Auch die Mikrostruktur solcher Maerkte ist relevant. \citet{zotero_poly_006}
-analysieren am Beispiel von Kalshi das Zusammenspiel von liquiditaetsgebenden und
-liquiditaetsnehmenden Teilnehmenden und zeigen, dass die Preisqualitaet von der
-Marktstruktur und den Anreizen abhaengt. Diese Spannung zwischen belegtem Vorteil
-und berechtigter Vorsicht begruendet, warum die vorliegende Arbeit nur begrenzte,
+Auch die Mikrostruktur solcher Märkte ist relevant. \citet{zotero_poly_006}
+analysieren am Beispiel von Kalshi das Zusammenspiel von liquiditätsgebenden und
+liquiditätsnehmenden Teilnehmenden und zeigen, dass die Preisqualität von der
+Marktstruktur und den Anreizen abhängt. Diese Spannung zwischen belegtem Vorteil
+und berechtigter Vorsicht begründet, warum die vorliegende Arbeit nur begrenzte,
 scope-spezifische Aussagen anstrebt.
 
-\section{Messung von Prognosequalitaet}
-Zur Messung der Forecast-Qualitaet dient der Brier-Score \citep{lit_brier_001},
+\section{Messung von Prognosequalität}
+Zur Messung der Forecast-Qualität dient der Brier-Score \citep{lit_brier_001},
 definiert als mittlere quadratische Abweichung zwischen Wahrscheinlichkeitsprognose
-und tatsaechlichem Ausgang. Ein niedrigerer Brier-Verlust bedeutet eine bessere
+und tatsächlichem Ausgang. Ein niedrigerer Brier-Verlust bedeutet eine bessere
 Prognose, und der Score belohnt sowohl Treffsicherheit als auch gute Kalibrierung.
 Der Vergleich zweier Verlustreihen erfolgt mit dem Diebold-Mariano-Test
-\citep{lit_dm_001}, der prueft, ob zwei Prognosen im Mittel gleich genau sind, ohne
+\citep{lit_dm_001}, der prüft, ob zwei Prognosen im Mittel gleich genau sind, ohne
 einen bestimmten Entstehungsmechanismus zu unterstellen. Beide Verfahren gelten
 als etablierte, deterministisch berechenbare Masse der Forecast-Bewertung und
 bilden die methodische Grundlage von H1.
 
 \section{Ereignisstudien}
-Die Reaktion eines Marktes auf neue Information laesst sich mit Ereignisstudien
-untersuchen \citep{lit_eventstudy_001}. Das Verfahren definiert ein Schaetzfenster
-fuer das normale Verhalten und ein Ereignisfenster, in dem abnormale und
-kumulierte abnormale Bewegungen gemessen werden. Urspruenglich fuer Aktienrenditen
-entwickelt, laesst sich das Design auf Tagesebene und auf Wahrscheinlichkeits-
-zeitreihen uebertragen. H2 nutzt dieses Design mit vorab fixierten, kuratierten
-oeffentlichen Ereignissen, um die Reaktionsrichtung von Polymarket nachvollziehbar
-zu pruefen.
+Die Reaktion eines Marktes auf neue Information lässt sich mit Ereignisstudien
+untersuchen \citep{lit_eventstudy_001}. Das Verfahren definiert ein Schätzfenster
+für das normale Verhalten und ein Ereignisfenster, in dem abnormale und
+kumulierte abnormale Bewegungen gemessen werden. Ursprünglich für Aktienrenditen
+entwickelt, lässt sich das Design auf Tagesebene und auf Wahrscheinlichkeits-
+zeitreihen übertragen. H2 nutzt dieses Design mit vorab fixierten, kuratierten
+öffentlichen Ereignissen, um die Reaktionsrichtung von Polymarket nachvollziehbar
+zu prüfen.
 
-\section{On-Chain-Aktivitaet und informierter Handel}
-Die Blockchain-Abwicklung macht Wallet-Aktivitaet sichtbar und eroeffnet die Frage,
+\section{On-Chain-Aktivität und informierter Handel}
+Die Blockchain-Abwicklung macht Wallet-Aktivität sichtbar und eröffnet die Frage,
 ob bestimmte Adressen Preisbewegungen zeitlich vorauslaufen. Methodisch nutzt H3
 Lead-Lag-Korrelationen und Granger-Tests \citep{lit_granger_001}, deren Ergebnisse
-ausdruecklich als praediktive Timing-Diagnostik und nicht als strukturelle
-Kausalitaet zu lesen sind. Theoretisch rahmt das Modell von \citet{lit_kyle_001}
+ausdrücklich als prädiktive Timing-Diagnostik und nicht als strukturelle
+Kausalität zu lesen sind. Theoretisch rahmt das Modell von \citet{lit_kyle_001}
 informierten Handel: Eine informierte Partei verbirgt ihre Order im normalen
-Handelsfluss, was sich in abnormaler Handelsgroesse niederschlagen kann. Empirisch
-zeigt \citet{zotero_delvecchio_001} fuer Kalshi-Maerkte, dass informierter Handel
-real und ueber eine Abnormal-Trade-Size-Kennzahl detektierbar ist und sich gegen
-die Marktaufloesung verstaerkt.
+Handelsfluss, was sich in abnormaler Handelsgrösse niederschlagen kann. Empirisch
+zeigt \citet{zotero_delvecchio_001} für Kalshi-Märkte, dass informierter Handel
+real und über eine Abnormal-Trade-Size-Kennzahl detektierbar ist und sich gegen
+die Marktauflösung verstärkt.
 
-Fuer die gebotene Vorsicht sprechen mehrere Befunde. \citet{zotero_poly_001} zeigen
-fuer die Oktober-Grosskonto-Episode 2024, dass Kapital gleichzeitig auf beide
+Für die gebotene Vorsicht sprechen mehrere Befunde. \citet{zotero_poly_001} zeigen
+für die Oktober-Grosskonto-Episode 2024, dass Kapital gleichzeitig auf beide
 Marktseiten floss --- ein Muster, das mit heterogenen Erwartungen und nicht mit
-einseitiger Manipulation vereinbar ist. \citet{zotero_poly_007} ergaenzt
-Verhaltensverzerrungen, etwa die Ueberschaetzung kleiner Wahrscheinlichkeiten,
-sowie eine im Vergleich zu traditionellen Instrumenten hoehere Volatilitaet. In der
+einseitiger Manipulation vereinbar ist. \citet{zotero_poly_007} ergänzt
+Verhaltensverzerrungen, etwa die Ueberschätzung kleiner Wahrscheinlichkeiten,
+sowie eine im Vergleich zu traditionellen Instrumenten höhere Volatilität. In der
 Praxis setzt Polymarket inzwischen eine On-Chain-Ueberwachung ein, die unter
-anderem ungewoehnliche Positionsgroessen vor Ergebnissen flaggt
-\citep{news_polymarket_integrity_001}, gestuetzt auf forensische Heuristiken wie
+anderem ungewöhnliche Positionsgrössen vor Ergebnissen flaggt
+\citep{news_polymarket_integrity_001}, gestützt auf forensische Heuristiken wie
 Funding-Quellen und Wallet-Clustering \citep{news_chainalysis_forensics_001}.
 Diese Arbeiten liefern gemeinsam eine Signatur informierten Handels, ohne dass
-einzelne Adressen damit als Insider bewiesen waeren.
+einzelne Adressen damit als Insider bewiesen wären.
 
-\section{Forschungsluecke}
+\section{Forschungslücke}
 Die Literatur liefert Theorie zur Aggregation und Effizienz, etablierte Methodik
 (Brier, Diebold-Mariano, Ereignisstudien, Granger) und gemischte Evidenz zu
-Polymarket. Diese Bausteine werden jedoch meist getrennt behandelt: Prognosequalitaet,
+Polymarket. Diese Bausteine werden jedoch meist getrennt behandelt: Prognosequalität,
 Ereignisreaktion und On-Chain-Timing erscheinen in unterschiedlichen Arbeiten und
-selten fuer denselben Marktkontext. Was fehlt, ist eine reproduzierbare,
-deterministisch gepruefte Zusammenfuehrung dieser drei Perspektiven fuer einen
-gemeinsamen Fall. Genau diese Luecke schliesst die vorliegende Arbeit fuer die
+selten für denselben Marktkontext. Was fehlt, ist eine reproduzierbare,
+deterministisch geprüfte Zusammenführung dieser drei Perspektiven für einen
+gemeinsamen Fall. Genau diese Lücke schliesst die vorliegende Arbeit für die
 US-Wahl 2024, indem sie H1, H2 und H3 auf derselben Datenbasis und mit
 nachvollziehbaren, vorab festgelegten Verfahren untersucht.

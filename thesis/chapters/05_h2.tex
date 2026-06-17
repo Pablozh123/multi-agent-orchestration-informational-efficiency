@@ -1,4 +1,4 @@
-% Status: result_ready_with_limits. Bounded-draft-ready.
+% Status: result_ready_with_limits.
 % Evidence: interpretation_h2_daily_response
 % Artefakte: h2_event_window_summary.csv; events_timeline_seed.csv
 \chapter{H2: Ereignisfenster}
@@ -6,18 +6,26 @@
 
 H2 prüft, ob sich Polymarket-Wahrscheinlichkeiten um sieben vorab kuratierte
 öffentliche Ereignisse in plausibler Richtung und innerhalb fester Tagesfenster
-bewegen \citep{lit_eventstudy_001,lit_emh_001}. Die Ereignisse wurden vor der
-Analyse mit Zeitstempel und erwarteter Richtung fixiert.
+bewegen \citep{lit_eventstudy_001,lit_emh_001}. Methodisch folgt die Analyse dem
+Ereignisstudien-Design: Ein Schätzfenster vor dem Ereignis beschreibt das normale
+Bewegungsverhalten der Wahrscheinlichkeit, im Ereignisfenster wird die abnormale,
+also über dieses Normalverhalten hinausgehende Veränderung gemessen
+\citep{lit_eventstudy_001}. Alle sieben Ereignisse wurden vor der Analyse mit
+Zeitstempel und a-priori erwarteter Richtung fixiert, sodass die Auswahl nicht
+nachträglich an sichtbaren Preisbewegungen ausgerichtet ist. Drei Ereignisse
+tragen eine gerichtete Erwartung, die übrigen vier wurden neutral kuratiert.
 
 \paragraph{Sichtbare Tagesreaktion.}
 Die stärkste Primärfenster-Bewegung (0--1 Tag) zeigt das Attentat auf Trump am
 13.~Juli 2024 mit einer abnormalen Veränderung von $+7.2$ Prozentpunkten zugunsten
 von Trump. Die gerichtet erwarteten Ereignisse bewegen sich konsistent: die
 Verurteilung im Schweigegeld-Prozess ($-4.1$ pp) und Bidens Rückzug zugunsten
-von Harris ($-1.7$ pp für Trump) gehen in die erwartete Richtung. Die übrigen,
-als neutral kuratierten Ereignisse zeigen kleinere Bewegungen. Insgesamt
-reagieren die Polymarket-Wahrscheinlichkeiten auf Tagesebene plausibel auf die
-kuratierten Ereignisse.
+von Harris ($-1.7$ pp für Trump) gehen in die erwartete Richtung. Die vier neutral
+kuratierten Ereignisse, also die beiden Debatten und die VP-Nominierungen, zeigen
+kleinere und in der Richtung gemischte Bewegungen zwischen $-2.9$ und $+3.5$
+Prozentpunkten, was zu ihrer offenen a-priori-Erwartung passt. Insgesamt reagieren
+die Polymarket-Wahrscheinlichkeiten auf Tagesebene plausibel auf die kuratierten
+Ereignisse.
 
 \begin{table}[ht]
 \centering
@@ -42,13 +50,34 @@ Harris--Trump-Debatte (11.09.) & neutral & $-2.9$ \\
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.85\textwidth]{thesis_h2_event_window_car.png}
-\caption{Tägliche Ereignisfenster-Bewegungen (F2). Quelle:
+\caption{Tägliche Ereignisfenster-Bewegungen je Ereignis (F2). Quelle:
 \texttt{data/results/thesis\_h2\_event\_window\_car.png}.}
 \label{fig:f2}
 \end{figure}
 
+\paragraph{Lesart der Abbildung.}
+Abbildung~\ref{fig:f2} stellt je Ereignis die abnormale Veränderung im
+Primärfenster dar und ordnet sie nach Stärke und Richtung. Sichtbar wird ein
+abgestuftes Muster: das Attentat als deutlichster Ausschlag, die beiden anderen
+gerichteten Ereignisse als klar erwartungskonforme, aber kleinere Bewegungen, und
+die neutralen Ereignisse als gestreutes Band um null. Die Abbildung macht damit
+zweierlei sichtbar -- dass der Markt auf gerichtete Ereignisse erwartungsgemäss
+reagiert, und dass auch ohne vorgezeichnete Richtung Bewegung entsteht, wie sie
+neue öffentliche Information erwarten lässt.
+
+\paragraph{Einordnung.}
+Das Muster ist mit einer halbstrengen Markteffizienz vereinbar, bei der
+öffentliche Information zügig in den Preis einfliesst \citep{lit_emh_001}. Es
+handelt sich jedoch um eine deskriptive, gerichtete Reaktionsdiagnostik und nicht
+um einen Kausalnachweis: Die abnormale Veränderung zeigt, dass sich die
+Wahrscheinlichkeit um das Ereignis herum in plausibler Richtung bewegt, nicht,
+dass allein das Ereignis sie verursacht hat.
+
 \paragraph{Limitation.}
 Die Analyse beruht auf Tagespreisen und kann keine Intraday-Reaktionszeit
-identifizieren, H2 stützt damit eine Aussage über tägliche Reaktionsmuster,
-nicht über sofortige Marktreaktion. Da die Ereignisse vorab fixiert wurden,
-besteht keine nachträgliche Auswahl nach sichtbaren Preisbewegungen.
+identifizieren, H2 stützt damit eine Aussage über tägliche Reaktionsmuster, nicht
+über sofortige Marktreaktion. Die sieben Ereignisse sind eine kleine, kuratierte
+Stichprobe ohne formalen Signifikanztest je Ereignis, und mehrere fielen in eine
+Phase dichter Nachrichtenlage, sodass sich Einflüsse überlagern können. Da die
+Ereignisse vorab fixiert wurden, besteht aber keine nachträgliche Auswahl nach
+sichtbaren Preisbewegungen.

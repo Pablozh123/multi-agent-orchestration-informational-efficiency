@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>Agenten-Review-Queue (Read-only)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 28px; color: #17202a; }
+    h1 { margin-bottom: 4px; }
+    .metrics { display: grid; grid-template-columns: repeat(4, minmax(120px, 1fr)); gap: 12px; margin-top: 12px; }
+    .metric { border: 1px solid #d7dde5; border-radius: 6px; padding: 12px; background: #f8fafc; }
+    .metric strong { display: block; font-size: 22px; margin-top: 4px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; font-size: 13px; }
+    th, td { border: 1px solid #d7dde5; padding: 7px; text-align: left; vertical-align: top; }
+    th { background: #eef2f7; }
+    code { background: #f1f5f9; padding: 2px 4px; border-radius: 4px; }
+    .note { background: #fff7e6; border: 1px solid #f0d08a; padding: 12px; border-radius: 6px; }
+    .pipeline { background: #f1f7fb; border: 1px solid #bcd4e6; padding: 12px; border-radius: 6px; }
+    .pipeline ol { margin: 8px 0 0 18px; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: bold; color: #fff; }
+    .badge-high, .badge-escalate_human { background: #b03a2e; }
+    .badge-medium, .badge-check_source { background: #b9770e; }
+    .badge-low, .badge-watch { background: #5d6d7e; }
+    .links a { color: #174f78; font-weight: bold; margin-right: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Agenten-Review-Queue</h1>
+  <p class="note">Read-only Prüf-Workflow. Die Agenten berechnen keine Kennzahlen,
+  sie ordnen nur bereits berechnete, begrenzte Monitor-Zusammenfassungen ein und
+  empfehlen ausschliesslich Prüf-Handlungen (watch, check_source, escalate_human). Kein Kauf/Verkauf, keine
+  Order, keine Aussage über Kausalität, Insiderhandel, Fehlverhalten oder
+  Profitabilität. Der Mensch entscheidet.</p>
+
+  <section class="metrics">
+    <div class="metric">Fälle in der Queue<strong>3</strong></div>
+    <div class="metric">Hoch<strong>0</strong></div>
+    <div class="metric">Mittel<strong>1</strong></div>
+    <div class="metric">Tief<strong>2</strong></div>
+  </section>
+
+  <div class="pipeline">
+    <strong>Agenten-Orchestrierung</strong>
+    <ol>
+      <li><b>EventScout</b> sammelt belegte Ereigniskandidaten (Quelle + Zeitstempel), unbelegte werden verworfen.</li>
+      <li><b>CaseNarrative</b> liest einen Fall über die read-only MCP-Schicht und beschreibt ihn neutral.</li>
+      <li><b>SkepticReviewer</b> nennt benigne Gegenargumente und senkt die Konfidenz begrenzt (nie positiv).</li>
+      <li><b>Orchestrator</b> vergibt Priorität und genau eine Prüf-Empfehlung und rankt die Queue.</li>
+    </ol>
+    <p style="margin:8px 0 0 0;">Empfehlungs-Verteilung: check_source: 1, watch: 2.</p>
+  </div>
+
+  <h2>Review-Queue (gerankt)</h2>
+  <table>
+    <thead><tr>
+      <th>#</th><th>Priorität</th><th>Empfehlung</th><th>Frage</th><th>Score</th>
+      <th>Narrativ (CaseNarrative)</th><th>Skeptiker-Hinweis</th><th>Review-Status</th>
+    </tr></thead>
+    <tbody>
+<tr><td>1</td><td><span class="badge badge-medium">medium</span></td><td><span class="badge badge-check_source">check_source</span></td><td>Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?</td><td>0.7</td><td>Case monitor_candidate_20260523_192500_c6370fa4e8c9 concerns the market &#x27;Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?&#x27; (slug: will-alexandria-ocasio-cortez-win-the-2028-democratic-presidential-nomination-653). It is a bounded human-review cue labelled &#x27;insider_risk_review_candidate&#x27; at review priority &#x27;high&#x27;. Event context: nearest_event_only; reference overlap: reference_hit; human-review status: source_check_pending. This is a review prompt only, not a finding, a metric, or any claim about private information.</td><td>A public attention spike (news/hype) around this market could explain the bucket without any private information. Generic new-user inflow can mimic concentrated activity; new wallets are not evidence of informed trading. The cue may be a BUY-only filter artifact; without exit/position data it is not a directional signal.</td><td>source_check_pending</td></tr>
+<tr><td>2</td><td><span class="badge badge-low">low</span></td><td><span class="badge badge-watch">watch</span></td><td>Will China invade Taiwan by end of 2026?</td><td>0.3</td><td>Case monitor_candidate_20260523_192500_2bb6f8fa6250 concerns the market &#x27;Will China invade Taiwan by end of 2026?&#x27; (slug: will-china-invade-taiwan-before-2027). It is a bounded human-review cue labelled &#x27;insider_risk_watch_cue&#x27; at review priority &#x27;medium&#x27;. Event context: nearest_event_only; reference overlap: partial_reference_overlap; human-review status: source_check_pending. This is a review prompt only, not a finding, a metric, or any claim about private information.</td><td>A public attention spike (news/hype) around this market could explain the bucket without any private information. Generic new-user inflow can mimic concentrated activity; new wallets are not evidence of informed trading. If flow is two-sided / bidirectional, it is a market-making or hedging pattern rather than a directional informed bet. The cue may be a BUY-only filter artifact; without exit/position data it is not a directional signal.</td><td>source_check_pending</td></tr>
+<tr><td>3</td><td><span class="badge badge-low">low</span></td><td><span class="badge badge-watch">watch</span></td><td>Will the U.S. invade Iran before 2027?</td><td>0.3</td><td>Case monitor_candidate_20260523_192500_71cd3b4e784b concerns the market &#x27;Will the U.S. invade Iran before 2027?&#x27; (slug: will-the-us-invade-iran-before-2027). It is a bounded human-review cue labelled &#x27;insider_risk_watch_cue&#x27; at review priority &#x27;medium&#x27;. Event context: nearest_event_only; reference overlap: no_reference_overlap; human-review status: source_check_pending. This is a review prompt only, not a finding, a metric, or any claim about private information.</td><td>A public attention spike (news/hype) around this market could explain the bucket without any private information. Generic new-user inflow can mimic concentrated activity; new wallets are not evidence of informed trading. If flow is two-sided / bidirectional, it is a market-making or hedging pattern rather than a directional informed bet. The cue may be a BUY-only filter artifact; without exit/position data it is not a directional signal.</td><td>source_check_pending</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Interpretationsgrenzen</h2>
+  <p class="note">Diese Queue beweist weder private Information noch Fehlverhalten,
+  Kausalität, Handelbarkeit, Profitabilität oder künftige Performance. Gesperrte
+  Behauptungen: <code>private_information_proof; misconduct_finding; causality; tradeability; profitability; future_performance; order_instruction</code>. Risiko-Etiketten sind Beobachtungs-Marker,
+  keine Befunde, und ersetzen keine manuelle Prüfung.</p>
+
+  <h2>Methode und Audit</h2>
+  <table>
+    <tbody>
+      <tr><th>LLM-Backend</th><td>mock (deterministisch, ohne Netz/Key sofern Mock)</td></tr>
+      <tr><th>LLM-Audit-Log</th><td><code>agent_review_queue_llm_audit_log.jsonl</code> (eine Zeile je LLM-Aufruf, nur Prompt-Hash)</td></tr>
+      <tr><th>Datenzugriff</th><td>read-only MCP, maximal 50 Zeilen je Abfrage, Wallet-Adressen redigiert</td></tr>
+      <tr><th>Agenten berechnen Kennzahlen</th><td>nein</td></tr>
+    </tbody>
+  </table>
+
+  <p class="links">
+    <a href="monitor_v2_polymarket_dashboard.html">&larr; Monitor-Dashboard</a>
+    <a href="monitor_anomaly_review_dashboard.html">Anomalie-Review-Dashboard</a>
+  </p>
+</body>
+</html>

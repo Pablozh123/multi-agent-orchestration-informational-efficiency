@@ -1,0 +1,49 @@
+{
+  "blocked_claims": "private_information_proof; misconduct_finding; causality; tradeability; profitability; future_performance; order_instruction",
+  "generated_at_utc": "2026-06-17T11:50:22+00:00",
+  "limitations": {
+    "human_review_required": true,
+    "no_causal_or_profitability_claim": true,
+    "no_private_information_proof": true,
+    "review_recommendations_only": true
+  },
+  "method": {
+    "agents": [
+      "EventScout",
+      "CaseNarrative",
+      "SkepticReviewer",
+      "Orchestrator"
+    ],
+    "agents_compute_no_metric": true,
+    "does_not_collect_external_data": true,
+    "does_not_write_database": true,
+    "every_llm_call_audited": true,
+    "llm_backend": "mock",
+    "max_rows": 50,
+    "name": "agent_review_queue_dashboard",
+    "read_only": true,
+    "recommendations_allowed": [
+      "watch",
+      "check_source",
+      "escalate_human"
+    ],
+    "uses_agents_and_mcp": true,
+    "uses_bounded_local_files": true,
+    "uses_llm": true
+  },
+  "outputs": {
+    "case_count": 3,
+    "contains_order_instructions": false,
+    "contains_wallet_addresses": false,
+    "dashboard_path": "/sessions/loving-cool-heisenberg/mnt/ba-thesis/data/results/agent_review_queue_dashboard.html",
+    "llm_audit_log": "/sessions/loving-cool-heisenberg/mnt/ba-thesis/data/results/agent_review_queue_llm_audit_log.jsonl",
+    "priority_counts": {
+      "low": 2,
+      "medium": 1
+    },
+    "recommendation_counts": {
+      "check_source": 1,
+      "watch": 2
+    }
+  }
+}

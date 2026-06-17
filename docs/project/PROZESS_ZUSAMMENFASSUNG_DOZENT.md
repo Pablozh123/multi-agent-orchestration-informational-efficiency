@@ -22,81 +22,101 @@ Ein paper-only TypeScript/Node-Scanner, der Markt- und Orderbook-Daten liest,
 moegliche Chancen erkennt und Reports schreibt. Schwerpunkt: Cross-Venue zwischen
 Kalshi und Polymarket.
 
-Zentrale Unterscheidung des Projekts: Ein Preisunterschied ist noch keine
-Arbitrage. Eine echte risikofreie Cross-Venue-Arbitrage entsteht erst, wenn man
-YES auf der einen und NO auf der anderen Boerse fuer denselben Ausgang zusammen
-fuer unter 1.00 kaufen kann (Kosten = YES-Ask + NO-Ask, Brutto-Edge =
-(1 - Kosten), abzueglich Gebuehren). Ein blosser Same-side-Spread ist nur ein
-Bewertungsunterschied, kein garantierter Gewinn. Die Matching-Logik ist bewusst
-konservativ (kanonisches Event-/Outcome-Modell, Ankerbegriffe, Aufloesungszeit und
--regeln); mehrdeutige Paare landen in einer Review-Liste statt automatisch als Arb.
+Zentrale Unterscheidung: Ein Preisunterschied ist noch keine Arbitrage. Eine echte
+risikofreie Cross-Venue-Arbitrage entsteht erst, wenn man YES auf der einen und NO
+auf der anderen Boerse fuer denselben Ausgang zusammen fuer unter 1.00 kaufen kann
+(Kosten = YES-Ask + NO-Ask, Brutto-Edge = 1 - Kosten, abzueglich Gebuehren). Ein
+blosser Same-side-Spread ist nur ein Bewertungsunterschied, kein garantierter
+Gewinn. Die Matching-Logik ist bewusst konservativ (kanonisches Event-/Outcome-
+Modell, Ankerbegriffe, Aufloesungszeit und -regeln); mehrdeutige Paare landen in
+einer Review-Liste statt automatisch als Arb.
 
 Untersuchte Marktfaelle: Inflation (Kalshi-KXCPI vs. Polymarket) und Bitcoin
-(Range/Bracket vs. ``ueber X'') ergaben keine sauberen gleichen Resolutionen und
-wuerden eine Basket-/Bracket-Logik brauchen; Fed-Zinsmaerkte blieben mehrdeutig;
-nur das Somaliland-Paar war ein manuell verifiziertes echtes Paar.
+(Range/Bracket vs. ``ueber X'') ergaben keine sauberen gleichen Resolutionen;
+Fed-Zinsmaerkte blieben mehrdeutig; nur das Somaliland-Paar war ein manuell
+verifiziertes echtes Paar. Die echten historischen Faelle waren real, aber klein
+und fragil:
 
-Ergebnis und Erkenntnis: Aktuell sind keine aktiven echten YES+NO-Arbitragen
-sichtbar, nur einige Same-side-Spreads. Die historischen echten Faelle
-(Somaliland) waren real, aber klein und fragil -- ein Top-of-book-Edge von rund
-6.5 Cent schrumpfte tiefenbereinigt auf wenige Dollar Maximalgewinn, spaetere
-Faelle lagen bei nur 1 bis 2 Cent. Wichtig fuer die Einordnung: Solche
-Cross-Venue-Arbitragen sind faktisch **Carry-Trades** -- man kauft beide Seiten und
-haelt die Position bis zur Marktaufloesung, die teils Monate entfernt liegt (z.B.
-``Somaliland before 2027''). Der ohnehin kleine Edge verteilt sich damit ueber eine
-lange Haltedauer mit gebundenem Kapital, was den annualisierten Ertrag
-ueberschaubar macht; Tiefe, Gebuehren und Slippage verkleinern ihn zusaetzlich.
-Fazit der Phase: Rohe Ineffizienzen erscheinen, ihre robuste, wirtschaftlich
-attraktive Ausnutzbarkeit ist aber begrenzt -- genau das motivierte den Wechsel von
-der Ausnutzung zur Messung der Effizienz.
+| Datum | Paar | Kosten (YES+NO) | Brutto-Edge | Realistischer Max-Gewinn (tiefenbereinigt) |
+|---|---|---|---|---|
+| 2026-06-05 | Somaliland | 93.5c (10.5 + 83.0) | +6.5c | ca. 2.90 USD (100 Kontrakte; Tiefen-Schnitt YES 14.1c statt 10.5c) |
+| 2026-06-08 | Somaliland | 98.3c (14.3 + 84.0) | +1.7c | ca. 0.71 USD |
+| spaeter (inaktiv) | Somaliland | 98.8c (13.8 + 85.0) | +1.2c | ca. 0.18 USD |
+
+Aktuell sind keine aktiven echten YES+NO-Arbitragen sichtbar, nur einige
+Same-side-Spreads. Wichtig fuer die Einordnung: Solche Cross-Venue-Arbitragen sind
+faktisch **Carry-Trades** -- man kauft beide Seiten und haelt die Position bis zur
+Marktaufloesung, die teils Monate entfernt liegt (z.B. ``Somaliland before 2027'').
+Der ohnehin kleine Edge verteilt sich damit ueber eine lange Haltedauer mit
+gebundenem Kapital, was den annualisierten Ertrag ueberschaubar macht; Tiefe,
+Gebuehren und Slippage verkleinern ihn zusaetzlich. Fazit: Rohe Ineffizienzen
+erscheinen, ihre robuste, wirtschaftlich attraktive Ausnutzbarkeit ist aber
+begrenzt -- genau das motivierte den Wechsel von der Ausnutzung zur Messung.
 
 ## Phase 2 -- Research-Terminal: prediction-market-terminal
 
 ### 2a -- Ausgangspunkt: Polymarket-Reddit-Sentiment-Analyse
-Urspruenglich ein Data-Wrangling-Modulprojekt, das explorativ prueft, ob die
-Reddit-Stimmung mit Polymarket-Wahrscheinlichkeiten zusammenhaengt.
-- Aufbau (ETL): aktive Polymarket-Maerkte per API laden, aus den Marktfragen
-  Reddit-Suchbegriffe ableiten, Posts sammeln, mit Twitter-RoBERTa als
-  positiv/neutral/negativ klassifizieren, pro Markt aggregieren; zusaetzlich ein
-  Zero-Shot-Stance-Score (DeBERTa-v3 NLI), der direkt misst, ob ein Post das
-  Eintreten des Ereignisses stuetzt.
-- Stichprobe: 29 Live-Maerkte und 725 Reddit-Posts (Bulk-Run 22. Mai).
-- Wichtigste Erkenntnis: **kein statistisch signifikanter** Zusammenhang zwischen
-  Reddit-Sentiment und Polymarket-Wahrscheinlichkeit; die Richtung stimmt nur in
-  **13 von 29 Maerkten (44.8 Prozent)** ueberein, und die Reddit-Treffer sind
-  inhaltlich verrauscht. Reddit-Stimmung allein ist also kein robuster Praediktor.
+Urspruenglich ein Data-Wrangling-Modulprojekt: Haengt die Reddit-Stimmung mit
+Polymarket-Wahrscheinlichkeiten zusammen? Aufbau als ETL-Pipeline (Polymarket-API
+-> Reddit-Suchbegriffe -> Posts -> Sentiment-Klassifikation -> pro Markt
+aggregiert), zusaetzlich ein Zero-Shot-Stance-Score (DeBERTa-v3 NLI), der direkt
+misst, ob ein Post das Eintreten des Ereignisses stuetzt. Stichprobe: 29
+Live-Maerkte, 725 Reddit-Posts, 7 Subreddits (Bulk-Run 22. Mai).
+
+| Modell | Pearson r | Spearman rho | Richtungstreffer |
+|---|---|---|---|
+| VADER (Baseline) | +0.069 | +0.115 | 27.6 % |
+| Twitter-RoBERTa (final) | +0.079 | +0.151 | 44.8 % |
+
+Wichtigste Erkenntnis: **kein statistisch signifikanter** Zusammenhang zwischen
+Reddit-Sentiment und Polymarket-Wahrscheinlichkeit (schwach positiv, nicht
+signifikant), Richtungstreffer nur 13 von 29 Maerkten (44.8 %). Der Stance-Score
+korrelierte **nicht staerker** als reines Sentiment (F4). Ein methodischer
+Kernpunkt: Sentiment misst Stimmung, nicht Zustimmung -- bei negativ gerahmten
+Fragen (Rezession, Krieg, Verurteilung) kann positive Stimmung sogar gegen das
+Ereignis sprechen, weshalb pro Marktfrage eine Polaritaets-Korrektur eingefuehrt
+wurde. Fazit: Reddit-Stimmung allein ist kein robuster Praediktor fuer
+Polymarket-Preise.
 
 ### 2b -- Ausbau zum Research-Terminal
-Die Ausgangsfrage war, wie man profitable Polymarket-Trader und Whales erkennen
-und verstehen kann. Daraus wurde eine Streamlit-Research-Plattform fuer Polymarket
-und Kalshi mit mehreren Workspaces: Marktsuche, Trader-Leaderboard und
-Wallet-Profile, Live-Trade-Flow, Whale Flow, Suspicious (Insider-Risiko),
-Cross-Venue, Backtester, Paper-Copytrading, Monitor und Portfolio.
+Die Ausgangsfrage war, wie man profitable Polymarket-Trader und Whales erkennen und
+verstehen kann. Daraus wurde eine Streamlit-Research-Plattform fuer Polymarket und
+Kalshi mit mehreren Workspaces: Marktsuche, Trader-Leaderboard und Wallet-Profile,
+Live-Trade-Flow, Whale Flow, Suspicious (Insider-Risiko), Cross-Venue, Backtester,
+Paper-Copytrading, Monitor und Portfolio.
 
-- **Fallstudie Swisstony:** wichtigster analysierter Trader (oeffentliche Wallet,
-  ohne Adressnennung). Aus lokaler Analyse oeffentlicher Daten: sehr starke
-  historische Performance (berichtete PnL in zweistelliger Millionenhoehe,
-  cashflow-bereinigter ROI rund +200 Prozent bei einer Winrate um 53 Prozent, hohe
-  risikoadjustierte Kennzahlen). Interpretation des Edges: keine wenigen grossen
-  Directional Bets, sondern Marktselektion, Timing, hoher Turnover, kurze
-  Event-Durations und sauberes Kapital-Recycling. Eine Winrate um 53 Prozent
-  erklaert den Erfolg also nicht allein -- entscheidend sind Odds, Size und
-  Umschlag. Die Zahlen sind vor einem produktiven Einsatz neu live zu pruefen.
-- **Paper-Copytrading:** bewusst nur Papier. Es beobachtet oeffentliche Trades
-  einer Zielwallet, skaliert sie in ein lokales simuliertes Portfolio und misst,
-  wie gut sich eine Quelle ueberhaupt kopieren laesst: Latenz, Sizing,
-  Cash-Recycling, Skips, Settlement-Mapping und Fidelity gegenueber der Source.
-  Keine echten Orders.
-- **Whale Flow und Suspicious:** fuehren Kontext, Timing, Wallet-Historie und
-  Verhalten zusammen (Suspicion-Scoring, Fresh-Wallet- und Louvain-Cluster,
-  Co-Trading-Netzwerk). Wichtig: Sport- und Wettermaerkte sind nicht automatisch
-  insider-riskant, weil viel oeffentlich modellierbar ist; hoeheres Risiko entsteht
-  eher bei politischen, juristischen oder internen Maerkten mit asymmetrischem
-  Informationszugang. Dieses Screening ist der direkte Vorlaeufer von H3 und dem
-  Monitoring-Werkzeug der Arbeit.
-- **Kalshi-Grenze:** Kalshi veroeffentlicht keine oeffentlichen Trader-Wallets,
-  daher sind dort Markt- und Cross-Venue-Analysen moeglich, aber kein
-  Wallet-Copytrading wie bei Polymarket.
+**Fallbeispiel Swisstony.** Als Testfall diente Swisstony, ein sehr profitabler
+oeffentlicher Trader (ohne Adressnennung), an dem die ganze Pipeline erprobt wurde:
+Trader-Erkennung, Backtesting und Paper-Copytrading. Es ging nicht darum, ihn als
+``wichtigsten'' Trader auszuzeichnen, sondern an einem starken, realen Beispiel zu
+messen, wie gut sich eine Quelle ueberhaupt analysieren und kopieren laesst. Die
+Zahlen stammen aus lokaler Analyse oeffentlicher Daten und sind vor produktivem
+Einsatz neu live zu pruefen:
+
+| Kennzahl | Wert (lokale Analyse) |
+|---|---|
+| Berichtete PnL | ca. 9.6 Mio. USD |
+| Cashflow-bereinigter ROI | ca. +200 % |
+| Winrate | ca. 53 % |
+| All-time-Volumen | ca. 867 Mio. USD |
+| Sharpe-aehnlich (taeglich) | ca. 4.1 |
+| Max. Drawdown | ca. -0.97 Mio. USD |
+
+Interpretation des Edges: keine wenigen grossen Directional Bets, sondern
+Marktselektion, Timing, hoher Turnover, kurze Event-Durations und sauberes
+Kapital-Recycling. Eine Winrate um 53 % erklaert den Erfolg also nicht allein --
+entscheidend sind Odds, Size und Umschlag.
+
+**Paper-Copytrading** ist bewusst nur Papier: Es beobachtet oeffentliche Trades
+einer Zielwallet, skaliert sie in ein lokales Portfolio und misst Latenz, Sizing,
+Cash-Recycling, Skips, Settlement-Mapping und Fidelity. Keine echten Orders.
+**Whale Flow und Suspicious** fuehren Kontext, Timing, Wallet-Historie und
+Verhalten zusammen (Suspicion-Scoring, Fresh-Wallet- und Louvain-Cluster,
+Co-Trading-Netzwerk). Hoeheres Insider-Risiko entsteht eher bei politischen,
+juristischen oder internen Maerkten mit asymmetrischem Informationszugang, nicht
+bei Sport- oder Wettermaerkten. Dieses Screening ist der direkte Vorlaeufer von H3
+und dem Monitoring-Werkzeug der Arbeit. Bei Kalshi fehlen oeffentliche
+Trader-Wallets, daher dort kein Wallet-Copytrading.
 
 ## Phase 3 -- Fokussierung auf die Forschungsfrage
 Wechsel von der Ausnutzungs- zur Mess-Perspektive: Statt Chancen zu handeln, wird
@@ -110,6 +130,18 @@ Vollstaendig deterministischer, getesteter Python-Analysepfad: alle Kennzahlen
 werden berechnet, bevor sie interpretiert werden. LLMs interpretieren nur
 begrenzte, vorab berechnete Zusammenfassungen. Ergebnisse zu H1--H3 inklusive
 Abbildungen und Tabellen.
+
+### Schweizer Referendum als Live-Fallstudie
+Als aktueller, eigenstaendiger Vergleich ausserhalb der US-Wahl diente die
+eidgenoessische Abstimmung vom 14. Juni 2026. Beim offiziellen Ja-Anteil von
+45.21 % lag die finale Umfrage als Stimmenanteil naeher am Resultat, waehrend
+Polymarket im lokalen Live-Fenster (Ja zuletzt 21.5 %) als binaere
+Ablehnungswahrscheinlichkeit klarer auf der richtigen Seite lag. Wichtig:
+Polymarket-Preise sind Annahmewahrscheinlichkeiten, Umfragen sind Stimmenanteile --
+der Binaervergleich ist nur ein transparenter Proxy und kein Mispricing-,
+Effizienz- oder Tradeability-Beweis. Die Fallstudie pruefte die Effizienz-
+Perspektive an einem frischen, selbst beobachteten Ereignis und ist als begrenzte
+Post-Resultat-Fallstudie eingeordnet.
 
 ## Phase 5 -- Loesung und Orchestrierung
 Aus der Untersuchung hervorgegangenes read-only Monitoring-Werkzeug, das die

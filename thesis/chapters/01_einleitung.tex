@@ -1,47 +1,113 @@
-% Status: draft (aus Outline ausgeschrieben). Finale Zitation nach Quellenreview.
-% Evidence: method_h1_brier_dm; method_h2_event_window; method_h3_wallet_tiers
-\chapter{Einleitung und Forschungsfrage}
+% Status: ueberarbeitet nach FHNW-Struktur fuer empirische Arbeiten
+% (docs/project/FHNW_ACADEMICGUIDE_RULES.md, Abschnitt 4a + 10).
+% Evidence: method_h1_brier_dm; method_h2_event_window; method_h3_wallet_tiers.
+% Finale Zitation nach Quellenreview (docs/project/SOURCE_REVIEW_LOG.md).
+\chapter{Einleitung}
 \label{ch:intro}
 
-\section{Problemstellung}
-Prognosemärkte bündeln verteiltes Wissen vieler Teilnehmer in einem einzigen,
-laufend aktualisierten Preis, der als Wahrscheinlichkeit für ein künftiges
-Ereignis gelesen werden kann. Im US-Wahljahr 2024 wurde der dezentrale, auf der
-Blockchain abgewickelte Markt Polymarket zum sichtbarsten Beispiel dieser Idee
-und stand wiederholt in Spannung zu traditionellen Umfragen und Forecast-Modellen
-\citep{zotero_poly_001,zotero_poly_009}. Damit stellt sich die Frage, wie gut ein
-solcher Markt Information tatsächlich verarbeitet --- und ob seine Preise
-traditionellen Quellen überlegen sind oder nur anders.
+\section{Ausgangslage und Problemstellung}
+Prognosemaerkte buendeln das verteilte Wissen vieler Marktteilnehmender in einem
+einzigen, laufend aktualisierten Preis, der sich als Wahrscheinlichkeit fuer ein
+kuenftiges Ereignis lesen laesst. Die theoretische Grundlage bildet die
+Markteffizienzhypothese, nach der Preise die verfuegbare Information widerspiegeln
+\citep{lit_emh_001}. Im US-Wahljahr 2024 wurde der dezentrale, auf der Blockchain
+abgewickelte Markt Polymarket zum sichtbarsten Beispiel dieser Idee. Er erreichte
+zeitweise sehr hohe Handelsvolumina und stand wiederholt in Spannung zu
+traditionellen Umfragen und Forecast-Modellen, die ein knapperes Rennen zeichneten
+\citep{zotero_poly_001,zotero_poly_009}.
+
+Diese Diskrepanz wirft eine grundlegende Frage auf. Verarbeitet ein solcher Markt
+Information tatsaechlich besser als etablierte Quellen, oder erscheint er nur
+deshalb ueberlegen, weil einzelne Episoden im Nachhinein betont werden? Die
+vorliegende Arbeit nimmt diese Frage zum Ausgangspunkt und untersucht die
+informationelle Effizienz von Polymarket im Kontext der US-Praesidentschaftswahl
+2024 --- nicht als pauschale Behauptung, sondern als nachvollziehbar gepruefte,
+scope-spezifische Aussage.
+
+\section{Relevanz und Einordnung}
+Die Fragestellung ist wirtschaftlich wie methodisch relevant. Erstens ruecken
+Prognosemaerkte als kostenguenstige, laufend aktualisierte Forecast-Infrastruktur
+in den Blick von Unternehmen, Medien und oeffentlichen Institutionen, die auf
+verlaessliche Wahrscheinlichkeitsschaetzungen angewiesen sind. Zweitens macht die
+Blockchain-Abwicklung jede Transaktion oeffentlich nachvollziehbar und eroeffnet
+damit Analysen auf Wallet-Ebene, die in traditionellen Maerkten nicht moeglich
+sind \citep{zotero_poly_001}. Drittens beruehrt die Diskussion um Grosskonten und
+moeglichen informierten Handel Fragen der Marktintegritaet und der Regulierung
+\citep{zotero_poly_005,zotero_poly_007}.
+
+Eine reproduzierbare und methodisch vorsichtige Untersuchung leistet damit einen
+doppelten Beitrag. Sie ordnet die empirische Effizienzforschung zu dezentralen
+Maerkten ein und liefert zugleich eine praxisnahe Grundlage, um die Verlaesslichkeit
+solcher Maerkte realistisch und ohne ueberzogene Erwartungen einzuschaetzen.
 
 \section{Forschungsfrage und Hypothesen}
-Die Arbeit fragt: \emph{In welchem Mass verarbeitet Polymarket während der
-US-Präsidentschaftswahl 2024 Information, verglichen mit traditionellen
-Prognosequellen?} Informationelle Effizienz \citep{lit_emh_001} wird dabei nicht
-direkt behauptet, sondern über drei reproduzierbare Proxy-Hypothesen geprüft:
+Aus der Problemstellung leitet sich die folgende Forschungsfrage ab:
+
+\begin{quote}
+In welchem Mass verarbeitet Polymarket waehrend der US-Praesidentschaftswahl 2024
+Information, verglichen mit traditionellen Prognosequellen?
+\end{quote}
+
+Informationelle Effizienz \citep{lit_emh_001} wird dabei nicht direkt behauptet,
+sondern ueber drei reproduzierbare, deterministisch pruefbare Proxy-Hypothesen
+operationalisiert:
 
 \begin{itemize}
-  \item \textbf{H1 (Prognosequalität):} Polymarket liefert besser oder
-  gleich kalibrierte Wahrscheinlichkeiten wie vergleichbare traditionelle
-  Forecasts, gemessen am Brier-Verlust.
-  \item \textbf{H2 (Ereignisreaktion):} Polymarket-Wahrscheinlichkeiten bewegen
-  sich um vorab kuratierte öffentliche Ereignisse in plausibler Richtung.
-  \item \textbf{H3 (Wallet-Timing):} Dataset-relative Wallet-Tiers zeigen
-  zeitliche Aktivitätsmuster um Preisbewegungen.
+  \item \textbf{H1 (Prognosequalitaet):} Polymarket liefert besser oder gleich gut
+  kalibrierte Wahrscheinlichkeiten wie vergleichbare traditionelle Forecasts,
+  gemessen am Brier-Verlust \citep{lit_brier_001} und am
+  Diebold-Mariano-Vergleich der Verlustreihen \citep{lit_dm_001}.
+  \item \textbf{H2 (Ereignisreaktion):} Die Polymarket-Wahrscheinlichkeiten bewegen
+  sich um vorab kuratierte oeffentliche Ereignisse in plausibler Richtung,
+  untersucht mit einem Ereignisstudien-Design \citep{lit_eventstudy_001}.
+  \item \textbf{H3 (Wallet-Timing):} Dataset-relative Wallet-Tiers zeigen zeitliche
+  Aktivitaetsmuster um Preisbewegungen, gemessen ueber Lead-Lag-Korrelationen und
+  Granger-Tests \citep{lit_granger_001}.
 \end{itemize}
 
-\section{Abgrenzung und Beitrag}
-Untersucht wird die US-Wahl 2024 als Fallkontext, Polymarket bildet die primäre
-Zeitreihe. Die Arbeit erhebt keine Ansprüche auf universelle Markteffizienz,
-Intraday-Reaktionsgeschwindigkeit, kausale Insider-Effekte oder handelbare
-Profitabilität. Der empirische Kern ist ein vollständig deterministischer,
-getesteter Python-Analysepfad. Als Sekundärbeiträge dokumentiert die Arbeit ein
-aus der Untersuchung hervorgegangenes Monitoring-Werkzeug sowie die
-Multiagenten-Methodik seiner Entwicklung (Kapitel~\ref{ch:erweiterungen}).
+Die drei Hypothesen greifen ineinander. H1 prueft die Ergebnisqualitaet der
+Prognose, H2 die Reaktionsrichtung auf neue oeffentliche Information und H3 die
+zeitliche Struktur der zugrunde liegenden Handelsaktivitaet. Zusammen erlauben sie
+eine differenzierte statt einer pauschalen Antwort auf die Forschungsfrage.
 
-\section{Aufbau}
-Kapitel~\ref{ch:theorie} ordnet Theorie und Literatur ein,
-Kapitel~\ref{ch:methodik} Daten und Methodik. Die
-Kapitel~\ref{ch:h1}--\ref{ch:h3} berichten H1--H3. Kapitel~\ref{ch:erweiterungen}
-behandelt Monitor, Schweizer Fallstudie und den praktischen Beitrag,
-Kapitel~\ref{ch:diskussion} Diskussion und Fazit, Kapitel~\ref{ch:ausblick} den
-Agenten-gestützten Ausblick.
+\section{Abgrenzung des Untersuchungsgegenstands}
+Der Untersuchungsgegenstand ist bewusst eng gefasst. Untersucht wird die US-Wahl
+2024 als einzelner Fallkontext, Polymarket bildet die primaere Zeitreihe,
+traditionelle Umfragen und Modell-Forecasts dienen als Vergleich. Die Arbeit erhebt
+ausdruecklich keinen Anspruch auf universelle Markteffizienz, auf
+Intraday-Reaktionsgeschwindigkeit, auf kausale Insider-Effekte oder auf handelbare
+Profitabilitaet. Die Wallet-Analyse stuetzt sich auf oeffentliche, quellseitig
+gefilterte Kauf-Transaktionen und ist deshalb als deskriptive Timing-Diagnostik zu
+lesen, nicht als Nachweis privater Information.
+
+Diese Selbstbeschraenkung folgt der in der Literatur betonten Vorsicht. Grosskonto-
+Aktivitaet kann mit heterogenen Erwartungen statt mit Manipulation vereinbar sein
+\citep{zotero_poly_001}, und Prognosemaerkte koennen reflexive Verzerrungen
+aufweisen, die ihre Genauigkeit begrenzen \citep{zotero_poly_009}.
+
+\section{Forschungsluecke und Beitrag}
+Die bestehende Literatur liefert Theorie zur Informationsaggregation, etablierte
+Messverfahren und gemischte Evidenz zu Polymarket, behandelt diese Aspekte aber
+meist getrennt \citep{zotero_poly_002,zotero_poly_007}. Was fehlt, ist eine
+reproduzierbare, deterministisch gepruefte Zusammenfuehrung von Prognosequalitaet,
+Ereignisreaktion und On-Chain-Timing fuer denselben Marktkontext. Genau diese Luecke
+schliesst die Arbeit fuer die US-Wahl 2024.
+
+Der empirische Kern ist ein vollstaendig deterministischer, getesteter
+Python-Analysepfad, der alle Kennzahlen berechnet, bevor sie interpretiert werden.
+Als Sekundaerbeitraege dokumentiert die Arbeit ein aus der Untersuchung
+hervorgegangenes read-only Monitoring-Werkzeug sowie die Multiagenten-Methodik
+seiner Entwicklung (Kapitel~\ref{ch:erweiterungen}). Diese Sekundaerbeitraege
+stuetzen die Forschungsfrage, ersetzen aber den empirischen Beleg nicht und
+ueberlagern ihn nicht.
+
+\section{Aufbau der Arbeit}
+Die Arbeit ist in der Struktur einer empirischen Forschungsarbeit aufgebaut.
+Kapitel~\ref{ch:theorie} ordnet Theorie und Literatur ein und entwickelt die
+Forschungsluecke. Kapitel~\ref{ch:methodik} beschreibt Daten, Aufbereitung und die
+deterministischen Verfahren fuer H1 bis H3. Die Kapitel~\ref{ch:h1} bis
+\ref{ch:h3} berichten die Ergebnisse der drei Hypothesen. Kapitel~\ref{ch:erweiterungen}
+stellt die Erweiterungen vor, darunter den Monitor, die Schweizer Fallstudie und
+den praktischen Beitrag. Kapitel~\ref{ch:diskussion} fuehrt die Befunde zusammen,
+diskutiert die Limitationen und zieht das Fazit, und Kapitel~\ref{ch:ausblick}
+skizziert den agentengestuetzten Ausblick.

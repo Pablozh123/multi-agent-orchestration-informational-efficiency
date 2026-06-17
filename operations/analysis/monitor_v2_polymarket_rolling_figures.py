@@ -28,6 +28,16 @@ ROLLING_FIGURE_OUTPUT = RESULTS_DIR / "monitor_v2_polymarket_rolling_history.png
 ROLLING_FIGURE_METADATA_OUTPUT = (
     RESULTS_DIR / "monitor_v2_polymarket_rolling_history_figure_metadata.json"
 )
+ROLLING_FIGURE_SIZE_INCHES: tuple[float, float] = (12.0, 7.0)
+MAX_WALLET_BUCKET_LABELS = 6
+WALLET_BUCKET_LABEL_OFFSETS_POINTS: tuple[tuple[int, int], ...] = (
+    (-18, 8),
+    (18, 18),
+    (-24, 28),
+    (24, 38),
+    (-12, 48),
+    (12, 58),
+)
 
 
 @dataclass(frozen=True)
@@ -103,7 +113,12 @@ def generate_polymarket_rolling_history_figure(
     wallet_view["short_question"] = wallet_view["question"].fillna(wallet_view["market_id"]).map(_shorten)
 
     figure_path.parent.mkdir(parents=True, exist_ok=True)
-    fig, axes = plt.subplots(2, 1, figsize=(12, 7), constrained_layout=True)
+    fig, axes = plt.subplots(
+        2,
+        1,
+        figsize=ROLLING_FIGURE_SIZE_INCHES,
+        constrained_layout=True,
+    )
 
     plotted = 0
     for label, group in market_view.groupby("series_label", sort=True):
@@ -141,14 +156,29 @@ def generate_polymarket_rolling_history_figure(
     )
     axes[1].set_ylabel("Observed amount USD")
     axes[1].set_title("Aggregate public trade activity by closed bucket")
-    for row in amount_by_bucket.itertuples():
-        axes[1].text(
-            row.timestamp_utc,
-            float(row.total_observed_amount_usd),
+    wallet_label_rows = _wallet_label_rows(amount_by_bucket)
+    max_amount = float(amount_by_bucket["total_observed_amount_usd"].max())
+    axes[1].set_ylim(0, max(1.0, max_amount * 1.24))
+    label_draw_rows = wallet_label_rows.sort_values(
+        ["total_observed_amount_usd", "timestamp_utc"],
+        ascending=[False, True],
+    ).reset_index(drop=True)
+    for label_rank, row in enumerate(label_draw_rows.itertuples()):
+        x_offset, y_offset = WALLET_BUCKET_LABEL_OFFSETS_POINTS[label_rank]
+        axes[1].annotate(
             f"wallets={int(row.active_wallets)}",
+            xy=(row.timestamp_utc, float(row.total_observed_amount_usd)),
+            xytext=(x_offset, y_offset),
+            textcoords="offset points",
             ha="center",
             va="bottom",
-            fontsize=8,
+            fontsize=7.5,
+            arrowprops={
+                "arrowstyle": "-",
+                "color": "#6b7280",
+                "linewidth": 0.45,
+                "alpha": 0.72,
+            },
         )
     for axis in axes:
         axis.tick_params(axis="x", rotation=20)
@@ -181,6 +211,18 @@ def generate_polymarket_rolling_history_figure(
             "wallet_snapshot_count": int(len(wallets)),
             "contains_wallet_addresses": False,
             "contains_order_instructions": False,
+            "figure_width_inches": ROLLING_FIGURE_SIZE_INCHES[0],
+            "figure_height_inches": ROLLING_FIGURE_SIZE_INCHES[1],
+            "figure_aspect_ratio": (
+                ROLLING_FIGURE_SIZE_INCHES[0] / ROLLING_FIGURE_SIZE_INCHES[1]
+            ),
+            "wallet_bucket_label_rule": (
+                "top_6_by_total_observed_amount_usd_tie_timestamp_ascending"
+            ),
+            "wallet_bucket_label_layout": "rank_staggered_offsets_points",
+            "wallet_bucket_label_count": int(len(wallet_label_rows)),
+            "wallet_bucket_label_max_count": MAX_WALLET_BUCKET_LABELS,
+            "wallet_bucket_labels": _wallet_label_metadata(wallet_label_rows),
         },
         "limitations": {
             "read_only_history_only": True,
@@ -255,6 +297,41 @@ def _market_label(row: pd.Series) -> str:
     question = _shorten(str(row.get("question") or row["market_id"]))
     token_id = str(row["token_id"])
     return f"{question} | {token_id[:6]}"
+
+
+def _wallet_label_rows(
+    amount_by_bucket: pd.DataFrame,
+    *,
+    max_labels: int = MAX_WALLET_BUCKET_LABELS,
+) -> pd.DataFrame:
+    """Return deterministic bar-label rows for the largest wallet buckets."""
+
+    if max_labels < 1 or amount_by_bucket.empty:
+        return amount_by_bucket.iloc[0:0].copy()
+    return (
+        amount_by_bucket.sort_values(
+            ["total_observed_amount_usd", "timestamp_utc"],
+            ascending=[False, True],
+        )
+        .head(max_labels)
+        .sort_values("timestamp_utc")
+        .reset_index(drop=True)
+    )
+
+
+def _wallet_label_metadata(label_rows: pd.DataFrame) -> list[dict[str, float | int | str]]:
+    """Return bounded metadata for the rendered wallet bucket labels."""
+
+    labels: list[dict[str, float | int | str]] = []
+    for row in label_rows.itertuples():
+        labels.append(
+            {
+                "timestamp_utc": row.timestamp_utc.isoformat(),
+                "total_observed_amount_usd": float(row.total_observed_amount_usd),
+                "active_wallets": int(row.active_wallets),
+            }
+        )
+    return labels
 
 
 def _shorten(value: str, max_length: int = 38) -> str:

@@ -38,6 +38,7 @@ FIGURE_OUTPUT = RESULTS_DIR / "h1_calibration_diagnostic.png"
 METADATA_OUTPUT = RESULTS_DIR / "h1_calibration_diagnostic_metadata.json"
 
 BIN_COUNT = 5
+FIGURE_SIZE_INCHES: tuple[float, float] = (14.4, 9.6)
 
 CASE_COLUMNS: tuple[str, ...] = (
     "case_set_id",
@@ -744,7 +745,7 @@ def write_calibration_figure(
         "polymarket_final_snapshot_8": "#1d4ed8",
         "fivethirtyeight_final_snapshot_8": "#dc2626",
     }
-    fig, axes = plt.subplots(2, 2, figsize=(14.4, 9.6))
+    fig, axes = plt.subplots(2, 2, figsize=FIGURE_SIZE_INCHES)
     fig.suptitle(
         "H1 forecast-quality scorecard and sparse-bin calibration",
         fontsize=15,
@@ -841,6 +842,12 @@ def build_metadata(
             "h1_goal_completion_status": "not_proven",
             "contains_wallet_addresses": False,
             "contains_order_instructions": False,
+            "figure_width_inches": FIGURE_SIZE_INCHES[0],
+            "figure_height_inches": FIGURE_SIZE_INCHES[1],
+            "figure_aspect_ratio": FIGURE_SIZE_INCHES[0] / FIGURE_SIZE_INCHES[1],
+            "reliability_panel_x_limits": [0.0, 1.0],
+            "reliability_panel_y_limits": [0.0, 1.0],
+            "reliability_panel_aspect": "equal",
         },
         "source_paths": {
             "rieke_case_input": str(rieke_case_input),
@@ -994,8 +1001,9 @@ def _plot_reliability_panel(
     ax.set_title(title)
     ax.set_xlabel("Mean forecast probability in bin")
     ax.set_ylabel("Observed frequency")
-    ax.set_xlim(-0.03, 1.03)
-    ax.set_ylim(-0.05, 1.05)
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.set_aspect("equal")
     ax.grid(True, alpha=0.25)
     ax.legend(fontsize=7.0, loc="upper left")
     ax.text(

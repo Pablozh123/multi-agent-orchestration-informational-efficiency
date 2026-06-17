@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
 import pandas as pd
 import pytest
 
@@ -14,6 +15,7 @@ from operations.analysis.h1_calibration_diagnostic import (
     build_pairwise_summary,
     generate_h1_calibration_diagnostic_outputs,
     validate_forecast_cases,
+    _plot_reliability_panel,
 )
 
 
@@ -82,6 +84,10 @@ def test_generate_h1_calibration_diagnostic_outputs(tmp_path: Path) -> None:
     assert metadata["method"]["reliability_panel_min_case_count"] == 30
     assert metadata["outputs"]["h1_goal_completion_status"] == "not_proven"
     assert metadata["outputs"]["contains_wallet_addresses"] is False
+    assert metadata["outputs"]["figure_aspect_ratio"] == 14.4 / 9.6
+    assert metadata["outputs"]["reliability_panel_x_limits"] == [0.0, 1.0]
+    assert metadata["outputs"]["reliability_panel_y_limits"] == [0.0, 1.0]
+    assert metadata["outputs"]["reliability_panel_aspect"] == "equal"
     assert len(cases) == 22
     assert len(summary) == 7
     assert len(pairwise) == 5
@@ -100,6 +106,37 @@ def test_validate_forecast_cases_rejects_forbidden_raw_trade_columns() -> None:
 
     with pytest.raises(ValueError, match="forbidden raw-trade"):
         validate_forecast_cases(cases)
+
+
+def test_reliability_panel_uses_square_probability_axes() -> None:
+    forecast_cases = validate_forecast_cases(
+        build_forecast_cases(
+            rieke_cases=_rieke_cases(),
+            two_seventy_cases=_two_seventy_cases(),
+            state_poll_cases=_state_poll_cases(),
+            final_snapshot_cases=_final_snapshot_cases(),
+        )
+    )
+    bins = build_calibration_bins(forecast_cases, bin_count=5)
+    summary = build_calibration_summary(forecast_cases, bins)
+    fig, ax = plt.subplots()
+
+    _plot_reliability_panel(
+        ax=ax,
+        calibration_bins=bins,
+        summary=summary,
+        source_ids=["polymarket_state_final_50", "rieke_state_final_50"],
+        colors={
+            "polymarket_state_final_50": "#2563eb",
+            "rieke_state_final_50": "#059669",
+        },
+        title="Fixture reliability panel",
+    )
+
+    assert ax.get_xlim() == pytest.approx((0.0, 1.0))
+    assert ax.get_ylim() == pytest.approx((0.0, 1.0))
+    assert float(ax.get_aspect()) == pytest.approx(1.0)
+    plt.close(fig)
 
 
 def _rieke_cases() -> pd.DataFrame:

@@ -5,6 +5,10 @@ from pathlib import Path
 
 import pandas as pd
 
+from operations.analysis.monitor_v2_polymarket_rolling_figures import (
+    MAX_WALLET_BUCKET_LABELS,
+    generate_polymarket_rolling_history_figure,
+)
 from operations.collectors.polymarket_rolling_history import (
     collect_polymarket_rolling_history,
     main,
@@ -74,6 +78,80 @@ def test_collect_mock_rolling_history_accepts_curated_watchlist(tmp_path: Path) 
     assert watchlist.iloc[0]["watch_id"] == "accepted_001"
     assert metadata["method"]["uses_curated_watchlist"] is True
     assert metadata["method"]["curated_watchlist_path"] == str(curated_path)
+
+
+def test_rolling_history_figure_labels_only_top_six_wallet_buckets(tmp_path: Path) -> None:
+    watchlist_path = tmp_path / "watchlist.csv"
+    market_path = tmp_path / "market.csv"
+    wallet_path = tmp_path / "wallet.csv"
+    figure_path = tmp_path / "rolling.png"
+    metadata_path = tmp_path / "figure_metadata.json"
+    scoring_metadata_path = tmp_path / "scoring_metadata.json"
+    timestamps = pd.date_range("2026-05-22T12:00:00Z", periods=8, freq="15min")
+    amounts = [10.0, 70.0, 30.0, 90.0, 20.0, 80.0, 40.0, 60.0]
+
+    pd.DataFrame(
+        [
+            {
+                "market_id": "market_001",
+                "question": "Fixture market with repeated rolling buckets",
+            }
+        ]
+    ).to_csv(watchlist_path, index=False)
+    pd.DataFrame(
+        [
+            {
+                "market_id": "market_001",
+                "token_id": "token_yes",
+                "bucket_end_utc": timestamp.isoformat(),
+                "midpoint": 0.45 + index * 0.01,
+            }
+            for index, timestamp in enumerate(timestamps)
+        ]
+    ).to_csv(market_path, index=False)
+    pd.DataFrame(
+        [
+            {
+                "market_id": "market_001",
+                "bucket_end_utc": timestamp.isoformat(),
+                "total_observed_amount_usd": amount,
+                "active_wallets": index + 1,
+            }
+            for index, (timestamp, amount) in enumerate(zip(timestamps, amounts))
+        ]
+    ).to_csv(wallet_path, index=False)
+    scoring_metadata_path.write_text(
+        json.dumps({"method": {"baseline_readiness": "fixture"}}),
+        encoding="utf-8",
+    )
+
+    generate_polymarket_rolling_history_figure(
+        watchlist_path=watchlist_path,
+        market_snapshots_path=market_path,
+        wallet_tier_snapshots_path=wallet_path,
+        scoring_metadata_path=scoring_metadata_path,
+        figure_path=figure_path,
+        metadata_path=metadata_path,
+    )
+
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    labels = metadata["outputs"]["wallet_bucket_labels"]
+    labeled_amounts = [label["total_observed_amount_usd"] for label in labels]
+
+    assert figure_path.exists()
+    assert metadata["outputs"]["wallet_bucket_label_count"] == MAX_WALLET_BUCKET_LABELS
+    assert metadata["outputs"]["wallet_bucket_label_max_count"] == MAX_WALLET_BUCKET_LABELS
+    assert metadata["outputs"]["wallet_bucket_label_rule"] == (
+        "top_6_by_total_observed_amount_usd_tie_timestamp_ascending"
+    )
+    assert metadata["outputs"]["wallet_bucket_label_layout"] == (
+        "rank_staggered_offsets_points"
+    )
+    assert set(labeled_amounts) == {30.0, 40.0, 60.0, 70.0, 80.0, 90.0}
+    assert 10.0 not in labeled_amounts
+    assert 20.0 not in labeled_amounts
+    assert metadata["outputs"]["figure_aspect_ratio"] == 12.0 / 7.0
+    assert metadata["outputs"]["contains_wallet_addresses"] is False
 
 
 def test_rolling_history_rejects_zero_samples(tmp_path: Path) -> None:

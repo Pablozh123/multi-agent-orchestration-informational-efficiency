@@ -206,3 +206,45 @@ Grenzen, Forschungsluecken) -> Verzeichnisse -> (Anhang).
 - State-of-the-art Literatur-Review: https://www.fhnw.ch/plattformen/academicguide/de/state-of-the-art-literatur-review/
 - Wissenschaftlicher Schreibstil: https://www.fhnw.ch/plattformen/academicguide/de/wissenschaftlicher-schreibstil/
 - Links und Mustervorlagen (Templates, Layout): https://www.fhnw.ch/plattformen/academicguide/de/links-und-mustervorlagen-templates-2/
+
+---
+
+## 9. Wegleitung Bachelor Thesis 2026 — bindende formale Aspekte
+
+Quelle: HSW-FHNW Wegleitung Bachelor Thesis 2026 (alle Standorte), hochgeladen.
+Bei Konflikt hat die Wegleitung Vorrang vor dem Academicguide.
+
+- **Umfang (6.5):** Zielgroesse **50-80 Seiten**, Anhaenge nicht eingerechnet.
+  Qualitaet ist nicht an Laenge gekoppelt. Die Arbeit richtet sich an eine
+  sachkundige Drittperson und muss ohne Kommentar verstaendlich sein.
+- **Formale/sprachliche Gestaltung (6.5):** Die Wegleitung legt **keine** eigenen
+  Schrift-/Rand-/Zeilenwerte fest, sondern verweist auf die Zusatzdokumente
+  (Dokumentvorlage + Academicguide). Die **Word-Dokumentvorlage ist die
+  Layout-Autoritaet**.
+- **Abgabe (7.1):** Bachelor Thesis als **PDF** (plus ggf. entwickelte Tools, z.B.
+  Excel) auf **Moodle Assessment** hochladen; finale Abgabe einmalig und definitiv.
+- **Verspaetung (7.2):** bis 24 h nach Termin -> Note 4.0 (ausser inhaltlich
+  ungenuegend); ab 24 h -> Note 1.0 (Grade F).
+- **Oeffentliches Management Summary (7.4, SEPARATES Formular, nicht Teil des
+  Thesis-PDF):** Lead max 300 Zeichen, Ausgangslage max 600, Vorgehen max 600,
+  Ergebnisse max 1'200 Zeichen (je inkl. Leerzeichen) + Illustration oder Video
+  (~1:30). Urheberrechte selbst besitzen. Auch bei vertraulichen Arbeiten Pflicht.
+- **Eigenstaendigkeitserklaerung + Plagiat (8.4):** Erklaerung, die Arbeit
+  selbstaendig und nur mit genannten Quellen/Hilfsmitteln erstellt zu haben. Alle
+  Quellen im Text UND im Literaturverzeichnis. **Alle weiteren Hilfsmittel (z.B.
+  Lektorate, KI-Tools) in einem Hilfsmittelverzeichnis deklarieren.**
+  Plagiatspruefung erfolgt; uebermaessige KI-Nutzung gilt als Verstoss.
+- **Wissenschaftliche Grundsaetze:** Informationsquellen korrekt und vollstaendig
+  zitieren; genutzte Hilfsmittel vollstaendig offenlegen (Hilfsmittelverzeichnis).
+
+### Offen: exakte Layout-Werte (Schrift, Raender, Zeilenabstand)
+
+Diese stehen NICHT in der Wegleitung (dort an die Dokumentvorlage delegiert) und
+NICHT im Text der Academicguide-Website. Sie stecken in
+`HSW-FHNW_Dokumentvorlage-studentische-Arbeit-2023.docx`. Diese Datei kommt ueber
+das zugelassene Web-Tool nur als Binaerdaten zurueck und kann nicht automatisch
+gelesen werden. Bisher als ANNAHME verwendet (unbestaetigt): 11 pt,
+1.5-Zeilenabstand, Blocksatz, Bundsteg-Rand 3 cm. Zum Sichern der exakten Werte:
+die .docx herunterladen und in den ba-thesis-Ordner legen (oder hochladen), dann
+werden Schrift, Schriftgroesse, Raender, Zeilenabstand und Ueberschriften-Stile
+direkt aus der Datei ausgelesen.

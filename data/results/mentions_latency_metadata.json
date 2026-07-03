@@ -76,9 +76,9 @@
   },
   {
    "event": "jre_trump_2219",
-   "drop_ts_utc": "2024-10-26T02:33:00Z",
+   "drop_ts_utc": "2024-10-26T01:50:00Z",
    "quelle_url": "https://feeds.megaphone.fm/GLT1412515089",
-   "hinweis": "RSS pubDate minutengenau; YouTube-Erstveroeffentlichung kann frueher am Abend gelegen haben"
+   "hinweis": "RSS pubDate 02:33 UTC verworfen, da YouTube-Erstveroeffentlichung frueher lag; Drop = YouTube-Upload ca. 01:50 bis 02:00 UTC, belegt durch CLOB-Minutenserie (Kollaps 01:50 0.475 ueber 02:00 0.235 und 02:10 0.08 auf 0.025 um 02:20); Konvergenz-Artefakt bereits_vor_drop_konvergiert damit aufgeloest"
   },
   {
    "event": "jre_vance_2221",
@@ -99,5 +99,5 @@
    "hinweis": "TV-Premiere Comedy Central 15.10.2025 22:00 ET; spaeter als Staffel-28-Premiere gefuehrt"
   }
  ],
- "erstellt_am_utc": "2026-07-03T06:04:45Z"
+ "erstellt_am_utc": "2026-07-03T08:11:04Z"
 }

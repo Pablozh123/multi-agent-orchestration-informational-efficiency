@@ -311,6 +311,28 @@ def berechne_ergebnisse(
     """Berechnet die Latenz-Kennzahlen fuer alle Seed-Maerkte."""
     ergebnisse = []
     for z in seed:
+        ausschluss = z.get("ausschluss", "").strip()
+        if ausschluss:
+            ergebnisse.append(
+                {
+                    "event": z["event"],
+                    "condition_id": z["condition_id"],
+                    "clob_token_id": z["clob_token_id"],
+                    "drop_ts_utc": z["drop_ts_utc"],
+                    "korrekt_aufgeloestes_outcome": z["korrekt_aufgeloestes_outcome"],
+                    "n_punkte": None,
+                    "n_punkte_baseline": None,
+                    "baseline_preis": None,
+                    "erste_reaktion_epoch": None,
+                    "minuten_bis_erste_reaktion": None,
+                    "konvergenz_epoch": None,
+                    "minuten_bis_konvergenz": None,
+                    "stunden_im_handelbaren_fenster": None,
+                    "endpreis": None,
+                    "status": f"ausgeschlossen_{ausschluss}",
+                }
+            )
+            continue
         drop_epoch = parse_ts_utc(z["drop_ts_utc"])
         ende = (
             parse_ts_utc(z["aufloesung_ts_utc"])
@@ -366,6 +388,14 @@ def schreibe_metadata(ergebnisse: list[dict], seed: list[dict], pfad: Path) -> N
         ),
         "seed_datei": "data/events/mentions_latency_seed.csv",
         "n_maerkte": len(ergebnisse),
+        "n_ausgewertet": len(
+            [r for r in ergebnisse if not r["status"].startswith("ausgeschlossen_")]
+        ),
+        "ausgeschlossene_events": [
+            {"event": r["event"], "status": r["status"]}
+            for r in ergebnisse
+            if r["status"].startswith("ausgeschlossen_")
+        ],
         "parameter": {
             "baseline_fenster_minuten": BASELINE_FENSTER_S // 60,
             "reaktions_schwelle_prozentpunkte": REAKTIONS_SCHWELLE * 100,
@@ -389,6 +419,13 @@ def schreibe_metadata(ergebnisse: list[dict], seed: list[dict], pfad: Path) -> N
             "Beobachtungsraster-Ebene.",
             "Kleine kuratierte Stichprobe, keine Zufallsauswahl; Maerkte ohne "
             "punktfoermigen Content-Drop (Mehrtagesfenster) wurden ausgeschlossen.",
+            "Seed-Zeilen mit gesetzter Spalte ausschluss erhalten nur eine "
+            "Statuszeile ohne Kennzahlen und erscheinen nicht in Abbildung oder "
+            "Auswertung. Aktuell betrifft das allin_next_episode: Serie auf die "
+            "naechste Episode ohne Episodennummer, YES stand beim Drop bereits "
+            "bei 0.911; der spaetere Rueckgang bis 0.399 (16.02.2026 15:23 UTC) "
+            "war Zuordnungs- und Aufloesungsunsicherheit, keine "
+            "Verarbeitungslatenz.",
             "Rein deskriptiv: keine Handels-, Strategie- oder "
             "Profitabilitaetsaussagen; keine Kausalaussagen.",
         ],

@@ -211,6 +211,19 @@ def test_parse_ts_utc() -> None:
         ml.parse_ts_utc("1970-01-01T00:00:00")
 
 
+def test_berechne_ergebnisse_ausschluss_ohne_fetch() -> None:
+    """Zeilen mit gesetzter Spalte ausschluss brauchen keinen Datenabruf
+    und liefern nur eine Statuszeile ohne Kennzahlen."""
+    seed = [{**SEED_ZEILE, "ausschluss": "zuordnungsambiguitaet"}]
+    ergebnisse = ml.berechne_ergebnisse(seed, fetch=None)
+    r = ergebnisse[0]
+    assert r["status"] == "ausgeschlossen_zuordnungsambiguitaet"
+    assert r["minuten_bis_erste_reaktion"] is None
+    assert r["minuten_bis_konvergenz"] is None
+    assert r["stunden_im_handelbaren_fenster"] is None
+    assert r["event"] == "test_event"
+
+
 # ------------------------------------------------------------ Pipeline mit Fake-Fetch
 
 

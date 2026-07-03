@@ -3,6 +3,13 @@
  "datenquelle": "Polymarket CLOB-API /prices-history, fidelity=1 (Minutenpunkte), YES-Outcome-Token, Rohdaten-Cache unter data/raw/mentions_latency/.",
  "seed_datei": "data/events/mentions_latency_seed.csv",
  "n_maerkte": 13,
+ "n_ausgewertet": 12,
+ "ausgeschlossene_events": [
+  {
+   "event": "allin_next_episode",
+   "status": "ausgeschlossen_zuordnungsambiguitaet"
+  }
+ ],
  "parameter": {
   "baseline_fenster_minuten": 60,
   "reaktions_schwelle_prozentpunkte": 1.0,
@@ -17,6 +24,7 @@
   "Drop-Zeitpunkte sind kuratierte, quellenbelegte Beginnzeiten der Events bzw. Ausstrahlungen; der tatsaechliche Moment der aufloesungsrelevanten Aussage innerhalb des Events kann spaeter liegen. Die Latenz enthaelt diese Differenz.",
   "Minutenpunkte der CLOB-API sind bei duennem Handel lueckenhaft; Reaktions- und Konvergenzzeiten sind dann Obergrenzen auf Beobachtungsraster-Ebene.",
   "Kleine kuratierte Stichprobe, keine Zufallsauswahl; Maerkte ohne punktfoermigen Content-Drop (Mehrtagesfenster) wurden ausgeschlossen.",
+  "Seed-Zeilen mit gesetzter Spalte ausschluss erhalten nur eine Statuszeile ohne Kennzahlen und erscheinen nicht in Abbildung oder Auswertung. Aktuell betrifft das allin_next_episode: Serie auf die naechste Episode ohne Episodennummer, YES stand beim Drop bereits bei 0.911; der spaetere Rueckgang bis 0.399 (16.02.2026 15:23 UTC) war Zuordnungs- und Aufloesungsunsicherheit, keine Verarbeitungslatenz.",
   "Rein deskriptiv: keine Handels-, Strategie- oder Profitabilitaetsaussagen; keine Kausalaussagen."
  ],
  "events": [
@@ -72,7 +80,7 @@
    "event": "allin_next_episode",
    "drop_ts_utc": "2026-02-13T21:56:00Z",
    "quelle_url": "https://allinchamathjason.libsyn.com/rss",
-   "hinweis": "RSS pubDate minutengenau; Serie naechste Episode ohne Episodennummer, Zuordnung ueber Preis-Lock nach dieser Episode validiert; Konvergenz enthaelt Klaerungszeit der Aufloesung"
+   "hinweis": "RSS pubDate minutengenau; Serie naechste Episode ohne Episodennummer; ausgeschlossen aus Kennzahlen und Abbildung: YES stand beim Drop bereits bei 0.911, der spaetere Rueckgang bis 0.399 (16.02.2026 15:23 UTC) war Zuordnungs- und Aufloesungsunsicherheit der Serie, keine Verarbeitungslatenz"
   },
   {
    "event": "jre_trump_2219",
@@ -99,5 +107,5 @@
    "hinweis": "TV-Premiere Comedy Central 15.10.2025 22:00 ET; spaeter als Staffel-28-Premiere gefuehrt"
   }
  ],
- "erstellt_am_utc": "2026-07-03T08:11:04Z"
+ "erstellt_am_utc": "2026-07-03T08:13:27Z"
 }

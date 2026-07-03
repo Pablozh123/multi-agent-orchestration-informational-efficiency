@@ -447,12 +447,14 @@ def schreibe_metadata(ergebnisse: list[dict], seed: list[dict], pfad: Path) -> N
 def zeichne_abbildung(ergebnisse: list[dict], pfad: Path) -> None:
     """Horizontale Balken je Markt: Minuten bis erste Reaktion und Konvergenz."""
     daten = [r for r in ergebnisse if r["minuten_bis_erste_reaktion"] is not None]
+    # Aufsteigend sortiert; barh zeichnet Index 0 unten, damit steht der
+    # groesste Wert oben (absteigende Lesereihenfolge).
     daten = sorted(
         daten,
         key=lambda r: (
-            r["minuten_bis_konvergenz"]
-            if r["minuten_bis_konvergenz"] is not None
-            else float("inf")
+            r["stunden_im_handelbaren_fenster"]
+            if r["stunden_im_handelbaren_fenster"] is not None
+            else float("-inf")
         ),
     )
 
@@ -518,7 +520,7 @@ def zeichne_abbildung(ergebnisse: list[dict], pfad: Path) -> None:
     ax.set_yticklabels([r["event"] for r in daten], fontsize=9)
     ax.set_xlabel("Minuten nach Content-Drop (logarithmische Skala)", fontsize=11)
     fig.suptitle(
-        "Einpreisungs-Latenz von Mentions-Maerkten nach Content-Drop",
+        "Einpreisungs-Latenz von Mentions-Märkten nach Content-Drop",
         fontsize=13, fontweight="bold",
     )
     ax.set_title(

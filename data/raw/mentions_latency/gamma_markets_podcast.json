@@ -1,0 +1,74 @@
+{
+ "meta": {
+  "beschreibung": "Gamma-Metadaten fuer Podcast/Episoden-Erweiterung der Mentions-Latenz-Analyse.",
+  "abrufdatum": "2026-07-03",
+  "quelle_url": "https://gamma-api.polymarket.com/markets/<id>"
+ },
+ "markets": [
+  {
+   "id": "1237131",
+   "slug": "will-microsoft-be-said-during-the-next-episode-of-the-all-in-podcast-327",
+   "question": "Will \"Microsoft\" be said during the next episode of the All-In Podcast?",
+   "conditionId": "0xc7dee18fb2c02b56f45720e753d0e4483f441e04a40062d58227ce2d9bd5dd40",
+   "description": "The All-In Podcast is scheduled to release episodes every Friday. (https://allin.com/episodes)\n\nThis market will resolve to \"Yes\" if the listed term is mentioned by anyone during the next released episode of the All-In Podcast. Otherwise, the market will resolve to \"No\".\n\nIf clips of old episodes or prerecorded clips are aired where people are speaking, those clips will count toward this market's resolution.\n\nAI-generated audio or video will count toward this market's resolution.\n\nAny usage of the term, regardless of context, will count toward the resolution of this market.\n\nPluralization/possessive of the term will count toward the resolution of this market; however, other forms will NOT count.\n\nInstances where the term is used in a compound word will count regardless of context (e.g. joyful is not a compound word for \"joy,\" however \"killjoy\" is a compounding of the words \"kill\" and \"joy\").\n\nIf this market requires a specified number of mentions of a person’s first or last name, a full-name mention will count as one mention (e.g., if a market is about “Joe / Biden 5+ times,” a mention of “Joe Biden” will count once).\n\nOnly All-Podcast episodes posted on (https://allin.com/episodes) will count for this market. Other episodes or specials posted on the youtube channel will not count.\n\nIf no such episode of the All-In Podcast is aired by February 28, 2026, 11:59 PM ET, this market will resolve to \"No\".\n\nThe resolution source will be audio of the event.",
+   "startDate": "2026-01-22T18:29:38.84128Z",
+   "endDate": "2026-01-23T00:00:00Z",
+   "closedTime": "2026-02-17 04:36:57+00",
+   "outcomes": "[\"Yes\", \"No\"]",
+   "outcomePrices": "[\"1\", \"0\"]",
+   "clobTokenIds": "[\"65380067573943412471748362051869474689006449354042653969122965828807065568870\", \"58428306582346207094283598302301369073139886014920561863434113251550957742358\"]"
+  },
+  {
+   "id": "510623",
+   "slug": "will-trump-say-crypto-or-bitcoin-on-the-joe-rogan-experience",
+   "question": "Will Trump say \"crypto\" or \"Bitcoin\" on The Joe Rogan Experience?",
+   "conditionId": "0x61a4709e69c966e531dd99d43b7e61dde4ee686e365ba9e242453b1ff33c3722",
+   "description": "Donald Trump has scheduled a podcast interview on The Joe Rogan Experience to be released on Friday, October 25, 2024.\n\nThis market will resolve to \"Yes\" if Trump says \"crypto\" or \"Bitcoin\" during their appearance at this event. Otherwise, the market will resolve to \"No\".\n\nAny usage of the term regardless of context will count toward the resolution of this market.\n\nPluralization/possessive of the term will count toward the resolution of this market, however other forms will NOT count.\n\nCompound words will count as long as \"crypto\" or \"Bitcoin\" is part of the compound word and references the meaning which refers to decentralized cryptocurrency (e.g. \"cryptocurrency-related\" counts).\n\nIf this candidate cancels his appearance, or if the podcast release is otherwise cancelled or delayed past November 4, 11:59 PM ET, this market will resolve to \"No\".\n\nThe resolution source will be the released podcast and/or its transcript.",
+   "startDate": "2024-10-23T17:33:39.232Z",
+   "endDate": "2024-10-25T12:00:00Z",
+   "closedTime": "2024-10-26 06:45:50+00",
+   "outcomes": "[\"Yes\", \"No\"]",
+   "outcomePrices": "[\"0\", \"1\"]",
+   "clobTokenIds": "[\"40265995327723058512884059065584670012524171259747665175335743407628251053085\", \"75990968585828828269535985146835290028677974375451249920807935901820098245022\"]"
+  },
+  {
+   "id": "511355",
+   "slug": "will-jd-vance-say-crypto-or-bitcoin-during-the-joe-rogan-podcast",
+   "question": "Will JD Vance say \"crypto\" or \"Bitcoin\" during the Joe Rogan podcast?",
+   "conditionId": "0x65f670cf6f0bbac44a2fa0fdb0df8a6841af0f5cc2a72ff11add4870d5319198",
+   "description": "JD Vance has scheduled a podcast interview on The Joe Rogan Experience to be released on Wednesday, October 30, 2024.\n\nThis market will resolve to \"Yes\" if JD Vance says \"crypto\" or \"Bitcoin\" during their appearance on this podcast. Otherwise, the market will resolve to \"No\".\n\nAny usage of the term regardless of context will count toward the resolution of this market.\n\nPluralization/possessive of the term will count toward the resolution of this market, however other forms will NOT count.\n\nCompound words will count as long as \"crypto\" or \"Bitcoin\" is part of the compound word and references the meaning which refers to decentralized cryptocurrency (e.g. \"cryptocurrency-related\" counts).\n\nThe resolution source will be the released podcast and/or its transcript.\n",
+   "startDate": "2024-10-29T20:16:45.961243Z",
+   "endDate": "2024-10-30T12:00:00Z",
+   "closedTime": "2024-11-01 00:36:30+00",
+   "outcomes": "[\"Yes\", \"No\"]",
+   "outcomePrices": "[\"0\", \"1\"]",
+   "clobTokenIds": "[\"59805362042309325617603175198023517430607032284096323382515573118308665179642\", \"28960313103023818994104494200588853660100820932383730261763667482484106830095\"]"
+  },
+  {
+   "id": "636072",
+   "slug": "will-anyone-say-fuck-or-fucking-3-times-during-south-park-e6-s27-178",
+   "question": "Will anyone say \"Fuck\" or \"Fucking\" 3+ times during South Park e6 s27?",
+   "conditionId": "0x7ed7e68430cd942146f8ca5182f1640b1c226ae39cc8da355b36a00947306023",
+   "description": "On October 15, 2025, South Park is scheduled to release Episode 6 of Season 27.\n\nThis market will resolve to \"Yes\" if anyone says the listed term during this episode of South Park. Otherwise, the market will resolve to \"No\".\n\nAny usage of the term regardless of context will count toward the resolution of this market.\n\nPluralization/possessive of the term will count toward the resolution of this market, however other forms will NOT count.\n\nInstances where the term is used in a compound word will count regardless of context (e.g. joyful is not a compound word for \"joy,\" however \"killjoy\" is a compounding of the words \"kill\" and \"joy\").\n\nIf this market requires a specified number of mentions of a person’s first or last name, a full-name mention will count as one mention (e.g., if a market is about “Joe / Biden 5+ times,” a mention of “Joe Biden” will count once).\n\nIf this episode of South Park is not released by October 15, 2025, 11:59 PM ET, this market will resolve to \"No\".\n\nIf this episode of South Park has not been released in its entirety by October 15, 2025, 11:59 PM ET, this market will resolve based on what has been released up to that point. If no episode has been released by this time, or if the release is otherwise definitively cancelled, this market will resolve to \"No\".\n\nThe resolution source for this market is the named episode of South Park when it is released.",
+   "startDate": "2025-10-14T20:31:26.203Z",
+   "endDate": "2025-10-15T00:00:00Z",
+   "closedTime": "2025-10-19 02:09:06+00",
+   "outcomes": "[\"Yes\", \"No\"]",
+   "outcomePrices": "[\"1\", \"0\"]",
+   "clobTokenIds": "[\"99688508241791710267114180363016295820549381654785737835601536653941248649367\", \"111020175991899243740717539007347892037509989245354582182478559895243090860360\"]"
+  },
+  {
+   "id": "611177",
+   "slug": "will-anyone-say-polymarket-during-south-parks-prediction-market-episode-556",
+   "question": "Will anyone say \"Polymarket\" during South Park's prediction market episode?",
+   "conditionId": "0x0223472ec2eb0c8bf6cdbc2bd3669adc87cdf2a58ce144cf90c2fe7bdea2ca2f",
+   "description": "On September 24, 2025, South Park is scheduled to release an episode on prediction markets titled \"Conflict of Interest\" for Episode 5 of Season 27.\n\nThis market will resolve to \"Yes\" if anyone says the listed term during this episode of South Park. Otherwise, the market will resolve to \"No\".\n\nAny usage of the term regardless of context will count toward the resolution of this market.\n\nPluralization/possessive of the term will count toward the resolution of this market, however other forms will NOT count.\n\nInstances where the term is used in a compound word will count regardless of context (e.g. joyful is not a compound word for \"joy,\" however \"killjoy\" is a compounding of the words \"kill\" and \"joy\").\n\nIf this market requires a specified number of mentions of a person’s first or last name, a full-name mention will count as one mention (e.g., if a market is about “Joe / Biden 5+ times,” a mention of “Joe Biden” will count once).\n\nIf this episode of South Park is not released by September 25, 2025, 11:59 PM ET this market will resolve to \"No\".\n\nThe resolution source for this market is the named episode of South Park when it is released.",
+   "startDate": "2025-09-24T15:08:13.452Z",
+   "endDate": "2025-09-24T00:00:00Z",
+   "closedTime": "2025-09-25 04:07:42+00",
+   "outcomes": "[\"Yes\", \"No\"]",
+   "outcomePrices": "[\"1\", \"0\"]",
+   "clobTokenIds": "[\"112577197739472489479449779794338411229648098814379399272581695896914420183398\", \"47715714447931746436851645977125749935269664665485389828885213324023619931581\"]"
+  }
+ ]
+}

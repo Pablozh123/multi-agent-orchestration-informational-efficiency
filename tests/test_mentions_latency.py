@@ -87,6 +87,34 @@ def test_konvergenz_kann_vor_drop_liegen() -> None:
     assert ml.konvergenz_epoch(punkte, outcome_yes=True) == DROP - 600
 
 
+# ------------------------------------------------------------ Handelbares Fenster
+
+
+def test_stunden_im_band_summiert_nur_bandpunkte_nach_drop() -> None:
+    punkte = punkte_aus(
+        (DROP - 3600, 0.50),   # vor Drop: zaehlt nicht
+        (DROP, 0.50),          # im Band, 1 h bis zum naechsten Punkt
+        (DROP + 3600, 0.95),   # ausserhalb, 1 h zaehlt nicht
+        (DROP + 7200, 0.50),   # im Band, 0.5 h
+        (DROP + 9000, 0.05),   # ausserhalb, letzter Punkt
+    )
+    assert ml.stunden_im_band(punkte, DROP) == pytest.approx(1.5)
+
+
+def test_stunden_im_band_grenzwerte_zaehlen_nicht() -> None:
+    punkte = punkte_aus(
+        (DROP, 0.10),          # exakt untere Grenze: nicht im Band
+        (DROP + 3600, 0.90),   # exakt obere Grenze: nicht im Band
+        (DROP + 7200, 0.50),
+    )
+    assert ml.stunden_im_band(punkte, DROP) == pytest.approx(0.0)
+
+
+def test_stunden_im_band_leer_oder_einzelpunkt() -> None:
+    assert ml.stunden_im_band([], DROP) == pytest.approx(0.0)
+    assert ml.stunden_im_band([(DROP, 0.5)], DROP) == pytest.approx(0.0)
+
+
 # ------------------------------------------------------------ Bewertung
 
 
@@ -104,6 +132,8 @@ def test_bewerte_markt_ok_und_minuten() -> None:
     assert r["minuten_bis_erste_reaktion"] == pytest.approx(5.0)
     assert r["minuten_bis_konvergenz"] == pytest.approx(20.0)
     assert r["n_punkte_baseline"] == 2
+    # Bandzeit: 0.35 bei DROP+300 (15 Min. bis DROP+1200); 0.95/0.99 ausserhalb
+    assert r["stunden_im_handelbaren_fenster"] == pytest.approx(0.25)
 
 
 def test_bewerte_markt_status_keine_baseline() -> None:

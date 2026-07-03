@@ -1,12 +1,16 @@
 {
- "beschreibung": "Einpreisungs-Latenz kuratierter Polymarket-Mentions-Maerkte nach Content-Drop. Baseline = Medianpreis 60 Minuten vor Drop; erste Reaktion = erstes Ueberschreiten von 1 Prozentpunkt Abweichung von der Baseline; Konvergenz = erster Zeitpunkt, ab dem der Preis dauerhaft auf der richtigen Seite von 0.9 (YES) bzw. 0.1 (NO) bleibt.",
+ "beschreibung": "Einpreisungs-Latenz kuratierter Polymarket-Mentions-Maerkte nach Content-Drop. Baseline = Medianpreis 60 Minuten vor Drop; erste Reaktion = erstes Ueberschreiten von 1 Prozentpunkt Abweichung von der Baseline; Konvergenz = erster Zeitpunkt, ab dem der Preis dauerhaft auf der richtigen Seite von 0.9 (YES) bzw. 0.1 (NO) bleibt; Stunden im handelbaren Fenster = Zeit nach Drop mit Preis strikt zwischen 0.1 und 0.9 (deskriptive Fenstergroesse, keine Handels- oder Profitabilitaetsaussage).",
  "datenquelle": "Polymarket CLOB-API /prices-history, fidelity=1 (Minutenpunkte), YES-Outcome-Token, Rohdaten-Cache unter data/raw/mentions_latency/.",
  "seed_datei": "data/events/mentions_latency_seed.csv",
- "n_maerkte": 8,
+ "n_maerkte": 13,
  "parameter": {
   "baseline_fenster_minuten": 60,
   "reaktions_schwelle_prozentpunkte": 1.0,
-  "konvergenz_band": 0.9
+  "konvergenz_band": 0.9,
+  "handelbares_fenster_band": [
+   0.1,
+   0.9
+  ]
  },
  "einordnung": "Vergleichswert: Im US-Wahlmarkt lagen die Reaktionszeiten bei Minuten bis rund einer Stunde (Tabelle A1 der Thesis).",
  "limitationen": [
@@ -63,7 +67,37 @@
    "drop_ts_utc": "2025-06-18T18:30:00Z",
    "quelle_url": "https://x.com/federalreserve/status/1935329597777920209",
    "hinweis": "Pressekonferenz 14:30 EDT; FOMC Statement bereits 14:00 EDT als separater Informationszeitpunkt"
+  },
+  {
+   "event": "allin_next_episode",
+   "drop_ts_utc": "2026-02-13T21:56:00Z",
+   "quelle_url": "https://allinchamathjason.libsyn.com/rss",
+   "hinweis": "RSS pubDate minutengenau; Serie naechste Episode ohne Episodennummer, Zuordnung ueber Preis-Lock nach dieser Episode validiert; Konvergenz enthaelt Klaerungszeit der Aufloesung"
+  },
+  {
+   "event": "jre_trump_2219",
+   "drop_ts_utc": "2024-10-26T02:33:00Z",
+   "quelle_url": "https://feeds.megaphone.fm/GLT1412515089",
+   "hinweis": "RSS pubDate minutengenau; YouTube-Erstveroeffentlichung kann frueher am Abend gelegen haben"
+  },
+  {
+   "event": "jre_vance_2221",
+   "drop_ts_utc": "2024-10-31T17:00:00Z",
+   "quelle_url": "https://feeds.megaphone.fm/GLT1412515089",
+   "hinweis": "RSS pubDate auf ganze Stunde; geplant war Veroeffentlichung am 30.10., tatsaechlich 31.10."
+  },
+  {
+   "event": "southpark_s27e5",
+   "drop_ts_utc": "2025-09-25T02:00:00Z",
+   "quelle_url": "https://en.wikipedia.org/wiki/South_Park_season_27",
+   "hinweis": "TV-Premiere Comedy Central 24.09.2025 22:00 ET; kein Podcast-RSS, Sendeplatz als Drop"
+  },
+  {
+   "event": "southpark_s27e6",
+   "drop_ts_utc": "2025-10-16T02:00:00Z",
+   "quelle_url": "https://en.wikipedia.org/wiki/South_Park_season_27",
+   "hinweis": "TV-Premiere Comedy Central 15.10.2025 22:00 ET; spaeter als Staffel-28-Premiere gefuehrt"
   }
  ],
- "erstellt_am_utc": "2026-07-03T05:14:37Z"
+ "erstellt_am_utc": "2026-07-03T06:04:45Z"
 }

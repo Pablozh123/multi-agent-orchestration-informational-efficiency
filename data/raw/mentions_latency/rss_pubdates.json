@@ -1,0 +1,32 @@
+{
+ "meta": {
+  "beschreibung": "RSS-pubDate-Belege fuer Podcast-Drops der Mentions-Latenz-Erweiterung. pubDate woertlich aus dem Feed uebernommen, UTC-Umrechnung dokumentiert.",
+  "abrufdatum": "2026-07-03"
+ },
+ "eintraege": [
+  {
+   "event": "allin_next_episode",
+   "feed_url": "https://allinchamathjason.libsyn.com/rss",
+   "item_titel": "Debt Spiral or NEW Golden Age? Super Bowl Insider Trading, Booming Token Budgets, Fed Picks...",
+   "pubdate_roh": "Fri, 13 Feb 2026 21:56:00 +0000",
+   "drop_ts_utc": "2026-02-13T21:56:00Z",
+   "hinweis": "Markt-Serie naechste Episode ohne Episodennummer im Feed; Zuordnung zu dieser Episode validiert ueber Preis-Lock (>=0.96 ab 2026-02-16 18:00 UTC, kein Lock nach frueheren Episoden-Kandidaten Jan 22 bis Feb 10)."
+  },
+  {
+   "event": "jre_trump_2219",
+   "feed_url": "https://feeds.megaphone.fm/GLT1412515089",
+   "item_titel": "#2219 - Donald Trump",
+   "pubdate_roh": "Sat, 26 Oct 2024 02:33:00 -0000",
+   "drop_ts_utc": "2024-10-26T02:33:00Z",
+   "hinweis": "Minutengenauer pubDate. YouTube-Erstveroeffentlichung kann frueher am Abend gelegen haben; Limitation dokumentiert."
+  },
+  {
+   "event": "jre_vance_2221",
+   "feed_url": "https://feeds.megaphone.fm/GLT1412515089",
+   "item_titel": "#2221 - JD Vance",
+   "pubdate_roh": "Thu, 31 Oct 2024 17:00:00 -0000",
+   "drop_ts_utc": "2024-10-31T17:00:00Z",
+   "hinweis": "pubDate auf ganze Stunde. Marktbeschreibung nannte geplante Veroeffentlichung 30.10.2024, tatsaechliche Feed-Veroeffentlichung 31.10.2024."
+  }
+ ]
+}

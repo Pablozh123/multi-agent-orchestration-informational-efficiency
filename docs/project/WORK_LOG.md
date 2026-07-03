@@ -13102,3 +13102,43 @@ Next step:
 - Optional: integrate figure/table into thesis chapter Erweiterungen
   with Table A1 comparison (US election market: minutes to about one
   hour).
+
+## 2026-07-03 - user-directed: mentions latency podcast extension
+
+Task:
+
+- Extend mentions-latency seed by 5 podcast/episode events (All-In, JRE
+  Trump #2219, JRE Vance #2221, South Park S27E5/E6) with drop
+  timestamps from podcast RSS pubDate (JRE/All-In, minute-precise where
+  the feed provides it) or documented TV premiere slot (South Park).
+- Add per-market column `stunden_im_handelbaren_fenster`: hours after
+  drop with price strictly between 0.1 and 0.9 (descriptive window
+  size, no trading or profitability claim).
+
+Files changed:
+
+- `operations/analysis/mentions_latency.py` (stunden_im_band,
+  figure special-case for pre-drop convergence, metadata parameter)
+- `tests/test_mentions_latency.py` (23 tests, +3 for stunden_im_band,
+  band-boundary epsilon case included)
+- `data/events/mentions_latency_seed.csv` (13 rows)
+- `data/raw/mentions_latency/` (gamma_markets_podcast.json,
+  rss_pubdates.json, 5 new cached price series)
+- `data/results/mentions_latency.{csv,_metadata.json,_de.png}`
+
+Decision:
+
+- All-In "next episode" series has no episode number in feed or market;
+  episode mapping to the 2026-02-13 21:56 UTC release validated via
+  price lock (>=0.96 only after this episode). Documented in seed and
+  raw evidence file.
+- jre_trump_2219 flags `bereits_vor_drop_konvergiert` (convergence 23
+  min before RSS pubDate), consistent with the documented limitation
+  that YouTube first release can precede the RSS pubDate.
+- Key result: window sizes range 0.08 h (jre_vance_2221) to 55.65 h
+  (allin_next_episode); reactions to point-shaped drops mostly under
+  1 minute.
+
+Next step:
+
+- Optional thesis integration alongside Table A1 comparison.

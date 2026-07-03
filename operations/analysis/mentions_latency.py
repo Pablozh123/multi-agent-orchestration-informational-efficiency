@@ -35,6 +35,9 @@ Kennzahlen je Markt
 - Konvergenz: erster Zeitpunkt, ab dem der Preis dauerhaft (bis zum Ende
   der Reihe) auf der richtigen Seite von 0.9 (Outcome YES) bzw. 0.1
   (Outcome NO) bleibt.
+- Stunden im handelbaren Fenster: Zeit nach dem Drop, in der der Preis
+  strikt zwischen 0.1 und 0.9 lag (deskriptive Fenstergroesse, keine
+  Handels- oder Profitabilitaetsaussage).
 
 Ausgaben
 --------
@@ -143,6 +146,28 @@ def minuten_nach_drop(epoch: int, drop_epoch: int) -> float:
     return round((epoch - drop_epoch) / 60.0, 1)
 
 
+def stunden_im_band(
+    punkte: list[Punkt],
+    drop_epoch: int,
+    unteres: float = 1.0 - KONVERGENZ_BAND,
+    oberes: float = KONVERGENZ_BAND,
+) -> float:
+    """Stunden nach dem Drop, in denen der Preis strikt zwischen den
+    Bandgrenzen lag (Standard: zwischen 0.1 und 0.9).
+
+    Summiert die Dauer zwischen aufeinanderfolgenden Beobachtungen, deren
+    linker Punkt im Band liegt und bei/nach dem Drop beobachtet wurde.
+    Rein deskriptive Fenstergroesse auf Beobachtungsraster-Ebene.
+    """
+    punkte = sorted(punkte)
+    sekunden = 0
+    for (t0, p0), (t1, _) in zip(punkte, punkte[1:]):
+        # Epsilon gegen Gleitkomma-Artefakte an den Bandgrenzen
+        if t0 >= drop_epoch and p0 - unteres > 1e-9 and oberes - p0 > 1e-9:
+            sekunden += t1 - t0
+    return round(sekunden / 3600.0, 2)
+
+
 def bewerte_markt(punkte: list[Punkt], drop_epoch: int, outcome_yes: bool) -> dict:
     """Berechnet alle Kennzahlen fuer eine Preisreihe (deterministisch)."""
     punkte = sorted(punkte)
@@ -179,6 +204,7 @@ def bewerte_markt(punkte: list[Punkt], drop_epoch: int, outcome_yes: bool) -> di
         "minuten_bis_konvergenz": (
             minuten_nach_drop(konvergenz, drop_epoch) if konvergenz is not None else None
         ),
+        "stunden_im_handelbaren_fenster": stunden_im_band(punkte, drop_epoch),
         "endpreis": round(punkte[-1][1], 4) if punkte else None,
         "status": status,
     }
@@ -329,7 +355,10 @@ def schreibe_metadata(ergebnisse: list[dict], seed: list[dict], pfad: Path) -> N
             "Content-Drop. Baseline = Medianpreis 60 Minuten vor Drop; erste "
             "Reaktion = erstes Ueberschreiten von 1 Prozentpunkt Abweichung von "
             "der Baseline; Konvergenz = erster Zeitpunkt, ab dem der Preis "
-            "dauerhaft auf der richtigen Seite von 0.9 (YES) bzw. 0.1 (NO) bleibt."
+            "dauerhaft auf der richtigen Seite von 0.9 (YES) bzw. 0.1 (NO) "
+            "bleibt; Stunden im handelbaren Fenster = Zeit nach Drop mit Preis "
+            "strikt zwischen 0.1 und 0.9 (deskriptive Fenstergroesse, keine "
+            "Handels- oder Profitabilitaetsaussage)."
         ),
         "datenquelle": (
             "Polymarket CLOB-API /prices-history, fidelity=1 (Minutenpunkte), "
@@ -341,6 +370,10 @@ def schreibe_metadata(ergebnisse: list[dict], seed: list[dict], pfad: Path) -> N
             "baseline_fenster_minuten": BASELINE_FENSTER_S // 60,
             "reaktions_schwelle_prozentpunkte": REAKTIONS_SCHWELLE * 100,
             "konvergenz_band": KONVERGENZ_BAND,
+            "handelbares_fenster_band": [
+                round(1.0 - KONVERGENZ_BAND, 4),
+                KONVERGENZ_BAND,
+            ],
         },
         "einordnung": (
             "Vergleichswert: Im US-Wahlmarkt lagen die Reaktionszeiten bei "
@@ -412,20 +445,28 @@ def zeichne_abbildung(ergebnisse: list[dict], pfad: Path) -> None:
         color="#c26a3d", label="Minuten bis Konvergenz (dauerhaft richtige Seite)",
     )
 
-    for bar, wert in list(zip(b1, reakt)) + list(zip(b2, konv)):
+    for bar, wert in zip(b1, reakt):
         ax.annotate(
             wert_text(wert),
             (bar.get_width(), bar.get_y() + bar.get_height() / 2),
             textcoords="offset points", xytext=(4, 0),
             va="center", fontsize=8.5, color="#333333",
         )
-    for y, r in zip(ys, daten):
-        if r["minuten_bis_konvergenz"] is None:
-            ax.annotate(
-                "keine Konvergenz im Fenster",
-                (minimum, y - hoehe / 2), textcoords="offset points", xytext=(4, 0),
-                va="center", fontsize=8.5, color="#888888", style="italic",
-            )
+    for bar, y, r in zip(b2, ys, daten):
+        konv_min = r["minuten_bis_konvergenz"]
+        if konv_min is None:
+            text, stil = "keine Konvergenz im Fenster", "#888888"
+        elif konv_min <= 0:
+            text, stil = "vor Drop konvergiert", "#888888"
+        else:
+            text, stil = wert_text(konv_min), "#333333"
+        ax.annotate(
+            text,
+            (bar.get_width(), bar.get_y() + bar.get_height() / 2),
+            textcoords="offset points", xytext=(4, 0),
+            va="center", fontsize=8.5, color=stil,
+            style="italic" if stil == "#888888" else "normal",
+        )
 
     ax.axvline(60, color="#666666", linestyle=":", linewidth=1.2)
     ax.plot(

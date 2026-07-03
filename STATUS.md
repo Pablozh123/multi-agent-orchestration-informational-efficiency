@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-07-03 08:03
+Generated: 2026-07-03 10:19
 
 Current goal: `goal-h3-informed-trading-signature-001` - Build tested H3 informed-trading signature diagnostics
 
@@ -11,35 +11,29 @@ Current roadmap phase: Phase 13: H3 Informed-Trading Signature Diagnostics
 
 Test status: FAIL
 
-Pytest summary: `1 failed, 702 passed in 63.74s (0:01:03)`
+Pytest summary: `1 failed, 711 passed in 61.63s (0:01:01)`
 
 Git branch: `main`
 
-Latest commit: `556deda`
+Latest commit: `0a7dd25`
 
 Git status:
 
 ```text
  M .claude/settings.local.json
  M GOAL.md
- M data/events/mentions_latency_seed.csv
  M data/results/h1_calibration_diagnostic.png
  M data/results/h1_calibration_diagnostic_bins.csv
  M data/results/h1_calibration_diagnostic_cases.csv
  M data/results/h1_calibration_diagnostic_metadata.json
  M data/results/h1_calibration_diagnostic_pairwise.csv
  M data/results/h1_calibration_diagnostic_summary.csv
- M data/results/mentions_latency.csv
- M data/results/mentions_latency_de.png
- M data/results/mentions_latency_metadata.json
  M docs/project/FHNW_ACADEMICGUIDE_RULES.md
  M docs/project/WORK_LOG.md
  M docs/project/dozentenbericht_ba_thesis.docx
  M docs/project/dozentenbericht_ba_thesis.html
  M docs/project/dozentenbericht_ba_thesis.md
  M operations/analysis/h1_calibration_diagnostic.py
- M operations/analysis/mentions_latency.py
- M tests/test_mentions_latency.py
  M thesis/Bachelorarbeit_FHNW.docx
  M thesis/chapters/01_einleitung.tex
  M thesis/chapters/02_theorie.tex
@@ -63,13 +57,7 @@ Git status:
 ?? data/.fuse_hidden0000000900000001
 ?? data/.fuse_hidden0000018400000001
 ?? data/raw/category_efficiency/
-?? data/raw/mentions_latency/gamma_markets_podcast.json
-?? data/raw/mentions_latency/prices_allin_next_episode.json
-?? data/raw/mentions_latency/prices_jre_trump_2219.json
-?? data/raw/mentions_latency/prices_jre_vance_2221.json
-?? data/raw/mentions_latency/prices_southpark_s27e5.json
-?? data/raw/mentions_latency/prices_southpark_s27e6.json
-?? data/raw/mentions_latency/rss_pubdates.json
+?? data/raw/mentions_latency/trades_southpark_s27e6.json
 ?? data/results/agent_review_queue_eval_metrics.csv
 ?? data/results/agent_review_queue_eval_summary.json
 ?? data/results/agent_review_queue_eval_summary_llm.json
@@ -91,6 +79,8 @@ Git status:
 ?? data/results/h3_oos_maduro_case.csv
 ?? data/results/h3_wallet_tier_counts_de.png
 ?? data/results/rcp_logit_scaling_sensitivity.png
+?? data/results/southpark_e6_window_trades.csv
+?? data/results/southpark_e6_window_trades_metadata.json
 ?? data/results/stage3_llm_audit_log.jsonl
 ?? data/results/swiss_referendum_10mio_case_study_de.png
 ?? docs/project/PROZESS_ZUSAMMENFASSUNG_DOZENT.docx
@@ -99,10 +89,12 @@ Git status:
 ?? operations/analysis/category_efficiency_snapshot.py
 ?? operations/analysis/h3_news_lead_check.py
 ?? operations/analysis/h3_oos_maduro_case.py
+?? operations/analysis/southpark_window_trades.py
 ?? operations/analysis/thesis_figures_de.py
 ?? operations/analysis/thesis_figures_de_rest.py
 ?? tests/test_agent_review_queue_eval.py
 ?? tests/test_category_efficiency_snapshot.py
+?? tests/test_southpark_window_trades.py
 ?? thesis/chapters/11_anhang.tex
 ?? thesis/figures/agent_orchestration_architecture.png
 ?? thesis/figures/h1_direct_poll_outlier_robustness.png
@@ -116,24 +108,18 @@ Git diff stat:
 ```text
  .claude/settings.local.json                        |   3 +-
  GOAL.md                                            |  57 ++-
- data/events/mentions_latency_seed.csv              |   5 +
  data/results/h1_calibration_diagnostic.png         | Bin 255226 -> 191785 bytes
  data/results/h1_calibration_diagnostic_bins.csv    |  54 +--
  data/results/h1_calibration_diagnostic_cases.csv   | 386 ++++++++++-----------
  .../h1_calibration_diagnostic_metadata.json        | 128 +++----
  .../results/h1_calibration_diagnostic_pairwise.csv |  12 +-
  data/results/h1_calibration_diagnostic_summary.csv |  16 +-
- data/results/mentions_latency.csv                  |  23 +-
- data/results/mentions_latency_de.png               | Bin 112553 -> 148878 bytes
- data/results/mentions_latency_metadata.json        |  42 ++-
  docs/project/FHNW_ACADEMICGUIDE_RULES.md           |  14 +-
- docs/project/WORK_LOG.md                           |  40 +++
+ docs/project/WORK_LOG.md                           |  52 +++
  docs/project/dozentenbericht_ba_thesis.docx        | Bin 7455425 -> 7428741 bytes
  docs/project/dozentenbericht_ba_thesis.html        |  10 +-
  docs/project/dozentenbericht_ba_thesis.md          |   8 +-
  operations/analysis/h1_calibration_diagnostic.py   |  29 +-
- operations/analysis/mentions_latency.py            |  56 ++-
- tests/test_mentions_latency.py                     |  30 ++
  thesis/Bachelorarbeit_FHNW.docx                    | Bin 1547968 -> 2484630 bytes
  thesis/chapters/01_einleitung.tex                  | 114 +++---
  thesis/chapters/02_theorie.tex                     |  52 ++-
@@ -148,7 +134,7 @@ Git diff stat:
  thesis/figures/h1_calibration_diagnostic.png       | Bin 268080 -> 191785 bytes
  thesis/main.tex                                    |   2 +
  thesis/references.bib                              |  12 +
- 34 files changed, 1040 insertions(+), 556 deletions(-)
+ 28 files changed, 918 insertions(+), 534 deletions(-)
 ```
 
 Blockers:

@@ -13142,3 +13142,55 @@ Decision:
 Next step:
 
 - Optional thesis integration alongside Table A1 comparison.
+
+## 2026-07-03 - user-directed: mentions latency corrections and window trades
+
+Task:
+
+- Four atomic commits: (1) correct jre_trump_2219 drop to YouTube
+  upload time (RSS pubDate discarded, CLOB collapse 01:50-02:20 UTC as
+  evidence; case now regular with reaction 0.0 min, convergence 20
+  min); (2) exclude allin_next_episode from statistics and figure via
+  new seed column `ausschluss` (status
+  ausgeschlossen_zuordnungsambiguitaet; YES already 0.911 at drop,
+  decline to 0.399 was mapping/resolution uncertainty); (3) figure
+  title umlaut (Maerkten -> Märkten) and bars sorted descending by
+  stunden_im_handelbaren_fenster; (4) new script
+  operations/analysis/southpark_window_trades.py pulling realized
+  trades in the southpark_s27e6 window from the Polymarket Data-API
+  (offset pagination, newest first, until before cutoff), window drop
+  to drop+16h.
+
+Files changed:
+
+- `data/events/mentions_latency_seed.csv` (jre correction, ausschluss
+  column)
+- `operations/analysis/mentions_latency.py` (exclusion path, metadata,
+  figure sort/title)
+- `tests/test_mentions_latency.py` (24 tests)
+- `operations/analysis/southpark_window_trades.py` (new)
+- `tests/test_southpark_window_trades.py` (new, 8 tests)
+- `data/raw/mentions_latency/` (refetched jre series, trades cache)
+- `data/results/mentions_latency.{csv,_metadata.json,_de.png}`
+- `data/results/southpark_e6_window_trades.{csv,_metadata.json}`
+
+Key output:
+
+- southpark_s27e6 window (16 h after drop): 63 trades, 25304.95 USD
+  total, largest single trade 13038.57 USD.
+- YES buys below 0.7: 0 trades. Earliest realized YES buy was at 0.80
+  five minutes after drop; the two sub-0.7 YES prints in the window
+  were small SELLs (~2.5 USD). Descriptive only.
+- Data-API note: trade list is taker-side fills; USD sum of all cached
+  fills (49.9k) is below Gamma volumeNum (114.5k), consistent with
+  double-sided volume counting and pre-window trading.
+
+Verification:
+
+- `pytest tests/test_mentions_latency.py tests/test_southpark_window_trades.py`
+  -> 32 passed.
+
+Next step:
+
+- Optional thesis integration (Erweiterungen chapter) with Table A1
+  comparison.

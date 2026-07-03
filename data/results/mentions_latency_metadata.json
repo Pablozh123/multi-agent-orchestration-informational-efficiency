@@ -1,0 +1,69 @@
+{
+ "beschreibung": "Einpreisungs-Latenz kuratierter Polymarket-Mentions-Maerkte nach Content-Drop. Baseline = Medianpreis 60 Minuten vor Drop; erste Reaktion = erstes Ueberschreiten von 1 Prozentpunkt Abweichung von der Baseline; Konvergenz = erster Zeitpunkt, ab dem der Preis dauerhaft auf der richtigen Seite von 0.9 (YES) bzw. 0.1 (NO) bleibt.",
+ "datenquelle": "Polymarket CLOB-API /prices-history, fidelity=1 (Minutenpunkte), YES-Outcome-Token, Rohdaten-Cache unter data/raw/mentions_latency/.",
+ "seed_datei": "data/events/mentions_latency_seed.csv",
+ "n_maerkte": 8,
+ "parameter": {
+  "baseline_fenster_minuten": 60,
+  "reaktions_schwelle_prozentpunkte": 1.0,
+  "konvergenz_band": 0.9
+ },
+ "einordnung": "Vergleichswert: Im US-Wahlmarkt lagen die Reaktionszeiten bei Minuten bis rund einer Stunde (Tabelle A1 der Thesis).",
+ "limitationen": [
+  "Drop-Zeitpunkte sind kuratierte, quellenbelegte Beginnzeiten der Events bzw. Ausstrahlungen; der tatsaechliche Moment der aufloesungsrelevanten Aussage innerhalb des Events kann spaeter liegen. Die Latenz enthaelt diese Differenz.",
+  "Minutenpunkte der CLOB-API sind bei duennem Handel lueckenhaft; Reaktions- und Konvergenzzeiten sind dann Obergrenzen auf Beobachtungsraster-Ebene.",
+  "Kleine kuratierte Stichprobe, keine Zufallsauswahl; Maerkte ohne punktfoermigen Content-Drop (Mehrtagesfenster) wurden ausgeschlossen.",
+  "Rein deskriptiv: keine Handels-, Strategie- oder Profitabilitaetsaussagen; keine Kausalaussagen."
+ ],
+ "events": [
+  {
+   "event": "melania_ai_talk",
+   "drop_ts_utc": "2026-01-16T17:00:00Z",
+   "quelle_url": "https://news.zoom.com/zoom-reinforces-commitment-to-ai-literacy-with-national-student-learning-experience/",
+   "hinweis": "Geplanter Beginn 12:00 ET (Praezision Stunde); Rede vorab aufgezeichnet als Eroeffnung des Zoom Webinars"
+  },
+  {
+   "event": "baier_interview",
+   "drop_ts_utc": "2026-05-15T22:00:00Z",
+   "quelle_url": "https://press.foxnews.com/2026/05/fox-news-channel-to-conduct-first-interview-with-president-donald-trump-from-beijing-following-meeting-with-chinese-president-xi-jinping",
+   "hinweis": "Beginn Special Report 18:00 EDT; Interviewclips zirkulierten bereits ab ca. 14:43 UTC vor der Ausstrahlung"
+  },
+  {
+   "event": "netflix_earnings",
+   "drop_ts_utc": "2026-01-20T21:42:36Z",
+   "quelle_url": "https://www.youtube.com/live/GYqP8zJLYKk",
+   "hinweis": "Tatsaechlicher Streamstart laut YouTube Livestream Metadaten 21:42:36 UTC"
+  },
+  {
+   "event": "cnbc_kernen",
+   "drop_ts_utc": "2026-01-21T20:00:00Z",
+   "quelle_url": "https://pressroom.versantmedia.com/cnbc/press-releases/cnbc-transcript-president-donald-trump-speaks-cnbcs-joe-kernen-davos",
+   "hinweis": "Erstausstrahlung Closing Bell ab 20:00 UTC (Praezision Stunde); Preisbewegung 19:32 bis 19:46 UTC durch separaten Truth Social Post vor der Ausstrahlung"
+  },
+  {
+   "event": "panthers_visit",
+   "drop_ts_utc": "2026-01-15T21:21:00Z",
+   "quelle_url": "https://www.presidency.ucsb.edu/documents/pool-reports-january-15-2026",
+   "hinweis": "Tatsaechlicher Beginn laut Pool Report ca. 16:19 bis 16:21 ET"
+  },
+  {
+   "event": "pgl_final",
+   "drop_ts_utc": "2026-04-11T14:00:00Z",
+   "quelle_url": "https://liquipedia.net/counterstrike/PGL/2026/Bucharest",
+   "hinweis": "Offiziell angesetzter Beginn 17:00 EEST (Praezision Stunde); BO5 Serie ueber mehrere Stunden"
+  },
+  {
+   "event": "inauguration",
+   "drop_ts_utc": "2025-01-20T17:10:00Z",
+   "quelle_url": "https://www.whitehouse.gov/remarks/2025/01/the-inaugural-address/",
+   "hinweis": "Redebeginn laut White House Transkript 12:10 EST"
+  },
+  {
+   "event": "powell_june",
+   "drop_ts_utc": "2025-06-18T18:30:00Z",
+   "quelle_url": "https://x.com/federalreserve/status/1935329597777920209",
+   "hinweis": "Pressekonferenz 14:30 EDT; FOMC Statement bereits 14:00 EDT als separater Informationszeitpunkt"
+  }
+ ],
+ "erstellt_am_utc": "2026-07-03T05:14:37Z"
+}

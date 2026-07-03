@@ -12618,6 +12618,94 @@ Next recommended action:
 
 - `docs: update project control workflow`.
 
+## 2026-06-17 - Figure Quality Follow-up And Locked Dozentenbericht
+
+Context:
+
+- Active thread goal: `figure-quality-pass-001`.
+- The figure rendering changes are already committed as
+  `0c44b3e analysis: improve figure rendering quality`.
+- The repository `GOAL.md` still points at
+  `goal-h3-informed-trading-signature-001`; this follow-up only verified the
+  active thread goal artifacts and did not change the repository goal.
+
+Changes:
+
+- Rechecked the H1 calibration diagnostic metadata.
+- Rechecked the Polymarket rolling-history figure metadata.
+- Tested the Dozentenbericht generator with the project venv.
+- Built the Dozentenbericht successfully to a temporary output path.
+- Removed temporary report and pytest directories after verification.
+- Reverted partial Markdown/HTML report writes from the failed default DOCX
+  save so no half-updated report files remain.
+
+Key output:
+
+- H1 figure aspect ratio: `1.5`.
+- H1 reliability panel aspect: `equal`.
+- H1 reliability x/y limits: `[0.0, 1.0]`.
+- Rolling-history figure aspect ratio: `1.7142857142857142`.
+- Rolling-history wallet labels: `6` of max `6`, using
+  `top_6_by_total_observed_amount_usd_tie_timestamp_ascending`.
+- Rolling-history label layout: `rank_staggered_offsets_points`.
+- Wallet label metadata contains no wallet-address-like values.
+- Temporary Dozentenbericht build output contained `43` figures.
+
+Blocker:
+
+- Default Dozentenbericht build is still blocked by
+  `PermissionError: [Errno 13] Permission denied` on
+  `docs/project/dozentenbericht_ba_thesis.docx`.
+- `WINWORD` is still running and likely holds the target DOCX open
+  (`PID 27964` during this check).
+- DOCX render QA could not be completed because the renderer failed with
+  `FileNotFoundError: [WinError 2]`, consistent with missing LibreOffice or
+  `soffice`.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp .tmp_pytest_figure_goal_current`
+  -> PASS, `668 passed in 67.14s (0:01:07)`.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `668 passed in 72.10s (0:01:12)`.
+
+Next recommended action:
+
+- Close/save the open Word document and rerun
+  `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`.
+
+## 2026-06-17 - Figure Quality Goal Blocked By Open Word Document
+
+Context:
+
+- Active thread goal: `figure-quality-pass-001`.
+- The source figure changes remain committed as
+  `0c44b3e analysis: improve figure rendering quality`.
+- The remaining required deliverable is the default Dozentenbericht rebuild to
+  `docs/project/dozentenbericht_ba_thesis.docx`.
+
+Result:
+
+- Reran the default report build with the project venv:
+  `.\.venv\Scripts\python.exe -m operations.project.build_dozenten_report`.
+- The command again failed at `doc.save(output_path)` with
+  `PermissionError: [Errno 13] Permission denied` for
+  `docs/project/dozentenbericht_ba_thesis.docx`.
+- `WINWORD` was still running with PID `27964`, so the target DOCX remains
+  locked by the open Word process.
+- Partial Markdown/HTML writes from the failed build were reverted so the
+  report source files are not half-updated.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `668 passed in 72.79s (0:01:12)`.
+
+Next required action:
+
+- Close/save the open Word document or explicitly allow the Word process to be
+  stopped, then rerun the default Dozentenbericht build.
+
 ## 2026-06-16 - H3 Informed-Trading Signature Diagnostic
 
 Context:
@@ -12923,4 +13011,94 @@ Context:
 - Active goal: `goal-thesis-consolidation-001`.
 - Review-Access remains paused.
 - This slice turns the existing high-level controls into a direct BA writing
-  handoff, with
+  handoff, without reading source contents, calculating new metrics, promoting
+  source status, or activating runtime agents.
+
+Changes:
+
+- Added `operations.project.build_highlevel_thesis_writing_handoff`.
+- Generated `data/results/thesis_highlevel_thesis_writing_handoff.csv`.
+- Generated `docs/project/THESIS_HIGHLEVEL_THESIS_WRITING_HANDOFF.md`.
+- Updated the thesis consolidation index to 63 artifacts.
+- Updated `GOAL.md` and `ROADMAP.md` so the new handoff is part of the
+  accepted high-level project view.
+- Committed the slice as
+  `a50a07b docs: add highlevel thesis writing handoff without review access`.
+
+Key output:
+
+- Handoff rows: 7.
+- Bounded-draft-ready rows: 7.
+- Final-submission-ready rows: 0.
+- Project handoff areas: project frame, H1, H2, H3, compact
+  table/figure integration, manual Source Review/Citation Gate, and
+  Agent/Swiss/Final-QA boundary.
+- Source/Draft controls preserved: 23 worksheet rows, 12 method rows,
+  11 interpretation rows, 0 source/artifact gaps, 15 drafting steps,
+  23 pending citation rows, and 0 final-release rows.
+- Compact result controls preserved: 5 core tables, 4 core figures,
+  T2/F1, T3/F2, and T4/F3 for H1-H2-H3.
+- Agent controls preserved: 7 future-agent rows, 6 documentation-only rows,
+  1 deferred row, and 0 active runtime rows.
+
+Verification:
+
+- `.\.venv\Scripts\python.exe -m pytest tests/test_highlevel_thesis_writing_handoff.py tests/test_thesis_consolidation_index.py tests/test_highlevel_next_step_control_summary.py tests/test_h1_h2_h3_source_gated_thesis_drafting_pass.py tests/test_h1_h2_h3_worksheet_drafting_bridge.py -q`
+  -> PASS, 13 passed.
+- `.\.venv\Scripts\python.exe -m py_compile ...` on touched generator and
+  test files -> PASS.
+- `rg -n "<sharp-s>" ...` on touched thesis-facing files -> PASS, no matches.
+- `git diff --check` -> PASS, CRLF warnings only.
+- `.\.venv\Scripts\python.exe -m operations.project.update_status`
+  -> PASS, `627 passed in 70.56s (0:01:10)`.
+
+Next recommended action:
+
+- `docs: update project control workflow`.
+
+## 2026-07-03 - user-directed: mentions latency work package
+
+Task:
+
+- Build deterministic mentions-latency module: pricing-in latency of
+  curated Polymarket mentions markets after content drop (baseline,
+  first reaction, convergence), plus curated event seed, results CSV,
+  metadata, and German figure. Descriptive only, no trading or
+  profitability claims. User-directed work package outside the current
+  GOAL.md active goal (deterministic core, no agents).
+
+Files changed:
+
+- `operations/analysis/mentions_latency.py` (new)
+- `tests/test_mentions_latency.py` (new, 20 tests)
+- `data/events/mentions_latency_seed.csv` (new, 8 curated events with
+  source URLs; 4 candidate markets excluded: 3 Trump-Xi markets and 1
+  Truth-Social week market, no point-shaped content drop)
+- `data/raw/mentions_latency/` (new: gamma_markets.json + 8 cached
+  minute-level CLOB prices-history series, fidelity=1)
+- `data/results/mentions_latency.csv`
+- `data/results/mentions_latency_metadata.json`
+- `data/results/mentions_latency_de.png`
+
+Tests:
+
+- `pytest tests/test_mentions_latency.py` -> 20 passed.
+- Note: `tests/test_h1_calibration_diagnostic.py` fails pre-existing
+  (unrelated to this change).
+
+Decision:
+
+- Drop timestamps curated via web research with independent
+  cross-verification per event (2 agents per event); timestamps and
+  source URLs stored in the seed. Baseline = median price 60 min before
+  drop; first reaction = first deviation > 1 percentage point from
+  baseline; convergence = start of the final suffix permanently on the
+  correct side of 0.9 / 0.1. Result: first reaction typically under
+  1 minute (5 of 8 markets), convergence 30 min to 4912 min, driven by
+  event length and resolution lag.
+
+Next step:
+
+- Optional: integrate figure/table into thesis chapter Erweiterungen
+  with Table A1 comparison (US election market: minutes to about one
+  hour).

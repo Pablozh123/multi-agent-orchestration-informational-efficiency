@@ -42,3 +42,7 @@ data/results/agent_review_queue_llm_audit_log.jsonl
 
 # Private Live-Bot-Daten (nicht thesis-facing)
 data/live/
+
+# Taeglicher Publish-Output (regenerierbar via daily_review_run)
+data/publish/
+data/results/daily_review_llm_audit_log.jsonl

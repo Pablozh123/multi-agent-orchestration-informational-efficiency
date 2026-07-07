@@ -13194,3 +13194,45 @@ Next step:
 
 - Optional thesis integration (Erweiterungen chapter) with Table A1
   comparison.
+
+## 2026-07-07 - user-directed: daily review run with publish step
+
+Task:
+
+- New runner operations/pipeline/daily_review_run.py (commit c1a738e):
+  sequentially runs the offline monitor candidate refresh
+  (monitor_reference_candidates -> monitor_candidate_human_review_report
+  -> monitor_anomaly_review_queue), build_review_queue from
+  operations/agents/review_queue (mock backend default; --llm uses
+  ANTHROPIC_API_KEY from .env via python-dotenv), and the snapshot
+  calculators (category_efficiency_snapshot always; mentions_latency
+  only when every non-excluded seed row has a price cache, so the
+  default run never touches the network; category_latency_examples).
+- Exports six pydantic-validated JSONs to data/publish/ (fail-closed,
+  extra="forbid", Literal whitelists): queue.json (cards sorted by
+  score band, recommendation whitelist beobachten/quelle_pruefen/
+  eskalation_mensch, skeptic_abschlag bounded [-0.3, 0]),
+  kategorie_karte.json (summary v2 + latency examples),
+  mentions_latenz.json (status == "ok" exact match plus documented
+  exclusions), pipeline_forward.json (observing/paper: only ts, action,
+  reason, limit_price, size_usd, derived best ask/bid, word-counter end
+  states; fail-soft when data/live is absent), audit.json (hashes and
+  counters only), meta.json (run time, backend, step status,
+  disclaimers).
+- Redaction gate before any write: wallet pattern 0x+40hex (64-hex
+  condition ids stay allowed, same lookahead as monitor_readonly) and
+  key-like strings (vendor prefixes, PEM marker, env assignments);
+  any hit aborts the whole publish. --publish-dir copies the six files
+  additionally (e.g. website public/data). data/publish/ and the
+  runner audit JSONL are gitignored as regenerable.
+- Verification: 16 new tests in tests/test_daily_review_run.py
+  -> 16 passed; full suite 754 passed, 1 pre-existing failure
+  (test_h1_calibration_diagnostic, present since the July state).
+  review_check: no new findings (3 pre-existing FAILs unchanged).
+  Real mock run: queue_rows=3, all snapshots ok, six files written and
+  copied to the website checkout.
+
+Next step:
+
+- Website views (review queue, category efficiency, mentions latency,
+  pipeline forward, methodology) read the published JSONs statically.

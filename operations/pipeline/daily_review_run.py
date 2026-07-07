@@ -107,10 +107,13 @@ DISCLAIMER = {
 # Redaktions-Gate
 # ---------------------------------------------------------------------------
 
-#: Wallet-Adressen: ``0x`` + exakt 40 Hex. Der negative Lookahead laesst
-#: laengere Hex-Ids (Condition-/Token-Ids mit 64 Hex) unangetastet --
-#: identisches Muster wie ``operations.mcp.monitor_readonly._WALLET_RE``.
-WALLET_RE = re.compile(r"0x[0-9a-fA-F]{40}(?![0-9a-fA-F])")
+#: Wallet-Adressen: ``0x``/``0X`` + exakt 40 Hex ODER eine nackte
+#: 40-Hex-Sequenz. Die Lookarounds lassen laengere Hex-Ids
+#: (Condition-/Token-Ids mit 64 Hex, sha256-Hashes) unangetastet.
+WALLET_RE = re.compile(
+    r"0[xX][0-9a-fA-F]{40}(?![0-9a-fA-F])"
+    r"|(?<![0-9a-fA-FxX])[0-9a-fA-F]{40}(?![0-9a-fA-F])"
+)
 
 #: Key-artige Strings: bekannte Secret-Praefixe, PEM-Marker und
 #: ``NAME=WERT``-Paare, deren Name nach einem Secret klingt.
@@ -123,9 +126,11 @@ SECRET_PATTERNS = (
     ("pem_marker", re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----")),
     (
         "env_assignment",
+        # Quotes/Backslashes sind auf BEIDEN Seiten des Separators erlaubt,
+        # damit auch JSON-serialisierte Paare ("api_key": "...") anschlagen.
         re.compile(
             r"(?i)\b(?:api[_-]?key|secret|token|password|private[_-]?key)\b"
-            r"\s*[=:]\s*[\\'\"]{0,3}[A-Za-z0-9+/_\-]{16,}"
+            r"[\\'\"]{0,3}\s*[=:]\s*[\\'\"]{0,3}[A-Za-z0-9+/_\-]{16,}"
         ),
     ),
 )
@@ -771,7 +776,9 @@ def run_daily_review(
 
         build_review_queue_fn = build_review_queue
     backend = _make_llm_backend() if use_llm else None
-    backend_name = "anthropic:claude-sonnet-5" if use_llm else "mock"
+    # Publiziert wird nur die generische Betriebsart -- die konkrete
+    # Modell-Id bleibt im internen (gitignorierten) LLM-Audit-Log.
+    backend_name = "llm" if use_llm else "mock"
     llm_sink: List[Dict[str, Any]] = []
     mcp_lines_before = _count_lines(MCP_AUDIT_PATH)
     queue_result = build_review_queue_fn(

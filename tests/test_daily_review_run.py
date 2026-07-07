@@ -47,9 +47,27 @@ def test_gate_blocks_wallet_address() -> None:
 
 
 def test_gate_allows_condition_id_64_hex() -> None:
-    # Condition-/Token-Ids (0x + 64 hex) sind KEINE Wallet-Adressen.
-    text = json.dumps({"condition_id": "0x" + "a" * 64})
+    # Condition-/Token-Ids (0x + 64 hex) und sha256-Hashes sind KEINE
+    # Wallet-Adressen.
+    text = json.dumps({"condition_id": "0x" + "a" * 64, "prompt_hash": "b" * 64})
     drr.run_redaction_gate({"mentions_latenz.json": text})
+
+
+def test_gate_blocks_wallet_variants() -> None:
+    # Grosses 0X-Praefix und nackte 40-Hex-Sequenzen entkommen nicht.
+    for value in ("0X" + "a" * 40, "wallet " + "b" * 40 + " gekauft"):
+        with pytest.raises(drr.RedactionGateError):
+            drr.run_redaction_gate({"queue.json": json.dumps({"v": value})})
+
+
+def test_gate_blocks_json_form_key_pairs() -> None:
+    # JSON-serialisierte Key/Value-Paare ("api_key": "...") muessen anschlagen.
+    for text in (
+        '{"api_key": "abcdefabcdefabcdef"}',
+        json.dumps({"nested": {"private_key": "abcdefabcdefabcdef12"}}),
+    ):
+        with pytest.raises(drr.RedactionGateError):
+            drr.run_redaction_gate({"audit.json": text})
 
 
 def test_gate_blocks_key_like_strings() -> None:
@@ -178,9 +196,11 @@ def test_mentions_ok_exact_match_and_exclusions() -> None:
             "status": "ausgeschlossen_zuordnungsambiguitaet",
         },
     ]
+    # Reales Producer-Schema (mentions_latency.py): ausgeschlossene_events
+    # enthaelt NUR {event, status}; der Grund wird aus dem Status abgeleitet.
     metadata = {
         "ausgeschlossene_events": [
-            {"event": "allin_next_episode", "grund": "Zuordnung mehrdeutig."}
+            {"event": "allin_next_episode", "status": "ausgeschlossen_zuordnungsambiguitaet"}
         ],
         "limitationen": ["Nur punktfoermige Drops."],
     }
@@ -193,7 +213,8 @@ def test_mentions_ok_exact_match_and_exclusions() -> None:
         "allin_next_episode",
     }
     grund = {a.event: a.grund for a in payload.ausschluesse}
-    assert grund["allin_next_episode"] == "Zuordnung mehrdeutig."
+    assert grund["allin_next_episode"] == "Seed-Ausschluss: zuordnungsambiguitaet"
+    assert grund["fall_teilstatus"].startswith("Messstatus:")
     assert payload.limitationen == ["Nur punktfoermige Drops."]
 
 

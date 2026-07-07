@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-06-17T12:11:21+00:00",
+  "generated_at_utc": "2026-06-18T17:13:42+00:00",
   "limitations": {
     "calibration_bins_are_descriptive_not_significance_tests": true,
     "goal_many_cases_claim_not_yet_proven": true,
@@ -31,9 +31,9 @@
     "calibration_bin_row_count": 26,
     "contains_order_instructions": false,
     "contains_wallet_addresses": false,
-    "figure_aspect_ratio": 1.5,
-    "figure_height_inches": 9.6,
-    "figure_width_inches": 14.4,
+    "figure_aspect_ratio": 2.9464285714285716,
+    "figure_height_inches": 5.6,
+    "figure_width_inches": 16.5,
     "forecast_case_row_count": 192,
     "forecast_source_count": 7,
     "h1_goal_completion_status": "not_proven",
@@ -51,14 +51,14 @@
     "summary_row_count": 7
   },
   "source_paths": {
-    "calibration_bins": "data\\results\\h1_calibration_diagnostic_bins.csv",
-    "figure": "data\\results\\h1_calibration_diagnostic.png",
-    "final_snapshot_case_input": "data\\results\\h1_final_snapshot_cases.csv",
-    "forecast_cases": "data\\results\\h1_calibration_diagnostic_cases.csv",
-    "pairwise": "data\\results\\h1_calibration_diagnostic_pairwise.csv",
-    "rieke_case_input": "data\\results\\h1_rieke_state_forecast_cases.csv",
-    "state_poll_case_input": "data\\results\\h1_state_poll_snapshot_cases.csv",
-    "summary": "data\\results\\h1_calibration_diagnostic_summary.csv",
-    "two_seventy_case_input": "data\\results\\h1_270towin_state_forecast_cases.csv"
+    "calibration_bins": "data/results/h1_calibration_diagnostic_bins.csv",
+    "figure": "data/results/h1_calibration_diagnostic.png",
+    "final_snapshot_case_input": "data/results/h1_final_snapshot_cases.csv",
+    "forecast_cases": "data/results/h1_calibration_diagnostic_cases.csv",
+    "pairwise": "data/results/h1_calibration_diagnostic_pairwise.csv",
+    "rieke_case_input": "data/results/h1_rieke_state_forecast_cases.csv",
+    "state_poll_case_input": "data/results/h1_state_poll_snapshot_cases.csv",
+    "summary": "data/results/h1_calibration_diagnostic_summary.csv",
+    "two_seventy_case_input": "data/results/h1_270towin_state_forecast_cases.csv"
   }
 }

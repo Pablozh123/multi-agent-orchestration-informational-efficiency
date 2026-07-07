@@ -38,7 +38,6 @@ Quelle & Tabelle & Umfang & Rolle / Einschränkung \\
 \midrule
 Polymarket CLOB/Gamma & \texttt{polymarket\_prices} & 307 Tagespreise & primäre Marktzeitreihe \\
 FiveThirtyEight & \texttt{poll\_forecasts} & 245 Zeilen & Vergleichsquelle H1 \\
-RealClearPolitics & \texttt{poll\_forecasts} & 0 Zeilen & standardmässig ausgeschlossen \\
 On-Chain-Wallets & \texttt{whale\_trades} & 25\,113 Zeilen & H3, BUY-only, Filter $\geq$10\,000 USD \\
 GDELT & \texttt{sentiment\_scores} & 310 Zeilen & Kontext, kein Kernparameter \\
 Ereigniskatalog (Seed) & \texttt{events\_timeline} & 7 kuratierte Ereignisse & H2-Eingabe, vorab fixiert \\
@@ -48,7 +47,7 @@ Ereigniskatalog (Seed) & \texttt{events\_timeline} & 7 kuratierte Ereignisse & H
 
 Die Vergleichsquellen sind bewusst restriktiv gewählt. FiveThirtyEight liefert
 native Wahrscheinlichkeiten und ist deshalb direkt vergleichbar
-\citep{zotero_poly_002}. RealClearPolitics liefert Umfragedurchschnitte, keine
+\citep{zotero_poly_002}. Für die Kalibrierungsdiagnostik in H1 treten als weitere aufgelöste Vergleichsquellen das unabhängige Umfragemodell Rieke, die 270toWin/JHK-Staatenprognose sowie eine dokumentierte Umfrage-Transformation (Poll-Transform) hinzu, jeweils nur für den paarweisen Brier-Vergleich und nicht als Kernzeitreihe. RealClearPolitics liefert Umfragedurchschnitte, keine
 Prognosewahrscheinlichkeiten, diese Quelle bleibt aus allen Wahrscheinlichkeits-
 und Kalibrierungsmetriken ausgeschlossen, solange die in der Methodiknote
 (\texttt{docs/research/RCP\_TRANSFORMATION.md}) beschriebene Logit-Transformation
@@ -101,6 +100,4 @@ DuckDB. Jede Datenbankschreiboperation wird, wo sinnvoll, validiert
 Entwurfs bestehen 640 Tests. Der Datenzugriff für spätere
 Interpretationsschichten ist begrenzt (kein \texttt{SELECT *} ohne
 \texttt{LIMIT}, maximal 50 Zeilen pro Abfrage), und jeder spätere
-Sprachmodell-Aufruf muss protokolliert werden. Diese Disziplin macht jede
-thesis-relevante Kennzahl rerunnbar und prüfbar und ist damit selbst ein
-methodischer Beitrag.
+Sprachmodell-Aufruf muss protokolliert werden. So bleibt jede thesis-relevante Kennzahl reproduzierbar und prüfbar.

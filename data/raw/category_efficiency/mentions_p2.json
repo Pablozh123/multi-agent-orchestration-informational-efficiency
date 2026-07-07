@@ -1,0 +1,375 @@
+{
+ "meta": {
+  "beschreibung": "Reduzierte Rohdaten (Feld-Extrakt) der Gamma-API fuer die Kategorie Mentions (Tag-Slug mention-markets), Ergaenzungsseite 2 (Events-Endpunkt, nach Volumen absteigend). Antwort des Abrufwerkzeugs bei ca. 90 kB gekappt; alle analyserelevanten Felder aus der Original-Antwort extrahiert, Werte unveraendert uebernommen.",
+  "abrufdatum": "2026-07-03",
+  "quelle_url": "https://gamma-api.polymarket.com/events?tag_slug=mention-markets&closed=true&order=volume&ascending=false&limit=15&offset=15",
+  "tag_slug": "mention-markets",
+  "endpunkt": "events",
+  "offset": 15,
+  "limit": 15,
+  "extrahierte_felder": [
+   "id",
+   "slug",
+   "closed_time",
+   "volume_num",
+   "outcome_prices",
+   "last_trade_price",
+   "best_bid",
+   "best_ask",
+   "one_day_price_change",
+   "one_week_price_change",
+   "event_id",
+   "event_slug",
+   "clob_token_id_yes"
+  ],
+  "anzahl_events_vollstaendig": 1,
+  "anzahl_maerkte_vollstaendig": 19,
+  "verworfen_unvollstaendig": [
+   "Letztes Event (id 193799, slug what-will-trump-say-this-week-february-8) am Ende der gekappten Antwort angeschnitten und nicht als vollstaendiges Event gezaehlt; 0 vollstaendige Maerkte daraus uebernommen; kein Maerkte-Array in der gekappten Antwort enthalten."
+  ]
+ },
+ "markets": [
+  {
+   "id": "523560",
+   "slug": "will-trump-and-elon-say-china-10-or-more-times-during-their-feb-18-interview",
+   "closed_time": "2025-02-20 22:19:49+00",
+   "volume_num": 16946.178948,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.002,
+   "one_day_price_change": -0.011,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "67336456336414143756126511208941289365052169797849132629037398921496375151905"
+  },
+  {
+   "id": "523561",
+   "slug": "will-trump-and-elon-say-billion-10-or-more-times-during-their-feb-18-interview",
+   "closed_time": "2025-02-21 04:40:12+00",
+   "volume_num": 35082.082249,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.003,
+   "one_day_price_change": -0.0105,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "21210327128754445871885830915790936709631316325846097734276018871648450011631"
+  },
+  {
+   "id": "523562",
+   "slug": "will-trump-and-elon-say-tax-5-or-more-times-during-their-feb-18-interview",
+   "closed_time": "2025-02-19 07:35:16+00",
+   "volume_num": 231488.50998,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": 0.4545,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "89241413439361747754403734536863072179452288221464264936397677455905266143389"
+  },
+  {
+   "id": "523564",
+   "slug": "will-trump-and-elon-say-doge-3-or-more-times-during-their-feb-18-interview",
+   "closed_time": "2025-02-20 06:10:42+00",
+   "volume_num": 588691.248546,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": 0.037,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "29088517546934230911354513155750330935794852548558887899922592523678255868555"
+  },
+  {
+   "id": "523565",
+   "slug": "will-trump-and-elon-say-kickback-during-their-feb-18-interview",
+   "closed_time": "2025-02-20 06:25:22+00",
+   "volume_num": 302103.63414,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": 0.0205,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "77777476429349643930959151781522455463668761720454499309239683479149084384183"
+  },
+  {
+   "id": "523566",
+   "slug": "will-trump-and-elon-say-saudi-arabia-during-their-feb-18-interview",
+   "closed_time": "2025-02-21 04:40:06+00",
+   "volume_num": 404450.770366,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": -0.006,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "75964602796312092840352301491095036630063245075788991740359659389269194197367"
+  },
+  {
+   "id": "523567",
+   "slug": "will-trump-and-elon-say-department-of-education-during-their-feb-18-interview",
+   "closed_time": "2025-02-20 06:20:46+00",
+   "volume_num": 472484.974387,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": 0.0235,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "13968912016084423003049222321394594395714385680285422624280127734655684880396"
+  },
+  {
+   "id": "523568",
+   "slug": "will-trump-and-elon-say-october-7-during-their-feb-18-interview",
+   "closed_time": "2025-02-20 23:00:25+00",
+   "volume_num": 29605.19587,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.002,
+   "one_day_price_change": -0.0025,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "70842672016910910175573758938091438189286766639227439910749230484521989270224"
+  },
+  {
+   "id": "523569",
+   "slug": "will-trump-and-elon-say-paper-straw-during-their-feb-18-interview",
+   "closed_time": "2025-02-20 22:19:59+00",
+   "volume_num": 142501.059715,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.002,
+   "one_day_price_change": -0.005,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "2770452408239763521047486923569299631737370751332043111430237430641393831885"
+  },
+  {
+   "id": "523570",
+   "slug": "will-trump-and-elon-say-covid-during-their-feb-18-interview",
+   "closed_time": "2025-02-20 06:30:32+00",
+   "volume_num": 169320.64717,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": 0.0295,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "71681646088119864249999031171684402837496495451154137003105761759052301282598"
+  },
+  {
+   "id": "523571",
+   "slug": "will-trump-and-elon-say-fema-during-their-feb-18-interview",
+   "closed_time": "2025-02-21 02:08:25+00",
+   "volume_num": 15048.729244,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": -0.0065,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "51030586142282624158893607242065277415959037728828968523224596682450601702611"
+  },
+  {
+   "id": "523572",
+   "slug": "will-trump-and-elon-say-nato-during-their-feb-18-interview",
+   "closed_time": "2025-02-21 02:33:23+00",
+   "volume_num": 34739.111574,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": -0.012,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "19104391401631931131971566197472264827705058829120288219781406895378708978339"
+  },
+  {
+   "id": "523573",
+   "slug": "will-trump-and-elon-say-tiktok-during-their-feb-18-interview",
+   "closed_time": "2025-02-20 22:15:05+00",
+   "volume_num": 240322.015107,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.002,
+   "one_day_price_change": -0.011,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "39838317776712125570290665812879509938126807282314084945342382286460020460202"
+  },
+  {
+   "id": "523574",
+   "slug": "will-trump-and-elon-say-crypto-or-bitcoin-during-their-feb-18-interview",
+   "closed_time": "2025-02-20 19:49:08+00",
+   "volume_num": 92006.775043,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": -0.0025,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "100662089224480541598515588987525249439562099155041588053876320000509907413688"
+  },
+  {
+   "id": "523575",
+   "slug": "will-trump-and-elon-say-ai-or-artificial-intelligence-during-their-feb-18-interview",
+   "closed_time": "2025-02-20 22:15:01+00",
+   "volume_num": 329472.546518,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.002,
+   "one_day_price_change": -0.011,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "23638483776842305360997097718830445067968229216868514678566621162100808587326"
+  },
+  {
+   "id": "523981",
+   "slug": "will-trump-and-elon-say-dei-during-their-feb-18-interview",
+   "closed_time": "2025-02-19 06:09:51+00",
+   "volume_num": 4026.116678,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": null,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "91471749775916039272606706124766068255518423834873571461466031127010651369919"
+  },
+  {
+   "id": "523982",
+   "slug": "will-trump-and-elon-say-woke-during-their-feb-18-interview",
+   "closed_time": "2025-02-20 22:19:53+00",
+   "volume_num": 10208.45649,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.002,
+   "one_day_price_change": -0.013,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "48742108628197850551049796502686717894128014900646656550241287029420130675658"
+  },
+  {
+   "id": "523983",
+   "slug": "will-trump-and-elon-say-fentanyl-during-their-feb-18-interview",
+   "closed_time": "2025-02-20 22:29:59+00",
+   "volume_num": 4423.782457,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.002,
+   "one_day_price_change": -0.009,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "36502233068184897690298273956140394299536606220891649352759064504056832729544"
+  },
+  {
+   "id": "523984",
+   "slug": "will-trump-and-elon-say-trans-or-transgender-during-their-feb-18-interview",
+   "closed_time": "2025-02-20 06:20:40+00",
+   "volume_num": 279948.279671,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": 0.025,
+   "one_week_price_change": 0,
+   "event_id": "18652",
+   "event_slug": "what-will-trump-and-elon-say-during-their-feb-18-interview",
+   "clob_token_id_yes": "64519529907475887255924060312513290917299683771558908362133655011416539452125"
+  }
+ ]
+}

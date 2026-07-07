@@ -1,6 +1,6 @@
 # Dozentenbericht zur Bachelorarbeit
 
-Erstellt: 2026-06-15T18:32:46+00:00
+Erstellt: 2026-06-17T12:58:01+00:00
 
 **Arbeitstitel:** Informationelle Effizienz dezentraler Prognosemaerkte am Beispiel Polymarket im Vergleich zu traditionellen Prognosequellen.
 
@@ -268,10 +268,10 @@ Die wichtigste inhaltliche Verbesserung ist die Trennung zwischen Ergebnis, Inte
 ## Projektstruktur
 
 - SQLite-Datenbank: 9 Tabellen.
-- Ergebnisartefakte: 387 Dateien unter `data/results`.
-- Analyse-Module: 79 Dateien.
+- Ergebnisartefakte: 397 Dateien unter `data/results`.
+- Analyse-Module: 81 Dateien.
 - Collector-Module: 10 Dateien.
-- Tests: 153 Testdateien; letzter Status: 636 passed in 60.24s (0:01:00).
+- Tests: 156 Testdateien; letzter Status: 668 passed in 72.79s (0:01:12).
 
 ## H1 - Forecast-Qualitaet
 

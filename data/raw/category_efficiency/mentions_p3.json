@@ -1,0 +1,411 @@
+{
+ "meta": {
+  "beschreibung": "Reduzierte Rohdaten (Feld-Extrakt) der Gamma-API fuer die Kategorie Mentions (Tag-Slug mention-markets), Ergaenzungsseite 3 (Events-Endpunkt, nach Volumen absteigend). Antwort des Abrufwerkzeugs bei ca. 90 kB gekappt; alle analyserelevanten Felder aus der Original-Antwort extrahiert, Werte unveraendert uebernommen.",
+  "abrufdatum": "2026-07-03",
+  "quelle_url": "https://gamma-api.polymarket.com/events?tag_slug=mention-markets&closed=true&order=volume&ascending=false&limit=15&offset=30",
+  "tag_slug": "mention-markets",
+  "endpunkt": "events",
+  "offset": 30,
+  "limit": 15,
+  "extrahierte_felder": [
+   "id",
+   "slug",
+   "closed_time",
+   "volume_num",
+   "outcome_prices",
+   "last_trade_price",
+   "best_bid",
+   "best_ask",
+   "one_day_price_change",
+   "one_week_price_change",
+   "event_id",
+   "event_slug",
+   "clob_token_id_yes"
+  ],
+  "anzahl_events_vollstaendig": 1,
+  "anzahl_maerkte_vollstaendig": 21,
+  "verworfen_unvollstaendig": [
+   "Letztes Event (id 12069, slug what-will-trump-say-during-saturday-rally) am Ende der gekappten Antwort angeschnitten und nicht als vollstaendiges Event gezaehlt; 4 vollstaendige Maerkte daraus uebernommen; angeschnittener Markt (id 505187, slug will-trump-say-drill-baby-drill-at-his-rally) verworfen, restliche Maerkte des Events fehlen."
+  ]
+ },
+ "markets": [
+  {
+   "id": "570381",
+   "slug": "will-powell-say-inflation-40-times-during-september-press-conference",
+   "closed_time": "2025-09-17 23:05:46+00",
+   "volume_num": 163625.5129,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": 0.2045,
+   "one_week_price_change": 0.1395,
+   "event_id": "35094",
+   "event_slug": "what-will-powell-say-during-september-press-conference",
+   "clob_token_id_yes": "30276200091926648278778654311401616858428381639208234704113603068192057530047"
+  },
+  {
+   "id": "570382",
+   "slug": "will-powell-say-inflation-50-times-during-september-press-conference",
+   "closed_time": "2025-09-21 04:52:22+00",
+   "volume_num": 549439.396154,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": 0.0005,
+   "one_week_price_change": 0.4095,
+   "event_id": "35094",
+   "event_slug": "what-will-powell-say-during-september-press-conference",
+   "clob_token_id_yes": "71851214040097245474558123223243875323894577983086443941312520875734036511111"
+  },
+  {
+   "id": "570383",
+   "slug": "will-powell-say-inflation-60-times-during-september-press-conference",
+   "closed_time": "2025-09-17 21:33:04+00",
+   "volume_num": 56854.502144,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": -0.15,
+   "one_week_price_change": -0.235,
+   "event_id": "35094",
+   "event_slug": "what-will-powell-say-during-september-press-conference",
+   "clob_token_id_yes": "92941627714067404122731955334575224357978587839215021035282397670731032678017"
+  },
+  {
+   "id": "570384",
+   "slug": "will-powell-say-goal-15-times-during-september-press-conference",
+   "closed_time": "2025-09-17 22:40:48+00",
+   "volume_num": 41282.421358,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": 0.432,
+   "one_week_price_change": 0.292,
+   "event_id": "35094",
+   "event_slug": "what-will-powell-say-during-september-press-conference",
+   "clob_token_id_yes": "19025781204419938820761731466645273062029753785910313141781084965469655995335"
+  },
+  {
+   "id": "570385",
+   "slug": "will-powell-say-tariff-15-times-during-september-press-conference",
+   "closed_time": "2025-09-17 21:35:04+00",
+   "volume_num": 22109.686048,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.019,
+   "one_day_price_change": -0.255,
+   "one_week_price_change": -0.29,
+   "event_id": "35094",
+   "event_slug": "what-will-powell-say-during-september-press-conference",
+   "clob_token_id_yes": "95976415296916752928325768062173940511229412852573755479725228730701189315916"
+  },
+  {
+   "id": "570386",
+   "slug": "will-powell-say-anchored-3-times-during-september-press-conference",
+   "closed_time": "2025-09-17 21:33:58+00",
+   "volume_num": 6896.322459,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.009,
+   "one_day_price_change": -0.56,
+   "one_week_price_change": -0.43,
+   "event_id": "35094",
+   "event_slug": "what-will-powell-say-during-september-press-conference",
+   "clob_token_id_yes": "18091165284913747348961699507211790230396706098363876305511898312462542277857"
+  },
+  {
+   "id": "570387",
+   "slug": "archwill-powell-say-unemployment-or-employment-10-times-during-september-press-conference",
+   "closed_time": null,
+   "volume_num": null,
+   "outcome_prices": [
+    "0.93",
+    "0.07"
+   ],
+   "last_trade_price": null,
+   "best_bid": 0.86,
+   "best_ask": 1,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "35094",
+   "event_slug": "what-will-powell-say-during-september-press-conference",
+   "clob_token_id_yes": "34398456772429790723130341364329488219787303972048906392412163811041695232428"
+  },
+  {
+   "id": "570388",
+   "slug": "will-powell-say-good-afternoon-during-september-press-conference-383",
+   "closed_time": "2025-09-17 20:50:14+00",
+   "volume_num": 420000.004231,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": 0.023,
+   "one_week_price_change": 0.025,
+   "event_id": "35094",
+   "event_slug": "what-will-powell-say-during-september-press-conference",
+   "clob_token_id_yes": "53357736518607457318659688636337636773111952744929902794976474170611694750827"
+  },
+  {
+   "id": "570389",
+   "slug": "will-powell-say-probability-during-september-press-conference-651",
+   "closed_time": "2025-09-17 21:05:08+00",
+   "volume_num": 11953.196809,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.993,
+   "best_ask": 1,
+   "one_day_price_change": 0.615,
+   "one_week_price_change": 0.67,
+   "event_id": "35094",
+   "event_slug": "what-will-powell-say-during-september-press-conference",
+   "clob_token_id_yes": "86206254296093355915305463469202544795588261059025987688918916526886778558574"
+  },
+  {
+   "id": "570390",
+   "slug": "will-powell-say-pandemic-during-september-press-conference-253",
+   "closed_time": "2025-09-17 21:20:02+00",
+   "volume_num": 32611.244327,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.992,
+   "best_ask": 1,
+   "one_day_price_change": 0.26,
+   "one_week_price_change": 0.32,
+   "event_id": "35094",
+   "event_slug": "what-will-powell-say-during-september-press-conference",
+   "clob_token_id_yes": "19500826798999805656986916932606754263707971258910185538440187450126050210134"
+  },
+  {
+   "id": "570391",
+   "slug": "will-powell-say-median-during-september-press-conference-762",
+   "closed_time": "2025-09-17 20:57:28+00",
+   "volume_num": 93237.632749,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": 0.039,
+   "one_week_price_change": 0.039,
+   "event_id": "35094",
+   "event_slug": "what-will-powell-say-during-september-press-conference",
+   "clob_token_id_yes": "84902872610025895914636579397971789016827522624734165065524499084829412902204"
+  },
+  {
+   "id": "570392",
+   "slug": "will-powell-say-trump-during-september-press-conference-313",
+   "closed_time": "2025-09-17 21:33:02+00",
+   "volume_num": 60274.238912,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.008,
+   "one_day_price_change": -0.075,
+   "one_week_price_change": -0.075,
+   "event_id": "35094",
+   "event_slug": "what-will-powell-say-during-september-press-conference",
+   "clob_token_id_yes": "25033648523097913664078935233133214694450476916198999163851757226123646996573"
+  },
+  {
+   "id": "570393",
+   "slug": "will-powell-say-comment-during-september-press-conference-667-914",
+   "closed_time": "2025-09-17 21:10:10+00",
+   "volume_num": 5984.807334,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.994,
+   "best_ask": 1,
+   "one_day_price_change": 0.2155,
+   "one_week_price_change": 0.2405,
+   "event_id": "35094",
+   "event_slug": "what-will-powell-say-during-september-press-conference",
+   "clob_token_id_yes": "102440952131986102289041784116446302156228605800860140568684141889882849483511"
+  },
+  {
+   "id": "570394",
+   "slug": "will-powell-say-downbeat-during-september-press-conference-275-111",
+   "closed_time": "2025-09-17 21:35:04+00",
+   "volume_num": 3410.63609,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.007,
+   "one_day_price_change": 0.24,
+   "one_week_price_change": 0.295,
+   "event_id": "35094",
+   "event_slug": "what-will-powell-say-during-september-press-conference",
+   "clob_token_id_yes": "101246746932272087926099346063337008395253506432674944217201036598822362770309"
+  },
+  {
+   "id": "570395",
+   "slug": "will-powell-say-ai-or-artificial-intelligence-during-september-press-conference-991-552",
+   "closed_time": "2025-09-17 21:17:04+00",
+   "volume_num": 22781.804163,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.998,
+   "best_ask": 1,
+   "one_day_price_change": 0.665,
+   "one_week_price_change": 0.77,
+   "event_id": "35094",
+   "event_slug": "what-will-powell-say-during-september-press-conference",
+   "clob_token_id_yes": "46418206343085438090857748580923830194750858305468423035558184880970582029346"
+  },
+  {
+   "id": "570937",
+   "slug": "will-powell-say-unemployment-or-employment-20-times-during-september-press-conference-437",
+   "closed_time": "2025-09-17 22:38:52+00",
+   "volume_num": 20617.390865,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": 0.151,
+   "one_week_price_change": 0.131,
+   "event_id": "35094",
+   "event_slug": "what-will-powell-say-during-september-press-conference",
+   "clob_token_id_yes": "86587194145222833340485587255446439165150697325825446944090463955351316811131"
+  },
+  {
+   "id": "571985",
+   "slug": "will-powell-say-recession-during-september-press-conference-751",
+   "closed_time": "2025-09-17 21:36:12+00",
+   "volume_num": 37075.207082,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": -0.4845,
+   "one_week_price_change": -0.4495,
+   "event_id": "35094",
+   "event_slug": "what-will-powell-say-during-september-press-conference",
+   "clob_token_id_yes": "94022166798056761389382698164198334519581859370738880288680371710280425256781"
+  },
+  {
+   "id": "505182",
+   "slug": "will-trump-say-maga-or-make-america-great-again-at-his-rally",
+   "closed_time": "2024-08-18 00:25:11+00",
+   "volume_num": 253160.06,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": 0.0495,
+   "one_week_price_change": 0,
+   "event_id": "12069",
+   "event_slug": "what-will-trump-say-during-saturday-rally",
+   "clob_token_id_yes": "66977574403171842454140985421937736351910548962512622570990599121933173533841"
+  },
+  {
+   "id": "505183",
+   "slug": "will-trump-say-tampon-at-his-rally",
+   "closed_time": "2024-08-17 23:09:33+00",
+   "volume_num": 172053.72,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": 0.2645,
+   "one_week_price_change": 0,
+   "event_id": "12069",
+   "event_slug": "what-will-trump-say-during-saturday-rally",
+   "clob_token_id_yes": "114209630118249463342688669146467455262402300496231980887573686133977683167421"
+  },
+  {
+   "id": "505184",
+   "slug": "will-trump-say-illegal-immigration-3-or-more-times-at-his-rally",
+   "closed_time": "2024-08-18 00:25:17+00",
+   "volume_num": 137557.4,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 1,
+   "best_bid": null,
+   "best_ask": 0.003,
+   "one_day_price_change": -0.3635,
+   "one_week_price_change": 0,
+   "event_id": "12069",
+   "event_slug": "what-will-trump-say-during-saturday-rally",
+   "clob_token_id_yes": "27647004347928939666462617708040891806552092280010127864605999796214839768561"
+  },
+  {
+   "id": "505185",
+   "slug": "will-trump-say-fake-news-at-his-rally",
+   "closed_time": "2024-08-17 22:59:51+00",
+   "volume_num": 60138.67,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 1,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": 0.1645,
+   "one_week_price_change": 0,
+   "event_id": "12069",
+   "event_slug": "what-will-trump-say-during-saturday-rally",
+   "clob_token_id_yes": "14174567165804806668785332292374014546312732575697077402386438013193962476956"
+  }
+ ]
+}

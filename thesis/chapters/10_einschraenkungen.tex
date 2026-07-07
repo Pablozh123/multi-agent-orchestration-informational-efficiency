@@ -1,4 +1,4 @@
-% Status: Allgemeine Schlussfolgerung und Einschraenkungen (4b-Struktur).
+% Status: Allgemeine Schlussfolgerung und Einschraenkungen (4b), ausgeschrieben.
 \chapter{Allgemeine Schlussfolgerung und Einschränkungen}
 \label{ch:einschraenkungen}
 
@@ -11,12 +11,35 @@ deterministisch geprüften Trennung von gestützter und nicht gestützter Eviden
 \citep{lit_emh_001}, ergänzt um ein lauffähiges Werkzeug, das diese Trennung
 operationalisiert.
 
+\section{Beitrag}
+Die Arbeit leistet drei Beiträge. Empirisch führt sie Prognosequalität (H1),
+Ereignisreaktion (H2) und On-Chain-Timing (H3) für denselben Marktkontext
+reproduzierbar zusammen. Methodisch etabliert sie eine Disziplin des
+deterministischen Kerns: Alle Kennzahlen werden berechnet, versioniert und
+getestet, bevor sie interpretiert werden, und Sprachmodelle dürfen nur begrenzte,
+vorab berechnete Ergebnisse deuten --- diese Reihenfolge ist selbst ein
+methodischer Beitrag. Gestalterisch entsteht ein read-only Monitoring-Werkzeug
+samt dokumentierter Agenten-Orchestrierung (Kapitel~\ref{ch:loesung}).
+
 \section{Einschränkungen}
-Die Evidenz stammt aus einem einzelnen Wahlkontext mit wiederholten Tageszeilen
-und erlaubt keine Mehr-Wahlen-Verallgemeinerung. H2 beruht auf Tagesdaten und
-identifiziert keine Intraday-Reaktionszeit \citep{lit_eventstudy_001}. Die
-H3-Wallet-Daten sind BUY-only und quellseitig gefiltert, die Ausrichtung erfolgt
-täglich, und über mehrere Tiers und Lags besteht ein Multiple-Testing-Problem
-\citep{lit_granger_001}. Verhaltensverzerrungen und erhöhte Volatilität
-\citep{zotero_poly_007} begrenzen die Tragweite zusätzlich. Das Werkzeug bleibt
-read-only und liefert Prüf-Hinweise, keine Beweise.
+Die Evidenz stammt aus einem einzelnen Wahlkontext mit wiederholten Tageszeilen und
+erlaubt keine Mehr-Wahlen-Verallgemeinerung; die nationale Tagesreihe ist ein
+einziger aufgelöster Markt, kein Satz unabhängiger Treffer. H2 beruht auf
+Tagesdaten und identifiziert keine Intraday-Reaktionszeit \citep{lit_eventstudy_001}.
+Die H3-Wallet-Daten sind BUY-only und quellseitig ab 10\,000 USD gefiltert, die
+Ausrichtung erfolgt täglich, das oberste Tier ist klein (32 Adressen), und über
+mehrere Tiers und Lags besteht ein Multiple-Testing-Problem \citep{lit_granger_001}.
+Die Kalibrierungs-Fall-Sets sind klein, die Schweizer Fallstudie ist ein einzelner
+Post-Resultat-Proxy, und der Arbitrage-Scan ist paper-only und unvalidiert.
+Verhaltensverzerrungen und erhöhte Volatilität \citep{zotero_poly_007} begrenzen die
+Tragweite zusätzlich. Das Werkzeug bleibt read-only und liefert Prüf-Hinweise, keine
+Beweise; es werden keine Aussagen zu Kausalität, privater Information, Handelbarkeit
+oder universeller Marktüberlegenheit getroffen.
+
+\section{Validität und Generalisierbarkeit}
+Die interne Validität stützt sich auf Determinismus, Versionierung und Tests; die
+externe Validität ist durch den einzelnen Markt- und Wahlkontext begrenzt. Eine
+Übertragung auf andere Wahlen, Themenfelder oder Plattformen verlangt Replikation
+mit unabhängigen Stichproben. Soweit Teile aus einem früheren
+Data-Wrangling-Modulprojekt wiederverwendet werden, ist dies mit der Betreuung
+abzusprechen und in der Eigenständigkeitserklärung auszuweisen.

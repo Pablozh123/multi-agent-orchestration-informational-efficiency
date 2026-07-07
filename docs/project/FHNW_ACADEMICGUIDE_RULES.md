@@ -84,10 +84,16 @@ Eintragsmuster (deutsche APA 7):
 
 ## 4. Struktur / Gliederung
 
-Drei Vorlagen je nach Arbeitstyp. **Fuer diese Arbeit ist die "empirische
-Forschungsarbeit" massgebend** (eigene gesammelte Daten + Hypothesen).
+Drei Vorlagen je nach Arbeitstyp. **Fuer diese Arbeit ist die Projekt-/Bachelorarbeit (4b) massgebend**, weil die Wegleitung einen analytischen UND konzeptionellen Teil verlangt und die Arbeit neben dem empirischen Kern einen Loesungsteil (Kapitel 4) umfasst. Der empirische Kern (Kapitel 2) folgt innerhalb dieser Gliederung der 4a-Logik (Theorie, Methode und Material, Ergebnisse); die 4a-Anforderungen an Methode und Material gelten dort weiter. (Entscheid aktualisiert 2026-07-03; vorher stand hier 4a.)
 
-### 4a. Empirische Forschungsarbeit (MASSGEBEND)
+> **Achtung (gilt fuer ALLE Struktur- und Inhaltsvorgaben hier):** Diese
+> Gliederungen dienen als **Vorlage und sind den Anforderungen der eigenen
+> Arbeit anzupassen** (Originalwortlaut FHNW). Die Punkte sind kein starres
+> Pflichtschema, sondern ein Geruest. Abschnitte werden weggelassen,
+> zusammengefasst oder ergaenzt, wo es die Forschungsfrage verlangt --- die
+> wissenschaftlichen Grundsaetze (Abschnitt 4b unten) bleiben aber bindend.
+
+### 4a. Empirische Forschungsarbeit (Logik fuer den empirischen Kern, Kapitel 2)
 
 Titelseite/Deckblatt -> (ggf. Vertraulichkeitserklaerung) ->
 **Eigenstaendigkeitserklaerung UND Anzahl der Woerter** -> (Danksagung) ->
@@ -106,7 +112,7 @@ Management Summary -> Inhaltsverzeichnis ->
 -> Literatur- und Quellenverzeichnis -> Abbildungs- und Tabellenverzeichnis ->
 (Anhang)
 
-### 4b. Projekt-/Bachelorarbeit (Berater:innen-Typ, zur Orientierung)
+### 4b. Projekt-/Bachelorarbeit (MASSGEBEND fuer die Kapitelstruktur)
 
 Titelseite -> (Vertraulichkeit) -> Eigenstaendigkeitserklaerung ->
 (Danksagung) -> Management Summary -> Inhaltsverzeichnis ->

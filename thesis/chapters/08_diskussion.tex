@@ -1,30 +1,50 @@
-% Status: Schlussfolgerung aus der Analyse (4b-Struktur).
+% Status: Schlussfolgerung aus der Analyse (4b), ausgeschrieben.
 \chapter{Schlussfolgerung aus der Analyse}
 \label{ch:schluss}
 
-\section{Synthese der Befunde}
+\section{Synthese der drei Hypothesen}
 Die drei Hypothesen ergeben ein konsistentes, aber bewusst begrenztes Bild. H1
-zeigt eine Polymarket-Stärke nur in einem definierten Vergleichsscope (262 von
-285 State-Date-Zeilen, 9 von 9 States), während die breite Überlegenheit
-ungedeckt bleibt und das volle Panel ein Gegenbeispiel liefert. H2 zeigt
-plausible tägliche Reaktionen auf kuratierte Ereignisse, am deutlichsten beim
-Attentat auf Trump. H3 findet im obersten Wallet-Tier das klarste prädiktive
-Timing-Muster. Zusammen stützen die Befunde \emph{begrenzte} Diagnosen
-informationeller Effizienz, keine universelle Aussage.
+zeigt eine bessere Prognosequalität von Polymarket nur in einem klar definierten
+Vergleichsscope: In der nationalen Tagesreihe trägt Polymarket den tieferen
+mittleren Brier-Verlust (0.230 gegen 0.332 von FiveThirtyEight), und auf
+Bundesstaaten-Ebene stützen 262 von 285 Zeilen sowie 9 von 9 Staaten den Vorteil
+(exakter Binomialtest, p = 0.0020). Die breite Überlegenheit bleibt jedoch
+ungedeckt, und das volle State-Date-Panel ist ein Gegenbeispiel. H2 zeigt plausible
+Tagesreaktionen auf die sieben vorab kuratierten Ereignisse, am deutlichsten beim
+Attentat auf Trump (+7.2 Prozentpunkte), während die neutral kuratierten Ereignisse
+erwartungsgemäss streuen. H3 findet das klarste prädiktive Timing-Muster im
+obersten Wallet-Tier (Lag-1-Korrelation 0.186, minimaler Granger-p-Wert 0.0012 über
+1216 ausgerichtete Zeilen). Zusammengenommen stützen die Befunde begrenzte,
+scope-spezifische Diagnosen informationeller Effizienz, keine universelle Aussage.
+
+\section{Stützende Evidenz ausserhalb der Hypothesen}
+Zwei weitere Beobachtungen fügen sich in dieses Bild. Erstens deckt sich der
+paper-only Arbitrage-Befund (Kapitel~\ref{ch:loesung}) mit weitgehend effizienten
+Märkten: Saubere strukturelle Arbitragen sind selten, die wenigen echten
+Cross-Venue-Fälle sind kleine Carry-Trades, und die kaum robust ausnutzbare
+Ineffizienz ist selbst ein Effizienz-Indiz. Zweitens lag Polymarket in der
+Schweizer Referendums-Fallstudie als binäre Wahrscheinlichkeit auf der richtigen
+Seite des Resultats; dies ist jedoch ein transparenter Proxy und ein einzelner,
+frischer Datenpunkt ausserhalb der US-Wahl, keine Verallgemeinerung.
 
 \section{Einordnung in die Literatur}
 Der begrenzte H1-Vorteil ist mit \citet{zotero_poly_002} vereinbar, die einen
-Polymarket-Vorteil besonders in Swing States berichten, zugleich aber zur
-Vorsicht bei Verallgemeinerung mahnen. Die kritische Lesart von
-\citet{zotero_poly_009} --- Märkte als reflexive Informationsplattform, nicht als
-``Truth Machine'' --- passt zum Gegenbeispiel im vollen Panel. Die H3-Vorsicht
-deckt sich mit \citet{zotero_poly_001}, deren Grosskonto-Befund heterogene
-Erwartungen statt Manipulation nahelegt, sowie mit der konzeptionellen
-Insider-Rahmung bei \citet{zotero_poly_005}.
+Polymarket-Vorteil besonders in Swing States berichten, zugleich aber zur Vorsicht
+bei Verallgemeinerung mahnen. Das Gegenbeispiel im vollen Panel passt zur kritischen
+Lesart von \citet{zotero_poly_009}, wonach Prognosemärkte reflexiv statt eine
+``Truth Machine'' sind, sowie zur gemischten plattformübergreifenden Evidenz für
+2024 \citep{lit_poly24_accuracy}. Die Vorsicht bei H3 deckt sich mit
+\citet{zotero_poly_001}, deren Grosskonto-Befund heterogene Erwartungen statt
+Manipulation nahelegt, und mit der Insider-Rahmung von \citet{lit_kyle_001} und
+\citet{zotero_delvecchio_001}. Insgesamt verarbeiten die Märkte Information
+innerhalb von Grenzen gut, vereinbar mit einer halbstrengen Effizienzlesart
+\citep{lit_emh_001}, ohne dass Preis und Wahrscheinlichkeit unbesehen
+gleichzusetzen wären \citep{lit_manski_2006}.
 
 \section{Folgerung für die Forschungsfrage}
 Aus der Analyse folgt, dass Polymarket im untersuchten Kontext Information
 nachweisbar gut verarbeitet, aber nur in klar abgegrenzten Fällen messbar besser
-als traditionelle Quellen. Diese begrenzte, aber belastbare Diagnose motiviert
-den folgenden Lösungsteil: ein Werkzeug, das genau solche begrenzten,
+als traditionelle Quellen. Diese begrenzte, doch belastbare Diagnose ist der
+eigentliche Beitrag: Sie trennt Gestütztes sauber von Nicht-Gestütztem. Genau das
+motiviert den folgenden Lösungsteil --- ein Werkzeug, das solche begrenzten,
 deterministisch geprüften Hinweise sichtbar und für Menschen prüfbar macht.

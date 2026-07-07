@@ -1,0 +1,33 @@
+{
+  "deterministic": true,
+  "f1": 0.6666666666666666,
+  "fn": 1,
+  "fp": 0,
+  "n_cases": 3,
+  "precision": 1.0,
+  "priority_distribution": {
+    "low": 2,
+    "medium": 1
+  },
+  "recall": 0.5,
+  "recommendation_distribution": {
+    "check_source": 1,
+    "watch": 2
+  },
+  "reference_distribution": {
+    "no_reference_overlap": 1,
+    "partial_reference_overlap": 1,
+    "reference_hit": 1
+  },
+  "safety": {
+    "forbidden_keys": [],
+    "invalid_priorities": [],
+    "invalid_recommendations": [],
+    "passed": true,
+    "wallet_leak": false
+  },
+  "skeptic_derated_cases": 3,
+  "small_sample_caveat": true,
+  "tn": 1,
+  "tp": 1
+}

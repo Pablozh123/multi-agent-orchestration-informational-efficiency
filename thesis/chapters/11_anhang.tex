@@ -1,0 +1,51 @@
+% Status: Anhang mit ergaenzenden Abbildungen (4b).
+\chapter{Anhang: Ergänzende Abbildungen}
+\label{ch:anhang}
+
+Dieser Anhang sammelt ergänzende, im Haupttext nicht abgebildete Diagnostiken zu H1
+sowie eine Ansicht des Monitoring-Werkzeugs. Sie stützen die Befunde, sind für die
+Argumentation aber nicht zwingend.
+
+\section{H1-Robustheit nach Prognosehorizont}
+Abbildung~\ref{fig:anhang-horizon} schlüsselt den H1-Poll-Vergleich nach
+Prognosehorizont auf und zeigt, dass der Polymarket-Vorteil an das Fenster bis 90
+Tage gebunden ist, während das volle Panel ihn nicht trägt.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\textwidth]{h1_state_poll_panel_horizon_diagnostic.png}
+\caption{H1-Robustheit nach Prognosehorizont: mittlerer Brier-Verlust,
+Lower-Loss-Zählung und Mehrheitsschwelle je Horizont-Bin sowie Claim-Audit. Das
+Fenster bis 90 Tage stützt Polymarket, das volle Panel nicht. Quelle:
+\texttt{data/results/h1\_state\_poll\_panel\_horizon\_diagnostic.png}.}
+\label{fig:anhang-horizon}
+\end{figure}
+
+\section{H1-Robustheit gegenüber Ausreissern und Bundesstaaten}
+Abbildung~\ref{fig:anhang-outlier} prüft, ob der Vorteil an einzelnen Bundesstaaten
+hängt.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\textwidth]{h1_direct_poll_outlier_robustness.png}
+\caption{H1-Robustheit gegenüber Ausreissern: Leave-one-state-out-Mittel, Erosion
+beim Entfernen der grössten positiven Staaten und Beitrag je Bundesstaat. Der
+Vorteil hängt nicht an einem einzelnen Staat, bleibt aber auf die Top-Staaten
+konzentriert; die breite Mehr-Fälle-Behauptung bleibt ungedeckt. Quelle:
+\texttt{data/results/h1\_direct\_poll\_outlier\_robustness.png}.}
+\label{fig:anhang-outlier}
+\end{figure}
+
+\section{Monitoring-Werkzeug (Read-only-Prototyp)}
+Abbildung~\ref{fig:anhang-monitor} zeigt eine Ansicht des read-only Monitors über
+mehrere Live-Märkte.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\textwidth]{monitor_v2_polymarket_rolling_history.png}
+\caption{Monitoring-Werkzeug (Read-only-Prototyp): rollende Polymarket-Midpoint-Historie
+und aggregierte öffentliche Handelsaktivität je Zeitfenster (Illustration, kurzer
+Beobachtungszeitraum). Quelle:
+\texttt{data/results/monitor\_v2\_polymarket\_rolling\_history.png}.}
+\label{fig:anhang-monitor}
+\end{figure}

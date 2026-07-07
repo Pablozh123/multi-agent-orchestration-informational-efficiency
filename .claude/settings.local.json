@@ -7,7 +7,8 @@
       "Bash(.venv/Scripts/python.exe -m pytest:*)",
       "Bash(python -m pytest:*)",
       "Bash(python -m operations.analysis.data_inventory:*)",
-      "Bash(python -m operations.analysis.brier_score:*)"
+      "Bash(python -m operations.analysis.brier_score:*)",
+      "Bash(python -c ' *)"
     ]
   }
 }

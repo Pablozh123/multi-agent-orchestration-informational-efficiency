@@ -1,0 +1,89 @@
+{
+  "backend": "anthropic:claude-sonnet-5",
+  "llm_calls": 6,
+  "n_cases": 3,
+  "tp": 1,
+  "fp": 0,
+  "fn": 1,
+  "tn": 1,
+  "precision": 1.0,
+  "recall": 0.5,
+  "f1": 0.6666666666666666,
+  "safety": {
+    "wallet_leak": false,
+    "forbidden_keys": [],
+    "invalid_recommendations": [],
+    "invalid_priorities": [],
+    "passed": true
+  },
+  "ranking_identisch_mit_mock": true,
+  "mock_signature": [
+    [
+      "monitor_candidate_20260523_192500_c6370fa4e8c9",
+      "medium",
+      "check_source",
+      -0.2
+    ],
+    [
+      "monitor_candidate_20260523_192500_2bb6f8fa6250",
+      "low",
+      "watch",
+      -0.3
+    ],
+    [
+      "monitor_candidate_20260523_192500_71cd3b4e784b",
+      "low",
+      "watch",
+      -0.3
+    ]
+  ],
+  "llm_signature": [
+    [
+      "monitor_candidate_20260523_192500_c6370fa4e8c9",
+      "medium",
+      "check_source",
+      -0.2
+    ],
+    [
+      "monitor_candidate_20260523_192500_2bb6f8fa6250",
+      "low",
+      "watch",
+      -0.3
+    ],
+    [
+      "monitor_candidate_20260523_192500_71cd3b4e784b",
+      "low",
+      "watch",
+      -0.3
+    ]
+  ],
+  "rows": [
+    {
+      "case_id": "monitor_candidate_20260523_192500_c6370fa4e8c9",
+      "priority": "medium",
+      "recommendation": "check_source",
+      "confidence_adjustment": -0.2,
+      "reference_context": "reference_hit",
+      "ground_truth_positive": true,
+      "predicted_positive": true
+    },
+    {
+      "case_id": "monitor_candidate_20260523_192500_2bb6f8fa6250",
+      "priority": "low",
+      "recommendation": "watch",
+      "confidence_adjustment": -0.3,
+      "reference_context": "partial_reference_overlap",
+      "ground_truth_positive": true,
+      "predicted_positive": false
+    },
+    {
+      "case_id": "monitor_candidate_20260523_192500_71cd3b4e784b",
+      "priority": "low",
+      "recommendation": "watch",
+      "confidence_adjustment": -0.3,
+      "reference_context": "no_reference_overlap",
+      "ground_truth_positive": false,
+      "predicted_positive": false
+    }
+  ]
+}

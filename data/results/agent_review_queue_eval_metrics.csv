@@ -1,0 +1,4 @@
+case_id,priority,recommendation,confidence_adjustment,reference_context,ground_truth_positive,predicted_positive
+monitor_candidate_20260523_192500_c6370fa4e8c9,medium,check_source,-0.2,reference_hit,True,True
+monitor_candidate_20260523_192500_2bb6f8fa6250,low,watch,-0.3,partial_reference_overlap,True,False
+monitor_candidate_20260523_192500_71cd3b4e784b,low,watch,-0.3,no_reference_overlap,False,False

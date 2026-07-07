@@ -1,0 +1,51 @@
+{
+ "meta": {
+   "beschreibung": "Reduzierte Rohdaten (Feld-Extrakt) der Gamma-API fuer die Kategorie politics, Ergaenzungsseite 4 (Events-Endpunkt, nach Volumen absteigend). Antwort des Abrufwerkzeugs bei ca. 90 kB gekappt; alle analyserelevanten Felder aus der Original-Antwort extrahiert, Werte unveraendert uebernommen.",
+   "abrufdatum": "2026-07-03",
+   "quelle_url": "https://gamma-api.polymarket.com/events?tag_slug=politics&closed=true&order=volume&ascending=false&limit=15&offset=45",
+   "tag_slug": "politics",
+   "endpunkt": "events",
+   "offset": 45,
+   "limit": 15,
+   "extrahierte_felder": [
+     "id",
+     "slug",
+     "closed_time",
+     "volume_num",
+     "outcome_prices",
+     "last_trade_price",
+     "best_bid",
+     "best_ask",
+     "one_day_price_change",
+     "one_week_price_change",
+     "event_id",
+     "event_slug",
+     "clob_token_id_yes"
+   ],
+   "anzahl_events_vollstaendig": 3,
+   "anzahl_maerkte_vollstaendig": 18,
+   "verworfen_unvollstaendig": [
+     "Letztes Event der gekappten Antwort angeschnitten (event_id=11143, event_slug=will-trump-launch-a-coin-before-the-election): Event-Objekt unvollstaendig, 0 vollstaendige Maerkte daraus uebernommen; angeschnittener Markt verworfen (id=502571, slug=will-trump-launch-a-coin-before-the-election); weitere Events dieser Seite fehlen wegen Kappung."
+   ]
+ },
+ "markets": [
+  {"id": "501585", "slug": "will-a-democrat-win-the-popular-vote-and-the-presidency", "closed_time": "2024-11-07 01:23:52+00", "volume_num": 14756382.198283, "outcome_prices": ["0", "1"], "last_trade_price": 1, "best_bid": null, "best_ask": 0.001, "one_day_price_change": -0.3045, "one_week_price_change": 0, "event_id": "10656", "event_slug": "which-party-wins-presidency-popular-vote", "clob_token_id_yes": "33573631646975967490303296373773410479817269960942179527425708594960263761938"},
+  {"id": "501587", "slug": "will-a-republican-win-the-popular-vote-and-the-presidency", "closed_time": "2024-11-07 00:49:10+00", "volume_num": 15286458.166973, "outcome_prices": ["1", "0"], "last_trade_price": 1, "best_bid": 0.999, "best_ask": 1, "one_day_price_change": 0.7445, "one_week_price_change": 0, "event_id": "10656", "event_slug": "which-party-wins-presidency-popular-vote", "clob_token_id_yes": "67648321332889562720702742465853245863647268672651902649177972067583993370930"},
+  {"id": "501588", "slug": "will-a-republican-win-the-popular-vote-and-a-democrat-win-the-presidency", "closed_time": "2024-11-07 01:33:34+00", "volume_num": 17751068.899255, "outcome_prices": ["0", "1"], "last_trade_price": 1, "best_bid": null, "best_ask": 0.001, "one_day_price_change": -0.028, "one_week_price_change": 0, "event_id": "10656", "event_slug": "which-party-wins-presidency-popular-vote", "clob_token_id_yes": "86476515438957907056315993820068995378660426416045749849962015285013351695183"},
+  {"id": "501589", "slug": "will-a-democrat-win-the-popular-vote-and-a-republican-win-the-presidency", "closed_time": "2024-11-07 00:39:51+00", "volume_num": 18758441.931819, "outcome_prices": ["0", "1"], "last_trade_price": 1, "best_bid": null, "best_ask": 0.001, "one_day_price_change": -0.3845, "one_week_price_change": 0, "event_id": "10656", "event_slug": "which-party-wins-presidency-popular-vote", "clob_token_id_yes": "79290738821633012952251194646343347843753407986785745774809464443278141510795"},
+  {"id": "501590", "slug": "will-a-3rd-party-candidate-win-the-popular-vote-or-the-presidency", "closed_time": "2024-11-07 00:39:47+00", "volume_num": 16641464.207499, "outcome_prices": ["0", "1"], "last_trade_price": 1, "best_bid": null, "best_ask": 0.001, "one_day_price_change": null, "one_week_price_change": 0, "event_id": "10656", "event_slug": "which-party-wins-presidency-popular-vote", "clob_token_id_yes": "105188262404483697509467695252326324791411917773657147371863257988735030760167"},
+  {"id": "500630", "slug": "democratic-sweep-in-2024-election", "closed_time": "2024-11-14 06:59:40+00", "volume_num": 5444340.53142, "outcome_prices": ["0", "1"], "last_trade_price": 1, "best_bid": null, "best_ask": 0.001, "one_day_price_change": -0.0005, "one_week_price_change": 0, "event_id": "10223", "event_slug": "balance-of-power-2024-election", "clob_token_id_yes": "23879627426961662812922169694268707374662971136118079896087093103802667054172"},
+  {"id": "500631", "slug": "2024-balance-of-power-r-prez-r-senate-r-house", "closed_time": "2024-11-14 06:59:46+00", "volume_num": 11132803.610888, "outcome_prices": ["1", "0"], "last_trade_price": 1, "best_bid": 0.999, "best_ask": 1, "one_day_price_change": 0.003, "one_week_price_change": 0, "event_id": "10223", "event_slug": "balance-of-power-2024-election", "clob_token_id_yes": "10057237541929696185971116542487795282113077727880089878027691009747516185940"},
+  {"id": "500632", "slug": "2024-election-democratic-presidency-and-house-republican-senate", "closed_time": "2024-11-14 07:04:54+00", "volume_num": 5535870.047873, "outcome_prices": ["0", "1"], "last_trade_price": 1, "best_bid": null, "best_ask": 0.001, "one_day_price_change": null, "one_week_price_change": 0, "event_id": "10223", "event_slug": "balance-of-power-2024-election", "clob_token_id_yes": "110572048196196721190273423098212132965212115169135445849838734204111986977975"},
+  {"id": "500635", "slug": "2024-balance-of-power-democratic-presidency-and-senate-republican-house", "closed_time": "2024-11-14 07:04:50+00", "volume_num": 5833432.223511, "outcome_prices": ["0", "1"], "last_trade_price": 1, "best_bid": null, "best_ask": 0.001, "one_day_price_change": null, "one_week_price_change": 0, "event_id": "10223", "event_slug": "balance-of-power-2024-election", "clob_token_id_yes": "103931010919995781828164224161268088895809185562670781148950698492640674977981"},
+  {"id": "500636", "slug": "2024-balance-of-power-republican-presidency-and-house-democratic-senate", "closed_time": "2024-11-14 07:04:44+00", "volume_num": 6332605.568078, "outcome_prices": ["0", "1"], "last_trade_price": 1, "best_bid": null, "best_ask": 0.001, "one_day_price_change": null, "one_week_price_change": 0, "event_id": "10223", "event_slug": "balance-of-power-2024-election", "clob_token_id_yes": "46167212842991355763663772182129837537545167602810511850370601149970675289312"},
+  {"id": "500637", "slug": "2024-balance-of-power-republican-presidency-and-senate-democratic-house", "closed_time": "2024-11-14 07:00:00+00", "volume_num": 9322470.30561, "outcome_prices": ["0", "1"], "last_trade_price": 1, "best_bid": null, "best_ask": 0.001, "one_day_price_change": -0.0005, "one_week_price_change": 0, "event_id": "10223", "event_slug": "balance-of-power-2024-election", "clob_token_id_yes": "11928031020017926253137048266138060552390028298132003645967202754777540403459"},
+  {"id": "500638", "slug": "2024-balance-of-power-democratic-presidency-republican-house-and-senate", "closed_time": "2024-11-14 07:04:38+00", "volume_num": 5546240.024256, "outcome_prices": ["0", "1"], "last_trade_price": 1, "best_bid": null, "best_ask": 0.001, "one_day_price_change": null, "one_week_price_change": 0, "event_id": "10223", "event_slug": "balance-of-power-2024-election", "clob_token_id_yes": "35629444424911540854033833805581282525894865134562240313992824142991452360546"},
+  {"id": "500639", "slug": "2024-balance-of-power-republican-presidency-democratic-house-and-senate", "closed_time": "2024-11-14 06:59:50+00", "volume_num": 6481908.722395, "outcome_prices": ["0", "1"], "last_trade_price": 1, "best_bid": null, "best_ask": 0.001, "one_day_price_change": null, "one_week_price_change": 0, "event_id": "10223", "event_slug": "balance-of-power-2024-election", "clob_token_id_yes": "37592150258992412335129765372551581004040470277008521657289304318436809180960"},
+  {"id": "500640", "slug": "2024-balance-of-power-other", "closed_time": "2024-11-14 06:59:54+00", "volume_num": 24501103.382891, "outcome_prices": ["0", "1"], "last_trade_price": 1, "best_bid": null, "best_ask": 0.001, "one_day_price_change": null, "one_week_price_change": 0, "event_id": "10223", "event_slug": "balance-of-power-2024-election", "clob_token_id_yes": "20649254764831410038598309644877889692693012350413722948161828363570285257089"},
+  {"id": "516008", "slug": "fed-decreases-interest-rates-by-50-bps-after-march-2025-meeting", "closed_time": "2025-03-19 21:31:55+00", "volume_num": 22150914.603213, "outcome_prices": ["0", "1"], "last_trade_price": 1, "best_bid": null, "best_ask": 0.001, "one_day_price_change": -0.002, "one_week_price_change": 0, "event_id": "15665", "event_slug": "fed-decision-in-march", "clob_token_id_yes": "59500043981638253528854819796350757181716737470693576068597643626706510223839"},
+  {"id": "516009", "slug": "fed-decreases-interest-rates-by-25-bps-after-march-2025-meeting", "closed_time": "2025-03-19 21:36:45+00", "volume_num": 17180913.164155, "outcome_prices": ["0", "1"], "last_trade_price": 1, "best_bid": null, "best_ask": 0.001, "one_day_price_change": -0.006, "one_week_price_change": 0, "event_id": "15665", "event_slug": "fed-decision-in-march", "clob_token_id_yes": "89116530978908711797607850110372348932106298082008228479003610418450546304140"},
+  {"id": "516010", "slug": "no-change-in-fed-interest-rates-after-march-2025-meeting", "closed_time": "2025-03-19 21:31:51+00", "volume_num": 17161804.938166, "outcome_prices": ["1", "0"], "last_trade_price": 1, "best_bid": 0.999, "best_ask": 1, "one_day_price_change": 0.007, "one_week_price_change": 0, "event_id": "15665", "event_slug": "fed-decision-in-march", "clob_token_id_yes": "36985952389507121027489287608663328433585265985125393395085818029245397624615"},
+  {"id": "516011", "slug": "fed-increases-interest-rates-by-25-bps-after-march-2025-meeting", "closed_time": "2025-03-19 21:31:45+00", "volume_num": 21544318.532625, "outcome_prices": ["0", "1"], "last_trade_price": 1, "best_bid": null, "best_ask": 0.001, "one_day_price_change": null, "one_week_price_change": 0, "event_id": "15665", "event_slug": "fed-decision-in-march", "clob_token_id_yes": "5678441977631356096576643767219853506662704132397324700379875824610338420737"}
+ ]
+}

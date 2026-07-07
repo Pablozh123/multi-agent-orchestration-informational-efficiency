@@ -1,0 +1,6 @@
+kategorie,tag_slug,n_maerkte,n_events,trefferquote_t1,brier_t1,n_t7,trefferquote_t7,brier_t7,median_volumen_usd,volumen_schwelle_usd,n_t1_aus_clob,n_ausgeschlossen_in_auswertung
+Politik,politics,13,10,1.0,0.0252,8,0.625,0.3259,203621392.14,10000,2,0
+Sport,sports,16,5,1.0,0.0,6,1.0,0.0001,118084821.51,10000,2,0
+Krypto,crypto,16,15,1.0,0.0021,11,0.9091,0.0496,28047380.45,10000,2,0
+Popkultur,pop-culture,14,9,1.0,0.0003,4,0.75,0.2698,24834166.79,10000,2,0
+Mentions,mentions,12,10,1.0,0.0158,8,0.875,0.0662,6412971.09,1000,2,0

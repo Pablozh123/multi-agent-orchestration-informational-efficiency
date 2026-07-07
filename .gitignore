@@ -39,3 +39,6 @@ data/results/monitor_mcp_audit_log.jsonl
 data/results/agent_review_queue_llm_audit_log.jsonl
 # MS Office lock/temp files
 ~$*
+
+# Private Live-Bot-Daten (nicht thesis-facing)
+data/live/

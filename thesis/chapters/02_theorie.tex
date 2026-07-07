@@ -8,14 +8,7 @@
 \section{Bisherige Forschung}
 \label{ch:theorie}
 
-Dieses Kapitel ordnet die für die Arbeit relevanten Begriffe, Theorien,
-Messverfahren und Vorbefunde ein. Es folgt der Logik eines Literatur-Reviews.
-Zuerst werden die zentralen Begriffe geklärt, danach die theoretischen
-Grundlagen und die etablierten Verfahren zur Messung von Prognosequalität und
-Marktreaktion dargestellt, anschliessend die bisherige Forschung zu Polymarket
-und zu informiertem Handel diskutiert. Aus dieser Zusammenschau ergibt sich die
-Forschungslücke, welche die drei Hypothesen motiviert. Ausgewählt werden nur
-jene Konzepte und Quellen, die für die Forschungsfrage unmittelbar relevant sind.
+Dieses Kapitel ordnet die relevanten Begriffe, Theorien, Messverfahren und Vorbefunde als Literatur-Review ein und arbeitet daraus die Forschungslücke heraus, welche die drei Hypothesen motiviert. Aufgenommen wird nur, was für die Forschungsfrage unmittelbar zählt.
 
 \subsection{Begriffsklärung}
 Ein \emph{Prognosemarkt} ist ein Markt, auf dem Kontrakte auf den Ausgang
@@ -39,6 +32,32 @@ dataset-relative Grössenklasse von Wallets, abgeleitet aus den beobachteten
 kumulierten Betragsperzentilen und nicht aus einer willkürlichen
 Dollar-Schwelle. Diese Begriffe bilden die gemeinsame Grundlage der drei
 Hypothesen.
+
+\subsection{Aktuelle Relevanz und neue Dynamiken}
+Prognosemärkte haben zwischen 2024 und 2026 einen Sprung von der Nische in den
+Mainstream vollzogen. Im US-Wahljahr 2024 erreichte Polymarket Milliardenvolumina
+und wurde in den Medien breit als Wahrscheinlichkeitsquelle zitiert
+\citep{lit_poly24_accuracy,zotero_poly_001}. Die Entwicklung setzte sich
+institutionell fort: 2025 beteiligte sich die Börsenbetreiberin Intercontinental
+Exchange mit rund zwei Milliarden US-Dollar an Polymarket und wurde zugleich
+Distributorin von dessen ereignisbasierten Daten \citep{news_ice_polymarket_2025};
+Polymarket kehrte unter CFTC-Regulierung in den US-Markt zurück
+\citep{ref_britannica_polymarket}. Parallel wuchs der ebenfalls CFTC-regulierte
+Wettbewerber Kalshi auf ein monatliches Handelsvolumen in Milliardenhöhe, wobei
+Sportmärkte als Volumentreiber und politische wie makroökonomische Märkte als
+Kapitalmagnete wirken \citep{news_kpmg_prediction_2025}.
+
+Diese Mainstream-Werdung bringt Dynamiken, die klassische Prognosemärkte wie die
+Iowa Electronic Markets nicht kannten. Erstens macht die Blockchain-Abwicklung jede
+Transaktion und Wallet öffentlich nachvollziehbar und eröffnet damit Analysen auf
+Teilnehmerebene, die zuvor unmöglich waren \citep{news_chainalysis_forensics_001}.
+Zweitens können breit zitierte Marktwahrscheinlichkeiten reflexiv auf Erwartungen
+zurückwirken und so die Genauigkeit, die sie signalisieren, gerade untergraben
+\citep{zotero_poly_009}. Drittens verschärfen Grosskonto-Konzentration und
+dokumentierte Insiderhandel-Fälle die Fragen nach Marktintegrität und Regulierung
+\citep{zotero_poly_001,news_polymarket_integrity_001}. Genau an diesen Punkten
+setzen die drei Hypothesen an: Prognosequalität (H1), Reaktion auf öffentliche
+Ereignisse (H2) sowie On-Chain-Timing und Konzentration (H3).
 
 \subsection{Markteffizienz und Informationsaggregation}
 Der theoretische Ausgangspunkt ist die Markteffizienzhypothese
@@ -128,4 +147,19 @@ die Marktauflösung verstärkt.
 Für die gebotene Vorsicht sprechen mehrere Befunde. \citet{zotero_poly_001} zeigen
 für die Oktober-Grosskonto-Episode 2024, dass Kapital gleichzeitig auf beide
 Marktseiten floss --- ein Muster, das mit heterogenen Erwartungen und nicht mit
-einseitiger Ma
+einseitiger Manipulation vereinbar ist. Hohe Konzentration und auffällige Positionsgrössen sind
+für sich genommen mehrdeutig und verlangen eine vorsichtige, nicht-kausale
+Interpretation.
+
+\subsection{Forschungslücke}
+Die referierte Literatur liefert eine Theorie der Informationsaggregation,
+etablierte und proper-score-basierte Verfahren zur Messung der Prognosequalität,
+das Ereignisstudien-Design für Marktreaktionen sowie Konzepte und erste Evidenz
+zu informiertem Handel. Diese Bausteine werden jedoch meist getrennt und
+überwiegend für zentralisierte Märkte oder einzelne Teilfragen behandelt. Für den
+dezentralen Markt Polymarket fehlt eine reproduzierbare, deterministisch geprüfte
+Zusammenführung von Prognosequalität (H1), Ereignisreaktion (H2) und On-Chain-Timing
+(H3) im selben Marktkontext. Genau diese Lücke adressiert die vorliegende Arbeit für
+die US-Präsidentschaftswahl 2024, indem sie die drei Perspektiven auf eine
+gemeinsame, scope-spezifische Datenbasis stellt und gestützte Befunde transparent
+von nicht gestützten Behauptungen trennt.

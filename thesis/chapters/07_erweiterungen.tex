@@ -1,71 +1,258 @@
-% Status: appendix_or_discussion_ready (Monitor/Swiss) + Narrativ-Entscheide.
+% Status: ausgebaut zum vollstaendigen Loesungskapitel (4b).
+% Gestaltungsbeitrag: Artefakte (Arb-Scanner, Research-Terminal), fokussiertes
+% Monitoring-Werkzeug, Agenten-Orchestrierung, Schweizer Fallstudie.
+% Alle Teile paper-only/read-only, stuetzen H1--H3, ersetzen sie nicht.
 \chapter{Lösung: Monitoring-Werkzeug und Agenten-Orchestrierung}
 \label{ch:loesung}
 
-Dieses Kapitel ordnet vier Erweiterungen ausserhalb des empirischen Kerns ein.
-Sie stützen die Forschungsfrage, ersetzen aber nicht den H1--H3-Beleg.
+Aus der Analyse (Kapitel~\ref{ch:analyse}) ist nicht nur ein empirischer Befund
+hervorgegangen, sondern auch der Bedarf an einem praktischen Werkzeug, das die
+Effizienz-Perspektive der Arbeit laufend sichtbar und für Menschen prüfbar macht.
+Dieses Kapitel dokumentiert diese Lösung als Gestaltungsbeitrag: die im
+Projektverlauf entstandenen Artefakte, das daraus fokussierte read-only
+Monitoring-Werkzeug und die Agenten-Orchestrierung seiner Entwicklung. Alle Teile
+stützen die Forschungsfrage, ersetzen aber den H1--H3-Beleg nicht und überlagern
+ihn nicht. Sämtliche Werkzeuge sind read-only und paper-only: kein Live-Handel,
+keine Orders, keine Schlüssel- oder Wallet-Verwaltung.
+
+\section{Ausgangspunkt und Gestaltungsansatz}
+\label{sec:loesung-ansatz}
+Während der Untersuchung wurde wiederholt der Bedarf an einem praktischen
+Analyse-Werkzeug für Prognosemärkte erkennbar. Als Gestaltungsbeitrag entstand
+daraus ein laufendes, read-only Webprodukt, das die Effizienz-Perspektive der
+Arbeit operationalisiert. Der Beitrag ist bewusst sekundär: Er macht begrenzte,
+deterministisch geprüfte Hinweise sichtbar, liefert aber selbst keine
+thesis-relevanten Kennzahlen und darf die Forschungsfrage nicht überlagern. Umfang
+und Anrechnung sind mit der Betreuung abzustimmen.
+
+\section{Erstes Artefakt: paper-only Arbitrage-Scanner}
+\label{sec:loesung-arb}
+Der erste praktische Zugang war ein ausschliesslich auf Papier arbeitender Scanner
+(TypeScript/Node), der Markt- und Orderbuch-Daten von Polymarket und Kalshi liest,
+mögliche Preis-Ineffizienzen erkennt und Reports schreibt. Er prüfte einen Katalog
+von Strategien, geordnet nach Evidenz-Stufen von strukturell garantiert (S) über
+empirisch belegt (A), vielversprechend (B) und blosse Hypothese (C) bis getestet
+und gescheitert (F). Tabelle~\ref{tab:t5} fasst die wichtigsten Strategien und die
+jeweils tatsächliche Beobachtung zusammen.
+
+Zentral ist die Unterscheidung von Preisunterschied und Arbitrage: Eine risikofreie
+Cross-Venue-Arbitrage entsteht erst, wenn sich YES auf der einen und NO auf der
+anderen Börse für denselben Ausgang zusammen für unter 1.00 kaufen lassen; ein
+blosser Same-side-Spread ist nur ein Bewertungsunterschied. In Forward-Replay- und
+Snapshot-Läufen über rund zwei Wochen (20.~Mai bis 2.~Juni 2026) fanden die
+strukturellen Scanner keine validierte, sauber ausführbare Arbitrage; einzelne sehr
+grosse scheinbare Edges waren als experimentell, unverknüpft oder durch veraltete
+Teil-Snapshots verzerrt markiert, also Artefakte. Die wenigen echten
+Cross-Venue-Fälle (etwa ein Somaliland-Markt) waren klein und faktisch
+Carry-Trades: Beide Seiten müssen bis zur teils Monate entfernten Marktauflösung
+gehalten werden, was den ohnehin kleinen Edge über eine lange Haltedauer verteilt;
+Tiefe, Gebühren und Slippage verkleinern ihn zusätzlich.
+
+\begin{table}[ht]
+\centering
+\caption{Getestete Arbitrage-Strategien und beobachtete Evidenz (T5)}
+\label{tab:t5}
+\small
+\begin{tabular}{@{}llp{6.6cm}@{}}
+\toprule
+Strategie & Evidenz & Beobachtung im Lauf \\
+\midrule
+NEG\_RISK Basket Sum-Arb & S & meist 0 saubere Arbs; ein toter Leg macht den Basket unbaubar \\
+Within-Market (YES+NO $<$ 1) & S & nächste Fälle bei Summe $\approx 1.001$, schliessen in Sekunden \\
+Cross-Venue (Kalshi $\times$ Polymarket) & A & selten, nur um Katalysator-Events; sonst Kadenz null \\
+Cross-Market-Monotonie & A & real, aber dünne Tiefe ($<$50 USD, 5--7 pp Spread) \\
+Sum-Arb Lock-In & A & bester real beobachteter Edge; Baskets bei 1.025--1.030 \\
+Tail-Fade / Premium-Harvest & B & konstanter Klein-Edge; Haltedisziplin nötig \\
+Whale-Following / Copy & B & Elite-Whales existieren; Kopieren nur schwaches Signal \\
+Crypto Oracle-Divergence-Fade & B & vielversprechend ($N=28$), Out-of-Sample offen \\
+UMA-Dispute-Arb & F & verworfen: kategorie-gefilterte Backtests trügen \\
+Temporal Anchoring & F & Null-Ergebnis (Artefakte fast aufgelöster Monate) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Einordnung.}
+Dieser Befund ist selbst ein Effizienz-Indiz: Saubere strukturelle Arbitragen sind
+selten und schliessen schnell, empirische Edges sind dünn oder unbestätigt, und
+mehrere zunächst attraktive Muster fielen bei kategorie-fairer Prüfung in sich
+zusammen. Die kaum robust ausnutzbare Ineffizienz motivierte den in
+Kapitel~\ref{ch:intro} beschriebenen Wechsel zur Messperspektive. Es wird
+ausdrücklich keine Handelbarkeits- oder Profitabilitätsaussage getroffen.
+
+\section{Research-Terminal: Aufbau und Workspaces}
+\label{sec:loesung-terminal}
+Parallel entstand ein Research-Terminal, ursprünglich als Data-Wrangling-Modulprojekt
+mit der Frage, ob die Reddit-Stimmung mit Polymarket-Wahrscheinlichkeiten
+zusammenhängt. Aufgebaut als ETL-Pipeline (Polymarket-API, Reddit-Suche,
+Sentiment-Klassifikation, je Markt aggregiert) und ergänzt um einen
+Zero-Shot-Stance-Score, ergab die Auswertung über 29 Live-Märkte und 725 Posts
+keinen statistisch signifikanten Zusammenhang (Tabelle~\ref{tab:t6}); der
+Stance-Score war nicht trennschärfer als reines Sentiment. Methodisch zentral:
+Sentiment misst Stimmung, nicht Zustimmung, weshalb je Marktfrage eine
+Polaritäts-Korrektur nötig war. Reddit-Stimmung allein ist damit kein robuster
+Prädiktor für Polymarket-Preise.
+
+\begin{table}[ht]
+\centering
+\caption{Reddit-Sentiment gegen Polymarket-Wahrscheinlichkeit (T6)}
+\label{tab:t6}
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Modell & Pearson $r$ & Spearman rho & Richtungstreffer \\
+\midrule
+VADER (Baseline) & $+0.069$ & $+0.115$ & 27.6\% \\
+Twitter-RoBERTa & $+0.079$ & $+0.151$ & 44.8\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Aus diesem Ausgangspunkt wuchs eine Streamlit-Research-Plattform für Polymarket und
+Kalshi mit mehreren Arbeitsbereichen: Marktsuche, Trader-Leaderboard und
+Wallet-Profile, Live-Trade-Flow, Whale Flow, Verdachts-Screening,
+Cross-Venue-Vergleich, Backtester, Paper-Copytrading sowie Monitor und Portfolio.
+Das Paper-Copytrading bleibt bewusst rein simuliert: Es beobachtet öffentliche
+Trades einer Zielwallet, skaliert sie in ein lokales Portfolio und misst Latenz,
+Sizing und Treue der Nachbildung, ohne echte Orders.
+
+\section{Verdachts-Screening als Brücke zu H3}
+\label{sec:loesung-suspicious}
+Der für die Forschungsfrage relevanteste Teil des Terminals ist das
+Verdachts-Screening, das den in Abschnitt~\ref{sec:verdacht} beschriebenen
+Signatur-Ansatz vorwegnimmt. Eine Wallet wird nicht wegen ihrer Grösse allein
+markiert, sondern anhand einer Kombination von Mustern: Fresh-Wallet-Cluster
+(mehrere im Sample kaum gesehene Wallets mit Whale-Volumen, die im selben Markt auf
+dieselbe Seite drängen), Wallet-Alter, Co-Trading-Cluster (über ein Netzwerk
+erkannte, wiederholt gemeinsam handelnde Adressen) sowie beschreibende
+Verhaltens-Etiketten. Entscheidend ist die Gewichtung nach Marktart: Sport,
+Asset-Preise und Wetter gelten als wenig insider-plausibel (öffentliche Quoten bzw.
+modellgetriebene Ausgänge), während Politik, Awards und interne Firmen-Märkte mit
+asymmetrischem Informationszugang anfällig sind. Der resultierende Score wird in
+Bänder gefasst (erhöht, mittel, hoch). Das Screening ist ein Best-Effort-Filter auf
+öffentlichen Daten, kein juristischer Nachweis, und gibt keine Wallet-Adressen aus.
+
+\paragraph{Fallbeispiel Swisstony.}
+Zum Test der gesamten Pipeline (Trader-Erkennung, Backtesting, Paper-Copytrading) diente ein öffentlich sichtbarer, sehr profitabler Trader
+(Pseudonym Swisstony). Es ging nicht darum, ihn auszuzeichnen, sondern an einem
+starken realen Beispiel zu messen, wie gut sich eine Quelle analysieren und
+nachbilden lässt. Die Kennzahlen (Tabelle~\ref{tab:t7}) stammen aus lokaler Analyse
+öffentlicher Daten und sind vor produktivem Einsatz neu zu prüfen; sie sind kein
+Ergebnis zur Forschungsfrage und keine Profitabilitätsaussage. Aufschlussreich ist
+die Struktur des Edges: nicht wenige grosse Richtungswetten, sondern
+Marktselektion, Timing, hoher Umschlag und sauberes Kapital-Recycling --- eine
+Winrate um 53\% erklärt den Erfolg allein nicht.
+
+\begin{table}[ht]
+\centering
+\caption{Fallbeispiel Swisstony: Kennzahlen aus lokaler Analyse öffentlicher Daten (T7)}
+\label{tab:t7}
+\small
+\begin{tabular}{@{}lr@{}}
+\toprule
+Kennzahl & Wert (lokale Analyse) \\
+\midrule
+Berichtete PnL & ca. 9.6 Mio. USD \\
+Cashflow-bereinigter ROI & ca. $+200$\% \\
+Winrate & ca. 53\% \\
+All-time-Volumen & ca. 867 Mio. USD \\
+Sharpe-ähnlich (täglich) & ca. 4.1 \\
+Max. Drawdown & ca. $-0.97$ Mio. USD \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Fokussiertes Monitoring-Werkzeug (Read-only-Prototyp)}
+\label{sec:loesung-monitor}
+Aus den breiten Terminal-Funktionen wurde ein fokussierter, akademisch sauberer
+Monitor abgeleitet. Er kombiniert Marktbewegung, aggregierte Wallet-Tier-Aktivität,
+Konzentration und Ereigniskontext zu deterministischen Prüf-Hinweisen
+\citep{zotero_poly_006,zotero_poly_009}. Er bleibt read-only, erzeugt keine
+Order- oder Trading-Pfade und liefert Prüf-Hinweise, keine kausale oder
+Effizienz-Evidenz. Im Haupttext erscheint er nur als Workflow, Einzelfälle bleiben
+bis zur manuellen Prüfung im Anhang.
+
+\section{Anomalie-Review-Queue als Prüf-Workflow}
+\label{sec:loesung-queue}
+Die deterministische Anomalie-Diagnostik aus Abschnitt~\ref{sec:anomalie} liefert
+Hinweise, die eine nachgelagerte Review-Schicht einordnet. Die aktuelle
+Review-Queue enthält drei Fälle: einen mit hoher Priorität, der als Prüf-Kandidat
+markiert ist, und zwei mit mittlerer Priorität als Beobachtungs-Hinweis. Alle drei
+stehen auf Quellenprüfung ausstehend. Bei der Überlappung mit den kuratierten
+Referenzfällen ergeben sich ein Treffer, eine teilweise und eine fehlende
+Überlappung.
+
+Diese Queue ist ausdrücklich ein menschlicher Prüf-Workflow über begrenzte, bereits
+berechnete Monitor-Artefakte. Die Risiko-Etiketten sind Beobachtungs-Marker, keine
+Befunde. Die Queue beweist weder private Information noch Fehlverhalten,
+Kausalität, Handelbarkeit, Profitabilität oder künftige Performance.
+
+\section{Agenten-Orchestrierung: gebaute, read-only Review-Schicht}
+\label{sec:loesung-agenten}
+Die ursprüngliche Projektidee, eine MCP-gestützte Multiagenten-Orchestrierung, ist nicht nur als Methode dokumentiert, sondern als read-only Review-Schicht
+tatsächlich gebaut und mit einer Testsuite abgesichert. Sie diente zweifach: als
+Entwicklungsmethode bei der Umsetzung des Werkzeugs und als lauffähige
+Orchestrierung, welche die deterministische Anomalie-Review-Queue
+(Abschnitt~\ref{sec:loesung-queue}) sichtet und nach Prüf-Dringlichkeit ordnet.
+Entscheidend und konform mit dem Architektur-Entscheid ``deterministischer Kern
+zuerst'': Die Agenten berechnen keine thesis-relevanten Kennzahlen, sie
+interpretieren ausschliesslich begrenzte, bereits berechnete Zusammenfassungen.
+
+Abbildung~\ref{fig:orchestration} zeigt den Aufbau. Vier Rollen greifen ineinander:
+ein EventScout normalisiert nur extern gelieferte Ereigniskandidaten und erfindet
+keine Ereignisse, ein CaseNarrative macht aus einem begrenzten Fall-Datensatz eine
+lesbare Beschreibung, ein SkepticReviewer formuliert Gegenargumente und einen
+begrenzten Konfidenz-Abschlag, und ein Orchestrator rangiert die Fälle in eine
+priorisierte Review-Queue und korrigiert die bereits vorhandene deterministische
+Priorität dabei nur nach unten. Der Zugriff läuft ausschliesslich über eine
+read-only MCP-Schicht mit vier Werkzeugen (Anomalie-Review-Summary, Einzelfall,
+Artefaktliste, Methodengrenzen), maximal 50 Zeilen je Abfrage, mit
+Wallet-Adress-Redaction und Protokollierung jeder LLM-Interaktion; die LLM-Schicht
+selbst nutzt standardmässig einen deterministischen Mock.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.92\textwidth]{agent_orchestration_architecture.png}
+\caption{Architektur der gebauten Agenten-Orchestrierung: vier read-only Rollen
+(EventScout, CaseNarrative, SkepticReviewer, Orchestrator) ordnen über eine
+begrenzte, read-only MCP-Schicht die deterministische Review-Queue, ohne selbst
+Kennzahlen zu berechnen. Quelle: \texttt{operations/agents/review\_queue/}.}
+\label{fig:orchestration}
+\end{figure}
+
+Bewusst zurückgestellt bleibt allein der produktive, metrik-erzeugende oder autonom
+handelnde Betrieb: Solange der deterministische Kern und die Audit-Grenzen nicht
+vollständig freigegeben sind, berechnen Agenten keine Kennzahlen, greifen nicht
+ungefiltert auf Rohdaten zu und lösen keine Trades aus. Die Orchestrierung ist damit
+ein realer, getesteter Gestaltungsbeitrag innerhalb klar gezogener Grenzen: kein blosser Entwurf, aber auch nicht Teil des empirischen Belegs.
 
 \section{Schweizer Referendum als begrenzte Fallstudie}
-Als aktueller, eigenständiger Vergleich dient die eidgenössische Abstimmung vom
-14.~Juni 2026. Beim offiziellen Ja-Anteil von 45.21\% lag die finale Umfrage als
-Stimmenanteil näher am Resultat, während Polymarket im lokalen Live-Fenster (Ja
-zuletzt 21.5\%) als binäre Ablehnungswahrscheinlichkeit klarer auf der richtigen
-Seite lag \citep{zotero_poly_002}. Wichtig: Polymarket-Preise sind
-Annahmewahrscheinlichkeiten, Umfragen sind Stimmenanteile. Der Binärvergleich
-ist nur ein transparenter Proxy und kein Mispricing-, Effizienz- oder
-Tradeability-Beweis (Abbildung~\ref{fig:swiss}).
+\label{sec:loesung-swiss}
+Als aktueller, eigenständiger Vergleich ausserhalb der US-Wahl dient die
+eidgenössische Abstimmung vom 14.~Juni 2026. Beim offiziellen Ja-Anteil von 45.21\%
+lag die finale Umfrage als Stimmenanteil näher am Resultat, während Polymarket im
+lokalen Live-Fenster (Ja zuletzt 21.5\%) als binäre Ablehnungswahrscheinlichkeit
+klarer auf der richtigen Seite lag \citep{zotero_poly_002}. Wichtig:
+Polymarket-Preise sind Annahmewahrscheinlichkeiten, Umfragen sind Stimmenanteile.
+Der Binärvergleich ist nur ein transparenter Proxy und kein Mispricing-,
+Effizienz- oder Tradeability-Beweis (Abbildung~\ref{fig:swiss}).
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.82\textwidth]{swiss_referendum_10mio_final_case_study.png}
-\caption{Schweizer Referendum 14.~Juni 2026: offizielles Resultat gegen
-Polymarket-Preise und Umfrage-Proxy (begrenzte Post-Resultat-Fallstudie).
+\caption{Schweizer Referendum 14.~Juni 2026: offizieller Ja-Anteil (45.21\%) gegen die finale Umfrage als Stimmenanteil und den Polymarket-Preis als Annahmewahrscheinlichkeit. Der Binärvergleich ist nur ein transparenter Proxy, kein Effizienz- oder Mispricing-Beweis.
 Quelle: \texttt{data/results/swiss\_referendum\_10mio\_final\_case\_study.png}.}
 \label{fig:swiss}
 \end{figure}
 
-\section{Anomalie-Review-Queue als Prüf-Workflow}
-Die deterministische Anomalie-Diagnostik aus Abschnitt~\ref{sec:anomalie} liefert
-Hinweise, die eine nachgelagerte Review-Schicht einordnet. Die aktuelle
-Review-Queue enthält drei Fälle: einen mit hoher Priorität, der als
-Prüf-Kandidat markiert ist, und zwei mit mittlerer Priorität als Beobachtungs-Hinweis.
-Alle drei stehen auf Quellenprüfung ausstehend. Bei der Überlappung mit den
-kuratierten Referenzfällen ergeben sich ein Treffer, eine teilweise und eine
-fehlende Überlappung.
-
-Diese Queue ist ausdrücklich ein menschlicher Prüf-Workflow über begrenzte,
-bereits berechnete Monitor-Artefakte. Die Risiko-Etiketten sind Beobachtungs-Marker,
-keine Befunde. Die Queue beweist weder private Information noch Fehlverhalten,
-Kausalität, Handelbarkeit, Profitabilität oder künftige Performance.
-
-\section{Politik-/Geo-Monitor als Read-only-Prototyp}
-Der Monitor kombiniert Marktbewegung, aggregierte Wallet-Tier-Aktivität,
-Konzentration und Ereigniskontext zu deterministischen Prüf-Hinweisen
-\citep{zotero_poly_006,zotero_poly_009}. Er bleibt read-only, erzeugt keine
-Order- oder Trading-Pfade und liefert Prüf-Hinweise, keine kausale oder
-Effizienz-Evidenz. Im Haupttext erscheint er nur als Workflow, Fälle bleiben bis
-zur manuellen Prüfung im Anhang.
-
-\section{Agenten-gestützte Pipeline als dokumentierter Vertrag}
-Die ursprünglich angestrebte Multiagenten-Pipeline ist hier als bewusst
-begrenzter, dokumentierter Vertrag verankert. Künftige Agenten dürfen Hinweise
-sichten und einordnen, aber keine Kennzahlen berechnen. Der Vertrag definiert
-vier Rollen: einen EventScout, der Ereigniskandidaten sammelt, einen
-CaseNarrative, der Fälle aus begrenzten Zusammenfassungen beschreibt, einen
-SkepticReviewer, der gegenprüft, und einen Orchestrator, der entscheidet. Eine
-spätere, ebenfalls vertraglich begrenzte MCP-Schicht stellt nur lesende Werkzeuge
-bereit (Anomalie-Review-Summary, Einzelfall, Artefaktliste, Methodengrenzen), mit
-maximal 50 Zeilen je Abfrage, ohne rohes SQL, ohne standardmässige
-Wallet-Adress-Ausgabe und mit Pflicht zur Protokollierung jeder LLM-Interaktion.
-Beide Verträge sind als nicht implementiert markiert und bleiben Future Work, bis
-der deterministische Kern und die Audit-Grenzen vollständig stehen.
-
-\section{Praktischer Beitrag: Monitoring-Werkzeug und Bau-Methodik}
-Während der Untersuchung wurde Bedarf an einem praktischen Analyse-Werkzeug für
-Prognosemärkte erkennbar. Als Gestaltungsbeitrag wurde daraus ein laufendes,
-read-only Webprodukt entwickelt, das die Effizienz-Perspektive der Arbeit
-operationalisiert. Die Umsetzung selbst nutzte eine Multiagenten-Orchestrierung
-als Entwicklungsmethode, dokumentiert wird diese als Prozessbeitrag. Die Agenten
-erzeugten Software, berechneten aber keine thesis-relevanten Kennzahlen. Beide
-Punkte sind Sekundärbeiträge und dürfen die Forschungsfrage nicht überlagern.
-Umfang und Einordnung sind mit der Betreuung abzustimmen.
+\section{Einordnung, Eigenständigkeit und Grenzen}
+\label{sec:loesung-grenzen}
+Alle beschriebenen Teile sind Sekundär- und Gestaltungsbeiträge: Sie
+operationalisieren die Effizienz-Perspektive und dokumentieren den Weg, ersetzen
+aber den empirischen Beleg nicht. Sämtliche Werkzeuge sind paper-only und
+read-only --- kein Live-Handel, keine Orders, keine Wallet- oder
+Schlüssel-Verwaltung, keine Anlageberatung, keine Secrets im Code. Das
+Research-Terminal ist teilweise aus einem Data-Wrangling-Modulprojekt
+hervorgegangen; eine Wiederverwendung von Teilen daraus ist nur zulässig, wenn sie
+mit der Betreuung abgesprochen und in der Eigenständigkeitserklärung ausgewiesen
+wird. Umfang und Anrechnung dieses Kapitels sind entsprechend mit der Betreuung
+abzustimmen.

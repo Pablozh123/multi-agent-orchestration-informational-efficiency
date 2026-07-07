@@ -1,0 +1,447 @@
+{
+ "meta": {
+  "beschreibung": "Reduzierte Rohdaten (Feld-Extrakt) der Gamma-API fuer die Kategorie Mentions (Tag-Slug mention-markets), Ergaenzungsseite 4 (Events-Endpunkt, nach Volumen absteigend). Antwort des Abrufwerkzeugs bei ca. 90 kB gekappt; alle analyserelevanten Felder aus der Original-Antwort extrahiert, Werte unveraendert uebernommen.",
+  "abrufdatum": "2026-07-03",
+  "quelle_url": "https://gamma-api.polymarket.com/events?tag_slug=mention-markets&closed=true&order=volume&ascending=false&limit=15&offset=45",
+  "tag_slug": "mention-markets",
+  "endpunkt": "events",
+  "offset": 45,
+  "limit": 15,
+  "extrahierte_felder": [
+   "id",
+   "slug",
+   "closed_time",
+   "volume_num",
+   "outcome_prices",
+   "last_trade_price",
+   "best_bid",
+   "best_ask",
+   "one_day_price_change",
+   "one_week_price_change",
+   "event_id",
+   "event_slug",
+   "clob_token_id_yes"
+  ],
+  "anzahl_events_vollstaendig": 0,
+  "anzahl_maerkte_vollstaendig": 23,
+  "verworfen_unvollstaendig": [
+   "Letztes Event (id 233066, slug what-will-trump-say-in-march) am Ende der gekappten Antwort angeschnitten und nicht als vollstaendiges Event gezaehlt; 23 vollstaendige Maerkte daraus uebernommen; angeschnittener Markt (id 1450155, slug will-trump-say-easter-in-march) verworfen, restliche Maerkte des Events fehlen."
+  ]
+ },
+ "markets": [
+  {
+   "id": "1450132",
+   "slug": "will-trump-say-big-fat-cat-in-march",
+   "closed_time": "2026-04-01 06:20:17+00",
+   "volume_num": 2239.145366,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 0.001,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "28949770054247380267155867151067432525052210811609613955442515943733959563171"
+  },
+  {
+   "id": "1450133",
+   "slug": "will-trump-say-n-word-in-march",
+   "closed_time": "2026-04-01 06:18:23+00",
+   "volume_num": 58291.50896900003,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 0.002,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "45449173808701868835341363909676790301039111647590342224986185755600811940478"
+  },
+  {
+   "id": "1450134",
+   "slug": "will-trump-say-hottest-nation-in-march",
+   "closed_time": "2026-04-01 06:47:29+00",
+   "volume_num": 12481.640239999995,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 0.002,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "11352021851803803642805543876611455915572690084873214677171394765236066524437"
+  },
+  {
+   "id": "1450135",
+   "slug": "will-trump-say-little-rocket-man-in-march",
+   "closed_time": "2026-04-01 06:30:29+00",
+   "volume_num": 3240.338785,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 0.016,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "85463650421816981370382487891272547557243204295949807488685529405363449860332"
+  },
+  {
+   "id": "1450136",
+   "slug": "will-trump-say-china-virus-or-wuhan-lab-in-march",
+   "closed_time": "2026-04-01 06:49:29+00",
+   "volume_num": 3776.4006839999997,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 0.001,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "90897716034883858203559815774487819072330558639949997635729594792784898356286"
+  },
+  {
+   "id": "1450137",
+   "slug": "will-trump-say-low-energy-in-march",
+   "closed_time": "2026-04-01 10:09:07+00",
+   "volume_num": 7787.329128,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 0.023,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "11559503856212549662125165987632423649212274311507534095543070650242355742140"
+  },
+  {
+   "id": "1450138",
+   "slug": "will-trump-say-aliens-are-real-in-march",
+   "closed_time": "2026-04-01 06:39:19+00",
+   "volume_num": 13232.729060999996,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 0.001,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "47917702300896200743232755237313188995786911488375659249605436010579795102550"
+  },
+  {
+   "id": "1450139",
+   "slug": "will-trump-say-kanye-or-taylor-swift-in-march",
+   "closed_time": "2026-04-01 08:32:21+00",
+   "volume_num": 3228.3014600000015,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 0.025,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "57298179664958475232394391810544486187199408298216234002249116077035333570232"
+  },
+  {
+   "id": "1450140",
+   "slug": "will-trump-say-banana-republic-in-march",
+   "closed_time": "2026-04-01 07:53:19+00",
+   "volume_num": 1782.6916570000005,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 0.009,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "90889168993784375790908855355138101583984746566561616433717030611500577254821"
+  },
+  {
+   "id": "1450141",
+   "slug": "will-trump-say-barack-hussein-obama-in-march",
+   "closed_time": "2026-03-02 19:22:17+00",
+   "volume_num": 11313.646533,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 0.999,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "86884896393972965012199220127740240799745782729064028448906100950805571061322"
+  },
+  {
+   "id": "1450142",
+   "slug": "will-trump-say-bitcoin-in-march",
+   "closed_time": "2026-03-28 00:36:11+00",
+   "volume_num": 9621.702989999998,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 0.997,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "114092271933861278517388985616090708826308226792410026749139974270221410044861"
+  },
+  {
+   "id": "1450143",
+   "slug": "will-trump-say-judy-shelton-in-march",
+   "closed_time": "2026-04-01 10:06:55+00",
+   "volume_num": 2868.5569539999997,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 0.023,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "45833935291846204047204256805013168806355646739710115721630866019018175789443"
+  },
+  {
+   "id": "1450144",
+   "slug": "will-trump-say-data-center-in-march",
+   "closed_time": "2026-03-05 12:16:49+00",
+   "volume_num": null,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 0.999,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "94023615944390297747291001191173568888988375262353609104266661664707490004173"
+  },
+  {
+   "id": "1450145",
+   "slug": "will-trump-say-midnight-hammer-in-march",
+   "closed_time": "2026-03-03 17:18:41+00",
+   "volume_num": 16634.070314,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 0.999,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "8179449752610212435909950389713496230985774603559016422055361860563347393340"
+  },
+  {
+   "id": "1450146",
+   "slug": "will-trump-say-secret-word-in-march",
+   "closed_time": "2026-04-01 11:03:57+00",
+   "volume_num": 499.41219099999995,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 0.009,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "69831001147620696825213874157936711913327845123363598255743064766124844984082"
+  },
+  {
+   "id": "1450147",
+   "slug": "will-trump-say-debate-in-march",
+   "closed_time": "2026-03-12 00:43:37+00",
+   "volume_num": null,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 0.998,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "54296991964625466048856010043851554688160898736455760620263762886922771260426"
+  },
+  {
+   "id": "1450148",
+   "slug": "will-trump-say-drill-baby-drill-in-march",
+   "closed_time": "2026-03-16 18:52:25+00",
+   "volume_num": null,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 0.999,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "15083607111600247260771820780082987328911442865142141383592818345068836647552"
+  },
+  {
+   "id": "1450149",
+   "slug": "will-trump-say-charlie-kirk-in-march",
+   "closed_time": "2026-04-01 12:04:09+00",
+   "volume_num": 6506.692662000003,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 0.002,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "55521046596251493123540057763116862513170341813825033826754353024331370496109"
+  },
+  {
+   "id": "1450150",
+   "slug": "will-trump-say-war-on-fraud-in-march",
+   "closed_time": "2026-04-01 08:30:09+00",
+   "volume_num": 752.7934929999998,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 0.011,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "41471730779578271876287573222098102078841430636700194156683965132604789133448"
+  },
+  {
+   "id": "1450151",
+   "slug": "will-trump-say-lonely-in-march",
+   "closed_time": "2026-03-26 02:32:55+00",
+   "volume_num": null,
+   "outcome_prices": [
+    "1",
+    "0"
+   ],
+   "last_trade_price": 0.998,
+   "best_bid": 0.999,
+   "best_ask": 1,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "89577345780409849589760830802599470090276521409065944645684473725186898018422"
+  },
+  {
+   "id": "1450152",
+   "slug": "will-trump-say-coward-in-march",
+   "closed_time": "2026-04-01 08:28:03+00",
+   "volume_num": 6430.1071790000005,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 0.001,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "40795326286611738505272621939850979928957884616204874849883390663513089013651"
+  },
+  {
+   "id": "1450153",
+   "slug": "will-trump-say-capital-of-the-world-in-march",
+   "closed_time": "2026-04-01 08:25:11+00",
+   "volume_num": 1839.6309360000005,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 0.002,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "77143343276888109483391889049428258755699606265896557483368616599877336368064"
+  },
+  {
+   "id": "1450154",
+   "slug": "will-trump-say-ufc-fight-in-march",
+   "closed_time": "2026-04-01 08:25:05+00",
+   "volume_num": 2213.8814459999994,
+   "outcome_prices": [
+    "0",
+    "1"
+   ],
+   "last_trade_price": 0.104,
+   "best_bid": null,
+   "best_ask": 0.001,
+   "one_day_price_change": null,
+   "one_week_price_change": null,
+   "event_id": "233066",
+   "event_slug": "what-will-trump-say-in-march",
+   "clob_token_id_yes": "67340866751357714104733283309588130350324095680725936216314007639587093075816"
+  }
+ ]
+}

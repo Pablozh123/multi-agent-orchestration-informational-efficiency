@@ -1,17 +1,34 @@
-% Status: Naechste Schritte / Ausblick (4b-Struktur). Guarded.
+% Status: Naechste Schritte (4b), ausgeschrieben. Guarded.
 \chapter{Nächste Schritte}
 \label{ch:naechste}
 
-Über den empirischen Kern hinaus lässt sich die in Kapitel~\ref{ch:loesung}
-vorgestellte Lösung zu einer agentengestützten Assistenzschicht ausbauen, die
-künftig die Interpretation begrenzter, bereits berechneter Zusammenfassungen
-unterstützt, ohne selbst Kennzahlen zu berechnen.
+\section{Empirische Erweiterungen}
+Die naheliegendste Erweiterung ist eine Mehr-Wahlen- und Mehr-Markt-Stichprobe, die
+den Befund über den Einzelkontext der US-Wahl 2024 hinaus prüft und so die externe
+Validität adressiert. Für H2 würden Intraday-Daten erlauben, statt täglicher
+Reaktionsmuster die tatsächliche Reaktionsgeschwindigkeit zu messen. Für H3 wäre ein
+Out-of-Sample-Test der Verdachts-Signatur (Abschnitt~\ref{sec:verdacht}) gegen die
+wenigen öffentlich dokumentierten Insider-Fälle aufschlussreich, ebenso ein Abgleich
+des Tier-Vorlaufs gegen verifizierte Nachrichten-Zeitstempel.
 
-Künftige Agenten dürfen Entwurfs-, Review- und Quellen-Prüf-Workflows nur aus
-begrenzten, bereits deterministisch berechneten Zusammenfassungen unterstützen.
-Sie berechnen keine Kennzahlen und greifen nicht ungefiltert auf Rohdaten zu,
-jede LLM-Interaktion wird protokolliert. Als Aktivierungs-Gates gelten ein
-separates Goal, Tests, bounded inputs (maximal 50 Zeilen je Abfrage) und die
-Protokollierung jeder LLM-Interaktion. Weitere Schritte betreffen die Härtung der
-Verdachts-Signatur (Funding-Quellen, Wallet-Lebensdauer, Out-of-Sample-Test gegen
-dokumentierte Fälle), stets gebunden an die Audit- und Wallet-Adress-Grenzen.
+\section{Methodische Härtung}
+Zur Härtung der Verdachts-Signatur fehlen deterministische, getestete Merkmale: die
+Funding-Quelle der Wallets (zentrale Börse oder Mixer), Wallet-Lebensdauer und
+Transaktionszahl, einseitiger Fluss je Markt sowie Konzentrationsmasse. Parallel ist
+die dokumentierte Logit-Transformation für RealClearPolitics abzuschliessen; erst
+danach dürfen umfragebasierte Quellen wie der Poll-Transform vollständig in die
+Wahrscheinlichkeits- und Kalibrierungsmetriken eingehen. Jede solche Transformation
+wird vor Gebrauch dokumentiert.
+
+\section{Werkzeug und Agenten-Schicht}
+Die agentengestützte Assistenzschicht bleibt Future Work, bis klar definierte
+Aktivierungs-Gates stehen: ein separates Goal, Tests, begrenzte Eingaben (maximal
+50 Zeilen je Abfrage) und die Protokollierung jeder LLM-Interaktion. Künftige
+Agenten dürfen begrenzte, bereits berechnete Zusammenfassungen sichten und einordnen,
+aber keine Kennzahlen berechnen; eine spätere MCP-Schicht stellt nur lesende
+Werkzeuge bereit, ohne rohes SQL und ohne standardmässige Wallet-Adress-Ausgabe.
+
+\section{Organisatorische Schritte}
+Schliesslich sind Umfang und Anrechnung der Sekundärbeiträge sowie die
+Wiederverwendung des Data-Wrangling-Moduls mit der Betreuung zu klären und in der
+Eigenständigkeitserklärung auszuweisen.

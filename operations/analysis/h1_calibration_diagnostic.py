@@ -38,7 +38,7 @@ FIGURE_OUTPUT = RESULTS_DIR / "h1_calibration_diagnostic.png"
 METADATA_OUTPUT = RESULTS_DIR / "h1_calibration_diagnostic_metadata.json"
 
 BIN_COUNT = 5
-FIGURE_SIZE_INCHES: tuple[float, float] = (14.4, 9.6)
+FIGURE_SIZE_INCHES: tuple[float, float] = (16.5, 5.6)
 
 CASE_COLUMNS: tuple[str, ...] = (
     "case_set_id",
@@ -745,37 +745,24 @@ def write_calibration_figure(
         "polymarket_final_snapshot_8": "#1d4ed8",
         "fivethirtyeight_final_snapshot_8": "#dc2626",
     }
-    fig, axes = plt.subplots(2, 2, figsize=FIGURE_SIZE_INCHES)
+    fig, axes = plt.subplots(1, 3, figsize=FIGURE_SIZE_INCHES)
     fig.suptitle(
-        "H1 forecast-quality scorecard and sparse-bin calibration",
+        "H1 forecast-quality scorecard",
         fontsize=15,
         fontweight="bold",
     )
 
-    _plot_loss_advantage_panel(axes[0, 0], pairwise)
-    _plot_pairwise_panel(axes[0, 1], pairwise)
-    _plot_reliability_panel(
-        ax=axes[1, 0],
-        calibration_bins=calibration_bins,
-        summary=summary,
-        source_ids=[
-            "polymarket_state_final_50",
-            "rieke_state_final_50",
-            "two_seventy_state_final_50",
-        ],
-        colors=colors,
-        title="Sparse reliability bins for n>=30 sources",
-    )
-    _plot_brier_ece_panel(axes[1, 1], summary, colors)
+    _plot_loss_advantage_panel(axes[0], pairwise)
+    _plot_pairwise_panel(axes[1], pairwise)
+    _plot_brier_ece_panel(axes[2], summary, colors)
 
     fig.text(
         0.5,
         0.012,
         (
             "Positive loss advantage means lower Polymarket mean Brier. "
-            "Reliability points are not connected because fixed 20-point bins "
-            "are sparse; n<30 sources are excluded from the reliability panel "
-            "but retained in the scorecards."
+            "ECE is the fixed-bin expected calibration error per source; "
+            "n is the resolved case count."
         ),
         ha="center",
         fontsize=9,

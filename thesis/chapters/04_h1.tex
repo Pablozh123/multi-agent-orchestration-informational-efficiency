@@ -9,35 +9,26 @@ traditionelle Wahrscheinlichkeitsprognosen, gemessen über den Brier-Verlust
 Stützung in einem klar definierten Vergleichsscope, aber kein Beweis einer
 breiten Überlegenheit.
 
+\paragraph{Vergleichsquellen.}
+H1 stellt den Polymarket-Preis (PM) mehreren traditionellen Wahrscheinlichkeitsquellen gegenüber: der finalen Prognose von FiveThirtyEight (``538 final''), einer dokumentierten Transformation der FiveThirtyEight-Umfragemargen in eine Wahrscheinlichkeit (``Poll-Transform''), der Staaten-Prognose von 270toWin (``270/JHK''), wobei ``270 exact'' nur die Staaten mit exakt ausgewiesener Wahrscheinlichkeit meint und die als sicher zensierten ausschliesst, sowie dem unabhängigen umfragebasierten Prognosemodell ``Rieke''. Verglichen wird jeweils über aufgelöste Fall-Sets: die 50 Bundesstaaten (``50-state''), einen Umfrage-Snapshot über 13 Staaten (``13-state'') und acht kuratierte Schluss-Fälle (``final 8''). Eine Zeile ``PM vs X'' in den Abbildungen bezeichnet damit den paarweisen Brier-Vergleich von Polymarket gegen die Quelle X über das jeweilige Fall-Set.
+
 \paragraph{Begrenzte Stützung.}
 Im primären Scope --- Prognosehorizont $\leq$90 Tage und geringe bis mittlere
 Poll-Distanz --- hat Polymarket in 262 von 285 State-Date-Zeilen (91.9\%) den
 niedrigeren Brier-Verlust. Behandelt man jeden Bundesstaat als diagnostische
 Einheit, stützen 9 von 9 States Polymarket (exakter einseitiger Binomialtest
-$p = 0.0020$). Abbildung~\ref{fig:h1quality} fasst diesen Befund über die
-Verlustreihen zusammen und zeigt, in wie vielen direkten Vergleichen Polymarket
-den tieferen Verlust trägt.
+$p = 0.0020$). Die nationale Tagesreihe in Abbildung~\ref{fig:h1quality} illustriert die Prognosequalität zusätzlich an mehreren Vergleichsmassstäben.
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.82\textwidth]{h1_forecast_quality.png}
-\caption{H1-Prognosequalität: Brier-Verlust von Polymarket gegen traditionelle
-Vergleichsquellen, Head-to-Head-Zählung und kumulativer Verlustvorteil. Quelle:
+\caption{H1-Prognosequalität, nationale Tagesreihe (ein aufgelöster Markt, 194 Handelstage): mittlerer Brier-Verlust von Polymarket gegen FiveThirtyEight (umfragebasierter Wahlforecast), den naiven 50-Prozent-Benchmark (Brier konstant 0.25) und die Persistenz (Polymarket-Vortagespreis); tägliche Head-to-Head-Zählung des tieferen Verlusts; kumulierter Verlustvorteil gegenüber FiveThirtyEight; Wahrscheinlichkeitsverläufe für den Gewinner-Ausgang. Quelle:
 \texttt{data/results/h1\_forecast\_quality.png}.}
 \label{fig:h1quality}
 \end{figure}
 
 \paragraph{Lesart der Abbildung.}
-Die Abbildung übersetzt den Befund in drei Ansichten: den paarweisen Brier-Verlust
-von Polymarket gegen die Vergleichsquellen, die Head-to-Head-Zählung der Vergleiche
-mit tieferem Verlust und den kumulierten Verlustvorteil über die Zeit. Die
-Head-to-Head-Zählung macht sichtbar, dass der Vorteil breit über die 285 Zeilen
-verteilt ist und nicht von wenigen Ausreissern stammt, während der kumulierte
-Verlauf zeigt, ob er anhält. Weil der Brier-Score eine strikt-proper Scoring Rule
-ist \citep{lit_gneiting_2007}, lässt sich der tiefere Verlust als bessere, ehrlich
-kalibrierte Wahrscheinlichkeit und nicht als blosses Skalenartefakt lesen. Das
-Muster reiht sich in die Markt-vs-Umfrage-Evidenz etablierter Prognosemärkte ein
-\citep{lit_berg_2008}, bleibt aber auf den definierten Scope beschränkt.
+Drei Begriffe in der Abbildung sind Vergleichsmassstäbe: \emph{FiveThirtyEight} ist der bekannte umfragebasierte US-Wahlforecast, der \emph{50-Prozent-Benchmark} ist ein naiver Forecaster, der jedem Ausgang konstant 50 Prozent zuweist (Brier-Verlust fix 0.25), und \emph{Persistenz} verwendet den Polymarket-Vortagespreis als heutige Prognose. Am mittleren Brier-Verlust ist Polymarket (0.230) besser als FiveThirtyEight (0.332), das hier sogar über dem naiven 50-Prozent-Benchmark (0.250) liegt, also schlechter abschneidet als ein Münzwurf. Head-to-Head-Zählung und stetig steigender kumulierter Vorteil zeigen, dass dieser Abstand konsistent über die Tage entsteht und nicht von einzelnen Ausreissern stammt. Weil der Brier-Score eine strikt-proper Scoring Rule ist \citep{lit_gneiting_2007}, lässt sich der tiefere Verlust als ehrlich kalibrierte Wahrscheinlichkeit lesen. Wichtig zur Einordnung: Die 194 Tageszeilen sind wiederholte Prognosen für \emph{einen} aufgelösten Markt und belegen Konsistenz im Zeitverlauf, nicht 194 unabhängige Treffer. Die breiter abgestützte Evidenz liefert die oben genannte Bundesstaaten-Ebene (262 von 285 Zeilen, 9 von 9 States), die Abbildung~\ref{fig:h1poll} der breiten Behauptung gegenüberstellt \citep{lit_berg_2008}.
 
 \paragraph{Breite Behauptung nicht bewiesen.}
 Über die gesamte Evidenz bleibt die allgemeine Überlegenheit ungedeckt. Von
@@ -68,8 +59,7 @@ Breite Mehr-Fälle-Behauptung & nicht bewiesen & 0/9 Broad-Zeilen, 5 Audit-Zeile
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.82\textwidth]{h1_poll_claim_readiness.png}
-\caption{Claim-Readiness des H1-Poll-Vergleichs: gestützter Scope gegen
-Gegenbeispiel-Scopes. Quelle: \texttt{data/results/h1\_poll\_claim\_readiness.png}.}
+\caption{H1-Claim-Readiness: der belegbare enge Vergleichsscope (Prognosehorizont bis 90 Tage, geringe Poll-Distanz) gegen die Gegenbeispiel-Scopes (volles State-Date-Panel), in denen sich der Vorteil umkehrt. Die Darstellung trennt damit die belegbare enge Aussage von der nicht belegbaren breiten Behauptung. Quelle: \texttt{data/results/h1\_poll\_claim\_readiness.png}.}
 \label{fig:h1poll}
 \end{figure}
 
@@ -94,18 +84,13 @@ führen.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.82\textwidth]{h1_calibration_diagnostic.png}
-\caption{H1-Kalibrierungsdiagnostik über aufgelöste Forecast-Fälle (Scorecard und
-Reliabilitätspunkte für Quellen mit mindestens 30 Fällen). Quelle:
+\caption{H1-Prognosequalitäts-Scorecard über aufgelöste Forecast-Fälle: aggregierter Brier-Vorteil je Vergleich, paarweise Lower-Loss-Zählung und mittlerer Brier mit fix-gebinntem Kalibrierungsfehler (ECE). Quelle:
 \texttt{data/results/h1\_calibration\_diagnostic.png}.}
 \label{fig:h1calib}
 \end{figure}
 
 \paragraph{Lesart der Abbildung.}
-Die Kalibrierungsabbildung kombiniert eine Scorecard der paarweisen Vergleiche mit
-Reliabilitätspunkten für Quellen mit mindestens 30 Fällen, dargestellt mit gleichem
-Achsenmassstab, sodass die 45-Grad-Diagonale die perfekte Kalibrierung markiert.
-Punkte nahe dieser Diagonale stehen für gute Kalibrierung, also prognostizierte
-nahe beobachteter Häufigkeit. Dass alle fünf paarweisen Vergleiche Polymarket im
+Die Scorecard fasst drei Ansichten zusammen: links den aggregierten Brier-Vorteil je Vergleich (positiver Wert bedeutet tieferer Polymarket-Brier), in der Mitte die paarweise Zählung, in wie vielen Einzelfällen Polymarket, die Vergleichsquelle oder keiner von beiden den tieferen Verlust trägt, und rechts den mittleren Brier-Verlust samt fix-gebinntem Kalibrierungsfehler (ECE) je Quelle. Dass alle fünf paarweisen Vergleiche Polymarket im
 mittleren Brier stützen, aber nur zwei nach Fallmehrheit, zeigt einen im Mittel
 besser kalibrierten, jedoch nicht durchgängig führenden Forecast. Das passt zur
 Mahnung, einen Marktpreis nicht unbesehen mit einer Wahrscheinlichkeit
@@ -115,5 +100,4 @@ gleichzusetzen \citep{lit_manski_2006}.
 Die Evidenz besteht aus wiederholten Tageszeilen innerhalb eines einzelnen
 Wahlkontexts und ersetzt keine unabhängige Mehr-Wahlen-Stichprobe. Aus H1
 folgt kein Beweis höherer Reaktionsgeschwindigkeit, keine universelle
-Marktüberlegenheit und keine kausale Erklärung. Die finale Zitation der
-Methodenquellen steht bis zum Abschluss des manuellen Quellen-Reviews aus.
+Marktüberlegenheit und keine kausale Erklärung.

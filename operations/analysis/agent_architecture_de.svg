@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="860" viewBox="0 0 1180 860" font-family="Nimbus Sans, Liberation Sans, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a1f2b"/><stop offset="1" stop-color="#232a38"/>
+    </linearGradient>
+    <linearGradient id="human" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c8703a"/><stop offset="1" stop-color="#b25f2e"/>
+    </linearGradient>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+    <marker id="arr" markerWidth="11" markerHeight="11" refX="8" refY="5.5" orient="auto">
+      <path d="M1,1 L9,5.5 L1,10" fill="none" stroke="#8fa0bf" stroke-width="1.8"/>
+    </marker>
+    <marker id="arrG" markerWidth="11" markerHeight="11" refX="8" refY="5.5" orient="auto">
+      <path d="M1,1 L9,5.5 L1,10" fill="none" stroke="#5aa27a" stroke-width="1.8"/>
+    </marker>
+  </defs>
+  <rect width="1180" height="860" fill="url(#bg)"/>
+
+  <text x="60" y="58" fill="#f4f1ea" font-size="30" font-weight="700" letter-spacing="0.4">Read-only Review-Schicht</text>
+  <text x="60" y="90" fill="#9aa6ba" font-size="17">Vier KI-Rollen zwischen Rohsignal und Mensch &#183; liest nur, rechnet nichts, handelt nichts</text>
+
+  <!-- Datenschicht unten -->
+  <rect x="60" y="720" width="1060" height="92" rx="12" fill="#2c3444" stroke="#3d4759" stroke-width="1.5"/>
+  <text x="90" y="753" fill="#c9d3e4" font-size="19" font-weight="700">Projektdatenbank (thesis.db)</text>
+  <text x="90" y="782" fill="#8492a8" font-size="15">Whale-Trades &#183; Ereigniskatalog &#183; Monitor-Kandidaten &#8212; deterministisch vorberechnet</text>
+  <text x="1092" y="770" text-anchor="end" fill="#5f6b80" font-size="13" font-style="italic">Quelle der Wahrheit</text>
+
+  <!-- MCP Lesescheibe -->
+  <rect x="60" y="622" width="1060" height="66" rx="12" fill="#343d2f" stroke="#4b5a3c" stroke-width="1.5"/>
+  <text x="90" y="651" fill="#b9c9a6" font-size="18" font-weight="700">MCP-Lesescheibe</text>
+  <text x="90" y="674" fill="#94a583" font-size="14.5">nur lesend &#183; max. 50 Zeilen je Abfrage &#183; Wallet-Adressen automatisch geschw&#228;rzt</text>
+  <text x="1092" y="662" text-anchor="end" fill="#6f8158" font-size="13" font-style="italic">Sicherheitsgrenze</text>
+
+  <!-- Pfeile DB -> MCP -> Rollen -->
+  <line x1="590" y1="720" x2="590" y2="690" stroke="#8fa0bf" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Vier Rollen -->
+  <g filter="url(#sh)">
+    <rect x="60" y="300" width="245" height="150" rx="14" fill="#2f3a4e" stroke="#46b0a6" stroke-width="2"/>
+    <rect x="333" y="300" width="245" height="150" rx="14" fill="#2f3a4e" stroke="#46b0a6" stroke-width="2"/>
+    <rect x="606" y="300" width="245" height="150" rx="14" fill="#2f3a4e" stroke="#d98a4e" stroke-width="2.4"/>
+    <rect x="879" y="300" width="241" height="150" rx="14" fill="#2f3a4e" stroke="#8f7fc4" stroke-width="2"/>
+  </g>
+
+  <text x="82" y="335" fill="#5ec9be" font-size="14" font-weight="700" letter-spacing="1">01 &#183; TRIAGE</text>
+  <text x="82" y="366" fill="#eef2f8" font-size="21" font-weight="700">EventScout</text>
+  <text x="82" y="398" fill="#9aa6ba" font-size="14.5">ordnet Kandidat ein:</text>
+  <text x="82" y="419" fill="#9aa6ba" font-size="14.5">Markt, Zeitfenster,</text>
+  <text x="82" y="440" fill="#9aa6ba" font-size="14.5">anliegende Signale</text>
+
+  <text x="355" y="335" fill="#5ec9be" font-size="14" font-weight="700" letter-spacing="1">02 &#183; AKTE</text>
+  <text x="355" y="366" fill="#eef2f8" font-size="21" font-weight="700">CaseNarrative</text>
+  <text x="355" y="398" fill="#9aa6ba" font-size="14.5">schreibt aus den Zahlen</text>
+  <text x="355" y="419" fill="#9aa6ba" font-size="14.5">eine lesbare</text>
+  <text x="355" y="440" fill="#9aa6ba" font-size="14.5">Fallbeschreibung</text>
+
+  <text x="628" y="335" fill="#e79b5f" font-size="14" font-weight="700" letter-spacing="1">03 &#183; ZWEIFEL</text>
+  <text x="628" y="366" fill="#eef2f8" font-size="21" font-weight="700">SkepticReviewer</text>
+  <text x="628" y="398" fill="#d7b394" font-size="14.5">sucht harmlose Erkl&#228;rung,</text>
+  <text x="628" y="419" fill="#d7b394" font-size="14.5">senkt Konfidenz</text>
+  <text x="628" y="440" fill="#d7b394" font-size="14.5">(nie erh&#246;hen)</text>
+
+  <text x="901" y="335" fill="#a595d6" font-size="14" font-weight="700" letter-spacing="1">04 &#183; REGIE</text>
+  <text x="901" y="366" fill="#eef2f8" font-size="21" font-weight="700">Orchestrator</text>
+  <text x="901" y="398" fill="#9aa6ba" font-size="14.5">f&#252;hrt zusammen,</text>
+  <text x="901" y="419" fill="#9aa6ba" font-size="14.5">erzwingt festes Format,</text>
+  <text x="901" y="440" fill="#9aa6ba" font-size="14.5">sortiert Warteschlange</text>
+
+  <!-- Fluss zwischen Rollen -->
+  <line x1="305" y1="375" x2="333" y2="375" stroke="#8fa0bf" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="578" y1="375" x2="606" y2="375" stroke="#8fa0bf" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="851" y1="375" x2="879" y2="375" stroke="#8fa0bf" stroke-width="2" marker-end="url(#arr)"/>
+  <!-- MCP zu Rollen (aufsteigend) -->
+  <line x1="182" y1="622" x2="182" y2="450" stroke="#6f8158" stroke-width="1.6" stroke-dasharray="5 5" marker-end="url(#arr)"/>
+  <line x1="455" y1="622" x2="455" y2="450" stroke="#6f8158" stroke-width="1.6" stroke-dasharray="5 5" marker-end="url(#arr)"/>
+  <line x1="728" y1="622" x2="728" y2="450" stroke="#6f8158" stroke-width="1.6" stroke-dasharray="5 5" marker-end="url(#arr)"/>
+
+  <!-- Audit-Log seitlich -->
+  <rect x="879" y="486" width="241" height="86" rx="12" fill="#2a2f3c" stroke="#3d4759" stroke-width="1.4"/>
+  <text x="901" y="516" fill="#c9d3e4" font-size="16" font-weight="700">Audit-Log</text>
+  <text x="901" y="539" fill="#8492a8" font-size="13.5">jede LLM-Interaktion</text>
+  <text x="901" y="558" fill="#8492a8" font-size="13.5">als Hash protokolliert</text>
+  <line x1="999" y1="486" x2="999" y2="450" stroke="#8fa0bf" stroke-width="1.6" marker-end="url(#arr)"/>
+
+  <!-- Empfehlungen Whitelist -->
+  <rect x="60" y="150" width="1060" height="96" rx="12" fill="#2c3444" stroke="#3d4759" stroke-width="1.5"/>
+  <text x="90" y="182" fill="#c9d3e4" font-size="17" font-weight="700">Ausgabe: sortierte Fallkarten mit drei erlaubten Empfehlungen</text>
+  <g font-size="15" font-weight="700">
+    <rect x="90" y="198" width="200" height="34" rx="17" fill="#33405a"/><text x="190" y="221" text-anchor="middle" fill="#bcd0f0">beobachten</text>
+    <rect x="306" y="198" width="200" height="34" rx="17" fill="#33405a"/><text x="406" y="221" text-anchor="middle" fill="#bcd0f0">Quelle pr&#252;fen</text>
+    <rect x="522" y="198" width="230" height="34" rx="17" fill="#4a3a55"/><text x="637" y="221" text-anchor="middle" fill="#d7bce8">an Mensch eskalieren</text>
+  </g>
+  <text x="1092" y="221" text-anchor="end" fill="#6b7688" font-size="13.5" font-style="italic">Priorit&#228;t nur senken</text>
+  <line x1="999" y1="300" x2="999" y2="246" stroke="#8fa0bf" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Mensch oben -->
+  <rect x="60" y="756" width="0" height="0"/>
+  <g>
+    <rect x="420" y="96" width="340" height="42" rx="21" fill="url(#human)" filter="url(#sh)"/>
+    <text x="590" y="123" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">Mensch pr&#252;ft nur die besten F&#228;lle</text>
+  </g>
+  <line x1="590" y1="150" x2="590" y2="138" stroke="#c8703a" stroke-width="2.4" marker-end="url(#arrG)"/>
+</svg>

@@ -28,66 +28,807 @@
   <h1>Insider-Risk Candidate Human Review</h1>
   <p class="note">Strict monitor candidates are insider-risk review cues only. This report contains no wallet addresses, order instructions, PnL, computed insider label, or misconduct claim.</p>
   <section class="metrics">
-    <div class="metric">Candidates<strong>3</strong></div>
-    <div class="metric">High priority<strong>1</strong></div>
+    <div class="metric">Candidates<strong>20</strong></div>
+    <div class="metric">High priority<strong>8</strong></div>
     <div class="metric">Status<strong>needs review</strong></div>
   </section>
   <h2>Review Cards</h2>
   
   <article class="candidate">
+    <h3>Will the U.S. invade Iran before 2027?</h3>
+    <p>
+      <span class="pill high">priority: high</span>
+      <span class="pill">severity: high</span>
+      <span class="pill">rows: 2</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because the active-wallet count was above its local baseline. This is a weak cue unless it repeats or combines with amount or concentration evidence.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>Wallet amount: observed about USD 44.25; rolling baseline median about USD 17.11; percentile 1.00; robust z 4.17; severity high. The very high robust z can be inflated when the recent baseline is tiny, so absolute size must be checked manually.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>No concentration metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): large_trade_flow. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.000% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=0.00; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000000; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=0; trade_count=0; total_amount_usd=0.00; amount_per_wallet_usd=0.00; amount_per_trade_usd=0.00</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 0.00<br>
+        Active wallets: 0<br>
+        Trades: 0<br>
+        Amount per wallet: USD 0.00<br>
+        Amount per trade: USD 0.00<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk review candidate: relative anomaly, low materiality<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.50</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> active_wallet_activity triggered watch on active_wallets; wallet_tier_activity triggered high on log1p_total_observed_amount_usd; reference-pattern labels: large_trade_flow,same_theme_repeated_positions</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; trade-size context against longer rolling volume; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Open the market page, verify current context, and collect another bounded bucket before any thesis-facing use.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will China invade Taiwan by end of 2026?</h3>
+    <p>
+      <span class="pill high">priority: high</span>
+      <span class="pill">severity: high</span>
+      <span class="pill">rows: 2</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because activity was concentrated in the current bucket. This can happen in thin markets, so repetition and market-page context matter.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>No wallet-amount metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>hhi_concentration: observed 1.00, baseline median 0.21, percentile 1.00, severity high; top_tier_share: observed 1.00, baseline median 0.25, percentile 1.00, severity high</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): market_concentration. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.000% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=0.00; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000000; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=0; trade_count=0; total_amount_usd=0.00; amount_per_wallet_usd=0.00; amount_per_trade_usd=0.00</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 0.00<br>
+        Active wallets: 0<br>
+        Trades: 0<br>
+        Amount per wallet: USD 0.00<br>
+        Amount per trade: USD 0.00<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk review candidate: relative anomaly, low materiality<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.50</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> concentration triggered high on hhi_concentration,top_tier_share; reference-pattern labels: market_concentration,same_theme_repeated_positions</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Open the market page, verify current context, and collect another bounded bucket before any thesis-facing use.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will the U.S. invade Iran before 2027?</h3>
+    <p>
+      <span class="pill high">priority: high</span>
+      <span class="pill">severity: high</span>
+      <span class="pill">rows: 1</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because neutral reference-pattern labels were triggered.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>Wallet amount: observed about USD 132.37; rolling baseline median about USD 20.00; percentile 1.00; robust z 4.20; severity high. The very high robust z can be inflated when the recent baseline is tiny, so absolute size must be checked manually.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>No concentration metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): large_trade_flow. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.000% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=0.00; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000000; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=0; trade_count=0; total_amount_usd=0.00; amount_per_wallet_usd=0.00; amount_per_trade_usd=0.00</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 0.00<br>
+        Active wallets: 0<br>
+        Trades: 0<br>
+        Amount per wallet: USD 0.00<br>
+        Amount per trade: USD 0.00<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk review candidate: relative anomaly, low materiality<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.50</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> wallet_tier_activity triggered high on log1p_total_observed_amount_usd; reference-pattern labels: large_trade_flow,same_theme_repeated_positions</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; trade-size context against longer rolling volume; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Open the market page, verify current context, and collect another bounded bucket before any thesis-facing use.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will China invade Taiwan by end of 2026?</h3>
+    <p>
+      <span class="pill high">priority: high</span>
+      <span class="pill">severity: high</span>
+      <span class="pill">rows: 2</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because activity was concentrated in the current bucket. This can happen in thin markets, so repetition and market-page context matter.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>No wallet-amount metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>hhi_concentration: observed 1.00, baseline median 0.21, percentile 1.00, severity high; top_tier_share: observed 1.00, baseline median 0.28, percentile 1.00, severity high</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): market_concentration. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.000% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=0.00; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000000; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=0; trade_count=0; total_amount_usd=0.00; amount_per_wallet_usd=0.00; amount_per_trade_usd=0.00</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 0.00<br>
+        Active wallets: 0<br>
+        Trades: 0<br>
+        Amount per wallet: USD 0.00<br>
+        Amount per trade: USD 0.00<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk review candidate: relative anomaly, low materiality<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.50</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> concentration triggered high on hhi_concentration,top_tier_share; reference-pattern labels: market_concentration,same_theme_repeated_positions</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Open the market page, verify current context, and collect another bounded bucket before any thesis-facing use.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will the U.S. invade Iran before 2027?</h3>
+    <p>
+      <span class="pill high">priority: high</span>
+      <span class="pill">severity: high</span>
+      <span class="pill">rows: 1</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because neutral reference-pattern labels were triggered.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>Wallet amount: observed about USD 7376.77; rolling baseline median about USD 132.37; percentile 1.00; robust z 3.33; severity high. The very high robust z can be inflated when the recent baseline is tiny, so absolute size must be checked manually.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>No concentration metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): large_trade_flow. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.000% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=0.00; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000000; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=0; trade_count=0; total_amount_usd=0.00; amount_per_wallet_usd=0.00; amount_per_trade_usd=0.00</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 0.00<br>
+        Active wallets: 0<br>
+        Trades: 0<br>
+        Amount per wallet: USD 0.00<br>
+        Amount per trade: USD 0.00<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk review candidate: relative anomaly, low materiality<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.50</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> wallet_tier_activity triggered high on log1p_total_observed_amount_usd; reference-pattern labels: large_trade_flow,same_theme_repeated_positions</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; trade-size context against longer rolling volume; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Open the market page, verify current context, and collect another bounded bucket before any thesis-facing use.</p>
+  </article>
+
+
+  <article class="candidate">
     <h3>Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?</h3>
     <p>
       <span class="pill high">priority: high</span>
       <span class="pill">severity: high</span>
-      <span class="pill">rows: 4</span>
+      <span class="pill">rows: 1</span>
     </p>
-    <p><strong>In plain words:</strong> insider-risk review candidate: relative anomaly, low materiality: wallet amount and concentration were both unusual in the same 5-minute bucket. The observed aggregate amount was about USD 64.28. This is large relative to the short rolling baseline, but its reference-scale context is `below_one_percent_of_reference` and must be reviewed manually.</p>
+    <p><strong>In plain words:</strong> Marked because neutral reference-pattern labels were triggered.</p>
     <section class="explain-grid">
       <div class="box">
         <strong>Wallet amount</strong>
-        <p>Wallet amount: observed about USD 64.28; rolling baseline median about USD 0.02; percentile 0.95; robust z 125.88; severity high. The very high robust z can be inflated when the recent baseline is tiny, so absolute size must be checked manually.</p>
+        <p>Wallet amount: observed about USD 52.15; rolling baseline median about USD 0.05; percentile 1.00; robust z 62.14; severity high. The very high robust z can be inflated when the recent baseline is tiny, so absolute size must be checked manually.</p>
       </div>
       <div class="box">
         <strong>Concentration</strong>
-        <p>hhi_concentration: observed 1.00, baseline median 0.27, percentile 1.00, severity watch; top_tier_share: observed 1.00, baseline median 0.31, percentile 1.00, severity watch</p>
+        <p>No concentration metric triggered for this candidate.</p>
       </div>
       <div class="box">
         <strong>Reference overlap</strong>
-        <p>Reference overlap 1.0 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 2 neutral pattern label(s): large_trade_flow,market_concentration. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.062% of the reference amount USD 103248.00.</p>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): large_trade_flow. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.104% of the reference amount USD 103248.00.</p>
       </div>
       <div class="box">
         <strong>Reference scale</strong>
-        <p>observed_amount_usd=64.28; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000623; materiality_label=below_one_percent_of_reference</p>
+        <p>observed_amount_usd=107.12; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.001038; materiality_label=below_one_percent_of_reference</p>
       </div>
       <div class="box">
         <strong>Coordination</strong>
-        <p>coordination_label=single_wallet_single_trade; active_wallets=1; trade_count=1; total_amount_usd=64.28; amount_per_wallet_usd=64.28; amount_per_trade_usd=64.28</p>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=1; trade_count=1; total_amount_usd=107.12; amount_per_wallet_usd=107.12; amount_per_trade_usd=107.12</p>
       </div>
       <div class="box">
         <strong>Literature-prior risk</strong>
-        <p>Wallet score: 1.43
-        (no_literature_prior_flag)<br>
-        Market score: 1.00
-        (literature_prior_flag)<br>
-        Feature status: computed_proxy=4; unavailable=3</p>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
       </div>
       <div class="box">
         <strong>Quick numbers</strong>
-        <p>Observed amount: USD 64.28<br>
+        <p>Observed amount: USD 107.12<br>
         Active wallets: 1<br>
         Trades: 1<br>
-        Amount per wallet: USD 64.28<br>
-        Amount per trade: USD 64.28<br>
+        Amount per wallet: USD 107.12<br>
+        Amount per trade: USD 107.12<br>
         Materiality: below_one_percent_of_reference<br>
         Review label: insider-risk review candidate: relative anomaly, low materiality<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.50</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> wallet_tier_activity triggered high on log1p_total_observed_amount_usd; reference-pattern labels: large_trade_flow,same_theme_repeated_positions</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; trade-size context against longer rolling volume; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Open the market page, verify current context, and collect another bounded bucket before any thesis-facing use.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will the U.S. invade Iran before 2027?</h3>
+    <p>
+      <span class="pill high">priority: high</span>
+      <span class="pill">severity: high</span>
+      <span class="pill">rows: 1</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because neutral reference-pattern labels were triggered.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>Wallet amount: observed about USD 7484.38; rolling baseline median about USD 3.12; percentile 1.00; robust z 6.66; severity high. The very high robust z can be inflated when the recent baseline is tiny, so absolute size must be checked manually.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>No concentration metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): large_trade_flow. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.000% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=0.00; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000000; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=0; trade_count=0; total_amount_usd=0.00; amount_per_wallet_usd=0.00; amount_per_trade_usd=0.00</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 0.00<br>
+        Active wallets: 0<br>
+        Trades: 0<br>
+        Amount per wallet: USD 0.00<br>
+        Amount per trade: USD 0.00<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk review candidate: relative anomaly, low materiality<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.50</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> wallet_tier_activity triggered high on log1p_total_observed_amount_usd; reference-pattern labels: large_trade_flow,same_theme_repeated_positions</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; trade-size context against longer rolling volume; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Open the market page, verify current context, and collect another bounded bucket before any thesis-facing use.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will the U.S. invade Iran before 2027?</h3>
+    <p>
+      <span class="pill high">priority: high</span>
+      <span class="pill">severity: high</span>
+      <span class="pill">rows: 1</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because neutral reference-pattern labels were triggered.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>Wallet amount: observed about USD 7764.88; rolling baseline median about USD 7.81; percentile 1.00; robust z 6.02; severity high. The very high robust z can be inflated when the recent baseline is tiny, so absolute size must be checked manually.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>No concentration metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): large_trade_flow. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.000% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=0.00; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000000; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=0; trade_count=0; total_amount_usd=0.00; amount_per_wallet_usd=0.00; amount_per_trade_usd=0.00</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 0.00<br>
+        Active wallets: 0<br>
+        Trades: 0<br>
+        Amount per wallet: USD 0.00<br>
+        Amount per trade: USD 0.00<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk review candidate: relative anomaly, low materiality<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.50</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> wallet_tier_activity triggered high on log1p_total_observed_amount_usd; reference-pattern labels: large_trade_flow,same_theme_repeated_positions</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; trade-size context against longer rolling volume; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Open the market page, verify current context, and collect another bounded bucket before any thesis-facing use.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will the U.S. invade Iran before 2027?</h3>
+    <p>
+      <span class="pill medium">priority: medium</span>
+      <span class="pill">severity: watch</span>
+      <span class="pill">rows: 3</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because activity was concentrated in the current bucket. This can happen in thin markets, so repetition and market-page context matter.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>Wallet amount: observed about USD 300.00; rolling baseline median about USD 44.25; percentile 1.00; robust z 1.20; severity watch. The very high robust z can be inflated when the recent baseline is tiny, so absolute size must be checked manually.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>hhi_concentration: observed 1.00, baseline median 0.83, percentile 1.00, severity watch; top_tier_share: observed 1.00, baseline median 0.91, percentile 1.00, severity watch</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 1.0 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 2 neutral pattern label(s): large_trade_flow,market_concentration. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.000% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=0.00; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000000; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=0; trade_count=0; total_amount_usd=0.00; amount_per_wallet_usd=0.00; amount_per_trade_usd=0.00</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 0.00<br>
+        Active wallets: 0<br>
+        Trades: 0<br>
+        Amount per wallet: USD 0.00<br>
+        Amount per trade: USD 0.00<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk watch cue: weak or incomplete evidence<br>
         Max percentile: 1.00<br>
         Reference score: 1.00</p>
         <div class="bar"><span style="width:100%"></span></div>
       </div>
     </section>
-    <p><strong>Why flagged:</strong> active_wallet_activity triggered info on active_wallets; concentration triggered watch on hhi_concentration,top_tier_share; wallet_tier_activity triggered high on log1p_total_observed_amount_usd; reference-pattern labels: large_trade_flow,market_concentration</p>
+    <p><strong>Why flagged:</strong> concentration triggered watch on hhi_concentration,top_tier_share; wallet_tier_activity triggered watch on log1p_total_observed_amount_usd; reference-pattern labels: large_trade_flow,market_concentration,same_theme_repeated_positions</p>
     <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; trade-size context against longer rolling volume; reviewed event candidate mapping</p>
-    <p><strong>Next step:</strong> Open the market page, verify current context, and collect another bounded bucket before any thesis-facing use.</p>
+    <p><strong>Next step:</strong> Check whether the same pattern repeats in the next bounded bucket.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?</h3>
+    <p>
+      <span class="pill medium">priority: medium</span>
+      <span class="pill">severity: info</span>
+      <span class="pill">rows: 2</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because activity was concentrated in the current bucket. This can happen in thin markets, so repetition and market-page context matter.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>No wallet-amount metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>hhi_concentration: observed 1.00, baseline median 0.94, percentile 1.00, severity info; top_tier_share: observed 1.00, baseline median 0.97, percentile 1.00, severity info</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): market_concentration. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.104% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=107.12; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.001038; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=1; trade_count=1; total_amount_usd=107.12; amount_per_wallet_usd=107.12; amount_per_trade_usd=107.12</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 107.12<br>
+        Active wallets: 1<br>
+        Trades: 1<br>
+        Amount per wallet: USD 107.12<br>
+        Amount per trade: USD 107.12<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk watch cue: weak or incomplete evidence<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.50</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> concentration triggered info on hhi_concentration,top_tier_share; reference-pattern labels: market_concentration,same_theme_repeated_positions</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Check whether the same pattern repeats in the next bounded bucket.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will China invade Taiwan by end of 2026?</h3>
+    <p>
+      <span class="pill medium">priority: medium</span>
+      <span class="pill">severity: info</span>
+      <span class="pill">rows: 1</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because neutral reference-pattern labels were triggered.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>Wallet amount: observed about USD 101.16; rolling baseline median about USD 45.59; percentile 1.00; robust z 1.20; severity info. The very high robust z can be inflated when the recent baseline is tiny, so absolute size must be checked manually.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>No concentration metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): large_trade_flow. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.000% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=0.00; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000000; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=0; trade_count=0; total_amount_usd=0.00; amount_per_wallet_usd=0.00; amount_per_trade_usd=0.00</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 0.00<br>
+        Active wallets: 0<br>
+        Trades: 0<br>
+        Amount per wallet: USD 0.00<br>
+        Amount per trade: USD 0.00<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk watch cue: weak or incomplete evidence<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.50</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> wallet_tier_activity triggered info on log1p_total_observed_amount_usd; reference-pattern labels: large_trade_flow,same_theme_repeated_positions</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; trade-size context against longer rolling volume; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Check whether the same pattern repeats in the next bounded bucket.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will the U.S. invade Iran before 2027?</h3>
+    <p>
+      <span class="pill medium">priority: medium</span>
+      <span class="pill">severity: info</span>
+      <span class="pill">rows: 2</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because activity was concentrated in the current bucket. This can happen in thin markets, so repetition and market-page context matter.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>No wallet-amount metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>hhi_concentration: observed 1.00, baseline median 0.93, percentile 1.00, severity info; top_tier_share: observed 1.00, baseline median 0.96, percentile 1.00, severity info</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): market_concentration. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.000% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=0.00; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000000; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=0; trade_count=0; total_amount_usd=0.00; amount_per_wallet_usd=0.00; amount_per_trade_usd=0.00</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 0.00<br>
+        Active wallets: 0<br>
+        Trades: 0<br>
+        Amount per wallet: USD 0.00<br>
+        Amount per trade: USD 0.00<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk watch cue: weak or incomplete evidence<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.50</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> concentration triggered info on hhi_concentration,top_tier_share; reference-pattern labels: market_concentration,same_theme_repeated_positions</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Check whether the same pattern repeats in the next bounded bucket.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will the U.S. invade Iran before 2027?</h3>
+    <p>
+      <span class="pill medium">priority: medium</span>
+      <span class="pill">severity: info</span>
+      <span class="pill">rows: 2</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because activity was concentrated in the current bucket. This can happen in thin markets, so repetition and market-page context matter.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>No wallet-amount metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>hhi_concentration: observed 1.00, baseline median 0.93, percentile 1.00, severity info; top_tier_share: observed 1.00, baseline median 0.96, percentile 1.00, severity info</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): market_concentration. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.000% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=0.00; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000000; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=0; trade_count=0; total_amount_usd=0.00; amount_per_wallet_usd=0.00; amount_per_trade_usd=0.00</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 0.00<br>
+        Active wallets: 0<br>
+        Trades: 0<br>
+        Amount per wallet: USD 0.00<br>
+        Amount per trade: USD 0.00<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk watch cue: weak or incomplete evidence<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.50</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> concentration triggered info on hhi_concentration,top_tier_share; reference-pattern labels: market_concentration,same_theme_repeated_positions</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Check whether the same pattern repeats in the next bounded bucket.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will the U.S. invade Iran before 2027?</h3>
+    <p>
+      <span class="pill medium">priority: medium</span>
+      <span class="pill">severity: info</span>
+      <span class="pill">rows: 1</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because neutral reference-pattern labels were triggered.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>Wallet amount: observed about USD 2263.95; rolling baseline median about USD 18.00; percentile 1.00; robust z 2.80; severity info. The very high robust z can be inflated when the recent baseline is tiny, so absolute size must be checked manually.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>No concentration metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): large_trade_flow. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.000% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=0.00; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000000; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=0; trade_count=0; total_amount_usd=0.00; amount_per_wallet_usd=0.00; amount_per_trade_usd=0.00</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 0.00<br>
+        Active wallets: 0<br>
+        Trades: 0<br>
+        Amount per wallet: USD 0.00<br>
+        Amount per trade: USD 0.00<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk watch cue: weak or incomplete evidence<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.50</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> wallet_tier_activity triggered info on log1p_total_observed_amount_usd; reference-pattern labels: large_trade_flow,same_theme_repeated_positions</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; trade-size context against longer rolling volume; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Check whether the same pattern repeats in the next bounded bucket.</p>
   </article>
 
 
@@ -106,35 +847,35 @@
       </div>
       <div class="box">
         <strong>Concentration</strong>
-        <p>hhi_concentration: observed 1.00, baseline median 0.63, percentile 1.00, severity info; top_tier_share: observed 1.00, baseline median 0.74, percentile 1.00, severity info</p>
+        <p>hhi_concentration: observed 1.00, baseline median 0.43, percentile 1.00, severity info; top_tier_share: observed 1.00, baseline median 0.62, percentile 1.00, severity info</p>
       </div>
       <div class="box">
         <strong>Reference overlap</strong>
-        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): market_concentration. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.009% of the reference amount USD 103248.00.</p>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): market_concentration. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.000% of the reference amount USD 103248.00.</p>
       </div>
       <div class="box">
         <strong>Reference scale</strong>
-        <p>observed_amount_usd=9.58; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000093; materiality_label=below_one_percent_of_reference</p>
+        <p>observed_amount_usd=0.00; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000000; materiality_label=below_one_percent_of_reference</p>
       </div>
       <div class="box">
         <strong>Coordination</strong>
-        <p>coordination_label=single_wallet_single_trade; active_wallets=1; trade_count=1; total_amount_usd=9.58; amount_per_wallet_usd=9.58; amount_per_trade_usd=9.58</p>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=0; trade_count=0; total_amount_usd=0.00; amount_per_wallet_usd=0.00; amount_per_trade_usd=0.00</p>
       </div>
       <div class="box">
         <strong>Literature-prior risk</strong>
-        <p>Wallet score: 0.60
-        (no_literature_prior_flag)<br>
-        Market score: 1.00
-        (literature_prior_flag)<br>
-        Feature status: computed_proxy=4; unavailable=3</p>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
       </div>
       <div class="box">
         <strong>Quick numbers</strong>
-        <p>Observed amount: USD 9.58<br>
-        Active wallets: 1<br>
-        Trades: 1<br>
-        Amount per wallet: USD 9.58<br>
-        Amount per trade: USD 9.58<br>
+        <p>Observed amount: USD 0.00<br>
+        Active wallets: 0<br>
+        Trades: 0<br>
+        Amount per wallet: USD 0.00<br>
+        Amount per trade: USD 0.00<br>
         Materiality: below_one_percent_of_reference<br>
         Review label: insider-risk watch cue: weak or incomplete evidence<br>
         Max percentile: 1.00<br>
@@ -142,8 +883,179 @@
         <div class="bar"><span style="width:100%"></span></div>
       </div>
     </section>
-    <p><strong>Why flagged:</strong> concentration triggered info on hhi_concentration,top_tier_share; reference-pattern labels: market_concentration</p>
+    <p><strong>Why flagged:</strong> concentration triggered info on hhi_concentration,top_tier_share; reference-pattern labels: market_concentration,same_theme_repeated_positions</p>
     <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Check whether the same pattern repeats in the next bounded bucket.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?</h3>
+    <p>
+      <span class="pill medium">priority: medium</span>
+      <span class="pill">severity: info</span>
+      <span class="pill">rows: 2</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because activity was concentrated in the current bucket. This can happen in thin markets, so repetition and market-page context matter.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>No wallet-amount metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>hhi_concentration: observed 1.00, baseline median 0.53, percentile 1.00, severity info; top_tier_share: observed 1.00, baseline median 0.63, percentile 1.00, severity info</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): market_concentration. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.104% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=107.12; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.001038; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=1; trade_count=1; total_amount_usd=107.12; amount_per_wallet_usd=107.12; amount_per_trade_usd=107.12</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 107.12<br>
+        Active wallets: 1<br>
+        Trades: 1<br>
+        Amount per wallet: USD 107.12<br>
+        Amount per trade: USD 107.12<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk watch cue: weak or incomplete evidence<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.50</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> concentration triggered info on hhi_concentration,top_tier_share; reference-pattern labels: market_concentration,same_theme_repeated_positions</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Check whether the same pattern repeats in the next bounded bucket.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will China invade Taiwan by end of 2026?</h3>
+    <p>
+      <span class="pill medium">priority: medium</span>
+      <span class="pill">severity: info</span>
+      <span class="pill">rows: 1</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because neutral reference-pattern labels were triggered.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>Wallet amount: observed about USD 71.36; rolling baseline median about USD 14.41; percentile 1.00; robust z 0.74; severity info. The very high robust z can be inflated when the recent baseline is tiny, so absolute size must be checked manually.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>No concentration metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): large_trade_flow. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.000% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=0.00; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000000; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=0; trade_count=0; total_amount_usd=0.00; amount_per_wallet_usd=0.00; amount_per_trade_usd=0.00</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 0.00<br>
+        Active wallets: 0<br>
+        Trades: 0<br>
+        Amount per wallet: USD 0.00<br>
+        Amount per trade: USD 0.00<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk watch cue: weak or incomplete evidence<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.50</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> wallet_tier_activity triggered info on log1p_total_observed_amount_usd; reference-pattern labels: large_trade_flow,same_theme_repeated_positions</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; trade-size context against longer rolling volume; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Check whether the same pattern repeats in the next bounded bucket.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will China invade Taiwan by end of 2026?</h3>
+    <p>
+      <span class="pill medium">priority: medium</span>
+      <span class="pill">severity: info</span>
+      <span class="pill">rows: 1</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because neutral reference-pattern labels were triggered.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>Wallet amount: observed about USD 151.24; rolling baseline median about USD 14.41; percentile 1.00; robust z 1.00; severity info. The very high robust z can be inflated when the recent baseline is tiny, so absolute size must be checked manually.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>No concentration metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): large_trade_flow. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.000% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=0.00; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000000; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=0; trade_count=0; total_amount_usd=0.00; amount_per_wallet_usd=0.00; amount_per_trade_usd=0.00</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 0.00<br>
+        Active wallets: 0<br>
+        Trades: 0<br>
+        Amount per wallet: USD 0.00<br>
+        Amount per trade: USD 0.00<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk watch cue: weak or incomplete evidence<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.50</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> wallet_tier_activity triggered info on log1p_total_observed_amount_usd; reference-pattern labels: large_trade_flow,same_theme_repeated_positions</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; trade-size context against longer rolling volume; reviewed event candidate mapping</p>
     <p><strong>Next step:</strong> Check whether the same pattern repeats in the next bounded bucket.</p>
   </article>
 
@@ -151,8 +1063,65 @@
   <article class="candidate">
     <h3>Will the U.S. invade Iran before 2027?</h3>
     <p>
-      <span class="pill low">priority: low</span>
+      <span class="pill medium">priority: medium</span>
       <span class="pill">severity: info</span>
+      <span class="pill">rows: 2</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked because activity was concentrated in the current bucket. This can happen in thin markets, so repetition and market-page context matter.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>No wallet-amount metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>hhi_concentration: observed 0.87, baseline median 0.64, percentile 1.00, severity info; top_tier_share: observed 0.93, baseline median 0.77, percentile 1.00, severity info</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.5 against adriancronauer_large_iran_flow_2026_05_14 means the candidate shares 1 neutral pattern label(s): market_concentration. It does not mean same wallet, same amount, same event, same outcome, or misconduct; it is only a review shortcut. The observed amount is 0.000% of the reference amount USD 103248.00.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=0.00; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000000; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=0; trade_count=0; total_amount_usd=0.00; amount_per_wallet_usd=0.00; amount_per_trade_usd=0.00</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: 1.46
+        (no_literature_prior_flag)<br>
+        Market score: 1.00
+        (literature_prior_flag)<br>
+        Feature status: computed_proxy=4; unavailable=3</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 0.00<br>
+        Active wallets: 0<br>
+        Trades: 0<br>
+        Amount per wallet: USD 0.00<br>
+        Amount per trade: USD 0.00<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk watch cue: weak or incomplete evidence<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.50</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> concentration triggered info on hhi_concentration,top_tier_share; reference-pattern labels: market_concentration,same_theme_repeated_positions</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Check whether the same pattern repeats in the next bounded bucket.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will the Iranian regime fall before 2027?</h3>
+    <p>
+      <span class="pill low">priority: low</span>
+      <span class="pill">severity: high</span>
       <span class="pill">rows: 1</span>
     </p>
     <p><strong>In plain words:</strong> Marked because the active-wallet count was above its local baseline. This is a weak cue unless it repeats or combines with amount or concentration evidence.</p>
@@ -171,35 +1140,35 @@
       </div>
       <div class="box">
         <strong>Reference scale</strong>
-        <p>observed_amount_usd=69.44; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000673; materiality_label=below_one_percent_of_reference</p>
+        <p>observed_amount_usd=0.00; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000000; materiality_label=below_one_percent_of_reference</p>
       </div>
       <div class="box">
         <strong>Coordination</strong>
-        <p>coordination_label=few_wallet_or_trade_context; active_wallets=3; trade_count=3; total_amount_usd=69.44; amount_per_wallet_usd=23.15; amount_per_trade_usd=23.15</p>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=0; trade_count=0; total_amount_usd=0.00; amount_per_wallet_usd=0.00; amount_per_trade_usd=0.00</p>
       </div>
       <div class="box">
         <strong>Literature-prior risk</strong>
-        <p>Wallet score: 1.46
-        (no_literature_prior_flag)<br>
-        Market score: 1.00
-        (literature_prior_flag)<br>
-        Feature status: computed_proxy=4; unavailable=3</p>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
       </div>
       <div class="box">
         <strong>Quick numbers</strong>
-        <p>Observed amount: USD 69.44<br>
-        Active wallets: 3<br>
-        Trades: 3<br>
-        Amount per wallet: USD 23.15<br>
-        Amount per trade: USD 23.15<br>
+        <p>Observed amount: USD 0.00<br>
+        Active wallets: 0<br>
+        Trades: 0<br>
+        Amount per wallet: USD 0.00<br>
+        Amount per trade: USD 0.00<br>
         Materiality: below_one_percent_of_reference<br>
         Review label: insider-risk watch cue: weak or incomplete evidence<br>
-        Max percentile: 0.90<br>
+        Max percentile: 1.00<br>
         Reference score: 0.00</p>
-        <div class="bar"><span style="width:90%"></span></div>
+        <div class="bar"><span style="width:100%"></span></div>
       </div>
     </section>
-    <p><strong>Why flagged:</strong> active_wallet_activity triggered info on active_wallets</p>
+    <p><strong>Why flagged:</strong> active_wallet_activity triggered high on active_wallets</p>
     <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
     <p><strong>Next step:</strong> Low-context cue: keep in registry and review only if repeated.</p>
   </article>

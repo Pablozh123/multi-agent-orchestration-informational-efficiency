@@ -1,9 +1,9 @@
 {
-  "generated_at_utc": "2026-06-17T12:15:33+00:00",
+  "generated_at_utc": "2026-07-09T20:24:00+00:00",
   "inputs": {
-    "baseline_readiness": "insufficient_baseline",
+    "baseline_readiness": "diagnostic_scores_available",
     "market_snapshots_path": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
-    "scoring_metadata_path": "data\\results\\monitor_v2_live_scoring_metadata.json",
+    "scoring_metadata_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_metadata.json",
     "wallet_tier_snapshots_path": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",
     "watchlist_path": "data\\results\\monitor_v2_polymarket_live_watchlist.csv"
   },
@@ -21,15 +21,15 @@
     "name": "monitor_v2_polymarket_rolling_history_figure"
   },
   "outputs": {
-    "bucket_count": 21,
+    "bucket_count": 22,
     "contains_order_instructions": false,
     "contains_wallet_addresses": false,
     "figure_aspect_ratio": 1.7142857142857142,
     "figure_height_inches": 7.0,
     "figure_path": "data\\results\\monitor_v2_polymarket_rolling_history.png",
     "figure_width_inches": 12.0,
-    "market_count": 12,
-    "token_snapshot_count": 504,
+    "market_count": 14,
+    "token_snapshot_count": 514,
     "wallet_bucket_label_count": 6,
     "wallet_bucket_label_layout": "rank_staggered_offsets_points",
     "wallet_bucket_label_max_count": 6,
@@ -66,6 +66,6 @@
         "total_observed_amount_usd": 1054.4541000000002
       }
     ],
-    "wallet_snapshot_count": 252
+    "wallet_snapshot_count": 257
   }
 }

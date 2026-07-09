@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-26T13:36:14+00:00",
+  "generated_at_utc": "2026-07-09T20:24:55+00:00",
   "inputs": {
     "alert_rows_path": "data\\results\\monitor_v2_polymarket_rolling_alert_rows.csv",
     "candidate_features_path": "data\\results\\monitor_reference_candidate_features.csv",
@@ -7,7 +7,7 @@
     "reference_cases_path": "data\\reference_cases\\wallet_reference_cases.csv",
     "risk_score_summary_path": "data\\results\\monitor_literature_risk_score_summary.csv",
     "similarity_summary_path": "data\\results\\monitor_reference_candidate_similarity_summary.csv",
-    "source_alert_rows": 1488,
+    "source_alert_rows": 1514,
     "wallet_tier_snapshots_path": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",
     "watchlist_path": "data\\results\\monitor_v2_polymarket_live_watchlist.csv"
   },
@@ -32,14 +32,14 @@
     "uses_existing_files_only": true
   },
   "outputs": {
-    "candidate_count": 3,
+    "candidate_count": 20,
     "contains_computed_insider_label": false,
     "contains_order_instructions": false,
     "contains_wallet_addresses": false,
     "dashboard_path": "data\\results\\monitor_candidate_human_review_report.html",
-    "high_priority_count": 1,
+    "high_priority_count": 8,
     "materiality_context_path": "data\\results\\monitor_candidate_materiality_context.csv",
-    "max_literature_market_risk_score": 1.002,
+    "max_literature_market_risk_score": 0.997962,
     "max_literature_wallet_risk_score": 1.455,
     "max_similarity_score": 1.0,
     "report_path": "data\\results\\monitor_candidate_human_review_report.csv"

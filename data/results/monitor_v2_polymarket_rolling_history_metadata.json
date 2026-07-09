@@ -3,13 +3,21 @@
     {
       "collected_at_utc": "",
       "event_candidate_row_count": 0,
-      "market_snapshot_row_count": 504,
+      "market_snapshot_row_count": 514,
       "sample_index": 0,
-      "wallet_tier_snapshot_row_count": 252,
-      "watchlist_row_count": 12
+      "wallet_tier_snapshot_row_count": 257,
+      "watchlist_row_count": 14
+    },
+    {
+      "collected_at_utc": "",
+      "event_candidate_row_count": 0,
+      "market_snapshot_row_count": 514,
+      "sample_index": 1,
+      "wallet_tier_snapshot_row_count": 257,
+      "watchlist_row_count": 14
     }
   ],
-  "generated_at_utc": "2026-05-23T19:29:54+00:00",
+  "generated_at_utc": "2026-07-09T20:24:00+00:00",
   "limitations": {
     "does_not_send_orders": true,
     "does_not_use_agents_or_mcp": true,
@@ -28,19 +36,19 @@
     "baseline_readiness": "diagnostic_scores_available",
     "bounded_loop_not_daemon": true,
     "bucket_minutes": 5,
-    "curated_watchlist_path": "data\\monitor_v2_curated_watchlist.csv",
-    "delay_seconds": 0.0,
-    "max_baseline_observations_available": 30,
-    "max_markets": 12,
+    "curated_watchlist_path": "",
+    "delay_seconds": 30.0,
+    "max_baseline_observations_available": 3,
+    "max_markets": 5,
     "name": "polymarket_readonly_rolling_history_collector",
     "reset_outputs": false,
     "runs_rolling_figure_after_collection": true,
     "runs_scoring_after_collection": true,
-    "samples_completed": 1,
-    "samples_requested": 1,
+    "samples_completed": 2,
+    "samples_requested": 2,
     "source": "live",
     "trade_limit": 500,
-    "uses_curated_watchlist": true
+    "uses_curated_watchlist": false
   },
   "outputs": {
     "collector_metadata_path": "data\\results\\monitor_v2_polymarket_live_collection_metadata.json",
@@ -50,24 +58,24 @@
     "figure_metadata_path": "data\\results\\monitor_v2_polymarket_rolling_history_figure_metadata.json",
     "figure_path": "data\\results\\monitor_v2_polymarket_rolling_history.png",
     "figure_result": {
-      "bucket_count": 21,
+      "bucket_count": 22,
       "figure_path": "data\\results\\monitor_v2_polymarket_rolling_history.png",
-      "market_count": 12,
+      "market_count": 14,
       "metadata_path": "data\\results\\monitor_v2_polymarket_rolling_history_figure_metadata.json",
-      "token_snapshot_count": 504,
-      "wallet_snapshot_count": 252
+      "token_snapshot_count": 514,
+      "wallet_snapshot_count": 257
     },
     "market_snapshots_path": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
     "scoring_metadata_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_metadata.json",
     "scoring_result": {
-      "alert_count": 7,
-      "alert_row_count": 1488,
+      "alert_count": 31,
+      "alert_row_count": 1514,
       "metadata_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_metadata.json",
       "rows_path": "data\\results\\monitor_v2_polymarket_rolling_alert_rows.csv",
-      "snapshot_count": 1488,
+      "snapshot_count": 1514,
       "snapshots_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_snapshots.csv",
       "summary_path": "data\\results\\monitor_v2_polymarket_rolling_alert_summary.csv",
-      "summary_row_count": 60,
+      "summary_row_count": 68,
       "validation_report_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_validation_report.json"
     },
     "scoring_rows_path": "data\\results\\monitor_v2_polymarket_rolling_alert_rows.csv",
@@ -75,15 +83,15 @@
     "scoring_summary_path": "data\\results\\monitor_v2_polymarket_rolling_alert_summary.csv",
     "scoring_validation_report_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_validation_report.json",
     "severity_counts": {
-      "high": 1,
-      "info": 4,
-      "none": 1481,
-      "watch": 2
+      "high": 11,
+      "info": 16,
+      "none": 1483,
+      "watch": 4
     },
     "status_counts": {
-      "insufficient_baseline": 1200,
-      "ok": 12,
-      "zero_mad": 276
+      "insufficient_baseline": 128,
+      "ok": 124,
+      "zero_mad": 1262
     },
     "validation_report_path": "data\\results\\monitor_v2_polymarket_live_input_validation_report.json",
     "wallet_tier_snapshots_path": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",

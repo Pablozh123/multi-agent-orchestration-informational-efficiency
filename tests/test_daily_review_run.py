@@ -18,7 +18,7 @@ def _queue_result(**overrides):
         "priority": "high",
         "score": 0.9,
         "recommendation": "escalate_human",
-        "narrative": "Deterministische Zusammenfassung.",
+        "narrative": "Deterministic summary text.",
         "skeptic_note": "Benigne Erklaerung moeglich.",
         "confidence_adjustment": -0.1,
         "human_review_status": "needs_human_review",
@@ -60,16 +60,6 @@ def test_gate_blocks_wallet_variants() -> None:
             drr.run_redaction_gate({"queue.json": json.dumps({"v": value})})
 
 
-def test_gate_blocks_json_form_key_pairs() -> None:
-    # JSON-serialisierte Key/Value-Paare ("api_key": "...") muessen anschlagen.
-    for text in (
-        '{"api_key": "abcdefabcdefabcdef"}',
-        json.dumps({"nested": {"private_key": "abcdefabcdefabcdef12"}}),
-    ):
-        with pytest.raises(drr.RedactionGateError):
-            drr.run_redaction_gate({"audit.json": text})
-
-
 def test_gate_blocks_key_like_strings() -> None:
     for secret in (
         "sk-ant-abc12345678",
@@ -80,6 +70,16 @@ def test_gate_blocks_key_like_strings() -> None:
     ):
         with pytest.raises(drr.RedactionGateError):
             drr.run_redaction_gate({"audit.json": json.dumps({"v": secret})})
+
+
+def test_gate_blocks_json_form_key_pairs() -> None:
+    # JSON-serialisierte Key/Value-Paare ("api_key": "...") muessen anschlagen.
+    for text in (
+        '{"api_key": "abcdefabcdefabcdef"}',
+        json.dumps({"nested": {"private_key": "abcdefabcdefabcdef12"}}),
+    ):
+        with pytest.raises(drr.RedactionGateError):
+            drr.run_redaction_gate({"audit.json": text})
 
 
 def test_gate_error_does_not_leak_value() -> None:
@@ -103,30 +103,30 @@ def test_gate_clean_payload_passes() -> None:
 
 def test_queue_payload_maps_and_sorts() -> None:
     result = {
-        "queue_kind": "anomaly_review_priority_queue",
-        "count": 3,
         "ranked_cases": [
             _queue_result()["ranked_cases"][0],
-            {**_queue_result()["ranked_cases"][0], "case_id": "b", "priority": "low", "score": 0.2, "recommendation": "watch", "confidence_adjustment": None},
-            {**_queue_result()["ranked_cases"][0], "case_id": "a", "priority": "medium", "score": 0.5, "recommendation": "check_source"},
+            {**_queue_result()["ranked_cases"][0], "case_id": "b", "priority": "low", "recommendation": "watch", "confidence_adjustment": None},
+            {**_queue_result()["ranked_cases"][0], "case_id": "a", "priority": "medium", "recommendation": "check_source"},
         ],
-        "steps": [],
-        "allowed_interpretation": "x",
-        "blocked_claims": "y",
     }
     payload = drr.build_queue_payload(
         result,
         queue_csv_rows=[{"case_id": "monitor_candidate_x", "timestamp_utc": "2026-07-01T00:00:00Z"}],
-        now_utc="2026-07-07T00:00:00+00:00",
+        now_utc="2026-07-08T00:00:00+00:00",
         backend_name="mock",
     )
-    assert [c.score_band for c in payload.cards] == ["high", "medium", "low"]
-    assert payload.cards[0].empfehlung == "eskalation_mensch"
-    assert payload.cards[0].zeitfenster == "2026-07-01T00:00:00Z"
-    assert payload.cards[0].skeptic_abschlag == -0.1
-    assert payload.cards[1].empfehlung == "quelle_pruefen"
-    assert payload.cards[2].empfehlung == "beobachten"
-    assert payload.count == 3
+    assert [f.score_band for f in payload.faelle] == ["high", "medium", "low"]
+    assert [f.empfehlung for f in payload.faelle] == ["escalate_human", "check_source", "watch"]
+    assert payload.faelle[0].zeitfenster == "2026-07-01T00:00:00Z"
+    assert payload.faelle[0].skeptic_abschlag == -0.1
+    assert payload.stand_utc == "2026-07-08T00:00:00+00:00"
+    assert "mock" in payload.hinweis
+    dumped = json.loads(payload.model_dump_json())
+    assert set(dumped.keys()) == {"hinweis", "stand_utc", "faelle"}
+    assert set(dumped["faelle"][0].keys()) == {
+        "id", "markt_slug", "zeitfenster", "score_band", "empfehlung",
+        "begruendung", "skeptic_abschlag", "ts",
+    }
 
 
 def test_queue_payload_rejects_non_whitelist_recommendation() -> None:
@@ -134,7 +134,7 @@ def test_queue_payload_rejects_non_whitelist_recommendation() -> None:
         drr.build_queue_payload(
             _queue_result(recommendation="buy_now"),
             queue_csv_rows=[],
-            now_utc="2026-07-07T00:00:00+00:00",
+            now_utc="2026-07-08T00:00:00+00:00",
             backend_name="mock",
         )
 
@@ -144,7 +144,7 @@ def test_queue_payload_rejects_bad_band_fail_closed() -> None:
         drr.build_queue_payload(
             _queue_result(priority="urgent"),
             queue_csv_rows=[],
-            now_utc="2026-07-07T00:00:00+00:00",
+            now_utc="2026-07-08T00:00:00+00:00",
             backend_name="mock",
         )
 
@@ -155,9 +155,43 @@ def test_queue_payload_rejects_positive_abschlag() -> None:
         drr.build_queue_payload(
             _queue_result(confidence_adjustment=0.2),
             queue_csv_rows=[],
-            now_utc="2026-07-07T00:00:00+00:00",
+            now_utc="2026-07-08T00:00:00+00:00",
             backend_name="mock",
         )
+
+
+# ---------------------------------------------------------------------------
+# kategorie_karte.json
+# ---------------------------------------------------------------------------
+
+
+def test_kategorie_karte_exact_fields() -> None:
+    summary = [{
+        "kategorie": "Politik", "tag_slug": "politics", "n_maerkte": "73",
+        "n_events": "17", "trefferquote_t1": "0.9315", "brier_t1": "0.0361",
+        "n_t7": "12", "trefferquote_t7": "0.4167", "brier_t7": "0.3521",
+        "median_volumen_usd": "9883931.33", "volumen_schwelle_usd": "10000",
+        "n_t1_aus_clob": "2", "n_ausgeschlossen_in_auswertung": "3",
+        "n_alt": "13", "n_neu": "60",
+    }]
+    beispiele = [{
+        "kategorie": "Sport", "ereignis": "Spiel", "markt_frage": "Frage?",
+        "t0_utc": "2026-06-01T00:00:00Z", "minuten_bis_erste_reaktion": "2.0",
+        "minuten_bis_konvergenz": "210.0", "praezisions_hinweis": "Obergrenze",
+    }]
+    payload = drr.build_kategorie_karte(
+        summary_rows=summary, beispiel_rows=beispiele, now_utc="2026-07-08T00:00:00+00:00"
+    )
+    dumped = json.loads(payload.model_dump_json())
+    assert set(dumped.keys()) == {"hinweis", "stand_utc", "kategorien", "beispiele"}
+    assert set(dumped["kategorien"][0].keys()) == {
+        "kategorie", "brier_t7", "trefferquote_t7", "brier_t1",
+        "trefferquote_t1", "n_maerkte", "n_t7", "median_volumen_usd",
+    }
+    assert set(dumped["beispiele"][0].keys()) == {
+        "kategorie", "ereignis", "markt_frage", "minuten_bis_konvergenz",
+        "minuten_bis_erste_reaktion", "t0_utc", "praezisions_hinweis",
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -174,6 +208,7 @@ def test_mentions_ok_exact_match_and_exclusions() -> None:
             "minuten_bis_konvergenz": "12.5",
             "stunden_im_handelbaren_fenster": "1.25",
             "endpreis": "0.97",
+            "korrekt_aufgeloestes_outcome": "YES",
             "status": "ok",
         },
         {
@@ -183,6 +218,7 @@ def test_mentions_ok_exact_match_and_exclusions() -> None:
             "minuten_bis_konvergenz": "",
             "stunden_im_handelbaren_fenster": "",
             "endpreis": "",
+            "korrekt_aufgeloestes_outcome": "NO",
             # darf NICHT als ok durchgehen (kein startswith-Match)
             "status": "ok_spaeter;keine_konvergenz_im_fenster",
         },
@@ -193,29 +229,25 @@ def test_mentions_ok_exact_match_and_exclusions() -> None:
             "minuten_bis_konvergenz": "",
             "stunden_im_handelbaren_fenster": "",
             "endpreis": "",
+            "korrekt_aufgeloestes_outcome": "NO",
             "status": "ausgeschlossen_zuordnungsambiguitaet",
         },
     ]
-    # Reales Producer-Schema (mentions_latency.py): ausgeschlossene_events
-    # enthaelt NUR {event, status}; der Grund wird aus dem Status abgeleitet.
-    metadata = {
-        "ausgeschlossene_events": [
-            {"event": "allin_next_episode", "status": "ausgeschlossen_zuordnungsambiguitaet"}
-        ],
-        "limitationen": ["Nur punktfoermige Drops."],
-    }
     payload = drr.build_mentions_latenz(
-        mentions_rows=rows, metadata=metadata, now_utc="2026-07-07T00:00:00+00:00"
+        mentions_rows=rows, now_utc="2026-07-08T00:00:00+00:00"
     )
     assert [f.event for f in payload.faelle] == ["fall_ok"]
+    assert payload.faelle[0].korrekt_aufgeloestes_outcome == "YES"
     assert {a.event for a in payload.ausschluesse} == {
         "fall_teilstatus",
         "allin_next_episode",
     }
-    grund = {a.event: a.grund for a in payload.ausschluesse}
-    assert grund["allin_next_episode"] == "Seed-Ausschluss: zuordnungsambiguitaet"
-    assert grund["fall_teilstatus"].startswith("Messstatus:")
-    assert payload.limitationen == ["Nur punktfoermige Drops."]
+    dumped = json.loads(payload.model_dump_json())
+    assert set(dumped["ausschluesse"][0].keys()) == {"event", "status"}
+    assert set(dumped["faelle"][0].keys()) == {
+        "event", "minuten_bis_erste_reaktion", "minuten_bis_konvergenz",
+        "stunden_im_handelbaren_fenster", "korrekt_aufgeloestes_outcome", "status",
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -270,21 +302,26 @@ def _write_live_fixture(tmp_path: Path) -> Path:
 def test_pipeline_forward_whitelist_only(tmp_path: Path) -> None:
     live = _write_live_fixture(tmp_path)
     payload = drr.build_pipeline_forward(
-        live_dir=live, profil="allin_july3", now_utc="2026-07-07T00:00:00+00:00"
+        live_dir=live, profil="allin_july3", now_utc="2026-07-08T00:00:00+00:00"
     )
-    assert payload.kennzeichnung == "beobachtend/paper"
-    assert payload.quelle_vorhanden is True
+    assert payload.kennzeichnung == "beobachtet/paper"
     assert len(payload.eintraege) == 1
     entry = payload.eintraege[0]
     assert entry.action == "YES"
     assert entry.reason.startswith("count 3")
     assert entry.limit_price == 0.82
     assert entry.size_usd == 12.3
-    assert entry.best_ask == 0.82  # min ask
-    assert entry.best_bid == 0.80  # max bid
+    assert entry.bestes_angebot == 0.82  # min ask
+    assert entry.bestes_gebot == 0.80  # max bid
     dumped = json.loads(payload.model_dump_json())
+    assert set(dumped.keys()) == {
+        "hinweis", "stand_utc", "kennzeichnung", "eintraege", "wortzaehler_endstaende",
+    }
+    assert set(dumped["eintraege"][0].keys()) == {
+        "action", "reason", "limit_price", "bestes_angebot", "bestes_gebot", "size_usd",
+    }
     text = json.dumps(dumped)
-    for forbidden in ("size_shares", "token_id", "detail", "market_id", "pnl"):
+    for forbidden in ("size_shares", "token_id", "detail", "market_id", "pnl", "wall_ts"):
         assert forbidden not in text
     assert payload.wortzaehler_endstaende == {"tariff": 3, "ai": 7}
 
@@ -293,44 +330,45 @@ def test_pipeline_forward_missing_source_is_fail_soft(tmp_path: Path) -> None:
     payload = drr.build_pipeline_forward(
         live_dir=tmp_path / "does_not_exist",
         profil="allin_july3",
-        now_utc="2026-07-07T00:00:00+00:00",
+        now_utc="2026-07-08T00:00:00+00:00",
     )
-    assert payload.quelle_vorhanden is False
     assert payload.eintraege == []
     assert "nicht vorhanden" in payload.hinweis
 
 
 # ---------------------------------------------------------------------------
-# audit.json
+# audit.json / meta.json
 # ---------------------------------------------------------------------------
 
 
-def test_audit_only_hashes_and_counters() -> None:
+def test_audit_counters_and_hashes_only() -> None:
     llm_sink = [
         {"role": "CaseNarrative", "prompt_hash": "h1", "ts_utc": "t", "backend": "mock", "output_hash": "o1"},
         {"role": "SkepticReviewer", "prompt_hash": "h2", "ts_utc": "t", "backend": "mock", "output_hash": "o2"},
+        {"role": "CaseNarrative", "prompt_hash": "h3", "ts_utc": "t", "backend": "mock", "output_hash": "o3"},
     ]
-    mcp_records = [
-        {"tool": "get_anomaly_review_summary", "args": {"x": 1}, "row_count": 5, "ts_utc": "t"},
-        {"tool": "get_anomaly_case", "args": {"case_id": "c"}, "row_count": 1, "ts_utc": "t"},
-        {"tool": "get_anomaly_case", "args": {"case_id": "d"}, "row_count": 1, "ts_utc": "t"},
-    ]
-    payload = drr.build_audit(
-        llm_sink=llm_sink,
-        mcp_records=mcp_records,
-        backend_name="mock",
-        now_utc="2026-07-07T00:00:00+00:00",
-    )
-    assert payload.llm_calls == 2
-    assert payload.prompt_hashes == ["h1", "h2"]
-    assert payload.mcp_tool_calls == {
-        "get_anomaly_review_summary": 1,
-        "get_anomaly_case": 2,
-    }
-    assert payload.mcp_rows_returned_total == 7
+    payload = drr.build_audit(llm_sink=llm_sink, now_utc="2026-07-08T00:00:00+00:00")
+    assert payload.n_eintraege == 3
+    assert payload.rollen_zaehler == {"CaseNarrative": 2, "SkepticReviewer": 1}
+    assert payload.backend_zaehler == {"mock": 3}
+    assert payload.prompt_hashes == ["h1", "h2", "h3"]
     text = payload.model_dump_json()
-    for forbidden in ("args", "model", "cost", "user_prompt", "response"):
+    for forbidden in ("model", "cost", "user_prompt", "response", "claude"):
         assert forbidden not in text
+    dumped = json.loads(text)
+    assert set(dumped.keys()) == {
+        "hinweis", "stand_utc", "n_eintraege", "rollen_zaehler",
+        "backend_zaehler", "prompt_hashes", "output_hashes",
+    }
+
+
+def test_meta_disclaimer_is_text_list() -> None:
+    payload = drr.build_meta(
+        now_utc="2026-07-08T00:00:00+00:00", backend_name="mock", schritte={"a": "ok"}
+    )
+    assert isinstance(payload.disclaimer, list)
+    assert all(isinstance(t, str) for t in payload.disclaimer)
+    assert payload.stand_utc == "2026-07-08T00:00:00+00:00"
 
 
 # ---------------------------------------------------------------------------
@@ -347,13 +385,9 @@ def _fake_build_review_queue(**kwargs):
     return _queue_result()
 
 
-def test_run_daily_review_writes_all_six(tmp_path: Path, monkeypatch) -> None:
-    publish = tmp_path / "publish"
-    extra = tmp_path / "public_data"
-    monkeypatch.setattr(drr, "MCP_AUDIT_PATH", tmp_path / "mcp_audit.jsonl")
+def _patch_paths(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.setattr(drr, "QUEUE_CSV_PATH", tmp_path / "queue.csv")
     monkeypatch.setattr(drr, "MENTIONS_CSV_PATH", tmp_path / "mentions.csv")
-    monkeypatch.setattr(drr, "MENTIONS_METADATA_PATH", tmp_path / "mm.json")
     monkeypatch.setattr(drr, "LIVE_BASE_DIR", tmp_path / "live")
     summary = tmp_path / "v2.csv"
     summary.write_text(
@@ -373,6 +407,12 @@ def test_run_daily_review_writes_all_six(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.setattr(drr, "SUMMARY_V2_PATH", summary)
     monkeypatch.setattr(drr, "LATENCY_EXAMPLES_PATH", examples)
 
+
+def test_run_daily_review_writes_all_six(tmp_path: Path, monkeypatch) -> None:
+    publish = tmp_path / "publish"
+    extra = tmp_path / "public_data"
+    _patch_paths(tmp_path, monkeypatch)
+
     result = drr.run_daily_review(
         publish_dir=publish,
         extra_publish_dir=extra,
@@ -385,26 +425,22 @@ def test_run_daily_review_writes_all_six(tmp_path: Path, monkeypatch) -> None:
         assert (publish / name).exists(), name
         assert (extra / name).exists(), name
     queue = json.loads((publish / "queue.json").read_text(encoding="utf-8"))
-    assert queue["backend"] == "mock"
-    assert queue["cards"][0]["empfehlung"] == "eskalation_mensch"
+    assert queue["faelle"][0]["empfehlung"] == "escalate_human"
+    assert queue["stand_utc"]
     meta = json.loads((publish / "meta.json").read_text(encoding="utf-8"))
-    assert meta["disclaimer"]["keine_finanzberatung"]
+    assert isinstance(meta["disclaimer"], list) and meta["disclaimer"]
     assert meta["schritte"]["monitor_refresh"] == "ok (test)"
     audit = json.loads((publish / "audit.json").read_text(encoding="utf-8"))
-    assert audit["llm_calls"] == 1
+    assert audit["n_eintraege"] == 1
+    assert audit["rollen_zaehler"] == {"CaseNarrative": 1}
+    for name in drr.PUBLISH_FILES:
+        data = json.loads((publish / name).read_text(encoding="utf-8"))
+        assert "hinweis" in data and "stand_utc" in data, name
 
 
 def test_run_daily_review_gate_blocks_everything(tmp_path: Path, monkeypatch) -> None:
     publish = tmp_path / "publish"
-    monkeypatch.setattr(drr, "MCP_AUDIT_PATH", tmp_path / "mcp_audit.jsonl")
-    monkeypatch.setattr(drr, "QUEUE_CSV_PATH", tmp_path / "queue.csv")
-    monkeypatch.setattr(drr, "MENTIONS_CSV_PATH", tmp_path / "mentions.csv")
-    monkeypatch.setattr(drr, "MENTIONS_METADATA_PATH", tmp_path / "mm.json")
-    monkeypatch.setattr(drr, "LIVE_BASE_DIR", tmp_path / "live")
-    for name, content in (("v2.csv", "kategorie,tag_slug,n_maerkte,n_events,trefferquote_t1,brier_t1,n_t7,trefferquote_t7,brier_t7,median_volumen_usd,volumen_schwelle_usd,n_t1_aus_clob,n_ausgeschlossen_in_auswertung,n_alt,n_neu\n"), ("ex.csv", "kategorie,ereignis,markt_frage,t0_utc,minuten_bis_erste_reaktion,minuten_bis_konvergenz,praezisions_hinweis\n")):
-        (tmp_path / name).write_text(content, encoding="utf-8")
-    monkeypatch.setattr(drr, "SUMMARY_V2_PATH", tmp_path / "v2.csv")
-    monkeypatch.setattr(drr, "LATENCY_EXAMPLES_PATH", tmp_path / "ex.csv")
+    _patch_paths(tmp_path, monkeypatch)
 
     def poisoned_queue(**kwargs):
         return _queue_result(narrative="Wallet 0x" + "a" * 40 + " hat gekauft")

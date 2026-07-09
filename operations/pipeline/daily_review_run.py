@@ -59,8 +59,6 @@ QUEUE_CSV_PATH = RESULTS_DIR / "monitor_anomaly_review_queue.csv"
 SUMMARY_V2_PATH = RESULTS_DIR / "category_efficiency_summary_v2.csv"
 LATENCY_EXAMPLES_PATH = RESULTS_DIR / "category_latency_examples.csv"
 MENTIONS_CSV_PATH = RESULTS_DIR / "mentions_latency.csv"
-MENTIONS_METADATA_PATH = RESULTS_DIR / "mentions_latency_metadata.json"
-MCP_AUDIT_PATH = RESULTS_DIR / "monitor_mcp_audit_log.jsonl"
 DAILY_LLM_AUDIT_PATH = RESULTS_DIR / "daily_review_llm_audit_log.jsonl"
 
 LIVE_PROFILE_CANDIDATES = ("allin_july3", "jre_july6")
@@ -74,13 +72,36 @@ PUBLISH_FILES = (
     "meta.json",
 )
 
-#: Uebersetzung der internen Empfehlungs-Whitelist in die publizierte Form.
-#: Nur diese drei Werte duerfen in queue.json auftauchen (Pruef-Empfehlungen,
-#: keine Handelsanweisungen).
-EMPFEHLUNG_MAP = {
-    "watch": "beobachten",
-    "check_source": "quelle_pruefen",
-    "escalate_human": "eskalation_mensch",
+#: Publizierte Empfehlungs-Whitelist (Pruef-Empfehlungen, keine
+#: Handelsanweisungen). Werte 1:1 aus der Agenten-Schicht.
+EMPFEHLUNG_WHITELIST = ("watch", "check_source", "escalate_human")
+
+#: Deskriptiver ``hinweis`` je publizierter Datei.
+DATEI_HINWEISE = {
+    "queue.json": (
+        "Read-only-Ergebnis eines taeglichen Laufs. Empfehlungen sind "
+        "Pruef-Schritte (watch, check_source, escalate_human), keine Trades."
+    ),
+    "kategorie_karte.json": (
+        "Brier-Scores und Einpreisungs-Beispiele je Marktkategorie; Sport/"
+        "Popkultur-Konvergenzzeiten sind dokumentierte Obergrenzen."
+    ),
+    "mentions_latenz.json": (
+        "Reaktions- und Konvergenzzeiten der Mentions-Maerkte nach dem "
+        "Content-Drop; Ausschluesse separat gelistet."
+    ),
+    "pipeline_forward.json": (
+        "Beobachtender Paper-Lauf: nur Entscheidungsfelder und Buch-Bestpreise, "
+        "keine Wallet-Daten, keine Renditeaussage."
+    ),
+    "audit.json": (
+        "Transparenz ueber den Agenten-Lauf: nur Zaehler und Hashes, keine "
+        "Prompts, keine Modell-Details."
+    ),
+    "meta.json": (
+        "Laufzeitpunkt, Backend-Betriebsart und Grundsaetze des taeglichen "
+        "Analyse-Laufs."
+    ),
 }
 
 DISCLAIMER = {
@@ -174,121 +195,105 @@ class _Strict(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
-class QueueCard(_Strict):
+class QueueFall(_Strict):
     id: str
     markt_slug: str
     zeitfenster: str
     score_band: Literal["high", "medium", "low"]
-    score: float = Field(ge=0.0)
-    empfehlung: Literal["beobachten", "quelle_pruefen", "eskalation_mensch"]
+    empfehlung: Literal["watch", "check_source", "escalate_human"]
     begruendung: str
-    skeptic_hinweis: str
     skeptic_abschlag: Optional[float] = Field(default=None, ge=-0.3, le=0.0)
     ts: str
 
 
 class QueuePayload(_Strict):
-    generated_utc: str
-    backend: str
-    queue_kind: str
-    allowed_interpretation: str
-    blocked_claims: str
-    count: int = Field(ge=0)
-    cards: List[QueueCard]
+    hinweis: str
+    stand_utc: str
+    faelle: List[QueueFall]
 
 
-class KategorieZeile(_Strict):
+class KategorieEintrag(_Strict):
     kategorie: str
-    tag_slug: str
-    n_maerkte: int
-    n_events: int
-    trefferquote_t1: Optional[float]
-    brier_t1: Optional[float]
-    n_t7: int
-    trefferquote_t7: Optional[float]
     brier_t7: Optional[float]
+    trefferquote_t7: Optional[float]
+    brier_t1: Optional[float]
+    trefferquote_t1: Optional[float]
+    n_maerkte: int
+    n_t7: int
     median_volumen_usd: Optional[float]
-    volumen_schwelle_usd: Optional[float]
-    n_t1_aus_clob: int
-    n_ausgeschlossen_in_auswertung: int
-    n_alt: int
-    n_neu: int
 
 
 class LatenzBeispiel(_Strict):
     kategorie: str
     ereignis: str
     markt_frage: str
-    t0_utc: str
-    minuten_bis_erste_reaktion: Optional[float]
     minuten_bis_konvergenz: Optional[float]
+    minuten_bis_erste_reaktion: Optional[float]
+    t0_utc: str
     praezisions_hinweis: str
 
 
 class KategorieKartePayload(_Strict):
-    generated_utc: str
-    zeilen: List[KategorieZeile]
+    hinweis: str
+    stand_utc: str
+    kategorien: List[KategorieEintrag]
     beispiele: List[LatenzBeispiel]
 
 
 class MentionsFall(_Strict):
     event: str
-    drop_ts_utc: str
     minuten_bis_erste_reaktion: Optional[float]
     minuten_bis_konvergenz: Optional[float]
     stunden_im_handelbaren_fenster: Optional[float]
-    endpreis: Optional[float]
+    korrekt_aufgeloestes_outcome: Literal["YES", "NO"]
     status: Literal["ok"]
 
 
 class MentionsAusschluss(_Strict):
     event: str
     status: str
-    grund: str
 
 
 class MentionsLatenzPayload(_Strict):
-    generated_utc: str
+    hinweis: str
+    stand_utc: str
     faelle: List[MentionsFall]
     ausschluesse: List[MentionsAusschluss]
-    limitationen: List[str]
 
 
 class PipelineEintrag(_Strict):
-    ts: str
     action: Literal["YES", "NO", "NONE"]
     reason: str
     limit_price: Optional[float]
+    bestes_angebot: Optional[float]
+    bestes_gebot: Optional[float]
     size_usd: Optional[float]
-    best_ask: Optional[float]
-    best_bid: Optional[float]
 
 
 class PipelineForwardPayload(_Strict):
-    generated_utc: str
-    kennzeichnung: Literal["beobachtend/paper"]
-    profil: str
-    quelle_vorhanden: bool
     hinweis: str
+    stand_utc: str
+    kennzeichnung: Literal["beobachtet/paper"]
     eintraege: List[PipelineEintrag]
     wortzaehler_endstaende: Dict[str, int]
 
 
 class AuditPayload(_Strict):
-    generated_utc: str
-    backend: str
-    llm_calls: int = Field(ge=0)
+    hinweis: str
+    stand_utc: str
+    n_eintraege: int = Field(ge=0)
+    rollen_zaehler: Dict[str, int]
+    backend_zaehler: Dict[str, int]
     prompt_hashes: List[str]
     output_hashes: List[str]
-    mcp_tool_calls: Dict[str, int]
-    mcp_rows_returned_total: int = Field(ge=0)
 
 
 class MetaPayload(_Strict):
-    laufzeitpunkt_utc: str
+    hinweis: str
+    stand_utc: str
     backend: str
     schritte: Dict[str, str]
-    disclaimer: Dict[str, str]
+    disclaimer: List[str]
 
 
 # ---------------------------------------------------------------------------
@@ -330,24 +335,22 @@ def build_queue_payload(
         str(row.get("case_id", "")): str(row.get("timestamp_utc", ""))
         for row in queue_csv_rows
     }
-    cards: List[QueueCard] = []
+    faelle: List[QueueFall] = []
     for case in queue_result.get("ranked_cases", []):
         recommendation = str(case.get("recommendation", ""))
-        if recommendation not in EMPFEHLUNG_MAP:
+        if recommendation not in EMPFEHLUNG_WHITELIST:
             raise ValueError(
                 f"Empfehlung ausserhalb der Whitelist: {recommendation!r}"
             )
         case_id = str(case.get("case_id", ""))
-        cards.append(
-            QueueCard(
+        faelle.append(
+            QueueFall(
                 id=case_id,
                 markt_slug=str(case.get("market_slug", "")),
                 zeitfenster=ts_by_case.get(case_id, ""),
                 score_band=str(case.get("priority", "")),
-                score=float(case.get("score", 0.0)),
-                empfehlung=EMPFEHLUNG_MAP[recommendation],
+                empfehlung=recommendation,
                 begruendung=str(case.get("narrative", "")),
-                skeptic_hinweis=str(case.get("skeptic_note", "")),
                 skeptic_abschlag=(
                     None
                     if case.get("confidence_adjustment") is None
@@ -356,15 +359,12 @@ def build_queue_payload(
                 ts=now_utc,
             )
         )
-    cards.sort(key=lambda c: (_BAND_ORDER[c.score_band], -c.score, c.id))
+    # ranked_cases ist bereits score-sortiert; hier nur stabil nach Band ordnen.
+    faelle.sort(key=lambda f: _BAND_ORDER[f.score_band])
     return QueuePayload(
-        generated_utc=now_utc,
-        backend=backend_name,
-        queue_kind=str(queue_result.get("queue_kind", "")),
-        allowed_interpretation=str(queue_result.get("allowed_interpretation", "")),
-        blocked_claims=str(queue_result.get("blocked_claims", "")),
-        count=len(cards),
-        cards=cards,
+        hinweis=DATEI_HINWEISE["queue.json"] + f" Backend: {backend_name}.",
+        stand_utc=now_utc,
+        faelle=faelle,
     )
 
 
@@ -374,23 +374,16 @@ def build_kategorie_karte(
     beispiel_rows: List[Dict[str, str]],
     now_utc: str,
 ) -> KategorieKartePayload:
-    zeilen = [
-        KategorieZeile(
+    kategorien = [
+        KategorieEintrag(
             kategorie=row["kategorie"],
-            tag_slug=row["tag_slug"],
-            n_maerkte=_int(row["n_maerkte"]),
-            n_events=_int(row["n_events"]),
-            trefferquote_t1=_num(row["trefferquote_t1"]),
-            brier_t1=_num(row["brier_t1"]),
-            n_t7=_int(row["n_t7"]),
-            trefferquote_t7=_num(row["trefferquote_t7"]),
             brier_t7=_num(row["brier_t7"]),
+            trefferquote_t7=_num(row["trefferquote_t7"]),
+            brier_t1=_num(row["brier_t1"]),
+            trefferquote_t1=_num(row["trefferquote_t1"]),
+            n_maerkte=_int(row["n_maerkte"]),
+            n_t7=_int(row["n_t7"]),
             median_volumen_usd=_num(row["median_volumen_usd"]),
-            volumen_schwelle_usd=_num(row["volumen_schwelle_usd"]),
-            n_t1_aus_clob=_int(row["n_t1_aus_clob"]),
-            n_ausgeschlossen_in_auswertung=_int(row["n_ausgeschlossen_in_auswertung"]),
-            n_alt=_int(row["n_alt"]),
-            n_neu=_int(row["n_neu"]),
         )
         for row in summary_rows
     ]
@@ -399,64 +392,60 @@ def build_kategorie_karte(
             kategorie=row["kategorie"],
             ereignis=row["ereignis"],
             markt_frage=row["markt_frage"],
-            t0_utc=str(row.get("t0_utc", "")),
-            minuten_bis_erste_reaktion=_num(row["minuten_bis_erste_reaktion"]),
             minuten_bis_konvergenz=_num(row["minuten_bis_konvergenz"]),
+            minuten_bis_erste_reaktion=_num(row["minuten_bis_erste_reaktion"]),
+            t0_utc=str(row.get("t0_utc", "")),
             praezisions_hinweis=row["praezisions_hinweis"],
         )
         for row in beispiel_rows
     ]
-    return KategorieKartePayload(generated_utc=now_utc, zeilen=zeilen, beispiele=beispiele)
+    return KategorieKartePayload(
+        hinweis=DATEI_HINWEISE["kategorie_karte.json"],
+        stand_utc=now_utc,
+        kategorien=kategorien,
+        beispiele=beispiele,
+    )
 
 
 def build_mentions_latenz(
     *,
     mentions_rows: List[Dict[str, str]],
-    metadata: Dict[str, Any],
     now_utc: str,
 ) -> MentionsLatenzPayload:
-    """Nur Zeilen mit ``status == 'ok'`` (exakter Match) plus Ausschluesse."""
+    """Nur Zeilen mit ``status == 'ok'`` (exakter Match) plus Ausschluesse.
+
+    Ausschluesse tragen (event, status); der Status selbst dokumentiert den
+    Grund (z.B. ``ausgeschlossen_zuordnungsambiguitaet``).
+    """
 
     faelle: List[MentionsFall] = []
     ausschluesse: List[MentionsAusschluss] = []
-    grund_by_event = {
-        str(item.get("event", "")): str(item.get("grund", item.get("hinweis", "")))
-        for item in metadata.get("ausgeschlossene_events", [])
-        if isinstance(item, dict)
-    }
     for row in mentions_rows:
         status = str(row.get("status", ""))
         if status == "ok":
             faelle.append(
                 MentionsFall(
                     event=row["event"],
-                    drop_ts_utc=row["drop_ts_utc"],
                     minuten_bis_erste_reaktion=_num(row["minuten_bis_erste_reaktion"]),
                     minuten_bis_konvergenz=_num(row["minuten_bis_konvergenz"]),
                     stunden_im_handelbaren_fenster=_num(
                         row["stunden_im_handelbaren_fenster"]
                     ),
-                    endpreis=_num(row["endpreis"]),
+                    korrekt_aufgeloestes_outcome=str(
+                        row.get("korrekt_aufgeloestes_outcome", "")
+                    ).upper(),
                     status="ok",
                 )
             )
         else:
-            event = str(row.get("event", ""))
-            grund = grund_by_event.get(event, "")
-            if not grund:
-                if status.startswith("ausgeschlossen_"):
-                    grund = f"Seed-Ausschluss: {status[len('ausgeschlossen_'):]}"
-                else:
-                    grund = f"Messstatus: {status}"
             ausschluesse.append(
-                MentionsAusschluss(event=event, status=status, grund=grund)
+                MentionsAusschluss(event=str(row.get("event", "")), status=status)
             )
-    limitationen = [str(item) for item in metadata.get("limitationen", [])]
     return MentionsLatenzPayload(
-        generated_utc=now_utc,
+        hinweis=DATEI_HINWEISE["mentions_latenz.json"],
+        stand_utc=now_utc,
         faelle=faelle,
         ausschluesse=ausschluesse,
-        limitationen=limitationen,
     )
 
 
@@ -493,16 +482,11 @@ def build_pipeline_forward(
 
     eintraege: List[PipelineEintrag] = []
     endstaende: Dict[str, int] = {}
-    quelle_vorhanden = False
-    hinweis = (
-        "Beobachtender Paper-Lauf. Nur Entscheidungsfelder und Buch-Bestpreise; "
-        "keine Wallet-Daten, keine Renditeaussage."
-    )
+    hinweis = DATEI_HINWEISE["pipeline_forward.json"] + f" Profil: {profil}."
     decisions_path = live_dir / "decisions_log.jsonl" if live_dir else None
     events_path = live_dir / "bot_events.jsonl" if live_dir else None
 
     if decisions_path is not None and decisions_path.exists():
-        quelle_vorhanden = True
         for line in decisions_path.read_text(encoding="utf-8").splitlines():
             line = line.strip()
             if not line:
@@ -510,10 +494,11 @@ def build_pipeline_forward(
             record = json.loads(line)
             decision = record.get("decision", {}) or {}
             result = record.get("result", {}) or {}
-            best_ask, best_bid = _best_prices(record.get("book_snapshot", {}) or {})
+            bestes_angebot, bestes_gebot = _best_prices(
+                record.get("book_snapshot", {}) or {}
+            )
             eintraege.append(
                 PipelineEintrag(
-                    ts=str(record.get("wall_ts_utc", "")),
                     action=str(decision.get("action", "NONE")),
                     reason=str(decision.get("reason", "")),
                     limit_price=(
@@ -521,13 +506,13 @@ def build_pipeline_forward(
                         if decision.get("limit_price") is None
                         else float(decision["limit_price"])
                     ),
+                    bestes_angebot=bestes_angebot,
+                    bestes_gebot=bestes_gebot,
                     size_usd=(
                         None
                         if result.get("size_usd") is None
                         else float(result["size_usd"])
                     ),
-                    best_ask=best_ask,
-                    best_bid=best_bid,
                 )
             )
     else:
@@ -551,11 +536,9 @@ def build_pipeline_forward(
                 endstaende = {str(k): int(v) for k, v in event["staende"].items()}
 
     return PipelineForwardPayload(
-        generated_utc=now_utc,
-        kennzeichnung="beobachtend/paper",
-        profil=profil,
-        quelle_vorhanden=quelle_vorhanden,
         hinweis=hinweis,
+        stand_utc=now_utc,
+        kennzeichnung="beobachtet/paper",
         eintraege=eintraege,
         wortzaehler_endstaende=endstaende,
     )
@@ -564,26 +547,25 @@ def build_pipeline_forward(
 def build_audit(
     *,
     llm_sink: List[Dict[str, Any]],
-    mcp_records: List[Dict[str, Any]],
-    backend_name: str,
     now_utc: str,
 ) -> AuditPayload:
     """Nur Hashes und Zaehler -- keine Prompts, Args, Modelle oder Kosten."""
 
-    tool_calls: Dict[str, int] = {}
-    rows_total = 0
-    for record in mcp_records:
-        tool = str(record.get("tool", ""))
-        tool_calls[tool] = tool_calls.get(tool, 0) + 1
-        rows_total += int(record.get("row_count", 0) or 0)
+    rollen: Dict[str, int] = {}
+    backends: Dict[str, int] = {}
+    for record in llm_sink:
+        rolle = str(record.get("role", ""))
+        backend = str(record.get("backend", ""))
+        rollen[rolle] = rollen.get(rolle, 0) + 1
+        backends[backend] = backends.get(backend, 0) + 1
     return AuditPayload(
-        generated_utc=now_utc,
-        backend=backend_name,
-        llm_calls=len(llm_sink),
+        hinweis=DATEI_HINWEISE["audit.json"],
+        stand_utc=now_utc,
+        n_eintraege=len(llm_sink),
+        rollen_zaehler=rollen,
+        backend_zaehler=backends,
         prompt_hashes=[str(r.get("prompt_hash", "")) for r in llm_sink],
         output_hashes=[str(r.get("output_hash", "")) for r in llm_sink],
-        mcp_tool_calls=tool_calls,
-        mcp_rows_returned_total=rows_total,
     )
 
 
@@ -591,10 +573,11 @@ def build_meta(
     *, now_utc: str, backend_name: str, schritte: Dict[str, str]
 ) -> MetaPayload:
     return MetaPayload(
-        laufzeitpunkt_utc=now_utc,
+        hinweis=DATEI_HINWEISE["meta.json"],
+        stand_utc=now_utc,
         backend=backend_name,
         schritte=schritte,
-        disclaimer=dict(DISCLAIMER),
+        disclaimer=list(DISCLAIMER.values()),
     )
 
 
@@ -726,23 +709,6 @@ def _resolve_live_dir(profil: Optional[str]) -> tuple[Optional[Path], str]:
     return None, LIVE_PROFILE_CANDIDATES[0]
 
 
-def _count_lines(path: Path) -> int:
-    if not path.exists():
-        return 0
-    return len(path.read_text(encoding="utf-8").splitlines())
-
-
-def _read_jsonl_tail(path: Path, skip_lines: int) -> List[Dict[str, Any]]:
-    if not path.exists():
-        return []
-    records: List[Dict[str, Any]] = []
-    for line in path.read_text(encoding="utf-8").splitlines()[skip_lines:]:
-        line = line.strip()
-        if line:
-            records.append(json.loads(line))
-    return records
-
-
 @dataclass
 class DailyReviewResult:
     publish_dir: Path
@@ -780,14 +746,12 @@ def run_daily_review(
     # Modell-Id bleibt im internen (gitignorierten) LLM-Audit-Log.
     backend_name = "llm" if use_llm else "mock"
     llm_sink: List[Dict[str, Any]] = []
-    mcp_lines_before = _count_lines(MCP_AUDIT_PATH)
     queue_result = build_review_queue_fn(
         backend=backend,
         llm_audit_path=DAILY_LLM_AUDIT_PATH,
         llm_audit_sink=llm_sink,
         max_cases=max_cases,
     )
-    mcp_records = _read_jsonl_tail(MCP_AUDIT_PATH, mcp_lines_before)
     schritte["review_queue"] = (
         f"ok (backend={backend_name}, cases={queue_result.get('count', 0)})"
     )
@@ -807,30 +771,19 @@ def run_daily_review(
         beispiel_rows=_read_csv_rows(LATENCY_EXAMPLES_PATH),
         now_utc=now_utc,
     )
-    mentions_metadata: Dict[str, Any] = {}
-    if MENTIONS_METADATA_PATH.exists():
-        mentions_metadata = json.loads(
-            MENTIONS_METADATA_PATH.read_text(encoding="utf-8")
-        )
     mentions_payload = build_mentions_latenz(
         mentions_rows=_read_csv_rows(MENTIONS_CSV_PATH) if MENTIONS_CSV_PATH.exists() else [],
-        metadata=mentions_metadata,
         now_utc=now_utc,
     )
     live_dir, profil = _resolve_live_dir(live_profile)
     forward_payload = build_pipeline_forward(
         live_dir=live_dir, profil=profil, now_utc=now_utc
     )
-    if not forward_payload.quelle_vorhanden:
-        schritte["pipeline_forward"] = "quelle_fehlt (data/live nicht vorhanden)"
-    else:
+    if forward_payload.eintraege:
         schritte["pipeline_forward"] = f"ok ({len(forward_payload.eintraege)} eintraege)"
-    audit_payload = build_audit(
-        llm_sink=llm_sink,
-        mcp_records=mcp_records,
-        backend_name=backend_name,
-        now_utc=now_utc,
-    )
+    else:
+        schritte["pipeline_forward"] = "quelle_fehlt (data/live nicht vorhanden)"
+    audit_payload = build_audit(llm_sink=llm_sink, now_utc=now_utc)
     meta_payload = build_meta(
         now_utc=now_utc, backend_name=backend_name, schritte=schritte
     )

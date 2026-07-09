@@ -46,3 +46,7 @@ data/live/
 # Taeglicher Publish-Output (regenerierbar via daily_review_run)
 data/publish/
 data/results/daily_review_llm_audit_log.jsonl
+
+# Tageslauf-Arbeitskopien der Kurations-Dateien (gefiltert, regenerierbar)
+data/results/daily_review_filtered_status_updates.csv
+data/results/daily_review_filtered_decisions.csv

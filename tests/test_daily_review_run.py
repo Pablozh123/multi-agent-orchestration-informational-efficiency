@@ -125,8 +125,10 @@ def test_queue_payload_maps_and_sorts() -> None:
     assert set(dumped.keys()) == {"hinweis", "stand_utc", "faelle"}
     assert set(dumped["faelle"][0].keys()) == {
         "id", "markt_slug", "zeitfenster", "score_band", "empfehlung",
-        "begruendung", "skeptic_abschlag", "ts",
+        "empfehlung_grund", "begruendung", "skeptic_begruendung",
+        "skeptic_abschlag", "signale", "ts",
     }
+    assert "Band high" in dumped["faelle"][0]["empfehlung_grund"]
 
 
 def test_queue_payload_rejects_non_whitelist_recommendation() -> None:
@@ -158,6 +160,74 @@ def test_queue_payload_rejects_positive_abschlag() -> None:
             now_utc="2026-07-08T00:00:00+00:00",
             backend_name="mock",
         )
+
+
+_QUEUE_CSV_ROW = {
+    "case_id": "monitor_candidate_x",
+    "timestamp_utc": "2026-05-23T19:25:00Z",
+    "question": "Will X happen?",
+    "trigger_family": "active_wallet_activity,concentration",
+    "priority_basis": "source_priority=high; max_severity=high; max_percentile_rank=1.000; family_count=3",
+    "wallet_flow_context": "total_observed_amount_usd=64.2802; active_wallets=1.0000; trade_count=1.0000; materiality=below_one_percent_of_reference",
+    "concentration_context": "concentration_context=present; triggered_patterns=large_trade_flow,market_concentration",
+    "event_context_status": "nearest_event_only",
+    "reference_overlap_status": "reference_hit",
+    "human_review_status": "source_check_pending",
+    "missing_evidence": "manual review; news check",
+}
+
+
+def test_deutsche_begruendung_from_signal_fields() -> None:
+    text = drr.deutsche_begruendung(_QUEUE_CSV_ROW)
+    assert "Will X happen?" in text
+    assert "aktive Wallet-Aktivitaet, Konzentration" in text
+    assert "Severity high" in text and "100. Perzentil" in text
+    assert "$64" in text and "1 Wallet(s)" in text
+    assert "Materialitaet unter 1%" in text
+    assert "large trade flow" in text
+    assert "kein bestaetigter Bezug" in text
+    assert "Referenz-Muster: Treffer" in text
+    assert "Quellen-Pruefung offen" in text
+    assert "2 Pruefschritte offen" in text
+    assert "kein Befund" in text
+
+
+def test_queue_signale_chips() -> None:
+    chips = drr.queue_signale(_QUEUE_CSV_ROW)
+    assert chips["severity"] == "high"
+    assert chips["perzentil"] == "100."
+    assert chips["konzentration"] == "vorhanden"
+    assert chips["referenz"] == "Treffer"
+    assert chips["flow"].startswith("$64")
+
+
+def test_queue_payload_uses_deutsche_begruendung_when_row_present() -> None:
+    payload = drr.build_queue_payload(
+        _queue_result(),
+        queue_csv_rows=[_QUEUE_CSV_ROW],
+        now_utc="2026-07-10T00:00:00+00:00",
+        backend_name="mock",
+    )
+    fall = payload.faelle[0]
+    assert "Severity high" in fall.begruendung  # deutsch, nicht das Agenten-Template
+    assert fall.skeptic_begruendung == "Benigne Erklaerung moeglich."
+    assert fall.signale["referenz"] == "Treffer"
+
+
+def test_run_collector_status_in_meta(tmp_path, monkeypatch) -> None:
+    _patch_paths(tmp_path, monkeypatch)
+    result = drr.run_daily_review(
+        publish_dir=tmp_path / "publish",
+        collect=True,
+        collect_fn=lambda: "ok (samples=2/2, alerts=5, baseline=ready)",
+        refresh_fn=lambda: "ok (test)",
+        snapshots_fn=lambda: {},
+        build_review_queue_fn=_fake_build_review_queue,
+    )
+    assert result.schritte["collector"].startswith("ok (samples=2/2")
+    import json as _json
+    meta = _json.loads((tmp_path / "publish" / "meta.json").read_text(encoding="utf-8"))
+    assert "collector" in meta["schritte"]
 
 
 # ---------------------------------------------------------------------------

@@ -2,11 +2,16 @@
 
 Ablauf (deterministisch und offline, einzige Ausnahme ist --llm):
 
+0. Optional ``--collect``: der bestehende read-only Polymarket-Collector
+   (``polymarket_rolling_history``, source=live) sammelt frische
+   Markt-Buckets und schreibt neue Alert-Rows -- die Anomalie-Erkennung
+   arbeitet damit auf aktuellen Daten und die Baseline waechst mit jedem
+   Tageslauf. Fail-soft: bei Netzfehlern laeuft der Rest mit den
+   vorhandenen Alert-Rows weiter.
 1. Monitor-Kandidaten-Refresh ueber die bestehenden Module:
    ``monitor_reference_candidates`` -> ``monitor_candidate_review_report``
-   -> ``monitor_anomaly_review_queue``. Das ist eine reine Datei-Pipeline;
-   der Netz-Collector ``polymarket_rolling_history`` wird bewusst NICHT
-   aufgerufen, vorhandene Alert-Rows werden wiederverwendet.
+   -> ``monitor_anomaly_review_queue``. Das ist eine reine Datei-Pipeline
+   auf den (ggf. frisch gesammelten) Alert-Rows.
 2. ``build_review_queue`` aus ``operations/agents/review_queue``.
    Default ist das deterministische Mock-Backend (kein Netz, kein Key).
    Erst das Flag ``--llm`` aktiviert den produktiven LLM-Betrieb; der Key
@@ -201,8 +206,11 @@ class QueueFall(_Strict):
     zeitfenster: str
     score_band: Literal["high", "medium", "low"]
     empfehlung: Literal["watch", "check_source", "escalate_human"]
+    empfehlung_grund: str
     begruendung: str
+    skeptic_begruendung: str
     skeptic_abschlag: Optional[float] = Field(default=None, ge=-0.3, le=0.0)
+    signale: Dict[str, str]
     ts: str
 
 
@@ -302,6 +310,162 @@ class MetaPayload(_Strict):
 
 _BAND_ORDER = {"high": 0, "medium": 1, "low": 2}
 
+#: Uebersetzung der deterministischen Signal-Tokens in Klartext.
+_TRIGGER_DE = {
+    "active_wallet_activity": "aktive Wallet-Aktivitaet",
+    "wallet_tier_activity": "Wallet-Tier-Aktivitaet",
+    "concentration": "Konzentration",
+    "market_move": "Preisbewegung",
+    "volume": "Volumen",
+}
+_REFERENZ_DE = {
+    "reference_hit": "Referenz-Muster: Treffer",
+    "partial_reference_overlap": "Referenz-Muster: teilweise Ueberlappung",
+    "no_reference_overlap": "Referenz-Muster: keine Ueberlappung",
+    "not_evaluated": "Referenz-Muster: nicht bewertet",
+}
+_EREIGNIS_DE = {
+    "nearest_event_only": "nur zeitlich naechstes Ereignis, kein bestaetigter Bezug",
+    "event_hit": "bestaetigter Ereignis-Bezug",
+    "not_evaluated": "Ereignis-Kontext nicht bewertet",
+}
+_STATUS_DE = {
+    "source_check_pending": "Quellen-Pruefung offen",
+    "needs_human_review": "menschliche Pruefung offen",
+    "reviewed_false_context": "geprueft: harmloser Kontext",
+    "reviewed_keep_candidate": "geprueft: Kandidat bleibt",
+    "thesis_excluded": "aus der Auswertung ausgeschlossen",
+}
+_EMPFEHLUNG_GRUND_DE = {
+    "escalate_human": "Band high -- der Fall geht komplett an einen Menschen.",
+    "check_source": (
+        "Band medium und die Quellen-Pruefung ist offen -- bitte pruefen, ob ein "
+        "oeffentliches Ereignis den Flow erklaert."
+    ),
+    "watch": (
+        "Niedriges Band oder Pruefung abgeschlossen -- nur weiter beobachten, "
+        "keine Aktion noetig."
+    ),
+}
+
+
+def _parse_kv(text: str) -> Dict[str, str]:
+    """``'a=b; c=d'`` -> ``{'a': 'b', 'c': 'd'}`` (tolerant gegen Freitext)."""
+
+    result: Dict[str, str] = {}
+    for part in str(text or "").split(";"):
+        part = part.strip()
+        if "=" in part:
+            key, value = part.split("=", 1)
+            result[key.strip()] = value.strip()
+    return result
+
+
+def _fmt_zahl(value: str, *, dezimal: int = 0) -> str:
+    try:
+        return f"{float(value):,.{dezimal}f}"
+    except (TypeError, ValueError):
+        return str(value)
+
+
+def queue_signale(row: Dict[str, str]) -> Dict[str, str]:
+    """Kompakte Signal-Chips aus einer Queue-CSV-Zeile (deterministisch)."""
+
+    signale: Dict[str, str] = {}
+    trigger = [t.strip() for t in str(row.get("trigger_family", "")).split(",") if t.strip()]
+    if trigger:
+        signale["ausloeser"] = ", ".join(_TRIGGER_DE.get(t, t.replace("_", " ")) for t in trigger)
+    basis = _parse_kv(row.get("priority_basis", ""))
+    if basis.get("max_severity"):
+        signale["severity"] = basis["max_severity"]
+    if basis.get("max_percentile_rank"):
+        try:
+            signale["perzentil"] = f"{float(basis['max_percentile_rank']) * 100:.0f}."
+        except ValueError:
+            pass
+    flow = _parse_kv(row.get("wallet_flow_context", ""))
+    try:
+        flow_usd = float(flow.get("total_observed_amount_usd", "0") or 0)
+    except ValueError:
+        flow_usd = 0.0
+    if flow_usd > 0:
+        wallets = _fmt_zahl(flow.get("active_wallets", ""), dezimal=0)
+        signale["flow"] = f"${_fmt_zahl(flow['total_observed_amount_usd'])} / {wallets} Wallet(s)"
+    konz = _parse_kv(row.get("concentration_context", ""))
+    if konz.get("concentration_context") == "present":
+        signale["konzentration"] = "vorhanden"
+    referenz = str(row.get("reference_overlap_status", ""))
+    if referenz:
+        signale["referenz"] = _REFERENZ_DE.get(referenz, referenz).replace("Referenz-Muster: ", "")
+    return signale
+
+
+def deutsche_begruendung(row: Dict[str, str]) -> str:
+    """Deterministische Klartext-Begruendung aus den Queue-Signalfeldern.
+
+    Kein LLM: alle Aussagen kommen woertlich aus den vorberechneten
+    Monitor-Feldern. Bewusst beschreibend, keine Schlussfolgerung.
+    """
+
+    teile: List[str] = []
+    frage = str(row.get("question", "")).strip()
+    if frage:
+        teile.append(f"Markt: '{frage}'")
+    trigger = [t.strip() for t in str(row.get("trigger_family", "")).split(",") if t.strip()]
+    if trigger:
+        teile.append(
+            "Ausloeser: " + ", ".join(_TRIGGER_DE.get(t, t.replace("_", " ")) for t in trigger)
+        )
+    basis = _parse_kv(row.get("priority_basis", ""))
+    basis_teile: List[str] = []
+    if basis.get("max_severity"):
+        basis_teile.append(f"Severity {basis['max_severity']}")
+    if basis.get("max_percentile_rank"):
+        try:
+            basis_teile.append(f"{float(basis['max_percentile_rank']) * 100:.0f}. Perzentil")
+        except ValueError:
+            pass
+    if basis.get("family_count"):
+        basis_teile.append(f"{basis['family_count']} Signalfamilie(n)")
+    if basis_teile:
+        teile.append("Einstufung: " + ", ".join(basis_teile))
+    flow = _parse_kv(row.get("wallet_flow_context", ""))
+    try:
+        _flow_usd = float(flow.get("total_observed_amount_usd", "0") or 0)
+    except ValueError:
+        _flow_usd = 0.0
+    if _flow_usd > 0:
+        flow_satz = (
+            f"Beobachteter Flow ${_fmt_zahl(flow['total_observed_amount_usd'])} "
+            f"von {_fmt_zahl(flow.get('active_wallets', '0'))} Wallet(s) "
+            f"({_fmt_zahl(flow.get('trade_count', '0'))} Trade(s))"
+        )
+        if flow.get("materiality") == "below_one_percent_of_reference":
+            flow_satz += ", Materialitaet unter 1% der Referenz"
+        teile.append(flow_satz)
+    konz = _parse_kv(row.get("concentration_context", ""))
+    muster = konz.get("triggered_patterns", "")
+    if muster and muster != "none":
+        teile.append(
+            "Konzentrations-Muster: " + muster.replace("_", " ").replace(",", ", ")
+        )
+    ereignis = str(row.get("event_context_status", ""))
+    if ereignis:
+        teile.append(_EREIGNIS_DE.get(ereignis, ereignis.replace("_", " ")))
+    referenz = str(row.get("reference_overlap_status", ""))
+    if referenz:
+        teile.append(_REFERENZ_DE.get(referenz, referenz.replace("_", " ")))
+    status = str(row.get("human_review_status", ""))
+    if status:
+        teile.append("Status: " + _STATUS_DE.get(status, status.replace("_", " ")))
+    offene = [p.strip() for p in str(row.get("missing_evidence", "")).split(";") if p.strip()]
+    if offene:
+        teile.append(f"{len(offene)} Pruefschritte offen")
+    teile.append(
+        "Statistische Auffaelligkeit, kein Befund -- keine Aussage ueber private Informationen"
+    )
+    return ". ".join(teile) + "."
+
 
 def _read_csv_rows(path: Path) -> List[Dict[str, str]]:
     import csv
@@ -331,10 +495,7 @@ def build_queue_payload(
 ) -> QueuePayload:
     """Fallkarten aus dem ``build_review_queue``-Ergebnis, sortiert nach Band."""
 
-    ts_by_case = {
-        str(row.get("case_id", "")): str(row.get("timestamp_utc", ""))
-        for row in queue_csv_rows
-    }
+    row_by_case = {str(row.get("case_id", "")): row for row in queue_csv_rows}
     faelle: List[QueueFall] = []
     for case in queue_result.get("ranked_cases", []):
         recommendation = str(case.get("recommendation", ""))
@@ -343,19 +504,26 @@ def build_queue_payload(
                 f"Empfehlung ausserhalb der Whitelist: {recommendation!r}"
             )
         case_id = str(case.get("case_id", ""))
+        row = row_by_case.get(case_id, {})
+        begruendung = (
+            deutsche_begruendung(row) if row else str(case.get("narrative", ""))
+        )
         faelle.append(
             QueueFall(
                 id=case_id,
                 markt_slug=str(case.get("market_slug", "")),
-                zeitfenster=ts_by_case.get(case_id, ""),
+                zeitfenster=str(row.get("timestamp_utc", "")),
                 score_band=str(case.get("priority", "")),
                 empfehlung=recommendation,
-                begruendung=str(case.get("narrative", "")),
+                empfehlung_grund=_EMPFEHLUNG_GRUND_DE[recommendation],
+                begruendung=begruendung,
+                skeptic_begruendung=str(case.get("skeptic_note", "")),
                 skeptic_abschlag=(
                     None
                     if case.get("confidence_adjustment") is None
                     else float(case["confidence_adjustment"])
                 ),
+                signale=queue_signale(row),
                 ts=now_utc,
             )
         )
@@ -608,22 +776,97 @@ def mentions_cache_complete(
     return True
 
 
+def _run_collector(samples: int = 2, delay_seconds: float = 30.0) -> str:
+    """Frische Marktdaten sammeln (Polymarket read-only, --collect).
+
+    Fail-soft: Netz-/Validierungsfehler brechen den Tageslauf nicht ab --
+    der Refresh nutzt dann die vorhandenen Alert-Rows und der Fehler steht
+    im Schritt-Status von meta.json.
+    """
+
+    import httpx
+    from pydantic import ValidationError as PydanticValidationError
+
+    from operations.collectors.polymarket_rolling_history import (
+        collect_polymarket_rolling_history,
+    )
+
+    try:
+        result = collect_polymarket_rolling_history(
+            source="live", samples=samples, delay_seconds=delay_seconds
+        )
+    except (httpx.HTTPError, PydanticValidationError, ValueError, FileNotFoundError) as exc:
+        return f"fehlgeschlagen ({type(exc).__name__}) -- vorhandene Alert-Rows werden weiterverwendet"
+    return (
+        f"ok (samples={result.samples_completed}/{result.samples_requested}, "
+        f"alerts={result.alert_count}, baseline={result.baseline_readiness})"
+    )
+
+
+def _filter_curation_csv(source: Path, target: Path, known_ids: set) -> Path:
+    """Kurations-CSV auf bekannte case_ids filtern (Original bleibt unberuehrt).
+
+    Nach einem frischen Collect existieren alte Fall-Ids nicht mehr in der
+    Queue; der strikte Queue-Builder wuerde sonst abbrechen. Die Historie in
+    ``data/`` wird NICHT veraendert -- der Tageslauf nutzt eine gefilterte
+    Arbeitskopie.
+    """
+
+    import csv
+
+    if not source.exists():
+        return source
+    with source.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = reader.fieldnames or []
+        rows = [r for r in reader if str(r.get("case_id", "")) in known_ids]
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with target.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+    return target
+
+
 def _run_monitor_refresh() -> str:
     """Deterministischer Kandidaten-Refresh aus vorhandenen Artefakten."""
+
+    import csv
 
     from operations.analysis.monitor_reference_candidates import (
         generate_monitor_reference_candidates,
     )
     from operations.analysis.monitor_candidate_review_report import (
         generate_monitor_candidate_human_review_report,
+        REVIEW_REPORT_OUTPUT,
     )
     from operations.analysis.monitor_anomaly_review_queue import (
         generate_monitor_anomaly_review_queue,
+        REVIEW_UPDATES_INPUT,
+        REVIEW_DECISIONS_INPUT,
     )
 
     generate_monitor_reference_candidates()
     generate_monitor_candidate_human_review_report()
-    result = generate_monitor_anomaly_review_queue()
+
+    with Path(REVIEW_REPORT_OUTPUT).open(encoding="utf-8", newline="") as handle:
+        known_ids = {
+            str(row.get("candidate_id", "")) for row in csv.DictReader(handle)
+        }
+    updates_path = _filter_curation_csv(
+        Path(REVIEW_UPDATES_INPUT),
+        RESULTS_DIR / "daily_review_filtered_status_updates.csv",
+        known_ids,
+    )
+    decisions_path = _filter_curation_csv(
+        Path(REVIEW_DECISIONS_INPUT),
+        RESULTS_DIR / "daily_review_filtered_decisions.csv",
+        known_ids,
+    )
+    result = generate_monitor_anomaly_review_queue(
+        review_updates_path=updates_path,
+        review_decisions_path=decisions_path,
+    )
     return f"ok (queue_rows={result.queue_row_count})"
 
 
@@ -722,8 +965,10 @@ def run_daily_review(
     publish_dir: Path = PUBLISH_DIR_DEFAULT,
     extra_publish_dir: Optional[Path] = None,
     use_llm: bool = False,
+    collect: bool = False,
     live_profile: Optional[str] = None,
     max_cases: int = 50,
+    collect_fn: Callable[[], str] = _run_collector,
     refresh_fn: Callable[[], str] = _run_monitor_refresh,
     snapshots_fn: Callable[[], Dict[str, str]] = _run_snapshots,
     build_review_queue_fn: Optional[Callable[..., Dict[str, Any]]] = None,
@@ -732,6 +977,12 @@ def run_daily_review(
 
     now_utc = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
     schritte: Dict[str, str] = {}
+
+    # 0) Optional: frische Marktdaten sammeln (einziger Netzpfad neben --llm)
+    if collect:
+        schritte["collector"] = collect_fn()
+    else:
+        schritte["collector"] = "uebersprungen (--collect nicht gesetzt)"
 
     # 1) Monitor-Kandidaten-Refresh (offline, bestehende Module)
     schritte["monitor_refresh"] = refresh_fn()
@@ -827,6 +1078,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         help="Produktives LLM-Backend (ANTHROPIC_API_KEY aus .env); Default ist das netzfreie Mock-Backend.",
     )
     parser.add_argument(
+        "--collect",
+        action="store_true",
+        help="Frische Marktdaten via read-only Polymarket-Collector sammeln (fail-soft).",
+    )
+    parser.add_argument(
         "--publish-dir",
         type=Path,
         default=None,
@@ -844,6 +1100,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         result = run_daily_review(
             extra_publish_dir=args.publish_dir,
             use_llm=args.llm,
+            collect=args.collect,
             live_profile=args.live_profile,
             max_cases=args.max_cases,
         )

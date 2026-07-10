@@ -20,6 +20,7 @@ Aufruf:
 from __future__ import annotations
 
 import argparse
+import html
 import json
 import sys
 from datetime import datetime, timezone
@@ -182,7 +183,8 @@ def parse_events(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
             info["n_maerkte"] = int(event.get("aktive_maerkte", 0) or 0)
         elif art == "drop_erkannt":
             info["drop_quelle"] = str(event.get("quelle", ""))
-            info["episode_titel"] = str(event.get("titel", ""))
+            # Feed-Titel enthalten teils HTML-Entities (&amp;) -- decodieren.
+            info["episode_titel"] = html.unescape(str(event.get("titel", "")))
             info["pubdate_utc"] = event.get("pubdate_utc")
             info["drop_erkannt_utc"] = event.get("wall_ts_utc")
         elif art == "fertig":

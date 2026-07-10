@@ -104,6 +104,14 @@ class TestBausteine:
         assert info["pubdate_utc"] == "2026-07-03T22:12:00Z"
         assert info["drop_erkannt_utc"] == "2026-07-03T23:21:22Z"
 
+    def test_parse_events_decodiert_html_entities_im_titel(self):
+        events = [{"art": "drop_erkannt", "quelle": "youtube",
+                   "titel": "Cerebras &amp; Black Forest Labs",
+                   "pubdate_utc": None, "wall_ts_utc": None}]
+        assert parse_events(events)["episode_titel"] == (
+            "Cerebras & Black Forest Labs"
+        )
+
     def test_sweep_clips(self):
         assert _sweep_clips("Sweep: 5 Clips, ['0xabc:23.8@<= 0.9']") == 5
         assert _sweep_clips("einzelner Fill") == 1

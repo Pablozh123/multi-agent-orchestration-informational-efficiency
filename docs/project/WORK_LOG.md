@@ -13236,3 +13236,51 @@ Next step:
 
 - Website views (review queue, category efficiency, mentions latency,
   pipeline forward, methodology) read the published JSONs statically.
+
+## 2026-07-10 - user-directed: live-run dashboard export (runs.json)
+
+Task:
+
+- User-directed work package outside the current H3 goal: publish a
+  descriptive summary of the own live runs (allin_july3, jre_july6,
+  allin_july10) for the website latency page and a new run dashboard.
+- New module operations/pipeline/run_dashboard.py: reads the private
+  run directories (bot_events.jsonl, decisions_log.jsonl,
+  gamma_event_snapshot.json) read-only via --live-root, joins public
+  market resolutions from the committed cache
+  data/raw/live_runs/resolutions_<profil>.json (refreshable read-only
+  via --fetch-resolutions against Gamma), and exports a single
+  pydantic-validated runs.json (fail-closed, redaction gate reused
+  from daily_review_run) to data/publish plus optional --publish-dir.
+- Per run: detection/decision/fill latencies in seconds, decision
+  counters, bets with decision ask vs average fill price, sweep clip
+  count, resolution status, realized PnL/ROI, and skipped_budget
+  entries as missed-opportunity list. Aggregate block with stake,
+  realized payout/PnL and ROI over resolved stake only.
+
+Key output:
+
+- 3 runs, 2 bets, stake 108.36 USD; resolved: Tourism YES 5.97 USD ->
+  payout 7.02 USD, PnL +1.05 USD (ROI +17.6% on resolved stake).
+  Open: IPO YES 102.39 USD (avg fill 0.90 via 5-clip sweep, decision
+  ask 0.63; market unresolved, mid 0.67 at cache time). jre_july6:
+  0 bets, all 21 markets already priced in within ~2 minutes.
+- Latency facts: detection 79-4162 s after source publish timestamp,
+  first decision 52-110 s after detection, fills 64-75 s after
+  detection.
+
+Verification:
+
+- pytest tests/test_run_dashboard.py tests/test_daily_review_run.py
+  -> 38 passed. Real run against the live checkout published
+  runs.json to data/publish and the website public/data.
+
+Limitation:
+
+- Resolution cache is a point-in-time snapshot; open markets (IPO)
+  need a --fetch-resolutions refresh after resolution. Dry-run fills
+  would be counted like live fills (none present in these runs).
+
+Next step:
+
+- Website pages (latency section + run dashboard) consume runs.json.

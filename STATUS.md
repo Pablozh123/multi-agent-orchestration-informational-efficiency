@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-07-07 19:48
+Generated: 2026-07-10 04:26
 
 Current goal: `goal-h3-informed-trading-signature-001` - Build tested H3 informed-trading signature diagnostics
 
@@ -11,23 +11,24 @@ Current roadmap phase: Phase 13: H3 Informed-Trading Signature Diagnostics
 
 Test status: FAIL
 
-Pytest summary: `1 failed, 754 passed in 61.32s (0:01:01)`
+Pytest summary: `1 failed, 776 passed in 72.56s (0:01:12)`
 
-Git branch: `claude/daily-review-publish`
+Git branch: `main`
 
-Latest commit: `c1a738e`
+Latest commit: `5647205`
 
 Git status:
 
 ```text
- M docs/project/WORK_LOG.md
+?? data/raw/live_runs/
+?? operations/pipeline/run_dashboard.py
+?? tests/test_run_dashboard.py
 ```
 
 Git diff stat:
 
 ```text
- docs/project/WORK_LOG.md | 42 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+no unstaged diff
 ```
 
 Blockers:

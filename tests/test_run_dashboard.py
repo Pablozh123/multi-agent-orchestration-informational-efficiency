@@ -104,6 +104,17 @@ class TestBausteine:
         assert info["pubdate_utc"] == "2026-07-03T22:12:00Z"
         assert info["drop_erkannt_utc"] == "2026-07-03T23:21:22Z"
 
+    def test_parse_events_erster_drop_gewinnt_bei_restart(self):
+        events = EVENTS + [{
+            "wall_ts_utc": "2026-07-03T23:59:00Z", "art": "drop_erkannt",
+            "quelle": "youtube", "titel": "Restart-Duplikat",
+            "pubdate_utc": "2026-07-03T22:12:00Z",
+        }]
+        info = parse_events(events)
+        assert info["drop_erkannt_utc"] == "2026-07-03T23:21:22Z"
+        assert info["drop_quelle"] == "libsyn_rss"
+        assert info["episode_titel"] == "Testepisode"
+
     def test_parse_events_decodiert_html_entities_im_titel(self):
         events = [{"art": "drop_erkannt", "quelle": "youtube",
                    "titel": "Cerebras &amp; Black Forest Labs",
@@ -191,7 +202,7 @@ class TestBuildRun:
         [chance] = run.verpasste_chancen
         assert chance.frage == 'Will "Model" be said?'
         assert chance.limit_preis == 0.83
-        assert chance.grund == "budget_erschoepft"
+        assert chance.grund == "budget_exhausted"
 
     def test_eingepreist_zaehlt_nur_ask_grenzen(self):
         run = _run([
@@ -246,7 +257,7 @@ class TestPayloadUndPublish:
         assert payload.aggregat.realisierter_pnl_usd == 1.05
         assert payload.aggregat.roi_realisiert_pct == pytest.approx(17.6, abs=0.1)
         assert payload.aggregat.offener_einsatz_usd == 0.0
-        assert payload.kennzeichnung == "live/deskriptiv"
+        assert payload.kennzeichnung == "live/descriptive"
 
     def test_publish_schreibt_beide_ordner(self, tmp_path: Path):
         payload = self._payload(tmp_path)

@@ -45,10 +45,9 @@ RUNS_FILE = "runs.json"
 FILL_STATUS = ("dry_run_fill", "live_fill", "live_partial")
 
 HINWEIS = (
-    "Deskriptive Nachauswertung eigener Live-Runs des Mentions-Bots "
-    "(Kleinbetraege). Read-only aus den Run-Logs rekonstruiert; Aufloesungen "
-    "aus oeffentlichen Gamma-Daten. Keine Handelsempfehlung, keine "
-    "Renditeprognose."
+    "Descriptive post-run review of our own small-stake live runs of the "
+    "mentions bot. Reconstructed read-only from the run logs; resolutions "
+    "from public Gamma data. No trading recommendation, no return forecast."
 )
 
 GAMMA_MARKETS_URL = "https://gamma-api.polymarket.com/markets"
@@ -181,7 +180,9 @@ def parse_events(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
         if art == "start":
             info["modus"] = str(event.get("modus", ""))
             info["n_maerkte"] = int(event.get("aktive_maerkte", 0) or 0)
-        elif art == "drop_erkannt":
+        elif art == "drop_erkannt" and info["drop_erkannt_utc"] is None:
+            # Bot-Restarts loggen den Drop erneut -- die ECHTE
+            # Erkennungslatenz ist die erste Erkennung.
             info["drop_quelle"] = str(event.get("quelle", ""))
             # Feed-Titel enthalten teils HTML-Entities (&amp;) -- decodieren.
             info["episode_titel"] = html.unescape(str(event.get("titel", "")))
@@ -269,7 +270,7 @@ def build_run(
                         if decision.get("limit_price") is None
                         else float(decision["limit_price"])
                     ),
-                    grund="budget_erschoepft",
+                    grund="budget_exhausted",
                 )
             )
             continue
@@ -422,7 +423,7 @@ def build_runs_payload(
     return RunsPayload(
         hinweis=HINWEIS,
         stand_utc=now,
-        kennzeichnung="live/deskriptiv",
+        kennzeichnung="live/descriptive",
         aggregat=build_aggregat(runs),
         runs=runs,
     )

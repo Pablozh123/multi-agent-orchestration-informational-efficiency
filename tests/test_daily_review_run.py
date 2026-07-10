@@ -177,31 +177,31 @@ _QUEUE_CSV_ROW = {
 }
 
 
-def test_deutsche_begruendung_from_signal_fields() -> None:
-    text = drr.deutsche_begruendung(_QUEUE_CSV_ROW)
+def test_case_reasoning_from_signal_fields() -> None:
+    text = drr.case_reasoning(_QUEUE_CSV_ROW)
     assert "Will X happen?" in text
-    assert "aktive Wallet-Aktivitaet, Konzentration" in text
-    assert "Severity high" in text and "100. Perzentil" in text
-    assert "$64" in text and "1 Wallet(s)" in text
-    assert "Materialitaet unter 1%" in text
+    assert "active wallet activity, concentration" in text
+    assert "severity high" in text and "100th percentile" in text
+    assert "$64" in text and "1 wallet(s)" in text
+    assert "materiality below 1%" in text
     assert "large trade flow" in text
-    assert "kein bestaetigter Bezug" in text
-    assert "Referenz-Muster: Treffer" in text
-    assert "Quellen-Pruefung offen" in text
-    assert "2 Pruefschritte offen" in text
-    assert "kein Befund" in text
+    assert "no confirmed link" in text
+    assert "Reference pattern: hit" in text
+    assert "source check pending" in text
+    assert "2 verification steps open" in text
+    assert "not a finding" in text
 
 
 def test_queue_signale_chips() -> None:
     chips = drr.queue_signale(_QUEUE_CSV_ROW)
     assert chips["severity"] == "high"
-    assert chips["perzentil"] == "100."
-    assert chips["konzentration"] == "vorhanden"
-    assert chips["referenz"] == "Treffer"
+    assert chips["percentile"] == "100th"
+    assert chips["concentration"] == "present"
+    assert chips["reference"] == "hit"
     assert chips["flow"].startswith("$64")
 
 
-def test_queue_payload_uses_deutsche_begruendung_when_row_present() -> None:
+def test_queue_payload_uses_case_reasoning_when_row_present() -> None:
     payload = drr.build_queue_payload(
         _queue_result(),
         queue_csv_rows=[_QUEUE_CSV_ROW],
@@ -209,9 +209,9 @@ def test_queue_payload_uses_deutsche_begruendung_when_row_present() -> None:
         backend_name="mock",
     )
     fall = payload.faelle[0]
-    assert "Severity high" in fall.begruendung  # deutsch, nicht das Agenten-Template
+    assert "severity high" in fall.begruendung  # deterministisch, nicht das Agenten-Template
     assert fall.skeptic_begruendung == "Benigne Erklaerung moeglich."
-    assert fall.signale["referenz"] == "Treffer"
+    assert fall.signale["reference"] == "hit"
 
 
 def test_run_collector_status_in_meta(tmp_path, monkeypatch) -> None:
@@ -374,7 +374,7 @@ def test_pipeline_forward_whitelist_only(tmp_path: Path) -> None:
     payload = drr.build_pipeline_forward(
         live_dir=live, profil="allin_july3", now_utc="2026-07-08T00:00:00+00:00"
     )
-    assert payload.kennzeichnung == "beobachtet/paper"
+    assert payload.kennzeichnung == "observed/paper"
     assert len(payload.eintraege) == 1
     entry = payload.eintraege[0]
     assert entry.action == "YES"
@@ -403,7 +403,7 @@ def test_pipeline_forward_missing_source_is_fail_soft(tmp_path: Path) -> None:
         now_utc="2026-07-08T00:00:00+00:00",
     )
     assert payload.eintraege == []
-    assert "nicht vorhanden" in payload.hinweis
+    assert "not present" in payload.hinweis
 
 
 # ---------------------------------------------------------------------------

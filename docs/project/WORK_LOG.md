@@ -13284,3 +13284,30 @@ Limitation:
 Next step:
 
 - Website pages (latency section + run dashboard) consume runs.json.
+
+## 2026-07-10 - user-directed: publish texts in English + restart-safe run latency
+
+Task:
+
+- Translate all website-facing publish values to English while keeping
+  the JSON schema keys unchanged: DATEI_HINWEISE, DISCLAIMER, the
+  deterministic case reasoning (deutsche_begruendung -> case_reasoning),
+  queue signal chips (English keys trigger/severity/percentile/flow/
+  concentration/reference), recommendation reasons, pipeline_forward
+  kennzeichnung observed/paper, runs.json hinweis, kennzeichnung
+  live/descriptive, and missed-opportunity reason budget_exhausted.
+- run_dashboard.parse_events: first drop_erkannt event wins -- bot
+  restarts re-log the drop and previously shifted detection latency
+  (negative fill latency against the restart timestamp).
+- Audit hinweis avoids the word "model" (leak-guard substring check).
+
+Key output:
+
+- Republished all seven JSONs in English. allin_july10 grew to 5 fills
+  (221.86 USD open) after a bot restart session; latencies stay anchored
+  to the first detection (122 s detect, 64 s first fill).
+
+Verification:
+
+- pytest tests/test_daily_review_run.py tests/test_run_dashboard.py
+  -> 40 passed.

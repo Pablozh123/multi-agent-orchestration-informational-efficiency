@@ -81,50 +81,50 @@ PUBLISH_FILES = (
 #: Handelsanweisungen). Werte 1:1 aus der Agenten-Schicht.
 EMPFEHLUNG_WHITELIST = ("watch", "check_source", "escalate_human")
 
-#: Deskriptiver ``hinweis`` je publizierter Datei.
+#: Deskriptiver ``hinweis`` je publizierter Datei (englisch, Website-facing).
 DATEI_HINWEISE = {
     "queue.json": (
-        "Read-only-Ergebnis eines taeglichen Laufs. Empfehlungen sind "
-        "Pruef-Schritte (watch, check_source, escalate_human), keine Trades."
+        "Read-only result of a daily run. Recommendations are verification "
+        "steps (watch, check_source, escalate_human), not trades."
     ),
     "kategorie_karte.json": (
-        "Brier-Scores und Einpreisungs-Beispiele je Marktkategorie; Sport/"
-        "Popkultur-Konvergenzzeiten sind dokumentierte Obergrenzen."
+        "Brier scores and pricing-speed examples per market category; sport/"
+        "pop-culture convergence times are documented upper bounds."
     ),
     "mentions_latenz.json": (
-        "Reaktions- und Konvergenzzeiten der Mentions-Maerkte nach dem "
-        "Content-Drop; Ausschluesse separat gelistet."
+        "Reaction and convergence times of mentions markets after the "
+        "content drop; exclusions listed separately."
     ),
     "pipeline_forward.json": (
-        "Beobachtender Paper-Lauf: nur Entscheidungsfelder und Buch-Bestpreise, "
-        "keine Wallet-Daten, keine Renditeaussage."
+        "Observing paper run: decision fields and best book prices only, "
+        "no wallet data, no return claim."
     ),
     "audit.json": (
-        "Transparenz ueber den Agenten-Lauf: nur Zaehler und Hashes, keine "
-        "Prompts, keine Modell-Details."
+        "Transparency about the agent run: counters and hashes only, no "
+        "prompts, no vendor or version details."
     ),
     "meta.json": (
-        "Laufzeitpunkt, Backend-Betriebsart und Grundsaetze des taeglichen "
-        "Analyse-Laufs."
+        "Run timestamp, backend mode, and principles of the daily "
+        "analysis run."
     ),
 }
 
 DISCLAIMER = {
     "zweck": (
-        "Deskriptive Forschungs-Artefakte eines taeglichen, deterministischen "
-        "Review-Laufs ueber oeffentliche Marktdaten."
+        "Descriptive research artifacts from a daily, deterministic "
+        "review run over public market data."
     ),
     "keine_handlungsempfehlung": (
-        "Die Empfehlungen sind Pruef-Empfehlungen (beobachten, Quelle pruefen, "
-        "an einen Menschen eskalieren) und keine Kauf- oder Verkaufssignale."
+        "Recommendations are verification steps (watch, check the source, "
+        "escalate to a human), not buy or sell signals."
     ),
     "keine_finanzberatung": (
-        "Keine Finanz- oder Anlageberatung. Keine Renditeaussage. "
-        "Pipeline-Eintraege sind beobachtend/paper."
+        "No financial or investment advice. No return claim. Pipeline "
+        "entries are observing/paper."
     ),
     "datenschutz": (
-        "Keine Wallet-Adressen, keine Schluessel, keine Prompts. Audit nur "
-        "als Hashes und Zaehler."
+        "No wallet addresses, no keys, no prompts. Audit as hashes and "
+        "counters only."
     ),
 }
 
@@ -281,7 +281,7 @@ class PipelineEintrag(_Strict):
 class PipelineForwardPayload(_Strict):
     hinweis: str
     stand_utc: str
-    kennzeichnung: Literal["beobachtet/paper"]
+    kennzeichnung: Literal["observed/paper"]
     eintraege: List[PipelineEintrag]
     wortzaehler_endstaende: Dict[str, int]
 
@@ -310,41 +310,41 @@ class MetaPayload(_Strict):
 
 _BAND_ORDER = {"high": 0, "medium": 1, "low": 2}
 
-#: Uebersetzung der deterministischen Signal-Tokens in Klartext.
-_TRIGGER_DE = {
-    "active_wallet_activity": "aktive Wallet-Aktivitaet",
-    "wallet_tier_activity": "Wallet-Tier-Aktivitaet",
-    "concentration": "Konzentration",
-    "market_move": "Preisbewegung",
-    "volume": "Volumen",
+#: Uebersetzung der deterministischen Signal-Tokens in Klartext (englisch).
+_TRIGGER_TEXT = {
+    "active_wallet_activity": "active wallet activity",
+    "wallet_tier_activity": "wallet tier activity",
+    "concentration": "concentration",
+    "market_move": "price move",
+    "volume": "volume",
 }
-_REFERENZ_DE = {
-    "reference_hit": "Referenz-Muster: Treffer",
-    "partial_reference_overlap": "Referenz-Muster: teilweise Ueberlappung",
-    "no_reference_overlap": "Referenz-Muster: keine Ueberlappung",
-    "not_evaluated": "Referenz-Muster: nicht bewertet",
+_REFERENZ_TEXT = {
+    "reference_hit": "Reference pattern: hit",
+    "partial_reference_overlap": "Reference pattern: partial overlap",
+    "no_reference_overlap": "Reference pattern: no overlap",
+    "not_evaluated": "Reference pattern: not evaluated",
 }
-_EREIGNIS_DE = {
-    "nearest_event_only": "nur zeitlich naechstes Ereignis, kein bestaetigter Bezug",
-    "event_hit": "bestaetigter Ereignis-Bezug",
-    "not_evaluated": "Ereignis-Kontext nicht bewertet",
+_EREIGNIS_TEXT = {
+    "nearest_event_only": "nearest event in time only, no confirmed link",
+    "event_hit": "confirmed event link",
+    "not_evaluated": "event context not evaluated",
 }
-_STATUS_DE = {
-    "source_check_pending": "Quellen-Pruefung offen",
-    "needs_human_review": "menschliche Pruefung offen",
-    "reviewed_false_context": "geprueft: harmloser Kontext",
-    "reviewed_keep_candidate": "geprueft: Kandidat bleibt",
-    "thesis_excluded": "aus der Auswertung ausgeschlossen",
+_STATUS_TEXT = {
+    "source_check_pending": "source check pending",
+    "needs_human_review": "human review pending",
+    "reviewed_false_context": "reviewed: harmless context",
+    "reviewed_keep_candidate": "reviewed: candidate stays",
+    "thesis_excluded": "excluded from the analysis",
 }
-_EMPFEHLUNG_GRUND_DE = {
-    "escalate_human": "Band high -- der Fall geht komplett an einen Menschen.",
+_EMPFEHLUNG_GRUND_TEXT = {
+    "escalate_human": "Band high -- the case goes fully to a human.",
     "check_source": (
-        "Band medium und die Quellen-Pruefung ist offen -- bitte pruefen, ob ein "
-        "oeffentliches Ereignis den Flow erklaert."
+        "Band medium and the source check is pending -- please verify whether "
+        "a public event explains the flow."
     ),
     "watch": (
-        "Niedriges Band oder Pruefung abgeschlossen -- nur weiter beobachten, "
-        "keine Aktion noetig."
+        "Low band or review completed -- keep watching only, no action "
+        "needed."
     ),
 }
 
@@ -374,13 +374,13 @@ def queue_signale(row: Dict[str, str]) -> Dict[str, str]:
     signale: Dict[str, str] = {}
     trigger = [t.strip() for t in str(row.get("trigger_family", "")).split(",") if t.strip()]
     if trigger:
-        signale["ausloeser"] = ", ".join(_TRIGGER_DE.get(t, t.replace("_", " ")) for t in trigger)
+        signale["trigger"] = ", ".join(_TRIGGER_TEXT.get(t, t.replace("_", " ")) for t in trigger)
     basis = _parse_kv(row.get("priority_basis", ""))
     if basis.get("max_severity"):
         signale["severity"] = basis["max_severity"]
     if basis.get("max_percentile_rank"):
         try:
-            signale["perzentil"] = f"{float(basis['max_percentile_rank']) * 100:.0f}."
+            signale["percentile"] = f"{float(basis['max_percentile_rank']) * 100:.0f}th"
         except ValueError:
             pass
     flow = _parse_kv(row.get("wallet_flow_context", ""))
@@ -390,18 +390,18 @@ def queue_signale(row: Dict[str, str]) -> Dict[str, str]:
         flow_usd = 0.0
     if flow_usd > 0:
         wallets = _fmt_zahl(flow.get("active_wallets", ""), dezimal=0)
-        signale["flow"] = f"${_fmt_zahl(flow['total_observed_amount_usd'])} / {wallets} Wallet(s)"
+        signale["flow"] = f"${_fmt_zahl(flow['total_observed_amount_usd'])} / {wallets} wallet(s)"
     konz = _parse_kv(row.get("concentration_context", ""))
     if konz.get("concentration_context") == "present":
-        signale["konzentration"] = "vorhanden"
+        signale["concentration"] = "present"
     referenz = str(row.get("reference_overlap_status", ""))
     if referenz:
-        signale["referenz"] = _REFERENZ_DE.get(referenz, referenz).replace("Referenz-Muster: ", "")
+        signale["reference"] = _REFERENZ_TEXT.get(referenz, referenz).replace("Reference pattern: ", "")
     return signale
 
 
-def deutsche_begruendung(row: Dict[str, str]) -> str:
-    """Deterministische Klartext-Begruendung aus den Queue-Signalfeldern.
+def case_reasoning(row: Dict[str, str]) -> str:
+    """Deterministische Klartext-Begruendung (englisch) aus den Signalfeldern.
 
     Kein LLM: alle Aussagen kommen woertlich aus den vorberechneten
     Monitor-Feldern. Bewusst beschreibend, keine Schlussfolgerung.
@@ -410,25 +410,25 @@ def deutsche_begruendung(row: Dict[str, str]) -> str:
     teile: List[str] = []
     frage = str(row.get("question", "")).strip()
     if frage:
-        teile.append(f"Markt: '{frage}'")
+        teile.append(f"Market: '{frage}'")
     trigger = [t.strip() for t in str(row.get("trigger_family", "")).split(",") if t.strip()]
     if trigger:
         teile.append(
-            "Ausloeser: " + ", ".join(_TRIGGER_DE.get(t, t.replace("_", " ")) for t in trigger)
+            "Trigger: " + ", ".join(_TRIGGER_TEXT.get(t, t.replace("_", " ")) for t in trigger)
         )
     basis = _parse_kv(row.get("priority_basis", ""))
     basis_teile: List[str] = []
     if basis.get("max_severity"):
-        basis_teile.append(f"Severity {basis['max_severity']}")
+        basis_teile.append(f"severity {basis['max_severity']}")
     if basis.get("max_percentile_rank"):
         try:
-            basis_teile.append(f"{float(basis['max_percentile_rank']) * 100:.0f}. Perzentil")
+            basis_teile.append(f"{float(basis['max_percentile_rank']) * 100:.0f}th percentile")
         except ValueError:
             pass
     if basis.get("family_count"):
-        basis_teile.append(f"{basis['family_count']} Signalfamilie(n)")
+        basis_teile.append(f"{basis['family_count']} signal family(ies)")
     if basis_teile:
-        teile.append("Einstufung: " + ", ".join(basis_teile))
+        teile.append("Classification: " + ", ".join(basis_teile))
     flow = _parse_kv(row.get("wallet_flow_context", ""))
     try:
         _flow_usd = float(flow.get("total_observed_amount_usd", "0") or 0)
@@ -436,33 +436,33 @@ def deutsche_begruendung(row: Dict[str, str]) -> str:
         _flow_usd = 0.0
     if _flow_usd > 0:
         flow_satz = (
-            f"Beobachteter Flow ${_fmt_zahl(flow['total_observed_amount_usd'])} "
-            f"von {_fmt_zahl(flow.get('active_wallets', '0'))} Wallet(s) "
-            f"({_fmt_zahl(flow.get('trade_count', '0'))} Trade(s))"
+            f"Observed flow ${_fmt_zahl(flow['total_observed_amount_usd'])} "
+            f"from {_fmt_zahl(flow.get('active_wallets', '0'))} wallet(s) "
+            f"({_fmt_zahl(flow.get('trade_count', '0'))} trade(s))"
         )
         if flow.get("materiality") == "below_one_percent_of_reference":
-            flow_satz += ", Materialitaet unter 1% der Referenz"
+            flow_satz += ", materiality below 1% of the reference"
         teile.append(flow_satz)
     konz = _parse_kv(row.get("concentration_context", ""))
     muster = konz.get("triggered_patterns", "")
     if muster and muster != "none":
         teile.append(
-            "Konzentrations-Muster: " + muster.replace("_", " ").replace(",", ", ")
+            "Concentration patterns: " + muster.replace("_", " ").replace(",", ", ")
         )
     ereignis = str(row.get("event_context_status", ""))
     if ereignis:
-        teile.append(_EREIGNIS_DE.get(ereignis, ereignis.replace("_", " ")))
+        teile.append(_EREIGNIS_TEXT.get(ereignis, ereignis.replace("_", " ")))
     referenz = str(row.get("reference_overlap_status", ""))
     if referenz:
-        teile.append(_REFERENZ_DE.get(referenz, referenz.replace("_", " ")))
+        teile.append(_REFERENZ_TEXT.get(referenz, referenz.replace("_", " ")))
     status = str(row.get("human_review_status", ""))
     if status:
-        teile.append("Status: " + _STATUS_DE.get(status, status.replace("_", " ")))
+        teile.append("Status: " + _STATUS_TEXT.get(status, status.replace("_", " ")))
     offene = [p.strip() for p in str(row.get("missing_evidence", "")).split(";") if p.strip()]
     if offene:
-        teile.append(f"{len(offene)} Pruefschritte offen")
+        teile.append(f"{len(offene)} verification steps open")
     teile.append(
-        "Statistische Auffaelligkeit, kein Befund -- keine Aussage ueber private Informationen"
+        "Statistical anomaly, not a finding -- no claim about private information"
     )
     return ". ".join(teile) + "."
 
@@ -506,7 +506,7 @@ def build_queue_payload(
         case_id = str(case.get("case_id", ""))
         row = row_by_case.get(case_id, {})
         begruendung = (
-            deutsche_begruendung(row) if row else str(case.get("narrative", ""))
+            case_reasoning(row) if row else str(case.get("narrative", ""))
         )
         faelle.append(
             QueueFall(
@@ -515,7 +515,7 @@ def build_queue_payload(
                 zeitfenster=str(row.get("timestamp_utc", "")),
                 score_band=str(case.get("priority", "")),
                 empfehlung=recommendation,
-                empfehlung_grund=_EMPFEHLUNG_GRUND_DE[recommendation],
+                empfehlung_grund=_EMPFEHLUNG_GRUND_TEXT[recommendation],
                 begruendung=begruendung,
                 skeptic_begruendung=str(case.get("skeptic_note", "")),
                 skeptic_abschlag=(
@@ -685,8 +685,8 @@ def build_pipeline_forward(
             )
     else:
         hinweis += (
-            " Quelle decisions_log.jsonl auf dieser Maschine nicht vorhanden -- "
-            "leeres Artefakt."
+            " Source decisions_log.jsonl not present on this machine -- "
+            "empty artifact."
         )
 
     if events_path is not None and events_path.exists():
@@ -706,7 +706,7 @@ def build_pipeline_forward(
     return PipelineForwardPayload(
         hinweis=hinweis,
         stand_utc=now_utc,
-        kennzeichnung="beobachtet/paper",
+        kennzeichnung="observed/paper",
         eintraege=eintraege,
         wortzaehler_endstaende=endstaende,
     )

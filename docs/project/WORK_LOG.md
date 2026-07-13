@@ -13311,3 +13311,30 @@ Verification:
 
 - pytest tests/test_daily_review_run.py tests/test_run_dashboard.py
   -> 40 passed.
+
+## 2026-07-13 - user-directed: run resolutions via events endpoint
+
+Task:
+
+- Resolution refresh returned zero markets for every run: Gamma answers
+  /markets?id=... (and ?slug=...) with an empty list for these market
+  ids, so the resolutions cache never carried closed/outcome data and
+  runs.json kept every bet open.
+- run_dashboard.fetch_resolutions now queries /events?slug=<event_slug>
+  (read-only, one request per run) and filters the event's markets to
+  the snapshot ids; cache source string updated and event_titel filled
+  from the event response.
+
+Key output:
+
+- All three cached runs resolve: aggregate 8/8 bets won, 260.83 USD
+  staked, +29.38 USD realised (ROI 11.3 pct). allin_july10 alone: 7
+  fills, +28.33 USD. Republished runs.json to data/publish and the
+  website's public/data.
+
+Verification:
+
+- pytest tests/test_run_dashboard.py -> 16 passed.
+- Full suite: 778 passed, 1 pre-existing failure in
+  test_h1_calibration_diagnostic (figure_aspect_ratio 2.946 vs expected
+  1.5) -- untouched by this change, needs its own review.

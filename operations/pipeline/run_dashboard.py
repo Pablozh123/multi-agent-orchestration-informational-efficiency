@@ -50,7 +50,7 @@ HINWEIS = (
     "from public Gamma data. No trading recommendation, no return forecast."
 )
 
-GAMMA_MARKETS_URL = "https://gamma-api.polymarket.com/markets"
+GAMMA_EVENTS_URL = "https://gamma-api.polymarket.com/events"
 HTTP_HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
 
 
@@ -449,18 +449,25 @@ def fetch_resolutions(
         if not snapshot_path.exists():
             continue
         snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
-        ids = [str(m.get("id")) for m in snapshot.get("markets", []) if m.get("id")]
-        if not ids:
+        ids = {str(m.get("id")) for m in snapshot.get("markets", []) if m.get("id")}
+        event_slug = str(snapshot.get("slug") or "")
+        if not ids or not event_slug:
             continue
+        # Gamma beantwortet /markets?id=... fuer diese Maerkte inzwischen leer;
+        # /events?slug=... traegt dieselben Maerkte inkl. closed/outcomePrices.
         response = httpx.get(
-            GAMMA_MARKETS_URL,
-            params=[("id", mid) for mid in ids],
+            GAMMA_EVENTS_URL,
+            params={"slug": event_slug},
             headers=HTTP_HEADERS,
             timeout=60,
         )
         response.raise_for_status()
+        events = response.json() or []
+        event_markets = events[0].get("markets", []) if events else []
         maerkte: Dict[str, Any] = {}
-        for markt in response.json():
+        for markt in event_markets:
+            if str(markt.get("id")) not in ids:
+                continue
             prices = markt.get("outcomePrices")
             prices = (
                 json.loads(prices) if isinstance(prices, str) else (prices or [])
@@ -478,10 +485,10 @@ def fetch_resolutions(
             }
         payload = {
             "profil": run_dir.name,
-            "event_slug": str(snapshot.get("slug") or ""),
-            "event_titel": "",
+            "event_slug": event_slug,
+            "event_titel": str(events[0].get("title") or "") if events else "",
             "abgerufen_utc": now,
-            "quelle": "gamma-api.polymarket.com/markets (oeffentlich, read-only)",
+            "quelle": "gamma-api.polymarket.com/events (oeffentlich, read-only)",
             "maerkte": maerkte,
         }
         target = resolutions_dir / f"resolutions_{run_dir.name}.json"

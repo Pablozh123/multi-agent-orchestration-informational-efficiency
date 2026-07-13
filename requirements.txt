@@ -35,6 +35,12 @@ pydantic-ai>=1.0
 pandera>=0.20
 tenacity>=8.0
 
+# Live-Bot: X-Feed (Elon-Post-Markt). transaction-id-Generator schaltet
+# UserTweetsAndReplies frei (native Fremd-Replies, 500 Req/15min).
+x-client-transaction-id>=0.0.1
+beautifulsoup4>=4.12.0
+requests>=2.31.0
+
 # Testing
 pytest>=8.3.0
 pytest-asyncio>=0.24.0

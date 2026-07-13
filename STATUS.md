@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-07-10 05:30
+Generated: 2026-07-13 14:03
 
 Current goal: `goal-h3-informed-trading-signature-001` - Build tested H3 informed-trading signature diagnostics
 
@@ -11,39 +11,99 @@ Current roadmap phase: Phase 13: H3 Informed-Trading Signature Diagnostics
 
 Test status: FAIL
 
-Pytest summary: `1 failed, 778 passed in 78.03s (0:01:18)`
+Pytest summary: `1 failed, 778 passed in 79.33s (0:01:19)`
 
 Git branch: `main`
 
-Latest commit: `ec59a7a`
+Latest commit: `e30aed3`
 
 Git status:
 
 ```text
+ M data/raw/live_runs/resolutions_allin_july10.json
+ M data/raw/live_runs/resolutions_allin_july3.json
+ M data/raw/live_runs/resolutions_jre_july6.json
  M data/results/mentions_latency_metadata.json
+ M data/results/monitor_anomaly_case_review_packets.csv
+ M data/results/monitor_anomaly_case_review_packets.json
+ M data/results/monitor_anomaly_review_access_contract.json
+ M data/results/monitor_anomaly_review_dashboard.html
+ M data/results/monitor_anomaly_review_decision_readiness.csv
+ M data/results/monitor_anomaly_review_decision_readiness.json
  M data/results/monitor_anomaly_review_metadata.json
+ M data/results/monitor_anomaly_review_queue.csv
+ M data/results/monitor_anomaly_review_status_transitions.csv
+ M data/results/monitor_anomaly_review_status_transitions.json
+ M data/results/monitor_anomaly_review_summary.csv
+ M data/results/monitor_candidate_human_review_report.csv
+ M data/results/monitor_candidate_human_review_report.html
  M data/results/monitor_candidate_human_review_report_metadata.json
+ M data/results/monitor_candidate_materiality_context.csv
+ M data/results/monitor_reference_candidate_dashboard.html
+ M data/results/monitor_reference_candidate_features.csv
  M data/results/monitor_reference_candidate_metadata.json
- M docs/project/WORK_LOG.md
- M operations/pipeline/daily_review_run.py
+ M data/results/monitor_reference_candidate_similarity_scores.csv
+ M data/results/monitor_reference_candidate_similarity_summary.csv
+ M data/results/monitor_reference_candidate_summary.csv
+ M data/results/monitor_v2_polymarket_live_collection_metadata.json
+ M data/results/monitor_v2_polymarket_live_input_validation_report.json
+ M data/results/monitor_v2_polymarket_live_market_snapshots.csv
+ M data/results/monitor_v2_polymarket_live_wallet_tier_snapshots.csv
+ M data/results/monitor_v2_polymarket_live_watchlist.csv
+ M data/results/monitor_v2_polymarket_rolling_alert_rows.csv
+ M data/results/monitor_v2_polymarket_rolling_alert_summary.csv
+ M data/results/monitor_v2_polymarket_rolling_history.png
+ M data/results/monitor_v2_polymarket_rolling_history_figure_metadata.json
+ M data/results/monitor_v2_polymarket_rolling_history_metadata.json
+ M data/results/monitor_v2_polymarket_rolling_scoring_metadata.json
+ M data/results/monitor_v2_polymarket_rolling_scoring_snapshots.csv
+ M data/results/monitor_v2_polymarket_rolling_scoring_validation_report.json
  M operations/pipeline/run_dashboard.py
- M tests/test_daily_review_run.py
- M tests/test_run_dashboard.py
 ```
 
 Git diff stat:
 
 ```text
+ data/raw/live_runs/resolutions_allin_july10.json   | 122 ++++-----
+ data/raw/live_runs/resolutions_allin_july3.json    |  88 +++----
+ data/raw/live_runs/resolutions_jre_july6.json      | 100 ++++----
  data/results/mentions_latency_metadata.json        |   2 +-
- data/results/monitor_anomaly_review_metadata.json  |   2 +-
- ...tor_candidate_human_review_report_metadata.json |   2 +-
- .../monitor_reference_candidate_metadata.json      |   2 +-
- docs/project/WORK_LOG.md                           |  27 ++++
- operations/pipeline/daily_review_run.py            | 156 ++++++++++-----------
- operations/pipeline/run_dashboard.py               |  15 +-
- tests/test_daily_review_run.py                     |  38 ++---
- tests/test_run_dashboard.py                        |  15 +-
- 9 files changed, 149 insertions(+), 110 deletions(-)
+ .../monitor_anomaly_case_review_packets.csv        |   4 +
+ .../monitor_anomaly_case_review_packets.json       |  74 +++++-
+ .../monitor_anomaly_review_access_contract.json    |  14 +-
+ data/results/monitor_anomaly_review_dashboard.html |  96 ++++++-
+ .../monitor_anomaly_review_decision_readiness.csv  |   4 +
+ .../monitor_anomaly_review_decision_readiness.json |  62 ++++-
+ data/results/monitor_anomaly_review_metadata.json  |  10 +-
+ data/results/monitor_anomaly_review_queue.csv      |  10 +-
+ .../monitor_anomaly_review_status_transitions.csv  |   4 +
+ .../monitor_anomaly_review_status_transitions.json |  58 ++++-
+ data/results/monitor_anomaly_review_summary.csv    |   2 +-
+ .../monitor_candidate_human_review_report.csv      |  10 +-
+ .../monitor_candidate_human_review_report.html     | 278 +++++++++++++++++++--
+ ...tor_candidate_human_review_report_metadata.json |   6 +-
+ .../monitor_candidate_materiality_context.csv      |  10 +-
+ .../monitor_reference_candidate_dashboard.html     |  12 +-
+ .../monitor_reference_candidate_features.csv       |  32 +++
+ .../monitor_reference_candidate_metadata.json      |  10 +-
+ ...nitor_reference_candidate_similarity_scores.csv |   8 +
+ ...itor_reference_candidate_similarity_summary.csv |   4 +
+ .../monitor_reference_candidate_summary.csv        |   2 +-
+ ...tor_v2_polymarket_live_collection_metadata.json |   8 +-
+ ...v2_polymarket_live_input_validation_report.json |  10 +-
+ ...monitor_v2_polymarket_live_market_snapshots.csv |  40 +++
+ ...or_v2_polymarket_live_wallet_tier_snapshots.csv |  20 ++
+ .../monitor_v2_polymarket_live_watchlist.csv       |  10 +-
+ .../monitor_v2_polymarket_rolling_alert_rows.csv   | 120 +++++++++
+ ...monitor_v2_polymarket_rolling_alert_summary.csv |  48 ++--
+ .../monitor_v2_polymarket_rolling_history.png      | Bin 130370 -> 132234 bytes
+ ...polymarket_rolling_history_figure_metadata.json |   8 +-
+ ...tor_v2_polymarket_rolling_history_metadata.json |  34 +--
+ ...tor_v2_polymarket_rolling_scoring_metadata.json |  24 +-
+ ...tor_v2_polymarket_rolling_scoring_snapshots.csv | 120 +++++++++
+ ...lymarket_rolling_scoring_validation_report.json |  10 +-
+ operations/pipeline/run_dashboard.py               |  25 +-
+ 39 files changed, 1186 insertions(+), 313 deletions(-)
 ```
 
 Blockers:

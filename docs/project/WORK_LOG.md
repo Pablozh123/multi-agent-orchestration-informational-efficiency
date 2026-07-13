@@ -13371,3 +13371,37 @@ Verification:
   wallet/name/tx fields.
 - Known pre-existing failures unchanged: test_h1_calibration_diagnostic,
   review_check live-trading guard (execution.py).
+
+## 2026-07-13 - user-directed: timing analytics on runs.json + daily tape refresh
+
+Task:
+
+- Make the drop-race tracking automatic and add the remaining timing
+  analyses to the published run review, per user request.
+- Scheduled task MarketIntelDailyReview action 2 now passes --fetch-tape
+  next to --fetch-resolutions: tape, resolutions and runs.json refresh
+  daily at 06:30 without manual research.
+- runs.json per bet: preis_nach_fill{0,30,60,120,300,900s} = last
+  FOREIGN taker buy of the bet side since the drop (own clips, sells and
+  opposite-side trades excluded -- they sit on the bid and faked falling
+  entry prices in the first cut; pre-drop prices excluded as stale).
+- runs.json per run: repricing[] curves (foreign buys of traded markets
+  over a 24h window -- mentions markets reprice while the episode runs,
+  not within the first hour; time_to_priced_s vs the 0.90 cap).
+- Missed chances get waere_gewonnen from the resolution cache.
+- Data note: the bot's own orderbook_log.csv pauses during the hot
+  phase (no rows between drop and ~+1h), so quotes cannot back these
+  curves; the public tape is the only in-window price source.
+
+Key output:
+
+- allin_july10: repricing curves for IPO and Nvidia (foreign buys...
+  time_to_priced 141 min for Nvidia); 15 of 25 missed chances would
+  have won. Counterfactual entry-delay table on the website shows
+  priced-out counts rising with delay.
+
+Verification:
+
+- pytest tests/test_run_dashboard.py -> 24 passed (timing tests reworked
+  from orderbook fixtures to tape fixtures after the data-gap finding).
+- Pre-existing failures unchanged (h1 figure test, live-trading guard).

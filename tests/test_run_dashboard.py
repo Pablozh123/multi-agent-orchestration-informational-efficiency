@@ -354,3 +354,82 @@ class TestRace:
         assert run.race.first_on == 1
         assert run.race.fremde_trades_vor_uns == 2
         assert run.race.median_verfolger_s == pytest.approx(180.0)
+
+
+class TestTimingAnalytik:
+    # Drop = 2026-07-03T23:21:22Z, Fill (default _decision) = 23:22:37Z (+75s).
+    # Kurven/Counterfactual kommen aus dem TAPE (der Bot pausiert sein
+    # Orderbuch-Log in der heissen Phase) -- No-Trades werden via 1-preis
+    # auf die Wett-Seite normalisiert.
+    TAPE_TIMING = {
+        "maerkte": {
+            "111": [
+                {"ts_utc": "2026-07-03T23:20:00Z", "side": "BUY", "outcome": "Yes",
+                 "preis": 0.40, "size": 5.0, "eigen": False},  # vor Drop
+                {"ts_utc": "2026-07-03T23:21:30Z", "side": "BUY", "outcome": "Yes",
+                 "preis": 0.62, "size": 5.0, "eigen": False},
+                {"ts_utc": "2026-07-03T23:22:30Z", "side": "BUY", "outcome": "No",
+                 "preis": 0.15, "size": 5.0, "eigen": False},  # Bid-Seite: fliegt raus
+                {"ts_utc": "2026-07-03T23:22:37Z", "side": "BUY", "outcome": "Yes",
+                 "preis": 0.85, "size": 7.0, "eigen": True},   # eigener Clip: raus
+                {"ts_utc": "2026-07-03T23:22:50Z", "side": "SELL", "outcome": "Yes",
+                 "preis": 0.80, "size": 4.0, "eigen": False},  # SELL: raus
+                {"ts_utc": "2026-07-03T23:23:00Z", "side": "BUY", "outcome": "Yes",
+                 "preis": 0.88, "size": 3.0, "eigen": False},
+                {"ts_utc": "2026-07-03T23:24:00Z", "side": "BUY", "outcome": "Yes",
+                 "preis": 0.93, "size": 3.0, "eigen": False},
+                {"ts_utc": "2026-07-03T23:40:00Z", "side": "BUY", "outcome": "Yes",
+                 "preis": 0.97, "size": 2.0, "eigen": False},
+            ],
+        }
+    }
+
+    def _run_mit_tape(self, decisions: list[dict]):
+        return build_run(
+            profil="testrun",
+            events=EVENTS,
+            decisions=decisions,
+            snapshot=SNAPSHOT,
+            resolutions=RESOLUTIONS,
+            tape=self.TAPE_TIMING,
+        )
+
+    def test_counterfactual_preise_nach_fill(self):
+        run = self._run_mit_tape([_decision()])
+        preise = run.wetten[0].preis_nach_fill
+        # Fill 23:22:37 -> letzter FREMDER Yes-BUY davor = 0.62 (eigener
+        # Clip, No-Trade und SELL zaehlen nicht); +30s -> 0.88;
+        # +120s -> 0.93; +900s (23:37:37) -> immer noch 0.93
+        assert preise["0"] == pytest.approx(0.62)
+        assert preise["30"] == pytest.approx(0.88)
+        assert preise["120"] == pytest.approx(0.93)
+        assert preise["900"] == pytest.approx(0.93)
+
+    def test_repricing_kurve_mit_priced_schwelle(self):
+        run = self._run_mit_tape([_decision()])
+        assert len(run.repricing) == 1
+        kurve = run.repricing[0]
+        # erster Trade-Preis > 0.90 bei 23:24:00 = 158 s nach Drop
+        assert kurve.time_to_priced_s == pytest.approx(158.0)
+        assert kurve.fill_nach_s == pytest.approx(75.0)
+        assert kurve.seite == "YES"
+        sekunden = [p[0] for p in kurve.punkte]
+        assert sekunden == sorted(sekunden)
+        assert min(sekunden) >= 0.0
+        # nur fremde Yes-BUYs im Fenster: 0.62 / 0.88 / 0.93 / 0.97
+        assert [p[1] for p in kurve.punkte] == [0.62, 0.88, 0.93, 0.97]
+
+    def test_ohne_tape_bleibt_leer(self):
+        run = _run([_decision()])
+        assert run.wetten[0].preis_nach_fill == {}
+        assert run.repricing == []
+
+    def test_verpasste_chance_wird_bepreist(self):
+        # market 111 ist closed mit outcome YES -> YES-Skip haette gewonnen
+        run = _run([
+            _decision(status="skipped_budget"),
+            _decision(market_id="333", status="skipped_budget", action="NO"),
+        ])
+        assert run.verpasste_chancen[0].waere_gewonnen is True
+        # market 333 ist offen -> keine Bewertung
+        assert run.verpasste_chancen[1].waere_gewonnen is None

@@ -23,7 +23,7 @@ import argparse
 import html
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional
 
@@ -89,6 +89,11 @@ class WetteEintrag(_Strict):
     fremde_davor: Optional[int] = None
     fremdvolumen_davor_usd: Optional[float] = None
     verfolger_s: Optional[float] = None
+    # Latenz-Counterfactual: letzter FREMDER Kauf-Preis der Wett-Seite N
+    # Sekunden nach dem eigenen Fill, gezaehlt AB dem Drop (Ask-seitig;
+    # eigene Clips und Gegenseiten-Trades ausgeschlossen; None = seit Drop
+    # kaufte bis dahin niemand sonst). Keys "0"/"30"/"60"/"120"/"300"/"900".
+    preis_nach_fill: Dict[str, Optional[float]] = {}
 
 
 class VerpassteChance(_Strict):
@@ -96,6 +101,24 @@ class VerpassteChance(_Strict):
     seite: str
     limit_preis: Optional[float]
     grund: str
+    # Nachtraegliche Bepreisung: haette die uebersprungene Seite gewonnen?
+    waere_gewonnen: Optional[bool] = None
+
+
+class RepricingKurve(_Strict):
+    """Fremd-Kaufpreis-Verlauf eines gehandelten Markts ab Drop (1h Fenster).
+
+    ``punkte``: [sekunden_seit_drop, preis] -- jeder FREMDE Taker-BUY der
+    Wett-Seite ein Punkt (Ask-seitig; eigene Clips ausgeschlossen).
+    ``time_to_priced_s``: Sekunden bis ein fremder Kauf ueber der
+    Bot-Kaufgrenze 0.90 liegt (None = im Fenster nie).
+    """
+
+    frage: str
+    seite: str
+    time_to_priced_s: Optional[float]
+    fill_nach_s: Optional[float]
+    punkte: List[List[float]]
 
 
 class RaceInfo(_Strict):
@@ -128,6 +151,7 @@ class RunEintrag(_Strict):
     wetten: List[WetteEintrag]
     verpasste_chancen: List[VerpassteChance]
     race: Optional[RaceInfo] = None
+    repricing: List[RepricingKurve] = []
 
 
 class RunsAggregat(_Strict):
@@ -287,6 +311,117 @@ def race_fuer_wette(
     }
 
 
+#: Bot-Kaufgrenze -- Preis darueber gilt als "eingepreist" (kein Entry mehr).
+PRICED_ASK_CAP = 0.90
+#: Mentions-Maerkte preisen waehrend der laufenden Episode ein -- die
+#: Fremd-Kaeufe kommen oft erst Stunden nach dem Drop, daher 24h Fenster.
+REPRICING_WINDOW_S = 24 * 3600
+COUNTERFACTUAL_DELTAS_S = (0, 30, 60, 120, 300, 900)
+
+
+def tape_price_series(
+    tape_rows: List[Dict[str, Any]], seite: str
+) -> List[tuple[datetime, float]]:
+    """FREMDE Kauf-Preise der Wett-Seite aus dem Taker-Tape, sortiert.
+
+    Nur Taker-BUYs derselben Outcome-Seite zaehlen: sie sind Ask-seitig und
+    beantworten "was haette ein spaeterer Kaeufer gezahlt". SELLs und
+    Gegenseiten-Trades sind Bid-seitig und wuerden faelschlich fallende
+    Einstiegspreise suggerieren; eigene Clips fliegen raus, weil sie im
+    Counterfactual "wir kommen spaeter" nicht existieren wuerden.
+    Grundlage ist das Tape, weil der Bot sein Orderbuch-Log waehrend der
+    heissen Phase pausiert -- im Repricing-Fenster gibt es keine Quotes.
+    """
+
+    wanted = "Yes" if str(seite).upper() == "YES" else "No"
+    series: List[tuple[datetime, float]] = []
+    for row in tape_rows or []:
+        if bool(row.get("eigen")):
+            continue
+        if str(row.get("outcome") or "") != wanted:
+            continue
+        if str(row.get("side") or "").upper() != "BUY":
+            continue
+        preis = row.get("preis")
+        t = _ts(row.get("ts_utc"))
+        if t is None or preis is None:
+            continue
+        preis = float(preis)
+        if 0.0 < preis < 1.0:
+            series.append((t, preis))
+    series.sort(key=lambda item: item[0])
+    return series
+
+
+def _price_at(
+    series: List[tuple[datetime, float]], moment: datetime
+) -> Optional[float]:
+    """Letzter gehandelter Preis vor oder auf ``moment`` (None ohne Trade)."""
+
+    preis = None
+    for t, value in series:
+        if t > moment:
+            break
+        preis = value
+    return preis
+
+
+def counterfactual_prices(
+    series: List[tuple[datetime, float]], fill_ts: Any, drop_ts: Any = None
+) -> Dict[str, Optional[float]]:
+    """Letzter fremder Kauf-Preis der Wett-Seite N Sekunden nach dem Fill.
+
+    Nur Kaeufe AB dem Drop zaehlen -- Preise aus der Zeit davor beschreiben
+    den alten, uninformierten Markt und taugen nicht als Einstiegs-Proxy.
+    None heisst: bis zu diesem Zeitpunkt hat seit dem Drop niemand sonst
+    unsere Seite gekauft.
+    """
+
+    t_fill = _ts(fill_ts)
+    if t_fill is None or not series:
+        return {}
+    t_drop = _ts(drop_ts)
+    if t_drop is not None:
+        series = [(t, preis) for t, preis in series if t >= t_drop]
+    return {
+        str(delta): _price_at(series, t_fill + timedelta(seconds=delta))
+        for delta in COUNTERFACTUAL_DELTAS_S
+    }
+
+
+def repricing_kurve(
+    series: List[tuple[datetime, float]],
+    drop_ts: Any,
+    fill_ts: Any,
+    *,
+    frage: str,
+    seite: str,
+) -> Optional[RepricingKurve]:
+    """Trade-Preis-Kurve ab Drop (jeder Trade ein Punkt, 1h Fenster)."""
+
+    t_drop = _ts(drop_ts)
+    if t_drop is None or not series:
+        return None
+    punkte: List[List[float]] = []
+    time_to_priced: Optional[float] = None
+    for t, preis in series:
+        s = (t - t_drop).total_seconds()
+        if s < 0 or s > REPRICING_WINDOW_S:
+            continue
+        if time_to_priced is None and preis > PRICED_ASK_CAP:
+            time_to_priced = round(s, 1)
+        punkte.append([round(s, 1), preis])
+    if not punkte:
+        return None
+    return RepricingKurve(
+        frage=frage,
+        seite=seite,
+        time_to_priced_s=time_to_priced,
+        fill_nach_s=_sekunden(fill_ts, drop_ts),
+        punkte=punkte,
+    )
+
+
 def build_race_info(wetten: List[WetteEintrag]) -> Optional[RaceInfo]:
     """Run-Zusammenfassung aus den Wetten-Race-Feldern (None ohne Tape)."""
 
@@ -329,11 +464,21 @@ def build_run(
     """Einen Run aus Logs, Markt-Snapshot und Aufloesungs-Cache bauen.
 
     ``tape``: optionaler anonymisierter Trade-Tape-Cache
-    (``maerkte`` -> market_id -> Taker-Trades) fuer die Race-Felder.
+    (``maerkte`` -> market_id -> Taker-Trades) fuer Race-Felder,
+    Repricing-Kurven und das Latenz-Counterfactual.
     """
 
     info = parse_events(events)
     tape_maerkte: Dict[str, Any] = (tape or {}).get("maerkte") or {}
+    series_cache: Dict[tuple[str, str], List[tuple[datetime, float]]] = {}
+
+    def _series(mid: str, seite: str) -> List[tuple[datetime, float]]:
+        key = (mid, str(seite).upper())
+        if key not in series_cache:
+            series_cache[key] = tape_price_series(
+                tape_maerkte.get(mid) or [], seite
+            )
+        return series_cache[key]
     fragen = {
         str(m.get("id")): str(m.get("question") or m.get("slug") or "")
         for m in snapshot.get("markets", [])
@@ -368,6 +513,12 @@ def build_run(
             continue
 
         if status == "skipped_budget":
+            markt_skip = aufloesung.get(mid) or {}
+            waere_gewonnen: Optional[bool] = None
+            if bool(markt_skip.get("closed")) and markt_skip.get("outcome_yes") is not None:
+                waere_gewonnen = (
+                    str(decision.get("action", "")) == "YES"
+                ) == bool(markt_skip["outcome_yes"])
             verpasst.append(
                 VerpassteChance(
                     frage=frage,
@@ -378,6 +529,7 @@ def build_run(
                         else float(decision["limit_price"])
                     ),
                     grund="budget_exhausted",
+                    waere_gewonnen=waere_gewonnen,
                 )
             )
             continue
@@ -411,6 +563,7 @@ def build_run(
             info["drop_erkannt_utc"],
             record.get("wall_ts_utc"),
         )
+        wetten_series = _series(mid, seite)
         wetten.append(
             WetteEintrag(
                 frage=frage,
@@ -438,6 +591,11 @@ def build_run(
                 fremde_davor=race["fremde_davor"],
                 fremdvolumen_davor_usd=race["fremdvolumen_davor_usd"],
                 verfolger_s=race["verfolger_s"],
+                preis_nach_fill=counterfactual_prices(
+                    wetten_series,
+                    record.get("wall_ts_utc"),
+                    info["drop_erkannt_utc"],
+                ),
             )
         )
 
@@ -445,6 +603,30 @@ def build_run(
     erste_entscheidung = (
         _sekunden(decisions[0].get("wall_ts_utc"), drop_ts) if decisions else None
     )
+    repricing: List[RepricingKurve] = []
+    gesehen: set[tuple[str, str]] = set()
+    for record in decisions:
+        result = record.get("result", {}) or {}
+        if str(result.get("status", "")) not in FILL_STATUS:
+            continue
+        mid = str(
+            result.get("market_id")
+            or (record.get("decision", {}) or {}).get("market_id")
+            or ""
+        )
+        seite = str(result.get("action", "")) or "YES"
+        if (mid, seite) in gesehen:
+            continue
+        gesehen.add((mid, seite))
+        kurve = repricing_kurve(
+            _series(mid, seite),
+            drop_ts,
+            record.get("wall_ts_utc"),
+            frage=fragen.get(mid, mid),
+            seite="YES" if seite == "YES" else "NO",
+        )
+        if kurve is not None:
+            repricing.append(kurve)
     return RunEintrag(
         profil=profil,
         event_slug=str(snapshot.get("slug") or resolutions.get("event_slug") or ""),
@@ -465,6 +647,7 @@ def build_run(
         wetten=wetten,
         verpasste_chancen=verpasst,
         race=build_race_info(wetten),
+        repricing=repricing,
     )
 
 

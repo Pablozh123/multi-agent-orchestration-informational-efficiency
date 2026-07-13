@@ -13338,3 +13338,36 @@ Verification:
 - Full suite: 778 passed, 1 pre-existing failure in
   test_h1_calibration_diagnostic (figure_aspect_ratio 2.946 vs expected
   1.5) -- untouched by this change, needs its own review.
+
+## 2026-07-13 - user-directed: drop-race analysis over the public trade tape
+
+Task:
+
+- Answer "who traded before/after us on each market after the drop" from
+  the public taker-trade tape (Data-API /trades per conditionId), as the
+  user proposed from the Polymarket activity feed.
+- run_dashboard gains fetch_trade_tape (--fetch-tape): one read-only GET
+  per run market, cached ANONYMIZED per run (time/side/outcome/price/
+  size/eigen flag only -- no wallets, names or tx hashes). Own fills are
+  matched internally against the deposit-wallet addresses, which never
+  leave the process.
+- race_fuer_wette counts foreign trades between drop and our logged fill
+  (rank, count, USD volume ahead of us) and the follower gap to the
+  first foreign trade after us; build_race_info aggregates per run
+  (first_on, median follower). New optional fields on WetteEintrag and
+  RunEintrag.race -- absent tape leaves them None.
+
+Key output:
+
+- allin_july10: first taker on 4 of 7 fills; fastest follower +69 s
+  (IPO), median +334 s. Third-wave Nvidia fill ranked 10th with 342 USD
+  ahead -- consistent with entering 25 h after the drop. allin_july3:
+  first on the single fill, follower +565 s.
+
+Verification:
+
+- pytest tests/test_run_dashboard.py -> 20 passed (4 new race tests).
+- Published runs.json contains no 0x pattern; tape caches carry no
+  wallet/name/tx fields.
+- Known pre-existing failures unchanged: test_h1_calibration_diagnostic,
+  review_check live-trading guard (execution.py).

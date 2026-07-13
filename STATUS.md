@@ -3,7 +3,7 @@
 <!-- PROJECT_STATUS:START -->
 ## Automation Snapshot
 
-Generated: 2026-07-13 14:03
+Generated: 2026-07-13 14:30
 
 Current goal: `goal-h3-informed-trading-signature-001` - Build tested H3 informed-trading signature diagnostics
 
@@ -11,18 +11,15 @@ Current roadmap phase: Phase 13: H3 Informed-Trading Signature Diagnostics
 
 Test status: FAIL
 
-Pytest summary: `1 failed, 778 passed in 79.33s (0:01:19)`
+Pytest summary: `1 failed, 782 passed in 62.68s (0:01:02)`
 
 Git branch: `main`
 
-Latest commit: `e30aed3`
+Latest commit: `c741ccc`
 
 Git status:
 
 ```text
- M data/raw/live_runs/resolutions_allin_july10.json
- M data/raw/live_runs/resolutions_allin_july3.json
- M data/raw/live_runs/resolutions_jre_july6.json
  M data/results/mentions_latency_metadata.json
  M data/results/monitor_anomaly_case_review_packets.csv
  M data/results/monitor_anomaly_case_review_packets.json
@@ -58,52 +55,56 @@ Git status:
  M data/results/monitor_v2_polymarket_rolling_scoring_metadata.json
  M data/results/monitor_v2_polymarket_rolling_scoring_snapshots.csv
  M data/results/monitor_v2_polymarket_rolling_scoring_validation_report.json
+ M data/results/stage3_llm_audit_log.jsonl
  M operations/pipeline/run_dashboard.py
+ M tests/test_run_dashboard.py
+?? data/raw/live_runs/tape_allin_july10.json
+?? data/raw/live_runs/tape_allin_july3.json
+?? data/raw/live_runs/tape_jre_july6.json
 ```
 
 Git diff stat:
 
 ```text
- data/raw/live_runs/resolutions_allin_july10.json   | 122 ++++-----
- data/raw/live_runs/resolutions_allin_july3.json    |  88 +++----
- data/raw/live_runs/resolutions_jre_july6.json      | 100 ++++----
  data/results/mentions_latency_metadata.json        |   2 +-
  .../monitor_anomaly_case_review_packets.csv        |   4 +
- .../monitor_anomaly_case_review_packets.json       |  74 +++++-
+ .../monitor_anomaly_case_review_packets.json       |  74 +++-
  .../monitor_anomaly_review_access_contract.json    |  14 +-
- data/results/monitor_anomaly_review_dashboard.html |  96 ++++++-
+ data/results/monitor_anomaly_review_dashboard.html |  96 ++++-
  .../monitor_anomaly_review_decision_readiness.csv  |   4 +
- .../monitor_anomaly_review_decision_readiness.json |  62 ++++-
+ .../monitor_anomaly_review_decision_readiness.json |  62 ++-
  data/results/monitor_anomaly_review_metadata.json  |  10 +-
  data/results/monitor_anomaly_review_queue.csv      |  10 +-
  .../monitor_anomaly_review_status_transitions.csv  |   4 +
- .../monitor_anomaly_review_status_transitions.json |  58 ++++-
+ .../monitor_anomaly_review_status_transitions.json |  58 ++-
  data/results/monitor_anomaly_review_summary.csv    |   2 +-
  .../monitor_candidate_human_review_report.csv      |  10 +-
- .../monitor_candidate_human_review_report.html     | 278 +++++++++++++++++++--
+ .../monitor_candidate_human_review_report.html     | 278 +++++++++++--
  ...tor_candidate_human_review_report_metadata.json |   6 +-
  .../monitor_candidate_materiality_context.csv      |  10 +-
  .../monitor_reference_candidate_dashboard.html     |  12 +-
- .../monitor_reference_candidate_features.csv       |  32 +++
+ .../monitor_reference_candidate_features.csv       |  32 ++
  .../monitor_reference_candidate_metadata.json      |  10 +-
  ...nitor_reference_candidate_similarity_scores.csv |   8 +
  ...itor_reference_candidate_similarity_summary.csv |   4 +
  .../monitor_reference_candidate_summary.csv        |   2 +-
  ...tor_v2_polymarket_live_collection_metadata.json |   8 +-
  ...v2_polymarket_live_input_validation_report.json |  10 +-
- ...monitor_v2_polymarket_live_market_snapshots.csv |  40 +++
- ...or_v2_polymarket_live_wallet_tier_snapshots.csv |  20 ++
+ ...monitor_v2_polymarket_live_market_snapshots.csv |  40 ++
+ ...or_v2_polymarket_live_wallet_tier_snapshots.csv |  20 +
  .../monitor_v2_polymarket_live_watchlist.csv       |  10 +-
- .../monitor_v2_polymarket_rolling_alert_rows.csv   | 120 +++++++++
- ...monitor_v2_polymarket_rolling_alert_summary.csv |  48 ++--
+ .../monitor_v2_polymarket_rolling_alert_rows.csv   | 120 ++++++
+ ...monitor_v2_polymarket_rolling_alert_summary.csv |  48 +--
  .../monitor_v2_polymarket_rolling_history.png      | Bin 130370 -> 132234 bytes
  ...polymarket_rolling_history_figure_metadata.json |   8 +-
- ...tor_v2_polymarket_rolling_history_metadata.json |  34 +--
+ ...tor_v2_polymarket_rolling_history_metadata.json |  34 +-
  ...tor_v2_polymarket_rolling_scoring_metadata.json |  24 +-
- ...tor_v2_polymarket_rolling_scoring_snapshots.csv | 120 +++++++++
+ ...tor_v2_polymarket_rolling_scoring_snapshots.csv | 120 ++++++
  ...lymarket_rolling_scoring_validation_report.json |  10 +-
- operations/pipeline/run_dashboard.py               |  25 +-
- 39 files changed, 1186 insertions(+), 313 deletions(-)
+ data/results/stage3_llm_audit_log.jsonl            | 432 +++++++++++++++++++++
+ operations/pipeline/run_dashboard.py               | 236 ++++++++++-
+ tests/test_run_dashboard.py                        |  76 ++++
+ 38 files changed, 1758 insertions(+), 150 deletions(-)
 ```
 
 Blockers:

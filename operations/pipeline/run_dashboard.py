@@ -51,7 +51,10 @@ HINWEIS = (
 )
 
 GAMMA_EVENTS_URL = "https://gamma-api.polymarket.com/events"
+DATA_API_TRADES_URL = "https://data-api.polymarket.com/trades"
 HTTP_HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+
+TAPE_QUELLE = "data-api.polymarket.com/trades (oeffentlich, read-only)"
 
 
 # ---------------------------------------------------------------------------
@@ -79,6 +82,13 @@ class WetteEintrag(_Strict):
     pnl_usd: Optional[float]
     roi_pct: Optional[float]
     aktueller_yes_preis: Optional[float]
+    # Race gegen das oeffentliche Trade-Tape (None ohne Tape-Cache).
+    # Zeitanker ist die geloggte Fill-Zeit des Bots; Chain-Timestamps koennen
+    # wenige Sekunden davon abweichen.
+    tape_rang: Optional[int] = None
+    fremde_davor: Optional[int] = None
+    fremdvolumen_davor_usd: Optional[float] = None
+    verfolger_s: Optional[float] = None
 
 
 class VerpassteChance(_Strict):
@@ -86,6 +96,16 @@ class VerpassteChance(_Strict):
     seite: str
     limit_preis: Optional[float]
     grund: str
+
+
+class RaceInfo(_Strict):
+    """Run-weite Zusammenfassung des Drop-Rennens uebers oeffentliche Tape."""
+
+    quelle: str
+    wetten_mit_tape: int
+    first_on: int
+    fremde_trades_vor_uns: int
+    median_verfolger_s: Optional[float]
 
 
 class RunEintrag(_Strict):
@@ -107,6 +127,7 @@ class RunEintrag(_Strict):
     realisierter_pnl_usd: Optional[float]
     wetten: List[WetteEintrag]
     verpasste_chancen: List[VerpassteChance]
+    race: Optional[RaceInfo] = None
 
 
 class RunsAggregat(_Strict):
@@ -216,6 +237,86 @@ def klassifiziere_grund(reason: str) -> str:
     return "regel_nicht_erfuellt"
 
 
+def race_fuer_wette(
+    tape_rows: List[Dict[str, Any]],
+    drop_ts: Any,
+    fill_ts: Any,
+) -> Dict[str, Optional[float]]:
+    """Drop-Rennen einer Wette gegen das anonymisierte Markt-Tape.
+
+    ``tape_rows``: Taker-Trades eines Markts (``ts_utc``, ``preis``, ``size``,
+    ``eigen``), zeitlich unsortiert erlaubt. Gezaehlt wird zwischen Drop und
+    der geloggten Fill-Zeit des Bots; eigene Clips zaehlen nie als fremd.
+    ``verfolger_s`` ist der Abstand vom eigenen Fill zum ersten fremden
+    Trade danach (None, wenn keiner folgt).
+    """
+
+    leer: Dict[str, Optional[float]] = {
+        "tape_rang": None,
+        "fremde_davor": None,
+        "fremdvolumen_davor_usd": None,
+        "verfolger_s": None,
+    }
+    t_drop, t_fill = _ts(drop_ts), _ts(fill_ts)
+    if not tape_rows or t_drop is None or t_fill is None:
+        return leer
+
+    fremde_davor = 0
+    fremdvolumen = 0.0
+    verfolger: Optional[datetime] = None
+    for row in sorted(tape_rows, key=lambda r: str(r.get("ts_utc", ""))):
+        t = _ts(row.get("ts_utc"))
+        if t is None or t < t_drop or bool(row.get("eigen")):
+            continue
+        if t < t_fill:
+            fremde_davor += 1
+            fremdvolumen += float(row.get("preis") or 0.0) * float(
+                row.get("size") or 0.0
+            )
+        elif verfolger is None:
+            verfolger = t
+    return {
+        "tape_rang": fremde_davor + 1,
+        "fremde_davor": fremde_davor,
+        "fremdvolumen_davor_usd": round(fremdvolumen, 2),
+        "verfolger_s": (
+            None
+            if verfolger is None
+            else round((verfolger - t_fill).total_seconds(), 1)
+        ),
+    }
+
+
+def build_race_info(wetten: List[WetteEintrag]) -> Optional[RaceInfo]:
+    """Run-Zusammenfassung aus den Wetten-Race-Feldern (None ohne Tape)."""
+
+    mit_tape = [w for w in wetten if w.tape_rang is not None]
+    if not mit_tape:
+        return None
+    verfolger = sorted(
+        w.verfolger_s for w in mit_tape if w.verfolger_s is not None
+    )
+    median = (
+        None
+        if not verfolger
+        else round(
+            (
+                verfolger[len(verfolger) // 2]
+                if len(verfolger) % 2
+                else (verfolger[len(verfolger) // 2 - 1] + verfolger[len(verfolger) // 2]) / 2.0
+            ),
+            1,
+        )
+    )
+    return RaceInfo(
+        quelle=TAPE_QUELLE,
+        wetten_mit_tape=len(mit_tape),
+        first_on=sum(1 for w in mit_tape if w.tape_rang == 1),
+        fremde_trades_vor_uns=sum(w.fremde_davor or 0 for w in mit_tape),
+        median_verfolger_s=median,
+    )
+
+
 def build_run(
     *,
     profil: str,
@@ -223,10 +324,16 @@ def build_run(
     decisions: List[Dict[str, Any]],
     snapshot: Dict[str, Any],
     resolutions: Dict[str, Any],
+    tape: Optional[Dict[str, Any]] = None,
 ) -> RunEintrag:
-    """Einen Run aus Logs, Markt-Snapshot und Aufloesungs-Cache bauen."""
+    """Einen Run aus Logs, Markt-Snapshot und Aufloesungs-Cache bauen.
+
+    ``tape``: optionaler anonymisierter Trade-Tape-Cache
+    (``maerkte`` -> market_id -> Taker-Trades) fuer die Race-Felder.
+    """
 
     info = parse_events(events)
+    tape_maerkte: Dict[str, Any] = (tape or {}).get("maerkte") or {}
     fragen = {
         str(m.get("id")): str(m.get("question") or m.get("slug") or "")
         for m in snapshot.get("markets", [])
@@ -299,6 +406,11 @@ def build_run(
         if erster_fill_ts is None:
             erster_fill_ts = str(record.get("wall_ts_utc", ""))
 
+        race = race_fuer_wette(
+            tape_maerkte.get(mid) or [],
+            info["drop_erkannt_utc"],
+            record.get("wall_ts_utc"),
+        )
         wetten.append(
             WetteEintrag(
                 frage=frage,
@@ -322,6 +434,10 @@ def build_run(
                 aktueller_yes_preis=(
                     None if aufgeloest else markt.get("aktueller_yes_preis")
                 ),
+                tape_rang=race["tape_rang"],
+                fremde_davor=race["fremde_davor"],
+                fremdvolumen_davor_usd=race["fremdvolumen_davor_usd"],
+                verfolger_s=race["verfolger_s"],
             )
         )
 
@@ -348,6 +464,7 @@ def build_run(
         realisierter_pnl_usd=realisiert,
         wetten=wetten,
         verpasste_chancen=verpasst,
+        race=build_race_info(wetten),
     )
 
 
@@ -410,6 +527,12 @@ def build_runs_payload(
             if resolutions_path.exists()
             else {}
         )
+        tape_path = resolutions_dir / f"tape_{profil}.json"
+        tape = (
+            json.loads(tape_path.read_text(encoding="utf-8"))
+            if tape_path.exists()
+            else None
+        )
         runs.append(
             build_run(
                 profil=profil,
@@ -417,6 +540,7 @@ def build_runs_payload(
                 decisions=_read_jsonl(run_dir / "decisions_log.jsonl"),
                 snapshot=snapshot,
                 resolutions=resolutions,
+                tape=tape,
             )
         )
     runs.sort(key=lambda r: r.drop_erkannt_utc or "")
@@ -500,6 +624,105 @@ def fetch_resolutions(
     return written
 
 
+def _load_own_wallets(live_root: Path) -> set[str]:
+    """Eigene Wallet-Adressen (lowercase) NUR fuer das interne Tape-Matching.
+
+    Die Adressen verlassen diese Funktion nicht: der Cache und alle
+    publizierten Artefakte tragen nur ein ``eigen``-Flag.
+    """
+
+    wallet_path = live_root / "deposit_wallet.json"
+    if not wallet_path.exists():
+        return set()
+    data = json.loads(wallet_path.read_text(encoding="utf-8"))
+    own = set()
+    for key in ("deposit_wallet", "owner_eoa"):
+        value = str(data.get(key) or "").strip().lower()
+        if value.startswith("0x") and len(value) == 42:
+            own.add(value)
+    return own
+
+
+def fetch_trade_tape(
+    live_root: Path, tape_dir: Path = RESOLUTIONS_DIR_DEFAULT
+) -> List[Path]:
+    """Oeffentliches Taker-Trade-Tape je Run-Markt cachen (read-only).
+
+    Ein GET je Markt gegen die Data-API; jede Zeile wird beim Schreiben
+    anonymisiert (Zeit, Seite, Preis, Groesse, ``eigen``-Flag) -- keine
+    Wallets, keine Namen, keine Tx-Hashes im Cache.
+    """
+
+    import httpx
+
+    own_wallets = _load_own_wallets(live_root)
+    written: List[Path] = []
+    now = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    tape_dir.mkdir(parents=True, exist_ok=True)
+    for run_dir in discover_runs(live_root):
+        snapshot_path = run_dir / "gamma_event_snapshot.json"
+        if not snapshot_path.exists():
+            continue
+        snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
+        maerkte: Dict[str, List[Dict[str, Any]]] = {}
+        for markt in snapshot.get("markets", []):
+            mid = str(markt.get("id") or "")
+            condition_id = str(markt.get("conditionId") or "")
+            if not mid or not condition_id:
+                continue
+            rows: List[Dict[str, Any]] = []
+            offset = 0
+            while True:
+                response = httpx.get(
+                    DATA_API_TRADES_URL,
+                    params={
+                        "market": condition_id,
+                        "limit": 500,
+                        "offset": offset,
+                    },
+                    headers=HTTP_HEADERS,
+                    timeout=60,
+                )
+                response.raise_for_status()
+                batch = response.json() or []
+                for trade in batch:
+                    ts = datetime.fromtimestamp(
+                        int(trade.get("timestamp") or 0), timezone.utc
+                    )
+                    rows.append(
+                        {
+                            "ts_utc": ts.isoformat().replace("+00:00", "Z"),
+                            "side": str(trade.get("side") or ""),
+                            "outcome": str(trade.get("outcome") or ""),
+                            "preis": float(trade.get("price") or 0.0),
+                            "size": float(trade.get("size") or 0.0),
+                            "eigen": (
+                                str(trade.get("proxyWallet") or "").lower()
+                                in own_wallets
+                            ),
+                        }
+                    )
+                if len(batch) < 500:
+                    break
+                offset += 500
+            rows.sort(key=lambda r: r["ts_utc"])
+            maerkte[mid] = rows
+        payload = {
+            "profil": run_dir.name,
+            "event_slug": str(snapshot.get("slug") or ""),
+            "abgerufen_utc": now,
+            "quelle": TAPE_QUELLE,
+            "maerkte": maerkte,
+        }
+        target = tape_dir / f"tape_{run_dir.name}.json"
+        target.write_text(
+            json.dumps(payload, ensure_ascii=False, indent=1) + "\n",
+            encoding="utf-8",
+        )
+        written.append(target)
+    return written
+
+
 # ---------------------------------------------------------------------------
 # Publish
 # ---------------------------------------------------------------------------
@@ -547,6 +770,14 @@ def main(argv: Optional[List[str]] = None) -> int:
         action="store_true",
         help="Aufloesungs-Cache vor dem Bauen read-only via Gamma auffrischen.",
     )
+    parser.add_argument(
+        "--fetch-tape",
+        action="store_true",
+        help=(
+            "Anonymisiertes Taker-Trade-Tape je Run-Markt read-only via "
+            "Data-API auffrischen (fuer die Race-Felder)."
+        ),
+    )
     args = parser.parse_args(argv)
 
     if not args.live_root.exists():
@@ -561,6 +792,9 @@ def main(argv: Optional[List[str]] = None) -> int:
         if args.fetch_resolutions:
             for path in fetch_resolutions(args.live_root):
                 print(f"Aufloesungs-Cache: {path}")
+        if args.fetch_tape:
+            for path in fetch_trade_tape(args.live_root):
+                print(f"Tape-Cache: {path}")
         payload = build_runs_payload(live_root=args.live_root)
         written = publish_runs(payload, extra_publish_dir=args.publish_dir)
     except (RedactionGateError, ValueError, RuntimeError) as exc:

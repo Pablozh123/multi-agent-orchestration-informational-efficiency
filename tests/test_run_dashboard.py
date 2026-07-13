@@ -278,3 +278,79 @@ class TestPayloadUndPublish:
         )
         with pytest.raises(RedactionGateError):
             publish_runs(payload, publish_dir=tmp_path / "p")
+
+
+class TestRace:
+    TAPE = {
+        "maerkte": {
+            "111": [
+                {"ts_utc": "2026-07-03T23:20:00Z", "side": "BUY",
+                 "outcome": "Yes", "preis": 0.4, "size": 100.0,
+                 "eigen": False},  # vor dem Drop -- zaehlt nicht
+                {"ts_utc": "2026-07-03T23:21:40Z", "side": "BUY",
+                 "outcome": "Yes", "preis": 0.5, "size": 10.0,
+                 "eigen": False},
+                {"ts_utc": "2026-07-03T23:22:00Z", "side": "BUY",
+                 "outcome": "Yes", "preis": 0.6, "size": 5.0,
+                 "eigen": False},
+                {"ts_utc": "2026-07-03T23:22:36Z", "side": "BUY",
+                 "outcome": "Yes", "preis": 0.85, "size": 7.0,
+                 "eigen": True},  # eigener Clip -- nie fremd
+                {"ts_utc": "2026-07-03T23:24:37Z", "side": "BUY",
+                 "outcome": "Yes", "preis": 0.9, "size": 3.0,
+                 "eigen": False},
+            ],
+            "333": [
+                {"ts_utc": "2026-07-03T23:26:37Z", "side": "BUY",
+                 "outcome": "Yes", "preis": 0.7, "size": 2.0,
+                 "eigen": False},
+            ],
+        }
+    }
+
+    def _run_mit_tape(self, decisions: list[dict]):
+        return build_run(
+            profil="testrun",
+            events=EVENTS,
+            decisions=decisions,
+            snapshot=SNAPSHOT,
+            resolutions=RESOLUTIONS,
+            tape=self.TAPE,
+        )
+
+    def test_race_zaehlt_fremde_vor_uns_und_verfolger(self):
+        run = self._run_mit_tape([_decision()])
+        wette = run.wetten[0]
+        assert wette.fremde_davor == 2
+        assert wette.tape_rang == 3
+        assert wette.fremdvolumen_davor_usd == pytest.approx(8.0)
+        assert wette.verfolger_s == pytest.approx(120.0)
+
+    def test_race_first_ohne_fremde_davor(self):
+        run = self._run_mit_tape(
+            [_decision(market_id="333", ts="2026-07-03T23:22:37Z")]
+        )
+        wette = run.wetten[0]
+        assert wette.tape_rang == 1
+        assert wette.fremde_davor == 0
+        assert wette.verfolger_s == pytest.approx(240.0)
+
+    def test_race_ohne_tape_bleibt_none(self):
+        run = _run([_decision()])
+        wette = run.wetten[0]
+        assert wette.tape_rang is None
+        assert wette.verfolger_s is None
+        assert run.race is None
+
+    def test_race_info_aggregiert_first_und_median(self):
+        run = self._run_mit_tape(
+            [
+                _decision(),
+                _decision(market_id="333", ts="2026-07-03T23:22:37Z"),
+            ]
+        )
+        assert run.race is not None
+        assert run.race.wetten_mit_tape == 2
+        assert run.race.first_on == 1
+        assert run.race.fremde_trades_vor_uns == 2
+        assert run.race.median_verfolger_s == pytest.approx(180.0)

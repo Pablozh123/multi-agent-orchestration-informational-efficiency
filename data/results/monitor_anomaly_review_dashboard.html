@@ -23,9 +23,9 @@
   <h1>Monitor Anomaly Review Queue</h1>
   <p class="note">Deterministic review queue over bounded monitor artifacts. Future agents and MCP may read summaries only after audit logging exists; they do not calculate metrics here.</p>
   <section class="metrics">
-    <div class="metric">Queued cases<strong>20</strong></div>
+    <div class="metric">Queued cases<strong>24</strong></div>
     <div class="metric">High priority<strong>8</strong></div>
-    <div class="metric">Medium priority<strong>12</strong></div>
+    <div class="metric">Medium priority<strong>16</strong></div>
     <div class="metric">Low priority<strong>0</strong></div>
   </section>
   <h2>Review Cases</h2>
@@ -138,8 +138,8 @@
       <span class="pill">status: needs_human_review</span>
     </p>
     <section class="grid">
-      <div class="box"><strong>Market move</strong><p>no_market_move_anomaly_in_candidate; midpoint_range=0.142-0.858; metrics=log1p_total_observed_amount_usd</p></div>
-      <div class="box"><strong>Wallet flow</strong><p>total_observed_amount_usd=107.1250; active_wallets=1.0000; trade_count=1.0000; amount_per_wallet_usd=107.1250; materiality=below_one_percent_of_reference</p></div>
+      <div class="box"><strong>Market move</strong><p>no_market_move_anomaly_in_candidate; midpoint_range=0.1455-0.8545; metrics=log1p_total_observed_amount_usd</p></div>
+      <div class="box"><strong>Wallet flow</strong><p>total_observed_amount_usd=0.0000; active_wallets=0.0000; trade_count=0.0000; amount_per_wallet_usd=0.0000; materiality=below_one_percent_of_reference</p></div>
       <div class="box"><strong>Concentration</strong><p>concentration_context=not_triggered; coordination_label=single_wallet_single_trade; triggered_patterns=large_trade_flow,same_theme_repeated_positions</p></div>
       <div class="box"><strong>Context checks</strong><p>Event: not_evaluated<br>Reference: partial_reference_overlap</p></div>
     </section>
@@ -218,8 +218,8 @@
       <span class="pill">status: needs_human_review</span>
     </p>
     <section class="grid">
-      <div class="box"><strong>Market move</strong><p>no_market_move_anomaly_in_candidate; midpoint_range=0.142-0.858; metrics=hhi_concentration,top_tier_share</p></div>
-      <div class="box"><strong>Wallet flow</strong><p>total_observed_amount_usd=107.1250; active_wallets=1.0000; trade_count=1.0000; amount_per_wallet_usd=107.1250; materiality=below_one_percent_of_reference</p></div>
+      <div class="box"><strong>Market move</strong><p>no_market_move_anomaly_in_candidate; midpoint_range=0.1455-0.8545; metrics=hhi_concentration,top_tier_share</p></div>
+      <div class="box"><strong>Wallet flow</strong><p>total_observed_amount_usd=0.0000; active_wallets=0.0000; trade_count=0.0000; amount_per_wallet_usd=0.0000; materiality=below_one_percent_of_reference</p></div>
       <div class="box"><strong>Concentration</strong><p>concentration_context=present; coordination_label=single_wallet_single_trade; triggered_patterns=market_concentration,same_theme_repeated_positions</p></div>
       <div class="box"><strong>Context checks</strong><p>Event: not_evaluated<br>Reference: partial_reference_overlap</p></div>
     </section>
@@ -358,8 +358,8 @@
       <span class="pill">status: needs_human_review</span>
     </p>
     <section class="grid">
-      <div class="box"><strong>Market move</strong><p>no_market_move_anomaly_in_candidate; midpoint_range=0.142-0.858; metrics=hhi_concentration,top_tier_share</p></div>
-      <div class="box"><strong>Wallet flow</strong><p>total_observed_amount_usd=107.1250; active_wallets=1.0000; trade_count=1.0000; amount_per_wallet_usd=107.1250; materiality=below_one_percent_of_reference</p></div>
+      <div class="box"><strong>Market move</strong><p>no_market_move_anomaly_in_candidate; midpoint_range=0.1455-0.8545; metrics=hhi_concentration,top_tier_share</p></div>
+      <div class="box"><strong>Wallet flow</strong><p>total_observed_amount_usd=0.0000; active_wallets=0.0000; trade_count=0.0000; amount_per_wallet_usd=0.0000; materiality=below_one_percent_of_reference</p></div>
       <div class="box"><strong>Concentration</strong><p>concentration_context=present; coordination_label=single_wallet_single_trade; triggered_patterns=market_concentration,same_theme_repeated_positions</p></div>
       <div class="box"><strong>Context checks</strong><p>Event: not_evaluated<br>Reference: partial_reference_overlap</p></div>
     </section>
@@ -427,6 +427,86 @@
     <p><strong>Manual review:</strong> reviewer codex_source_check; source https://polymarket.com/event/will-the-us-invade-iran-before-2027; note Source check opened; Polymarket market page verified; May 18 Guardian context records public US-Iran escalation discussion before the candidate bucket; no causal event mapping or private-information claim</p>
     <p><strong>Blocked claims:</strong> private_information_proof; misconduct_finding; causality; tradeability; profitability; future_performance; order_instruction; insider_risk_as_fact</p>
     <p><strong>Case ID:</strong> <code>monitor_candidate_20260523_192500_71cd3b4e784b</code></p>
+  </article>
+
+
+  <article class="case">
+    <h3>Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?</h3>
+    <p>
+      <span class="pill medium">priority: medium</span>
+      <span class="pill">label: insider_risk_watch_cue</span>
+      <span class="pill">status: needs_human_review</span>
+    </p>
+    <section class="grid">
+      <div class="box"><strong>Market move</strong><p>market_move_anomaly_present; midpoint_range=0.1455-0.8545; metrics=absolute_midpoint_change</p></div>
+      <div class="box"><strong>Wallet flow</strong><p>total_observed_amount_usd=0.0000; active_wallets=0.0000; trade_count=0.0000; amount_per_wallet_usd=0.0000; materiality=reference_scale_unknown</p></div>
+      <div class="box"><strong>Concentration</strong><p>concentration_context=not_triggered; coordination_label=single_wallet_single_trade; triggered_patterns=same_theme_repeated_positions</p></div>
+      <div class="box"><strong>Context checks</strong><p>Event: not_evaluated<br>Reference: partial_reference_overlap</p></div>
+    </section>
+    <p><strong>Missing evidence:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
+    <p><strong>Manual review:</strong> reviewer not assigned; source not recorded; note none</p>
+    <p><strong>Blocked claims:</strong> private_information_proof; misconduct_finding; causality; tradeability; profitability; future_performance; order_instruction; insider_risk_as_fact</p>
+    <p><strong>Case ID:</strong> <code>monitor_candidate_20260711_043000_c4915e2197ca</code></p>
+  </article>
+
+
+  <article class="case">
+    <h3>Will Josh Shapiro win the 2028 Democratic presidential nomination?</h3>
+    <p>
+      <span class="pill medium">priority: medium</span>
+      <span class="pill">label: insider_risk_watch_cue</span>
+      <span class="pill">status: needs_human_review</span>
+    </p>
+    <section class="grid">
+      <div class="box"><strong>Market move</strong><p>market_move_anomaly_present; midpoint_range=0.0535-0.9465; metrics=absolute_midpoint_change</p></div>
+      <div class="box"><strong>Wallet flow</strong><p>total_observed_amount_usd=0.0000; active_wallets=0.0000; trade_count=0.0000; amount_per_wallet_usd=0.0000; materiality=below_one_percent_of_reference</p></div>
+      <div class="box"><strong>Concentration</strong><p>concentration_context=not_triggered; coordination_label=single_wallet_single_trade; triggered_patterns=none</p></div>
+      <div class="box"><strong>Context checks</strong><p>Event: not_evaluated<br>Reference: no_reference_overlap</p></div>
+    </section>
+    <p><strong>Missing evidence:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
+    <p><strong>Manual review:</strong> reviewer not assigned; source not recorded; note none</p>
+    <p><strong>Blocked claims:</strong> private_information_proof; misconduct_finding; causality; tradeability; profitability; future_performance; order_instruction; insider_risk_as_fact</p>
+    <p><strong>Case ID:</strong> <code>monitor_candidate_20260712_043000_99ab9e8ce0da</code></p>
+  </article>
+
+
+  <article class="case">
+    <h3>Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?</h3>
+    <p>
+      <span class="pill medium">priority: medium</span>
+      <span class="pill">label: insider_risk_watch_cue</span>
+      <span class="pill">status: needs_human_review</span>
+    </p>
+    <section class="grid">
+      <div class="box"><strong>Market move</strong><p>market_move_anomaly_present; midpoint_range=0.1455-0.8545; metrics=absolute_midpoint_change</p></div>
+      <div class="box"><strong>Wallet flow</strong><p>total_observed_amount_usd=0.0000; active_wallets=0.0000; trade_count=0.0000; amount_per_wallet_usd=0.0000; materiality=reference_scale_unknown</p></div>
+      <div class="box"><strong>Concentration</strong><p>concentration_context=not_triggered; coordination_label=single_wallet_single_trade; triggered_patterns=same_theme_repeated_positions</p></div>
+      <div class="box"><strong>Context checks</strong><p>Event: not_evaluated<br>Reference: partial_reference_overlap</p></div>
+    </section>
+    <p><strong>Missing evidence:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
+    <p><strong>Manual review:</strong> reviewer not assigned; source not recorded; note none</p>
+    <p><strong>Blocked claims:</strong> private_information_proof; misconduct_finding; causality; tradeability; profitability; future_performance; order_instruction; insider_risk_as_fact</p>
+    <p><strong>Case ID:</strong> <code>monitor_candidate_20260712_043000_ca862e76e221</code></p>
+  </article>
+
+
+  <article class="case">
+    <h3>Xi Jinping out before 2027?</h3>
+    <p>
+      <span class="pill medium">priority: medium</span>
+      <span class="pill">label: insider_risk_watch_cue</span>
+      <span class="pill">status: needs_human_review</span>
+    </p>
+    <section class="grid">
+      <div class="box"><strong>Market move</strong><p>market_move_anomaly_present; midpoint_range=0.0495-0.9505; metrics=absolute_midpoint_change</p></div>
+      <div class="box"><strong>Wallet flow</strong><p>total_observed_amount_usd=0.0000; active_wallets=0.0000; trade_count=0.0000; amount_per_wallet_usd=0.0000; materiality=below_one_percent_of_reference</p></div>
+      <div class="box"><strong>Concentration</strong><p>concentration_context=not_triggered; coordination_label=single_wallet_single_trade; triggered_patterns=none</p></div>
+      <div class="box"><strong>Context checks</strong><p>Event: not_evaluated<br>Reference: no_reference_overlap</p></div>
+    </section>
+    <p><strong>Missing evidence:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
+    <p><strong>Manual review:</strong> reviewer not assigned; source not recorded; note none</p>
+    <p><strong>Blocked claims:</strong> private_information_proof; misconduct_finding; causality; tradeability; profitability; future_performance; order_instruction; insider_risk_as_fact</p>
+    <p><strong>Case ID:</strong> <code>monitor_candidate_20260713_043000_5b68f4fe078f</code></p>
   </article>
 
   <h2>Method Limits</h2>

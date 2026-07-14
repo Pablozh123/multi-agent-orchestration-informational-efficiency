@@ -10,43 +10,43 @@
       "artifact_id": "anomaly_review_queue",
       "default_access": "allowed_bounded",
       "path": "data\\results\\monitor_anomaly_review_queue.csv",
-      "row_count": 20
+      "row_count": 24
     },
     {
       "artifact_id": "anomaly_case_review_packets_csv",
       "default_access": "allowed_bounded",
       "path": "data\\results\\monitor_anomaly_case_review_packets.csv",
-      "row_count": 20
+      "row_count": 24
     },
     {
       "artifact_id": "anomaly_case_review_packets_json",
       "default_access": "allowed_bounded",
       "path": "data\\results\\monitor_anomaly_case_review_packets.json",
-      "row_count": 20
+      "row_count": 24
     },
     {
       "artifact_id": "anomaly_review_status_transitions_csv",
       "default_access": "allowed_bounded",
       "path": "data\\results\\monitor_anomaly_review_status_transitions.csv",
-      "row_count": 20
+      "row_count": 24
     },
     {
       "artifact_id": "anomaly_review_status_transitions_json",
       "default_access": "allowed_bounded",
       "path": "data\\results\\monitor_anomaly_review_status_transitions.json",
-      "row_count": 20
+      "row_count": 24
     },
     {
       "artifact_id": "anomaly_review_decision_readiness_csv",
       "default_access": "allowed_bounded",
       "path": "data\\results\\monitor_anomaly_review_decision_readiness.csv",
-      "row_count": 20
+      "row_count": 24
     },
     {
       "artifact_id": "anomaly_review_decision_readiness_json",
       "default_access": "allowed_bounded",
       "path": "data\\results\\monitor_anomaly_review_decision_readiness.json",
-      "row_count": 20
+      "row_count": 24
     },
     {
       "artifact_id": "anomaly_review_metadata",

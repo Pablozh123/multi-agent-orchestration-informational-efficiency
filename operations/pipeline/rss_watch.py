@@ -183,11 +183,47 @@ def parse_yt_kanalseite(html: str, max_items: int = 10) -> list[YtVideo]:
             for v in gesehen]
 
 
+# Kanalseiten-Drossel: beim Dauerlauf (Tage vor dem Drop) nicht bei jedem
+# 15s-Poll die HTML-Seite ziehen — schont das YouTube-Ratelimit; ein
+# IP-Block am Drop-Tag waere fatal. Die Kanalseite ist die REDUNDANZ-
+# Schiene (XML-Feed alle 15s und RSS laufen parallel), 60s TTL kostet im
+# Normalfall nichts.
+_KANALSEITE_TTL_S = 60.0
+_kanalseite_cache: dict = {"ts": 0.0, "videos": []}
+
+
+def _fetch_kanalseite(max_items: int) -> list[YtVideo]:
+    """Video-IDs von der Kanalseite /videos (SOCS-Cookie gegen EU-Consent)."""
+    import time
+
+    import httpx
+
+    alter = time.monotonic() - _kanalseite_cache["ts"]
+    if _kanalseite_cache["videos"] and alter < _KANALSEITE_TTL_S:
+        return list(_kanalseite_cache["videos"])[:max_items]
+
+    resp = httpx.get(
+        f"https://www.youtube.com/channel/{config.YT_CHANNEL_ID}/videos",
+        headers=config.HTTP_HEADERS, cookies={"SOCS": "CAI"},
+        timeout=30.0, follow_redirects=True,
+    )
+    resp.raise_for_status()
+    videos = parse_yt_kanalseite(resp.text, max_items=max_items)
+    _kanalseite_cache.update(ts=time.monotonic(), videos=list(videos))
+    return videos
+
+
 def fetch_yt_videos(max_items: int = 10) -> list[YtVideo]:
     """Neueste Kanal-Videos: Feed zuerst, Kanalseite als Fallback.
 
     Der YouTube-Feed-Endpoint liefert intermittierend 404 (beobachtet
     2026-07-07); die Videoseite haengt an anderer Infrastruktur.
+
+    Mit YT_KANALSEITE_IMMER wird die Kanalseite bei JEDEM Abruf mitgelesen
+    und mit dem Feed gemerged: beim Lemonade-Stand-Kanal listet videos.xml
+    nur die Daily-Clips, die Hauptepisoden erscheinen ausschliesslich auf
+    der /videos-Seite (Befund 13.7.) — der Feed allein wuerde den Drop
+    nie sehen.
     """
     import httpx
     from tenacity import retry, stop_after_attempt, wait_random_exponential
@@ -199,17 +235,18 @@ def fetch_yt_videos(max_items: int = 10) -> list[YtVideo]:
         resp.raise_for_status()
         return resp.text
 
+    videos: list[YtVideo] = []
+    feed_fehler: Exception | None = None
     try:
-        return parse_yt_feed(_feed(), max_items=max_items)
-    except Exception:  # noqa: BLE001 - Fallback auf Kanalseite
-        # SOCS-Cookie umgeht die EU-Consent-Zwischenseite.
-        resp = httpx.get(
-            f"https://www.youtube.com/channel/{config.YT_CHANNEL_ID}/videos",
-            headers=config.HTTP_HEADERS, cookies={"SOCS": "CAI"},
-            timeout=30.0, follow_redirects=True,
-        )
-        resp.raise_for_status()
-        return parse_yt_kanalseite(resp.text, max_items=max_items)
+        videos = parse_yt_feed(_feed(), max_items=max_items)
+    except Exception as ex:  # noqa: BLE001 - Fallback/Merge unten
+        feed_fehler = ex
+
+    if config.YT_KANALSEITE_IMMER or feed_fehler is not None:
+        seite = _fetch_kanalseite(max_items)
+        bekannt = {v.video_id for v in videos}
+        videos.extend(v for v in seite if v.video_id not in bekannt)
+    return videos
 
 
 class YouTubeWatcher:
@@ -222,6 +259,22 @@ class YouTubeWatcher:
     def initialisiere(self) -> int:
         videos = fetch_yt_videos()
         self.bekannt = {v.video_id for v in videos}
+        # Kanalseiten-IDs ebenfalls in die Baseline: der Fallback listet
+        # teils aeltere Videos, die im 15-Item-Feed fehlen — ohne diese
+        # Baseline meldet er sie faelschlich als neu (E278-Fehltrigger 10.7.).
+        try:
+            import httpx
+
+            resp = httpx.get(
+                f"https://www.youtube.com/channel/{config.YT_CHANNEL_ID}/videos",
+                headers=config.HTTP_HEADERS, cookies={"SOCS": "CAI"},
+                timeout=30.0, follow_redirects=True,
+            )
+            resp.raise_for_status()
+            for v in parse_yt_kanalseite(resp.text, max_items=30):
+                self.bekannt.add(v.video_id)
+        except Exception:  # noqa: BLE001 - Feed-Baseline reicht als Minimum
+            pass
         return len(self.bekannt)
 
     def poll(self) -> list[YtVideo]:

@@ -118,13 +118,42 @@ def yt_metadata(video_url: str) -> dict:
         "dauer_s": d.get("duration"),
         "is_live": bool(d.get("is_live")),
         "live_status": d.get("live_status"),
+        "upload_date": d.get("upload_date"),  # YYYYMMDD
+        "release_timestamp": d.get("release_timestamp"),
     }
 
 
+def playlist_ids(playlist_id: str) -> set[str]:
+    """Alle Video-IDs einer Playlist (yt-dlp, flach)."""
+    import sys
+
+    r = subprocess.run(
+        [sys.executable, "-m", "yt_dlp", "--flat-playlist",
+         "--dump-single-json",
+         f"https://www.youtube.com/playlist?list={playlist_id}"],
+        check=True, capture_output=True, timeout=120,
+    )
+    d = json.loads(r.stdout)
+    return {e.get("id") for e in d.get("entries", []) if e.get("id")}
+
+
+def in_playlist(video_id: str, playlist_id: str) -> bool:
+    """Prueft via yt-dlp, ob ein Video in einer Playlist enthalten ist."""
+    return video_id in playlist_ids(playlist_id)
+
+
 def ist_voll_episode(meta: dict) -> tuple[bool, str]:
-    """Voll-Episode: nicht live und mindestens YT_MIN_DAUER_S lang."""
+    """Voll-Episode: nicht live, lang genug und FRISCH (max. 48h alt)."""
     if meta.get("is_live") or meta.get("live_status") in ("is_live", "is_upcoming"):
         return False, f"livestream ({meta.get('live_status')})"
+    upload = meta.get("upload_date")
+    if upload:
+        from datetime import datetime, timedelta, timezone
+
+        alter = datetime.now(timezone.utc) - datetime.strptime(
+            upload, "%Y%m%d").replace(tzinfo=timezone.utc)
+        if alter > timedelta(hours=48):
+            return False, f"upload {upload} aelter als 48h (kein frischer Drop)"
     dauer = meta.get("dauer_s")
     if dauer is None:
         return False, "keine dauer in metadaten"
@@ -182,9 +211,12 @@ class ChunkTranscriber:
     Durchlauf (auf GPU batched, falls verfuegbar).
     """
 
-    def __init__(self, model_size: str = "small") -> None:
+    def __init__(self, model_size: str = "small", verifier=None) -> None:
         from faster_whisper import WhisperModel
 
+        # Optionaler SpeakerVerifier: rechnet jedes Segment dem
+        # Zielsprecher zu (Segment.ist_ziel) oder nicht.
+        self.verifier = verifier
         _cuda_dlls_einbinden()
         try:
             self.model = WhisperModel(model_size, device="cuda",
@@ -275,4 +307,11 @@ class ChunkTranscriber:
                     ]
 
         adaptiert = [_SegAdapter(s) for s in fw_segs]
-        return segmente_mit_wort_dedup(adaptiert, grenze_s)
+        segmente = segmente_mit_wort_dedup(adaptiert, grenze_s)
+        if self.verifier is not None:
+            for seg in segmente:
+                a = int(seg.start_s * SAMPLE_RATE)
+                b = int(seg.end_s * SAMPLE_RATE)
+                ausschnitt_seg = audio[max(0, a):min(len(audio), b)]
+                seg.ist_ziel, _sim = self.verifier.ist_zielsprecher(ausschnitt_seg)
+        return segmente

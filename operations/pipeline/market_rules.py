@@ -80,10 +80,24 @@ def _token_ids(market: dict) -> tuple[str | None, str | None]:
     return yes_id, no_id
 
 
+_NEGATION = re.compile(r"\bwill no\b[^\"“”]{0,80}\bepisode\b")
+
+
 def _ist_negationsmarkt(question: str) -> bool:
-    """Maerkte wie 'Will no episode air?' sind keine Wortzaehl-Maerkte."""
+    """Maerkte wie 'Will no episode air?' sind keine Wortzaehl-Maerkte.
+
+    Deckt auch Varianten mit Showname dazwischen ab ('Will no Lemonade
+    Stand episode air?'). Anfuehrungszeichen im Fenster brechen den Match,
+    damit Fragen mit zitiertem Begriff (Will "No" be said ...) nicht
+    faelschlich als Negationsmarkt gelten.
+    """
     q = question.lower()
-    return "no episode" in q or "not air" in q or "be cancelled" in q
+    return (
+        "no episode" in q
+        or bool(_NEGATION.search(q))
+        or "not air" in q
+        or "be cancelled" in q
+    )
 
 
 def build_rule(market: dict) -> MarketRule:

@@ -134,8 +134,15 @@ class ExecutorBase:
         result = self._platziere(decision, usd, shares)
         if result.status in ("dry_run_fill", "live_fill", "live_partial"):
             self.ausgegeben_usd = round(self.ausgegeben_usd + result.size_usd, 2)
+        # Live: Schaetzung durch echten Wallet-Stand ersetzen (Lehre aus dem
+        # IPO-Sweep 10.7.: Deckelpreis-Schaetzung ueberzeichnete das Budget
+        # und blockierte fuenf berechtigte Folgetrades).
+        self._budget_sync()
         self._log(decision, book, result)
         return result
+
+    def _budget_sync(self) -> None:
+        """Basisklasse: keine echte Wallet-Anbindung."""
 
     def _platziere(
         self, decision: Decision, usd: float, shares: float
@@ -218,6 +225,35 @@ class LiveExecutor(ExecutorBase):
                 signature_type=SignatureTypeV2.POLY_1271,
             )
         )
+        self._start_balance = self._wallet_balance()
+
+    def _wallet_balance(self) -> float | None:
+        """Aktuelles pUSD-Guthaben der Deposit-Wallet (Server-Sicht)."""
+        from py_clob_client_v2 import (
+            AssetType,
+            BalanceAllowanceParams,
+            SignatureTypeV2,
+        )
+
+        try:
+            params = BalanceAllowanceParams(
+                asset_type=AssetType.COLLATERAL,
+                signature_type=SignatureTypeV2.POLY_1271,
+            )
+            self.client.update_balance_allowance(params)
+            antwort = self.client.get_balance_allowance(params)
+            roh = antwort.get("balance") if isinstance(antwort, dict) else None
+            return round(int(roh) / 1e6, 2) if roh is not None else None
+        except Exception:  # noqa: BLE001 - Fallback auf Schaetzung
+            return None
+
+    def _budget_sync(self) -> None:
+        """Setzt die Ausgaben auf das echte Wallet-Delta (statt Schaetzung)."""
+        if self._start_balance is None:
+            return
+        aktuell = self._wallet_balance()
+        if aktuell is not None:
+            self.ausgegeben_usd = round(self._start_balance - aktuell, 2)
 
     def _bestell(self, token_id: str, usd: float) -> dict:
         """FAK-Market-Order: Betrag in USD, Preisdeckel ASK_OBERGRENZE."""
@@ -272,7 +308,11 @@ class LiveExecutor(ExecutorBase):
         for _ in range(config.MAX_CLIPS_PRO_MARKT):
             budget_rest = (config.MAX_USD_GESAMT - self.ausgegeben_usd
                            - summe_usd)
-            clip_usd = round(min(config.MAX_USD_PRO_MARKT, budget_rest), 2)
+            # 3% Fee-Puffer: Server lehnt Orders ab, deren Betrag plus
+            # Gebuehrenschaetzung das Guthaben uebersteigt (E280-Befund:
+            # 5 NO-Chancen verloren bei Clip 15.00 auf Guthaben 15.01).
+            clip_usd = round(min(config.MAX_USD_PRO_MARKT,
+                                 budget_rest * 0.97), 2)
             if clip_usd < 1.0 or self._stop_aktiv():
                 break
             try:

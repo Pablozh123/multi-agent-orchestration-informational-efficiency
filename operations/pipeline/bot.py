@@ -22,12 +22,17 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import time
 from datetime import datetime, timezone
 
 from operations.pipeline import config
 from operations.pipeline.counter_engine import StreamingCounter
-from operations.pipeline.decision import entscheide_no, entscheide_yes
+from operations.pipeline.decision import (
+    entscheide_no,
+    entscheide_yes,
+    nach_edge_sortiert,
+)
 from operations.pipeline.market_rules import lade_snapshot_rules
 from operations.pipeline.orderbook import best_ask, fetch_book, log_snapshots, now_utc_iso
 from operations.pipeline.rss_watch import (
@@ -148,15 +153,46 @@ def lauf(live: bool) -> None:
 
     executor = LiveExecutor() if live else DryRunExecutor()
     modus = "LIVE" if live else "DRY_RUN"
+    verifier = None
+    if config.ZIELSPRECHER_REFERENZ is not None:
+        if not config.ZIELSPRECHER_REFERENZ.exists():
+            raise SystemExit(
+                f"Zielsprecher-Referenz fehlt: {config.ZIELSPRECHER_REFERENZ} — "
+                "zuerst operations.pipeline.baue_referenz ausfuehren."
+            )
+        from operations.pipeline.speaker import SpeakerVerifier
+
+        verifier = SpeakerVerifier(config.ZIELSPRECHER_REFERENZ)
+        print("Sprecher-Verifikation aktiv (YES nur aus Zielsprecher-Treffern).")
     rules = lade_snapshot_rules()
     aktive = [r for r in rules if r.status == "active"]
     counters = {r.market_id: StreamingCounter(r) for r in aktive}
     getradet_yes: set[str] = set()
+    # Vorscan: Maerkte, deren YES-Ask zuletzt ueber der Obergrenze lag,
+    # werden im heissen Chunk-Pfad bis zum genannten Chunk-Index nicht
+    # gefetcht (spart Book-Roundtrips fuer eingepreiste Maerkte wie
+    # "China" @0.92, deren Wort oft faellt). Buchlog pflegt die Pausen.
+    yes_pause: dict[str, int] = {}
 
-    watcher = RssWatcher()
-    baseline = watcher.initialisiere()
+    watcher, baseline = None, None
+    if config.RSS_FEED_URL:
+        watcher = RssWatcher()
+        baseline = watcher.initialisiere()
     yt_watcher = YouTubeWatcher()
     yt_baseline = yt_watcher.initialisiere()
+    # Positiv-Identifikation: Baseline der offiziellen Playlist. Ein
+    # YouTube-Drop wird NUR akzeptiert, wenn ein Video NEU zur Playlist
+    # hinzukommt (Diff) — Playlist = Resolutionsquelle. Verhindert per
+    # Konstruktion alte Episoden (in Baseline) und Specials (nie drin).
+    playlist_baseline: set[str] | None = None
+    if config.YT_PLAYLIST_ID:
+        from operations.pipeline.transcription import playlist_ids
+
+        try:
+            playlist_baseline = playlist_ids(config.YT_PLAYLIST_ID)
+        except Exception as ex:  # noqa: BLE001
+            _schreibe_event("fehler", {"wo": "playlist_baseline",
+                                       "fehler": str(ex)})
     naechste_nr, prober = None, None
     if config.MP3_PROBE_MUSTER:
         try:
@@ -182,8 +218,9 @@ def lauf(live: bool) -> None:
     # Ladezeit anfaellt.
     from operations.pipeline.transcription import ChunkTranscriber
 
-    transcriber = ChunkTranscriber()
-    _schreibe_event("whisper_bereit", {"geraet": transcriber.geraet})
+    transcriber = ChunkTranscriber(verifier=verifier)
+    _schreibe_event("whisper_bereit", {"geraet": transcriber.geraet,
+                                       "sprecher_verifikation": verifier is not None})
     print(f"Whisper bereit ({transcriber.geraet}).")
     audio_pfad = config.LIVE_DIR / "episode.mp3"
     chunk_index = 0
@@ -199,7 +236,20 @@ def lauf(live: bool) -> None:
         if jetzt - letzter_buchlog >= config.BUCH_LOG_INTERVALL_S:
             try:
                 zeilen = log_snapshots(aktive, now_utc_iso())
-                _schreibe_event("buchlog", {"n_zeilen": len(zeilen)})
+                yes_tot = []
+                for z in zeilen:
+                    if z.get("outcome") != "Yes" or z.get("best_ask") is None:
+                        continue
+                    mid = z.get("market_id")
+                    if z["best_ask"] > config.ASK_OBERGRENZE:
+                        yes_pause[mid] = chunk_index + config.VORSCAN_PAUSE_CHUNKS
+                        yes_tot.append(z.get("slug"))
+                    else:
+                        yes_pause.pop(mid, None)
+                _schreibe_event("buchlog", {
+                    "n_zeilen": len(zeilen), "yes_tot": yes_tot,
+                    "yes_handelbar": max(0, len(aktive) - len(yes_tot)),
+                })
             except Exception as ex:  # noqa: BLE001
                 _schreibe_event("fehler", {"wo": "buchlog", "fehler": str(ex)})
             letzter_buchlog = jetzt
@@ -231,12 +281,39 @@ def lauf(live: bool) -> None:
                 time.sleep(config.PROBER_POLL_S)
                 continue
 
-            # Quelle 1: libsyn-RSS (progressiver MP3-Download).
-            try:
-                neu = watcher.poll()
-            except Exception as ex:  # noqa: BLE001
-                _schreibe_event("fehler", {"wo": "rss_poll", "fehler": str(ex)})
-                neu = None
+            # Quelle 1: Podcast-RSS (progressiver MP3-Download), falls vorhanden.
+            neu = None
+            if watcher is not None:
+                try:
+                    neu = watcher.poll()
+                except Exception as ex:  # noqa: BLE001
+                    _schreibe_event("fehler", {"wo": "rss_poll", "fehler": str(ex)})
+            if neu is not None and neu.audio_url and config.RSS_NUR_MUSTER:
+                if not re.search(config.RSS_NUR_MUSTER, neu.audio_url):
+                    _schreibe_event("rss_kandidat_verworfen", {
+                        "titel": neu.title, "audio_url": neu.audio_url,
+                        "grund": "kein Hauptepisoden-Muster (Special)",
+                    })
+                    neu = None
+            # Pflicht-Titel-Muster (z.B. Lemonade Stand: nur Videos mit
+            # "Lemonade Stand" im Titel qualifizieren laut Marktregel).
+            if neu is not None and config.TITEL_MUSTER:
+                if not re.search(config.TITEL_MUSTER, neu.title or "",
+                                 re.IGNORECASE):
+                    _schreibe_event("rss_kandidat_verworfen", {
+                        "titel": neu.title, "audio_url": neu.audio_url,
+                        "grund": "titel ohne Pflichtmuster",
+                    })
+                    neu = None
+            # Verbots-Muster (z.B. JRE "MMA Show" zaehlt laut Regel nicht).
+            if neu is not None and config.TITEL_VERBOTEN:
+                if re.search(config.TITEL_VERBOTEN, neu.title or "",
+                             re.IGNORECASE):
+                    _schreibe_event("rss_kandidat_verworfen", {
+                        "titel": neu.title, "audio_url": neu.audio_url,
+                        "grund": "titel matcht Verbotsmuster",
+                    })
+                    neu = None
             if neu is not None and neu.audio_url:
                 drop_item = neu
                 drop_quelle = "libsyn_rss"
@@ -271,6 +348,33 @@ def lauf(live: bool) -> None:
                                                "fehler": str(ex)})
                     continue
                 ok, grund = ist_voll_episode(meta)
+                # Pflicht-Titel-Muster als Positiv-Identifikation (Marktregel
+                # Lemonade Stand: jedes Kanal-Video mit "Lemonade Stand" im
+                # Titel qualifiziert — Daily-Clips tragen das Muster nie).
+                if ok and config.TITEL_MUSTER:
+                    titel_meta = str(meta.get("titel") or "")
+                    if not re.search(config.TITEL_MUSTER, titel_meta,
+                                     re.IGNORECASE):
+                        ok, grund = False, "titel ohne Pflichtmuster (qualifiziert nicht)"
+                # Verbots-Muster (JRE: "MMA Show" zaehlt laut Regel nicht).
+                if ok and config.TITEL_VERBOTEN:
+                    titel_meta = str(meta.get("titel") or "")
+                    if re.search(config.TITEL_VERBOTEN, titel_meta,
+                                 re.IGNORECASE):
+                        ok, grund = False, "titel matcht Verbotsmuster (z.B. MMA Show)"
+                if ok and config.YT_PLAYLIST_ID:
+                    # Positiv-Identifikation: NEU in der Playlist noetig.
+                    from operations.pipeline.transcription import playlist_ids
+
+                    try:
+                        aktuelle = playlist_ids(config.YT_PLAYLIST_ID)
+                        if video.video_id not in aktuelle:
+                            ok, grund = False, "nicht in offizieller Playlist (Special)"
+                        elif (playlist_baseline is not None
+                              and video.video_id in playlist_baseline):
+                            ok, grund = False, "bereits vor Start in Playlist (alte Episode)"
+                    except Exception as ex:  # noqa: BLE001
+                        ok, grund = False, f"playlist-check fehlgeschlagen: {ex}"
                 _schreibe_event("yt_kandidat", {
                     "video_id": video.video_id, "titel": video.title,
                     "voll_episode": ok, "grund": grund,
@@ -315,29 +419,144 @@ def lauf(live: bool) -> None:
 
         if segmente is None:
             if download_fertig and not no_entschieden:
-                # Vollstaendiges Transkript: NO-Runde.
+                # Letzter YES-Blick: Maerkte mit erreichtem Ziel, die wegen
+                # Vorscan-Pause oder zu teurem Buch nie gekauft wurden —
+                # ein finaler Book-Fetch, falls sich das Fenster geoeffnet hat.
+                for r in aktive:
+                    if r.market_id in getradet_yes:
+                        continue
+                    c = counters[r.market_id]
+                    ziel = (1 if r.schwelle <= 1
+                            else r.schwelle + config.YES_SCHWELLE_PUFFER)
+                    if c.ziel_count < ziel:
+                        continue
+                    try:
+                        book = fetch_book(r.yes_token_id)
+                        d = entscheide_yes(r, c.ziel_count, best_ask(book))
+                        res = executor.place(d, book)
+                        if d.action == "YES":
+                            getradet_yes.add(r.market_id)
+                        _schreibe_event("yes_endcheck", {
+                            "markt": r.slug, "count": c.count,
+                            "action": d.action, "status": res.status,
+                            "grund": d.reason,
+                        })
+                    except Exception as ex:  # noqa: BLE001
+                        _schreibe_event("fehler", {"wo": f"yes_endcheck:{r.slug}",
+                                                   "fehler": str(ex)})
+                # Vollstaendiges Transkript: NO-Runde. Konservativ zaehlt
+                # der erweiterte Zaehler (inkl. Komposita-Verdacht, PDF-
+                # Regel "Compound Words"): kein NO, wenn schon die
+                # grosszuegigste Lesart die Schwelle reissen koennte.
+                gefuellt = {"dry_run_fill", "live_fill", "live_partial"}
+                getradet_no: set[str] = set()
                 for r in aktive:
                     if r.market_id in getradet_yes:
                         continue
                     try:
                         book = fetch_book(r.no_token_id)
                         no_ask = best_ask(book)
-                        d = entscheide_no(r, counters[r.market_id].count, no_ask)
+                        c = counters[r.market_id]
+                        d = entscheide_no(r, c.erweitert_count, no_ask)
                         res = executor.place(d, book)
+                        if res.status in gefuellt:
+                            getradet_no.add(r.market_id)
                         _schreibe_event("no_runde", {
-                            "markt": r.slug, "count": counters[r.market_id].count,
+                            "markt": r.slug, "count": c.count,
+                            "erweitert_count": c.erweitert_count,
                             "action": d.action, "status": res.status,
                         })
                     except Exception as ex:  # noqa: BLE001
                         _schreibe_event("fehler", {"wo": f"no:{r.slug}",
                                                    "fehler": str(ex)})
                 no_entschieden = True
+
+                # Nachlauf: MMs ziehen beim Drop die Quotes und stellen sie
+                # erst Minuten spaeter wieder rein (JRE #2523: alle Asks
+                # gepullt; E280: NOs nach unserer Runde noch zu 0.50-0.70
+                # gehandelt). Offene Kandidaten weiter pollen, solange
+                # Budget und Zeitfenster reichen.
+                nachlauf_kaeufe = 0
+                ende_ts = time.time() + config.NACHLAUF_MINUTEN * 60
+                _schreibe_event("nachlauf_start", {
+                    "minuten": config.NACHLAUF_MINUTEN,
+                    "poll_s": config.NACHLAUF_POLL_S,
+                })
+                while time.time() < ende_ts and not _stop():
+                    # Kandidaten samt Buch/Ask sammeln, dann edge-sortiert
+                    # (billigster Ask zuerst) aus dem geteilten Pool kaufen.
+                    offene = []
+                    for r in aktive:
+                        if (r.market_id in getradet_yes
+                                or r.market_id in getradet_no):
+                            continue
+                        c = counters[r.market_id]
+                        ziel = (1 if r.schwelle <= 1
+                                else r.schwelle + config.YES_SCHWELLE_PUFFER)
+                        seite = None
+                        if c.ziel_count >= ziel:
+                            seite = "YES"
+                        elif c.erweitert_count <= config.NO_ANTEIL * r.schwelle:
+                            seite = "NO"
+                        if seite is None:
+                            continue
+                        tok = r.yes_token_id if seite == "YES" else r.no_token_id
+                        try:
+                            book = fetch_book(tok)
+                        except Exception as ex:  # noqa: BLE001
+                            _schreibe_event("fehler", {
+                                "wo": f"nachlauf_fetch:{r.slug}",
+                                "fehler": str(ex)})
+                            continue
+                        offene.append({"rule": r, "seite": seite, "book": book,
+                                       "best_ask": best_ask(book)})
+                    if not offene:
+                        break
+                    budget_leer = True
+                    for k in nach_edge_sortiert(offene):
+                        r, seite, book = k["rule"], k["seite"], k["book"]
+                        c = counters[r.market_id]
+                        try:
+                            if seite == "YES":
+                                d = entscheide_yes(r, c.ziel_count,
+                                                   k["best_ask"])
+                            else:
+                                d = entscheide_no(r, c.erweitert_count,
+                                                  k["best_ask"])
+                            if d.action == "NONE":
+                                budget_leer = False
+                                continue
+                            res = executor.place(d, book)
+                            if res.status != "skipped_budget":
+                                budget_leer = False
+                            if res.status in gefuellt:
+                                nachlauf_kaeufe += 1
+                                (getradet_yes if seite == "YES"
+                                 else getradet_no).add(r.market_id)
+                                _schreibe_event("nachlauf_kauf", {
+                                    "markt": r.slug, "seite": seite,
+                                    "count": c.count, "status": res.status,
+                                    "preis": res.limit_price,
+                                    "usd": res.size_usd,
+                                })
+                                print(f"NACHLAUF {seite}: {r.slug[:40]} "
+                                      f"@ {res.limit_price}")
+                        except Exception as ex:  # noqa: BLE001
+                            _schreibe_event("fehler", {
+                                "wo": f"nachlauf:{r.slug}", "fehler": str(ex)})
+                    if budget_leer:
+                        _schreibe_event("nachlauf_ende", {"grund": "budget"})
+                        break
+                    time.sleep(config.NACHLAUF_POLL_S)
+
                 _schreibe_event("fertig", {
                     "endstaende": {r.slug: counters[r.market_id].count
                                    for r in aktive},
+                    "nachlauf_kaeufe": nachlauf_kaeufe,
                     "ausgegeben_usd": executor.ausgegeben_usd,
                 })
-                print("Episode vollstaendig verarbeitet, NO-Runde abgeschlossen.")
+                print("Episode vollstaendig verarbeitet, NO-Runde und "
+                      f"Nachlauf abgeschlossen ({nachlauf_kaeufe} Nachkaeufe).")
                 return
             time.sleep(5)
             continue
@@ -345,27 +564,53 @@ def lauf(live: bool) -> None:
         chunk_index += 1
         ts = now_utc_iso()
         staende = {}
+        # Phase 1: alle Zaehler aktualisieren und kaufbereite Maerkte samt
+        # Buch/Ask sammeln (noch nicht kaufen).
+        bereit = []
         for r in aktive:
             log = counters[r.market_id].ingest_chunk(chunk_index, segmente, ts)
             staende[r.slug] = log.count_total
             if r.market_id in getradet_yes:
                 continue
+            # YES ausschliesslich aus Zielsprecher-Treffern (ohne
+            # Verifikation identisch mit dem Gesamtzaehler).
             ziel = 1 if r.schwelle <= 1 else r.schwelle + config.YES_SCHWELLE_PUFFER
-            if log.count_total >= ziel:
+            if log.ziel_count_total >= ziel:
+                # Vorscan-Pause: Buch zuletzt ueber der Obergrenze -> den
+                # Roundtrip im heissen Pfad sparen (Re-Check am Ende).
+                if chunk_index < yes_pause.get(r.market_id, 0):
+                    continue
                 try:
                     book = fetch_book(r.yes_token_id)
-                    d = entscheide_yes(r, log.count_total, best_ask(book))
-                    res = executor.place(d, book)
-                    if d.action == "YES":
-                        getradet_yes.add(r.market_id)
-                    _schreibe_event("yes_entscheidung", {
-                        "markt": r.slug, "count": log.count_total,
-                        "action": d.action, "status": res.status,
-                        "grund": d.reason,
-                    })
+                    bereit.append({"rule": r, "book": book,
+                                   "best_ask": best_ask(book),
+                                   "count": log.ziel_count_total,
+                                   "count_total": log.count_total})
                 except Exception as ex:  # noqa: BLE001
-                    _schreibe_event("fehler", {"wo": f"yes:{r.slug}",
+                    _schreibe_event("fehler", {"wo": f"yes_fetch:{r.slug}",
                                                "fehler": str(ex)})
+        # Phase 2: Edge-Priorisierung — bei mehreren gleichzeitig
+        # ausgeloesten Maerkten zuerst die mit dem billigsten Ask kaufen
+        # (hoechster Grenzgewinn je Dollar), damit ein teurer Markt nicht
+        # in Listen-Reihenfolge den geteilten Pool leerkauft.
+        for k in nach_edge_sortiert(bereit):
+            r, book, ask = k["rule"], k["book"], k["best_ask"]
+            try:
+                d = entscheide_yes(r, k["count"], ask)
+                res = executor.place(d, book)
+                if d.action == "YES":
+                    getradet_yes.add(r.market_id)
+                elif ask is not None and ask > config.ASK_OBERGRENZE:
+                    yes_pause[r.market_id] = (
+                        chunk_index + config.VORSCAN_PAUSE_CHUNKS)
+                _schreibe_event("yes_entscheidung", {
+                    "markt": r.slug, "count": k["count_total"],
+                    "best_ask": ask, "action": d.action,
+                    "status": res.status, "grund": d.reason,
+                })
+            except Exception as ex:  # noqa: BLE001
+                _schreibe_event("fehler", {"wo": f"yes:{r.slug}",
+                                           "fehler": str(ex)})
         _schreibe_event("chunk", {"index": chunk_index, "staende": staende})
         print(f"Chunk {chunk_index}: " + ", ".join(
             f"{k.split('will-')[-1][:20]}={v}" for k, v in list(staende.items())[:6]
@@ -373,6 +618,16 @@ def lauf(live: bool) -> None:
 
 
 def main() -> None:
+    # Windows-Konsolen/Logdateien sind oft cp1252: Episodentitel mit Emoji
+    # (Lemonade Stand 🍋) wuerden print() mitten im Drop crashen.
+    import sys
+
+    for strom in (sys.stdout, sys.stderr):
+        try:
+            strom.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:  # noqa: BLE001 - z.B. ersetzte Streams in Tests
+            pass
+
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--status", action="store_true",
                         help="einmaliger Statusbericht, keine Schleife")

@@ -29,6 +29,21 @@ def _kein_trade(rule: MarketRule, grund: str) -> Decision:
     return Decision(rule.market_id, "NONE", None, None, None, grund)
 
 
+def nach_edge_sortiert(kandidaten: list, ask_key=lambda k: k.get("best_ask")):
+    """Kaufkandidaten nach bestem Ask AUFSTEIGEND (billigste zuerst).
+
+    Bei gleichzeitig ausgeloesten Maerkten und knappem Pool holt der Bot
+    so zuerst die Shares mit dem hoechsten Grenzgewinn je Dollar (die
+    billigen Tranchen), statt in Listen-Reihenfolge (first-come) einen
+    teuren Markt den Pool leerkaufen zu lassen. Kandidaten ohne Ask ans
+    Ende. Stabil (gleiche Asks behalten ihre Reihenfolge)."""
+    def schluessel(k):
+        a = ask_key(k)
+        return (a is None, a if a is not None else 1.0)
+
+    return sorted(kandidaten, key=schluessel)
+
+
 def entscheide_yes(rule: MarketRule, count: int, best_yes_ask: float | None) -> Decision:
     """Live-Entscheidung fuer YES waehrend des Streams."""
     if rule.status != "active":

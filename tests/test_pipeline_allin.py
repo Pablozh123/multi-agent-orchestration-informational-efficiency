@@ -294,3 +294,218 @@ def test_parse_yt_kanalseite_dedupliziert() -> None:
             '"videoId":"LMNOPQRSTUV"w')
     videos = parse_yt_kanalseite(html)
     assert [v.video_id for v in videos] == ["abcdefghijk", "LMNOPQRSTUV"]
+
+
+# ------------------------------------------------------------ Sprecher-Verifikation
+
+
+def test_dual_zaehler_mit_zurechnung() -> None:
+    r = build_rule(gamma_markt('Will "Cheat" be said during the episode?'))
+    c = StreamingCounter(r)
+    log = c.ingest_chunk(1, [
+        Segment("no cheating but cheat", confidence=0.9, ist_ziel=True),
+        Segment("cheat cheat", confidence=0.9, ist_ziel=False),  # Fremdstimme
+    ], "t1")
+    assert c.count == 3          # alle Stimmen
+    assert c.ziel_count == 1     # nur Zielsprecher
+    assert log.ziel_count_total == 1
+
+
+def test_dual_zaehler_ohne_verifikation_identisch() -> None:
+    r = build_rule(gamma_markt('Will "Cheat" be said during the episode?'))
+    c = StreamingCounter(r)
+    c.ingest_chunk(1, [Segment("cheat cheat", confidence=0.9)], "t1")
+    assert c.count == c.ziel_count == 2
+
+
+# ------------------------------------- Event-Mentions-PDF / Lemonade Stand
+
+
+def test_negationsmarkt_mit_showname() -> None:
+    r = build_rule(gamma_markt("Will no Lemonade Stand episode air?"))
+    assert r.status == "skip"
+    assert r.skip_grund == "negationsmarkt_ohne_wortzaehlung"
+
+
+def test_zitiertes_no_ist_kein_negationsmarkt() -> None:
+    r = build_rule(gamma_markt(
+        'Will "No" be said during the next episode of the podcast?'
+    ))
+    assert r.status == "active"
+
+
+def test_ai_expandiert_nicht_zur_langform() -> None:
+    # PDF "Expanded Acronyms": Langform zaehlt nur, wenn selbst zitiert.
+    r = build_rule(gamma_markt('Will "AI" be said 35+ times during the episode?'))
+    assert not any("intelligence" in v.lower() for v in r.varianten)
+    assert "A.I." in r.varianten
+
+
+def test_mehrwort_world_cup_mit_plural() -> None:
+    p = compile_patterns(["World Cup"])
+    assert count_in_text("the World Cup! world  cup. World Cups", p) == 3
+    assert count_in_text("worldcup chatter", p) == 0
+
+
+def test_erweiterter_zaehler_komposita_verdacht() -> None:
+    # "evergreen" ist strikt kein Treffer fuer "Green", zaehlt aber als
+    # Komposita-Verdacht in den erweiterten Zaehler (nur NO-Absicherung).
+    r = build_rule(gamma_markt('Will "Green" be said during the episode?'))
+    c = StreamingCounter(r)
+    log = c.ingest_chunk(1, [Segment("an evergreen topic, green light",
+                                     confidence=0.9)], "t1")
+    assert c.count == 1
+    assert c.erweitert_count == 2
+    assert log.erweitert_count_total == 2
+
+
+def test_erweiterter_zaehler_kurze_woerter_ohne_verdacht() -> None:
+    # len<4 ("Red"): Substring-Verdacht aus, sonst zaehlt "hundred".
+    r = build_rule(gamma_markt('Will "Red" be said during the episode?'))
+    c = StreamingCounter(r)
+    c.ingest_chunk(1, [Segment("a hundred times", confidence=0.95)], "t1")
+    assert c.count == 0
+    assert c.erweitert_count == 0
+
+
+def test_erweiterter_zaehler_zaehlt_strikte_nur_einmal() -> None:
+    r = build_rule(gamma_markt('Will "Money" be said during the episode?'))
+    c = StreamingCounter(r)
+    c.ingest_chunk(1, [Segment("money money moneymaker", confidence=0.9)], "t1")
+    assert c.count == 2
+    assert c.erweitert_count == 3
+
+
+def test_jre_profil_titel_und_verbotsmuster() -> None:
+    import re as _re
+
+    p = config.PROFILE["jre_july13"]
+    pflicht, verboten = p["titel_muster"], p["titel_verboten"]
+
+    def qualifiziert(titel: str) -> bool:
+        return bool(_re.search(pflicht, titel, _re.IGNORECASE)) and not bool(
+            _re.search(verboten, titel, _re.IGNORECASE))
+
+    # RSS-Format und YouTube-Format der Hauptepisoden
+    assert qualifiziert("#2524 - Rupert Lowe")
+    assert qualifiziert("Joe Rogan Experience #2523 - Ali Siddiq")
+    # MMA-Show traegt #<n>, zaehlt laut Marktregel aber nicht
+    assert not qualifiziert("JRE MMA Show #182 - Protect Ya Neck")
+    assert not qualifiziert("JRE MMA Show #181 with Justin Gaethje & Trevor Wittman")
+    # Nebenformate ohne Episodennummer scheitern am Pflichtmuster
+    assert not qualifiziert("Fight Companion - June 2026")
+    assert not qualifiziert("JRE Toon - The Best Trip Ever")
+
+
+def test_elon_matcher_strikt_und_verdacht() -> None:
+    from operations.pipeline.elon_bot import ElonMatcher
+    from operations.pipeline.market_rules import MarketRule
+
+    def rule(*begriffe):
+        return MarketRule("m1", "s", "q", list(begriffe), 1, "y", "n", False)
+
+    m = ElonMatcher(rule("Tesla"))
+    # Strikt: exakt, Plural, Possessiv, Case, Sigils davor
+    for t in ("Tesla rules", "two Teslas", "Tesla's plan", "$TESLA up",
+              "#tesla", "@Tesla hi"):
+        assert m.pruefe(t) == (True, False), t
+    # Streckung: kein Auto-Kauf (zaehlt laut Regel nicht), aber Verdacht
+    # (Regex kann Streckung nicht von Compound trennen -> manuell)
+    assert m.pruefe("Teslaaa!") == (False, True)
+    # Symbol im Wort: strikt nein, und auch kein Substring -> gar nichts
+    assert m.pruefe("T3sla") == (False, False)
+    # Compound/Handle-Rest -> nur Verdacht (kein Auto-Kauf)
+    assert m.pruefe("the Teslabot cometh") == (False, True)
+    assert m.pruefe("@tesla_fan yes") == (False, True)
+
+    m2 = ElonMatcher(rule("Video game", "Videogame"))
+    for t in ("a video game", "video-game night", "videogames forever"):
+        assert m2.pruefe(t)[0] is True, t
+
+    m3 = ElonMatcher(rule("Never"))
+    assert m3.pruefe("Never give up") == (True, False)
+    assert m3.pruefe("nevertheless") == (False, True)
+
+    m4 = ElonMatcher(rule("IPO"))
+    assert m4.pruefe("the IPO is on") == (True, False)
+    assert m4.pruefe("three IPOs") == (True, False)
+
+
+def test_nach_edge_sortiert_billigster_ask_zuerst() -> None:
+    from operations.pipeline.decision import nach_edge_sortiert
+
+    kand = [
+        {"slug": "teuer", "best_ask": 0.88},
+        {"slug": "billig", "best_ask": 0.12},
+        {"slug": "kein_ask", "best_ask": None},
+        {"slug": "mittel", "best_ask": 0.45},
+    ]
+    reihenfolge = [k["slug"] for k in nach_edge_sortiert(kand)]
+    # billigster Ask zuerst (hoechster Grenzgewinn/Dollar), None ans Ende
+    assert reihenfolge == ["billig", "mittel", "teuer", "kein_ask"]
+
+
+def test_nach_edge_sortiert_stabil_bei_gleichheit() -> None:
+    from operations.pipeline.decision import nach_edge_sortiert
+
+    kand = [{"slug": "a", "best_ask": 0.5}, {"slug": "b", "best_ask": 0.5}]
+    assert [k["slug"] for k in nach_edge_sortiert(kand)] == ["a", "b"]
+
+
+def test_ev_deckel_ableitung() -> None:
+    # ASK_OBERGRENZE = min(HARD_ASK_DECKEL, p_win - min_edge), gerundet.
+    assert config.ASK_OBERGRENZE <= config.HARD_ASK_DECKEL + 1e-9
+    erwartet = round(min(config.HARD_ASK_DECKEL,
+                         config.EV_P_WIN - config.EV_MIN_EDGE), 4)
+    assert config.ASK_OBERGRENZE == pytest.approx(erwartet)
+
+
+def test_sizing_kauf_walk_und_kennzahlen() -> None:
+    from operations.pipeline.sizing_analyse import (
+        asks_aufsteigend,
+        kauf_walk,
+        kennzahlen,
+    )
+
+    # Bimodales Buch: billige Tranche 0.12/0.13, Luecke, Wall 0.80-0.90
+    book = {"asks": [
+        {"price": "0.90", "size": "10"}, {"price": "0.80", "size": "5"},
+        {"price": "0.13", "size": "200"}, {"price": "0.12", "size": "50"},
+    ]}
+    asks = asks_aufsteigend(book)
+    assert asks[0] == (0.12, 50.0)  # aufsteigend sortiert
+
+    # EV-Grenze 0.97-0.03=... hier min_edge gross -> nur billige Tranche.
+    # max_preis 0.20: nimmt 0.12 (6 USD) + 0.13 (26 USD) = 32 USD.
+    opt = kauf_walk(asks, max_preis=0.20, budget=1000)
+    assert opt["usd"] == pytest.approx(0.12 * 50 + 0.13 * 200)  # 32.0
+    assert opt["n_level"] == 2
+
+    # Deckel 0.90: nimmt zusaetzlich Wall 0.80 (4 USD) + 0.90 (9 USD).
+    deck = kauf_walk(asks, max_preis=0.90, budget=1000)
+    assert deck["usd"] == pytest.approx(32.0 + 0.80 * 5 + 0.90 * 10)  # 45.0
+    assert deck["n_level"] == 4
+
+    # Budget-Deckelung: nur 10 USD -> stoppt in der billigen Tranche.
+    knapp = kauf_walk(asks, max_preis=0.90, budget=10.0)
+    assert knapp["usd"] == pytest.approx(10.0)
+
+    # Kennzahlen: EV = p_win*shares - usd; Worst = -usd.
+    k = kennzahlen(opt, p_win=0.98)
+    assert k["payout_gewinn"] == opt["shares"]
+    assert k["ev"] == pytest.approx(round(0.98 * opt["shares"] - opt["usd"], 2))
+    assert k["worst"] == pytest.approx(-opt["usd"])
+
+
+def test_lemonade_profil_titel_muster() -> None:
+    import re as _re
+
+    muster = config.PROFILE["lemonade_july15"]["titel_muster"]
+    assert _re.search(muster, "We Made A World Cup of News Stories | "
+                              "Lemonade Stand \U0001f34b", _re.IGNORECASE)
+    assert _re.search(muster, "This Week Was Crazy | Lemonade Stand\U0001f34b",
+                      _re.IGNORECASE)
+    # Daily-Clips des Kanals tragen das Muster nicht:
+    assert not _re.search(muster, "France VS Morocco | World Cup News",
+                          _re.IGNORECASE)
+    assert not _re.search(muster, "There's beef about beef", _re.IGNORECASE)

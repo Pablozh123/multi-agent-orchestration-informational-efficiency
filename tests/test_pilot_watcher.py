@@ -135,6 +135,16 @@ def test_arm2_tiefe_unter_20_usdc() -> None:
     assert stat["arm2_tiefe_unter_20"] == 1
 
 
+def test_arm2_gamma_vorfilter_laedt_kein_buch() -> None:
+    def kein_buch(token_id: str) -> dict:
+        raise AssertionError("Buchabruf trotz Gamma-Vorfilter")
+
+    m = markt(prices=("0.60", "0.40"))  # weit ausserhalb des Fensters
+    signale, stat = watcher.scan([m], NOW, fetch_book_fn=kein_buch)
+    assert signale == []
+    assert stat["arm2_gamma_vorfilter"] == 1
+
+
 def test_nicht_binaere_maerkte_werden_uebersprungen() -> None:
     m = markt()
     m["outcomes"] = json.dumps(["A", "B", "C"])
@@ -202,6 +212,39 @@ def test_arm1_hat_vorrang_vor_arm2() -> None:
     assert len(signale) == 1
     assert signale[0].arm == "arm1"
     assert signale[0].regel == "arm1_schwelle_moeglich"
+
+
+# ------------------------------------------------- Gamma-Abruf
+
+
+def test_lade_fenster_paginierung_bis_leere_seite() -> None:
+    seiten = {0: [{"id": "a"}] * 100, 100: [{"id": "b"}] * 40, 200: []}
+
+    def fake_get(params: dict) -> list:
+        assert params["active"] == "true"
+        return seiten.get(params["offset"], [])
+
+    batch = watcher._lade_fenster({}, get_json=fake_get)
+    assert len(batch) == 140  # bricht erst bei leerer Seite ab, nicht bei <100
+
+
+def test_fetch_gamma_maerkte_zwei_fenster_dedupliziert() -> None:
+    aufrufe: list[dict] = []
+
+    def fake_get(params: dict) -> list:
+        aufrufe.append(params)
+        if params["offset"] > 0:
+            return []
+        if params["end_date_max"] == "2026-07-16":  # Rueckblick-Fenster
+            return [{"id": "alt1"}, {"id": "beide"}]
+        return [{"id": "beide"}, {"id": "neu1"}]
+
+    maerkte = watcher.fetch_gamma_maerkte(now=NOW, get_json=fake_get)
+    ids = [m["id"] for m in maerkte]
+    assert ids == ["alt1", "beide", "neu1"]  # dedupliziert, Reihenfolge stabil
+    fenster = {(a.get("end_date_min"), a.get("end_date_max")) for a in aufrufe}
+    assert ("2026-07-02", "2026-07-16") in fenster  # 14 Tage Rueckblick
+    assert ("2026-07-16", "2026-08-02") in fenster  # bis Pilot-Stichtag
 
 
 # ------------------------------------------------- Dedupe und Ablage

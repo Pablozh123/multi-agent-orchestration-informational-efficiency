@@ -24,7 +24,7 @@ import csv
 import json
 import re
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from operations.pipeline.orderbook import (
@@ -302,7 +302,13 @@ def scan(
         if ("arm2", mid) in signalisierte:
             zaehle("arm2_bereits_signalisiert")
             continue
-        seite, token, _ = max(seiten, key=lambda s: s[2])
+        seite, token, gamma_preis = max(seiten, key=lambda s: s[2])
+        # Effizienz-Vorfilter, keine Protokoll-Regel: Orderbuecher nur fuer
+        # Maerkte laden, deren Gamma-Preis grob im Arm-2-Fenster liegt
+        # (0.05 Marge unten, 0.02 oben). Entschieden wird am Live-Ask.
+        if not (0.85 <= gamma_preis <= 0.99):
+            zaehle("arm2_gamma_vorfilter")
+            continue
         try:
             book = fetch_book_fn(token)
         except Exception:  # noqa: BLE001
@@ -416,31 +422,73 @@ def schreibe_metadata(
 # ------------------------------------------------------------ Live-Abruf
 
 
-def fetch_gamma_maerkte(max_seiten: int = 4, seitengroesse: int = 500) -> list[dict]:
-    """Aktive, ungeschlossene Maerkte mit Aufloesung bis zum Pilot-Stichtag."""
+ARM1_STICHTAG_RUECKBLICK_TAGE = 14  # Engineering-Wahl, keine Protokoll-Regel
+
+
+def _hole_gamma_json(params: dict) -> list[dict]:
     import httpx
 
+    resp = httpx.get(
+        GAMMA_MARKETS_URL, params=params, headers=HTTP_HEADERS, timeout=30.0
+    )
+    resp.raise_for_status()
+    return resp.json()
+
+
+def _lade_fenster(
+    fenster_params: dict,
+    max_seiten: int = 10,
+    seitengroesse: int = 100,
+    get_json=_hole_gamma_json,
+) -> list[dict]:
+    """Paginiert ein Gamma-Zeitfenster (Server deckelt limit auf 100)."""
     maerkte: list[dict] = []
     for seite in range(max_seiten):
-        resp = httpx.get(
-            GAMMA_MARKETS_URL,
-            params={
-                "active": "true",
-                "closed": "false",
-                "limit": seitengroesse,
-                "offset": seite * seitengroesse,
-                "end_date_max": ARM2_SPAETESTE_AUFLOESUNG.strftime("%Y-%m-%d"),
-            },
-            headers=HTTP_HEADERS,
-            timeout=30.0,
-        )
-        resp.raise_for_status()
-        batch = resp.json()
+        params = {
+            "active": "true",
+            "closed": "false",
+            "limit": seitengroesse,
+            "offset": seite * seitengroesse,
+            **fenster_params,
+        }
+        batch = get_json(params)
         if not batch:
             break
         maerkte.extend(batch)
-        if len(batch) < seitengroesse:
-            break
+    return maerkte
+
+
+def fetch_gamma_maerkte(
+    now: datetime | None = None, get_json=_hole_gamma_json
+) -> list[dict]:
+    """Zwei Zeitfenster, dedupliziert nach Markt-ID.
+
+    Fenster 1 (Arm 1): kuerzlich abgelaufene, noch offene Maerkte
+    (Stichtag verstrichen, Aufloesung steht aus). Fenster 2 (Arm 2 und
+    Ever-Style-Arm-1): kommende Aufloesungen bis zum Pilot-Stichtag.
+    """
+    now = now or datetime.now(timezone.utc)
+    fenster = [
+        {
+            "end_date_min": (
+                now - timedelta(days=ARM1_STICHTAG_RUECKBLICK_TAGE)
+            ).strftime("%Y-%m-%d"),
+            "end_date_max": now.strftime("%Y-%m-%d"),
+        },
+        {
+            "end_date_min": now.strftime("%Y-%m-%d"),
+            "end_date_max": ARM2_SPAETESTE_AUFLOESUNG.strftime("%Y-%m-%d"),
+        },
+    ]
+    gesehen: set[str] = set()
+    maerkte: list[dict] = []
+    for params in fenster:
+        for markt in _lade_fenster(params, get_json=get_json):
+            mid = str(markt.get("id"))
+            if mid in gesehen:
+                continue
+            gesehen.add(mid)
+            maerkte.append(markt)
     return maerkte
 
 

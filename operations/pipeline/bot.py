@@ -24,7 +24,6 @@ import argparse
 import json
 import re
 import time
-from datetime import datetime, timezone
 
 from operations.pipeline import config
 from operations.pipeline.counter_engine import StreamingCounter

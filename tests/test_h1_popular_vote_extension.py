@@ -12,13 +12,11 @@ import pytest
 from operations.analysis.h1_popular_vote_extension import (
     CLOB_BASE_URL,
     FIVETHIRTYEIGHT_SOURCE,
-    GAMMA_BASE_URL,
     TARGET_OUTCOME,
     build_cases,
     fetch_daily_prices,
     generate_h1_popular_vote_outputs,
     mock_gamma_event,
-    mock_daily_prices,
     poll_margin_to_probability,
     read_national_poll_shares,
     select_market,

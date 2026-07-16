@@ -1,0 +1,20 @@
+# Ruff-Linter-Konfiguration.
+#
+# Scope: der aktiv entwickelte Live-Bot (operations/pipeline) und seine
+# Tests. Die Thesis-Analyse (operations/analysis) folgt eigenem Stil und
+# ist bewusst vom Gate ausgenommen — dort wird nicht mit-linted.
+#
+# Regelauswahl bleibt bei den Ruff-Defaults (pyflakes F + die kuratierten
+# pycodestyle-Fehler E4/E7/E9). E501 (Zeilenlaenge) ist bewusst NICHT
+# aktiv; Blind-except (BLE001) wird im Code mit # noqa markiert und nicht
+# als Regel erzwungen.
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+exclude = [
+    "operations/analysis",
+    "data",
+    ".venv",
+    "_disabled",
+]

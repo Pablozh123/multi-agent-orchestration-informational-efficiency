@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os as _os
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -172,8 +173,6 @@ PROFILE = {
         "yt_min_dauer_s": 900,
     },
 }
-
-import os as _os
 
 PROFIL = _os.environ.get("BOT_PROFIL", "allin_july10")
 _P = PROFILE[PROFIL]

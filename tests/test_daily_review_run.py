@@ -483,7 +483,7 @@ def test_run_daily_review_writes_all_six(tmp_path: Path, monkeypatch) -> None:
     extra = tmp_path / "public_data"
     _patch_paths(tmp_path, monkeypatch)
 
-    result = drr.run_daily_review(
+    drr.run_daily_review(
         publish_dir=publish,
         extra_publish_dir=extra,
         refresh_fn=lambda: "ok (test)",

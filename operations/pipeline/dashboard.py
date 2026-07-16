@@ -166,7 +166,8 @@ def main() -> None:
 
         treffer_txt = ", ".join(f"{k} {v}" for k, v in sorted(
             r["treffer"].items(), key=lambda x: -x[1])[:8]) or "keine"
-        lehren = "".join(f"<li>{html.escape(l)}</li>" for l in a.get("lehren", []))
+        lehren = "".join(
+            f"<li>{html.escape(lehre)}</li>" for lehre in a.get("lehren", []))
         dauer = f"{r['dauer_s']} s" if r["dauer_s"] is not None else "abgebrochen"
         pnl_txt = (f"{pnl:+.2f} USD" if pnl is not None else "offen")
         karten.append(f"""

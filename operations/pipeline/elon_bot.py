@@ -159,6 +159,8 @@ def lauf(live: bool) -> None:
                                                 "live_partial")):
                     getradet.add(str(e.get("market_id")))
 
+    # PID-Datei fuer den Watchdog (erkennt haengende Instanzen).
+    (config.LIVE_DIR / "bot.pid").write_text(str(os.getpid()), encoding="utf-8")
     _schreibe_event("start", {
         "modus": modus, "aktive_maerkte": len(rules),
         "bereits_getradet": sorted(getradet),
@@ -170,6 +172,7 @@ def lauf(live: bool) -> None:
     watcher: XWatcher | None = None
     gesehen: set[int] = set()
     startscan_fertig = False
+    letzte_abdeckung: bool | None = None
     letzter_buchlog = 0.0
     letzte_cookie_meldung = 0.0
     backoff_bis = 0.0
@@ -309,10 +312,24 @@ def lauf(live: bool) -> None:
                 if not watcher.reply_abdeckung:
                     _schreibe_event("warnung", {
                         "wo": "reply_abdeckung",
+                        "txn_fehler": watcher._txn._fehler,
+                        "letzter_fehler": watcher.letzter_fehler,
                         "hinweis": ("nur UserTweets aktiv — Fremd-Replies "
                                     "fehlen. transaction-id pruefen oder "
                                     "APIFY_REPLY_FALLBACK=1 setzen."),
                     })
+                letzte_abdeckung = watcher.reply_abdeckung
+            else:
+                # Query-Wechsel sichtbar machen (Selbstheilung UserTweets
+                # -> UserTweetsAndReplies, sobald die transaction-id wieder
+                # baut). feed_modus loggt nur beim Start.
+                if watcher.reply_abdeckung != letzte_abdeckung:
+                    _schreibe_event("feed_wechsel", {
+                        "query": (watcher._query[0]
+                                  if watcher._query else None),
+                        "reply_abdeckung": watcher.reply_abdeckung,
+                    })
+                    letzte_abdeckung = watcher.reply_abdeckung
             if not startscan_fertig:
                 # Historie seit Periodenstart nachziehen (max 4 Seiten).
                 seiten = 0
@@ -362,22 +379,41 @@ def lauf(live: bool) -> None:
             watcher = None  # .env neu laden, ggf. frische Cookies
             time.sleep(300)
         except Exception as ex:  # noqa: BLE001
-            _schreibe_event("fehler", {"wo": "x_poll", "fehler": str(ex)[:200]})
-            backoff_bis = time.time() + 45
+            msg = str(ex)
+            # Read-Timeout ist die transienteste Fehlerart (X-Endpoint
+            # gelegentlich langsam, Befund 13.7.: ~1/5min). Kurzer Retry
+            # statt 45s Pause -> Blindfenster von ~65s auf ~20s.
+            ist_timeout = ("timed out" in msg.lower()
+                           or "timeout" in type(ex).__name__.lower())
+            _schreibe_event("fehler", {"wo": "x_poll", "fehler": msg[:200],
+                                       "timeout": ist_timeout})
+            backoff_bis = time.time() + (8 if ist_timeout else 45)
 
-        # Budgetbewusstes Pacing: X deckelt UserTweets auf 50 Requests je
-        # 15-min-Fenster. Ist der Rest knapp, bis kurz nach dem Reset
-        # schlafen statt ins 429 zu laufen; sonst der normale Poll-Takt.
+        # Adaptives Pacing (Fix 15.7.): X deckelt UserTweetsAndReplies je
+        # 15-min-Fenster; der 5s-Poll erschoepft es regelmaessig. Der alte
+        # "bis Reset schlafen"-Guard verursachte 10-Min-Blackouts (Texas-
+        # Post 15.7. dadurch 9 Min zu spaet erkannt -> Ask weg). Statt am
+        # Fensterende voll zu schlafen, die VERBLEIBENDEN Requests
+        # gleichmaessig ueber das Restfenster strecken: bei gesundem Budget
+        # 5s-Takt, bei knappem Budget graduell langsamer (aber NIE Blackout,
+        # NIE 429). Self-correcting — nutzt das echte remaining/reset.
         pause = config.X_POLL_S
-        if watcher is not None and watcher.rate_remaining is not None:
-            if watcher.rate_remaining <= 2 and watcher.rate_reset:
-                warten = max(config.X_POLL_S,
-                             watcher.rate_reset - time.time() + 2)
-                if warten > config.X_POLL_S:
-                    _schreibe_event("rate_pause", {
-                        "remaining": watcher.rate_remaining,
-                        "warten_s": round(warten)})
-                pause = warten
+        if (watcher is not None and watcher.rate_remaining is not None
+                and watcher.rate_reset):
+            rest_s = max(0.0, watcher.rate_reset - time.time())
+            nutzbar = watcher.rate_remaining - 2  # 2 Puffer gegen 429
+            if nutzbar <= 0:
+                # Budget erschoepft (durch Spreading praktisch nie): bis
+                # Reset warten, aber in <=60s-Haeppchen, damit ein frueher
+                # Reset schnell erkannt wird (nicht 10 Min blind).
+                pause = min(max(rest_s + 2, config.X_POLL_S), 60.0)
+            else:
+                pause = max(config.X_POLL_S, rest_s / nutzbar)
+            if pause > config.X_POLL_S + 1:
+                _schreibe_event("rate_pace", {
+                    "pause_s": round(pause, 1),
+                    "remaining": watcher.rate_remaining,
+                    "rest_s": round(rest_s)})
         time.sleep(pause)
 
 

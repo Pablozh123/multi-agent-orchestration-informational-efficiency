@@ -200,6 +200,10 @@ def lauf(live: bool) -> None:
             prober = Mp3UrlProber(naechste_nr)
         except Exception as ex:  # noqa: BLE001
             _schreibe_event("fehler", {"wo": "prober_init", "fehler": str(ex)})
+    import os as _os
+
+    # PID-Datei fuer den Watchdog (erkennt haengende Instanzen).
+    (config.LIVE_DIR / "bot.pid").write_text(str(_os.getpid()), encoding="utf-8")
     _schreibe_event("start", {
         "modus": modus,
         "aktive_maerkte": len(aktive),

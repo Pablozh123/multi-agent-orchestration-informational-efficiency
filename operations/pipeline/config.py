@@ -103,10 +103,12 @@ PROFILE = {
         "min_edge": 0.03,
         "periode_start_utc": "2026-07-13T04:00:00Z",  # 00:00 ET
         "periode_ende_utc": "2026-07-20T03:59:59Z",   # 19.7. 23:59 ET
-        # UserTweetsAndReplies (mit transaction-id) hat ein Limit von
-        # 500 Req/15min (=1/1.8s) — 10x mehr als UserTweets (50). 5s
-        # (180/15min) bleibt weit drunter, der Budget-Guard adaptiert eh.
-        "x_poll_s": 5.0,
+        # UserTweetsAndReplies-Limit je 15-min-Fenster. Empirie 15.7.: der
+        # 5s-Poll erschoepfte es regelmaessig (-> 10-Min-Blackouts, Texas-
+        # Post verpasst). 8s (112/15min) gibt strukturelle Reserve; das
+        # adaptive Pacing in elon_bot streckt bei Bedarf zusaetzlich, ohne
+        # je zu blacken. Latenz 8s ist fuer einen Wochen-Markt egal.
+        "x_poll_s": 8.0,
     },
     "jre_july13": {
         "live_dir": "jre_july13",
@@ -152,9 +154,11 @@ PROFILE = {
         "yt_channel_id": "UCwVevVbti5Uuxj6Mkl5NHRA",  # @LemonadeStandPodcast
         "mp3_probe_muster": None,
         "discovery_slug_filter": "lemonade-stand",
-        # Voller Pool (Wallet ~178 pUSD, MrBeast-Profil pausiert wegen
-        # unklarer Marktlage 13.7.); ~8 USD Fee-/Rundungspuffer.
-        "max_usd_gesamt": 170.0,
+        # Voller Pool: Wallet 178.54 pUSD (E280-Gewinne, Elon 0 gebunden),
+        # 175 = fast alles nutzbar, ~3.5 Fee-/Rundungspuffer. Der Executor
+        # deckelt zusaetzlich am echten Wallet-Stand (Wallet-Delta-Sync),
+        # kann also nie ueberziehen — auch bei parallelem Elon-Bot.
+        "max_usd_gesamt": 175.0,
         # Marktregel (Event 686210): JEDES Video des Kanals mit
         # "Lemonade Stand" im Titel qualifiziert ("mentioned by anyone",
         # keine Playlist, keine Sprecher-Verifikation). Das Titel-Muster

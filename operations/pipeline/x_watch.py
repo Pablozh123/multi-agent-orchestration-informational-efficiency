@@ -39,6 +39,10 @@ ELON_USER_ID = "44196397"
 # main-Bundle gezogen (aktuelle_query_ids); die Konstante ist nur der
 # Fallback, falls die Extraktion scheitert.
 FALLBACK_QUERY_IDS = [
+    # UTAR-Fallback ZWINGEND (Befund 16.7.): fehlte hier komplett -> wenn
+    # der main.js-Parse die UTAR-qid mal nicht fand, gab es keinen
+    # UTAR-Kandidaten und der Bot blieb dauerhaft ohne Fremd-Replies.
+    ("UserTweetsAndReplies", "FIFgycIi-CNJcV0R-135Uw"),  # verifiziert 16.7.
     ("UserTweets", "E3opETHurmVJflFsUBVuUQ"),
     ("UserTweets", "hr4gzZONlq23okjU8fIe_A"),
 ]
@@ -167,6 +171,8 @@ class _TxnIdManager:
         self._fehler: str | None = None
 
     def _baue(self) -> None:
+        import time as _t
+
         import requests
         from bs4 import BeautifulSoup
         from x_client_transaction import ClientTransaction
@@ -175,12 +181,26 @@ class _TxnIdManager:
             handle_x_migration,
         )
 
-        sess = requests.Session()
-        sess.headers.update({"User-Agent": self._ua})
-        home = handle_x_migration(sess)
-        ond = BeautifulSoup(
-            sess.get(get_ondemand_file_url(home)).text, "html.parser")
-        self._ct = ClientTransaction(home, ond)
+        # Retry: der Home-/ondemand-Abruf haengt am selben X-Edge wie die
+        # API und wird beim Start (parallel zum Startscan) gern gedrosselt.
+        # Ein einmaliger Fehlschlag degradierte sonst die Reply-Abdeckung
+        # (Befund 16.7.: 2 Neustarts blieben ohne Fremd-Replies).
+        letzter: Exception | None = None
+        for versuch in range(3):
+            try:
+                sess = requests.Session()
+                sess.headers.update({"User-Agent": self._ua})
+                home = handle_x_migration(sess)
+                ond = BeautifulSoup(
+                    sess.get(get_ondemand_file_url(home), timeout=15).text,
+                    "html.parser")
+                self._ct = ClientTransaction(home, ond)
+                return
+            except Exception as ex:  # noqa: BLE001 - bis zu 3 Versuche
+                letzter = ex
+                if versuch < 2:
+                    _t.sleep(2.0)
+        raise letzter if letzter else RuntimeError("tid-Build fehlgeschlagen")
 
     def txn(self, method: str, path: str) -> str | None:
         import time as _t
@@ -239,15 +259,25 @@ class XWatcher:
             live = aktuelle_query_ids()
         except Exception:  # noqa: BLE001 - Fallback greift
             live = {}
+        # Kandidaten strikt in Prioritaet: ERST alle UserTweetsAndReplies
+        # (live-qid + UTAR-Fallbacks), DANN UserTweets. So wird UTAR immer
+        # zuerst probiert — auch wenn der main.js-Parse die UTAR-qid mal
+        # nicht liefert (sonst gewinnt UserTweets und die Reply-Abdeckung
+        # heilt nie, Befund 16.7.).
         self._kandidaten: list[tuple[str, str]] = []
-        if live.get("UserTweetsAndReplies"):
-            self._kandidaten.append(
-                ("UserTweetsAndReplies", live["UserTweetsAndReplies"]))
-        if live.get("UserTweets"):
-            self._kandidaten.append(("UserTweets", live["UserTweets"]))
-        for op, qid in FALLBACK_QUERY_IDS:
-            if (op, qid) not in self._kandidaten:
+
+        def _add(op: str, qid: str | None) -> None:
+            if qid and (op, qid) not in self._kandidaten:
                 self._kandidaten.append((op, qid))
+
+        _add("UserTweetsAndReplies", live.get("UserTweetsAndReplies"))
+        for op, qid in FALLBACK_QUERY_IDS:
+            if op == "UserTweetsAndReplies":
+                _add(op, qid)
+        _add("UserTweets", live.get("UserTweets"))
+        for op, qid in FALLBACK_QUERY_IDS:
+            if op == "UserTweets":
+                _add(op, qid)
 
     @property
     def reply_abdeckung(self) -> bool:
@@ -279,7 +309,10 @@ class XWatcher:
         url = (f"https://x.com{pfad}"
                f"?variables={urllib.parse.quote(json.dumps(variablen))}"
                f"&features={urllib.parse.quote(json.dumps(self._features))}")
-        return httpx.get(url, headers=kopf, cookies=self._cookies, timeout=20)
+        # 12s statt 20s: die Timeline-Antwort (~500KB) kommt normal in <1s;
+        # 12s trennt echte Haenger schneller ab (kuerzeres Blindfenster).
+        return httpx.get(url, headers=kopf, cookies=self._cookies,
+                         timeout=httpx.Timeout(12.0, connect=8.0))
 
     def hole_posts(
         self, cursor: str | None = None
@@ -289,8 +322,14 @@ class XWatcher:
         429 wird als eigener Fehlertyp gemeldet (Aufrufer soll backoffen),
         401/403 deuten auf abgelaufene Cookies.
         """
-        kandidaten = ([self._query] if self._query else []) + [
-            q for q in self._kandidaten if q != self._query]
+        # Immer in Prioritaetsreihenfolge (UserTweetsAndReplies zuerst):
+        # so heilt sich die Reply-Abdeckung selbst, sobald eine transiente
+        # transaction-id-Stoerung vorbei ist — statt dauerhaft auf
+        # UserTweets haengenzubleiben (Befund 16.7.: tid schlug beim
+        # Neustart einmal fehl -> Bot blieb ohne Fremd-Replies). Kostet
+        # nichts: bei kaputtem tid wirft UTAR _KeinTxnId OHNE HTTP-Call,
+        # dann pollt UserTweets. self._query bleibt nur Feature-Flag-Merker.
+        kandidaten = list(self._kandidaten)
         letzte = ""
         for name, qid in kandidaten:
             for _ in range(8):  # Feature-Flags iterativ ergaenzen

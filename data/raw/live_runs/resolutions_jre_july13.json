@@ -1,0 +1,165 @@
+{
+ "profil": "jre_july13",
+ "event_slug": "what-will-be-said-on-the-first-joe-rogan-experience-episode-of-the-week-july-13-20260707144311074",
+ "event_titel": "What will be said on the first Joe Rogan Experience episode of the week? (July 13)",
+ "abgerufen_utc": "2026-07-16T04:30:47+00:00",
+ "quelle": "gamma-api.polymarket.com/events (oeffentlich, read-only)",
+ "maerkte": {
+  "2839476": {
+   "frage": "Will \"People\" be said 200+ times during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2839477": {
+   "frage": "Will \"People\" be said 100+ times during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2839478": {
+   "frage": "Will \"Dude\" be said 20+ times during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2839479": {
+   "frage": "Will \"Trump\" be said 10+ times during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2839480": {
+   "frage": "Will \"Fuck\" or \"Fucking\" be said 10+ times during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2839481": {
+   "frage": "Will \"AI\" or \"Artificial Intelligence\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2839482": {
+   "frage": "Will \"Comedy\" or \"Comedian\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2839483": {
+   "frage": "Will \"Space\" or \"Planet\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2839484": {
+   "frage": "Will \"Apple\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2839485": {
+   "frage": "Will \"Microsoft\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2839486": {
+   "frage": "Will \"Spy\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2839487": {
+   "frage": "Will \"World Cup\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2839488": {
+   "frage": "Will \"Alien\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2839489": {
+   "frage": "Will \"Right\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2839490": {
+   "frage": "Will \"Left\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2839491": {
+   "frage": "Will \"Red\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2839492": {
+   "frage": "Will \"Blue\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2839493": {
+   "frage": "Will \"Amazing\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2839494": {
+   "frage": "Will \"Crazy\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2839495": {
+   "frage": "Will \"Informative\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2839496": {
+   "frage": "Will \"Different\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2839497": {
+   "frage": "Will \"Firearm\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2839498": {
+   "frage": "Will \"Show\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2839499": {
+   "frage": "Will \"Obsolete\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2839500": {
+   "frage": "Will \"Problem\" be said during the first Joe Rogan Experience of the week of July 13?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2839501": {
+   "frage": "Will no Rogan episode air?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  }
+ }
+}

@@ -502,6 +502,26 @@ acceptance_criteria:
 - Review checks pass before recommending a commit.
 next_commit: docs: update project control workflow
 
+## Scoped Side Goal: Echtgeld Pilot Watcher (read-only)
+
+goal_id: goal-pilot-watcher-readonly-001
+status: active (bounded side goal, 2026-07-16 to 2026-08-02)
+source: docs/project/PILOT_PROTOKOLL_ECHTGELD_2026-07-11.md (version 2) and
+docs/project/REPLAY_NACHWEIS.md
+scope:
+- `operations/pilot/watcher.py`, `tests/test_pilot_watcher.py`, and bounded
+  CSV/JSON outputs under `pilot/` (signals, trades template, run metadata).
+allowed (explicit live-data scoping per AGENTS.md read-only rule):
+- Read-only public Gamma market discovery and public CLOB order books for the
+  two preregistered pilot arms; bounded outputs (max 50 signals per run).
+blocked (unchanged from AGENTS.md):
+- Order placement, order cancellation, trading credentials, authenticated
+  channels, autonomous execution, and profitability claims.
+notes:
+- Trades are executed manually by the author and logged in `pilot/trades.csv`;
+  the watcher only surfaces rule-conform candidates. Arm-1 hits are candidates
+  that require a manual reference check before any action.
+
 ## Running Side Goal
 
 - `goal-swiss-referendum-efficiency-001` is no longer a live data-collection

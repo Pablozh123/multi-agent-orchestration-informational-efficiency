@@ -13422,3 +13422,43 @@ Key output:
 - runs.json now carries four runs; elon_july13 entered without any
   manual step -- discovery, tape, resolutions and publish all came from
   the scheduled task.
+
+## 2026-07-16 - goal-pilot-watcher-readonly-001
+
+Task:
+
+- Save the user-provided Echtgeld pilot preregistration protocol v2 and
+  implement its two Claude-Code deliverables: the read-only pilot watcher
+  and the table-6 forward-replay evidence trail.
+
+Files changed:
+
+- `docs/project/PILOT_PROTOKOLL_ECHTGELD_2026-07-11.md`
+- `docs/project/REPLAY_NACHWEIS.md`
+- `GOAL.md`
+- `operations/pilot/watcher.py` (+ `operations/pilot/__init__.py`)
+- `tests/test_pilot_watcher.py`
+- `pilot/trades.csv`
+- `docs/project/WORK_LOG.md`
+
+Verification:
+
+- `python -m pytest tests/test_pilot_watcher.py -q` -> 23 passed.
+- `python -m pytest -q` -> 826 passed (includes the h1 calibration figure
+  fix committed earlier today together with the new CI workflow).
+
+Decision:
+
+- Watcher stays strictly read-only: public Gamma/CLOB endpoints, bounded
+  CSV outputs (max 50 signals per run), no order path, no credentials.
+  Arm-1 hits are candidates that require a manual reference check;
+  trading is manual per protocol v2.
+- The N=28 oracle tally exists only as a playbook entry in
+  prediction-alpha-bot citing a non-archived VPS database; the wording
+  decision stays with the author (see REPLAY_NACHWEIS.md).
+
+Next step:
+
+- Author fills in the pilot budget and freeze confirmation in the
+  protocol, runs `python -m operations.pilot.watcher` during the trading
+  window, and logs manual trades in `pilot/trades.csv`.

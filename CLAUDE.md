@@ -21,6 +21,15 @@ Do not implement or extend agents, MCP, Claude Desktop integration, model
 routing, self-consistency runs, or cloud deployment until the deterministic core
 is stable and explicitly approved.
 
+## Parallel Sessions
+
+- One folder, one active session: continue the existing session instead of
+  opening a second one in the same project folder.
+- Parallel work in this repo runs in an isolated worktree (session start
+  option) or on a feature branch merged via pull request with green CI.
+- Stage only files you changed yourself. Never commit, revert, or stash
+  another session's uncommitted changes; report them instead.
+
 ## Guardrails
 
 - No raw table dumps into prompts.

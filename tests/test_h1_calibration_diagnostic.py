@@ -84,7 +84,7 @@ def test_generate_h1_calibration_diagnostic_outputs(tmp_path: Path) -> None:
     assert metadata["method"]["reliability_panel_min_case_count"] == 30
     assert metadata["outputs"]["h1_goal_completion_status"] == "not_proven"
     assert metadata["outputs"]["contains_wallet_addresses"] is False
-    assert metadata["outputs"]["figure_aspect_ratio"] == 14.4 / 9.6
+    assert metadata["outputs"]["figure_aspect_ratio"] == 16.5 / 5.6
     assert metadata["outputs"]["reliability_panel_x_limits"] == [0.0, 1.0]
     assert metadata["outputs"]["reliability_panel_y_limits"] == [0.0, 1.0]
     assert metadata["outputs"]["reliability_panel_aspect"] == "equal"

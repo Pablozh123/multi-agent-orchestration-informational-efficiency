@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import csv
-import json
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -82,7 +81,12 @@ def log_snapshots(
         for outcome, tok in (("Yes", rule.yes_token_id), ("No", rule.no_token_id)):
             if not tok:
                 continue
-            book = fetch(tok)
+            try:
+                book = fetch(tok)
+            except Exception:  # noqa: BLE001 - ein toter Token (aufgeloester
+                # Markt -> CLOB 404) darf nicht den ganzen Buchlog-Batch
+                # abbrechen; diesen Token ueberspringen, Rest weiter loggen.
+                continue
             row = snapshot_row(tok, book, wall_ts_utc)
             row["market_id"] = rule.market_id
             row["slug"] = rule.slug

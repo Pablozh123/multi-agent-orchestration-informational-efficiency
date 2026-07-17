@@ -24,7 +24,6 @@ import argparse
 import json
 import re
 import time
-from datetime import datetime, timezone
 
 from operations.pipeline import config
 from operations.pipeline.counter_engine import StreamingCounter
@@ -162,8 +161,10 @@ def lauf(live: bool) -> None:
             )
         from operations.pipeline.speaker import SpeakerVerifier
 
-        verifier = SpeakerVerifier(config.ZIELSPRECHER_REFERENZ)
-        print("Sprecher-Verifikation aktiv (YES nur aus Zielsprecher-Treffern).")
+        verifier = SpeakerVerifier(config.ZIELSPRECHER_REFERENZ,
+                                   schwelle=config.SPRECHER_SCHWELLE)
+        print(f"Sprecher-Verifikation aktiv (Schwelle {config.SPRECHER_SCHWELLE}, "
+              "YES nur aus Zielsprecher-Treffern).")
     rules = lade_snapshot_rules()
     aktive = [r for r in rules if r.status == "active"]
     counters = {r.market_id: StreamingCounter(r) for r in aktive}

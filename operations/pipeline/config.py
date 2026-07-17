@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os as _os
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -68,6 +69,63 @@ PROFILE = {
         "max_usd_gesamt": 30.0,
         # Sprecher-Verifikation: YES nur aus MrBeast-zugerechneten Treffern.
         "zielsprecher_referenz": "data/live/mrbeast_next/referenz_stimme.npy",
+    },
+    "allin_july17": {
+        "live_dir": "allin_july17",
+        "event_id": "700931",
+        "event_slug": "what-will-be-said-on-the-next-all-in-podcast-july-17",
+        "rss_feed_url": "https://allinchamathjason.libsyn.com/rss",
+        "yt_channel_id": "UCESLZhusAkFfsNsApnjF_Cg",
+        # Prober-Muster stabil bis E280 -> naechste E281 (bewiesener Edge,
+        # E280 gewann alle Fills). Direkte traffic.libsyn.com-URL.
+        "mp3_probe_muster": (
+            "https://traffic.libsyn.com/secure/allinchamathjason/"
+            "ALLIN-E{n}_Ch.mp3"
+        ),
+        "discovery_slug_filter": "all-in",
+        # Voller Wallet-Pool (420.44 pUSD, 16.7.): 400 nutzbar, ~20 Puffer
+        # fuer Fees/Parallel-Bots. All-In = groesster Edge -> volle Groesse.
+        "max_usd_gesamt": 400.0,
+        # Buch KOMPLETT bis 0.90 abraeumen, nicht bei 150 gedeckelt:
+        # grosse 50-USD-FAK-Clips, bis zu 40 Clips -> effektiv budget-
+        # limitiert. Gilt fuer YES UND NO (beide ueber denselben Sweep).
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        "yt_playlist_id": "PLn5MTSAqaf8peDZQ57QkJBzewJU1aUokl",
+        "rss_nur_muster": r"ALLIN-E\d+_Ch\.mp3",
+    },
+    "mrbeast_gaming": {
+        "live_dir": "mrbeast_gaming",
+        "event_id": "700921",
+        "event_slug": (
+            "what-will-mrbeast-say-during-his-next-gaming-youtube-video-"
+            "20260713152829391"
+        ),
+        # Nur YouTube (@MrBeastGaming = EIGENER Kanal, NICHT der Hauptkanal
+        # UCX6O...). Video-Pfad (Voll-Download), kein Feed/Prober.
+        "rss_feed_url": None,
+        "yt_channel_id": "UCIPPMRA040LQr5QPyJEbmXA",
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "gaming",
+        # Gaming-Videos 18-33 Min; 900s-Gate schliesst Shorts/Previews aus
+        # (Marktregel: "Shorts, previews ... will not be considered").
+        "yt_min_dauer_s": 900,
+        "max_usd_gesamt": 60.0,
+        # SPRECHER-VERIFIKATION ZWINGEND: Marktregel wertet nur, was
+        # MrBeast SELBST sagt — die Crew (Chandler/Karl/Darius sind sogar
+        # Marktwoerter!) redet viel. YES nur aus MrBeast-zugerechneten
+        # Treffern (ziel_count), NO aus dem Gesamtzaehler. Eigene
+        # Referenz-Kopie (nicht der mrbeast-Pfad) -> Profil unabhaengig,
+        # selbe MrBeast-Stimme.
+        "zielsprecher_referenz": "data/live/mrbeast_gaming/referenz_stimme.npy",
+        # Kalibriert 16.7. an "10 YouTubers vs 2 Traitors" (Hauptkanal-
+        # Referenz auf Gaming-Audio): eindeutige MrBeast-Narration scort
+        # 0.52-0.64, Crew <=0.35, ein grenzwertiges Segment bei 0.40.
+        # Schwelle daher auf 0.50 angehoben (Standard 0.40): bei Schwelle-1-
+        # Maerkten ist ein einziger Fehl-Treffer ein Falschkauf -> Praezision
+        # vor Recall. Kosten: Undercount (schnelle Gameplay-Aussagen fallen
+        # raus) — aber verpasster YES = kein Verlust, NO nutzt Gesamtzaehler.
+        "sprecher_schwelle": 0.50,
     },
     "elon_july13": {
         "live_dir": "elon_july13",
@@ -173,8 +231,6 @@ PROFILE = {
     },
 }
 
-import os as _os
-
 PROFIL = _os.environ.get("BOT_PROFIL", "allin_july10")
 _P = PROFILE[PROFIL]
 
@@ -208,11 +264,14 @@ YES_SCHWELLE_PUFFER = 2        # YES ab Zaehler >= Schwelle + Puffer
 NO_ANTEIL = 0.7               # NO nur wenn Endstand <= 70% der Schwelle
 ASR_KONFIDENZ_HOMOPHON = 0.8  # Homophon-Treffer nur ab Konfidenz > 0.8
 
-# Level-Sweep: je Markt wiederholte FAK-Clips von 15 USD, solange der
-# beste Ask <= ASK_OBERGRENZE liegt (duenne Level nacheinander abraeumen).
-# Kein Pro-Markt-Limit mehr; harte Grenze ist der Gesamtpool.
-MAX_USD_PRO_MARKT = 15.0       # Clip-Groesse je Einzelorder
-MAX_CLIPS_PRO_MARKT = 10       # Sicherheitsgrenze gegen Endlos-Sweep
+# Level-Sweep: je Markt wiederholte FAK-Clips, solange der beste Ask
+# <= ASK_OBERGRENZE liegt (duenne Level nacheinander abraeumen). Kein
+# Pro-Markt-Notional-Limit; die harte Grenze ist der Gesamtpool.
+# Clip-Groesse und Clip-Anzahl je Profil: All-In (groesster Edge, voller
+# Pool) raeumt mit grossen Clips das ganze Buch bis 0.90 ab, budget-
+# limitiert statt bei 10x15=150 gedeckelt.
+MAX_USD_PRO_MARKT = float(_P.get("max_usd_pro_markt", 15.0))  # Clip-Groesse
+MAX_CLIPS_PRO_MARKT = int(_P.get("max_clips_pro_markt", 10))  # Sweep-Obergrenze
 MAX_USD_GESAMT = _P.get("max_usd_gesamt", 130.0)  # je Profil (Pool geteilt bei Parallelbetrieb)
 MAX_NACHBESSERUNGEN = 1
 
@@ -241,6 +300,9 @@ YT_FEED_URL = (
 YT_MIN_DAUER_S = _P.get("yt_min_dauer_s", 1800)  # Clips ausschliessen, je Profil
 _ziel_ref = _P.get("zielsprecher_referenz")
 ZIELSPRECHER_REFERENZ = (REPO_ROOT / _ziel_ref) if _ziel_ref else None
+# Similarity-Schwelle je Profil (Standard 0.40 aus speaker.py). Hoeher =
+# praeziser (weniger Falsch-Zurechnung), niedriger Recall.
+SPRECHER_SCHWELLE = float(_P.get("sprecher_schwelle", 0.40))
 YT_PLAYLIST_ID = _P.get("yt_playlist_id")
 RSS_NUR_MUSTER = _P.get("rss_nur_muster")
 # Pflicht-Titel-Muster (case-insensitive) fuer RSS- und YouTube-Drops.

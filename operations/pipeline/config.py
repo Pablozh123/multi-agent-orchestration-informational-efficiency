@@ -260,6 +260,12 @@ HARD_ASK_DECKEL = 0.97         # absolute Obergrenze, modellunabhaengig
 EV_P_WIN = float(_P.get("p_win", 0.93))
 EV_MIN_EDGE = float(_P.get("min_edge", 0.03))
 ASK_OBERGRENZE = round(min(HARD_ASK_DECKEL, EV_P_WIN - EV_MIN_EDGE), 4)
+# NO-Deckel NIEDRIGER als YES: YES kaufen wir auf einem GESEHENEN Wort
+# (zuverlaessig), NO wetten wir auf die ABWESENHEIT — ein einziger
+# ASR-Verpasser macht die NO falsch (E281 18.7.: "Tension" verpasst, NO
+# @0.88 verloren). Nur billige NO (Puffer fuer gelegentliche Misses):
+# NO@0.80 -> +EV bis ~20% Verpasserrate; NO@0.88 kippt schon bei ~12%.
+NO_ASK_OBERGRENZE = float(_P.get("no_ask_obergrenze", 0.80))
 YES_SCHWELLE_PUFFER = 2        # YES ab Zaehler >= Schwelle + Puffer
 NO_ANTEIL = 0.7               # NO nur wenn Endstand <= 70% der Schwelle
 ASR_KONFIDENZ_HOMOPHON = 0.8  # Homophon-Treffer nur ab Konfidenz > 0.8

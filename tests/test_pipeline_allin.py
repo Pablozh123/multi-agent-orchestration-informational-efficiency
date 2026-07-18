@@ -152,7 +152,19 @@ def test_no_erst_unter_70_prozent() -> None:
     r = rule_mit_schwelle(10)
     assert entscheide_no(r, 7, 0.5).action == "NO"     # 7 <= 7.0
     assert entscheide_no(r, 8, 0.5).action == "NONE"   # 8 > 7.0
-    assert entscheide_no(r, 7, config.ASK_OBERGRENZE + 0.001).action == "NONE"
+    assert entscheide_no(r, 7, config.NO_ASK_OBERGRENZE + 0.001).action == "NONE"
+
+
+def test_no_deckel_niedriger_als_yes() -> None:
+    # E281-Lehre: teure NO (Wort verpasst -> Falschkauf) meiden. Der
+    # NO-Deckel (0.80) ist niedriger als der YES-Deckel (0.90).
+    assert config.NO_ASK_OBERGRENZE < config.ASK_OBERGRENZE
+    r = rule_mit_schwelle(1)
+    # Tension-Fall: NO @0.88 wird jetzt abgelehnt (frueher gekauft, verloren)
+    assert entscheide_no(r, 0, 0.88).action == "NONE"
+    # billige NO (grosser Puffer) wird weiter gekauft
+    assert entscheide_no(r, 0, 0.44).action == "NO"
+    assert entscheide_no(r, 0, config.NO_ASK_OBERGRENZE).action == "NO"
 
 
 def test_no_bei_schwelle_1_nur_null_treffer() -> None:

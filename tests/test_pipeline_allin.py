@@ -509,6 +509,39 @@ def test_sizing_kauf_walk_und_kennzahlen() -> None:
     assert k["worst"] == pytest.approx(-opt["usd"])
 
 
+def test_mrbeast_gaming_profil_konfiguration() -> None:
+    p = config.PROFILE["mrbeast_gaming"]
+    haupt = config.PROFILE["mrbeast"]
+    # Eigener Gaming-Kanal, nicht der Hauptkanal
+    assert p["yt_channel_id"] != haupt["yt_channel_id"]
+    # Marktregel: Shorts/Previews zaehlen nicht -> 900s-Gate
+    assert p["yt_min_dauer_s"] == 900
+    # Sprecher-Verifikation zwingend, eigene Referenz-Kopie, Schwelle 0.50
+    # (kalibriert 16.7.: MrBeast 0.52-0.64, Crew <=0.35)
+    assert p["zielsprecher_referenz"].endswith(
+        "mrbeast_gaming/referenz_stimme.npy")
+    assert p["sprecher_schwelle"] == pytest.approx(0.50)
+    # Hauptkanal-Profil bleibt beim Default (0.40 aus speaker.py)
+    assert "sprecher_schwelle" not in haupt
+
+
+def test_sprecher_schwelle_default_ableitung() -> None:
+    # Aktives Testprofil (Default) definiert keine sprecher_schwelle ->
+    # config leitet den speaker.py-Standard 0.40 ab.
+    assert config.SPRECHER_SCHWELLE == pytest.approx(0.40)
+
+
+def test_discovery_filter_mrbeast_profile_disjunkt() -> None:
+    haupt = config.PROFILE["mrbeast"]
+    gaming = config.PROFILE["mrbeast_gaming"]
+    # Auto-Discovery (Event zu -> neuestes offenes Event mit Filter im
+    # Slug) darf nie das Event des jeweils anderen Profils uebernehmen.
+    assert haupt["discovery_slug_filter"] in haupt["event_slug"]
+    assert gaming["discovery_slug_filter"] in gaming["event_slug"]
+    assert haupt["discovery_slug_filter"] not in gaming["event_slug"]
+    assert gaming["discovery_slug_filter"] not in haupt["event_slug"]
+
+
 def test_lemonade_profil_titel_muster() -> None:
     import re as _re
 

@@ -64,7 +64,10 @@ PROFILE = {
         "rss_feed_url": None,
         "yt_channel_id": "UCX6OQ3DkcsbYNE6H8uQQuVA",  # MrBeast Hauptkanal
         "mp3_probe_muster": None,
-        "discovery_slug_filter": "mrbeast",
+        # Disjunkt zum Gaming-Event: "mrbeast" allein matcht auch
+        # "...mrbeast-say-during-his-next-gaming..." -> Auto-Discovery
+        # koennte sonst das falsche Event uebernehmen.
+        "discovery_slug_filter": "mrbeast-say-during-his-next-youtube",
         "yt_min_dauer_s": 300,  # Hauptvideos 10-25 Min.; Shorts ausschliessen
         "max_usd_gesamt": 30.0,
         # Sprecher-Verifikation: YES nur aus MrBeast-zugerechneten Treffern.
@@ -106,7 +109,9 @@ PROFILE = {
         "rss_feed_url": None,
         "yt_channel_id": "UCIPPMRA040LQr5QPyJEbmXA",
         "mp3_probe_muster": None,
-        "discovery_slug_filter": "gaming",
+        # "gaming" allein waere zu breit (jedes fremde Gaming-Event);
+        # disjunkt zum Hauptkanal-Filter (siehe Test).
+        "discovery_slug_filter": "mrbeast-say-during-his-next-gaming",
         # Gaming-Videos 18-33 Min; 900s-Gate schliesst Shorts/Previews aus
         # (Marktregel: "Shorts, previews ... will not be considered").
         "yt_min_dauer_s": 900,

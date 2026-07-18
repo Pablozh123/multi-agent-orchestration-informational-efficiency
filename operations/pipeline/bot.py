@@ -488,6 +488,13 @@ def lauf(live: bool) -> None:
                     "poll_s": config.NACHLAUF_POLL_S,
                 })
                 while time.time() < ende_ts and not _stop():
+                    # Heartbeat: ohne Fill produziert der Nachlauf sonst
+                    # minutenlang keine Events -> der Watchdog haelt den Bot
+                    # faelschlich fuer tot und killt ihn mitten im Nachlauf
+                    # (E281 17.7.: nach 13 Min gekillt, 5 NO-Chancen verloren).
+                    _schreibe_event("nachlauf_tick", {
+                        "rest_min": round((ende_ts - time.time()) / 60, 1),
+                        "kaeufe": nachlauf_kaeufe})
                     # Kandidaten samt Buch/Ask sammeln, dann edge-sortiert
                     # (billigster Ask zuerst) aus dem geteilten Pool kaufen.
                     offene = []

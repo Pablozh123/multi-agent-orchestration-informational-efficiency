@@ -481,7 +481,7 @@ class TestPostmortemsUndPilot:
         assert payload.kennzeichnung == "curated/postmortem"
         assert len(payload.eintraege) >= 6
         achsen = {e.achse for e in payload.eintraege}
-        assert "Risiko-Disziplin" in achsen
+        assert "Risk discipline" in achsen
         # Jeder Eintrag traegt Fix und Referenz (Ehrlichkeits-Format).
         assert all(e.fix and e.referenz for e in payload.eintraege)
 

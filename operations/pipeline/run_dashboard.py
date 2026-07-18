@@ -1122,12 +1122,13 @@ _PILOT_PROTOKOLL = PilotProtokollInfo(
     regel_freeze_datum="2026-07-18",
     handelsfenster_bis="2026-08-01",
     arm1_kurz=(
-        "Referenz-entschieden-Fade: bereits irreversibel entschiedene Seite "
-        "handelt noch <= 0.97; Kandidaten werden manuell verifiziert."
+        "Reference-decided fade: a side already irreversibly decided by the "
+        "reference source still trades <= 0.97; candidates are verified "
+        "manually."
     ),
     arm2_kurz=(
-        "Favoriten-Seite (Tail-Fade): 0.90-0.97 bei <= 21 Tagen Restlaufzeit, "
-        "Exit nur ueber die Aufloesung."
+        "Favourite side (tail fade): 0.90-0.97 with <= 21 days to "
+        "resolution, exit only via resolution."
     ),
 )
 

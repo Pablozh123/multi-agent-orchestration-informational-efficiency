@@ -2,9 +2,10 @@
 
 YES sofort, sobald der Zaehler die Schwelle plus Puffer erreicht (bei
 Schwelle 1 reicht ein eindeutiger Treffer) und der beste Ask hoechstens
-0.85 betraegt. NO erst nach vollstaendigem Transkript, wenn der Endstand
-hoechstens 70% der Schwelle betraegt und der beste NO-Ask hoechstens 0.85
-ist. Sonst kein Trade.
+ASK_OBERGRENZE betraegt. NO erst nach vollstaendigem Transkript, wenn der
+erweiterte Endstand hoechstens NO_ANTEIL (70%) der Schwelle betraegt und
+der beste NO-Ask hoechstens NO_ASK_OBERGRENZE liegt (niedriger als der
+YES-Deckel, E281-Lehre). Sonst kein Trade.
 """
 
 from __future__ import annotations

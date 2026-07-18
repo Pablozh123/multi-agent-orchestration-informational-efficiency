@@ -1,8 +1,10 @@
 """Zaehler-Engine: Wortvarianten in Transkript-Segmenten zaehlen.
 
 Case-insensitive, mit Wortgrenzen, optional Plural/Possessiv. Homophon-
-anfaellige Begriffe werden nur gezaehlt, wenn die ASR-Konfidenz des
-Segments oberhalb der Schwelle liegt.
+anfaellige Begriffe werden im strikten Zaehler (YES) nur gezaehlt, wenn
+die ASR-Konfidenz des Segments oberhalb der Schwelle liegt; im
+erweiterten Zaehler (NO-Absicherung) zaehlen sie unabhaengig von der
+Konfidenz mit.
 """
 
 from __future__ import annotations
@@ -103,21 +105,26 @@ class StreamingCounter:
         self.logs: list[ChunkLog] = []
 
     def _zaehle_segment(self, seg: Segment) -> tuple[int, int, bool]:
-        """(strikte Treffer, Komposita-Extra); bool = Homophon-Skip."""
-        if (
-            self.rule.homophon_sensitiv
-            and seg.confidence <= config.ASR_KONFIDENZ_HOMOPHON
-        ):
-            treffer = count_in_text(seg.text, self.patterns)
-            if treffer:
-                return 0, 0, True
-            return 0, 0, False
+        """(strikte Treffer, Nur-erweitert-Treffer); bool = Homophon-Skip.
+
+        Nur-erweitert-Treffer fliessen ausschliesslich in erweitert_count:
+        regulaer der Komposita-Verdacht; bei Homophon-Skip zusaetzlich die
+        strikten Treffer selbst. Ein Niedrig-Konfidenz-Treffer ist fuer
+        YES zu unsicher (Homophon-Gefahr), fuer die NO-Absicherung zaehlt
+        er konservativ MIT — das Wort koennte gefallen sein (Review 18.07.,
+        vorher fiel er aus allen Zaehlern und NO blieb kaufbar).
+        """
         strikt = count_in_text(seg.text, self.patterns)
         extra = 0
         if self.verdacht_patterns:
             substring = count_in_text(seg.text, self.verdacht_patterns)
             strikt_teilmenge = count_in_text(seg.text, self._strikt_fuer_verdacht)
             extra = max(0, substring - strikt_teilmenge)
+        if (
+            self.rule.homophon_sensitiv
+            and seg.confidence <= config.ASR_KONFIDENZ_HOMOPHON
+        ):
+            return 0, strikt + extra, strikt > 0
         return strikt, extra, False
 
     def ingest_chunk(

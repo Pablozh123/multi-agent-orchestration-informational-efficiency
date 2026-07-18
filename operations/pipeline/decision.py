@@ -70,9 +70,14 @@ def entscheide_no(rule: MarketRule, final_count: int, best_no_ask: float | None)
         return _kein_trade(rule, f"endstand {final_count} > grenze {grenze}")
     if best_no_ask is None:
         return _kein_trade(rule, "kein_no_ask")
-    if best_no_ask > config.ASK_OBERGRENZE:
-        return _kein_trade(rule, f"no_ask {best_no_ask} > {config.ASK_OBERGRENZE}")
+    # NO hat einen NIEDRIGEREN Deckel als YES: YES kaufen wir, weil wir das
+    # Wort gesehen haben (zuverlaessig); NO wetten wir auf die Abwesenheit,
+    # die ein einziger ASR-Verpasser bricht (E281: "Tension" verpasst, NO
+    # @0.88 verloren). Teure NO = winziger Gewinn, grosser Verlust bei
+    # Verpasser -> nur billige NO mit Puffer fuer gelegentliche Misses.
+    if best_no_ask > config.NO_ASK_OBERGRENZE:
+        return _kein_trade(rule, f"no_ask {best_no_ask} > {config.NO_ASK_OBERGRENZE}")
     return Decision(
         rule.market_id, "NO", rule.no_token_id, "No", best_no_ask,
-        f"endstand {final_count} <= grenze {grenze}, ask {best_no_ask} <= {config.ASK_OBERGRENZE}",
+        f"endstand {final_count} <= grenze {grenze}, ask {best_no_ask} <= {config.NO_ASK_OBERGRENZE}",
     )

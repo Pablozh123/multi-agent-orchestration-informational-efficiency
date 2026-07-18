@@ -1,10 +1,27 @@
 {
  "profil": "elon_july13",
  "event_slug": "what-will-elon-post-this-week-july-13-july-19-20260710174050678",
- "abgerufen_utc": "2026-07-16T04:30:49+00:00",
+ "abgerufen_utc": "2026-07-18T04:30:50+00:00",
  "quelle": "data-api.polymarket.com/trades (oeffentlich, read-only)",
  "maerkte": {
-  "2877672": [],
+  "2877672": [
+   {
+    "ts_utc": "2026-07-16T09:27:34Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.72,
+    "size": 65.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-16T11:48:35Z",
+    "side": "SELL",
+    "outcome": "Yes",
+    "preis": 0.28,
+    "size": 35.0,
+    "eigen": false
+   }
+  ],
   "2877673": [
    {
     "ts_utc": "2026-07-11T18:16:49Z",
@@ -243,6 +260,30 @@
     "preis": 0.95,
     "size": 1.05262,
     "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-16T21:57:11Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.95,
+    "size": 35.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-17T00:18:26Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.999,
+    "size": 4.994,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-17T00:18:31Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.999,
+    "size": 45.0,
+    "eigen": false
    }
   ],
   "2877677": [
@@ -318,6 +359,14 @@
     "outcome": "Yes",
     "preis": 0.9,
     "size": 11.11111,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-17T18:58:24Z",
+    "side": "SELL",
+    "outcome": "Yes",
+    "preis": 0.2090009001,
+    "size": 11.11,
     "eigen": false
    }
   ],
@@ -449,10 +498,67 @@
     "preis": 0.96,
     "size": 100.0,
     "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-16T08:42:16Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.9897674144,
+    "size": 84.7,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-17T00:17:22Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.997,
+    "size": 54.45,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-17T00:17:47Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.997,
+    "size": 10.88,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-17T02:57:24Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.998,
+    "size": 5.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-17T02:57:24Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.998,
+    "size": 5.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-17T02:57:25Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.998037037,
+    "size": 270.0,
+    "eigen": false
    }
   ],
   "2877680": [],
-  "2877681": [],
+  "2877681": [
+   {
+    "ts_utc": "2026-07-16T21:13:28Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.92,
+    "size": 21.03,
+    "eigen": false
+   }
+  ],
   "2877682": [],
   "2877683": [
    {
@@ -509,6 +615,14 @@
     "outcome": "Yes",
     "preis": 0.07,
     "size": 9.2,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-18T02:05:52Z",
+    "side": "SELL",
+    "outcome": "No",
+    "preis": 0.92,
+    "size": 30.0,
     "eigen": false
    }
   ],
@@ -740,6 +854,46 @@
     "preis": 0.002,
     "size": 30.0,
     "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-16T05:02:22Z",
+    "side": "SELL",
+    "outcome": "No",
+    "preis": 0.002,
+    "size": 30.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-16T11:45:31Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.997,
+    "size": 10.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-16T14:44:20Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.998,
+    "size": 215.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-16T21:24:56Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.999,
+    "size": 35.035,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-16T21:30:23Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.999,
+    "size": 168.96,
+    "eigen": false
    }
   ],
   "2877687": [
@@ -877,6 +1031,14 @@
     "outcome": "Yes",
     "preis": 0.0689999845,
     "size": 57.971013,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-16T08:47:11Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.0695120256,
+    "size": 14.386,
     "eigen": false
    }
   ]

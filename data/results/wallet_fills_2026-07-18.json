@@ -1,0 +1,256 @@
+{
+  "hinweis": "Per-bet wallet fills reconstructed from the author's Polymarket activity statement (18 July 2026, no addresses). Matching to log bets is deterministic via share proximity (log_shares_ref). These are the REAL fill prices; the log estimated fills at the price cap where the FAK status returned no price. Bets not in this list could not be verified against the statement (e.g. the E278 Tourism fill fell outside the copied feed window).",
+  "stand": "2026-07-18",
+  "wetten": [
+    {
+      "profil": "allin_july17",
+      "frage_enthaelt": "\"Blue\"",
+      "seite": "YES",
+      "log_shares_ref": 147.06,
+      "wallet_shares": 179.8,
+      "wallet_einsatz_usd": 123.84,
+      "wallet_avg_fill_preis": 0.6888,
+      "fills": [
+        [
+          0.689,
+          32.8
+        ],
+        [
+          0.689,
+          73.5
+        ],
+        [
+          0.689,
+          73.5
+        ]
+      ]
+    },
+    {
+      "profil": "allin_july17",
+      "frage_enthaelt": "\"Regulator\"",
+      "seite": "YES",
+      "log_shares_ref": 10.0,
+      "wallet_shares": 10.0,
+      "wallet_einsatz_usd": 7.08,
+      "wallet_avg_fill_preis": 0.708,
+      "fills": [
+        [
+          0.708,
+          10.0
+        ]
+      ]
+    },
+    {
+      "profil": "allin_july17",
+      "frage_enthaelt": "\"Alignment\"",
+      "seite": "NO",
+      "log_shares_ref": 50.0,
+      "wallet_shares": 50.0,
+      "wallet_einsatz_usd": 36.4,
+      "wallet_avg_fill_preis": 0.728,
+      "fills": [
+        [
+          0.728,
+          50.0
+        ]
+      ]
+    },
+    {
+      "profil": "allin_july17",
+      "frage_enthaelt": "\"Stock Market\"",
+      "seite": "NO",
+      "log_shares_ref": 124.29,
+      "wallet_shares": 124.2,
+      "wallet_einsatz_usd": 78.94,
+      "wallet_avg_fill_preis": 0.6356,
+      "fills": [
+        [
+          0.711,
+          39.5
+        ],
+        [
+          0.6,
+          84.7
+        ]
+      ]
+    },
+    {
+      "profil": "allin_july17",
+      "frage_enthaelt": "\"Tension\"",
+      "seite": "NO",
+      "log_shares_ref": 25.0,
+      "wallet_shares": 25.0,
+      "wallet_einsatz_usd": 22.11,
+      "wallet_avg_fill_preis": 0.8844,
+      "fills": [
+        [
+          0.884,
+          25.0
+        ]
+      ]
+    },
+    {
+      "profil": "allin_july17",
+      "frage_enthaelt": "\"Midterm\"",
+      "seite": "NO",
+      "log_shares_ref": 43.83,
+      "wallet_shares": 43.8,
+      "wallet_einsatz_usd": 19.72,
+      "wallet_avg_fill_preis": 0.4502,
+      "fills": [
+        [
+          0.45,
+          43.8
+        ]
+      ]
+    },
+    {
+      "profil": "allin_july10",
+      "frage_enthaelt": "\"IPO\"",
+      "seite": "YES",
+      "log_shares_ref": 113.76,
+      "wallet_shares": 113.7,
+      "wallet_einsatz_usd": 76.02,
+      "wallet_avg_fill_preis": 0.6686,
+      "fills": [
+        [
+          0.639,
+          23.8
+        ],
+        [
+          0.645,
+          23.6
+        ],
+        [
+          0.649,
+          23.4
+        ],
+        [
+          0.664,
+          22.9
+        ],
+        [
+          0.758,
+          20.0
+        ]
+      ]
+    },
+    {
+      "profil": "allin_july10",
+      "frage_enthaelt": "\"IPO\"",
+      "seite": "YES",
+      "log_shares_ref": 23.26,
+      "wallet_shares": 23.3,
+      "wallet_einsatz_usd": 15.21,
+      "wallet_avg_fill_preis": 0.6528,
+      "fills": [
+        [
+          0.654,
+          23.3
+        ]
+      ]
+    },
+    {
+      "profil": "allin_july10",
+      "frage_enthaelt": "\"AI\"",
+      "seite": "YES",
+      "log_shares_ref": 27.31,
+      "wallet_shares": 27.3,
+      "wallet_einsatz_usd": 24.07,
+      "wallet_avg_fill_preis": 0.8817,
+      "fills": [
+        [
+          0.884,
+          10.2
+        ],
+        [
+          0.88,
+          17.1
+        ]
+      ]
+    },
+    {
+      "profil": "allin_july10",
+      "frage_enthaelt": "\"SpaceX\"",
+      "seite": "YES",
+      "log_shares_ref": 76.27,
+      "wallet_shares": 76.2,
+      "wallet_einsatz_usd": 45.75,
+      "wallet_avg_fill_preis": 0.6004,
+      "fills": [
+        [
+          0.6,
+          25.4
+        ],
+        [
+          0.6,
+          25.4
+        ],
+        [
+          0.6,
+          25.4
+        ]
+      ]
+    },
+    {
+      "profil": "allin_july10",
+      "frage_enthaelt": "\"SpaceX\"",
+      "seite": "YES",
+      "log_shares_ref": 20.0,
+      "wallet_shares": 20.0,
+      "wallet_einsatz_usd": 11.99,
+      "wallet_avg_fill_preis": 0.5995,
+      "fills": [
+        [
+          0.6,
+          20.0
+        ]
+      ]
+    },
+    {
+      "profil": "allin_july10",
+      "frage_enthaelt": "\"Nvidia\"",
+      "seite": "YES",
+      "log_shares_ref": 5.92,
+      "wallet_shares": 5.9,
+      "wallet_einsatz_usd": 5.0,
+      "wallet_avg_fill_preis": 0.8475,
+      "fills": [
+        [
+          0.845,
+          5.9
+        ]
+      ]
+    },
+    {
+      "profil": "allin_july10",
+      "frage_enthaelt": "\"Nvidia\"",
+      "seite": "YES",
+      "log_shares_ref": 16.67,
+      "wallet_shares": 16.7,
+      "wallet_einsatz_usd": 15.06,
+      "wallet_avg_fill_preis": 0.9018,
+      "fills": [
+        [
+          0.904,
+          16.7
+        ]
+      ]
+    },
+    {
+      "profil": "lemonade_july15",
+      "frage_enthaelt": "\"Korea\"",
+      "seite": "NO",
+      "log_shares_ref": 6.31,
+      "wallet_shares": 6.3,
+      "wallet_einsatz_usd": 4.41,
+      "wallet_avg_fill_preis": 0.7,
+      "fills": [
+        [
+          0.699,
+          6.3
+        ]
+      ]
+    }
+  ]
+}

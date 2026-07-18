@@ -561,7 +561,10 @@ class TestWalletAbgleich:
         overlay.write_text(json.dumps({
             "stand": "2026-07-18",
             "gesamt_netto_usd": 175.09,
-            "events": {"testrun": {"netto_usd": 119.84}},
+            "events": {"testrun": {"netto_usd": 119.84,
+                                   "kaeufe_usd": 288.09,
+                                   "verkaeufe_usd": 0.0,
+                                   "einloesungen_usd": 407.93}},
         }), encoding="utf-8")
         monkeypatch.setattr(rd, "WALLET_ABGLEICH_QUELLE", overlay)
         payload = rd.build_runs_payload(
@@ -569,7 +572,10 @@ class TestWalletAbgleich:
             resolutions_dir=tmp_path / "nores",
         )
         assert payload.runs[0].wallet_netto_usd == 119.84
+        assert payload.runs[0].wallet_kaeufe_usd == 288.09
+        assert payload.runs[0].wallet_einloesungen_usd == 407.93
         assert payload.aggregat.wallet_netto_usd == 175.09
+        assert payload.aggregat.wallet_kaeufe_usd == 288.09
         assert payload.aggregat.wallet_abgleich_stand == "2026-07-18"
 
     def test_ohne_overlay_bleibt_none(self, tmp_path, monkeypatch):

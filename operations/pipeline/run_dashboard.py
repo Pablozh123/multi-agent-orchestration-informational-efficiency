@@ -181,6 +181,9 @@ class RunEintrag(_Strict):
     einsatz_zu_sichtbarer_tiefe_pct: Optional[float] = None
     # Wallet-Wahrheit je Event (kuratierter Abgleich; None ohne Eintrag).
     wallet_netto_usd: Optional[float] = None
+    wallet_kaeufe_usd: Optional[float] = None
+    wallet_verkaeufe_usd: Optional[float] = None
+    wallet_einloesungen_usd: Optional[float] = None
 
 
 class RunsAggregat(_Strict):
@@ -198,6 +201,7 @@ class RunsAggregat(_Strict):
     sichtbare_tiefe_usd: Optional[float] = None
     einsatz_zu_sichtbarer_tiefe_pct: Optional[float] = None
     wallet_netto_usd: Optional[float] = None
+    wallet_kaeufe_usd: Optional[float] = None
     wallet_abgleich_stand: Optional[str] = None
 
 
@@ -881,15 +885,27 @@ def build_runs_payload(
     if abgleich:
         events = abgleich.get("events", {}) or {}
         runs = [
-            r.model_copy(
-                update={"wallet_netto_usd": (events.get(r.profil) or {}).get("netto_usd")}
-            )
+            r.model_copy(update={
+                "wallet_netto_usd": (events.get(r.profil) or {}).get("netto_usd"),
+                "wallet_kaeufe_usd": (events.get(r.profil) or {}).get("kaeufe_usd"),
+                "wallet_verkaeufe_usd": (
+                    events.get(r.profil) or {}
+                ).get("verkaeufe_usd"),
+                "wallet_einloesungen_usd": (
+                    events.get(r.profil) or {}
+                ).get("einloesungen_usd"),
+            })
             for r in runs
         ]
     aggregat = build_aggregat(runs)
     if abgleich:
+        kaeufe = [
+            e.get("kaeufe_usd") for e in events.values()
+            if e.get("kaeufe_usd") is not None
+        ]
         aggregat = aggregat.model_copy(update={
             "wallet_netto_usd": abgleich.get("gesamt_netto_usd"),
+            "wallet_kaeufe_usd": round(sum(kaeufe), 2) if kaeufe else None,
             "wallet_abgleich_stand": abgleich.get("stand"),
         })
     return RunsPayload(

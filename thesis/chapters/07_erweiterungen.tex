@@ -225,6 +225,61 @@ vollständig freigegeben sind, berechnen Agenten keine Kennzahlen, greifen nicht
 ungefiltert auf Rohdaten zu und lösen keine Trades aus. Die Orchestrierung ist damit
 ein realer, getesteter Gestaltungsbeitrag innerhalb klar gezogener Grenzen: kein blosser Entwurf, aber auch nicht Teil des empirischen Belegs.
 
+\section{Feldtest: Latenz-Bot auf Mentions-Märkten (kleiner Realeinsatz)}
+\label{sec:mentions-feldtest}
+Die Latenzbefunde der Mentions-Kategorie werfen eine praktische Anschlussfrage
+auf: Ist der gemessene Reaktionspfad unter echten Bedingungen -- Fills, Gebühren,
+Orderbuchtiefe -- tatsächlich ausführbar? Dazu diente ein Feldtest mit kleinem
+Eigeneinsatz auf \enquote{What will be said}-Märkten. Wichtig zur Einordnung:
+Das Werkzeug ist bewusst \emph{kein} Teil der oben beschriebenen Agenten-Schicht,
+sondern ein separates, rein regelbasiert-deterministisches Modul
+(\texttt{operations/pipeline/}); die Nachauswertung ist deskriptiv und erhebt
+keinen Rendite- oder Wiederholbarkeitsanspruch.
+
+Der Aufbau folgt sechs Achsen. \emph{Regelverständnis:} Die Marktregeln werden
+maschinenlesbar abgebildet (zitierte Begriffe, Schwellen; Komposita zählen nur
+konservativ zur NO-Absicherung, Akronym-Langformen zählen nicht, homophon-anfällige
+Begriffe nur oberhalb einer ASR-Konfidenzschwelle; bei Einzelsprecher-Märkten
+werden Treffer über Stimm-Embeddings dem Zielsprecher zugerechnet).
+\emph{Detection-Latenz:} gestufte Quellen je Profil -- direkter CDN-URL-Prober vor
+RSS vor YouTube-Kanal, Transkription in 20-Sekunden-Blöcken auf GPU; für
+Post-Märkte ein X-Feed. \emph{Ausführung:} wiederholte FAK-Teilorders bis zu einer
+EV-Obergrenze; YES-Entscheidungen fallen live je Block, NO erst nach vollständigem
+Transkript mit erweitertem Zähler und tieferem Preisdeckel. \emph{Risiko-Disziplin:}
+Budgetgrenzen je Profil, Kill-Switch-Datei, ein Watchdog im Fünf-Minuten-Takt und
+ein Neustart-Schutz aus den Logs. \emph{Auswertung:} read-only Rekonstruktion aus
+den Run-Logs (\texttt{operations/pipeline/run\_dashboard.py}) mit den committeten
+Auflösungs-Caches (\texttt{data/raw/live\_runs/}) und dem öffentlichen Trade-Tape
+als Vergleichsmassstab.
+
+Stand 18.~Juli 2026 umfasst der Feldtest sieben Runs mit 15 platzierten Wetten:
+Einsatz 626.68 USD, realisierter Gewinn 45.02 USD auf den aufgelösten Einsatz
+(7.2\%), 14 gewonnene und eine verlorene Wette. Drops wurden in 48 bis 122
+Sekunden nach Publikation erkannt; der erste Fill lag bei den Podcast-Runs 64 bis
+75 Sekunden nach Drop-Erkennung (der YouTube-Batch-Pfad brauchte einmalig
+941 Sekunden, ein früher Lauf litt unter rund 69 Minuten Feed-Cache-Verzögerung,
+worauf der URL-Prober eingeführt wurde). Im Abgleich mit dem öffentlichen
+Trade-Tape war der Bot bei 11 von 15 Wetten der erste Käufer der gehandelten
+Seite; im jüngsten Run (Episode E281) bei allen sechs, mit einem
+Median-Abstand des nächsten fremden Käufers von rund 18 Minuten. Die an den
+Auslösezeitpunkten sofort sichtbare Ask-Tiefe bis zur Kaufobergrenze summierte
+sich auf rund 930 USD; der Einsatz entsprach 67\% davon, einzelne Sweeps füllten
+mehr als die anfangs sichtbare Tiefe (nachrückende Liquidität; der geloggte
+Snapshot ist eine Untergrenze). Aufschlussreich ist auch das Nicht-Handeln: Im
+Post-Profil scheiterten alle 24 regelkonformen Kaufprüfungen an bereits
+eingepreisten Quotes -- konsistent mit der Effizienz-Lesart, dass solche
+Wortmärkte binnen Sekunden eingepreist sind.
+
+Zur Ehrlichkeit des Feldtests gehört die kuratierte Vorfall-Liste
+(\texttt{data/results/mentions\_run\_postmortems.json}): jeder Fehltrigger und
+Ausfall mit Auswirkung, verifiziertem Fix und Fundstelle -- etwa der Fehlkauf auf
+einer Special-Episode (behoben durch Playlist-Positiv-Identifikation), vom
+Market-Maker gezogene Quotes im Drop-Moment (behoben durch ein
+45-Minuten-Nachlauffenster) oder stille Prozessabbrüche (behoben durch den
+Watchdog). Die Grenzen bleiben ausdrücklich: kleine Stichprobe, ein Marktsegment,
+kurzer Zeitraum und enge sichtbare Tiefe; die Ergebnisse sind als Prozess- und
+Latenzevidenz zu lesen, nicht als Strategie- oder Renditenachweis.
+
 \section{Schweizer Referendum als begrenzte Fallstudie}
 \label{sec:loesung-swiss}
 Als aktueller, eigenständiger Vergleich ausserhalb der US-Wahl dient die

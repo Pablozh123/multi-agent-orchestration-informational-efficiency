@@ -20,8 +20,10 @@ Aufruf:
 from __future__ import annotations
 
 import argparse
+import csv
 import html
 import json
+import re
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -34,12 +36,21 @@ from operations.pipeline.daily_review_run import (
     RedactionGateError,
     run_redaction_gate,
 )
+from operations.pipeline.orderbook import ausfuehrbare_tiefe_usd
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PUBLISH_DIR_DEFAULT = REPO_ROOT / "data" / "publish"
 RESOLUTIONS_DIR_DEFAULT = REPO_ROOT / "data" / "raw" / "live_runs"
 
 RUNS_FILE = "runs.json"
+POSTMORTEMS_FILE = "postmortems.json"
+PILOT_FILE = "pilot.json"
+
+#: Kuratierte Vorfall-Liste (getrackte Quelldatei, kein generiertes Artefakt).
+POSTMORTEMS_QUELLE = REPO_ROOT / "data" / "results" / "mentions_run_postmortems.json"
+
+#: Read-only Pilot-Artefakte des Echtgeld-Mini-Piloten (Protokoll V2).
+PILOT_DIR_DEFAULT = REPO_ROOT / "pilot"
 
 #: Fill-Status, die als platzierte Wette zaehlen (wie post_resolution).
 FILL_STATUS = ("dry_run_fill", "live_fill", "live_partial")
@@ -94,6 +105,10 @@ class WetteEintrag(_Strict):
     # eigene Clips und Gegenseiten-Trades ausgeschlossen; None = seit Drop
     # kaufte bis dahin niemand sonst). Keys "0"/"30"/"60"/"120"/"300"/"900".
     preis_nach_fill: Dict[str, Optional[float]] = {}
+    # Kapazitaetsmass: ausfuehrbare Ask-Tiefe (USD) im Entscheidungs-Snapshot
+    # bis zur geloggten Kaufobergrenze. Untergrenze, da der Snapshot auf die
+    # obersten 10 Level gekuerzt ist; None ohne Snapshot/parsebare Grenze.
+    tiefe_usd_bis_deckel: Optional[float] = None
 
 
 class VerpassteChance(_Strict):
@@ -152,6 +167,11 @@ class RunEintrag(_Strict):
     verpasste_chancen: List[VerpassteChance]
     race: Optional[RaceInfo] = None
     repricing: List[RepricingKurve] = []
+    # Summe der Wetten-Tiefen (nur Wetten mit Snapshot): sofort sichtbares
+    # Angebot am Trigger. Werte ueber 100% beim Einsatz-Verhaeltnis heissen:
+    # der Sweep nahm nachrueckende Liquiditaet mit (Snapshot = Untergrenze).
+    sichtbare_tiefe_usd: Optional[float] = None
+    einsatz_zu_sichtbarer_tiefe_pct: Optional[float] = None
 
 
 class RunsAggregat(_Strict):
@@ -166,6 +186,8 @@ class RunsAggregat(_Strict):
     realisierter_pnl_usd: float
     roi_realisiert_pct: Optional[float]
     offener_einsatz_usd: float
+    sichtbare_tiefe_usd: Optional[float] = None
+    einsatz_zu_sichtbarer_tiefe_pct: Optional[float] = None
 
 
 class RunsPayload(_Strict):
@@ -174,6 +196,60 @@ class RunsPayload(_Strict):
     kennzeichnung: str
     aggregat: RunsAggregat
     runs: List[RunEintrag]
+
+
+class PostmortemEintrag(_Strict):
+    """Ein kuratierter Vorfall aus dem Live-Betrieb samt verifiziertem Fix."""
+
+    datum: str
+    profil: str
+    achse: str  # Kernachse (z.B. "Detection-Latenz", "Risiko-Disziplin")
+    titel: str
+    was_passierte: str
+    auswirkung: str
+    fix: str
+    referenz: str  # Commit/PR/Log-Fundstelle
+
+
+class PostmortemsPayload(_Strict):
+    hinweis: str
+    stand_utc: str
+    kennzeichnung: str
+    eintraege: List[PostmortemEintrag]
+
+
+class PilotSignalKompakt(_Strict):
+    ts_utc: str
+    arm: str
+    frage: str
+    seite: str
+    signal_preis: Optional[float]
+    buchtiefe_usd: Optional[float]
+    restlaufzeit_tage: Optional[float]
+    status: str
+
+
+class PilotProtokollInfo(_Strict):
+    quelle: str
+    budget_usdc: float
+    einsatz_je_trade_usdc: float
+    regel_freeze_datum: str
+    handelsfenster_bis: str
+    arm1_kurz: str
+    arm2_kurz: str
+
+
+class PilotPayload(_Strict):
+    hinweis: str
+    stand_utc: str
+    kennzeichnung: str
+    protokoll: PilotProtokollInfo
+    watcher_lauf_ts_utc: Optional[str]
+    watcher_parameter: Dict[str, Any]
+    watcher_statistik: Dict[str, int]
+    signal_zaehler: Dict[str, int]
+    signale_neueste: List[PilotSignalKompakt]
+    trades: List[Dict[str, Optional[str]]]
 
 
 # ---------------------------------------------------------------------------
@@ -236,6 +312,15 @@ def parse_events(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
         elif art == "fertig":
             info["ausgegeben_usd"] = event.get("ausgegeben_usd")
     return info
+
+
+#: Kaufobergrenze aus dem Entscheidungs-Grund ("ask 0.68 <= 0.9").
+_DECKEL_RE = re.compile(r"<=\s*(0\.\d+)")
+
+
+def _deckel_aus_reason(reason: str) -> Optional[float]:
+    treffer = _DECKEL_RE.search(reason or "")
+    return float(treffer.group(1)) if treffer else None
 
 
 def _sweep_clips(detail: str) -> int:
@@ -563,6 +648,13 @@ def build_run(
             info["drop_erkannt_utc"],
             record.get("wall_ts_utc"),
         )
+        deckel = _deckel_aus_reason(str(decision.get("reason", "")))
+        buch = record.get("book_snapshot") or {}
+        tiefe_bis_deckel = (
+            ausfuehrbare_tiefe_usd(buch, deckel)
+            if deckel is not None and buch.get("asks")
+            else None
+        )
         wetten_series = _series(mid, seite)
         wetten.append(
             WetteEintrag(
@@ -596,8 +688,22 @@ def build_run(
                     record.get("wall_ts_utc"),
                     info["drop_erkannt_utc"],
                 ),
+                tiefe_usd_bis_deckel=tiefe_bis_deckel,
             )
         )
+
+    tiefen_wetten = [
+        w for w in wetten if w.tiefe_usd_bis_deckel is not None
+    ]
+    kapazitaet: Optional[float] = None
+    auslastung: Optional[float] = None
+    if tiefen_wetten:
+        kapazitaet = round(
+            sum(w.tiefe_usd_bis_deckel or 0.0 for w in tiefen_wetten), 2
+        )
+        einsatz_mit_tiefe = sum(w.einsatz_usd for w in tiefen_wetten)
+        if kapazitaet > 0:
+            auslastung = round(einsatz_mit_tiefe / kapazitaet * 100.0, 1)
 
     drop_ts = info["drop_erkannt_utc"]
     erste_entscheidung = (
@@ -648,6 +754,8 @@ def build_run(
         verpasste_chancen=verpasst,
         race=build_race_info(wetten),
         repricing=repricing,
+        sichtbare_tiefe_usd=kapazitaet,
+        einsatz_zu_sichtbarer_tiefe_pct=auslastung,
     )
 
 
@@ -658,6 +766,17 @@ def build_aggregat(runs: List[RunEintrag]) -> RunsAggregat:
     payout = round(sum(w.payout_usd or 0.0 for w in aufgeloeste), 2)
     pnl = round(sum(w.pnl_usd or 0.0 for w in aufgeloeste), 2)
     offene = [w for w in alle_wetten if not w.aufgeloest]
+    tiefen_wetten = [w for w in alle_wetten if w.tiefe_usd_bis_deckel is not None]
+    kapazitaet: Optional[float] = None
+    auslastung: Optional[float] = None
+    if tiefen_wetten:
+        kapazitaet = round(
+            sum(w.tiefe_usd_bis_deckel or 0.0 for w in tiefen_wetten), 2
+        )
+        if kapazitaet > 0:
+            auslastung = round(
+                sum(w.einsatz_usd for w in tiefen_wetten) / kapazitaet * 100.0, 1
+            )
     return RunsAggregat(
         n_runs=len(runs),
         n_wetten=len(alle_wetten),
@@ -674,6 +793,8 @@ def build_aggregat(runs: List[RunEintrag]) -> RunsAggregat:
             else None
         ),
         offener_einsatz_usd=round(sum(w.einsatz_usd for w in offene), 2),
+        sichtbare_tiefe_usd=kapazitaet,
+        einsatz_zu_sichtbarer_tiefe_pct=auslastung,
     )
 
 
@@ -932,6 +1053,129 @@ def publish_runs(
     return written
 
 
+def build_postmortems_payload(
+    quelle: Path = POSTMORTEMS_QUELLE, now_utc: Optional[str] = None
+) -> Optional[PostmortemsPayload]:
+    """Kuratierte Vorfall-Liste validieren (None, wenn Quelldatei fehlt)."""
+
+    if not quelle.exists():
+        return None
+    roh = json.loads(quelle.read_text(encoding="utf-8"))
+    now = now_utc or datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    return PostmortemsPayload(
+        hinweis=str(roh.get("hinweis") or ""),
+        stand_utc=now,
+        kennzeichnung="curated/postmortem",
+        eintraege=[PostmortemEintrag(**e) for e in roh.get("eintraege", [])],
+    )
+
+
+#: Protokoll-Eckdaten (Version 2, bestaetigt 18.07.2026 — Quelle unten).
+_PILOT_PROTOKOLL = PilotProtokollInfo(
+    quelle="docs/project/PILOT_PROTOKOLL_ECHTGELD_2026-07-11.md (Version 2)",
+    budget_usdc=100.0,
+    einsatz_je_trade_usdc=10.0,
+    regel_freeze_datum="2026-07-18",
+    handelsfenster_bis="2026-08-01",
+    arm1_kurz=(
+        "Referenz-entschieden-Fade: bereits irreversibel entschiedene Seite "
+        "handelt noch <= 0.97; Kandidaten werden manuell verifiziert."
+    ),
+    arm2_kurz=(
+        "Favoriten-Seite (Tail-Fade): 0.90-0.97 bei <= 21 Tagen Restlaufzeit, "
+        "Exit nur ueber die Aufloesung."
+    ),
+)
+
+
+def build_pilot_payload(
+    pilot_dir: Path = PILOT_DIR_DEFAULT,
+    now_utc: Optional[str] = None,
+    max_neueste: int = 15,
+) -> Optional[PilotPayload]:
+    """pilot.json aus den read-only Watcher-/Trade-Artefakten bauen."""
+
+    metadata_path = pilot_dir / "watcher_metadata.json"
+    signals_path = pilot_dir / "signals.csv"
+    if not metadata_path.exists() or not signals_path.exists():
+        return None
+    meta = json.loads(metadata_path.read_text(encoding="utf-8"))
+
+    def _f(wert: Any) -> Optional[float]:
+        try:
+            return float(wert)
+        except (TypeError, ValueError):
+            return None
+
+    signale: List[PilotSignalKompakt] = []
+    zaehler: Dict[str, int] = {}
+    with open(signals_path, encoding="utf-8", newline="") as handle:
+        for zeile in csv.DictReader(handle):
+            schluessel = f"{zeile.get('arm', '?')}:{zeile.get('status', '?')}"
+            zaehler[schluessel] = zaehler.get(schluessel, 0) + 1
+            signale.append(
+                PilotSignalKompakt(
+                    ts_utc=str(zeile.get("ts_utc") or ""),
+                    arm=str(zeile.get("arm") or ""),
+                    frage=str(zeile.get("frage") or "")[:120],
+                    seite=str(zeile.get("seite") or ""),
+                    signal_preis=_f(zeile.get("signal_preis")),
+                    buchtiefe_usd=_f(zeile.get("buchtiefe_usd")),
+                    restlaufzeit_tage=_f(zeile.get("restlaufzeit_tage")),
+                    status=str(zeile.get("status") or ""),
+                )
+            )
+
+    trades: List[Dict[str, Optional[str]]] = []
+    trades_path = pilot_dir / "trades.csv"
+    if trades_path.exists():
+        with open(trades_path, encoding="utf-8", newline="") as handle:
+            trades = [dict(z) for z in csv.DictReader(handle)]
+
+    now = now_utc or datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    return PilotPayload(
+        hinweis=(
+            "Read-only candidate scanner of the pre-registered small-stake "
+            "field test. Signals are rule matches, not recommendations; all "
+            "trading decisions are made manually by the author."
+        ),
+        stand_utc=now,
+        kennzeichnung="pilot/preregistered",
+        protokoll=_PILOT_PROTOKOLL,
+        watcher_lauf_ts_utc=meta.get("lauf_ts_utc"),
+        watcher_parameter=dict(meta.get("parameter") or {}),
+        watcher_statistik={
+            k: int(v) for k, v in (meta.get("statistik") or {}).items()
+        },
+        signal_zaehler=zaehler,
+        signale_neueste=sorted(
+            signale, key=lambda s: s.ts_utc, reverse=True
+        )[:max_neueste],
+        trades=trades,
+    )
+
+
+def publish_payloads(
+    payloads: Dict[str, str],
+    *,
+    publish_dir: Path = PUBLISH_DIR_DEFAULT,
+    extra_publish_dir: Optional[Path] = None,
+) -> List[Path]:
+    """Beliebige JSON-Payloads Gate-geprueft in die Zielordner schreiben."""
+
+    run_redaction_gate(payloads)
+    written: List[Path] = []
+    for target_dir in [publish_dir] + (
+        [extra_publish_dir] if extra_publish_dir else []
+    ):
+        target_dir.mkdir(parents=True, exist_ok=True)
+        for name, serialized in payloads.items():
+            target = target_dir / name
+            target.write_text(serialized + "\n", encoding="utf-8")
+            written.append(target)
+    return written
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description="Live-Run-Dashboard (runs.json) aus den Run-Logs bauen."
@@ -980,6 +1224,17 @@ def main(argv: Optional[List[str]] = None) -> int:
                 print(f"Tape-Cache: {path}")
         payload = build_runs_payload(live_root=args.live_root)
         written = publish_runs(payload, extra_publish_dir=args.publish_dir)
+        extra_payloads: Dict[str, str] = {}
+        postmortems = build_postmortems_payload()
+        if postmortems is not None:
+            extra_payloads[POSTMORTEMS_FILE] = postmortems.model_dump_json(indent=1)
+        pilot = build_pilot_payload()
+        if pilot is not None:
+            extra_payloads[PILOT_FILE] = pilot.model_dump_json(indent=1)
+        if extra_payloads:
+            written += publish_payloads(
+                extra_payloads, extra_publish_dir=args.publish_dir
+            )
     except (RedactionGateError, ValueError, RuntimeError) as exc:
         print(f"ABBRUCH: {exc}", file=sys.stderr)
         return 2

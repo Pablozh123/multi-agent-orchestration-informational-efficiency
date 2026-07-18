@@ -1,5 +1,5 @@
 {
-  "lauf_ts_utc": "2026-07-16T17:58:48Z",
+  "lauf_ts_utc": "2026-07-18T10:19:52Z",
   "protokoll": "docs/project/PILOT_PROTOKOLL_ECHTGELD_2026-07-11.md (Version 2, 2026-07-16)",
   "parameter": {
     "arm1_max_entry_preis": 0.97,
@@ -12,17 +12,18 @@
     "max_signale_pro_lauf": 50
   },
   "tiefen_definition": "ausfuehrbare Ask-Tiefe in USD bis einschliesslich der Arm-Preisobergrenze",
-  "signale": 50,
+  "signale": 42,
   "statistik": {
-    "maerkte": 1468,
-    "gekappt": 319,
-    "arm2_bereits_abgelaufen": 468,
-    "arm2_aufloesungsregel_unklar": 5,
-    "arm2_gamma_vorfilter": 467,
+    "maerkte": 1715,
+    "gekappt": 0,
+    "arm2_bereits_abgelaufen": 715,
+    "arm2_aufloesungsregel_unklar": 9,
+    "arm2_gamma_vorfilter": 684,
     "arm1_bereits_signalisiert": 1,
-    "arm2_preis_ausserhalb_090_097": 155,
-    "arm2_laufender_streit": 2,
-    "arm2_tiefe_unter_20": 1
+    "arm2_preis_ausserhalb_090_097": 211,
+    "arm2_bereits_signalisiert": 49,
+    "arm2_tiefe_unter_20": 2,
+    "arm2_laufender_streit": 2
   },
   "order_pfad": "keiner (read-only Watcher, manueller Handel)"
 }

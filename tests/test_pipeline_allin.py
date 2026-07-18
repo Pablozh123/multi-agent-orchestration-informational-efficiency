@@ -554,3 +554,36 @@ def test_lemonade_profil_titel_muster() -> None:
     assert not _re.search(muster, "France VS Morocco | World Cup News",
                           _re.IGNORECASE)
     assert not _re.search(muster, "There's beef about beef", _re.IGNORECASE)
+
+
+def test_fill_aus_antwort_bevorzugt_exakte_post_werte() -> None:
+    from operations.pipeline.execution import fill_aus_antwort
+
+    # BUY-FAK: taking = Shares, making = USDC — exakt, kein Deckel-Ansatz.
+    shares, usd, quelle = fill_aus_antwort(
+        {"takingAmount": "179.8", "makingAmount": "123.84"}, None, 0.9
+    )
+    assert (shares, usd, quelle) == (179.8, 123.84, "post_antwort")
+
+
+def test_fill_aus_antwort_fallback_nutzt_entscheidungspreis() -> None:
+    from operations.pipeline.execution import fill_aus_antwort
+
+    # Kein Post-Match: size_matched zum besten Ask am Entscheid bewerten —
+    # NICHT zum Order-Deckel (Wallet-Abgleich 18.07.).
+    shares, usd, quelle = fill_aus_antwort(
+        {}, {"size_matched": "50", "price": "0.9"}, 0.689
+    )
+    assert quelle == "status_geschaetzt"
+    assert shares == 50.0
+    assert usd == pytest.approx(34.45)
+
+
+def test_fill_aus_antwort_kaputte_werte_fail_safe() -> None:
+    from operations.pipeline.execution import fill_aus_antwort
+
+    shares, usd, quelle = fill_aus_antwort(
+        {"takingAmount": "x"}, {"size_matched": None}, None
+    )
+    assert (shares, usd) == (0.0, 0.0)
+    assert quelle == "status_geschaetzt"

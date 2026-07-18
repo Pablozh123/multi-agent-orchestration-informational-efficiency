@@ -1,0 +1,85 @@
+{
+  "hinweis": "Kuratierte Post-Mortems der Mentions-Live-Runs: jeder Vorfall mit Auswirkung und verifiziertem Fix. Quellen: bot_events-/decisions-Logs der Runs, Commits und Pull Requests dieses Repos. Ehrlichkeits-Grundsatz: Fehltrigger und Ausfaelle werden berichtet, nicht wegerklaert.",
+  "eintraege": [
+    {
+      "datum": "2026-07-10",
+      "profil": "allin_july10",
+      "achse": "Regelverstaendnis",
+      "titel": "Fehltrigger durch Special-Episode (Cerebras/BFL)",
+      "was_passierte": "Ein Nicht-Hauptepisoden-Upload wurde als Episoden-Drop akzeptiert und loeste Kaeufe aus, obwohl die Marktregel nur Playlist-Episoden wertet.",
+      "auswirkung": "Fehlkaeufe auf einem nicht qualifizierenden Drop; Verlust im Rahmen der Clip-Limits.",
+      "fix": "Positiv-Identifikation statt Blocklist: YouTube-Drop nur bei NEU-Aufnahme in die offizielle Playlist (Baseline-Diff), RSS nur bei Hauptepisoden-Dateimuster ALLIN-E<n>.",
+      "referenz": "operations/pipeline/bot.py (yt_playlist_id/rss_nur_muster), Profil-Kommentar allin_july10"
+    },
+    {
+      "datum": "2026-07-10",
+      "profil": "allin_july10",
+      "achse": "Ausfuehrung",
+      "titel": "Budget-Schaetzung blockierte fuenf berechtigte Folgetrades",
+      "was_passierte": "Die Deckelpreis-Schaetzung ueberzeichnete das verbrauchte Budget; der Server lehnte zudem Orders ab, deren Betrag plus Gebuehren das Guthaben ueberstieg (Clip 15.00 auf Guthaben 15.01).",
+      "auswirkung": "Fuenf regelkonforme NO-Chancen blieben ungenutzt.",
+      "fix": "Budget-Sync gegen den echten Wallet-Stand nach jedem Fill plus 3%-Fee-Puffer je Clip.",
+      "referenz": "operations/pipeline/execution.py (_budget_sync, Fee-Puffer; E280-Befund)"
+    },
+    {
+      "datum": "2026-07-12",
+      "profil": "jre_july13",
+      "achse": "Mikrostruktur",
+      "titel": "Market Maker ziehen beim Drop die Quotes",
+      "was_passierte": "Beim JRE-Drop #2523 wurden saemtliche Asks gepullt; die NO-Runde fand kein Angebot (0 Trades), Quotes kamen erst Minuten spaeter zurueck.",
+      "auswirkung": "Regelkonforme Kandidaten ohne Fill; bei E280 wurden NOs nach unserer Runde noch zu 0.50-0.70 gehandelt.",
+      "fix": "45-Minuten-Nachlauf: offene YES-/NO-Kandidaten werden alle 90 s re-gecheckt und gekauft, sobald wieder Liquiditaet unter dem Deckel liegt.",
+      "referenz": "operations/pipeline/bot.py (NACHLAUF_MINUTEN/NACHLAUF_POLL_S)"
+    },
+    {
+      "datum": "2026-07-16",
+      "profil": "elon_july13",
+      "achse": "Risiko-Disziplin",
+      "titel": "Stille Bot-Tode durch Sleep/Session-Teardown",
+      "was_passierte": "Detachte Bot-Prozesse starben ohne Crash-Log bei System-Sleep oder Sitzungsende (stundenweise stille Ausfaelle am 12., 13. und 16.07.).",
+      "auswirkung": "Beobachtungs- und Handelsluecken waehrend aktiver Marktfenster.",
+      "fix": "Watchdog als Scheduled Task (5-Minuten-Takt): Heartbeat-Pruefung ueber bot_events.jsonl, PID-basiertes Killen von Haengern, Neustart nur im konfigurierten Zeitfenster.",
+      "referenz": "operations/pipeline/watchdog.py (PR #2, reliability hardening)"
+    },
+    {
+      "datum": "2026-07-18",
+      "profil": "allin_july17",
+      "achse": "Risiko-Disziplin",
+      "titel": "Watchdog-False-Kill im stillen Nachlauf",
+      "was_passierte": "Der Nachlauf schrieb keine Events; nach 13 Minuten Stille killte der Watchdog den laufenden Prozess und startete neu, der Neustart setzte eine frische Baseline.",
+      "auswirkung": "Nachlauf lief 13 statt 45 Minuten; potenzielle Nachkaeufe entfielen. Keine Doppeltrades (Neustart-Schutz).",
+      "fix": "Heartbeat-Events im Nachlauf, damit der Watchdog laufende Nachlaeufe nicht als tot einstuft.",
+      "referenz": "Commit 8af07d6 (nachlauf heartbeat)"
+    },
+    {
+      "datum": "2026-07-18",
+      "profil": "mrbeast_gaming",
+      "achse": "Engineering-Reife",
+      "titel": "Fortran-Runtime-Abbruch beim Watchdog-Start",
+      "was_passierte": "Der einzige Bot mit Sprecher-Verifikation starb nach dem Start mit 'forrtl error (200) ... window-CLOSE event': die Intel-Fortran-Runtime (via speechbrain) reagierte auf das Schliessen des kurzlebigen Task-Konsolenfensters.",
+      "auswirkung": "Bot-Start schlug reproduzierbar fehl, solange er vom Scheduler statt interaktiv gestartet wurde.",
+      "fix": "FOR_DISABLE_CONSOLE_CTRL_HANDLER=1 in der Umgebung aller vom Watchdog gestarteten Bots; verifiziert bis whisper_bereit (cuda/float16, Sprecher-Verifikation aktiv).",
+      "referenz": "PR #8 (fix/watchdog-fortran-console)"
+    },
+    {
+      "datum": "2026-07-17",
+      "profil": "elon_july13",
+      "achse": "Auswertung",
+      "titel": "Buchlog-Ausfall durch 404 eines aufgeloesten Markts",
+      "was_passierte": "Ein vorzeitig aufgeloester Markt lieferte 404 auf das Orderbuch; der Sammel-Snapshot brach dadurch komplett ab, rund 30 Stunden ohne Buchdaten.",
+      "auswirkung": "Luecke in der Orderbuch-Historie fuer die Nachauswertung; Kauffunktion blieb unberuehrt.",
+      "fix": "Buchlog-Resilienz (Fehler je Token isoliert) plus Prozess-Neustart, damit laufende Instanzen den gemergten Fix laden.",
+      "referenz": "PR #5 (buchlog resilience), Neustart 18.07."
+    },
+    {
+      "datum": "2026-07-16",
+      "profil": "pilot_watcher",
+      "achse": "Detection-Latenz",
+      "titel": "Gamma deckelt limit still auf 100",
+      "was_passierte": "Der erste Watcher-Lauf sah nur 100 Maerkte, weil die Gamma-API den limit-Parameter still kappt und Alt-Maerkte nach vorne sortierte.",
+      "auswirkung": "Scan-Universum um Faktor ~15 zu klein; Signale unvollstaendig.",
+      "fix": "Zwei-Fenster-Abruf (kuerzlich abgelaufen + kommend) mit Pagination; zweiter Lauf scannte 1468 Maerkte.",
+      "referenz": "operations/pilot/watcher.py (two-window gamma fetch, Commit dd4872f)"
+    }
+  ]
+}

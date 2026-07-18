@@ -10,12 +10,17 @@ import pytest
 from operations.pipeline.run_dashboard import (
     RUNS_FILE,
     RedactionGateError,
+    build_aggregat,
+    build_pilot_payload,
+    build_postmortems_payload,
     build_run,
     build_runs_payload,
     discover_runs,
     klassifiziere_grund,
     parse_events,
+    publish_payloads,
     publish_runs,
+    _deckel_aus_reason,
     _sweep_clips,
 )
 
@@ -31,6 +36,7 @@ def _decision(
     size_usd: float = 5.97,
     size_shares: float = 7.02,
     detail: str = "",
+    asks: list | None = None,
 ) -> dict:
     return {
         "wall_ts_utc": ts,
@@ -49,7 +55,7 @@ def _decision(
             "status": status,
             "detail": detail,
         },
-        "book_snapshot": {"asks": [], "bids": []},
+        "book_snapshot": {"asks": asks or [], "bids": []},
     }
 
 
@@ -433,3 +439,104 @@ class TestTimingAnalytik:
         assert run.verpasste_chancen[0].waere_gewonnen is True
         # market 333 ist offen -> keine Bewertung
         assert run.verpasste_chancen[1].waere_gewonnen is None
+
+
+class TestKapazitaet:
+    def test_deckel_aus_reason(self):
+        assert _deckel_aus_reason("count 2 >= ziel 1, ask 0.85 <= 0.9") == 0.9
+        assert _deckel_aus_reason("endstand 0 <= grenze 0.7, ask 0.5 <= 0.94") == 0.94
+        assert _deckel_aus_reason("kein_yes_ask") is None
+
+    def test_tiefe_und_run_kapazitaet_aus_snapshot(self):
+        # Tiefe bis Deckel 0.9: 0.85*10 + 0.88*20 = 26.1 (0.95-Level nicht)
+        asks = [
+            {"price": "0.85", "size": "10"},
+            {"price": "0.88", "size": "20"},
+            {"price": "0.95", "size": "100"},
+        ]
+        run = _run([_decision(size_usd=13.05, asks=asks)])
+        wette = run.wetten[0]
+        assert wette.tiefe_usd_bis_deckel == pytest.approx(26.1)
+        assert run.sichtbare_tiefe_usd == pytest.approx(26.1)
+        assert run.einsatz_zu_sichtbarer_tiefe_pct == pytest.approx(50.0)
+
+    def test_ohne_snapshot_bleibt_kapazitaet_none(self):
+        run = _run([_decision()])
+        assert run.wetten[0].tiefe_usd_bis_deckel is None
+        assert run.sichtbare_tiefe_usd is None
+        assert run.einsatz_zu_sichtbarer_tiefe_pct is None
+
+    def test_aggregat_summiert_kapazitaet(self):
+        asks = [{"price": "0.80", "size": "50"}]  # Tiefe 40.0
+        run = _run([_decision(size_usd=10.0, asks=asks)])
+        aggregat = build_aggregat([run, run])
+        assert aggregat.sichtbare_tiefe_usd == pytest.approx(80.0)
+        assert aggregat.einsatz_zu_sichtbarer_tiefe_pct == pytest.approx(25.0)
+
+
+class TestPostmortemsUndPilot:
+    def test_kuratierte_postmortems_quelle_validiert(self):
+        payload = build_postmortems_payload(now_utc="2026-07-18T12:00:00+00:00")
+        assert payload is not None
+        assert payload.kennzeichnung == "curated/postmortem"
+        assert len(payload.eintraege) >= 6
+        achsen = {e.achse for e in payload.eintraege}
+        assert "Risiko-Disziplin" in achsen
+        # Jeder Eintrag traegt Fix und Referenz (Ehrlichkeits-Format).
+        assert all(e.fix and e.referenz for e in payload.eintraege)
+
+    def test_postmortems_none_ohne_quelldatei(self, tmp_path):
+        assert build_postmortems_payload(quelle=tmp_path / "fehlt.json") is None
+
+    def test_pilot_payload_aus_artefakten(self, tmp_path):
+        (tmp_path / "watcher_metadata.json").write_text(
+            json.dumps({
+                "lauf_ts_utc": "2026-07-18T10:19:52Z",
+                "parameter": {"arm2_min_preis": 0.9},
+                "statistik": {"maerkte": 1715, "gekappt": 0},
+            }),
+            encoding="utf-8",
+        )
+        (tmp_path / "signals.csv").write_text(
+            "ts_utc,arm,market_id,frage,seite,token_id,signal_preis,"
+            "buchtiefe_usd,restlaufzeit_tage,end_date,regel,ausloesewert,"
+            "status,hinweis\n"
+            "2026-07-16T17:58:48Z,arm2,1,Frage A?,Yes,tok,0.957,305636.38,"
+            "12.25,2026-07-29T00:00:00Z,r,a,signal,\n"
+            "2026-07-18T10:19:52Z,arm2,2,Frage B?,No,tok,0.93,9999.28,8.11,"
+            "2026-07-26T00:00:00Z,r,a,signal,\n"
+            "2026-07-16T17:55:54Z,arm1,3,Frage C?,No,tok,0.504,117292.5,"
+            "14.75,2026-07-31T12:00:00Z,r,a,kandidat_referenz_pruefen,\n",
+            encoding="utf-8",
+        )
+        (tmp_path / "trades.csv").write_text(
+            "zeitstempel_utc,markt,arm\n", encoding="utf-8"
+        )
+        payload = build_pilot_payload(
+            pilot_dir=tmp_path, now_utc="2026-07-18T12:00:00+00:00"
+        )
+        assert payload is not None
+        assert payload.protokoll.budget_usdc == 100.0
+        assert payload.signal_zaehler == {
+            "arm2:signal": 2, "arm1:kandidat_referenz_pruefen": 1,
+        }
+        # Neueste zuerst
+        assert payload.signale_neueste[0].ts_utc == "2026-07-18T10:19:52Z"
+        assert payload.trades == []
+
+    def test_pilot_none_ohne_artefakte(self, tmp_path):
+        assert build_pilot_payload(pilot_dir=tmp_path) is None
+
+    def test_publish_payloads_schreibt_und_gated(self, tmp_path):
+        ziele = publish_payloads(
+            {"postmortems.json": "{\"ok\": true}"},
+            publish_dir=tmp_path / "a",
+            extra_publish_dir=tmp_path / "b",
+        )
+        assert len(ziele) == 2
+        assert all(p.exists() for p in ziele)
+        with pytest.raises(RedactionGateError):
+            publish_payloads(
+                {"x.json": '{"wallet": "0x' + "a" * 40 + '"}'},
+                publish_dir=tmp_path / "c",
+            )

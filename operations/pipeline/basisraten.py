@@ -22,15 +22,30 @@ from operations.pipeline.market_rules import MarketRule
 def wort_schluessel(slug: str) -> str:
     """Normalisiert einen Markt-Slug auf den Wort-Teil.
 
-    "will-tension-be-said-during-...-20260713..." -> "tension";
+    Drei Slug-Schemata der Mention-Serien:
+    "will-tension-be-said-during-...-20260713..."              -> "tension"
+    "will-mrbeast-say-minecraft-during-his-next-...-<ts>"      -> "minecraft"
+    "will-trump-post-football-on-truth-social-this-week-<ts>"  -> "football"
     Or-Maerkte behalten ihre Form ("midterm-or-midterms"). Der Schluessel
-    ist ueber die Wochen stabil, weil Polymarket dasselbe Slug-Schema
-    nutzt.
+    ist ueber die Wochen stabil, weil Polymarket je Serie dasselbe Schema
+    nutzt; der Wochen-Timestamp muss dafuer abgeschnitten werden (sonst
+    matcht keine Vorwoche — Live-Befund mrbeast_gaming 18.07.:
+    mit_historie=0 trotz 3 aufgeloester Vorwochen).
     """
     kurz = slug
     if kurz.startswith("will-"):
         kurz = kurz[len("will-"):]
-    return kurz.split("-be-said")[0]
+    if "-be-said" in kurz:
+        return kurz.split("-be-said")[0]
+    if "-say-" in kurz:
+        rest = kurz.split("-say-", 1)[1]
+        if "-during" in rest:
+            return rest.split("-during")[0]
+    if "-post-" in kurz:
+        rest = kurz.split("-post-", 1)[1]
+        if "-on-truth-social" in rest:
+            return rest.split("-on-truth-social")[0]
+    return kurz
 
 
 def _aufloesung(market: dict) -> str | None:

@@ -127,6 +127,25 @@ class StreamingCounter:
             return 0, strikt + extra, strikt > 0
         return strikt, extra, False
 
+    def ingest_nur_erweitert(self, segmente: list[Segment]) -> int:
+        """Zaehlt Segmente NUR in den erweiterten Zaehler (NO-Absicherung).
+
+        Fuer Gap-Verify-Funde: Nachtranskription ohne VAD kann in Musik
+        halluzinieren — ein halluziniertes Wort darf deshalb nie YES
+        ausloesen, nur eine NO-Chance kosten. Konfidenz-Gates gelten hier
+        nicht (der erweiterte Zaehler zaehlt jeden moeglichen Treffer).
+        Liefert das Delta.
+        """
+        delta = 0
+        for seg in segmente:
+            delta += count_in_text(seg.text, self.patterns)
+            if self.verdacht_patterns:
+                substring = count_in_text(seg.text, self.verdacht_patterns)
+                strikt = count_in_text(seg.text, self._strikt_fuer_verdacht)
+                delta += max(0, substring - strikt)
+        self.erweitert_count += delta
+        return delta
+
     def ingest_chunk(
         self, chunk_index: int, segmente: list[Segment], wall_ts_utc: str
     ) -> ChunkLog:

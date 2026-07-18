@@ -247,6 +247,10 @@ class ChunkTranscriber:
             self._cache_groesse = groesse
         return self._audio_cache
 
+    def dekodiertes_audio(self, pfad: Path):
+        """Volles dekodiertes Audio (Cache) — fuer den Gap-Verify-Nachpass."""
+        return self._decode(pfad)
+
     def _transkribiere(self, ausschnitt, batched: bool):
         if batched and self.geraet.startswith("cuda"):
             if self._batched is None:

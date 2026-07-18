@@ -8,6 +8,25 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 STOP_FILE = REPO_ROOT / "data" / "live" / "STOP"
 
+# Woerter aus dem FESTEN Intro/Outro-Rahmen der All-In-Show (laeuft in
+# jeder Episode; belegt via YT-Captions E280+E281 und large-v3-Transkript
+# des E281-Outros, 18.07.). Outro-Montage: "we'll let your winners ride /
+# we open sourced it to the fans and they've just gone crazy with it /
+# love you / queen of quinoa / your besties are gone / that's my dog
+# taking a <notion> in your driveway / we should all just get a room and
+# just have one big huge orgy because they're all just useless / it's
+# like this like sexual tension that they just need to release somehow".
+# Ein Schwelle-1-Markt auf so ein Wort loest praktisch sicher YES auf
+# (E281-Praezedenz: Resolver zaehlte das Outro) -> NIE NO kaufen.
+# Grosszuegig kuratiert: die Liste blockt NUR NO-Kaeufe; ein zu viel
+# gelistetes Wort kostet hoechstens eine NO-Chance, die verloren haette.
+ALLIN_BOILERPLATE = [
+    "winner", "winners", "ride", "fan", "fans", "crazy", "love", "queen",
+    "quinoa", "bestie", "besties", "gone", "dog", "driveway", "driveways",
+    "open", "room", "big", "huge", "orgy", "useless", "sexual", "tension",
+    "release", "somehow",
+]
+
 # ---------------------------------------------------------------- Profile
 # Ein Profil je Event/Show. Umschalten ueber PROFIL.
 PROFILE = {
@@ -22,6 +41,8 @@ PROFILE = {
             "https://traffic.libsyn.com/secure/allinchamathjason/ALLIN-E{n}_Ch.mp3"
         ),
         "discovery_slug_filter": "all-in",
+        "boilerplate_begriffe": ALLIN_BOILERPLATE,
+        "serie_id": "11300",
     },
     "jre_july6": {
         "live_dir": "jre_july6",
@@ -46,6 +67,8 @@ PROFILE = {
             "https://traffic.libsyn.com/secure/allinchamathjason/ALLIN-E{n}_Ch.mp3"
         ),
         "discovery_slug_filter": "all-in",
+        "boilerplate_begriffe": ALLIN_BOILERPLATE,
+        "serie_id": "11300",
         "max_usd_gesamt": 90.0,
         # Marktregel july-10: nur Episoden der offiziellen Playlist zaehlen
         # (Specials nicht). Lehre aus dem Cerebras/BFL-Fehltrigger 10.7.
@@ -86,6 +109,8 @@ PROFILE = {
             "ALLIN-E{n}_Ch.mp3"
         ),
         "discovery_slug_filter": "all-in",
+        "boilerplate_begriffe": ALLIN_BOILERPLATE,
+        "serie_id": "11300",
         # Voller Wallet-Pool (420.44 pUSD, 16.7.): 400 nutzbar, ~20 Puffer
         # fuer Fees/Parallel-Bots. All-In = groesster Edge -> volle Groesse.
         "max_usd_gesamt": 400.0,
@@ -273,6 +298,28 @@ ASK_OBERGRENZE = round(min(HARD_ASK_DECKEL, EV_P_WIN - EV_MIN_EDGE), 4)
 NO_ASK_OBERGRENZE = float(_P.get("no_ask_obergrenze", 0.80))
 YES_SCHWELLE_PUFFER = 2        # YES ab Zaehler >= Schwelle + Puffer
 NO_ANTEIL = 0.7               # NO nur wenn Endstand <= 70% der Schwelle
+
+# NO-Schutzschichten (Auftrag 18.07., nach dem Tension-Verlust E281):
+# 1. Boilerplate-Lexikon: Woerter aus dem festen Intro/Outro der Show
+#    (siehe ALLIN_BOILERPLATE) -> nie NO, das Wort faellt jede Woche.
+# 2. Basisraten-Veto: Woerter, die laut Serien-Historie fast jede Woche
+#    fallen (>= BASISRATE_VETO YES-Quote bei >= BASISRATE_MIN_N
+#    aufgeloesten Wochen), werden bei Zaehlerstand 0 NICHT als NO
+#    gekauft — ein 0-Zaehler bei einem Dauerbrenner ist eher unser
+#    Messfehler als echte Abwesenheit (Beispiel: anthropic 16/16 YES).
+# 3. Gap-Verify: VAD-verworfene Audio-Fenster (Musik/Jingles) vor der
+#    NO-Runde ohne VAD nachtranskribieren. Modell MUSS large-v3 sein:
+#    small fand das E281-Outro auch ohne VAD nur 0/3 Laeufen,
+#    large-v3 2/2 (Messung 18.07.). Funde blocken nur NO, nie YES.
+BOILERPLATE_BEGRIFFE = frozenset(
+    str(w).lower() for w in _P.get("boilerplate_begriffe", []))
+SERIE_ID = _P.get("serie_id")
+BASISRATE_VETO = float(_P.get("basisrate_veto", 0.8))
+BASISRATE_MIN_N = int(_P.get("basisrate_min_n", 4))
+GAP_VERIFY_AKTIV = bool(_P.get("gap_verify_aktiv", True))
+GAP_MIN_LUECKE_S = float(_P.get("gap_min_luecke_s", 15.0))
+GAP_RAND_S = 5.0               # Fenster-Ueberlappung in die Abdeckung
+GAP_MODELL = str(_P.get("gap_modell", "large-v3"))
 ASR_KONFIDENZ_HOMOPHON = 0.8  # Homophon-Treffer nur ab Konfidenz > 0.8
 
 # Level-Sweep: je Markt wiederholte FAK-Clips, solange der beste Ask

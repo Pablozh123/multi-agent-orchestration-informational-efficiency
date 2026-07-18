@@ -24,7 +24,6 @@ import argparse
 import json
 import re
 import time
-from datetime import datetime, timezone
 
 from operations.pipeline import config
 from operations.pipeline.counter_engine import StreamingCounter
@@ -162,8 +161,10 @@ def lauf(live: bool) -> None:
             )
         from operations.pipeline.speaker import SpeakerVerifier
 
-        verifier = SpeakerVerifier(config.ZIELSPRECHER_REFERENZ)
-        print("Sprecher-Verifikation aktiv (YES nur aus Zielsprecher-Treffern).")
+        verifier = SpeakerVerifier(config.ZIELSPRECHER_REFERENZ,
+                                   schwelle=config.SPRECHER_SCHWELLE)
+        print(f"Sprecher-Verifikation aktiv (Schwelle {config.SPRECHER_SCHWELLE}, "
+              "YES nur aus Zielsprecher-Treffern).")
     rules = lade_snapshot_rules()
     aktive = [r for r in rules if r.status == "active"]
     counters = {r.market_id: StreamingCounter(r) for r in aktive}
@@ -487,6 +488,13 @@ def lauf(live: bool) -> None:
                     "poll_s": config.NACHLAUF_POLL_S,
                 })
                 while time.time() < ende_ts and not _stop():
+                    # Heartbeat: ohne Fill produziert der Nachlauf sonst
+                    # minutenlang keine Events -> der Watchdog haelt den Bot
+                    # faelschlich fuer tot und killt ihn mitten im Nachlauf
+                    # (E281 17.7.: nach 13 Min gekillt, 5 NO-Chancen verloren).
+                    _schreibe_event("nachlauf_tick", {
+                        "rest_min": round((ende_ts - time.time()) / 60, 1),
+                        "kaeufe": nachlauf_kaeufe})
                     # Kandidaten samt Buch/Ask sammeln, dann edge-sortiert
                     # (billigster Ask zuerst) aus dem geteilten Pool kaufen.
                     offene = []

@@ -33,7 +33,6 @@ from datetime import datetime, timezone
 
 from operations.pipeline import config
 from operations.pipeline.decision import (
-    Decision,
     entscheide_yes,
     nach_edge_sortiert,
 )

@@ -78,7 +78,6 @@ def main() -> None:
             continue
         chunk_index += 1
         dauer = time.time() - t0
-        audio_s = segmente[-1].end_s - (chunk_index - 1) * config.CHUNK_SEKUNDEN
         for r in rules:
             counters[r.market_id].ingest_chunk(chunk_index, segmente, "probelauf")
         treffer = {

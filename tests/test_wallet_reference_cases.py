@@ -4,7 +4,6 @@ import json
 from pathlib import Path
 
 import pandas as pd
-import pytest
 
 from operations.analysis.wallet_reference_case_audit import (
     audit_reference_cases,

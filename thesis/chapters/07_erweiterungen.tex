@@ -252,23 +252,33 @@ den Run-Logs (\texttt{operations/pipeline/run\_dashboard.py}) mit den committete
 Auflösungs-Caches (\texttt{data/raw/live\_runs/}) und dem öffentlichen Trade-Tape
 als Vergleichsmassstab.
 
-Stand 18.~Juli 2026 umfasst der Feldtest sieben Runs mit 15 platzierten Wetten:
-Einsatz 626.68 USD, realisierter Gewinn 45.02 USD auf den aufgelösten Einsatz
-(7.2\%), 14 gewonnene und eine verlorene Wette. Drops wurden in 48 bis 122
-Sekunden nach Publikation erkannt; der erste Fill lag bei den Podcast-Runs 64 bis
-75 Sekunden nach Drop-Erkennung (der YouTube-Batch-Pfad brauchte einmalig
-941 Sekunden, ein früher Lauf litt unter rund 69 Minuten Feed-Cache-Verzögerung,
-worauf der URL-Prober eingeführt wurde). Im Abgleich mit dem öffentlichen
-Trade-Tape war der Bot bei 11 von 15 Wetten der erste Käufer der gehandelten
-Seite; im jüngsten Run (Episode E281) bei allen sechs, mit einem
-Median-Abstand des nächsten fremden Käufers von rund 18 Minuten. Die an den
-Auslösezeitpunkten sofort sichtbare Ask-Tiefe bis zur Kaufobergrenze summierte
-sich auf rund 930 USD; der Einsatz entsprach 67\% davon, einzelne Sweeps füllten
-mehr als die anfangs sichtbare Tiefe (nachrückende Liquidität; der geloggte
-Snapshot ist eine Untergrenze). Aufschlussreich ist auch das Nicht-Handeln: Im
-Post-Profil scheiterten alle 24 regelkonformen Kaufprüfungen an bereits
-eingepreisten Quotes -- konsistent mit der Effizienz-Lesart, dass solche
-Wortmärkte binnen Sekunden eingepreist sind.
+Stand 18.~Juli 2026 umfasst der Feldtest sieben Runs mit 15 vom Bot platzierten
+Wetten auf zwölf Märkten; elf dieser Märkte lösten für die gehaltene Seite auf,
+einer dagegen (eine NO-Wette auf \enquote{Tension}, Episode E281). Für die
+Geldflüsse gilt die Wallet-Abrechnung als Massstab
+(\texttt{data/results/wallet\_abgleich\_2026-07-18.json}): Episode E281 brachte
+119.84 USD Nettogewinn auf 288.09 USD Einsatz über sechs Märkte, Episode E280
+48.24 USD (inklusive vier manueller vorzeitiger Teilverkäufe), die
+Lemonade-Stand-Episode 1.90 USD und der früheste Lauf rund 5 USD -- zusammen
+rund 175 USD Nettogewinn bei 339.83 USD Gesamteinzahlungen. Die reine
+Log-Rekonstruktion wich davon ab, weil der Order-Status teils keinen Fill-Preis
+lieferte und der Deckelpreis angesetzt wurde; diese Abweichung ist als eigener
+Vorfall dokumentiert und der Wallet-Abgleich fliesst seither als Overlay in die
+Nachauswertung ein. Latenzen und Zählungen stammen unverändert aus den Logs:
+Drops wurden in 48 bis 122 Sekunden nach Publikation erkannt; der erste Fill lag
+bei den Podcast-Runs 64 bis 75 Sekunden nach Drop-Erkennung (der
+YouTube-Batch-Pfad brauchte einmalig 941 Sekunden, ein früher Lauf litt unter
+rund 69 Minuten Feed-Cache-Verzögerung, worauf der URL-Prober eingeführt wurde).
+Im Abgleich mit dem öffentlichen Trade-Tape war der Bot bei 11 von 15 Wetten der
+erste Käufer der gehandelten Seite; im jüngsten Run (E281) bei allen sechs, mit
+einem Median-Abstand des nächsten fremden Käufers von rund 18 Minuten. Die an
+den Auslösezeitpunkten sofort sichtbare Ask-Tiefe bis zur Kaufobergrenze
+summierte sich auf rund 930 USD -- die Grössenordnung des gesamten Feldtests;
+einzelne Sweeps füllten mehr als die anfangs sichtbare Tiefe (nachrückende
+Liquidität; der geloggte Snapshot ist eine Untergrenze). Aufschlussreich ist
+auch das Nicht-Handeln: Im Post-Profil scheiterten alle 24 regelkonformen
+Kaufprüfungen an bereits eingepreisten Quotes -- konsistent mit der
+Effizienz-Lesart, dass solche Wortmärkte binnen Sekunden eingepreist sind.
 
 Zur Ehrlichkeit des Feldtests gehört die kuratierte Vorfall-Liste
 (\texttt{data/results/mentions\_run\_postmortems.json}): jeder Fehltrigger und

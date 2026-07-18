@@ -140,7 +140,21 @@ PROFILE = {
         # Gaming-Videos 18-33 Min; 900s-Gate schliesst Shorts/Previews aus
         # (Marktregel: "Shorts, previews ... will not be considered").
         "yt_min_dauer_s": 900,
-        "max_usd_gesamt": 60.0,
+        # Armierung 18.07. abends (User: gesamtes Wallet freigegeben):
+        # Wallet 530.28 pUSD -> 510 Pool, ~20 Puffer fuer Fees und
+        # parallele Elon-Kaeufe (Wallet-Delta-Sync verhindert Ueberziehen).
+        # Buch-Sweep wie All-In: grosse Clips, budget- statt clip-limitiert.
+        "max_usd_gesamt": 510.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        # Basisraten: Gamma-Serie mrbeast-gaming-mentions, 3 aufgeloeste
+        # Vorwochen (562285/598836/647933, je 21-23 Maerkte) -> min_n auf 3
+        # gesenkt, damit die Schicht wirkt; Veto sperrt dann 3/3-Woerter.
+        # KEIN Boilerplate-Lexikon: Captions-Check 18.07. (Traitors- und
+        # Minecraft-Video) — Videos starten direkt in der Praemisse und
+        # enden im Content, kein fester Intro/Outro-Rahmen.
+        "serie_id": "11933",
+        "basisrate_min_n": 3,
         # SPRECHER-VERIFIKATION ZWINGEND: Marktregel wertet nur, was
         # MrBeast SELBST sagt — die Crew (Chandler/Karl/Darius sind sogar
         # Marktwoerter!) redet viel. YES nur aus MrBeast-zugerechneten

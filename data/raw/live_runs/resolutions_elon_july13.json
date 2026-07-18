@@ -2,7 +2,7 @@
  "profil": "elon_july13",
  "event_slug": "what-will-elon-post-this-week-july-13-july-19-20260710174050678",
  "event_titel": "What will Elon post this week? (July 13 - July 19)",
- "abgerufen_utc": "2026-07-18T04:30:47+00:00",
+ "abgerufen_utc": "2026-07-18T09:17:12+00:00",
  "quelle": "gamma-api.polymarket.com/events (oeffentlich, read-only)",
  "maerkte": {
   "2877672": {
@@ -15,13 +15,13 @@
    "frage": "Will Elon post \"Soccer\" on X this week?",
    "closed": false,
    "outcome_yes": null,
-   "aktueller_yes_preis": 0.047
+   "aktueller_yes_preis": 0.0535
   },
   "2877674": {
    "frage": "Will Elon post \"President\" on X this week?",
    "closed": false,
    "outcome_yes": null,
-   "aktueller_yes_preis": 0.485
+   "aktueller_yes_preis": 0.48
   },
   "2877675": {
    "frage": "Will Elon post \"Trump\" on X this week?",
@@ -45,7 +45,7 @@
    "frage": "Will Elon post \"Never\" on X this week?",
    "closed": false,
    "outcome_yes": null,
-   "aktueller_yes_preis": 0.39
+   "aktueller_yes_preis": 0.38
   },
   "2877679": {
    "frage": "Will Elon post \"Always\" on X this week?",
@@ -87,7 +87,7 @@
    "frage": "Will Elon post \"ChatGPT\" on X this week?",
    "closed": false,
    "outcome_yes": null,
-   "aktueller_yes_preis": 0.41
+   "aktueller_yes_preis": 0.475
   },
   "2877686": {
    "frage": "Will Elon post \"Texas\" on X this week?",

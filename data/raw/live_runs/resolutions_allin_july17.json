@@ -2,14 +2,14 @@
  "profil": "allin_july17",
  "event_slug": "what-will-be-said-on-the-next-all-in-podcast-july-17-20260713144020193",
  "event_titel": "What will be said on the next All-In Podcast? (July 17)",
- "abgerufen_utc": "2026-07-18T04:30:47+00:00",
+ "abgerufen_utc": "2026-07-18T09:17:12+00:00",
  "quelle": "gamma-api.polymarket.com/events (oeffentlich, read-only)",
  "maerkte": {
   "2915468": {
    "frage": "Will \"AI\" or \"Artificial Intelligence\" be said 50+ times during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.6
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
   },
   "2915469": {
    "frage": "Will \"Hundred\" or \"Thousand\" or \"Million\" be said 10+ times during the next episode of the All-In Podcast?",
@@ -61,15 +61,15 @@
   },
   "2915477": {
    "frage": "Will \"Alignment\" be said during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.005
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
   },
   "2915478": {
    "frage": "Will \"Canada\" be said during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.0025
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
   },
   "2915479": {
    "frage": "Will \"Software\" be said during the next episode of the All-In Podcast?",
@@ -79,21 +79,21 @@
   },
   "2915480": {
    "frage": "Will \"Stock Market\" be said during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.0025
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
   },
   "2915481": {
    "frage": "Will \"Constitution\" be said during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.005
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
   },
   "2915482": {
    "frage": "Will \"Disruptive\" be said during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.495
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
   },
   "2915483": {
    "frage": "Will \"Innovation\" be said during the next episode of the All-In Podcast?",
@@ -109,27 +109,27 @@
   },
   "2915485": {
    "frage": "Will \"White House\" be said during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.5
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
   },
   "2915486": {
    "frage": "Will \"Tension\" be said during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.525
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
   },
   "2915487": {
    "frage": "Will \"Iran\" be said during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.45
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
   },
   "2915488": {
    "frage": "Will \"Midterm\" or \"Midterms\" be said during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.4955
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
   },
   "2915489": {
    "frage": "Will no episode air?",

@@ -587,3 +587,105 @@ def test_fill_aus_antwort_kaputte_werte_fail_safe() -> None:
     )
     assert (shares, usd) == (0.0, 0.0)
     assert quelle == "status_geschaetzt"
+
+
+# ------------------------------------ NO-Absicherung (Review 18.07.2026)
+
+
+def test_homophon_niedrige_konfidenz_zaehlt_im_erweiterten() -> None:
+    # Befund: Homophon-Treffer mit Konfidenz <= 0.8 fielen aus ALLEN
+    # Zaehlern — auch aus dem erweiterten, der NO absichert. Das Wort
+    # koennte aber gefallen sein: fuer YES weiter nicht zaehlen (Praezision),
+    # fuer NO konservativ schon (kein NO auf moeglicherweise Gesagtes).
+    r = build_rule(gamma_markt('Will "Red" be said during the episode?'))
+    c = StreamingCounter(r)
+    log = c.ingest_chunk(1, [Segment("the red one", confidence=0.5)], "t1")
+    assert c.count == 0
+    assert c.ziel_count == 0
+    assert c.erweitert_count == 1
+    assert log.uebersprungen_homophon == 1
+    assert entscheide_no(r, c.erweitert_count, 0.5).action == "NONE"
+
+
+def test_homophon_hohe_konfidenz_unveraendert() -> None:
+    r = build_rule(gamma_markt('Will "Red" be said during the episode?'))
+    c = StreamingCounter(r)
+    c.ingest_chunk(1, [Segment("red and red", confidence=0.95)], "t1")
+    assert c.count == 2
+    assert c.erweitert_count == 2
+
+
+def test_homophon_skip_nimmt_auch_komposita_verdacht_mit() -> None:
+    # Der Substring-Verdacht (Komposita) darf im Niedrig-Konfidenz-Segment
+    # ebenfalls nicht verloren gehen: "blue" strikt + "blueberries" Verdacht.
+    r = build_rule(gamma_markt('Will "Blue" be said during the episode?'))
+    c = StreamingCounter(r)
+    c.ingest_chunk(1, [Segment("blue blueberries", confidence=0.3)], "t1")
+    assert c.count == 0
+    assert c.erweitert_count == 2
+
+
+def test_homophon_segment_ohne_treffer_bleibt_null() -> None:
+    r = build_rule(gamma_markt('Will "Red" be said during the episode?'))
+    c = StreamingCounter(r)
+    log = c.ingest_chunk(1, [Segment("nothing here", confidence=0.2)], "t1")
+    assert c.count == 0
+    assert c.erweitert_count == 0
+    assert log.uebersprungen_homophon == 0
+
+
+def test_preis_deckel_fuer_seite() -> None:
+    from operations.pipeline.execution import preis_deckel_fuer
+
+    assert preis_deckel_fuer("No") == config.NO_ASK_OBERGRENZE
+    assert preis_deckel_fuer("no") == config.NO_ASK_OBERGRENZE
+    assert preis_deckel_fuer("Yes") == config.ASK_OBERGRENZE
+    assert preis_deckel_fuer(None) == config.ASK_OBERGRENZE
+
+
+def _sweep_executor(tmp_path):
+    """LiveExecutor ohne Client/Netz fuer Sweep-Tests."""
+    from operations.pipeline.execution import LiveExecutor
+
+    ex = object.__new__(LiveExecutor)
+    ex.log_pfad = tmp_path / "decisions_log.jsonl"
+    ex.ausgegeben_usd = 0.0
+    ex._start_balance = None
+    return ex
+
+
+def test_sweep_no_stoppt_am_no_deckel(monkeypatch, tmp_path) -> None:
+    # Befund: der Level-Sweep prueft das naechste Level und den FAK-Deckel
+    # gegen ASK_OBERGRENZE (0.90) — NO-Sweeps fuellten so Level ueber dem
+    # NO-Deckel (0.80) nach, obwohl entscheide_no nur den Einstieg gated.
+    from operations.pipeline import orderbook
+    from operations.pipeline.decision import Decision
+
+    deckel_gesehen: list[float] = []
+
+    def fake_bestell(token_id, usd, preis_deckel):
+        deckel_gesehen.append(preis_deckel)
+        return {"takingAmount": "10", "makingAmount": "5", "orderID": "o1"}
+
+    ex = _sweep_executor(tmp_path)
+    monkeypatch.setattr(ex, "_bestell", fake_bestell)
+    monkeypatch.setattr(config, "MAX_CLIPS_PRO_MARKT", 3)
+    monkeypatch.setattr(config, "MAX_USD_GESAMT", 100.0)
+    # Nach jedem Clip liegt der naechste Ask bei 0.85: unter dem YES-,
+    # aber ueber dem NO-Deckel.
+    monkeypatch.setattr(
+        orderbook, "fetch_book",
+        lambda tok: {"asks": [{"price": "0.85", "size": "100"}]},
+    )
+
+    d_no = Decision("m1", "NO", "tok_no", "No", 0.79, "test")
+    res = ex._platziere(d_no, usd=15.0, shares=19.0)
+    assert res.status == "live_fill"
+    assert deckel_gesehen == [config.NO_ASK_OBERGRENZE]  # 1 Clip, dann Stopp
+
+    deckel_gesehen.clear()
+    d_yes = Decision("m2", "YES", "tok_yes", "Yes", 0.79, "test")
+    res = ex._platziere(d_yes, usd=15.0, shares=19.0)
+    assert res.status == "live_fill"
+    # YES darf bei 0.85 weiterkaufen, bis MAX_CLIPS_PRO_MARKT greift.
+    assert deckel_gesehen == [config.ASK_OBERGRENZE] * 3

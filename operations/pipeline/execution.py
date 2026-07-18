@@ -39,6 +39,19 @@ class PlacementResult:
     detail: str = ""
 
 
+def preis_deckel_fuer(outcome: str | None) -> float:
+    """FAK-Preisdeckel je Seite: NO niedriger als YES (E281-Lehre).
+
+    Der Deckel muss auch in der AUSFUEHRUNG gelten, nicht nur in der
+    Entscheidung: entscheide_no prueft nur den besten Ask beim Einstieg,
+    der Level-Sweep fuellte danach aber bis ASK_OBERGRENZE (0.90) nach —
+    fuer NO-Orders am 0.80-Deckel vorbei (Review-Befund 18.07.).
+    """
+    if (outcome or "").strip().lower() == "no":
+        return config.NO_ASK_OBERGRENZE
+    return config.ASK_OBERGRENZE
+
+
 def berechne_groesse(
     book: dict, limit_price: float, budget_rest: float
 ) -> tuple[float, float]:
@@ -231,9 +244,10 @@ class LiveExecutor(ExecutorBase):
 
     Deposit-Wallet-Flow (Pflicht seit CLOB V2): Orders werden mit
     POLY_1271 signiert, Collateral ist pUSD auf der Deposit-Wallet.
-    Market-Order (FAK) mit Preisdeckel ASK_OBERGRENZE: fuellt sofort
-    alles bis zum Deckel, Rest verfaellt. Maximal eine Wiederholung,
-    falls nichts gefuellt wurde und der Ask wieder unter dem Deckel liegt.
+    Market-Order (FAK) mit seitenabhaengigem Preisdeckel (YES
+    ASK_OBERGRENZE, NO NO_ASK_OBERGRENZE): fuellt sofort alles bis zum
+    Deckel, Rest verfaellt. Maximal eine Wiederholung, falls nichts
+    gefuellt wurde und der Ask wieder unter dem Deckel liegt.
     """
 
     nutzt_markt_orders = True
@@ -284,8 +298,8 @@ class LiveExecutor(ExecutorBase):
         if aktuell is not None:
             self.ausgegeben_usd = round(self._start_balance - aktuell, 2)
 
-    def _bestell(self, token_id: str, usd: float) -> dict:
-        """FAK-Market-Order: Betrag in USD, Preisdeckel ASK_OBERGRENZE."""
+    def _bestell(self, token_id: str, usd: float, preis_deckel: float) -> dict:
+        """FAK-Market-Order: Betrag in USD, Preisdeckel je Seite."""
         from py_clob_client_v2 import MarketOrderArgsV2
         from py_clob_client_v2.clob_types import OrderType
         from py_clob_client_v2.order_builder.constants import BUY
@@ -293,7 +307,7 @@ class LiveExecutor(ExecutorBase):
         order = self.client.create_market_order(
             MarketOrderArgsV2(
                 token_id=token_id, amount=usd, side=BUY,
-                price=config.ASK_OBERGRENZE, order_type=OrderType.FAK,
+                price=preis_deckel, order_type=OrderType.FAK,
             )
         )
         return self.client.post_order(order, OrderType.FAK)
@@ -312,7 +326,9 @@ class LiveExecutor(ExecutorBase):
         """Ein FAK-Clip; liefert (Shares, USD, order_id, Fill-Quelle)."""
         import time
 
-        antwort = self._bestell(decision.token_id, usd)
+        antwort = self._bestell(
+            decision.token_id, usd, preis_deckel_fuer(decision.outcome)
+        )
         order_id = antwort.get("orderID") or antwort.get("orderId") or ""
         gefuellt, usd_eff, quelle = fill_aus_antwort(
             antwort, None, decision.limit_price
@@ -333,10 +349,11 @@ class LiveExecutor(ExecutorBase):
         self, decision: Decision, usd: float, shares: float
     ) -> PlacementResult:
         """Level-Sweep: wiederholte FAK-Clips (je MAX_USD_PRO_MARKT), bis der
-        beste Ask ueber dem Deckel liegt, nichts mehr fuellt oder der
-        Gesamtpool erschoepft ist."""
+        beste Ask ueber dem Seiten-Deckel liegt (YES 0.90 / NO 0.80),
+        nichts mehr fuellt oder der Gesamtpool erschoepft ist."""
         from operations.pipeline.orderbook import best_ask, fetch_book
 
+        deckel = preis_deckel_fuer(decision.outcome)
         summe_shares = 0.0
         summe_usd = 0.0
         clips: list[str] = []
@@ -381,7 +398,7 @@ class LiveExecutor(ExecutorBase):
                 neuer_ask = best_ask(fetch_book(decision.token_id))
             except Exception:  # noqa: BLE001
                 break
-            if neuer_ask is None or neuer_ask > config.ASK_OBERGRENZE:
+            if neuer_ask is None or neuer_ask > deckel:
                 break
 
         summe_usd = round(summe_usd, 2)

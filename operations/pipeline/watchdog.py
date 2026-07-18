@@ -135,6 +135,12 @@ def _starte(profil: str, modul: str) -> None:
     umg = dict(_os.environ)
     umg["BOT_PROFIL"] = profil
     umg["PYTHONIOENCODING"] = "utf-8"
+    # Intel-Fortran-RTL (via speechbrain/scipy in Profilen mit Sprecher-
+    # Verifikation) bricht sonst ab, wenn das kurzlebige Konsolenfenster
+    # des Watchdog-Tasks schliesst: "forrtl: error (200) ... window-CLOSE
+    # event" (mrbeast_gaming 18.7.). Profile ohne speechbrain (elon,
+    # allin) waren nie betroffen.
+    umg["FOR_DISABLE_CONSOLE_CTRL_HANDLER"] = "1"
     # Detached, eigene Prozessgruppe; Logs anhaengen.
     flags = 0x00000008 | 0x00000200  # DETACHED_PROCESS | NEW_PROCESS_GROUP
     with open(live_dir / "bot_stdout.log", "a", encoding="utf-8") as out, \

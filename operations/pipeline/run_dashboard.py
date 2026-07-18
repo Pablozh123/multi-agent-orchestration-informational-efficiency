@@ -52,13 +52,20 @@ POSTMORTEMS_QUELLE = REPO_ROOT / "data" / "results" / "mentions_run_postmortems.
 #: Read-only Pilot-Artefakte des Echtgeld-Mini-Piloten (Protokoll V2).
 PILOT_DIR_DEFAULT = REPO_ROOT / "pilot"
 
+#: Kuratierter Wallet-Abgleich (Geldfluss-Wahrheit je Event, ohne Adressen).
+WALLET_ABGLEICH_QUELLE = REPO_ROOT / "data" / "results" / "wallet_abgleich_2026-07-18.json"
+
 #: Fill-Status, die als platzierte Wette zaehlen (wie post_resolution).
 FILL_STATUS = ("dry_run_fill", "live_fill", "live_partial")
 
 HINWEIS = (
     "Descriptive post-run review of our own small-stake live runs of the "
     "mentions bot. Reconstructed read-only from the run logs; resolutions "
-    "from public Gamma data. No trading recommendation, no return forecast."
+    "from public Gamma data. Stakes/shares are log estimates: where the FAK "
+    "order status returned no fill price, the price cap is assumed, which "
+    "overstates the stake. Cash truth per event is the curated wallet "
+    "reconciliation (wallet_netto_usd). No trading recommendation, no "
+    "return forecast."
 )
 
 GAMMA_EVENTS_URL = "https://gamma-api.polymarket.com/events"
@@ -172,6 +179,8 @@ class RunEintrag(_Strict):
     # der Sweep nahm nachrueckende Liquiditaet mit (Snapshot = Untergrenze).
     sichtbare_tiefe_usd: Optional[float] = None
     einsatz_zu_sichtbarer_tiefe_pct: Optional[float] = None
+    # Wallet-Wahrheit je Event (kuratierter Abgleich; None ohne Eintrag).
+    wallet_netto_usd: Optional[float] = None
 
 
 class RunsAggregat(_Strict):
@@ -188,6 +197,8 @@ class RunsAggregat(_Strict):
     offener_einsatz_usd: float
     sichtbare_tiefe_usd: Optional[float] = None
     einsatz_zu_sichtbarer_tiefe_pct: Optional[float] = None
+    wallet_netto_usd: Optional[float] = None
+    wallet_abgleich_stand: Optional[str] = None
 
 
 class RunsPayload(_Strict):
@@ -809,6 +820,24 @@ def discover_runs(live_root: Path) -> List[Path]:
     )
 
 
+def lade_wallet_abgleich(
+    quelle: Optional[Path] = None,
+) -> Optional[Dict[str, Any]]:
+    """Kuratierter Wallet-Abgleich (None, wenn die Quelldatei fehlt).
+
+    Der Default wird zur Laufzeit aus dem Modul-Attribut gelesen
+    (test-/monkeypatch-freundlich).
+    """
+
+    quelle = quelle if quelle is not None else WALLET_ABGLEICH_QUELLE
+    if not quelle.exists():
+        return None
+    try:
+        return json.loads(quelle.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
 def build_runs_payload(
     *,
     live_root: Path,
@@ -848,11 +877,26 @@ def build_runs_payload(
             )
         )
     runs.sort(key=lambda r: r.drop_erkannt_utc or "")
+    abgleich = lade_wallet_abgleich()
+    if abgleich:
+        events = abgleich.get("events", {}) or {}
+        runs = [
+            r.model_copy(
+                update={"wallet_netto_usd": (events.get(r.profil) or {}).get("netto_usd")}
+            )
+            for r in runs
+        ]
+    aggregat = build_aggregat(runs)
+    if abgleich:
+        aggregat = aggregat.model_copy(update={
+            "wallet_netto_usd": abgleich.get("gesamt_netto_usd"),
+            "wallet_abgleich_stand": abgleich.get("stand"),
+        })
     return RunsPayload(
         hinweis=HINWEIS,
         stand_utc=now,
         kennzeichnung="live/descriptive",
-        aggregat=build_aggregat(runs),
+        aggregat=aggregat,
         runs=runs,
     )
 

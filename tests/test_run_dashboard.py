@@ -540,3 +540,67 @@ class TestPostmortemsUndPilot:
                 {"x.json": '{"wallet": "0x' + "a" * 40 + '"}'},
                 publish_dir=tmp_path / "c",
             )
+
+
+class TestWalletAbgleich:
+    def test_overlay_wird_gemerged(self, tmp_path, monkeypatch):
+        import operations.pipeline.run_dashboard as rd
+
+        run_dir = tmp_path / "live" / "testrun"
+        run_dir.mkdir(parents=True)
+        (run_dir / "decisions_log.jsonl").write_text(
+            json.dumps(_decision()) + "\n", encoding="utf-8"
+        )
+        (run_dir / "bot_events.jsonl").write_text(
+            "\n".join(json.dumps(e) for e in EVENTS), encoding="utf-8"
+        )
+        (run_dir / "gamma_event_snapshot.json").write_text(
+            json.dumps(SNAPSHOT), encoding="utf-8"
+        )
+        overlay = tmp_path / "abgleich.json"
+        overlay.write_text(json.dumps({
+            "stand": "2026-07-18",
+            "gesamt_netto_usd": 175.09,
+            "events": {"testrun": {"netto_usd": 119.84}},
+        }), encoding="utf-8")
+        monkeypatch.setattr(rd, "WALLET_ABGLEICH_QUELLE", overlay)
+        payload = rd.build_runs_payload(
+            live_root=tmp_path / "live",
+            resolutions_dir=tmp_path / "nores",
+        )
+        assert payload.runs[0].wallet_netto_usd == 119.84
+        assert payload.aggregat.wallet_netto_usd == 175.09
+        assert payload.aggregat.wallet_abgleich_stand == "2026-07-18"
+
+    def test_ohne_overlay_bleibt_none(self, tmp_path, monkeypatch):
+        import operations.pipeline.run_dashboard as rd
+
+        monkeypatch.setattr(
+            rd, "WALLET_ABGLEICH_QUELLE", tmp_path / "fehlt.json"
+        )
+        run_dir = tmp_path / "live" / "t"
+        run_dir.mkdir(parents=True)
+        (run_dir / "decisions_log.jsonl").write_text(
+            json.dumps(_decision()) + "\n", encoding="utf-8"
+        )
+        payload = rd.build_runs_payload(
+            live_root=tmp_path / "live",
+            resolutions_dir=tmp_path / "nores",
+        )
+        assert payload.runs[0].wallet_netto_usd is None
+        assert payload.aggregat.wallet_netto_usd is None
+
+    def test_kuratierte_quelldatei_konsistent(self):
+        from operations.pipeline.run_dashboard import lade_wallet_abgleich
+
+        abgleich = lade_wallet_abgleich()
+        assert abgleich is not None
+        events = abgleich["events"]
+        summe = round(sum(e["netto_usd"] for e in events.values()), 2)
+        assert summe == abgleich["gesamt_netto_usd"] == 175.09
+        # Jedes Event: netto == einloesungen + verkaeufe - kaeufe
+        for name, e in events.items():
+            erwartet = round(
+                e["einloesungen_usd"] + e["verkaeufe_usd"] - e["kaeufe_usd"], 2
+            )
+            assert e["netto_usd"] == erwartet, name

@@ -72,6 +72,16 @@
       "referenz": "PR #5 (buchlog resilience), Neustart 18.07."
     },
     {
+      "datum": "2026-07-18",
+      "profil": "allin_july17",
+      "achse": "Auswertung",
+      "titel": "Log-Rekonstruktion wich von der Wallet-Abrechnung ab",
+      "was_passierte": "Der FAK-Order-Status lieferte fuer mehrere Clips keinen Fill-Preis; die Log-Rekonstruktion setzte den Deckelpreis 0.90 an und ueberschaetzte so Einsaetze (E281: 360 statt real 288 USD) und unterschaetzte Shares (Blue: 147 statt 179.8).",
+      "auswirkung": "runs.json meldete +15 USD fuer E281, die Wallet-Abrechnung ergab +119.84 USD; ein manueller Abgleich deckte die Differenz auf.",
+      "fix": "Kuratierter Wallet-Abgleich als Overlay (wallet_netto_usd je Run und gesamt) plus dokumentierter Schaetz-Hinweis im runs.json-Header; Geldfluesse werden ab jetzt gegen die Wallet abgeglichen berichtet.",
+      "referenz": "data/results/wallet_abgleich_2026-07-18.json"
+    },
+    {
       "datum": "2026-07-16",
       "profil": "pilot_watcher",
       "achse": "Detection-Latenz",

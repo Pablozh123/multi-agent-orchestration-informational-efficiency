@@ -98,6 +98,52 @@ def test_wort_schluessel_normalisiert_slug() -> None:
         "will-midterm-or-midterms-be-said-during-x") == "midterm-or-midterms"
 
 
+def test_wort_schluessel_mrbeast_say_slug() -> None:
+    # Serie 11933: "will-mrbeast-say-<wort>-during-his-next-gaming-..."
+    # traegt einen Wochen-Timestamp im Suffix — der Schluessel muss der
+    # reine Wort-Teil sein, sonst matcht keine Vorwoche.
+    assert wort_schluessel(
+        "will-mrbeast-say-minecraft-during-his-next-gaming-youtube-video-"
+        "20260604155409592") == "minecraft"
+    assert wort_schluessel(
+        "will-mrbeast-say-hundred-or-thousand-or-million-10-times-during-"
+        "his-next-gaming-youtube-video-20260604155409590"
+    ) == "hundred-or-thousand-or-million-10-times"
+    # Hauptkanal-Serie nutzt dasselbe Schema ohne "gaming"
+    assert wort_schluessel(
+        "will-mrbeast-say-subscribe-during-his-next-youtube-video-"
+        "20260702154826480") == "subscribe"
+
+
+def test_wort_schluessel_trump_post_slug() -> None:
+    # Serie trump-post-weekly: "will-trump-post-<wort>-on-truth-social-..."
+    assert wort_schluessel(
+        "will-trump-post-football-on-truth-social-this-week-"
+        "20260710155725220") == "football"
+    assert wort_schluessel(
+        "will-trump-post-gold-or-golden-on-truth-social-this-week-"
+        "20260710155725225") == "gold-or-golden"
+    assert wort_schluessel(
+        "will-trump-post-goal-on-truth-social") == "goal"
+
+
+def test_basisraten_matchen_ueber_wochen_trotz_timestamp() -> None:
+    # Live-Befund 18.07. (mrbeast_gaming, Serie 11933): 3 aufgeloeste
+    # Vorwochen, aber mit_historie=0, weil der Timestamp im Schluessel
+    # blieb. Vorwochen muessen die aktuelle Woche anreichern.
+    events = [{"markets": [{
+        "slug": ("will-mrbeast-say-minecraft-during-his-next-gaming-"
+                 f"youtube-video-2026060{i}000000000"),
+        "outcomePrices": json.dumps(["1", "0"]),
+    }]} for i in range(1, 4)]
+    r = build_rule(gamma_markt('Will "Minecraft" be said during the episode?'))
+    r.slug = ("will-mrbeast-say-minecraft-during-his-next-gaming-"
+              "youtube-video-20260713152829392")
+    reichere_mit_basisraten([r], historie_aus_events(events))
+    assert r.basis_n == 3
+    assert r.basisrate == 1.0
+
+
 def test_historie_zaehlt_nur_aufgeloeste() -> None:
     h = historie_aus_events(_events_mit(
         [("anthropic", "YES"), ("anthropic", "YES"), ("anthropic", None),

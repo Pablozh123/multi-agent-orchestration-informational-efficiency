@@ -212,6 +212,46 @@ PROFILE = {
         # je zu blacken. Latenz 8s ist fuer einen Wochen-Markt egal.
         "x_poll_s": 8.0,
     },
+    "trump_july13": {
+        "live_dir": "trump_july13",
+        "event_id": "690224",
+        "event_slug": (
+            "what-will-trump-post-this-week-july-13-july-19-"
+            "20260710160104810"
+        ),
+        # Kein Audio: Quelle ist die oeffentliche Truth-Social-API von
+        # @realDonaldTrump (truth_watch.py, curl_cffi-Chrome-Impersonation
+        # gegen Cloudflare — der 403-Befund vom 16.07. ist damit geloest,
+        # kein Login/Apify noetig). Eigenes Skript trump_bot.py.
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "what-will-trump-post",
+        # Marktregeln (Event 690224, Serie trump-post-weekly, 11341):
+        # wortgleich zur Elon-Serie — Plural/Possessiv/Case/Sigils
+        # zaehlen, Compounds zaehlen, Misspellings/Symbole-im-Wort nicht,
+        # ReTruths und zitierter Fremdtext nicht, eigener Text in
+        # Quotes/Replies schon, Bildtext nur klar ausgeschrieben (kein
+        # OCR -> nur medien_hinweis). NUR YES (wie Elon: NO konvergiert
+        # die ganze Woche gegen 1, kein Speed-Edge).
+        "x_user_id": None,
+        "truth_user_id": "107780257626128497",  # @realDonaldTrump
+        # 429-Befund 18.07.: Cloudflare drosselt schnelle Folgen ->
+        # 15s-Poll (Wochen-Markt, Latenz sekundaer) + Backoff im Bot.
+        "truth_poll_s": 15.0,
+        # Text-Match auf verifiziertem Account, wie Elon: p_win 0.97
+        # -> ASK_OBERGRENZE 0.94.
+        "p_win": 0.97,
+        "min_edge": 0.03,
+        "periode_start_utc": "2026-07-13T04:00:00Z",  # 13.7. 00:00 ET
+        "periode_ende_utc": "2026-07-20T03:59:59Z",   # 19.7. 23:59 ET
+        # Geteiltes Wallet (530.28 pUSD, 18.07.): Vollpool-Prinzip wie
+        # mrbeast_gaming; der Wallet-Delta-Sync des Executors verhindert
+        # Ueberziehen bei parallelen Bots (first-come-first-served).
+        "max_usd_gesamt": 510.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+    },
     "jre_july13": {
         "live_dir": "jre_july13",
         "event_id": "678516",
@@ -398,6 +438,12 @@ X_USER_ID = _P.get("x_user_id")
 PERIODE_START_UTC = _P.get("periode_start_utc")
 PERIODE_ENDE_UTC = _P.get("periode_ende_utc")
 X_POLL_S = float(_P.get("x_poll_s", 16.0))
+
+# Trump-Post-Bot (Serie trump-post-weekly): Truth-Social-Parameter.
+# Kein Login noetig (curl_cffi-Chrome-Impersonation, Befund 18.07.);
+# Poll konservativ, Cloudflare-Drosselung via Backoff im Bot.
+TRUTH_USER_ID = _P.get("truth_user_id")
+TRUTH_POLL_S = float(_P.get("truth_poll_s", 15.0))
 
 # Nachlauf nach der NO-Runde: Market Maker ziehen beim Drop die Quotes
 # und stellen sie erst Minuten spaeter wieder rein (JRE #2523: alle Asks

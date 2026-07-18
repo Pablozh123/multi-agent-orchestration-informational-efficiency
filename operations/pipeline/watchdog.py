@@ -11,6 +11,14 @@ mind. alle paar Minuten ein Event). Zusaetzlich eine PID-Datei, um eine
 HAENGENDE Instanz vor dem Neustart sauber zu killen (kein Doppelstart).
 
 Sicherheiten:
+- Instanz-Lock (data/live/watchdog.lock): genau EIN Watchdog pro Repo;
+  jede weitere Instanz beendet sich sofort still. Grund: am 18.7.
+  feuerten zwei Task-Trigger (5-Min-Intervall + Anmeldung) gleichzeitig,
+  zwei parallele Durchlaeufe starteten zwei Profile je DOPPELT.
+- Doppelstart-Gegencheck vor jedem Start: laeuft laut Win32_Process
+  schon ein Python-Prozess mit dem Bot-Modul, der keiner bot.pid der
+  betreuten Profile zuzuordnen ist, wird NICHT gestartet (die
+  Doppelgaenger vom 18.7. standen in keiner PID-Datei).
 - Respektiert den Kill-Switch data/live/STOP (startet dann nichts).
 - Startet einen Bot NICHT neu, dessen letztes Event `fertig`/`stop` ist
   (der hat seinen Lauf korrekt beendet — z.B. Audio-Episode fertig).
@@ -32,9 +40,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import re
 import subprocess
 import sys
 from datetime import datetime, timezone
+from pathlib import Path
 
 from operations.pipeline import config
 
@@ -43,6 +54,7 @@ LIVE_ROOT = REPO_ROOT / "data" / "live"
 STOP_FILE = config.STOP_FILE
 WATCHDOG_JSON = LIVE_ROOT / "watchdog.json"
 WATCHDOG_LOG = LIVE_ROOT / "watchdog.log"
+WATCHDOG_LOCK = LIVE_ROOT / "watchdog.lock"
 STALE_S = 600.0  # >10 min ohne Event = tot (Bots schreiben alle <=5 min)
 
 DEFAULT_MANAGED = {
@@ -60,6 +72,67 @@ def _log(zeile: str) -> None:
     with open(WATCHDOG_LOG, "a", encoding="utf-8") as f:
         f.write(f"{_now().strftime('%Y-%m-%dT%H:%M:%SZ')} {zeile}\n")
     print(zeile)
+
+
+# ------------------------------------------------- Instanz-Lock (18.7.)
+# Zwei parallel gefeuerte Task-Trigger liessen am 18.7. um 15:10:01 zwei
+# Watchdog-Durchlaeufe im selben Sekundenfenster laufen — beide sahen
+# dieselben Profile als tot und starteten sie je doppelt. Darum haelt
+# genau EINE Instanz pro Repo einen exklusiven OS-Lock.
+
+_LOCK_FD: int | None = None
+
+
+def instanz_lock(pfad: Path | None = None) -> bool:
+    """Nimmt den exklusiven Instanz-Lock; False = andere Instanz laeuft.
+
+    Das Gate ist der OS-Dateilock (msvcrt.locking unter Windows, flock
+    sonst), NICHT die Datei-Existenz: eine nach einem Crash liegen-
+    gebliebene Datei blockiert nie (deshalb kein O_EXCL, und die Datei
+    wird nie geloescht). Das OS gibt den Lock bei jedem Prozessende
+    frei — auch nach Kill oder Absturz. Der Handle bleibt dafuer
+    bewusst bis zum Prozessende offen.
+    """
+    global _LOCK_FD
+    ziel = WATCHDOG_LOCK if pfad is None else pfad
+    ziel.parent.mkdir(parents=True, exist_ok=True)
+    fd = os.open(str(ziel), os.O_CREAT | os.O_RDWR)
+    try:
+        if sys.platform == "win32":
+            import msvcrt
+            msvcrt.locking(fd, msvcrt.LK_NBLCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        os.close(fd)
+        return False
+    try:  # Halter-PID als Forensik-Notiz (lesbar, sobald der Lock frei ist)
+        os.ftruncate(fd, 0)
+        os.write(fd, str(os.getpid()).encode("ascii"))
+    except OSError:
+        pass
+    _LOCK_FD = fd
+    return True
+
+
+def instanz_lock_freigeben() -> None:
+    """Gibt den Lock explizit frei (Tests; im Betrieb reicht Prozessende)."""
+    global _LOCK_FD
+    if _LOCK_FD is None:
+        return
+    try:
+        if sys.platform == "win32":
+            import msvcrt
+            os.lseek(_LOCK_FD, 0, os.SEEK_SET)
+            msvcrt.locking(_LOCK_FD, msvcrt.LK_UNLCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(_LOCK_FD, fcntl.LOCK_UN)
+    except OSError:
+        pass
+    os.close(_LOCK_FD)
+    _LOCK_FD = None
 
 
 def lade_managed() -> dict:
@@ -127,6 +200,77 @@ def _kill_haenger(profil: str) -> None:
             _log(f"  taskkill-Fehler: {ex}")
 
 
+# ----------------------------- Doppelstart-Gegencheck via Win32_Process
+# Die Doppelgaenger vom 18.7. standen in KEINER bot.pid — die PID-Datei
+# allein reicht als Schutz nicht. Vor jedem Start wird darum die echte
+# Prozessliste befragt: lieber einen 5-Min-Zyklus Verzoegerung als ein
+# doppelt tradender Bot.
+
+
+def _parse_prozessliste(text: str) -> list[tuple[int, str]]:
+    """Parst die ConvertTo-Json-Ausgabe (Objekt ODER Liste; leer = [])."""
+    text = text.strip()
+    if not text:
+        return []
+    daten = json.loads(text)
+    if isinstance(daten, dict):  # Einzeltreffer kommt ohne Listen-Klammer
+        daten = [daten]
+    return [(int(p["ProcessId"]), p.get("CommandLine") or "") for p in daten]
+
+
+def _python_prozesse() -> list[tuple[int, str]] | None:
+    """(PID, Kommandozeile) aller python-Prozesse; None = nicht ermittelbar.
+
+    Win32_Process via PowerShell: tasklist kennt keine Kommandozeilen,
+    und wmic ist auf aktuellem Win11 nicht mehr verlaesslich vorhanden.
+    Unter Nicht-Windows gibt es den Scan nicht — der Gegencheck faellt
+    dann offen aus (Aufrufer startet mit WARN im Log).
+    """
+    if sys.platform != "win32":
+        return None
+    befehl = (
+        "Get-CimInstance Win32_Process "
+        "-Filter \"Name='python.exe' OR Name='pythonw.exe'\" | "
+        "Select-Object ProcessId, CommandLine | ConvertTo-Json -Compress"
+    )
+    try:
+        out = subprocess.run(
+            ["powershell", "-NoProfile", "-NonInteractive", "-Command",
+             befehl],
+            capture_output=True, timeout=30)
+        if out.returncode != 0:
+            return None
+        text = (out.stdout or b"").decode("utf-8", errors="replace")
+        return _parse_prozessliste(text)
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _fremde_instanzen(modul: str, managed: dict) -> list[int] | None:
+    """PIDs laufender <modul>-Prozesse ohne bot.pid-Zuordnung (None=kein Scan).
+
+    Bekannt sind die PIDs aus den bot.pid-Dateien ALLER betreuten
+    Profile (Profile koennen sich ein Modul teilen, z.B. "bot" fuer die
+    Audio-Shows). Alles andere mit passendem Modul ist Doppelstart-
+    Verdacht.
+    """
+    prozesse = _python_prozesse()
+    if prozesse is None:
+        return None
+    bekannt: set[int] = set()
+    for profil in managed:
+        pidfile = LIVE_ROOT / profil / "bot.pid"
+        if pidfile.exists():
+            try:
+                bekannt.add(int(pidfile.read_text(encoding="utf-8").strip()))
+            except (ValueError, OSError):
+                pass
+    muster = re.compile(
+        r"operations\.pipeline\." + re.escape(modul) + r"(?=\s|$)")
+    return [pid for pid, cmd in prozesse
+            if muster.search(cmd) and pid not in bekannt]
+
+
 def _starte(profil: str, modul: str) -> None:
     live_dir = LIVE_ROOT / profil
     live_dir.mkdir(parents=True, exist_ok=True)
@@ -183,6 +327,15 @@ def durchlauf(dry_run: bool) -> None:
         aktionen += 1
         if not dry_run:
             _kill_haenger(profil)
+            fremde = _fremde_instanzen(cfg["modul"], managed)
+            if fremde:
+                _log(f"  DOPPELSTART-VERDACHT {profil}: {cfg['modul']}-"
+                     f"Prozesse ohne bot.pid laufen bereits (PID "
+                     f"{', '.join(map(str, fremde))}) — Start uebersprungen.")
+                continue
+            if fremde is None:
+                _log(f"  WARN {profil}: Prozessliste nicht ermittelbar — "
+                     "Start ohne Doppelstart-Gegencheck.")
             _starte(profil, cfg["modul"])
     if aktionen == 0:
         _log("alle betreuten Bots leben (oder korrekt beendet).")
@@ -202,6 +355,10 @@ def main() -> None:
                         "Einzeldurchlauf). Nur als Interim ohne Scheduled "
                         "Task — ueberlebt PC-Sleep NICHT (dafuer den Task).")
     argv = p.parse_args()
+    if not instanz_lock():
+        _log("Instanz-Lock belegt (andere Watchdog-Instanz laeuft) — "
+             "beende still.")
+        return
     if argv.loop > 0:
         import time
         _log(f"Watchdog-Loop gestartet (alle {argv.loop:.0f}s).")

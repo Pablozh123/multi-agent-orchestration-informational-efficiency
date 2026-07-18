@@ -50,6 +50,35 @@ def berechne_groesse(
     return usd, shares
 
 
+def fill_aus_antwort(
+    antwort: dict | None, status: dict | None, fallback_preis: float | None
+) -> tuple[float, float, str]:
+    """(Shares, USD, Quelle) eines FAK-BUY-Clips.
+
+    Prioritaet: takingAmount/makingAmount der Post-Antwort — die exakten
+    Fill-Werte (BUY: taking = erhaltene Shares, making = bezahlte USDC).
+    Fallback: size_matched des Order-Status, bewertet zum besten Ask am
+    Entscheid (fallback_preis). status['price'] ist bewusst KEINE Quelle:
+    es ist der Order-Deckel, nicht der Fill-Preis — der Wallet-Abgleich
+    vom 18.07. zeigte dadurch ueberschaetzte Einsaetze (E281: 360 statt
+    288 USD). Die Quelle wird geloggt, damit Abgleiche sie pruefen koennen.
+    """
+
+    def _f(wert: object) -> float:
+        try:
+            return float(wert or 0)
+        except (TypeError, ValueError):
+            return 0.0
+
+    taking = _f((antwort or {}).get("takingAmount"))
+    making = _f((antwort or {}).get("makingAmount"))
+    if taking > 0 and making > 0:
+        return round(taking, 2), round(making, 2), "post_antwort"
+    gefuellt = _f((status or {}).get("size_matched"))
+    preis = _f(fallback_preis)
+    return round(gefuellt, 2), round(gefuellt * preis, 2), "status_geschaetzt"
+
+
 class ExecutorBase:
     """Gemeinsame Logik: Budget, Kill-Switch, Entscheidungslog."""
 
@@ -277,20 +306,28 @@ class LiveExecutor(ExecutorBase):
 
         self.client.cancel_order(OrderPayload(orderID=order_id))
 
-    def _ein_clip(self, decision: Decision, usd: float) -> tuple[float, float, str]:
-        """Ein FAK-Clip; liefert (gefuellte Shares, USD-Schaetzung, order_id)."""
+    def _ein_clip(
+        self, decision: Decision, usd: float
+    ) -> tuple[float, float, str, str]:
+        """Ein FAK-Clip; liefert (Shares, USD, order_id, Fill-Quelle)."""
         import time
 
         antwort = self._bestell(decision.token_id, usd)
         order_id = antwort.get("orderID") or antwort.get("orderId") or ""
+        gefuellt, usd_eff, quelle = fill_aus_antwort(
+            antwort, None, decision.limit_price
+        )
+        if quelle == "post_antwort":
+            return gefuellt, usd_eff, order_id, quelle
         time.sleep(2)  # FAK ist sofort terminal
         try:
             status = self._order_status(order_id) if order_id else {}
         except Exception:  # noqa: BLE001
             status = {}
-        gefuellt = float(status.get("size_matched") or 0)
-        preis_eff = float(status.get("price") or decision.limit_price or 0)
-        return gefuellt, round(gefuellt * preis_eff, 2), order_id
+        gefuellt, usd_eff, quelle = fill_aus_antwort(
+            None, status, decision.limit_price
+        )
+        return gefuellt, usd_eff, order_id, quelle
 
     def _platziere(
         self, decision: Decision, usd: float, shares: float
@@ -316,7 +353,9 @@ class LiveExecutor(ExecutorBase):
             if clip_usd < 1.0 or self._stop_aktiv():
                 break
             try:
-                gefuellt, usd_eff, order_id = self._ein_clip(decision, clip_usd)
+                gefuellt, usd_eff, order_id, quelle = self._ein_clip(
+                    decision, clip_usd
+                )
             except Exception as ex:  # noqa: BLE001
                 if not clips:
                     return PlacementResult(
@@ -325,7 +364,9 @@ class LiveExecutor(ExecutorBase):
                         f"post_order: {ex}",
                     )
                 break
-            clips.append(f"{order_id[:14]}:{gefuellt}@<= {config.ASK_OBERGRENZE}")
+            clips.append(
+                f"{order_id[:14]}:{gefuellt}sh/{usd_eff}$[{quelle}]"
+            )
             summe_shares += gefuellt
             summe_usd += usd_eff
             if gefuellt <= 0:

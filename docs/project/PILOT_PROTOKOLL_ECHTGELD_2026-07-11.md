@@ -20,7 +20,7 @@ Universum: Polymarket-Märkte mit Auflösung bis spätestens 02.08.2026. Signal 
 
 ## Budgetrahmen
 
-Nur Eigenmittel, Totalverlust einkalkuliert, keine Nachschüsse. Vorschlag: 100 bis 200 USDC gesamt. [Budgetzahl von der Studentin NACHZUTRAGEN, Datum der Bestätigung: ___]
+Nur Eigenmittel, Totalverlust einkalkuliert, keine Nachschüsse. Bestätigt: **100 USDC gesamt** (Bestätigung der Studentin am 18.07.2026). Damit gilt der Regel-Freeze; Einsatz je Trade ein Zehntel = 10 USDC, maximal 10 Trades.
 
 ## Zeitplan
 

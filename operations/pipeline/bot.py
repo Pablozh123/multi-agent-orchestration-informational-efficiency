@@ -31,6 +31,7 @@ from operations.pipeline.decision import (
     entscheide_no,
     entscheide_yes,
     nach_edge_sortiert,
+    no_sperre,
 )
 from operations.pipeline.market_rules import lade_snapshot_rules
 from operations.pipeline.orderbook import best_ask, fetch_book, log_snapshots, now_utc_iso
@@ -166,8 +167,34 @@ def lauf(live: bool) -> None:
         print(f"Sprecher-Verifikation aktiv (Schwelle {config.SPRECHER_SCHWELLE}, "
               "YES nur aus Zielsprecher-Treffern).")
     rules = lade_snapshot_rules()
+    # Basisraten aus der Serien-Historie (Zaehler-Misstrauen fuer NO):
+    # fail-safe — ohne Serie/Netz bleibt alles unveraendert.
+    if config.SERIE_ID:
+        try:
+            from operations.pipeline.basisraten import (
+                hole_serien_historie,
+                reichere_mit_basisraten,
+            )
+
+            reichere_mit_basisraten(rules,
+                                    hole_serien_historie(config.SERIE_ID))
+            _schreibe_event("basisraten", {
+                "serie_id": config.SERIE_ID,
+                "mit_historie": sum(
+                    1 for r in rules if r.basisrate is not None),
+                "no_sperren": [
+                    {"markt": r.slug, "grund": no_sperre(r)}
+                    for r in rules if no_sperre(r) is not None
+                ],
+            })
+        except Exception as ex:  # noqa: BLE001
+            _schreibe_event("warnung", {"wo": "basisraten",
+                                        "fehler": str(ex)})
     aktive = [r for r in rules if r.status == "active"]
     counters = {r.market_id: StreamingCounter(r) for r in aktive}
+    # Abdeckungs-Intervalle aller transkribierten Segmente — Grundlage
+    # fuer den Gap-Verify vor der NO-Runde (VAD-Luecken, E281-Lehre).
+    abgedeckt: list[tuple[float, float]] = []
     getradet_yes: set[str] = set()
     # Vorscan: Maerkte, deren YES-Ask zuletzt ueber der Obergrenze lag,
     # werden im heissen Chunk-Pfad bis zum genannten Chunk-Index nicht
@@ -449,6 +476,28 @@ def lauf(live: bool) -> None:
                     except Exception as ex:  # noqa: BLE001
                         _schreibe_event("fehler", {"wo": f"yes_endcheck:{r.slug}",
                                                    "fehler": str(ex)})
+                # Gap-Verify VOR der NO-Runde: von der VAD verworfene
+                # Fenster (Musik/Jingles, E281-Outro) mit large-v3 ohne
+                # VAD nachtranskribieren. Funde erhoehen NUR den
+                # erweiterten Zaehler -> blocken NO, nie YES.
+                if config.GAP_VERIFY_AKTIV:
+                    try:
+                        from operations.pipeline.gap_verify import (
+                            SAMPLE_RATE,
+                            gap_verify,
+                        )
+
+                        audio = transcriber.dekodiertes_audio(audio_pfad)
+                        bericht = gap_verify(
+                            audio, abgedeckt, len(audio) / SAMPLE_RATE,
+                            counters,
+                        )
+                        _schreibe_event("gap_verify", bericht)
+                        if bericht["deltas"]:
+                            print(f"GAP-VERIFY Funde: {bericht['deltas']}")
+                    except Exception as ex:  # noqa: BLE001
+                        _schreibe_event("warnung", {"wo": "gap_verify",
+                                                    "fehler": str(ex)})
                 # Vollstaendiges Transkript: NO-Runde. Konservativ zaehlt
                 # der erweiterte Zaehler (inkl. Komposita-Verdacht, PDF-
                 # Regel "Compound Words"): kein NO, wenn schon die
@@ -508,7 +557,9 @@ def lauf(live: bool) -> None:
                         seite = None
                         if c.ziel_count >= ziel:
                             seite = "YES"
-                        elif c.erweitert_count <= config.NO_ANTEIL * r.schwelle:
+                        elif (c.erweitert_count
+                                <= config.NO_ANTEIL * r.schwelle
+                                and no_sperre(r) is None):
                             seite = "NO"
                         if seite is None:
                             continue
@@ -576,6 +627,8 @@ def lauf(live: bool) -> None:
         chunk_index += 1
         ts = now_utc_iso()
         staende = {}
+        for seg in segmente:
+            abgedeckt.append((seg.start_s, seg.end_s))
         # Phase 1: alle Zaehler aktualisieren und kaufbereite Maerkte samt
         # Buch/Ask sammeln (noch nicht kaufen).
         bereit = []

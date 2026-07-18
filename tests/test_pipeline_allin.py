@@ -523,6 +523,13 @@ def test_mrbeast_gaming_profil_konfiguration() -> None:
     assert p["sprecher_schwelle"] == pytest.approx(0.50)
     # Hauptkanal-Profil bleibt beim Default (0.40 aus speaker.py)
     assert "sprecher_schwelle" not in haupt
+    # Armierung 18.07.: Vollbudget + Basisraten-Serie (3 aufgeloeste
+    # Vorwochen -> min_n 3), bewusst KEIN Boilerplate-Lexikon (Captions-
+    # Check: Gaming-Videos haben keinen festen Intro/Outro-Rahmen).
+    assert p["max_usd_gesamt"] == pytest.approx(510.0)
+    assert p["serie_id"] == "11933"
+    assert p["basisrate_min_n"] == 3
+    assert "boilerplate_begriffe" not in p
 
 
 def test_sprecher_schwelle_default_ableitung() -> None:
@@ -671,6 +678,9 @@ def test_sweep_no_stoppt_am_no_deckel(monkeypatch, tmp_path) -> None:
     monkeypatch.setattr(ex, "_bestell", fake_bestell)
     monkeypatch.setattr(config, "MAX_CLIPS_PRO_MARKT", 3)
     monkeypatch.setattr(config, "MAX_USD_GESAMT", 100.0)
+    # Hermetisch: der ECHTE globale Kill-Switch (data/live/STOP) darf den
+    # Test nicht beeinflussen (Befund 18.07.: gesetztes STOP -> gave_up).
+    monkeypatch.setattr(config, "STOP_FILE", tmp_path / "STOP")
     # Nach jedem Clip liegt der naechste Ask bei 0.85: unter dem YES-,
     # aber ueber dem NO-Deckel.
     monkeypatch.setattr(

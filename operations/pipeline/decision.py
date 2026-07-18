@@ -62,10 +62,38 @@ def entscheide_yes(rule: MarketRule, count: int, best_yes_ask: float | None) -> 
     )
 
 
+def no_sperre(rule: MarketRule) -> str | None:
+    """Strukturelle NO-Sperren, unabhaengig vom Zaehlerstand.
+
+    1. Boilerplate: Das Wort steht im festen Intro/Outro der Show und
+       faellt damit JEDE Woche — eine NO-Wette darauf ist nur eine Wette,
+       dass der Resolver das Outro ignoriert (E281 "tension": tat er
+       nicht, NO @0.88 verloren).
+    2. Basisraten-Veto: Das Wort fiel historisch in >= BASISRATE_VETO
+       der aufgeloesten Wochen (bei genug Historie). Ein Zaehlerstand 0
+       ist dann eher unser Messfehler (VAD-Luecke, ASR-Miss) als echte
+       Abwesenheit -> Zaehler-Misstrauen statt Kauf.
+    YES bleibt von beidem unberuehrt.
+    """
+    if rule.boilerplate_sensitiv:
+        return "boilerplate_wort_im_intro_outro"
+    if (
+        rule.basisrate is not None
+        and rule.basis_n >= config.BASISRATE_MIN_N
+        and rule.basisrate >= config.BASISRATE_VETO
+    ):
+        return (f"basisrate_veto {rule.basisrate:.2f} "
+                f"(n={rule.basis_n} Wochen)")
+    return None
+
+
 def entscheide_no(rule: MarketRule, final_count: int, best_no_ask: float | None) -> Decision:
     """Finale Entscheidung fuer NO nach vollstaendigem Transkript."""
     if rule.status != "active":
         return _kein_trade(rule, f"skip:{rule.skip_grund}")
+    sperre = no_sperre(rule)
+    if sperre is not None:
+        return _kein_trade(rule, sperre)
     grenze = config.NO_ANTEIL * rule.schwelle
     if final_count > grenze:
         return _kein_trade(rule, f"endstand {final_count} > grenze {grenze}")

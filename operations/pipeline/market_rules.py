@@ -33,6 +33,12 @@ class MarketRule:
     skip_grund: str = ""
     resolution_hinweis: str = ""
     extra: dict = field(default_factory=dict)
+    # Wort steht im festen Intro/Outro der Show -> nie NO (E281-Lehre).
+    boilerplate_sensitiv: bool = False
+    # YES-Quote des Worts in aufgeloesten Wochen der Serie (None = keine
+    # Historie) und Anzahl aufgeloester Wochen; siehe basisraten.py.
+    basisrate: float | None = None
+    basis_n: int = 0
 
 
 def parse_zitierte_begriffe(question: str) -> list[str]:
@@ -58,6 +64,13 @@ def expandiere_varianten(begriff: str) -> list[str]:
 
 def _ist_homophon(begriffe: list[str]) -> bool:
     return any(b.strip().lower() in config.HOMOPHON_BEGRIFFE for b in begriffe)
+
+
+def _ist_boilerplate(begriffe: list[str]) -> bool:
+    """Ein Begriff des Markts steht im festen Intro/Outro der Show."""
+    return any(
+        b.strip().lower() in config.BOILERPLATE_BEGRIFFE for b in begriffe
+    )
 
 
 def _token_ids(market: dict) -> tuple[str | None, str | None]:
@@ -147,6 +160,7 @@ def build_rule(market: dict) -> MarketRule:
         homophon_sensitiv=_ist_homophon(begriffe),
         status="active",
         resolution_hinweis=description[:400],
+        boilerplate_sensitiv=_ist_boilerplate(begriffe),
     )
 
 

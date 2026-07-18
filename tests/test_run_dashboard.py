@@ -610,3 +610,81 @@ class TestWalletAbgleich:
                 e["einloesungen_usd"] + e["verkaeufe_usd"] - e["kaeufe_usd"], 2
             )
             assert e["netto_usd"] == erwartet, name
+
+
+class TestVerifizierteFills:
+    def test_wallet_fill_matcht_ueber_frage_und_shares(self):
+        import operations.pipeline.run_dashboard as rd
+
+        fills = [{
+            "profil": "testrun", "frage_enthaelt": '"Tourism"',
+            "seite": "YES", "log_shares_ref": 7.02,
+            "wallet_shares": 7.0, "wallet_einsatz_usd": 4.82,
+            "wallet_avg_fill_preis": 0.689,
+        }]
+        run = _run([_decision()])
+        wetten = rd._merge_wallet_fills("testrun", run.wetten, fills)
+        [w] = wetten
+        assert w.fill_verifiziert and w.fill_quelle == "wallet_abgleich"
+        assert w.wallet_avg_fill_preis == 0.689
+        # gewonnen -> Hold-PnL aus Wallet-Werten: 7.0 - 4.82
+        assert w.wallet_pnl_usd == pytest.approx(2.18)
+
+    def test_shares_naehe_entscheidet_bei_mehreren_wetten(self):
+        import operations.pipeline.run_dashboard as rd
+
+        run = _run([
+            _decision(size_shares=113.76, size_usd=102.39),
+            _decision(size_shares=23.26, size_usd=20.93),
+        ])
+        fills = [
+            {"profil": "testrun", "frage_enthaelt": '"Tourism"',
+             "seite": "YES", "log_shares_ref": 23.26,
+             "wallet_shares": 23.3, "wallet_einsatz_usd": 15.21,
+             "wallet_avg_fill_preis": 0.6528},
+            {"profil": "testrun", "frage_enthaelt": '"Tourism"',
+             "seite": "YES", "log_shares_ref": 113.76,
+             "wallet_shares": 113.7, "wallet_einsatz_usd": 76.02,
+             "wallet_avg_fill_preis": 0.6686},
+        ]
+        wetten = rd._merge_wallet_fills("testrun", run.wetten, fills)
+        assert wetten[0].wallet_avg_fill_preis == 0.6686
+        assert wetten[1].wallet_avg_fill_preis == 0.6528
+
+    def test_ohne_match_bleibt_log_geschaetzt(self):
+        import operations.pipeline.run_dashboard as rd
+
+        run = _run([_decision()])
+        wetten = rd._merge_wallet_fills("testrun", run.wetten, [])
+        assert wetten[0].fill_quelle == "log_geschaetzt"
+        assert not wetten[0].fill_verifiziert
+        assert wetten[0].wallet_avg_fill_preis is None
+
+    def test_post_antwort_clips_sind_auto_verifiziert(self):
+        run = _run([_decision(
+            detail="Sweep: 2 Clips, ['0xabc:73.5sh/50.64$[post_antwort]', "
+                   "'0xdef:73.5sh/50.64$[post_antwort]']",
+        )])
+        [w] = run.wetten
+        assert w.fill_verifiziert and w.fill_quelle == "post_antwort"
+        assert w.wallet_avg_fill_preis == w.avg_fill_preis
+
+    def test_gemischte_clips_bleiben_unverifiziert(self):
+        run = _run([_decision(
+            detail="Sweep: 2 Clips, ['a:10sh/9$[post_antwort]', "
+                   "'b:5sh/4.5$[status_geschaetzt]']",
+        )])
+        assert not run.wetten[0].fill_verifiziert
+
+    def test_kuratierte_fills_quelldatei_konsistent(self):
+        from operations.pipeline.run_dashboard import lade_wallet_fills
+
+        fills = lade_wallet_fills()
+        assert len(fills) >= 14
+        for f in fills:
+            usd = round(sum(p * m for p, m in f["fills"]), 2)
+            shares = round(sum(m for _, m in f["fills"]), 2)
+            assert abs(usd - f["wallet_einsatz_usd"]) < 0.15, f
+            assert abs(shares - f["wallet_shares"]) < 0.15, f
+            avg = round(f["wallet_einsatz_usd"] / f["wallet_shares"], 4)
+            assert abs(avg - f["wallet_avg_fill_preis"]) < 0.002, f

@@ -55,6 +55,9 @@ PILOT_DIR_DEFAULT = REPO_ROOT / "pilot"
 #: Kuratierter Wallet-Abgleich (Geldfluss-Wahrheit je Event, ohne Adressen).
 WALLET_ABGLEICH_QUELLE = REPO_ROOT / "data" / "results" / "wallet_abgleich_2026-07-18.json"
 
+#: Kuratierte Per-Wette-Fills (echte Fill-Preise aus dem Wallet-Auszug).
+WALLET_FILLS_QUELLE = REPO_ROOT / "data" / "results" / "wallet_fills_2026-07-18.json"
+
 #: Fill-Status, die als platzierte Wette zaehlen (wie post_resolution).
 FILL_STATUS = ("dry_run_fill", "live_fill", "live_partial")
 
@@ -116,6 +119,17 @@ class WetteEintrag(_Strict):
     # bis zur geloggten Kaufobergrenze. Untergrenze, da der Snapshot auf die
     # obersten 10 Level gekuerzt ist; None ohne Snapshot/parsebare Grenze.
     tiefe_usd_bis_deckel: Optional[float] = None
+    # Verifizierte Fill-Werte: "wallet_abgleich" (kuratierter Auszug,
+    # Alt-Runs), "post_antwort" (exakte FAK-Antwort, neue Runs) oder
+    # "log_geschaetzt" (Deckel-Ansatz -- nur diese Werte sind Schaetzungen).
+    fill_quelle: str = "log_geschaetzt"
+    fill_verifiziert: bool = False
+    wallet_shares: Optional[float] = None
+    wallet_einsatz_usd: Optional[float] = None
+    wallet_avg_fill_preis: Optional[float] = None
+    # Hold-bis-Aufloesung-PnL auf Wallet-Basis (manuelle vorzeitige
+    # Verkaeufe sind hier NICHT abgebildet -- Event-Netto ist massgeblich).
+    wallet_pnl_usd: Optional[float] = None
 
 
 class VerpassteChance(_Strict):
@@ -671,8 +685,19 @@ def build_run(
             else None
         )
         wetten_series = _series(mid, seite)
+        detail_text = str(result.get("detail", ""))
+        post_exakt = (
+            "[post_antwort]" in detail_text
+            and "[status_geschaetzt]" not in detail_text
+        )
         wetten.append(
             WetteEintrag(
+                fill_quelle="post_antwort" if post_exakt else "log_geschaetzt",
+                fill_verifiziert=post_exakt,
+                wallet_shares=round(shares, 2) if post_exakt else None,
+                wallet_einsatz_usd=round(size_usd, 2) if post_exakt else None,
+                wallet_avg_fill_preis=avg_fill if post_exakt else None,
+                wallet_pnl_usd=pnl if post_exakt else None,
                 frage=frage,
                 seite="YES" if seite == "YES" else "NO",
                 entscheidungs_preis=(
@@ -706,6 +731,8 @@ def build_run(
                 tiefe_usd_bis_deckel=tiefe_bis_deckel,
             )
         )
+
+    wetten = _merge_wallet_fills(profil, wetten, lade_wallet_fills())
 
     tiefen_wetten = [
         w for w in wetten if w.tiefe_usd_bis_deckel is not None
@@ -822,6 +849,72 @@ def discover_runs(live_root: Path) -> List[Path]:
         p for p in live_root.iterdir()
         if p.is_dir() and (p / "decisions_log.jsonl").exists()
     )
+
+
+def lade_wallet_fills(
+    quelle: Optional[Path] = None,
+) -> List[Dict[str, Any]]:
+    """Kuratierte Per-Wette-Fills (leer, wenn die Quelldatei fehlt)."""
+
+    quelle = quelle if quelle is not None else WALLET_FILLS_QUELLE
+    if not quelle.exists():
+        return []
+    try:
+        roh = json.loads(quelle.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    return list(roh.get("wetten", []) or [])
+
+
+def _merge_wallet_fills(
+    profil: str, wetten: List[WetteEintrag], fills: List[Dict[str, Any]]
+) -> List[WetteEintrag]:
+    """Matcht kuratierte Fills auf Wetten (frage-Substring + Shares-Naehe).
+
+    Jeder kuratierte Eintrag wird hoechstens einmal verbraucht; bei
+    mehreren Wetten desselben Markts entscheidet die kleinste Differenz
+    zur ``log_shares_ref``. Nicht gematchte Wetten bleiben unveraendert
+    (fill_quelle "log_geschaetzt" bzw. "post_antwort").
+    """
+
+    kandidaten = [dict(f) for f in fills if f.get("profil") == profil]
+    if not kandidaten:
+        return wetten
+    ergebnis: List[WetteEintrag] = []
+    for wette in wetten:
+        passend = [
+            (abs(float(f.get("log_shares_ref") or 0) - wette.shares), i, f)
+            for i, f in enumerate(kandidaten)
+            if str(f.get("frage_enthaelt") or "") in wette.frage
+            and str(f.get("seite") or "").upper() == wette.seite
+        ]
+        if not passend:
+            ergebnis.append(wette)
+            continue
+        _, index, fill = min(passend, key=lambda k: k[0])
+        kandidaten.pop(index)
+        w_shares = fill.get("wallet_shares")
+        w_usd = fill.get("wallet_einsatz_usd")
+        w_pnl: Optional[float] = None
+        if (
+            wette.aufgeloest
+            and wette.gewonnen is not None
+            and w_shares is not None
+            and w_usd is not None
+        ):
+            payout = float(w_shares) if wette.gewonnen else 0.0
+            w_pnl = round(payout - float(w_usd), 2)
+        ergebnis.append(
+            wette.model_copy(update={
+                "fill_quelle": "wallet_abgleich",
+                "fill_verifiziert": True,
+                "wallet_shares": w_shares,
+                "wallet_einsatz_usd": w_usd,
+                "wallet_avg_fill_preis": fill.get("wallet_avg_fill_preis"),
+                "wallet_pnl_usd": w_pnl,
+            })
+        )
+    return ergebnis
 
 
 def lade_wallet_abgleich(

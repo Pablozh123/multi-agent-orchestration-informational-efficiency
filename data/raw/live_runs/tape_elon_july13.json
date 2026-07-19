@@ -1,7 +1,7 @@
 {
  "profil": "elon_july13",
  "event_slug": "what-will-elon-post-this-week-july-13-july-19-20260710174050678",
- "abgerufen_utc": "2026-07-18T09:17:15+00:00",
+ "abgerufen_utc": "2026-07-19T04:30:55+00:00",
  "quelle": "data-api.polymarket.com/trades (oeffentlich, read-only)",
  "maerkte": {
   "2877672": [
@@ -191,6 +191,14 @@
     "outcome": "No",
     "preis": 0.66,
     "size": 16.07,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-18T18:48:39Z",
+    "side": "SELL",
+    "outcome": "No",
+    "preis": 0.92,
+    "size": 13.93,
     "eigen": false
    }
   ],
@@ -384,6 +392,22 @@
     "preis": 0.79,
     "size": 5.0,
     "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-18T15:16:00Z",
+    "side": "SELL",
+    "outcome": "No",
+    "preis": 0.76,
+    "size": 30.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-19T00:31:51Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.8,
+    "size": 8.89,
+    "eigen": false
    }
   ],
   "2877679": [
@@ -573,6 +597,22 @@
     "preis": 0.92,
     "size": 21.03,
     "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-18T10:56:45Z",
+    "side": "SELL",
+    "outcome": "Yes",
+    "preis": 0.01089301,
+    "size": 21.03,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-18T11:56:13Z",
+    "side": "SELL",
+    "outcome": "Yes",
+    "preis": 0.012,
+    "size": 6.64,
+    "eigen": false
    }
   ],
   "2877682": [],
@@ -635,6 +675,30 @@
    },
    {
     "ts_utc": "2026-07-18T02:05:52Z",
+    "side": "SELL",
+    "outcome": "No",
+    "preis": 0.92,
+    "size": 30.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-18T15:11:34Z",
+    "side": "SELL",
+    "outcome": "No",
+    "preis": 0.92,
+    "size": 20.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-18T18:48:51Z",
+    "side": "SELL",
+    "outcome": "No",
+    "preis": 0.92,
+    "size": 30.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-07-18T22:32:18Z",
     "side": "SELL",
     "outcome": "No",
     "preis": 0.92,

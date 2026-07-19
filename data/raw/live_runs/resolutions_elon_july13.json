@@ -2,26 +2,26 @@
  "profil": "elon_july13",
  "event_slug": "what-will-elon-post-this-week-july-13-july-19-20260710174050678",
  "event_titel": "What will Elon post this week? (July 13 - July 19)",
- "abgerufen_utc": "2026-07-18T09:17:12+00:00",
+ "abgerufen_utc": "2026-07-19T04:30:53+00:00",
  "quelle": "gamma-api.polymarket.com/events (oeffentlich, read-only)",
  "maerkte": {
   "2877672": {
    "frage": "Will Elon post \"Football\" on X this week?",
    "closed": false,
    "outcome_yes": null,
-   "aktueller_yes_preis": 0.105
+   "aktueller_yes_preis": 0.085
   },
   "2877673": {
    "frage": "Will Elon post \"Soccer\" on X this week?",
    "closed": false,
    "outcome_yes": null,
-   "aktueller_yes_preis": 0.0535
+   "aktueller_yes_preis": 0.0605
   },
   "2877674": {
    "frage": "Will Elon post \"President\" on X this week?",
    "closed": false,
    "outcome_yes": null,
-   "aktueller_yes_preis": 0.48
+   "aktueller_yes_preis": 0.05
   },
   "2877675": {
    "frage": "Will Elon post \"Trump\" on X this week?",
@@ -39,7 +39,7 @@
    "frage": "Will Elon post \"Neuralink\" on X this week?",
    "closed": false,
    "outcome_yes": null,
-   "aktueller_yes_preis": 0.48
+   "aktueller_yes_preis": 0.485
   },
   "2877678": {
    "frage": "Will Elon post \"Never\" on X this week?",
@@ -57,25 +57,25 @@
    "frage": "Will Elon post \"Video game\" or \"Videogame\" on X this week?",
    "closed": false,
    "outcome_yes": null,
-   "aktueller_yes_preis": 0.485
+   "aktueller_yes_preis": 0.49
   },
   "2877681": {
    "frage": "Will Elon post \"Iran\" or \"Iranian\" on X this week?",
    "closed": false,
    "outcome_yes": null,
-   "aktueller_yes_preis": 0.051
+   "aktueller_yes_preis": 0.05
   },
   "2877682": {
    "frage": "Will Elon post \"China\" on X this week?",
    "closed": false,
    "outcome_yes": null,
-   "aktueller_yes_preis": 0.485
+   "aktueller_yes_preis": 0.065
   },
   "2877683": {
    "frage": "Will Elon post \"IPO\" on X this week?",
    "closed": false,
    "outcome_yes": null,
-   "aktueller_yes_preis": 0.485
+   "aktueller_yes_preis": 0.055
   },
   "2877684": {
    "frage": "Will Elon post \"Claude\" on X this week?",

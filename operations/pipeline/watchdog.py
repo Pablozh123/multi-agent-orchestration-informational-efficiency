@@ -16,9 +16,11 @@ Sicherheiten:
   feuerten zwei Task-Trigger (5-Min-Intervall + Anmeldung) gleichzeitig,
   zwei parallele Durchlaeufe starteten zwei Profile je DOPPELT.
 - Doppelstart-Gegencheck vor jedem Start: laeuft laut Win32_Process
-  schon ein Python-Prozess mit dem Bot-Modul, der keiner bot.pid der
-  betreuten Profile zuzuordnen ist, wird NICHT gestartet (die
-  Doppelgaenger vom 18.7. standen in keiner PID-Datei).
+  schon ein Python-Prozess mit dem Bot-Modul, der weder selbst noch
+  ueber seine Eltern/Kind-Beziehung einer bot.pid der betreuten
+  Profile zuzuordnen ist, wird NICHT gestartet (die Doppelgaenger vom
+  18.7. standen in keiner PID-Datei; der venv-Launcher-Stub des
+  laufenden Schwesterprofils dagegen ist harmlos — Fehlalarm 20.7.).
 - Respektiert den Kill-Switch data/live/STOP (startet dann nichts).
 - Startet einen Bot NICHT neu, dessen letztes Event `fertig`/`stop` ist
   (der hat seinen Lauf korrekt beendet — z.B. Audio-Episode fertig).
@@ -207,19 +209,24 @@ def _kill_haenger(profil: str) -> None:
 # doppelt tradender Bot.
 
 
-def _parse_prozessliste(text: str) -> list[tuple[int, str]]:
-    """Parst die ConvertTo-Json-Ausgabe (Objekt ODER Liste; leer = [])."""
+def _parse_prozessliste(text: str) -> list[tuple[int, int, str]]:
+    """Parst die ConvertTo-Json-Ausgabe (Objekt ODER Liste; leer = []).
+
+    Fehlende/nullige ParentProcessId wird 0 — PID 0 (System Idle) kommt
+    in keiner bot.pid vor, ordnet also nie faelschlich etwas zu.
+    """
     text = text.strip()
     if not text:
         return []
     daten = json.loads(text)
     if isinstance(daten, dict):  # Einzeltreffer kommt ohne Listen-Klammer
         daten = [daten]
-    return [(int(p["ProcessId"]), p.get("CommandLine") or "") for p in daten]
+    return [(int(p["ProcessId"]), int(p.get("ParentProcessId") or 0),
+             p.get("CommandLine") or "") for p in daten]
 
 
-def _python_prozesse() -> list[tuple[int, str]] | None:
-    """(PID, Kommandozeile) aller python-Prozesse; None = nicht ermittelbar.
+def _python_prozesse() -> list[tuple[int, int, str]] | None:
+    """(PID, Eltern-PID, Kommandozeile) aller python-Prozesse; None = kein Scan.
 
     Win32_Process via PowerShell: tasklist kennt keine Kommandozeilen,
     und wmic ist auf aktuellem Win11 nicht mehr verlaesslich vorhanden.
@@ -231,7 +238,8 @@ def _python_prozesse() -> list[tuple[int, str]] | None:
     befehl = (
         "Get-CimInstance Win32_Process "
         "-Filter \"Name='python.exe' OR Name='pythonw.exe'\" | "
-        "Select-Object ProcessId, CommandLine | ConvertTo-Json -Compress"
+        "Select-Object ProcessId, ParentProcessId, CommandLine | "
+        "ConvertTo-Json -Compress"
     )
     try:
         out = subprocess.run(
@@ -251,8 +259,14 @@ def _fremde_instanzen(modul: str, managed: dict) -> list[int] | None:
 
     Bekannt sind die PIDs aus den bot.pid-Dateien ALLER betreuten
     Profile (Profile koennen sich ein Modul teilen, z.B. "bot" fuer die
-    Audio-Shows). Alles andere mit passendem Modul ist Doppelstart-
-    Verdacht.
+    Audio-Shows). Ein Bot ist unter venv aber ZWEI Prozesse: der
+    Launcher-Stub (venv\\Scripts\\python.exe) haelt den echten
+    Interpreter als Kind, beide zeigen die Modul-Kommandozeile, und
+    bot.pid traegt nur die KIND-PID (bot.py schreibt os.getpid()).
+    Fehlalarm 20.7.: der Stub des lebenden mrbeast_gaming blockierte
+    den Erststart von jre_july20. Darum gilt ein Prozess erst dann als
+    Doppelstart-Verdacht, wenn weder er selbst noch sein Elter noch
+    sein Kind in einer bot.pid steht.
     """
     prozesse = _python_prozesse()
     if prozesse is None:
@@ -265,10 +279,15 @@ def _fremde_instanzen(modul: str, managed: dict) -> list[int] | None:
                 bekannt.add(int(pidfile.read_text(encoding="utf-8").strip()))
             except (ValueError, OSError):
                 pass
+    # Eltern bekannter Prozesse (= deren Launcher-Stubs) sind mit-bekannt.
+    stubs = {ppid for pid, ppid, _ in prozesse if pid in bekannt}
     muster = re.compile(
         r"operations\.pipeline\." + re.escape(modul) + r"(?=\s|$)")
-    return [pid for pid, cmd in prozesse
-            if muster.search(cmd) and pid not in bekannt]
+    return [pid for pid, ppid, cmd in prozesse
+            if muster.search(cmd)
+            and pid not in bekannt   # der Bot selbst (Kind-PID in bot.pid)
+            and ppid not in bekannt  # Kind eines bekannten Prozesses
+            and pid not in stubs]    # Eltern-Stub eines bekannten Prozesses
 
 
 def _starte(profil: str, modul: str) -> None:

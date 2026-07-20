@@ -6,6 +6,14 @@ starteten elon_july13 und mrbeast_gaming je DOPPELT (vier Prozesse mit
 identischer CreationDate; die Doppelgaenger standen in keiner bot.pid).
 Zwei Schutzschichten dagegen: (1) exklusiver Instanz-Lock, (2) Prozess-
 Gegencheck via Win32_Process vor jedem Start.
+
+Fehlalarm 20.7.: der Gegencheck hielt den venv-Launcher-Stub des
+laufenden mrbeast_gaming-Bots fuer einen Doppelgaenger und blockierte
+den Erststart von jre_july20 (gleiches Modul "bot", Profil steckt nur
+in der Env-Var). Ein Bot ist unter venv ZWEI Prozesse — Eltern-Stub +
+Kind-Interpreter, bot.pid traegt die KIND-PID — darum ordnet der
+Gegencheck Prozesse auch ueber die Eltern/Kind-Beziehung
+(ParentProcessId) einer bot.pid zu.
 """
 
 from __future__ import annotations
@@ -132,6 +140,10 @@ def test_main_laeuft_bei_freiem_lock(monkeypatch) -> None:
 
 CMD_ELON = '"C:\\Python314\\python.exe" -m operations.pipeline.elon_bot --live'
 CMD_BOT = '"C:\\Python314\\python.exe" -m operations.pipeline.bot --live'
+# Der venv-Launcher-Stub: gleiches Modul in der Kommandozeile wie sein
+# Kind-Interpreter (CMD_BOT), aber die eigene PID steht in keiner bot.pid.
+CMD_STUB = ('"C:\\Users\\chole\\ba-thesis\\venv\\Scripts\\python.exe" '
+            '-m operations.pipeline.bot --live')
 
 
 def test_gegencheck_blockt_unbekannten_doppelgaenger(monkeypatch) -> None:
@@ -139,7 +151,7 @@ def test_gegencheck_blockt_unbekannten_doppelgaenger(monkeypatch) -> None:
     _schreibe_managed({"elon_july13": {"modul": "elon_bot"}})
     _schreibe_event("elon_july13", "2026-01-01T00:00:00Z")  # stale -> Neustart
     monkeypatch.setattr(watchdog, "_python_prozesse",
-                        lambda: [(4242, CMD_ELON)])
+                        lambda: [(4242, 4000, CMD_ELON)])
     starts: list[tuple[str, str]] = []
     monkeypatch.setattr(watchdog, "_starte",
                         lambda p, m: starts.append((p, m)))
@@ -163,12 +175,70 @@ def test_gegencheck_akzeptiert_pid_eines_betreuten_profils(
     (watchdog.LIVE_ROOT / "lemonade_july15" / "bot.pid").write_text(
         "4242", encoding="utf-8")
     monkeypatch.setattr(watchdog, "_python_prozesse",
-                        lambda: [(4242, CMD_BOT)])
+                        lambda: [(4242, 4000, CMD_BOT)])
     starts: list[tuple[str, str]] = []
     monkeypatch.setattr(watchdog, "_starte",
                         lambda p, m: starts.append((p, m)))
     watchdog.durchlauf(dry_run=False)
     assert starts == [("jre_july13", "bot")]
+
+
+def test_gegencheck_akzeptiert_venv_stub_des_schwesterprofils(
+        monkeypatch) -> None:
+    # Fehlalarm 20.7. 11:50Z: mrbeast_gaming lebt als Stub+Kind-Paar,
+    # bot.pid traegt nur die Kind-PID. Der Stub (PID 30800) matchte das
+    # Modulmuster, stand in keiner bot.pid und blockierte so den
+    # Erststart von jre_july20 — solange irgendein Audio-Bot lief,
+    # blieb jedes tote Schwesterprofil dauerhaft tot.
+    _schreibe_managed({
+        "mrbeast_gaming": {"modul": "bot"},
+        "jre_july20": {"modul": "bot"},
+    })
+    _schreibe_event("mrbeast_gaming",
+                    watchdog._now().strftime("%Y-%m-%dT%H:%M:%SZ"))  # lebt
+    (watchdog.LIVE_ROOT / "mrbeast_gaming" / "bot.pid").write_text(
+        "24160", encoding="utf-8")
+    # jre_july20 hat noch kein Event-Log (Erststart) -> gilt als TOT.
+    monkeypatch.setattr(watchdog, "_python_prozesse", lambda: [
+        (30800, 4711, CMD_STUB),  # Eltern-Stub: steht in KEINER bot.pid
+        (24160, 30800, CMD_BOT),  # Kind-Interpreter: PID steht in bot.pid
+    ])
+    starts: list[tuple[str, str]] = []
+    monkeypatch.setattr(watchdog, "_starte",
+                        lambda p, m: starts.append((p, m)))
+    watchdog.durchlauf(dry_run=False)
+    assert starts == [("jre_july20", "bot")]
+    log = watchdog.WATCHDOG_LOG.read_text(encoding="utf-8")
+    assert "DOPPELSTART-VERDACHT" not in log
+
+
+def test_fremde_instanzen_wertet_eltern_und_kind_als_bekannt(
+        monkeypatch) -> None:
+    # bot.pid traegt die KIND-PID -> der Eltern-Stub ist mit-bekannt.
+    d = watchdog.LIVE_ROOT / "mrbeast_gaming"
+    d.mkdir(parents=True)
+    (d / "bot.pid").write_text("24160", encoding="utf-8")
+    managed = {"mrbeast_gaming": {"modul": "bot"}}
+    monkeypatch.setattr(watchdog, "_python_prozesse", lambda: [
+        (30800, 4711, CMD_STUB),
+        (24160, 30800, CMD_BOT),
+    ])
+    assert watchdog._fremde_instanzen("bot", managed) == []
+    # Robustheit andersrum: truege bot.pid die STUB-PID, waere der
+    # Kind-Interpreter ueber seine Eltern-Beziehung mit-bekannt.
+    (d / "bot.pid").write_text("30800", encoding="utf-8")
+    assert watchdog._fremde_instanzen("bot", managed) == []
+
+
+def test_fremdes_stub_kind_paar_bleibt_verdaechtig(monkeypatch) -> None:
+    # Die Eltern/Kind-Beziehung whitelisted nur RELATIV zu einer
+    # bekannten bot.pid: ein Doppelgaenger-Paar (Klasse 18.7.), das in
+    # keiner bot.pid steht, bleibt trotz interner Beziehung geblockt.
+    monkeypatch.setattr(watchdog, "_python_prozesse", lambda: [
+        (500, 400, CMD_STUB),
+        (600, 500, CMD_BOT),
+    ])
+    assert watchdog._fremde_instanzen("bot", {}) == [500, 600]
 
 
 def test_gegencheck_faellt_offen_aus_ohne_prozessliste(monkeypatch) -> None:
@@ -188,10 +258,11 @@ def test_gegencheck_faellt_offen_aus_ohne_prozessliste(monkeypatch) -> None:
 
 def test_fremde_instanzen_matcht_nur_das_exakte_modul(monkeypatch) -> None:
     monkeypatch.setattr(watchdog, "_python_prozesse", lambda: [
-        (1, CMD_BOT),
-        (2, '"C:\\Python314\\python.exe" -m operations.pipeline.bot_recorder'),
-        (3, '"C:\\Python314\\python.exe" -m operations.pipeline.watchdog'),
-        (4, ""),
+        (1, 90, CMD_BOT),
+        (2, 90,
+         '"C:\\Python314\\python.exe" -m operations.pipeline.bot_recorder'),
+        (3, 90, '"C:\\Python314\\python.exe" -m operations.pipeline.watchdog'),
+        (4, 90, ""),
     ])
     assert watchdog._fremde_instanzen("bot", {}) == [1]
 
@@ -199,10 +270,13 @@ def test_fremde_instanzen_matcht_nur_das_exakte_modul(monkeypatch) -> None:
 def test_parse_prozessliste_objekt_liste_und_leer() -> None:
     # ConvertTo-Json liefert bei genau einem Treffer ein Objekt statt
     # einer Liste; leere Ausgabe heisst: kein python.exe unterwegs.
-    einzel = '{"ProcessId":42,"CommandLine":"python.exe -m x"}'
-    liste = '[{"ProcessId":1,"CommandLine":null},{"ProcessId":2,"CommandLine":"x"}]'
-    assert watchdog._parse_prozessliste(einzel) == [(42, "python.exe -m x")]
-    assert watchdog._parse_prozessliste(liste) == [(1, ""), (2, "x")]
+    # Fehlende/nullige ParentProcessId wird 0 (ordnet nie etwas zu).
+    einzel = ('{"ProcessId":42,"ParentProcessId":7,'
+              '"CommandLine":"python.exe -m x"}')
+    liste = ('[{"ProcessId":1,"ParentProcessId":null,"CommandLine":null},'
+             '{"ProcessId":2,"CommandLine":"x"}]')
+    assert watchdog._parse_prozessliste(einzel) == [(42, 7, "python.exe -m x")]
+    assert watchdog._parse_prozessliste(liste) == [(1, 0, ""), (2, 0, "x")]
     assert watchdog._parse_prozessliste("") == []
     assert watchdog._parse_prozessliste("  \n") == []
 
@@ -212,4 +286,8 @@ def test_parse_prozessliste_objekt_liste_und_leer() -> None:
 def test_python_prozesse_liefert_eigenen_prozess() -> None:
     prozesse = watchdog._python_prozesse()
     assert prozesse is not None
-    assert os.getpid() in [pid for pid, _ in prozesse]
+    assert os.getpid() in [pid for pid, _, _ in prozesse]
+    for pid, ppid, cmd in prozesse:  # Formvertrag (PID, Eltern-PID, Cmd)
+        assert isinstance(pid, int)
+        assert isinstance(ppid, int)
+        assert isinstance(cmd, str)

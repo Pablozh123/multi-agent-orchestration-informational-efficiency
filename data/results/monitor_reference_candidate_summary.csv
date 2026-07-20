@@ -1,2 +1,2 @@
 summary_id,source_alert_rows,source_non_none_rows,candidate_count,candidate_feature_rows,triggered_feature_rows,similarity_comparison_rows,max_similarity_score,allowed_interpretation,limitation
-monitor_reference_candidates_current,1844,40,25,200,43,50,1.0,Monitor candidates were converted into neutral pattern labels for human review.,Candidate features are derived only from non-none monitor severity rows and aggregate monitor fields; no wallet addresses are used.
+monitor_reference_candidates_current,1874,42,26,208,45,52,1.0,Monitor candidates were converted into neutral pattern labels for human review.,Candidate features are derived only from non-none monitor severity rows and aggregate monitor fields; no wallet addresses are used.

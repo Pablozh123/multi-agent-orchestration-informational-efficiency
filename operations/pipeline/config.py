@@ -27,6 +27,17 @@ ALLIN_BOILERPLATE = [
     "release", "somehow",
 ]
 
+# Festes JRE-Intro-Jingle, laeuft musikunterlegt am Anfang JEDER Episode
+# (per YT-Captions #2526 UND #2527 wortidentisch belegt, 18.07.):
+# "Joe Rogan podcast. Check it out. / The Joe Rogan Experience. /
+# TRAIN BY DAY. JOE ROGAN PODCAST BY NIGHT. All day." Kein festes Outro
+# (beide Episoden enden im Gespraech). Gleiche Fallenklasse wie das
+# All-In-Outro (Musik -> VAD-Drop moeglich, Resolver zaehlt trotzdem).
+JRE_BOILERPLATE = [
+    "joe", "rogan", "podcast", "check", "experience", "train", "day",
+    "night", "all",
+]
+
 # ---------------------------------------------------------------- Profile
 # Ein Profil je Event/Show. Umschalten ueber PROFIL.
 PROFILE = {
@@ -278,6 +289,38 @@ PROFILE = {
         "titel_verboten": r"mma\s*show",
         "yt_kanalseite_immer": True,
     },
+    "jre_july20": {
+        "live_dir": "jre_july20",
+        "event_id": "704429",
+        "event_slug": (
+            "what-will-be-said-on-the-first-joe-rogan-experience-episode-"
+            "of-the-week-july-20-20260714183012846"
+        ),
+        # Quellen wie july13: Megaphone-Feed (GLT-Zufallsnamen, kein
+        # Prober), YouTube @joerogan ist Primaer- UND Resolutionsquelle
+        # (Marktregel 704429), Feed-Drops historisch Di-Fr ~17:00 UTC.
+        "rss_feed_url": "https://feeds.megaphone.fm/GLT1412515089",
+        "yt_channel_id": "UCzQUP1qoWDoEbmsQxvdjxgQ",  # PowerfulJRE
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "joe-rogan-experience",
+        "titel_muster": r"(?:joe rogan experience\s*)?#\d{3,5}\s*-",
+        "titel_verboten": r"mma\s*show",  # "JRE MMA Show ... will not count"
+        "yt_kanalseite_immer": True,
+        # Armierung 18.07. (Vollpool-Prinzip wie mrbeast/trump; geteiltes
+        # Wallet, Executor-Delta-Sync verhindert Ueberziehen).
+        "max_usd_gesamt": 510.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        # NO-Schutzschichten: Serie rogan-mentions fuer Basisraten
+        # (Dauerbrenner wie right/crazy/different werden gesperrt),
+        # Intro-Jingle-Lexikon (siehe JRE_BOILERPLATE).
+        "serie_id": "11275",
+        "boilerplate_begriffe": JRE_BOILERPLATE,
+        # Nachlauf verlaengert: JRE-Buecher sind duenn und MMs traege
+        # (#2523: alle Asks beim Drop gepullt, 0 Trades; E280-NOs wurden
+        # noch lange nach der Runde guenstig gehandelt).
+        "nachlauf_minuten": 90,
+    },
     "lemonade_july15": {
         "live_dir": "lemonade_july15",
         "event_id": "686210",
@@ -451,7 +494,9 @@ TRUTH_POLL_S = float(_P.get("truth_poll_s", 15.0))
 # 0.50-0.70 gehandelt). Offene YES-/NO-Kandidaten werden deshalb noch
 # NACHLAUF_MINUTEN lang alle NACHLAUF_POLL_S re-checkt und gekauft,
 # sobald wieder ein Ask <= Obergrenze mit Liquiditaet da ist.
-NACHLAUF_MINUTEN = 45
+# Profil-Override nachlauf_minuten: duenne/traege Buecher (JRE) brauchen
+# ein laengeres Fenster als der 45er-Default.
+NACHLAUF_MINUTEN = float(_P.get("nachlauf_minuten", 45))
 NACHLAUF_POLL_S = 90
 
 # Homophon-anfaellige Begriffe (Basisform, kleingeschrieben). Treffer auf

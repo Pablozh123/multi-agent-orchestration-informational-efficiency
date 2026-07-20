@@ -699,3 +699,45 @@ def test_sweep_no_stoppt_am_no_deckel(monkeypatch, tmp_path) -> None:
     assert res.status == "live_fill"
     # YES darf bei 0.85 weiterkaufen, bis MAX_CLIPS_PRO_MARKT greift.
     assert deckel_gesehen == [config.ASK_OBERGRENZE] * 3
+
+
+# ------------------------------------ JRE july-20 Armierung (18.07.2026)
+
+
+def test_jre_july20_profil_konfiguration() -> None:
+    p = config.PROFILE["jre_july20"]
+    alt = config.PROFILE["jre_july13"]
+    # Quellen und Titel-Gates unveraendert zur Vorwoche
+    assert p["rss_feed_url"] == alt["rss_feed_url"]
+    assert p["yt_channel_id"] == alt["yt_channel_id"]
+    assert p["titel_muster"] == alt["titel_muster"]
+    assert p["titel_verboten"] == alt["titel_verboten"]
+    assert p["event_id"] == "704429"
+    # Vollpool + Sweep wie mrbeast/trump
+    assert p["max_usd_gesamt"] == pytest.approx(510.0)
+    assert p["max_clips_pro_markt"] == 40
+    # NO-Schutzschichten: Serie rogan-mentions + Intro-Jingle-Lexikon
+    assert p["serie_id"] == "11275"
+    for wort in ("train", "night", "rogan", "podcast", "day"):
+        assert wort in p["boilerplate_begriffe"]
+    # Nachlauf verlaengert (duenne Buecher, traege MMs)
+    assert p["nachlauf_minuten"] == 90
+
+
+def test_nachlauf_default_bleibt_45() -> None:
+    # Aktives Testprofil (Default) hat keinen Override -> 45.
+    assert config.NACHLAUF_MINUTEN == pytest.approx(45.0)
+
+
+def test_jre_boilerplate_blockt_no_der_intro_woerter(monkeypatch) -> None:
+    monkeypatch.setattr(config, "BOILERPLATE_BEGRIFFE",
+                        frozenset(config.JRE_BOILERPLATE))
+    r = build_rule(gamma_markt('Will "Train" be said during the episode?'))
+    assert r.boilerplate_sensitiv
+    d = entscheide_no(r, 0, 0.44)
+    assert d.action == "NONE"
+    assert "boilerplate" in d.reason
+    # Nicht-Intro-Wort bleibt als NO handelbar
+    r2 = build_rule(gamma_markt('Will "Alien" be said during the episode?'))
+    assert not r2.boilerplate_sensitiv
+    assert entscheide_no(r2, 0, 0.44).action == "NO"

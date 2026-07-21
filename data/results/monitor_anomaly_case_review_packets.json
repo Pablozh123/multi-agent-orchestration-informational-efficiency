@@ -469,10 +469,28 @@
       "source_check_status": "source_check_not_started",
       "source_context": "review_source_url=not_recorded; event_source_url=not_recorded; reviewer=not_recorded; updated_at_utc=not_recorded; review_note=not_recorded",
       "source_queue_artifact": "monitor_anomaly_review_queue.csv"
+    },
+    {
+      "allowed_interpretation": "Deterministic anomaly review cue for human source checking and later bounded SignalSpec drafting only; not a metric calculated by agents.",
+      "blocked_claims": "private_information_proof; misconduct_finding; causality; tradeability; profitability; future_performance; order_instruction; insider_risk_as_fact",
+      "case_id": "monitor_candidate_20260721_043000_c2eb7db7da29",
+      "evidence_status": "human_review_required; event_context=not_evaluated; reference_context=no_reference_overlap",
+      "future_agent_access": "contract_only_after_llm_audit_log; interpretation_only; no_metric_calculation",
+      "future_mcp_access": "contract_only_bounded_case_summary; max_rows=50; no_raw_sql; no_wallet_address_by_default; no_order_path",
+      "human_review_status": "needs_human_review",
+      "market_slug": "will-pete-buttigieg-win-the-2028-democratic-presidential-nomination-687",
+      "missing_evidence": "manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping",
+      "next_review_step": "Open public market and event/context sources; record source URLs; keep as review cue only.",
+      "packet_id": "case_review_packet_monitor_candidate_20260721_043000_c2eb7db7da29",
+      "question": "Will Pete Buttigieg win the 2028 Democratic presidential nomination?",
+      "review_priority": "medium",
+      "source_check_status": "source_check_not_started",
+      "source_context": "review_source_url=not_recorded; event_source_url=not_recorded; reviewer=not_recorded; updated_at_utc=not_recorded; review_note=not_recorded",
+      "source_queue_artifact": "monitor_anomaly_review_queue.csv"
     }
   ],
   "contains_order_instructions": false,
   "contains_wallet_addresses": false,
   "max_default_rows_for_future_tools": 50,
-  "row_count": 26
+  "row_count": 27
 }

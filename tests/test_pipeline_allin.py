@@ -741,3 +741,25 @@ def test_jre_boilerplate_blockt_no_der_intro_woerter(monkeypatch) -> None:
     r2 = build_rule(gamma_markt('Will "Alien" be said during the episode?'))
     assert not r2.boilerplate_sensitiv
     assert entscheide_no(r2, 0, 0.44).action == "NO"
+
+
+# --------------------------------- Lemonade july-22 Armierung (22.07.2026)
+
+
+def test_lemonade_july22_profil_konfiguration() -> None:
+    p = config.PROFILE["lemonade_july22"]
+    alt = config.PROFILE["lemonade_july15"]
+    # Quellen und Titel-Gate unveraendert zur Vorwoche
+    assert p["rss_feed_url"] == alt["rss_feed_url"]
+    assert p["yt_channel_id"] == alt["yt_channel_id"]
+    assert p["titel_muster"] == alt["titel_muster"]
+    assert p["yt_min_dauer_s"] == 900
+    assert p["event_id"] == "708407"
+    # Vollpool + Sweep + langer Nachlauf (duenne Buecher)
+    assert p["max_usd_gesamt"] == pytest.approx(510.0)
+    assert p["max_clips_pro_markt"] == 40
+    assert p["nachlauf_minuten"] == 90
+    # Basisraten-Serie mit 7 aufgeloesten Vorwochen; bewusst KEIN
+    # Boilerplate-Lexikon (kein festes Jingle, Captions-Check 22.07.)
+    assert p["serie_id"] == "11828"
+    assert "boilerplate_begriffe" not in p

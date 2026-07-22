@@ -139,11 +139,21 @@ def build_rule(market: dict) -> MarketRule:
     if yes_id is None or no_id is None:
         return skip("token_ids_unvollstaendig")
 
-    varianten: list[str] = []
-    for b in begriffe:
-        for v in expandiere_varianten(b):
+    # Profil-lokaler Varianten-Override je Markt hat Vorrang vor der
+    # Frage-Ableitung (Eigennamen-Schreibvarianten, getrennte Komposita,
+    # Praefix-Doppelzaehlung — siehe config.MARKT_VARIANTEN_OVERRIDE).
+    override = config.MARKT_VARIANTEN_OVERRIDE.get(mid)
+    if override:
+        varianten: list[str] = []
+        for v in override:
             if v not in varianten:
                 varianten.append(v)
+    else:
+        varianten = []
+        for b in begriffe:
+            for v in expandiere_varianten(b):
+                if v not in varianten:
+                    varianten.append(v)
 
     # Auffaellige Aufloesungsregeln, die manuelle Pruefung brauchen.
     if re.search(r"\bunless\b|\bexcept\b|\bonly if\b", description, re.IGNORECASE):

@@ -393,6 +393,131 @@ PROFILE = {
         # laesst jede echte Episode durch.
         "yt_min_dauer_s": 900,
     },
+    "hotones_july23": {
+        # Event 731776 "What will Jon Bernthal or Tom Holland say on Hot
+        # Ones?" (Serie 12334 hot-ones-mentions, 22 Maerkte, Auftritt
+        # 23.07.2026 11:00 ET = 15:00 UTC, Deadline 24.07. 23:59 ET).
+        # BESONDERHEIT: Der Markt wertet nur Aussagen von Bernthal ODER
+        # Holland, waehrend Host Sean Evans den groesseren Redeanteil hat.
+        # Deshalb ZWEI Zielsprecher (Union) — YES nur aus deren Treffern.
+        # Empirischer Beleg fuer die Gast-only-Zurechnung: der einzige
+        # aufgeloeste Serien-Vorgaenger (Radcliffe, Event 214212, 19.02.)
+        # loeste "Scoville"/"Sauce 5+"/"Wing 10+" zu NO auf, obwohl der
+        # Host diese Woerter sicher sagt.
+        "live_dir": "hotones_july23",
+        "event_id": "731776",
+        "event_slug": (
+            "what-will-jon-bernthal-or-tom-holland-say-on-hot-ones-"
+            "20260721145535497"
+        ),
+        # KEIN Audio-Feed: der einzige Hot-Ones-Podcast ("The Classic
+        # Interviews", Acast) ist ein Archiv, letzte Folge 29.08.2018 ->
+        # tot. Der Watcher laeuft rein ueber YouTube (@FirstWeFeast).
+        "rss_feed_url": None,
+        "mp3_probe_muster": None,
+        "rss_nur_muster": None,
+        # @FirstWeFeast; belegt via <link rel="canonical"> + "rssUrl" auf
+        # der Kanalseite (22.07.2026).
+        "yt_channel_id": "UCPD_bxCRGpmmeQcbe2kpPaA",
+        # Eng an DIESES Event binden, nicht an den Serien-Slug: Serie 12334
+        # ist MONATLICH; ein breiter Filter (say-on-hot-ones) wuerde beim
+        # Auto-Roll im August auf die naechste Hot-Ones-Folge (anderer Gast)
+        # springen — mit stehen gebliebenen Bernthal/Holland-Referenzen.
+        # Der Slug-Substring ist disjunkt zu allen bestehenden Profilen.
+        "discovery_slug_filter": "jon-bernthal-or-tom-holland",
+        # Positiv-Identifikation. Kern "spicy wings": Hausformat in 425 von
+        # 439 Episodentiteln, in KEINEM Nebenformat-Titel (Versus / Heat
+        # Eaters / Pro Moves / Slice Joint / Hot Kitchen / Wing Pong) und
+        # stabil im YouTube-Titel-A/B-Test (Pv2txXubvRY lief zeitgleich als
+        # "Goes Into Fight or Flight ..." und "Wants to Throw Hands ...").
+        # Duo-Folgen lassen historisch "While Eating" weg ("... Bond Over
+        # Spicy Wings") -> NICHT auf "while eating" ankern. Namen als
+        # Redundanz gegen einen Sondertitel der Duo-Folge.
+        "titel_muster": r"spicy\s*wings|bernthal|holland",
+        # Der Namens-Zweig liesse sonst eine "Hot Ones Versus"-Folge mit
+        # Bernthal/Holland durch (Versus laeuft 1280s, ueber jedem Dauer-
+        # Gate). Marktregel: "their appearance ON Hot Ones", Resolutions-
+        # quelle "the released episode" -> Nebenformate raus.
+        "titel_verboten": (
+            r"hot\s*ones\s*versus|hotonesversus|wing\s*pong|pro\s*moves|"
+            r"slice\s*joint|heat\s*eaters|hot\s*kitchen|truth\s*or\s*dab"
+        ),
+        # S30-Hauptfolgen 1244-1596s (Mittel 1426s). 1000s laesst 244s
+        # Puffer und toetet die belegte Falle kVJuKJgbfrg (195s mit EXAKTEM
+        # Hauptfolgen-Titel "... While Eating Spicy Wings | Hot Ones") sowie
+        # Sauce-Lineup (355s) und Teaser-Shorts (61s).
+        "yt_min_dauer_s": 1000,
+        # KEINE Playlist-Gate: "Hot Ones Season 30" enthaelt Shorts und das
+        # Sauce-Lineup, und die Pflege haengt Stunden nach (der Heat-Eaters-
+        # Upload vom 22.07. fehlte 5,5h spaeter noch in seiner Playlist).
+        # In bot.py ist die Playlist ein HARTER Ausschluss -> wuerde den
+        # Drop verwerfen.
+        "yt_playlist_id": None,
+        # Kanalseite /videos bei jedem Poll mitlesen (Langform-Tab, andere
+        # Infrastruktur als videos.xml) — Redundanz gegen Feed-Nachlauf/404.
+        "yt_kanalseite_immer": True,
+        # Duenne Buecher der monatlichen Serie (Serien-Liquiditaet ~2000 USD)
+        # -> langes Nachlauf-Fenster wie JRE.
+        "nachlauf_minuten": 90,
+        # Serie hot-ones-mentions. Nur 1 aufgeloester Vorgaenger (Radcliffe)
+        # -> Basisraten-Schicht strukturell wirkungslos (min_n 4 nicht
+        # erreichbar, und der Serien-Slug traegt den Gastnamen, sodass sich
+        # Wochen nie matchen). Die NO-Absicherung traegt hier NICHT ueber
+        # Basisraten; siehe no_ask_obergrenze.
+        "serie_id": "12334",
+        # ZWEI Referenzstimmen (Union). Erst nach Kalibrierung scharf
+        # schalten; bauen mit operations.pipeline.baue_referenz_quellen
+        # (benannte Solo-Clips + Positiv-/Negativ-Kontrollen).
+        "zielsprecher_referenzen": [
+            "data/live/hotones_july23/referenz_bernthal.npy",
+            "data/live/hotones_july23/referenz_holland.npy",
+        ],
+        # Zwei Referenzen = zwei Chancen, den Host faelschlich zuzurechnen
+        # (Union erhoeht die Falsch-Positiv-Rate). Bei 18 Schwelle-1-Maerkten
+        # ist ein einziger Falsch-Positiv ein Fehlkauf -> Schwelle 0.50
+        # statt 0.40 (analog mrbeast_gaming), vor dem Scharfschalten gegen
+        # Sean-Evans-Audio kalibrieren.
+        "sprecher_schwelle": 0.50,
+        # Profil-eigene Homophon-Fallen (globales Default-Set waere hier
+        # falsch): mate/made/maid, soccer/sucker, wedding/weeding,
+        # brother/bother. Bei Segment-Konfidenz <= 0.8 wandern strikte
+        # Treffer aus dem YES-Zaehler (Schutz gegen ASR-Fehl-YES auf
+        # Schwelle-1-Maerkten). PDF: "Homophones ... do not qualify".
+        "homophon_begriffe": {"mate", "soccer", "wedding", "brother"},
+        # Varianten-Override je Markt (Frage-Ableitung ist dort falsch):
+        # - 3026024 Spider/Spider-man: "Spider"+"Spider-man" zaehlen
+        #   "Spider-Man" DOPPELT (Bindestrich ist keine Buchstabengrenze)
+        #   -> YES feuerte bei 4 statt 5+. ["Spider","Spiderman"] zaehlt
+        #   "Spider-Man"=1 ("Spider" deckt es ab), "Spiderman"=1. PDF
+        #   "Name Components": ein Vollname zaehlt einmal.
+        # - Getrennte/bindestrich-Komposita, die die strikten Wortgrenzen
+        #   sonst verwerfen (PDF "Hyphenated Constructs"/"Compound Words":
+        #   Leerzeichen ODER Bindestrich qualifiziert).
+        # - ASR-Schreibvarianten desselben gesprochenen Eigennamens.
+        "markt_varianten_override": {
+            "3026024": ["Spider", "Spiderman"],
+            "3026043": ["Ice Cream", "Ice-Cream", "Icecream"],
+            "3026035": ["World Cup", "World-Cup", "Worldcup"],
+            "3026039": ["Pitbull", "Pit bull", "Pit-bull"],
+            "3026036": ["Morocco", "Marocco"],
+        },
+        # NO-SEITE FUER DIESEN LAUF AUS (no_ask_obergrenze 0.0 -> entscheide_no
+        # verwirft jeden NO-Kandidaten). Grund: Der NO-Zweig entscheidet auf
+        # dem erweiterten GESAMT-Zaehler (alle Stimmen, bot.py NO-Runde), der
+        # Markt wertet aber nur den Gast. Auf Hot Ones (Host-dominiert) ist
+        # der Gesamtzaehler kein tauglicher Proxy fuer die Gast-Abwesenheit,
+        # und eine Gast-only-NO-Schicht ist noch nicht kalibriert. Analog zu
+        # elon_july13/trump_july13 wird nur YES gehandelt, bis die Gast-only-
+        # NO-Zuordnung belegt ist. Siehe Handover-Notiz.
+        "no_ask_obergrenze": 0.0,
+        # Konservatives Budget: duenne Buecher + geteiltes Wallet mit den
+        # parallel laufenden 510er-Profilen (mrbeast_gaming). Groessenordnung
+        # allin_july10, NICHT 510. Vor dem Scharfschalten an den realen
+        # Wallet-Stand anpassen.
+        "max_usd_gesamt": 90.0,
+        "max_usd_pro_markt": 15.0,
+        "max_clips_pro_markt": 10,
+    },
 }
 
 PROFIL = _os.environ.get("BOT_PROFIL", "allin_july10")
@@ -490,8 +615,18 @@ YT_FEED_URL = (
     if YT_CHANNEL_ID else None
 )
 YT_MIN_DAUER_S = _P.get("yt_min_dauer_s", 1800)  # Clips ausschliessen, je Profil
+# Sprecher-Verifikation: ein Profil nennt entweder EINE Referenzstimme
+# (zielsprecher_referenz, MrBeast-Fall) oder MEHRERE
+# (zielsprecher_referenzen, Hot-Ones-Fall "Bernthal ODER Holland").
+# Mehrere Referenzen werden als Union ausgewertet (siehe speaker.py).
 _ziel_ref = _P.get("zielsprecher_referenz")
-ZIELSPRECHER_REFERENZ = (REPO_ROOT / _ziel_ref) if _ziel_ref else None
+_ziel_refs = list(_P.get("zielsprecher_referenzen", []))
+if _ziel_ref and _ziel_ref not in _ziel_refs:
+    _ziel_refs.insert(0, _ziel_ref)
+ZIELSPRECHER_REFERENZEN = [REPO_ROOT / p for p in _ziel_refs]
+# Rueckwaertskompatibel: erste Referenz bleibt als Einzelpfad lesbar
+# (baue_referenz.py, Tests, Startwache-Vorpruefung).
+ZIELSPRECHER_REFERENZ = ZIELSPRECHER_REFERENZEN[0] if ZIELSPRECHER_REFERENZEN else None
 # Similarity-Schwelle je Profil (Standard 0.40 aus speaker.py). Hoeher =
 # praeziser (weniger Falsch-Zurechnung), niedriger Recall.
 SPRECHER_SCHWELLE = float(_P.get("sprecher_schwelle", 0.40))
@@ -538,7 +673,12 @@ NACHLAUF_POLL_S = 90
 
 # Homophon-anfaellige Begriffe (Basisform, kleingeschrieben). Treffer auf
 # diese Begriffe zaehlen nur bei ASR-Konfidenz oberhalb ASR_KONFIDENZ_HOMOPHON.
-HOMOPHON_BEGRIFFE = {"red", "read", "blue", "blew", "right", "write"}
+# Profil-Override homophon_begriffe: manche Events tragen eigene Homophon-
+# Fallen (Hot Ones: mate/made/maid, soccer/sucker, wedding/weeding,
+# brother/bother). Ohne Override bleibt das globale Default-Set aktiv,
+# damit bestehende Profile (All-In/JRE/Lemonade/MrBeast) unveraendert sind.
+HOMOPHON_BEGRIFFE = set(
+    _P.get("homophon_begriffe", {"red", "read", "blue", "blew", "right", "write"}))
 
 # Bekannte Wortvarianten je Basisbegriff (kleingeschrieben).
 # Event-Mentions-Contract (Polymarket-PDF, "Expanded Acronyms"): die
@@ -551,4 +691,17 @@ VARIANTEN_MAP = {
     "artificial intelligence": ["artificial intelligence"],
     "elon": ["Elon", "Elon Musk"],
     "musk": ["Musk"],
+}
+
+# Profil-lokaler Varianten-Override je Markt (market_id -> Variantenliste).
+# Fuer Faelle, die die globale VARIANTEN_MAP nicht sauber loesen kann, ohne
+# andere Profile zu beruehren: ASR-Schreibvarianten von Eigennamen
+# (Zendaya/Zendeya, Morocco/Marocco), getrennt/bindestrich geschriebene
+# Komposita (Pit bull, World-Cup) und die Entschaerfung der Praefix-
+# Doppelzaehlung ("Spider"+"Spider-man" zaehlen "Spider-Man" doppelt ->
+# stattdessen ["Spider","Spiderman"], "Spider" allein deckt "Spider-Man"
+# ab, weil der Bindestrich keine Buchstabengrenze ist). Greift NUR fuer
+# das aktive Profil; ohne Eintrag bleibt die Frage-Ableitung unveraendert.
+MARKT_VARIANTEN_OVERRIDE = {
+    str(k): list(v) for k, v in _P.get("markt_varianten_override", {}).items()
 }

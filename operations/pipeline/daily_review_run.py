@@ -287,12 +287,26 @@ class PipelineEintrag(_Strict):
     size_usd: Optional[float]
 
 
+class PipelineLauf(_Strict):
+    """Ein abgeschlossener Lauf. Gleiche Whitelist wie auf oberster Ebene."""
+
+    profil: str
+    n_eintraege: int = Field(ge=0)
+    n_kaeufe: int = Field(ge=0)
+    eintraege: List[PipelineEintrag]
+    wortzaehler_endstaende: Dict[str, int]
+
+
 class PipelineForwardPayload(_Strict):
     hinweis: str
     stand_utc: str
     kennzeichnung: Literal["observed/paper"]
+    #: Rueckwaertskompatibel: der Lauf, den ``hinweis`` als Profil nennt
+    #: (juengster Lauf mit Kaeufen). Bestehende Leser bleiben unveraendert.
     eintraege: List[PipelineEintrag]
     wortzaehler_endstaende: Dict[str, int]
+    #: Alle Laeufe, juengster zuerst.
+    laeufe: List[PipelineLauf] = Field(default_factory=list)
 
 
 class AuditPayload(_Strict):
@@ -641,25 +655,21 @@ def _best_prices(book_snapshot: Dict[str, Any]) -> tuple[Optional[float], Option
     return (min(asks) if asks else None, max(bids) if bids else None)
 
 
-def build_pipeline_forward(
-    *,
+def _lies_lauf(
     live_dir: Optional[Path],
-    profil: str,
-    now_utc: str,
-) -> PipelineForwardPayload:
-    """Beobachtende Paper-Zeitleiste aus dem Live-Verzeichnis.
+) -> tuple[List[PipelineEintrag], Dict[str, int], str]:
+    """Einen Lauf einlesen: Eintraege, Wortzaehler-Endstand, letzter Zeitstempel.
 
-    Publiziert werden AUSSCHLIESSLICH: Zeitstempel, ``action``, ``reason``,
-    ``limit_price``, ``size_usd`` (aus ``decisions_log.jsonl``), abgeleitete
-    Buch-Bestpreise (min ask / max bid aus dem ``book_snapshot``) sowie die
-    Wortzaehler-Endstaende (aus ``bot_events.jsonl``). Keine Wallet-Daten,
-    keine PnL-Aussage. Fehlt die Quelle (``data/live`` ist bewusst nicht im
-    Repo), wird ein leeres, klar gekennzeichnetes Artefakt geschrieben.
+    Gelesen werden AUSSCHLIESSLICH: ``action``, ``reason``, ``limit_price``,
+    ``size_usd`` (aus ``decisions_log.jsonl``), abgeleitete Buch-Bestpreise
+    (min ask / max bid aus dem ``book_snapshot``) sowie die Wortzaehler-Staende
+    (aus ``bot_events.jsonl``). ``wall_ts_utc`` dient nur der Sortierung der
+    Laeufe und wird nicht publiziert.
     """
 
     eintraege: List[PipelineEintrag] = []
     endstaende: Dict[str, int] = {}
-    hinweis = DATEI_HINWEISE["pipeline_forward.json"] + f" Profil: {profil}."
+    letzter_ts = ""
     decisions_path = live_dir / "decisions_log.jsonl" if live_dir else None
     events_path = live_dir / "bot_events.jsonl" if live_dir else None
 
@@ -674,6 +684,7 @@ def build_pipeline_forward(
             bestes_angebot, bestes_gebot = _best_prices(
                 record.get("book_snapshot", {}) or {}
             )
+            letzter_ts = max(letzter_ts, str(record.get("wall_ts_utc", "")))
             eintraege.append(
                 PipelineEintrag(
                     action=str(decision.get("action", "NONE")),
@@ -692,11 +703,6 @@ def build_pipeline_forward(
                     ),
                 )
             )
-    else:
-        hinweis += (
-            " Source decisions_log.jsonl not present on this machine -- "
-            "empty artifact."
-        )
 
     if events_path is not None and events_path.exists():
         for line in events_path.read_text(encoding="utf-8").splitlines():
@@ -712,12 +718,98 @@ def build_pipeline_forward(
             elif art == "chunk" and isinstance(event.get("staende"), dict):
                 endstaende = {str(k): int(v) for k, v in event["staende"].items()}
 
+    return eintraege, endstaende, letzter_ts
+
+
+def entdecke_laeufe(roots: List[Path]) -> List[tuple[str, Path]]:
+    """Alle Lauf-Verzeichnisse mit ``decisions_log.jsonl`` ueber alle Wurzeln.
+
+    Je Profil gewinnt die erste Wurzel der Suchreihenfolge, damit Rohdaten die
+    kuratierten Kopien schlagen. Sortiert wird spaeter nach Lauf-Zeit.
+    """
+
+    gefunden: Dict[str, Path] = {}
+    for root in roots:
+        if not root.is_dir():
+            continue
+        for kandidat in sorted(p for p in root.iterdir() if p.is_dir()):
+            if kandidat.name in gefunden:
+                continue
+            if (kandidat / "decisions_log.jsonl").exists():
+                gefunden[kandidat.name] = kandidat
+    return list(gefunden.items())
+
+
+def build_pipeline_forward(
+    *,
+    live_dir: Optional[Path] = None,
+    profil: str,
+    now_utc: str,
+    laeufe: Optional[List[tuple[str, Path]]] = None,
+) -> PipelineForwardPayload:
+    """Beobachtende Paper-Zeitleiste, ein Eintrag je Lauf.
+
+    ``laeufe`` publiziert alle uebergebenen Laeufe, juengster zuerst. Die
+    obersten Felder ``eintraege``/``wortzaehler_endstaende`` spiegeln weiterhin
+    genau einen Lauf -- den juengsten mit Kaeufen, sonst den juengsten
+    ueberhaupt -- damit bestehende Leser unveraendert funktionieren. ``profil``
+    ist der Fallback-Name, wenn gar kein Lauf gefunden wurde.
+
+    Keine Wallet-Daten, keine PnL-Aussage. Fehlt die Quelle (``data/live`` ist
+    bewusst nicht im Repo), wird ein leeres, klar gekennzeichnetes Artefakt
+    geschrieben.
+    """
+
+    if laeufe is None:
+        laeufe = [(profil, live_dir)] if live_dir is not None else []
+
+    gelesen: List[tuple[str, PipelineLauf]] = []
+    for lauf_profil, lauf_dir in laeufe:
+        eintraege, endstaende, letzter_ts = _lies_lauf(lauf_dir)
+        if not eintraege:
+            continue
+        gelesen.append(
+            (
+                letzter_ts,
+                PipelineLauf(
+                    profil=lauf_profil,
+                    n_eintraege=len(eintraege),
+                    n_kaeufe=sum(1 for e in eintraege if e.action != "NONE"),
+                    eintraege=eintraege,
+                    wortzaehler_endstaende=endstaende,
+                ),
+            )
+        )
+
+    # Juengster Lauf zuerst; ohne Zeitstempel ans Ende.
+    gelesen.sort(key=lambda paar: paar[0], reverse=True)
+    sortierte = [lauf for _, lauf in gelesen]
+
+    # Oberste Ebene: juengster Lauf MIT Kaeufen, sonst juengster ueberhaupt.
+    spiegel = next((lauf for lauf in sortierte if lauf.n_kaeufe), None)
+    if spiegel is None and sortierte:
+        spiegel = sortierte[0]
+
+    hinweis = DATEI_HINWEISE["pipeline_forward.json"]
+    hinweis += f" Profil: {spiegel.profil if spiegel else profil}."
+    if spiegel is None:
+        hinweis += (
+            " Source decisions_log.jsonl not present on this machine -- "
+            "empty artifact."
+        )
+    elif len(sortierte) > 1:
+        hinweis += (
+            f" Top-level fields mirror this run; all {len(sortierte)} runs are"
+            " listed under laeufe, newest first."
+        )
+
     return PipelineForwardPayload(
         hinweis=hinweis,
         stand_utc=now_utc,
         kennzeichnung="observed/paper",
-        eintraege=eintraege,
-        wortzaehler_endstaende=endstaende,
+        eintraege=spiegel.eintraege if spiegel else [],
+        wortzaehler_endstaende=spiegel.wortzaehler_endstaende if spiegel else {},
+        laeufe=sortierte,
     )
 
 
@@ -1069,12 +1161,21 @@ def run_daily_review(
         now_utc=now_utc,
     )
     roots = live_roots(live_root)
-    live_dir, profil = _resolve_live_dir(live_profile, roots)
+    if live_profile:
+        # Explizites Profil: nur diesen einen Lauf publizieren.
+        live_dir, profil = _resolve_live_dir(live_profile, roots)
+        forward_laeufe = [(profil, live_dir)] if live_dir else []
+    else:
+        profil = LIVE_PROFILE_CANDIDATES[0]
+        forward_laeufe = entdecke_laeufe(roots)
     forward_payload = build_pipeline_forward(
-        live_dir=live_dir, profil=profil, now_utc=now_utc
+        profil=profil, now_utc=now_utc, laeufe=forward_laeufe
     )
-    if forward_payload.eintraege:
-        schritte["pipeline_forward"] = f"ok ({len(forward_payload.eintraege)} eintraege)"
+    if forward_payload.laeufe:
+        schritte["pipeline_forward"] = (
+            f"ok ({len(forward_payload.laeufe)} laeufe, "
+            f"{sum(l.n_eintraege for l in forward_payload.laeufe)} eintraege)"
+        )
     else:
         schritte["pipeline_forward"] = (
             "quelle_fehlt (keine Live-Wurzel mit decisions_log.jsonl gefunden)"

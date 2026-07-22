@@ -385,11 +385,18 @@ def test_pipeline_forward_whitelist_only(tmp_path: Path) -> None:
     assert entry.bestes_gebot == 0.80  # max bid
     dumped = json.loads(payload.model_dump_json())
     assert set(dumped.keys()) == {
-        "hinweis", "stand_utc", "kennzeichnung", "eintraege", "wortzaehler_endstaende",
+        "hinweis", "stand_utc", "kennzeichnung", "eintraege",
+        "wortzaehler_endstaende", "laeufe",
     }
-    assert set(dumped["eintraege"][0].keys()) == {
+    eintrag_felder = {
         "action", "reason", "limit_price", "bestes_angebot", "bestes_gebot", "size_usd",
     }
+    assert set(dumped["eintraege"][0].keys()) == eintrag_felder
+    # Dieselbe Whitelist gilt innerhalb der Lauf-Liste.
+    assert set(dumped["laeufe"][0].keys()) == {
+        "profil", "n_eintraege", "n_kaeufe", "eintraege", "wortzaehler_endstaende",
+    }
+    assert set(dumped["laeufe"][0]["eintraege"][0].keys()) == eintrag_felder
     text = json.dumps(dumped)
     for forbidden in ("size_shares", "token_id", "detail", "market_id", "pnl", "wall_ts"):
         assert forbidden not in text
@@ -404,6 +411,118 @@ def test_pipeline_forward_missing_source_is_fail_soft(tmp_path: Path) -> None:
     )
     assert payload.eintraege == []
     assert "not present" in payload.hinweis
+
+
+# ---------------------------------------------------------------------------
+# Eine Liste je Lauf
+# ---------------------------------------------------------------------------
+
+
+def _write_lauf(
+    root: Path, profil: str, *, ts: str, actions: list[str]
+) -> tuple[str, Path]:
+    """Minimaler Lauf mit vorgegebenen Aktionen und Lauf-Zeitstempel."""
+
+    lauf = root / profil
+    lauf.mkdir(parents=True)
+    zeilen = [
+        json.dumps(
+            {
+                "wall_ts_utc": ts,
+                "decision": {"action": action, "reason": "r", "limit_price": 0.5},
+                "result": {"size_usd": 1.0 if action != "NONE" else None},
+                "book_snapshot": {
+                    "asks": [{"price": "0.6"}], "bids": [{"price": "0.4"}]
+                },
+            }
+        )
+        for action in actions
+    ]
+    (lauf / "decisions_log.jsonl").write_text(
+        "\n".join(zeilen) + "\n", encoding="utf-8"
+    )
+    (lauf / "bot_events.jsonl").write_text(
+        json.dumps({"art": "fertig", "endstaende": {profil: len(actions)}}) + "\n",
+        encoding="utf-8",
+    )
+    return profil, lauf
+
+
+def test_pipeline_forward_listet_alle_laeufe_juengster_zuerst(tmp_path: Path) -> None:
+    laeufe = [
+        _write_lauf(tmp_path, "alt", ts="2026-07-03T20:00:00Z", actions=["YES"]),
+        _write_lauf(tmp_path, "neu", ts="2026-07-18T00:48:20Z", actions=["NONE", "NO"]),
+        _write_lauf(tmp_path, "mittel", ts="2026-07-10T01:00:00Z", actions=["NONE"]),
+    ]
+
+    payload = drr.build_pipeline_forward(
+        profil="fallback", now_utc="2026-07-22T00:00:00+00:00", laeufe=laeufe
+    )
+
+    assert [lauf.profil for lauf in payload.laeufe] == ["neu", "mittel", "alt"]
+    assert [lauf.n_eintraege for lauf in payload.laeufe] == [2, 1, 1]
+    assert [lauf.n_kaeufe for lauf in payload.laeufe] == [1, 0, 1]
+
+
+def test_pipeline_forward_spiegelt_juengsten_lauf_mit_kaeufen(tmp_path: Path) -> None:
+    """Oberste Ebene bleibt rueckwaertskompatibel und zeigt nicht mehr allin_july3."""
+
+    laeufe = [
+        _write_lauf(tmp_path, "allin_july3", ts="2026-07-03T20:00:00Z", actions=["YES"]),
+        _write_lauf(tmp_path, "jre_july20", ts="2026-07-21T17:00:00Z", actions=["NONE"]),
+        _write_lauf(
+            tmp_path, "allin_july17", ts="2026-07-18T00:48:20Z", actions=["NONE", "YES"]
+        ),
+    ]
+
+    payload = drr.build_pipeline_forward(
+        profil="fallback", now_utc="2026-07-22T00:00:00+00:00", laeufe=laeufe
+    )
+
+    # jre_july20 ist juenger, hat aber keine Kaeufe -> allin_july17 gewinnt.
+    assert "Profil: allin_july17." in payload.hinweis
+    assert payload.wortzaehler_endstaende == {"allin_july17": 2}
+    assert [e.action for e in payload.eintraege] == ["NONE", "YES"]
+    spiegel = next(lauf for lauf in payload.laeufe if lauf.profil == "allin_july17")
+    assert payload.eintraege == spiegel.eintraege
+
+
+def test_pipeline_forward_ohne_kaeufe_spiegelt_juengsten_lauf(tmp_path: Path) -> None:
+    laeufe = [
+        _write_lauf(tmp_path, "a", ts="2026-07-03T20:00:00Z", actions=["NONE"]),
+        _write_lauf(tmp_path, "b", ts="2026-07-20T20:00:00Z", actions=["NONE"]),
+    ]
+
+    payload = drr.build_pipeline_forward(
+        profil="fallback", now_utc="2026-07-22T00:00:00+00:00", laeufe=laeufe
+    )
+
+    assert "Profil: b." in payload.hinweis
+    assert payload.eintraege
+
+
+def test_entdecke_laeufe_erste_wurzel_gewinnt_je_profil(tmp_path: Path) -> None:
+    roh = tmp_path / "roh"
+    kuratiert = tmp_path / "kuratiert"
+    _write_lauf(roh, "geteilt", ts="2026-07-18T00:00:00Z", actions=["YES"])
+    _write_lauf(kuratiert, "geteilt", ts="2026-07-18T00:00:00Z", actions=["NONE"])
+    _write_lauf(kuratiert, "nur_kuratiert", ts="2026-07-10T00:00:00Z", actions=["NO"])
+    (tmp_path / "leer").mkdir()
+
+    gefunden = dict(drr.entdecke_laeufe([roh, kuratiert, tmp_path / "leer"]))
+
+    assert gefunden["geteilt"] == roh / "geteilt"
+    assert gefunden["nur_kuratiert"] == kuratiert / "nur_kuratiert"
+
+
+def test_entdecke_laeufe_ignoriert_verzeichnisse_ohne_decisions_log(
+    tmp_path: Path,
+) -> None:
+    (tmp_path / "nur_audio").mkdir()
+    (tmp_path / "nur_audio" / "episode.mp3").write_bytes(b"ID3")
+    _write_lauf(tmp_path, "echt", ts="2026-07-18T00:00:00Z", actions=["YES"])
+
+    assert [p for p, _ in drr.entdecke_laeufe([tmp_path])] == ["echt"]
 
 
 # ---------------------------------------------------------------------------

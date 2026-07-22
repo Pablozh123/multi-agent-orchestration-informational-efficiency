@@ -167,18 +167,27 @@ def lauf(live: bool) -> None:
     executor = LiveExecutor() if live else DryRunExecutor()
     modus = "LIVE" if live else "DRY_RUN"
     verifier = None
-    if config.ZIELSPRECHER_REFERENZ is not None:
-        if not config.ZIELSPRECHER_REFERENZ.exists():
+    if config.ZIELSPRECHER_REFERENZEN:
+        fehlend = [p for p in config.ZIELSPRECHER_REFERENZEN if not p.exists()]
+        if fehlend:
             raise SystemExit(
-                f"Zielsprecher-Referenz fehlt: {config.ZIELSPRECHER_REFERENZ} — "
-                "zuerst operations.pipeline.baue_referenz ausfuehren."
+                "Zielsprecher-Referenz fehlt: "
+                + ", ".join(str(p) for p in fehlend)
+                + " — zuerst operations.pipeline.baue_referenz ausfuehren."
             )
         from operations.pipeline.speaker import SpeakerVerifier
 
-        verifier = SpeakerVerifier(config.ZIELSPRECHER_REFERENZ,
+        verifier = SpeakerVerifier(config.ZIELSPRECHER_REFERENZEN,
                                    schwelle=config.SPRECHER_SCHWELLE)
         print(f"Sprecher-Verifikation aktiv (Schwelle {config.SPRECHER_SCHWELLE}, "
+              f"Referenzen: {', '.join(verifier.namen)}; "
               "YES nur aus Zielsprecher-Treffern).")
+        _schreibe_event("sprecher_verifikation", {
+            "schwelle": config.SPRECHER_SCHWELLE,
+            "referenzen": verifier.namen,
+            "pfade": [str(p) for p in config.ZIELSPRECHER_REFERENZEN],
+            "regel": "union_oder" if len(verifier.namen) > 1 else "einzel",
+        })
     rules = lade_snapshot_rules()
     # Basisraten aus der Serien-Historie (Zaehler-Misstrauen fuer NO):
     # fail-safe — ohne Serie/Netz bleibt alles unveraendert.

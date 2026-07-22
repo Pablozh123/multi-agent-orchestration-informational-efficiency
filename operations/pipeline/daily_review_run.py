@@ -1174,7 +1174,7 @@ def run_daily_review(
     if forward_payload.laeufe:
         schritte["pipeline_forward"] = (
             f"ok ({len(forward_payload.laeufe)} laeufe, "
-            f"{sum(l.n_eintraege for l in forward_payload.laeufe)} eintraege)"
+            f"{sum(lauf.n_eintraege for lauf in forward_payload.laeufe)} eintraege)"
         )
     else:
         schritte["pipeline_forward"] = (

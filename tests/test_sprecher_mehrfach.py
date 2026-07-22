@@ -31,8 +31,13 @@ EMB_DIM = 3
 
 @pytest.fixture
 def speechbrain_stub(monkeypatch):
-    """Encoder-Stub: Embedding = erste EMB_DIM Samples des Audios."""
-    import torch
+    """Encoder-Stub: Embedding = erste EMB_DIM Samples des Audios.
+
+    Der reale Embedding-Pfad (speaker.embedding) importiert torch; ohne
+    torch (CI) werden diese Tests uebersprungen — wie die uebrigen
+    ML-abhaengigen Tests des Repos (pytest.importorskip).
+    """
+    torch = pytest.importorskip("torch")
 
     class _Encoder:
         @classmethod

@@ -407,6 +407,77 @@ def test_pipeline_forward_missing_source_is_fail_soft(tmp_path: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Quellpfad-Fallback (--live-root / THESIS_LIVE_ROOT / data/live_curated)
+# ---------------------------------------------------------------------------
+
+
+def test_live_roots_prefer_explicit_then_env(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    explicit = tmp_path / "explicit"
+    from_env = tmp_path / "from_env"
+    explicit.mkdir()
+    from_env.mkdir()
+    monkeypatch.setenv(drr.LIVE_ROOT_ENV, str(from_env))
+
+    roots = drr.live_roots(explicit)
+
+    assert roots[0] == explicit
+    assert roots[1] == from_env
+
+
+def test_live_roots_skip_missing_and_keep_curated_last(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.delenv(drr.LIVE_ROOT_ENV, raising=False)
+    live = tmp_path / "live"
+    curated = tmp_path / "live_curated"
+    live.mkdir()
+    curated.mkdir()
+    monkeypatch.setattr(drr, "LIVE_BASE_DIR", live)
+    monkeypatch.setattr(drr, "LIVE_CURATED_DIR", curated)
+
+    roots = drr.live_roots(tmp_path / "gibt_es_nicht")
+
+    # Nicht existierende Wurzeln fallen raus, die versionierten kuratierten
+    # Kopien sind immer der letzte Fallback.
+    assert roots == [live, curated]
+
+
+def test_resolve_live_dir_falls_back_to_second_root(tmp_path: Path) -> None:
+    leer = tmp_path / "leer"
+    kuratiert = tmp_path / "kuratiert"
+    leer.mkdir()
+    _write_live_fixture(kuratiert)
+
+    live_dir, profil = drr._resolve_live_dir("allin_july3", [leer, kuratiert])
+
+    assert live_dir == kuratiert / "allin_july3"
+    assert profil == "allin_july3"
+
+
+def test_resolve_live_dir_without_any_root_stays_empty_but_valid(
+    tmp_path: Path,
+) -> None:
+    """Fehlende Quelle ergibt weiterhin ein valides, leeres Artefakt mit Hinweis."""
+
+    live_dir, profil = drr._resolve_live_dir(None, [tmp_path / "gibt_es_nicht"])
+    assert live_dir is None
+    assert profil == drr.LIVE_PROFILE_CANDIDATES[0]
+
+    payload = drr.build_pipeline_forward(
+        live_dir=live_dir, profil=profil, now_utc="2026-07-22T00:00:00+00:00"
+    )
+
+    assert payload.eintraege == []
+    assert payload.wortzaehler_endstaende == {}
+    assert payload.kennzeichnung == "observed/paper"
+    assert "not present" in payload.hinweis
+    # Muss weiterhin schema- und gate-fest sein.
+    drr.run_redaction_gate({"pipeline_forward.json": payload.model_dump_json()})
+
+
+# ---------------------------------------------------------------------------
 # audit.json / meta.json
 # ---------------------------------------------------------------------------
 

@@ -42,6 +42,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import shutil
 import sys
@@ -59,6 +60,14 @@ RESULTS_DIR = REPO_ROOT / "data" / "results"
 SEED_PATH = REPO_ROOT / "data" / "events" / "mentions_latency_seed.csv"
 MENTIONS_CACHE_DIR = REPO_ROOT / "data" / "raw" / "mentions_latency"
 LIVE_BASE_DIR = REPO_ROOT / "data" / "live"
+#: Kuratierte, versionierte Kopien der abgeschlossenen Laeufe (nur die
+#: publizierbaren Felder, siehe ``scripts/kuratiere_live_laeufe.py``). Sie sind
+#: der Fallback, wenn die Arbeitskopie kein ``data/live`` hat -- so publiziert
+#: die Kette auf jeder Maschine dieselben Eintraege.
+LIVE_CURATED_DIR = REPO_ROOT / "data" / "live_curated"
+#: Umgebungsvariable fuer eine abweichende Live-Wurzel (z.B. das Checkout mit
+#: den Rohdaten). Explizites ``--live-root`` gewinnt gegen die Variable.
+LIVE_ROOT_ENV = "THESIS_LIVE_ROOT"
 
 QUEUE_CSV_PATH = RESULTS_DIR / "monitor_anomaly_review_queue.csv"
 SUMMARY_V2_PATH = RESULTS_DIR / "category_efficiency_summary_v2.csv"
@@ -942,14 +951,46 @@ def _make_llm_backend() -> Callable[[str, str], str]:
     return backend
 
 
-def _resolve_live_dir(profil: Optional[str]) -> tuple[Optional[Path], str]:
-    if profil:
-        return LIVE_BASE_DIR / profil, profil
-    for candidate in LIVE_PROFILE_CANDIDATES:
-        candidate_dir = LIVE_BASE_DIR / candidate
-        if (candidate_dir / "decisions_log.jsonl").exists():
-            return candidate_dir, candidate
-    return None, LIVE_PROFILE_CANDIDATES[0]
+def live_roots(explicit: Optional[Path] = None) -> List[Path]:
+    """Suchreihenfolge fuer die Live-Wurzel, erste Treffer zuerst.
+
+    ``--live-root`` schlaegt ``THESIS_LIVE_ROOT`` schlaegt das (gitignorierte)
+    ``data/live`` der Arbeitskopie schlaegt die versionierten, kuratierten
+    Kopien unter ``data/live_curated``. Zurueckgegeben werden nur existierende
+    Verzeichnisse; ist keines vorhanden, ist die Liste leer und die Kette
+    schreibt ein valides, gekennzeichnetes Leer-Artefakt.
+    """
+
+    candidates: List[Path] = []
+    if explicit is not None:
+        candidates.append(Path(explicit))
+    from_env = os.environ.get(LIVE_ROOT_ENV, "").strip()
+    if from_env:
+        candidates.append(Path(from_env))
+    candidates.extend((LIVE_BASE_DIR, LIVE_CURATED_DIR))
+
+    roots: List[Path] = []
+    for candidate in candidates:
+        resolved = candidate.expanduser()
+        if resolved.is_dir() and resolved not in roots:
+            roots.append(resolved)
+    return roots
+
+
+def _resolve_live_dir(
+    profil: Optional[str], roots: Optional[List[Path]] = None
+) -> tuple[Optional[Path], str]:
+    """Verzeichnis eines Laufs ueber die Wurzel-Suchreihenfolge finden."""
+
+    roots = live_roots() if roots is None else roots
+    wanted = (profil,) if profil else LIVE_PROFILE_CANDIDATES
+    for candidate in wanted:
+        for root in roots:
+            candidate_dir = root / candidate
+            if (candidate_dir / "decisions_log.jsonl").exists():
+                return candidate_dir, candidate
+    fallback = profil or LIVE_PROFILE_CANDIDATES[0]
+    return None, fallback
 
 
 @dataclass
@@ -967,6 +1008,7 @@ def run_daily_review(
     use_llm: bool = False,
     collect: bool = False,
     live_profile: Optional[str] = None,
+    live_root: Optional[Path] = None,
     max_cases: int = 50,
     collect_fn: Callable[[], str] = _run_collector,
     refresh_fn: Callable[[], str] = _run_monitor_refresh,
@@ -1026,14 +1068,17 @@ def run_daily_review(
         mentions_rows=_read_csv_rows(MENTIONS_CSV_PATH) if MENTIONS_CSV_PATH.exists() else [],
         now_utc=now_utc,
     )
-    live_dir, profil = _resolve_live_dir(live_profile)
+    roots = live_roots(live_root)
+    live_dir, profil = _resolve_live_dir(live_profile, roots)
     forward_payload = build_pipeline_forward(
         live_dir=live_dir, profil=profil, now_utc=now_utc
     )
     if forward_payload.eintraege:
         schritte["pipeline_forward"] = f"ok ({len(forward_payload.eintraege)} eintraege)"
     else:
-        schritte["pipeline_forward"] = "quelle_fehlt (data/live nicht vorhanden)"
+        schritte["pipeline_forward"] = (
+            "quelle_fehlt (keine Live-Wurzel mit decisions_log.jsonl gefunden)"
+        )
     audit_payload = build_audit(llm_sink=llm_sink, now_utc=now_utc)
     meta_payload = build_meta(
         now_utc=now_utc, backend_name=backend_name, schritte=schritte
@@ -1093,6 +1138,16 @@ def main(argv: Optional[List[str]] = None) -> int:
         default=None,
         help="Live-Profil fuer pipeline_forward.json (z.B. allin_july3).",
     )
+    parser.add_argument(
+        "--live-root",
+        type=Path,
+        default=None,
+        help=(
+            "Wurzel der Lauf-Verzeichnisse (z.B. C:\\Users\\chole\\ba-thesis\\data\\live). "
+            f"Alternativ ueber {LIVE_ROOT_ENV}. Ohne Angabe: data/live, sonst "
+            "die kuratierten Kopien unter data/live_curated."
+        ),
+    )
     parser.add_argument("--max-cases", type=int, default=50)
     args = parser.parse_args(argv)
 
@@ -1102,6 +1157,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             use_llm=args.llm,
             collect=args.collect,
             live_profile=args.live_profile,
+            live_root=args.live_root,
             max_cases=args.max_cases,
         )
     except (RedactionGateError, ValueError, FileNotFoundError, RuntimeError) as exc:

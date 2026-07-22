@@ -31,7 +31,7 @@ import re
 import time
 from datetime import datetime, timezone
 
-from operations.pipeline import config
+from operations.pipeline import config, startwache
 from operations.pipeline.decision import (
     entscheide_yes,
     nach_edge_sortiert,
@@ -132,6 +132,16 @@ class ElonMatcher:
 
 
 def lauf(live: bool) -> None:
+    # Startwache VOR allem Setup (Vorfall 22.7., lemonade_july22):
+    # zweite Instanz desselben Profils beendet sich sofort; der Gewinner
+    # schreibt bot.pid atomar, bevor das Setup beginnt.
+    if not startwache.wache_nehmen(config.LIVE_DIR):
+        _schreibe_event("doppelstart_abgebrochen", {
+            "grund": "start.lock belegt — andere Instanz laeuft/startet",
+            "verlierer_pid": os.getpid(),
+        })
+        print("Startwache belegt (andere Instanz laeuft) — beende.")
+        return
     from operations.pipeline.execution import DryRunExecutor, LiveExecutor
 
     executor = LiveExecutor() if live else DryRunExecutor()
@@ -158,8 +168,6 @@ def lauf(live: bool) -> None:
                                                 "live_partial")):
                     getradet.add(str(e.get("market_id")))
 
-    # PID-Datei fuer den Watchdog (erkennt haengende Instanzen).
-    (config.LIVE_DIR / "bot.pid").write_text(str(os.getpid()), encoding="utf-8")
     _schreibe_event("start", {
         "modus": modus, "aktive_maerkte": len(rules),
         "bereits_getradet": sorted(getradet),

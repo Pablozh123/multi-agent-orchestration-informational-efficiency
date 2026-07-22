@@ -25,7 +25,7 @@ import os
 import time
 from datetime import datetime, timezone
 
-from operations.pipeline import config
+from operations.pipeline import config, startwache
 from operations.pipeline.decision import entscheide_yes, nach_edge_sortiert
 from operations.pipeline.elon_bot import ElonMatcher, baue_elon_rules
 from operations.pipeline.orderbook import (
@@ -88,6 +88,16 @@ def hole_startscan(watcher, start_dt: datetime, max_seiten: int = 40,
 
 
 def lauf(live: bool) -> None:
+    # Startwache VOR allem Setup (Vorfall 22.7., lemonade_july22):
+    # zweite Instanz desselben Profils beendet sich sofort; der Gewinner
+    # schreibt bot.pid atomar, bevor das Setup beginnt.
+    if not startwache.wache_nehmen(config.LIVE_DIR):
+        _schreibe_event("doppelstart_abgebrochen", {
+            "grund": "start.lock belegt — andere Instanz laeuft/startet",
+            "verlierer_pid": os.getpid(),
+        })
+        print("Startwache belegt (andere Instanz laeuft) — beende.")
+        return
     from operations.pipeline.execution import DryRunExecutor, LiveExecutor
 
     executor = LiveExecutor() if live else DryRunExecutor()
@@ -113,8 +123,6 @@ def lauf(live: bool) -> None:
                         and e.get("status") in _GEFUELLT):
                     getradet.add(str(e.get("market_id")))
 
-    (config.LIVE_DIR / "bot.pid").write_text(str(os.getpid()),
-                                             encoding="utf-8")
     _schreibe_event("start", {
         "modus": modus, "aktive_maerkte": len(rules),
         "bereits_getradet": sorted(getradet),

@@ -22,10 +22,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import time
 
-from operations.pipeline import config
+from operations.pipeline import config, startwache
 from operations.pipeline.counter_engine import StreamingCounter
 from operations.pipeline.decision import (
     entscheide_no,
@@ -149,6 +150,18 @@ def status_bericht() -> dict:
 
 def lauf(live: bool) -> None:
     """Hauptschleife des Bots."""
+    # Startwache VOR allem Setup (Vorfall 22.7.: Watchdog-Tick und
+    # starte_bots.ps1 starteten dasselbe Profil sekundengleich doppelt,
+    # weil bot.pid erst nach dem minutenlangen Setup geschrieben wurde):
+    # die zweite Instanz desselben Profils beendet sich hier sofort; der
+    # Gewinner schreibt bot.pid atomar, bevor das Setup beginnt.
+    if not startwache.wache_nehmen(config.LIVE_DIR):
+        _schreibe_event("doppelstart_abgebrochen", {
+            "grund": "start.lock belegt — andere Instanz laeuft/startet",
+            "verlierer_pid": os.getpid(),
+        })
+        print("Startwache belegt (andere Instanz laeuft) — beende.")
+        return
     from operations.pipeline.execution import DryRunExecutor, LiveExecutor
 
     executor = LiveExecutor() if live else DryRunExecutor()
@@ -228,10 +241,6 @@ def lauf(live: bool) -> None:
             prober = Mp3UrlProber(naechste_nr)
         except Exception as ex:  # noqa: BLE001
             _schreibe_event("fehler", {"wo": "prober_init", "fehler": str(ex)})
-    import os as _os
-
-    # PID-Datei fuer den Watchdog (erkennt haengende Instanzen).
-    (config.LIVE_DIR / "bot.pid").write_text(str(_os.getpid()), encoding="utf-8")
     _schreibe_event("start", {
         "modus": modus,
         "aktive_maerkte": len(aktive),

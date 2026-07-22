@@ -3,15 +3,19 @@
 from __future__ import annotations
 
 import json
+from datetime import date
 from pathlib import Path
 
 import pytest
 
+from operations.pilot import watcher as pilot_watcher
 from operations.pipeline.run_dashboard import (
     RUNS_FILE,
     RedactionGateError,
+    aktualisiere_pilot_signale,
     build_aggregat,
     build_pilot_payload,
+    pilot_fenster_offen,
     build_postmortems_payload,
     build_run,
     build_runs_payload,
@@ -526,6 +530,54 @@ class TestPostmortemsUndPilot:
 
     def test_pilot_none_ohne_artefakte(self, tmp_path):
         assert build_pilot_payload(pilot_dir=tmp_path) is None
+
+    def test_watcher_laeuft_im_handelsfenster(self, tmp_path, monkeypatch):
+        """Kettenschritt: im Fenster wird der Watcher wirklich aufgerufen."""
+
+        gerufen = {}
+
+        def fake_fetch(now=None, **kwargs):
+            gerufen["fetch"] = True
+            return [{"id": "1"}]
+
+        def fake_scan(maerkte, now, **kwargs):
+            gerufen["scan"] = True
+            return [], {"maerkte": len(maerkte)}
+
+        monkeypatch.setattr(pilot_watcher, "fetch_gamma_maerkte", fake_fetch)
+        monkeypatch.setattr(pilot_watcher, "scan", fake_scan)
+        meldung = aktualisiere_pilot_signale(
+            pilot_dir=tmp_path, heute=date(2026, 7, 22)
+        )
+        assert gerufen == {"fetch": True, "scan": True}
+        assert meldung.startswith("ok (1 maerkte")
+        # Trade-Vorlage und Metadaten entstehen im selben Lauf.
+        assert (tmp_path / "trades.csv").exists()
+        assert (tmp_path / "watcher_metadata.json").exists()
+
+    def test_watcher_entfaellt_nach_fensterende(self, tmp_path, monkeypatch):
+        def darf_nicht(*args, **kwargs):
+            raise AssertionError("Watcher lief nach Fensterende")
+
+        monkeypatch.setattr(pilot_watcher, "fetch_gamma_maerkte", darf_nicht)
+        meldung = aktualisiere_pilot_signale(
+            pilot_dir=tmp_path, heute=date(2026, 8, 2)
+        )
+        assert "uebersprungen" in meldung
+
+    def test_watcher_fehler_bricht_die_kette_nicht(self, tmp_path, monkeypatch):
+        def kaputt(**kwargs):
+            raise RuntimeError("Gamma nicht erreichbar")
+
+        monkeypatch.setattr(pilot_watcher, "fetch_gamma_maerkte", kaputt)
+        meldung = aktualisiere_pilot_signale(
+            pilot_dir=tmp_path, heute=date(2026, 7, 22)
+        )
+        assert meldung.startswith("fehlgeschlagen (RuntimeError)")
+
+    def test_fenster_grenze_ist_der_letzte_handelstag(self):
+        assert pilot_fenster_offen(date(2026, 8, 1)) is True
+        assert pilot_fenster_offen(date(2026, 8, 2)) is False
 
     def test_publish_payloads_schreibt_und_gated(self, tmp_path):
         ziele = publish_payloads(

@@ -18,7 +18,6 @@ No raw SQL, no database writes (beyond the audit append), no order/trading path.
 from __future__ import annotations
 
 import json
-from pathlib import Path
 from typing import Any, Callable, Dict, Optional
 
 try:  # Support both package import and direct-script execution.

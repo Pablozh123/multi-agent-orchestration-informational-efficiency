@@ -101,11 +101,13 @@ def test_no_seite_ausgeschaltet(profil) -> None:
     assert config.NO_ASK_OBERGRENZE == pytest.approx(0.0)
 
 
-def test_budget_konservativ_nicht_vollpool(profil) -> None:
-    # Budget-Mittelweg (User-Vorgabe 23.07.), aber klar unter dem 510er-
-    # Vollpool wegen geteiltem Wallet + duennen Buechern.
-    assert config.MAX_USD_GESAMT == pytest.approx(170.0)
-    assert config.MAX_USD_GESAMT < 510.0
+def test_budget_und_standard_sweep(profil) -> None:
+    # Budget 400 (User-Vorgabe 23.07.) mit Standard-Sweep wie allin_july17.
+    assert config.MAX_USD_GESAMT == pytest.approx(400.0)
+    assert config.MAX_USD_PRO_MARKT == pytest.approx(50.0)
+    assert config.MAX_CLIPS_PRO_MARKT == 40
+    assert config.PROFILE["hotones_july23"]["max_usd_pro_markt"] == pytest.approx(
+        config.PROFILE["allin_july17"]["max_usd_pro_markt"])
 
 
 def test_titel_muster_trifft_hauptfolge_nicht_nebenformate(profil) -> None:

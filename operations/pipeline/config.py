@@ -510,14 +510,17 @@ PROFILE = {
         # elon_july13/trump_july13 wird nur YES gehandelt, bis die Gast-only-
         # NO-Zuordnung belegt ist. Siehe Handover-Notiz.
         "no_ask_obergrenze": 0.0,
-        # Budget-Mittelweg (User-Vorgabe 23.07.): mehr Tiefe je Markt als
-        # der 90er-Default, aber deutlich unter den 510er-Vollpool-Profilen
-        # wegen des geteilten Wallets (parallel: mrbeast_gaming) und der
-        # duennen Buecher (Serien-Liquiditaet ~2000 USD). Vor dem Scharf-
-        # schalten am realen Wallet-Stand gegenpruefen.
-        "max_usd_gesamt": 170.0,
-        "max_usd_pro_markt": 15.0,
-        "max_clips_pro_markt": 10,
+        # Budget 400 (User-Vorgabe 23.07.) mit Standard-Sweep wie die
+        # Vollprofile (allin_july17: 50 USD je Markt, 40 Clips, budget-
+        # statt clip-limitiert). ACHTUNG duenne Buecher (Serien-Liquiditaet
+        # ~2000 USD, mehrere Maerkte nur 8-17 USD Tiefe unter dem Deckel) —
+        # der Sweep raeumt nur vorhandene Level ab und stoppt am Deckel,
+        # aber 50/Markt kann bei duennen Buechern spuerbar slippen. Geteiltes
+        # Wallet mit mrbeast_gaming: vor dem Scharfschalten Wallet-Stand
+        # gegenpruefen (Executor-Delta-Sync verhindert Ueberziehen).
+        "max_usd_gesamt": 400.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
     },
 }
 

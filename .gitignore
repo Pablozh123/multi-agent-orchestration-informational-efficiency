@@ -50,3 +50,6 @@ data/results/daily_review_llm_audit_log.jsonl
 # Tageslauf-Arbeitskopien der Kurations-Dateien (gefiltert, regenerierbar)
 data/results/daily_review_filtered_status_updates.csv
 data/results/daily_review_filtered_decisions.csv
+
+# Probelauf-Journal des Pilot-Autotraders (kein Protokoll-Nachweis)
+pilot/trades_dry_run.csv

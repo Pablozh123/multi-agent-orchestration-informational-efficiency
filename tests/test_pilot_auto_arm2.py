@@ -244,10 +244,33 @@ def test_journal_hat_alle_pflichtfelder(pilot_dir) -> None:
                  "ausfuehrungspreis", "groesse_usd", "gebuehren_usd",
                  "slippage", "orderbuchtiefe_einstieg_usd", "exit_grund"):
         assert zeile[feld] != "", f"{feld} fehlt"
-    assert zeile["slippage"] == "0.0"  # Dry-Run fuellt zum gesehenen Ask
+    # Protokoll-Definition: Ausfuehrung minus SIGNAL. Signal war 0.95, das
+    # Buch stand beim Kauf ebenfalls auf 0.95 -> Abweichung null.
+    assert zeile["signalpreis"] == "0.95"
+    assert zeile["slippage"] == "0.0"
+    assert "ask_bei_ausfuehrung=0.95" in zeile["bemerkung"]
     assert "Aufloesung" in zeile["exit_grund"]
     assert "automatisiert (V3)" in zeile["bemerkung"]
     assert not any("wallet" in k.lower() for k in zeile)
+
+
+def test_slippage_misst_verfall_zwischen_signal_und_ausfuehrung(pilot_dir) -> None:
+    """Signal bei 0.92, Buch beim Kauf auf 0.95 -> Slippage +0.03."""
+
+    schreibe_signale(pilot_dir, [signal("m1", signal_preis="0.92")])
+    auto_arm2.lauf(pilot_dir=pilot_dir, fetch=fetch_fest(0.95),
+                   heute=date(2026, 7, 22))
+    with open(pilot_dir / "trades_dry_run.csv", encoding="utf-8", newline="") as handle:
+        zeile = list(csv.DictReader(handle))[0]
+    assert zeile["signalpreis"] == "0.92"
+    assert zeile["ausfuehrungspreis"] == "0.95"
+    assert float(zeile["slippage"]) == pytest.approx(0.03, abs=1e-6)
+
+
+def test_signalpreis_faellt_auf_ausloesewert_zurueck() -> None:
+    assert auto_arm2.signalpreis_aus({"signal_preis": "0.93"}) == 0.93
+    assert auto_arm2.signalpreis_aus({"ausloesewert": "ask=0.91"}) == 0.91
+    assert auto_arm2.signalpreis_aus({"ausloesewert": "kaputt"}) is None
 
 
 def test_dry_run_kaeufer_rechnet_anteile_und_betrag() -> None:

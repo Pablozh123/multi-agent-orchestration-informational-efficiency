@@ -205,11 +205,32 @@ def pruefe_am_buch(token_id: str, fetch=fetch_book) -> tuple[float | None, float
     return ask, tiefe, ""
 
 
+def signalpreis_aus(signal: dict) -> float | None:
+    """Preis, bei dem das Signal ausgeloest hat (nicht der Preis beim Kauf)."""
+
+    try:
+        return float(signal.get("signal_preis"))
+    except (TypeError, ValueError):
+        pass
+    roh = str(signal.get("ausloesewert") or "")
+    if "=" in roh:
+        try:
+            return float(roh.split("=", 1)[1])
+        except ValueError:
+            return None
+    return None
+
+
 def schreibe_trade(
     trades_pfad: Path, signal: dict, ask: float, tiefe: float,
     ergebnis: Kaufergebnis, jetzt: str,
 ) -> None:
     watcher.ensure_trades_template(trades_pfad)
+    # Protokoll-Definition: Slippage = Ausfuehrung minus SIGNAL. Nicht gegen
+    # den frisch geprueften Ask rechnen -- der ist beim FAK-Kauf gleich dem
+    # Fill, die Spalte waere dann konstant null und der eigentliche Effekt
+    # (Preisverfall zwischen Signal und Ausfuehrung) unsichtbar.
+    signalpreis = signalpreis_aus(signal)
     zeile = {
         "zeitstempel_utc": jetzt,
         "markt_id": signal.get("market_id"),
@@ -218,20 +239,23 @@ def schreibe_trade(
         "signal_regel": signal.get("regel"),
         "signal_ausloesewert": signal.get("ausloesewert"),
         "seite": signal.get("seite"),
-        "signalpreis": ask,
+        "signalpreis": signalpreis,
         "ausfuehrungspreis": ergebnis.ausfuehrungspreis,
         "groesse_usd": ergebnis.betrag_usd,
         "gebuehren_usd": ergebnis.gebuehren_usd,
         "slippage": (
             None
-            if ergebnis.ausfuehrungspreis is None
-            else round(ergebnis.ausfuehrungspreis - ask, 4)
+            if ergebnis.ausfuehrungspreis is None or signalpreis is None
+            else round(ergebnis.ausfuehrungspreis - signalpreis, 4)
         ),
         "orderbuchtiefe_einstieg_usd": tiefe,
         "exit_zeit_utc": "",
         "exit_preis": "",
         "exit_grund": "haelt bis zur Aufloesung (Protokoll)",
-        "bemerkung": f"automatisiert (V3): {ergebnis.status}; {ergebnis.detail}",
+        "bemerkung": (
+            f"automatisiert (V3): {ergebnis.status}; ask_bei_ausfuehrung={ask}; "
+            f"{ergebnis.detail}"
+        ),
     }
     with open(trades_pfad, "a", encoding="utf-8", newline="") as handle:
         csv.DictWriter(handle, fieldnames=watcher.TRADES_CSV_FELDER).writerow(zeile)

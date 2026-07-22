@@ -37,32 +37,56 @@ Der Code liegt hier im Projects-Klon. Erst nach ba-thesis bringen:
    erzwingen; sie beenden sich ohnehin selbst.
 
 2. **Zwei Referenzstimmen bauen** (ECAPA ist lokal gecacht → nur Downloads,
-   kein Modell-Download). Solo-Quellen (Metadaten verifiziert; Sekunden-
-   Fenster VOR dem Bauen kurz gegenhören — sie sind Format-Heuristik):
+   kein Modell-Download). Die Fenster wurden aus den Video-Captions
+   abgeleitet (Holland: manuelle Captions mit Sprecher-Labels `Tom:`/`Sean:`
+   → punktgenau; Bernthal: Auto-Captions, seine langen Antwortblöcke —
+   Anfang kurz gegenhören und ggf. 1–2 s trimmen). Fenster = `@start-ende`
+   in Sekunden. Kommandos für die ba-thesis-`.venv`:
 
-   Bernthal — Refs aus `REAL ONES w/ Jon Bernthal` (`76Ypt7CmYsI`,
-   `hC07aVjdRC8`) und JRE #1916 (`mfXxdBMkvhs`); Positiv-Test =
-   sein eigenes Hot Ones (`KCVjsbmVi0E`, gleiche Studio-Akustik).
-
-   Holland — Refs aus Rich Roll (`zfyU30zrHHI`), Jay Shetty (`GOqEl4ADyVk`),
-   Amy Poehler (`muM7YcClWeU`); Positiv-Test = sein eigenes Hot Ones
-   (`qxGmGGmvFD8`).
-
-   Negativ = Sean Evans (`RHEgCocqOM8`) plus lokale `data/live/*/episode.mp3`.
-
+   **Holland** (alle aus seinem Hot Ones `qxGmGGmvFD8`, reines Tom
+   verifiziert; Sean-Evans-Fenster derselben Folge + lokale Männerstimmen
+   als Negativ):
    ```bash
-   BOT_PROFIL=hotones_july23 python -m operations.pipeline.baue_referenz_quellen \
-     --ziel data/live/hotones_july23/referenz_bernthal.npy \
-     --clip "https://youtu.be/76Ypt7CmYsI@START-ENDE" \
-     --clip "https://youtu.be/hC07aVjdRC8@START-ENDE" \
-     --clip "https://youtu.be/mfXxdBMkvhs@START-ENDE" \
-     --test "https://youtu.be/KCVjsbmVi0E@START-ENDE" \
-     --negativ "https://youtu.be/RHEgCocqOM8@START-ENDE"
+   BOT_PROFIL=hotones_july23 .venv/Scripts/python -m operations.pipeline.baue_referenz_quellen \
+     --ziel data/live/hotones_july23/referenz_holland.npy \
+     --clip "https://youtu.be/qxGmGGmvFD8@55-83" \
+     --clip "https://youtu.be/qxGmGGmvFD8@160-188" \
+     --clip "https://youtu.be/qxGmGGmvFD8@286-314" \
+     --clip "https://youtu.be/qxGmGGmvFD8@497-525" \
+     --clip "https://youtu.be/qxGmGGmvFD8@838-866" \
+     --test "https://youtu.be/qxGmGGmvFD8@1230-1258" \
+     --negativ "https://youtu.be/qxGmGGmvFD8@15-35" \
+     --negativ "https://youtu.be/qxGmGGmvFD8@1372-1400" \
+     --negativ "data/live/jre_july6/episode.mp3@1800-1830" \
+     --negativ "data/live/allin_july17/episode.mp3@1800-1830"
    ```
 
-   Empfehlung: 4–6 Clips à 15–30 s je Person (ECAPA degradiert unter ~3 s).
-   Positiv soll klar über 0.50 liegen, Sean-Evans-Negativ klar darunter.
-   Für Holland analog mit `referenz_holland.npy`.
+   **Bernthal** (vier Fenster aus seinem Hot Ones `KCVjsbmVi0E` + Cold-Open
+   aus `REAL ONES` `76Ypt7CmYsI` für Aufnahme-Varianz; Positiv-Test =
+   ausgehaltenes Hot-Ones-Fenster):
+   ```bash
+   BOT_PROFIL=hotones_july23 .venv/Scripts/python -m operations.pipeline.baue_referenz_quellen \
+     --ziel data/live/hotones_july23/referenz_bernthal.npy \
+     --clip "https://youtu.be/KCVjsbmVi0E@250-278" \
+     --clip "https://youtu.be/KCVjsbmVi0E@402-430" \
+     --clip "https://youtu.be/KCVjsbmVi0E@667-695" \
+     --clip "https://youtu.be/KCVjsbmVi0E@824-852" \
+     --clip "https://youtu.be/76Ypt7CmYsI@1-19" \
+     --test "https://youtu.be/KCVjsbmVi0E@588-614" \
+     --negativ "https://youtu.be/qxGmGGmvFD8@15-35" \
+     --negativ "data/live/jre_july6/episode.mp3@1800-1830" \
+     --negativ "data/live/allin_july17/episode.mp3@1800-1830"
+   ```
+
+   Inhalte der Fenster (zum schnellen Gegenhören):
+   - Holland `@55` Nando's/spicy · `@160` Puppeteer-Arme · `@286` Downey/Marty ·
+     `@497` „Spider-Man suit" · `@838` Water-Tank-Set · `@1230` (Test) Drama-School/Downey
+   - Bernthal `@250` „nowhere to hide" (Theater) · `@402` „you buy it" (Fights) ·
+     `@667` Dogs on set · `@824` Masculinity · `76Ypt…@1` Cold-Open „violence scale" ·
+     `KCV…@588` (Test) Sweatpants-Story
+
+   Empfehlung: 15–30 s je Clip (ECAPA degradiert unter ~3 s). Positiv-Test
+   soll klar über 0.50 liegen, alle Negative klar darunter.
 
 3. **Schwelle prüfen.** Start bei `sprecher_schwelle = 0.50`. Wenn der
    Positiv-Test nur knapp über 0.50 und Evans nah dran liegt: anheben. Zwei
@@ -77,9 +101,10 @@ Der Code liegt hier im Projects-Klon. Erst nach ba-thesis bringen:
    hängen, NICHT an das Gamma-`endDate` (23.07. 23:59 UTC) — sonst killt der
    Watchdog den Bot vor einem verspäteten Upload.
 
-5. **Start** (der Bot holt den Gamma-Snapshot selbst):
+5. **Start — Echtgeld, DU führst das aus** (der Bot holt den Gamma-Snapshot
+   selbst und platziert live Orders auf Polymarket). Vor ~14:45 UTC starten:
    ```bash
-   BOT_PROFIL=hotones_july23 python -m operations.pipeline.bot --refresh-rules --live
+   BOT_PROFIL=hotones_july23 .venv/Scripts/python -m operations.pipeline.bot --refresh-rules --live
    ```
    Direkt nach dem Trigger den Folgen-Titel manuell gegenchecken — der Titel
    der Duo-Folge ist bis zum Upload unbekannt (Wikipedia-Eintrag ist

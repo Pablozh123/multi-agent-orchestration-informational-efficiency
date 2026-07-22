@@ -93,9 +93,10 @@ Der Code liegt hier im Projects-Klon. Erst nach ba-thesis bringen:
   wer NO handeln will, braucht zuerst einen **gast-only erweiterten Zähler**
   (erweitert_count nur aus `ist_ziel`-Segmenten) + Kalibrierung — echter
   Code-Eingriff mit Testbedarf, nicht heute Nacht blind scharf schalten.
-- **Budget** `max_usd_gesamt = 90` (geteiltes Wallet mit mrbeast_gaming).
-  Vor dem Scharfschalten an den realen Wallet-Stand anpassen (belegt ist nur
-  der 18.07.-Stand ~340 USD Einzahlung).
+- **Budget** `max_usd_gesamt = 170` (User-Vorgabe 23.07.; Mittelweg, klar
+  unter den 510er-Vollpool-Profilen wegen geteiltem Wallet mit
+  mrbeast_gaming). Vor dem Scharfschalten am realen Wallet-Stand
+  gegenprüfen (belegt ist nur der 18.07.-Stand ~340 USD Einzahlung).
 - **Homophon-Gate** kann YES auf soccer/wedding/brother abschalten, wenn die
   Segment-Konfidenz auf Hot-Ones-Audio (Essen, Lachen, Husten) oft < 0.8
   liegt. Auf der Radcliffe-Folge (Serie 12334, Event 214212) einmal messen.

@@ -102,8 +102,9 @@ def test_no_seite_ausgeschaltet(profil) -> None:
 
 
 def test_budget_konservativ_nicht_vollpool(profil) -> None:
-    # Geteiltes Wallet mit parallelen 510er-Profilen -> klein halten.
-    assert config.MAX_USD_GESAMT == pytest.approx(90.0)
+    # Budget-Mittelweg (User-Vorgabe 23.07.), aber klar unter dem 510er-
+    # Vollpool wegen geteiltem Wallet + duennen Buechern.
+    assert config.MAX_USD_GESAMT == pytest.approx(170.0)
     assert config.MAX_USD_GESAMT < 510.0
 
 

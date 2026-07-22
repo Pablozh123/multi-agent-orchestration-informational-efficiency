@@ -510,11 +510,12 @@ PROFILE = {
         # elon_july13/trump_july13 wird nur YES gehandelt, bis die Gast-only-
         # NO-Zuordnung belegt ist. Siehe Handover-Notiz.
         "no_ask_obergrenze": 0.0,
-        # Konservatives Budget: duenne Buecher + geteiltes Wallet mit den
-        # parallel laufenden 510er-Profilen (mrbeast_gaming). Groessenordnung
-        # allin_july10, NICHT 510. Vor dem Scharfschalten an den realen
-        # Wallet-Stand anpassen.
-        "max_usd_gesamt": 90.0,
+        # Budget-Mittelweg (User-Vorgabe 23.07.): mehr Tiefe je Markt als
+        # der 90er-Default, aber deutlich unter den 510er-Vollpool-Profilen
+        # wegen des geteilten Wallets (parallel: mrbeast_gaming) und der
+        # duennen Buecher (Serien-Liquiditaet ~2000 USD). Vor dem Scharf-
+        # schalten am realen Wallet-Stand gegenpruefen.
+        "max_usd_gesamt": 170.0,
         "max_usd_pro_markt": 15.0,
         "max_clips_pro_markt": 10,
     },

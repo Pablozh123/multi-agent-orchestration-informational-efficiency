@@ -321,6 +321,43 @@ PROFILE = {
         # noch lange nach der Runde guenstig gehandelt).
         "nachlauf_minuten": 90,
     },
+    "lemonade_july22": {
+        "live_dir": "lemonade_july22",
+        "event_id": "708407",
+        "event_slug": (
+            "what-will-be-said-on-the-next-lemonade-stand-podcast-"
+            "july-22-20260715172625707"
+        ),
+        # Quellen wie july15: Vox/Megaphone-Feed (VMP-Zufallsnamen, kein
+        # Prober), Drop Mi ~19:00 UTC, pubDate teils +15-115 Min verspaetet
+        # -> RSS+YT parallel, first-wins. NUR der Podcast-Kanal (der
+        # Clips-Kanal UCurXa... ist irrelevant, Befund 13.07.).
+        "rss_feed_url": "https://feeds.megaphone.fm/VMP5629614579",
+        "yt_channel_id": "UCwVevVbti5Uuxj6Mkl5NHRA",  # @LemonadeStandPodcast
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "lemonade-stand",
+        # Marktregel 708407 (geprueft 22.07.): jedes Kanal-Video mit
+        # "Lemonade Stand" im Titel qualifiziert, "mentioned by anyone",
+        # No-Qualifying erst 31.07. -> Titel-Muster = Positiv-Identifikation.
+        "titel_muster": r"lemonade\s*stand",
+        "yt_kanalseite_immer": True,
+        "yt_min_dauer_s": 900,
+        # Armierung 22.07. (Vollpool-Prinzip, geteiltes Wallet mit
+        # mrbeast_gaming; Executor-Delta-Sync verhindert Ueberziehen).
+        "max_usd_gesamt": 510.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        # Basisraten: Serie lemonade-stand, 7 voll aufgeloeste Vorwochen —
+        # Ritual-/Fuellwoerter (actually/think/money 0.91-0.97 vorgepreist)
+        # sperren sich damit empirisch selbst. BEWUSST kein Boilerplate-
+        # Lexikon: Captions-Check zweier Episoden (22.07.) zeigt kein
+        # festes Intro/Outro-Jingle (nur den Host-Opener "Ladies and
+        # gentlemen", danach divergent) — Ritual-Woerter deckt die
+        # Basisraten-Schicht besser belegt ab.
+        "serie_id": "11828",
+        # Duenne Buecher der jungen Show -> langes Nachlauf-Fenster wie JRE.
+        "nachlauf_minuten": 90,
+    },
     "lemonade_july15": {
         "live_dir": "lemonade_july15",
         "event_id": "686210",

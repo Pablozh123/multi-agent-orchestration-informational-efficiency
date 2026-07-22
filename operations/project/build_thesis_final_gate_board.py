@@ -181,8 +181,10 @@ def build_thesis_final_gate_board(
         result_package["package_traceability_status"].astype(str).str.contains("gap", case=False, na=False).sum()
     )
     latest_snapshot = str(swiss_latest["polymarket_snapshot_at_utc"].iloc[0])
-    latest_yes = float(swiss_latest["polymarket_yes_probability"].iloc[0])
-    valuation_scopes = "; ".join(sorted(set(swiss_latest["valuation_scope"].astype(str))))
+    # Bewusst berechnet, aber nicht ausgegeben: die Zugriffe validieren die
+    # Spalten (fehlend oder unparsbar => Abbruch statt stiller Luecke).
+    _latest_yes = float(swiss_latest["polymarket_yes_probability"].iloc[0])
+    _valuation_scopes = "; ".join(sorted(set(swiss_latest["valuation_scope"].astype(str))))
     active_agents = _active_agent_rows(agent_upgrade)
     if active_agents:
         raise ValueError("Future agent upgrade plan must not activate runtime agents.")
@@ -192,7 +194,7 @@ def build_thesis_final_gate_board(
     swiss_status_block = swiss_status.get("status", {})
     if not isinstance(swiss_status_block, dict):
         raise ValueError("Swiss running status JSON missing status object.")
-    snapshot_row_count = _int_from_mapping(
+    _snapshot_row_count = _int_from_mapping(
         swiss_status_block,
         "snapshot_row_count",
         default=len(swiss_latest),

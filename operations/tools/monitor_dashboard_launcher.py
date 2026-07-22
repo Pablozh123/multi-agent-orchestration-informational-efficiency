@@ -7,7 +7,7 @@ import sys
 import webbrowser
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Sequence
 
 from operations.analysis.monitor_v2_dashboard import (
     DASHBOARD_METADATA_OUTPUT,

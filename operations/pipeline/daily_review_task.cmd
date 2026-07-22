@@ -2,6 +2,8 @@
 REM Wrapper fuer den Windows-Task \MarketIntelDailyReview (Muster: watchdog_task.cmd).
 REM   %1 = publish-dir (Website public\data)
 REM   %2 = live-root   (Live-Repo data\live, z.B. C:\Users\chole\ba-thesis\data\live)
+REM        Geht an Tageslauf UND Dashboard: die Rohdaten der Laeufe liegen nur
+REM        dort, data\live dieser Arbeitskopie ist gitignored und leer.
 REM Ablauf: Clone aktualisieren -> Tageslauf -> Daten-Artefakte committen+pushen.
 REM Lehre 16.7.: Der Task lief auf einem 10 Commits alten Clone, und der
 REM manuelle Artefakt-Commit im veralteten Stand erzeugte Divergenz (Rebase).
@@ -28,7 +30,12 @@ if errorlevel 1 (
 )
 
 :pipeline
-python -m operations.pipeline.daily_review_run --collect --publish-dir %1 >> %LOG% 2>&1
+REM Ohne %2 (anderer Rechner, anderes Checkout) bleibt --live-root weg; der Lauf
+REM faellt dann auf data\live und danach auf data\live_curated zurueck.
+set LIVEARG=
+if not "%~2"=="" set LIVEARG=--live-root %2
+
+python -m operations.pipeline.daily_review_run --collect --publish-dir %1 %LIVEARG% >> %LOG% 2>&1
 if errorlevel 1 echo [%date% %time%] WARN: daily_review_run Exit-Code %errorlevel% >> %LOG%
 
 python -m operations.pipeline.run_dashboard --live-root %2 --fetch-resolutions --fetch-tape --publish-dir %1 >> %LOG% 2>&1

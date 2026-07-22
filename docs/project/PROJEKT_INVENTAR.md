@@ -102,3 +102,15 @@ Der Schritt-Vermerk in `meta.json` lautet jetzt `ok (8 laeufe, 308 eintraege)` s
 **Tests.** ba-thesis 920 grün (vorher 842, neu unter anderem `tests/test_kuratiere_live_laeufe.py` und die Fallback-Tests für den Quellpfad), Terminal 446 grün.
 
 **Offen.** Die kuratierten Kopien sind ein Stand vom 22.07. Nach neuen abgeschlossenen Läufen muss `kuratiere_live_laeufe.py` erneut laufen, sonst publiziert die Kette auf einer Maschine ohne `data/live` weiterhin nur diese acht Läufe.
+
+## Update 22.07.2026 (zweite Session): Pilot-Watcher in der Kette, Torn Write behoben
+
+Ergänzt den Abschnitt oben; beide Arbeitspakete liefen am selben Tag parallel (siehe die Notiz zur Doppelarbeit am Ende).
+
+**Der Feldtest stand still.** Der Pilot-Watcher hatte nie einen Scheduled Task. Letzter Lauf war der 18.07., 10:19 UTC — die tägliche Kette publizierte seither denselben alten Signalstand, obwohl das Handelsfenster bis 01.08. läuft. `run_dashboard` führt den read-only Watcher jetzt vor dem Bauen von `pilot.json` aus. Bewusst ohne Änderung am bestehenden Scheduled Task: Der Schritt ist datumsgebunden an `handelsfenster_bis` aus dem Protokoll, entfällt nach dem 01.08. von selbst und lässt sich mit `--kein-pilot-watcher` abschalten. Fehler sind fail-soft, dann bleibt der letzte Stand publiziert. Weiterhin kein Order-Pfad und keine Keys: gehandelt wird manuell.
+
+Erster Lauf über die Kette am 22.07., 12:11 UTC: 1655 geprüfte Märkte, kumuliert 143 Signal-Zeilen in `pilot/signals.csv` (142 Arm-2-Signale, 1 Arm-1-Kandidat). `pilot/trades.csv` bleibt leer — bis zum Fensterende am 01.08. ist kein manueller Trade erfasst. Ohne Trades wird die Ergebnis-Box in Kapitel 4 ein dokumentierter Null-Fall (Signale, Hindernisse, keine Ausführungsdaten).
+
+**Torn Write an der Wurzel behoben.** `runs.json` war am 18.07. abgeschnitten (30'072 Bytes, ungültiges JSON), weil `write_text` in die Zieldatei selbst schreibt und die Website denselben Ordner live liest. Alle Publizierpfade schreiben jetzt atomar (Temp-Datei im Zielordner, `fsync`, `os.replace`): `publish_runs`, `publish_payloads`, der Tageslauf und die Kopie in den Website-Ordner (`shutil.copy2` war derselbe Fall). `runs.json` ist neu publiziert und wieder gültiges JSON — 32'758 Bytes, 8 Runs, 15 Wetten, Einsatz 626.68, PnL 45.02 (log-basiert). Damit ist Punkt 12.1 des Kennzahlenblatts vom 18.07. erledigt.
+
+**Doppelarbeit-Notiz (für die Sync-Regeln).** Der CC-Auftrag «Pipeline-Forward füllen» wurde am 22.07. von zwei Claude-Code-Sessions gleichzeitig bearbeitet. PR #25 (kuratierte Läufe im Repo, Liste je Lauf) wurde zuerst gemergt und ist die gültige Lösung; die zweite Session hat ihre eigene, schwächere Quellpfad-Variante verworfen und nur ihre eindeutigen Beiträge (Watcher-Kettenschritt, atomares Schreiben) auf den gemergten Stand neu aufgebaut. Lehre für die Sync-Regeln in `SYNC_KONTEXT_2026-07-16.md`: Ein Auftrag aus `docs/project/` gehört an genau eine Session; vor Arbeitsbeginn `git fetch` und die offenen PRs prüfen.

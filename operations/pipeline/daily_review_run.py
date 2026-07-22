@@ -44,7 +44,6 @@ import argparse
 import json
 import os
 import re
-import shutil
 import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -52,6 +51,8 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
+
+from operations.pipeline.publish_io import schreibe_atomar
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -1200,15 +1201,17 @@ def run_daily_review(
     publish_dir.mkdir(parents=True, exist_ok=True)
     result = DailyReviewResult(publish_dir=publish_dir, schritte=schritte)
     for name, text in serialized.items():
-        target = publish_dir / name
-        target.write_text(text + "\n", encoding="utf-8")
-        result.written.append(target)
+        result.written.append(schreibe_atomar(publish_dir / name, text + "\n"))
 
     # 6) Optionaler zusaetzlicher Publish-Ordner (z.B. Website public/data)
     if extra_publish_dir is not None:
         extra_publish_dir.mkdir(parents=True, exist_ok=True)
         for name in PUBLISH_FILES:
-            shutil.copy2(publish_dir / name, extra_publish_dir / name)
+            # Atomar statt copy2: die Website liest diesen Ordner live.
+            schreibe_atomar(
+                extra_publish_dir / name,
+                (publish_dir / name).read_text(encoding="utf-8"),
+            )
         result.copied_to = extra_publish_dir
 
     return result

@@ -25,7 +25,7 @@ import html
 import json
 import re
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional
 
@@ -37,6 +37,7 @@ from operations.pipeline.daily_review_run import (
     run_redaction_gate,
 )
 from operations.pipeline.orderbook import ausfuehrbare_tiefe_usd
+from operations.pipeline.publish_io import schreibe_atomar
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PUBLISH_DIR_DEFAULT = REPO_ROOT / "data" / "publish"
@@ -1200,9 +1201,7 @@ def publish_runs(
         [extra_publish_dir] if extra_publish_dir else []
     ):
         target_dir.mkdir(parents=True, exist_ok=True)
-        target = target_dir / RUNS_FILE
-        target.write_text(serialized + "\n", encoding="utf-8")
-        written.append(target)
+        written.append(schreibe_atomar(target_dir / RUNS_FILE, serialized + "\n"))
     return written
 
 
@@ -1240,6 +1239,55 @@ _PILOT_PROTOKOLL = PilotProtokollInfo(
         "resolution, exit only via resolution."
     ),
 )
+
+
+def pilot_fenster_offen(heute: Optional[date] = None) -> bool:
+    """True, solange das vorregistrierte Handelsfenster laeuft.
+
+    Der Watcher darf nur waehrend des Fensters mitlaufen: danach ist der
+    Feldtest beendet und neue Signale wuerden das Protokoll aufweichen.
+    """
+
+    heute = heute or datetime.now(timezone.utc).date()
+    return heute <= date.fromisoformat(_PILOT_PROTOKOLL.handelsfenster_bis)
+
+
+def aktualisiere_pilot_signale(
+    pilot_dir: Path = PILOT_DIR_DEFAULT, heute: Optional[date] = None
+) -> str:
+    """Read-only Watcher-Lauf vor dem Bauen von ``pilot.json``.
+
+    Ohne diesen Schritt publiziert die Kette taeglich denselben alten
+    Signalstand (Befund 22.07.: letzter Lauf vom 18.07., der Watcher hatte
+    keinen Scheduled Task). Der Watcher bleibt read-only und ohne
+    Order-Pfad; gehandelt wird manuell. Fehler sind fail-soft: die Kette
+    publiziert dann den letzten Stand.
+    """
+
+    if not pilot_fenster_offen(heute):
+        return (
+            "uebersprungen (Handelsfenster bis "
+            f"{_PILOT_PROTOKOLL.handelsfenster_bis} beendet)"
+        )
+    try:
+        from operations.pilot import watcher as pilot_watcher
+
+        now = datetime.now(timezone.utc)
+        maerkte = pilot_watcher.fetch_gamma_maerkte(now=now)
+        trades_pfad = pilot_watcher.ensure_trades_template(pilot_dir / "trades.csv")
+        signale, statistik = pilot_watcher.scan(
+            maerkte,
+            now,
+            gehandelte_maerkte=pilot_watcher.lade_gehandelte_maerkte(trades_pfad),
+            signalisierte=pilot_watcher.lade_signalisierte(pilot_dir / "signals.csv"),
+        )
+        pilot_watcher.schreibe_signale(signale, pilot_dir / "signals.csv")
+        pilot_watcher.schreibe_metadata(
+            statistik, len(signale), now, pilot_dir / "watcher_metadata.json"
+        )
+        return f"ok ({len(maerkte)} maerkte geprueft, {len(signale)} neue signale)"
+    except Exception as exc:  # noqa: BLE001 - Kette darf daran nicht scheitern
+        return f"fehlgeschlagen ({type(exc).__name__}), letzter Stand bleibt"
 
 
 def build_pilot_payload(
@@ -1324,9 +1372,7 @@ def publish_payloads(
     ):
         target_dir.mkdir(parents=True, exist_ok=True)
         for name, serialized in payloads.items():
-            target = target_dir / name
-            target.write_text(serialized + "\n", encoding="utf-8")
-            written.append(target)
+            written.append(schreibe_atomar(target_dir / name, serialized + "\n"))
     return written
 
 
@@ -1359,6 +1405,16 @@ def main(argv: Optional[List[str]] = None) -> int:
             "Data-API auffrischen (fuer die Race-Felder)."
         ),
     )
+    parser.add_argument(
+        "--kein-pilot-watcher",
+        action="store_true",
+        help=(
+            "Den read-only Pilot-Watcher NICHT mitlaufen lassen. Default ist "
+            "mitlaufen, solange das Handelsfenster offen ist "
+            f"(bis {_PILOT_PROTOKOLL.handelsfenster_bis}); danach entfaellt "
+            "der Schritt automatisch."
+        ),
+    )
     args = parser.parse_args(argv)
 
     if not args.live_root.exists():
@@ -1382,6 +1438,12 @@ def main(argv: Optional[List[str]] = None) -> int:
         postmortems = build_postmortems_payload()
         if postmortems is not None:
             extra_payloads[POSTMORTEMS_FILE] = postmortems.model_dump_json(indent=1)
+        pilot_schritt = (
+            "uebersprungen (--kein-pilot-watcher)"
+            if args.kein_pilot_watcher
+            else aktualisiere_pilot_signale()
+        )
+        print(f"Pilot-Watcher: {pilot_schritt}")
         pilot = build_pilot_payload()
         if pilot is not None:
             extra_payloads[PILOT_FILE] = pilot.model_dump_json(indent=1)

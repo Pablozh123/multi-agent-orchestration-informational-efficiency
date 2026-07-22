@@ -42,8 +42,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
-import shutil
 import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -51,6 +51,8 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
+
+from operations.pipeline.publish_io import schreibe_atomar
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -66,7 +68,19 @@ LATENCY_EXAMPLES_PATH = RESULTS_DIR / "category_latency_examples.csv"
 MENTIONS_CSV_PATH = RESULTS_DIR / "mentions_latency.csv"
 DAILY_LLM_AUDIT_PATH = RESULTS_DIR / "daily_review_llm_audit_log.jsonl"
 
-LIVE_PROFILE_CANDIDATES = ("allin_july3", "jre_july6")
+#: Fallback-Profil, wenn keine Quelle gefunden wird (nur fuer den Hinweis).
+LIVE_PROFILE_FALLBACK = "allin_july17"
+
+#: Umgebungsvariable, mit der die Kette auf ein anderes Checkout zeigt.
+LIVE_DIR_ENV = "THESIS_LIVE_DIR"
+
+#: Bekannte Arbeitskopien desselben Repos (PROJEKT_INVENTAR.md, Punkt 1).
+#: ``data/live/`` ist gitignored und existiert nur dort, wo die Bots laufen,
+#: waehrend die taegliche Kette in der anderen Kopie laufen kann.
+GESCHWISTER_CHECKOUTS = (
+    "ba-thesis",
+    "multi-agent-orchestration-informational-efficiency",
+)
 
 PUBLISH_FILES = (
     "queue.json",
@@ -942,14 +956,87 @@ def _make_llm_backend() -> Callable[[str, str], str]:
     return backend
 
 
-def _resolve_live_dir(profil: Optional[str]) -> tuple[Optional[Path], str]:
+def live_basis_kandidaten(explizit: Optional[Path] = None) -> List[Path]:
+    """Suchreihenfolge fuer ``data/live`` (erste existierende gewinnt).
+
+    ``--live-dir`` schlaegt die Umgebungsvariable, diese das eigene Repo,
+    dieses die bekannte zweite Arbeitskopie. Damit findet die Kette die
+    Rohdaten auch dann, wenn sie nicht in dem Checkout laeuft, in dem die
+    Bots schreiben (``data/live`` ist gitignored).
+    """
+
+    kandidaten: List[Path] = []
+    if explizit is not None:
+        kandidaten.append(Path(explizit))
+    aus_env = os.environ.get(LIVE_DIR_ENV)
+    if aus_env:
+        kandidaten.append(Path(aus_env))
+    kandidaten.append(LIVE_BASE_DIR)
+    for eltern in (REPO_ROOT.parent, REPO_ROOT.parent.parent):
+        for name in GESCHWISTER_CHECKOUTS:
+            geschwister = eltern / name / "data" / "live"
+            if geschwister != LIVE_BASE_DIR:
+                kandidaten.append(geschwister)
+    return kandidaten
+
+
+def _hat_kaeufe(decisions_path: Path) -> bool:
+    """True, wenn im Entscheidungs-Log mindestens ein YES/NO steht."""
+
+    try:
+        with open(decisions_path, encoding="utf-8") as handle:
+            for line in handle:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    decision = json.loads(line).get("decision", {}) or {}
+                except json.JSONDecodeError:
+                    continue
+                if str(decision.get("action", "NONE")) in ("YES", "NO"):
+                    return True
+    except OSError:
+        return False
+    return False
+
+
+def _resolve_live_dir(
+    profil: Optional[str], live_dir: Optional[Path] = None
+) -> tuple[Optional[Path], str]:
+    """(Verzeichnis, Profilname) fuer ``pipeline_forward.json``.
+
+    Ohne explizites Profil gewinnt der juengste Lauf MIT Kaeufen; gibt es
+    keinen, der juengste Lauf mit Entscheidungen ueberhaupt. Fehlt jede
+    Quelle, wird ``None`` geliefert -- das Artefakt bleibt dann gueltig
+    und leer, mit Hinweis.
+    """
+
+    basen = live_basis_kandidaten(live_dir)
     if profil:
-        return LIVE_BASE_DIR / profil, profil
-    for candidate in LIVE_PROFILE_CANDIDATES:
-        candidate_dir = LIVE_BASE_DIR / candidate
-        if (candidate_dir / "decisions_log.jsonl").exists():
-            return candidate_dir, candidate
-    return None, LIVE_PROFILE_CANDIDATES[0]
+        for basis in basen:
+            if (basis / profil / "decisions_log.jsonl").exists():
+                return basis / profil, profil
+        return None, profil
+
+    # Die erste Basis mit Rohdaten gewinnt -- Basen werden nicht vermischt,
+    # sonst schlaegt ein zufaellig vorhandenes lokales data/live den
+    # ausdruecklich gesetzten Pfad.
+    for basis in basen:
+        if not basis.is_dir():
+            continue
+        mit_kaeufen: List[tuple[float, Path]] = []
+        ohne_kaeufe: List[tuple[float, Path]] = []
+        for profil_dir in sorted(basis.iterdir()):
+            decisions = profil_dir / "decisions_log.jsonl"
+            if not decisions.is_file():
+                continue
+            eintrag = (decisions.stat().st_mtime, profil_dir)
+            (mit_kaeufen if _hat_kaeufe(decisions) else ohne_kaeufe).append(eintrag)
+        for gruppe in (mit_kaeufen, ohne_kaeufe):
+            if gruppe:
+                _, gewaehlt = max(gruppe, key=lambda eintrag: eintrag[0])
+                return gewaehlt, gewaehlt.name
+    return None, LIVE_PROFILE_FALLBACK
 
 
 @dataclass
@@ -967,6 +1054,7 @@ def run_daily_review(
     use_llm: bool = False,
     collect: bool = False,
     live_profile: Optional[str] = None,
+    live_dir: Optional[Path] = None,
     max_cases: int = 50,
     collect_fn: Callable[[], str] = _run_collector,
     refresh_fn: Callable[[], str] = _run_monitor_refresh,
@@ -1026,14 +1114,18 @@ def run_daily_review(
         mentions_rows=_read_csv_rows(MENTIONS_CSV_PATH) if MENTIONS_CSV_PATH.exists() else [],
         now_utc=now_utc,
     )
-    live_dir, profil = _resolve_live_dir(live_profile)
+    live_dir, profil = _resolve_live_dir(live_profile, live_dir)
     forward_payload = build_pipeline_forward(
         live_dir=live_dir, profil=profil, now_utc=now_utc
     )
     if forward_payload.eintraege:
-        schritte["pipeline_forward"] = f"ok ({len(forward_payload.eintraege)} eintraege)"
+        schritte["pipeline_forward"] = (
+            f"ok (profil={profil}, {len(forward_payload.eintraege)} eintraege)"
+        )
     else:
-        schritte["pipeline_forward"] = "quelle_fehlt (data/live nicht vorhanden)"
+        schritte["pipeline_forward"] = (
+            f"quelle_fehlt (kein decisions_log.jsonl gefunden, profil={profil})"
+        )
     audit_payload = build_audit(llm_sink=llm_sink, now_utc=now_utc)
     meta_payload = build_meta(
         now_utc=now_utc, backend_name=backend_name, schritte=schritte
@@ -1054,15 +1146,17 @@ def run_daily_review(
     publish_dir.mkdir(parents=True, exist_ok=True)
     result = DailyReviewResult(publish_dir=publish_dir, schritte=schritte)
     for name, text in serialized.items():
-        target = publish_dir / name
-        target.write_text(text + "\n", encoding="utf-8")
-        result.written.append(target)
+        result.written.append(schreibe_atomar(publish_dir / name, text + "\n"))
 
     # 6) Optionaler zusaetzlicher Publish-Ordner (z.B. Website public/data)
     if extra_publish_dir is not None:
         extra_publish_dir.mkdir(parents=True, exist_ok=True)
         for name in PUBLISH_FILES:
-            shutil.copy2(publish_dir / name, extra_publish_dir / name)
+            # Atomar statt copy2: die Website liest diesen Ordner live.
+            schreibe_atomar(
+                extra_publish_dir / name,
+                (publish_dir / name).read_text(encoding="utf-8"),
+            )
         result.copied_to = extra_publish_dir
 
     return result
@@ -1091,7 +1185,19 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument(
         "--live-profile",
         default=None,
-        help="Live-Profil fuer pipeline_forward.json (z.B. allin_july3).",
+        help=(
+            "Live-Profil fuer pipeline_forward.json (z.B. allin_july17). "
+            "Ohne Angabe gewinnt der juengste Lauf mit Kaeufen."
+        ),
+    )
+    parser.add_argument(
+        "--live-dir",
+        type=Path,
+        default=None,
+        help=(
+            "Basisordner der Live-Rohdaten (Default: eigenes data/live, sonst "
+            f"${LIVE_DIR_ENV} oder die zweite bekannte Arbeitskopie)."
+        ),
     )
     parser.add_argument("--max-cases", type=int, default=50)
     args = parser.parse_args(argv)
@@ -1102,6 +1208,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             use_llm=args.llm,
             collect=args.collect,
             live_profile=args.live_profile,
+            live_dir=args.live_dir,
             max_cases=args.max_cases,
         )
     except (RedactionGateError, ValueError, FileNotFoundError, RuntimeError) as exc:

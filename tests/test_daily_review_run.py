@@ -407,6 +407,103 @@ def test_pipeline_forward_missing_source_is_fail_soft(tmp_path: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Quellpfad-Aufloesung fuer pipeline_forward.json
+# ---------------------------------------------------------------------------
+
+
+def _live_profil(basis: Path, name: str, *, action: str) -> Path:
+    """Minimales Live-Profil mit einer Entscheidung (YES/NO = Kauf)."""
+
+    profil = basis / name
+    profil.mkdir(parents=True)
+    record = {
+        "wall_ts_utc": "2026-07-17T20:00:00Z",
+        "decision": {"action": action, "reason": "test", "limit_price": 0.8},
+        "result": {"size_usd": 10.0},
+        "book_snapshot": {"asks": [{"price": "0.8", "size": "5"}], "bids": []},
+    }
+    (profil / "decisions_log.jsonl").write_text(
+        json.dumps(record) + "\n", encoding="utf-8"
+    )
+    return profil
+
+
+def test_resolve_live_dir_bevorzugt_lauf_mit_kaeufen(tmp_path: Path) -> None:
+    basis = tmp_path / "live"
+    mit = _live_profil(basis, "allin_july17", action="YES")
+    ohne = _live_profil(basis, "jre_july20", action="NONE")
+    # Der Lauf ohne Kaeufe ist der juengere -- trotzdem gewinnt der mit.
+    import os as _os
+
+    _os.utime(mit / "decisions_log.jsonl", (1_000_000, 1_000_000))
+    _os.utime(ohne / "decisions_log.jsonl", (2_000_000, 2_000_000))
+
+    verzeichnis, profil = drr._resolve_live_dir(None, basis)
+    assert profil == "allin_july17"
+    assert verzeichnis == mit
+
+
+def test_resolve_live_dir_nimmt_juengsten_lauf_mit_kaeufen(tmp_path: Path) -> None:
+    basis = tmp_path / "live"
+    alt = _live_profil(basis, "allin_july3", action="YES")
+    neu = _live_profil(basis, "allin_july17", action="NO")
+    import os as _os
+
+    _os.utime(alt / "decisions_log.jsonl", (1_000_000, 1_000_000))
+    _os.utime(neu / "decisions_log.jsonl", (2_000_000, 2_000_000))
+
+    _, profil = drr._resolve_live_dir(None, basis)
+    assert profil == "allin_july17"
+
+
+def test_resolve_live_dir_faellt_auf_lauf_ohne_kaeufe_zurueck(tmp_path: Path) -> None:
+    basis = tmp_path / "live"
+    _live_profil(basis, "jre_july6", action="NONE")
+    _, profil = drr._resolve_live_dir(None, basis)
+    assert profil == "jre_july6"
+
+
+def test_resolve_live_dir_ohne_quelle_liefert_none_und_fallback(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Kernfall: keine Quelle -> gueltiges, leeres Artefakt mit Hinweis."""
+
+    monkeypatch.delenv(drr.LIVE_DIR_ENV, raising=False)
+    monkeypatch.setattr(drr, "LIVE_BASE_DIR", tmp_path / "fehlt")
+    monkeypatch.setattr(drr, "GESCHWISTER_CHECKOUTS", ())
+
+    verzeichnis, profil = drr._resolve_live_dir(None, tmp_path / "auch_weg")
+    assert verzeichnis is None
+    assert profil == drr.LIVE_PROFILE_FALLBACK
+
+    payload = drr.build_pipeline_forward(
+        live_dir=verzeichnis, profil=profil, now_utc="2026-07-22T00:00:00+00:00"
+    )
+    assert payload.eintraege == []
+    assert payload.kennzeichnung == "observed/paper"
+    assert "not present" in payload.hinweis
+
+
+def test_resolve_live_dir_nutzt_umgebungsvariable(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    basis = tmp_path / "anderes_checkout" / "data" / "live"
+    _live_profil(basis, "allin_july17", action="YES")
+    monkeypatch.setenv(drr.LIVE_DIR_ENV, str(basis))
+    monkeypatch.setattr(drr, "LIVE_BASE_DIR", tmp_path / "fehlt")
+    monkeypatch.setattr(drr, "GESCHWISTER_CHECKOUTS", ())
+
+    _, profil = drr._resolve_live_dir(None)
+    assert profil == "allin_july17"
+
+
+def test_explizites_profil_ohne_quelle_bleibt_leer(tmp_path: Path) -> None:
+    verzeichnis, profil = drr._resolve_live_dir("gibt_es_nicht", tmp_path)
+    assert verzeichnis is None
+    assert profil == "gibt_es_nicht"
+
+
+# ---------------------------------------------------------------------------
 # audit.json / meta.json
 # ---------------------------------------------------------------------------
 

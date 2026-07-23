@@ -1,131 +1,131 @@
 {
- "profil": "lemonade_july15",
- "event_slug": "what-will-be-said-on-the-next-lemonade-stand-podcast-july-15-20260709163957166",
- "event_titel": "What will be said on the next Lemonade Stand Podcast? (July 15)",
+ "profil": "lemonade_july22",
+ "event_slug": "what-will-be-said-on-the-next-lemonade-stand-podcast-july-22-20260715172625707",
+ "event_titel": "What will be said on the next Lemonade Stand Podcast? (July 22)",
  "abgerufen_utc": "2026-07-23T04:30:43+00:00",
  "quelle": "gamma-api.polymarket.com/events (oeffentlich, read-only)",
  "maerkte": {
-  "2865902": {
-   "frage": "Will \"AI\" or \"Artificial Intelligence\" be said 15+ times during the next episode of the Lemonade Stand Podcast?",
+  "2941672": {
+   "frage": "Will \"AI\" or \"Artificial Intelligence\" be said 5+ times during the next episode of the Lemonade Stand Podcast?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "2865903": {
-   "frage": "Will \"Trump\" be said 10+ times during the next episode of the Lemonade Stand Podcast?",
+  "2941673": {
+   "frage": "Will \"Trump\" be said 5+ times during the next episode of the Lemonade Stand Podcast?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "2865904": {
+  "2941674": {
    "frage": "Will \"Actually\" be said during the next episode of the Lemonade Stand Podcast?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "2865905": {
+  "2941675": {
    "frage": "Will \"Collateral\" be said during the next episode of the Lemonade Stand Podcast?",
    "closed": true,
    "outcome_yes": false,
    "aktueller_yes_preis": null
   },
-  "2865906": {
+  "2941676": {
    "frage": "Will \"Honestly\" be said during the next episode of the Lemonade Stand Podcast?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "2865907": {
+  "2941677": {
    "frage": "Will \"Think\" be said during the next episode of the Lemonade Stand Podcast?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "2865908": {
+  "2941678": {
    "frage": "Will \"Legality\" be said during the next episode of the Lemonade Stand Podcast?",
    "closed": true,
    "outcome_yes": false,
    "aktueller_yes_preis": null
   },
-  "2865909": {
+  "2941679": {
+   "frage": "Will \"Time\" be said during the next episode of the Lemonade Stand Podcast?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2941680": {
    "frage": "Will \"Money\" be said during the next episode of the Lemonade Stand Podcast?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "2865910": {
-   "frage": "Will \"World Cup\" be said during the next episode of the Lemonade Stand Podcast?",
-   "closed": true,
-   "outcome_yes": true,
-   "aktueller_yes_preis": null
-  },
-  "2865911": {
+  "2941681": {
    "frage": "Will \"Different\" be said during the next episode of the Lemonade Stand Podcast?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "2865912": {
+  "2941682": {
+   "frage": "Will \"Automatic\" be said during the next episode of the Lemonade Stand Podcast?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2941683": {
    "frage": "Will \"Problem\" be said during the next episode of the Lemonade Stand Podcast?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "2865913": {
+  "2941684": {
    "frage": "Will \"Red\" be said during the next episode of the Lemonade Stand Podcast?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "2865914": {
+  "2941685": {
    "frage": "Will \"Blue\" be said during the next episode of the Lemonade Stand Podcast?",
    "closed": true,
-   "outcome_yes": true,
+   "outcome_yes": false,
    "aktueller_yes_preis": null
   },
-  "2865915": {
+  "2941686": {
    "frage": "Will \"Green\" be said during the next episode of the Lemonade Stand Podcast?",
    "closed": true,
    "outcome_yes": false,
    "aktueller_yes_preis": null
   },
-  "2865916": {
+  "2941687": {
    "frage": "Will \"Car\" or \"Vehicle\" be said during the next episode of the Lemonade Stand Podcast?",
-   "closed": true,
-   "outcome_yes": false,
-   "aktueller_yes_preis": null
-  },
-  "2865917": {
-   "frage": "Will \"Nordic\" be said during the next episode of the Lemonade Stand Podcast?",
-   "closed": true,
-   "outcome_yes": false,
-   "aktueller_yes_preis": null
-  },
-  "2865918": {
-   "frage": "Will \"Iran\" or \"Iranian\" be said during the next episode of the Lemonade Stand Podcast?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "2865919": {
+  "2941688": {
+   "frage": "Will \"World Cup\" be said during the next episode of the Lemonade Stand Podcast?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2941689": {
    "frage": "Will \"China\" or \"Chinese\" be said during the next episode of the Lemonade Stand Podcast?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "2865920": {
+  "2941690": {
    "frage": "Will \"Korea\" or \"Korean\" be said during the next episode of the Lemonade Stand Podcast?",
    "closed": true,
    "outcome_yes": false,
    "aktueller_yes_preis": null
   },
-  "2865921": {
-   "frage": "Will \"Ukraine\" or \"Ukrainian\" be said during the next episode of the Lemonade Stand Podcast?",
+  "2941691": {
+   "frage": "Will \"Nordic,\" \"Sweden,\" or \"Swedish\" be said during the next episode of the Lemonade Stand Podcast?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "2865922": {
+  "2941692": {
    "frage": "Will no Lemonade Stand episode air?",
    "closed": true,
    "outcome_yes": false,

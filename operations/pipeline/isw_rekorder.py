@@ -184,11 +184,17 @@ class PolymarktLeser:
         self._client.close()
 
 
-def baue_watchlist(leser: PolymarktLeser, karte: ISWKarte) -> list[Marktziel]:
+def baue_watchlist(leser: PolymarktLeser, karte: ISWKarte,
+                   pause_s: float = 0.3) -> list[Marktziel]:
     """Märkte mit Koordinate auf Siedlungsflächen abbilden.
 
     Die Zuordnung läuft ausschliesslich über die Koordinate — Namen weichen
     zwischen Markt und ISW-Layer ab.
+
+    `pause_s` entzerrt die Siedlungsabfragen. Ohne Pause laufen rund 50
+    Abfragen in Folge gegen den FeatureServer und lösen die Drosselung aus
+    (HTTP 429, beobachtet 23.07.). Die Watchlist wird nur beim Start gebaut,
+    die Pause kostet also einmalig gut 15 Sekunden.
     """
     ziele: list[Marktziel] = []
     siedlungs_cache: dict[tuple[float, float], Siedlung | None] = {}
@@ -200,6 +206,8 @@ def baue_watchlist(leser: PolymarktLeser, karte: ISWKarte) -> list[Marktziel]:
         schluessel = (round(lat, 5), round(lon, 5))
         if schluessel not in siedlungs_cache:
             siedlungs_cache[schluessel] = karte.siedlung_an_punkt(lat, lon)
+            if pause_s:
+                time.sleep(pause_s)
         siedlung = siedlungs_cache[schluessel]
         if siedlung is None or not siedlung.ringe:
             continue

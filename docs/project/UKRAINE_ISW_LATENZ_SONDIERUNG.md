@@ -174,9 +174,14 @@ beobachtet.
 3. **Geometrietest**, lokal: geänderte Polygone gegen die 52 gecachten
    Siedlungsflächen schneiden (shapely, kein weiterer Netzabruf).
 
-Erwartete Erkennungslatenz nach dem ISW-Insert: Poll-Intervall/2 + ~1.6 s,
-also **10–16 s**. Gegen 18.7 Minuten Marktträgheit ist das reichlich Reserve;
-ein 60-Sekunden-Takt genügte ebenfalls.
+Erwartete Erkennungslatenz nach dem ISW-Insert: Poll-Intervall/2 plus
+Abrufzeit plus Geometrie (gemessen 2.3 s je Volldurchlauf, siehe Abschnitt
+10). Bei 20-Sekunden-Takt liegt sie deutlich unter einer Minute. Gegen 18.7
+Minuten Marktträgheit ist das reichlich Reserve; ein 60-Sekunden-Takt
+genügte ebenfalls.
+
+Nicht vergessen: der FeatureServer drosselt unter Dauerlast (HTTP 429 im
+error-Objekt einer 200-Antwort). Backoff ist Pflicht, nicht Kür.
 
 **Zeitfenster.** Beobachtete Einzel-Edits am 22.07.: 15:20, 18:47, 19:48,
 20:14, 20:39 UTC; Bulk-Rebuild am 21.07. 19:42–20:30 UTC; Control-Layer
@@ -330,6 +335,39 @@ nicht als Signal gewertet.
 
 Beide Fälle sind der Grund, warum der Rekorder vor dem Handel läuft: Der
 zweite wäre im Live-Betrieb als „es passiert eben nichts" durchgegangen.
+
+**Zwei weitere Fehler zeigte erst der Dauerlauf:**
+
+3. *Der Geometrietest war unbrauchbar langsam.* Das grösste Kontroll-Polygon
+   trägt **51'901 Stützpunkte in einem einzigen Ring**. Der naive Test — alle
+   Ecken beider Polygone gegeneinander plus alle Kantenpaare — kostete dafür
+   gemessene **5.6 s je Siedlung**, hochgerechnet **48 Minuten je
+   Durchlauf**. Der Rekorder blieb im ersten Durchlauf hängen und schrieb nie
+   eine Zustandsdatei. Die in Abschnitt 6 genannte Erkennungslatenz von
+   10–16 s galt für diese Fassung schlicht nicht.
+
+   Behoben durch einen Kantenfilter: Nur die Kanten des grossen Polygons, die
+   in die Bounding-Box der Siedlung hineinreichen, werden geprüft; fehlt jede
+   Randberührung, entscheidet je ein einziger Punkttest über Enthaltung oder
+   Disjunktheit. Ergebnis unverändert (21/16/4 Treffer), Kosten:
+
+   | | vorher | nachher |
+   | --- | --- | --- |
+   | ein Schnitt gegen das grösste Kontroll-Polygon | 5'559 ms | **19.6 ms** |
+   | Geometrie je Volldurchlauf (4 Layer × 52 Siedlungen) | ~2'891 s | **2.3 s** |
+
+4. *Der FeatureServer drosselt.* Unter Dauerlast antwortet ArcGIS mit
+   `HTTP 429 "Unable to perform query. Too many requests."` — und zwar im
+   `error`-Objekt einer **HTTP-200-Antwort**, nicht als HTTP-Status. Der
+   frühere Befund „15 Polls in Folge ohne Rate-Limit" war zu optimistisch
+   verallgemeinert. Behoben durch exponentiellen Backoff (429/5xx, vier
+   Versuche ab 5 s) und eine Pause von 0.3 s zwischen den rund 50
+   Siedlungsabfragen beim Watchlist-Aufbau (einmalig 16.5 s).
+
+Damit ist die Latenzangabe belastbar: Poll-Intervall/2 plus rund 2.3 s
+Geometrie plus Abrufzeit. Bei 20-Sekunden-Takt liegt die Erkennung
+gut unter einer Minute nach dem ISW-Insert — gegen 18.7 Minuten
+Marktträgheit weiterhin reichlich Reserve, aber eben nicht 10 Sekunden.
 
 ## 11. Nächster Schritt
 

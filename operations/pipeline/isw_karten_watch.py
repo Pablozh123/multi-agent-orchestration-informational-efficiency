@@ -50,6 +50,7 @@ from __future__ import annotations
 
 import json
 import re
+import time
 from dataclasses import dataclass, field
 
 import httpx
@@ -283,31 +284,66 @@ def _kanten(ringe: list[list[list[float]]]):
             yield ring[i], ring[(i + 1) % n]
 
 
+def _segment_box_ueberlappt(p1: list[float], p2: list[float],
+                            box: tuple[float, float, float, float]) -> bool:
+    """Kommt die Strecke p1p2 überhaupt in die Nähe der Box?"""
+    if max(p1[0], p2[0]) < box[0] or min(p1[0], p2[0]) > box[2]:
+        return False
+    if max(p1[1], p2[1]) < box[1] or min(p1[1], p2[1]) > box[3]:
+        return False
+    return True
+
+
+def _erster_punkt(ringe: list[list[list[float]]]) -> list[float] | None:
+    for ring in ringe:
+        if ring:
+            return ring[0]
+    return None
+
+
 def polygone_beruehren(a: list[list[list[float]]],
                        b: list[list[list[float]]]) -> bool:
     """Teilen sich zwei Polygone irgendeinen Punkt?
 
-    Vollständig für einfache Polygone: Boxen-Vorfilter, dann Ecke-in-Fläche
-    in beide Richtungen (deckt vollständige Enthaltung ab), dann
-    Kantenschnitt (deckt echte Überlappung ohne enthaltene Ecke ab).
+    Drei Stufen, absteigend nach Kosten:
+
+    1. Boxen-Vorfilter.
+    2. Kantenschnitt, aber NUR gegen die Kanten von `a`, die in die Box von
+       `b` hineinreichen.
+    3. Fehlt jede Randberührung, liegt entweder eines vollständig im anderen
+       oder sie sind disjunkt. Beides entscheidet je ein einziger Punkttest.
+
+    Warum Stufe 2 den Kantenfilter braucht: Das grösste Kontroll-Polygon der
+    ISW-Karte trägt 51'901 Stützpunkte in einem Ring. Der naive Test — alle
+    Ecken beider Polygone gegeneinander plus alle Kantenpaare — kostete dafür
+    gemessene 5.6 s je Siedlung, hochgerechnet 48 Minuten je Durchlauf. Der
+    Rekorder blieb im ersten Durchlauf hängen (Befund 23.07.). Mit Filter
+    bleibt es bei zwei linearen Durchläufen über `a`.
+
+    Löcher bleiben korrekt behandelt: `punkt_in_polygon` zählt even-odd über
+    alle Ringe, und eine Siedlung in einem Loch von `a` erzeugt in Stufe 2
+    keinen Schnitt und in Stufe 3 eine gerade Kreuzungszahl.
     """
     if not a or not b:
         return False
-    if not _boxen_ueberlappen(bounding_box(a), bounding_box(b)):
+    punkt_a, punkt_b = _erster_punkt(a), _erster_punkt(b)
+    if punkt_a is None or punkt_b is None:
         return False
-    for ring in a:
-        for punkt in ring:
-            if punkt_in_polygon(punkt[0], punkt[1], b):
-                return True
-    for ring in b:
-        for punkt in ring:
-            if punkt_in_polygon(punkt[0], punkt[1], a):
-                return True
+    box_a, box_b = bounding_box(a), bounding_box(b)
+    if not _boxen_ueberlappen(box_a, box_b):
+        return False
+
+    kanten_b = list(_kanten(b))
     for p1, p2 in _kanten(a):
-        for p3, p4 in _kanten(b):
+        if not _segment_box_ueberlappt(p1, p2, box_b):
+            continue
+        for p3, p4 in kanten_b:
             if strecken_schneiden(p1, p2, p3, p4):
                 return True
-    return False
+
+    if punkt_in_polygon(punkt_b[0], punkt_b[1], a):
+        return True
+    return punkt_in_polygon(punkt_a[0], punkt_a[1], b)
 
 
 def neue_zeitstempel(zeitstempel_ms: list[int | None],
@@ -354,9 +390,13 @@ class ISWKarte:
 
     def __init__(self, basis: str = ARCGIS_BASIS,
                  timeout: float = STANDARD_TIMEOUT,
-                 client: httpx.Client | None = None) -> None:
+                 client: httpx.Client | None = None,
+                 max_versuche: int = 4,
+                 backoff_start_s: float = 5.0) -> None:
         self.basis = basis
         self.timeout = timeout
+        self.max_versuche = max_versuche
+        self.backoff_start_s = backoff_start_s
         self._client = client
 
     def _sess(self) -> httpx.Client:
@@ -367,7 +407,7 @@ class ISWKarte:
             )
         return self._client
 
-    def _json(self, url: str, daten: dict | None = None) -> dict:
+    def _einmal(self, url: str, daten: dict | None) -> dict:
         sess = self._sess()
         if daten is None:
             antwort = sess.get(url)
@@ -376,12 +416,34 @@ class ISWKarte:
         if antwort.status_code != 200:
             raise ISWFehler(antwort.status_code, antwort.text)
         nutz = antwort.json()
-        # ArcGIS meldet Fehler mit HTTP 200 und einem error-Objekt.
+        # ArcGIS meldet Fehler auch mit HTTP 200 und einem error-Objekt —
+        # unter anderem 429 "Unable to perform query. Too many requests."
         if isinstance(nutz, dict) and "error" in nutz:
             fehler = nutz["error"]
             raise ISWFehler(int(fehler.get("code", 200)),
                             str(fehler.get("message", "")))
         return nutz
+
+    def _json(self, url: str, daten: dict | None = None) -> dict:
+        """Abruf mit Backoff bei Drosselung.
+
+        Der FeatureServer drosselt unter Dauerlast (beobachtet 23.07.: HTTP
+        429 "Too many requests" im error-Objekt einer 200-Antwort). Ohne
+        Backoff verschärft der Rekorder die Drosselung, statt sie abzuwarten.
+        """
+        wartezeit = self.backoff_start_s
+        letzter: ISWFehler | None = None
+        for versuch in range(self.max_versuche):
+            try:
+                return self._einmal(url, daten)
+            except ISWFehler as fehler:
+                if fehler.status not in (429, 500, 502, 503, 504):
+                    raise
+                letzter = fehler
+                if versuch < self.max_versuche - 1:
+                    time.sleep(wartezeit)
+                    wartezeit *= 2
+        raise letzter if letzter else ISWFehler(500, "unbekannt")
 
     def layer_stand(self, layer: ISWLayer) -> int | None:
         """`editingInfo.lastEditDate` in ms — der Stolperdraht.

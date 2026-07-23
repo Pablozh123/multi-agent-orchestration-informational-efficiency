@@ -283,6 +283,36 @@ def test_durchlauf_bremst_nicht_wegen_alter_historie(tmp_path):
     assert ereignisse[0].objectid == 999
 
 
+def test_main_schleife_ueberlebt_unerwarteten_fehler(tmp_path, monkeypatch, capsys):
+    """Regression: ein ReadTimeout beendete den Prozess nach dem 1. Durchlauf."""
+    protokoll = tmp_path / "p.jsonl"
+    zustand_pfad = tmp_path / "z.json"
+
+    monkeypatch.setattr(rek, "ISWKarte", lambda *a, **k: _KarteAttrappe({}, {}))
+    monkeypatch.setattr(rek, "PolymarktLeser", lambda *a, **k: _LeserAttrappe())
+    monkeypatch.setattr(rek, "baue_watchlist", lambda *a, **k: [_ziel()])
+
+    def _kracht(*args, **kwargs):
+        raise TimeoutError("The read operation timed out")
+
+    monkeypatch.setattr(rek, "durchlauf", _kracht)
+    # Attrappen tragen kein schliessen() -> im finally abfangen
+    monkeypatch.setattr(_KarteAttrappe, "schliessen", lambda self: None,
+                        raising=False)
+    monkeypatch.setattr(_LeserAttrappe, "schliessen", lambda self: None,
+                        raising=False)
+
+    code = rek.main(["--einmal", "--zustand", str(zustand_pfad),
+                     "--protokoll", str(protokoll)])
+    assert code == 0, "main haette den Fehler abfangen muessen"
+    eintraege = [json.loads(z) for z in
+                 protokoll.read_text(encoding="utf-8").strip().splitlines()]
+    assert eintraege[0]["art"] == "lauf_fehler"
+    assert eintraege[0]["typ"] == "TimeoutError"
+    # Zustand wurde trotz Fehler geschrieben
+    assert zustand_pfad.exists()
+
+
 def test_baue_watchlist_ordnet_ueber_koordinate_zu():
     """Namen weichen ab — die Zuordnung muss ueber die Koordinate laufen."""
 

@@ -458,8 +458,23 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         while True:
-            ereignisse = durchlauf(karte, leser, ziele, zustand,
-                                   argumente.protokoll)
+            # Ein Rekorder, der tagelang laufen soll, darf an keinem
+            # Einzelfehler sterben. Am 23.07. hat ein httpx.ReadTimeout den
+            # Prozess nach dem ersten Durchlauf abgerissen; gefangen wurden
+            # damals nur ISWFehler.
+            try:
+                ereignisse = durchlauf(karte, leser, ziele, zustand,
+                                       argumente.protokoll)
+            except Exception as fehler:  # noqa: BLE001
+                _protokolliere(argumente.protokoll, {
+                    "art": "lauf_fehler",
+                    "zeit_utc": _iso(_jetzt_utc()),
+                    "typ": type(fehler).__name__,
+                    "text": str(fehler)[:300],
+                })
+                print(f"Durchlauf-Fehler ({type(fehler).__name__}), weiter: "
+                      f"{str(fehler)[:120]}")
+                ereignisse = []
             _schreibe_zustand(argumente.zustand, zustand)
             for ereignis in ereignisse:
                 marke = "" if ereignis.auswertbar else "  [nicht auswertbar]"

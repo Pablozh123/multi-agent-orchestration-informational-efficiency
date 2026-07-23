@@ -258,6 +258,38 @@ def test_json_gibt_nach_max_versuchen_auf(monkeypatch):
         raise AssertionError("haette ISWFehler werfen muessen")
 
 
+def test_transportfehler_wird_wiederholbarer_iswfehler(monkeypatch):
+    """Regression: ein httpx.ReadTimeout riss den Rekorder ab."""
+    import httpx
+
+    karte = ikw.ISWKarte(max_versuche=3, backoff_start_s=0)
+    versuche = {"n": 0}
+
+    class _Sess:
+        def get(self, url):
+            versuche["n"] += 1
+            if versuche["n"] < 3:
+                raise httpx.ReadTimeout("The read operation timed out")
+            return _Antwort()
+
+    class _Antwort:
+        status_code = 200
+
+        @staticmethod
+        def json():
+            return {"ok": True}
+
+    monkeypatch.setattr(karte, "_sess", lambda: _Sess())
+    assert karte._json("egal") == {"ok": True}
+    assert versuche["n"] == 3
+
+
+def test_transport_status_ist_wiederholbar():
+    assert ikw.TRANSPORT_STATUS in ikw.WIEDERHOLBAR
+    assert 429 in ikw.WIEDERHOLBAR
+    assert 400 not in ikw.WIEDERHOLBAR
+
+
 def test_json_wiederholt_nicht_bei_dauerhaftem_fehler(monkeypatch):
     """HTTP 400 ist ein Programmfehler — Wiederholen hilft nicht."""
     karte = ikw.ISWKarte(max_versuche=4, backoff_start_s=0)

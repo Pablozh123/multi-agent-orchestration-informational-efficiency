@@ -60,9 +60,16 @@ ARCGIS_BASIS = (
 )
 SIEDLUNGS_LAYER = "Ukrainian_Settlements_Updated_view/FeatureServer/0"
 
-# Gemessen 23.07.: Layer-Metadaten 104 ms, Volldatenabruf 1494 ms,
-# 15 Polls in Folge ohne Rate-Limit (Median 543 ms).
+# Gemessen 23.07.: Layer-Metadaten 104 ms, Volldatenabruf 1494 ms.
+# Unter Dauerlast drosselt der Server allerdings (HTTP 429), und einzelne
+# Abrufe laufen in Read-Timeouts -- beides muss der Client abfangen.
 STANDARD_TIMEOUT = 30.0
+
+# Eigener Status fuer Transportfehler ohne HTTP-Antwort (Timeout, DNS,
+# Verbindungsabbruch). Kein echter HTTP-Code.
+TRANSPORT_STATUS = 599
+
+WIEDERHOLBAR = frozenset({429, 500, 502, 503, 504, TRANSPORT_STATUS})
 
 _KOORDINATE = re.compile(r"\(\s*([0-9]+(?:\.[0-9]+)?)\s*[^0-9]*?N\s*[,;]?\s*"
                          r"([0-9]+(?:\.[0-9]+)?)\s*[^0-9]*?E\s*\)")
@@ -409,10 +416,17 @@ class ISWKarte:
 
     def _einmal(self, url: str, daten: dict | None) -> dict:
         sess = self._sess()
-        if daten is None:
-            antwort = sess.get(url)
-        else:
-            antwort = sess.post(url, data=daten)
+        try:
+            if daten is None:
+                antwort = sess.get(url)
+            else:
+                antwort = sess.post(url, data=daten)
+        except httpx.HTTPError as fehler:
+            # Transportfehler (Timeout, Verbindungsabbruch, DNS) als
+            # wiederholbaren ISWFehler durchreichen. Ohne das reisst ein
+            # einzelner Netz-Schluckauf den ganzen Rekorder ab -- genau so
+            # ist er am 23.07. nach dem ersten Durchlauf gestorben.
+            raise ISWFehler(TRANSPORT_STATUS, str(fehler)) from fehler
         if antwort.status_code != 200:
             raise ISWFehler(antwort.status_code, antwort.text)
         nutz = antwort.json()
@@ -437,7 +451,7 @@ class ISWKarte:
             try:
                 return self._einmal(url, daten)
             except ISWFehler as fehler:
-                if fehler.status not in (429, 500, 502, 503, 504):
+                if fehler.status not in WIEDERHOLBAR:
                     raise
                 letzter = fehler
                 if versuch < self.max_versuche - 1:

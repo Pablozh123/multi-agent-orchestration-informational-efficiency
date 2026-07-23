@@ -27,8 +27,10 @@ Schutz vor Falsch-Positiven, jeder Punkt aus einem beobachteten Fehlermodus:
 - Marktpolarität: `will-ukraine-re-enter-…` invertiert das Signal.
 - Kriterium: "capture all of" verlangt Vollüberdeckung; der Rekorder
   protokolliert dort die Berührung, bewertet aber die Auflösung NICHT.
-- Persistenz: eine Berührung ist ein Kandidat, keine Auflösung. Der Zustand
-  je Treffer wird getrennt geführt.
+- Persistenz: eine Berührung ist ein Kandidat, keine Auflösung. Neben dem
+  Entstehen wird auch das Verschwinden einer Schattierung protokolliert
+  (`deckung_verloren`) — der Myrnohrad-Fall vom November 2025 war genau
+  das: eine Karteneditierung, die am Folgetag wieder weg war.
 
 Aufruf:
 
@@ -233,6 +235,20 @@ def baue_watchlist(leser: PolymarktLeser, karte: ISWKarte,
 
 # ------------------------------------------------------------ Kernauswertung
 
+def deckung(flaechen: list[ISWFlaeche],
+            ziele: list[Marktziel]) -> dict[str, ISWFlaeche]:
+    """Welche Siedlungen deckt dieser Layer gerade? slug -> erste Fläche."""
+    heraus: dict[str, ISWFlaeche] = {}
+    for ziel in ziele:
+        for flaeche in flaechen:
+            if not flaeche.ringe:
+                continue
+            if polygone_beruehren(flaeche.ringe, ziel.ringe):
+                heraus[ziel.slug] = flaeche
+                break
+    return heraus
+
+
 def neue_treffer(flaechen: list[ISWFlaeche],
                  ziele: list[Marktziel],
                  bereits_gedeckt: dict[str, list[str]]) -> list[tuple[Marktziel, ISWFlaeche]]:
@@ -241,18 +257,29 @@ def neue_treffer(flaechen: list[ISWFlaeche],
     `bereits_gedeckt` bildet slug -> Liste bereits bekannter Layernamen ab und
     verhindert, dass derselbe Zustand bei jedem Durchlauf erneut feuert.
     """
-    treffer: list[tuple[Marktziel, ISWFlaeche]] = []
-    for ziel in ziele:
-        for flaeche in flaechen:
-            if not flaeche.ringe:
-                continue
-            if not polygone_beruehren(flaeche.ringe, ziel.ringe):
-                continue
-            if flaeche.layer in bereits_gedeckt.get(ziel.slug, []):
-                break
-            treffer.append((ziel, flaeche))
-            break
-    return treffer
+    jetzt = deckung(flaechen, ziele)
+    nach_slug = {ziel.slug: ziel for ziel in ziele}
+    return [(nach_slug[slug], flaeche) for slug, flaeche in jetzt.items()
+            if flaeche.layer not in bereits_gedeckt.get(slug, [])]
+
+
+def verlorene_deckung(flaechen: list[ISWFlaeche],
+                      ziele: list[Marktziel],
+                      bereits_gedeckt: dict[str, list[str]],
+                      layer_name: str) -> list[Marktziel]:
+    """Welche Siedlungen hat dieser Layer seit dem letzten Stand verloren?
+
+    Das ist die Gegenrichtung zu `neue_treffer` und der Kern der
+    Persistenzfrage: Die Marktregel verlangt, dass eine Schattierung den
+    nächsten vollen ISW-Zyklus übersteht. Der Myrnohrad-Fall vom November
+    2025 (Karteneditierung verschwand am Folgetag) ist genau dieser Fall.
+    Ohne diese Erkennung misst der Rekorder nur das Entstehen, nicht das
+    Verschwinden.
+    """
+    jetzt = deckung(flaechen, ziele)
+    return [ziel for ziel in ziele
+            if layer_name in bereits_gedeckt.get(ziel.slug, [])
+            and ziel.slug not in jetzt]
 
 
 def _lade_zustand(pfad: Path) -> dict:
@@ -325,6 +352,25 @@ def durchlauf(karte: ISWKarte,
                 "hinweis": "Bulk-Rebuild erkannt, neu grundiert statt signalisiert",
             })
             grundierung = True
+
+        # Gegenrichtung zuerst: verschwundene Schattierung ist die
+        # Persistenzfrage und muss auch bei Grundierung protokolliert werden.
+        for ziel in verlorene_deckung(flaechen, ziele, zustand["gedeckt"],
+                                      layer.name):
+            zustand["gedeckt"][ziel.slug] = [
+                name for name in zustand["gedeckt"].get(ziel.slug, [])
+                if name != layer.name
+            ]
+            _protokolliere(protokoll, {
+                "art": "deckung_verloren",
+                "zeit_utc": _iso(jetzt),
+                "layer": layer.name,
+                "slug": ziel.slug,
+                "siedlung": ziel.siedlung_name,
+                "auswertbar": ziel.auswertbar,
+                "preis_yes": leser.preis_yes(ziel.token_yes),
+                "restliche_layer": zustand["gedeckt"][ziel.slug],
+            })
 
         for ziel, flaeche in neue_treffer(flaechen, ziele, zustand["gedeckt"]):
             zustand["gedeckt"].setdefault(ziel.slug, [])

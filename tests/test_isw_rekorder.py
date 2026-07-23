@@ -217,6 +217,50 @@ def test_durchlauf_signalisiert_bei_bulk_rebuild_nicht(tmp_path):
     assert "rebuild" in arten
 
 
+def test_verlorene_deckung_erkennt_verschwundene_schattierung():
+    """Persistenzfrage: der Myrnohrad-Fall war eine Editierung, die verschwand."""
+    ziel = _ziel()
+    bereits = {ziel.slug: ["infiltration"]}
+    # Layer enthaelt nur noch eine weit entfernte Flaeche
+    fern = [ISWFlaeche("infiltration", 1, FERN, creation_ms=1000)]
+    verloren = rek.verlorene_deckung(fern, [ziel], bereits, "infiltration")
+    assert [z.slug for z in verloren] == [ziel.slug]
+
+
+def test_verlorene_deckung_meldet_nichts_wenn_flaeche_bleibt():
+    ziel = _ziel()
+    bereits = {ziel.slug: ["infiltration"]}
+    weiterhin = [ISWFlaeche("infiltration", 1, QUADRAT, creation_ms=1000)]
+    assert rek.verlorene_deckung(weiterhin, [ziel], bereits, "infiltration") == []
+
+
+def test_verlorene_deckung_ignoriert_fremden_layer():
+    """Ein leerer Advance-Layer loescht keine Infiltrations-Deckung."""
+    ziel = _ziel()
+    bereits = {ziel.slug: ["infiltration"]}
+    assert rek.verlorene_deckung([], [ziel], bereits, "advance") == []
+
+
+def test_durchlauf_protokolliert_verlust(tmp_path):
+    protokoll = tmp_path / "p.jsonl"
+    ziel = _ziel()
+    zustand = {"layer_stand": {"infiltration": 111},
+               "gedeckt": {ziel.slug: ["infiltration"]},
+               "offene_nachfassungen": []}
+    karte = _KarteAttrappe(
+        {"infiltration": 222},
+        {"infiltration": [ISWFlaeche("infiltration", 1, FERN, creation_ms=1000)]},
+    )
+    rek.durchlauf(karte, _LeserAttrappe(0.91), [ziel], zustand, protokoll)
+    zeilen = [json.loads(z) for z in
+              protokoll.read_text(encoding="utf-8").strip().splitlines()]
+    verluste = [z for z in zeilen if z["art"] == "deckung_verloren"]
+    assert len(verluste) == 1
+    assert verluste[0]["slug"] == ziel.slug
+    assert verluste[0]["preis_yes"] == 0.91
+    assert zustand["gedeckt"][ziel.slug] == []
+
+
 def test_durchlauf_bremst_nicht_wegen_alter_historie(tmp_path):
     """Regression aus dem Probelauf: viele ALTE Features duerfen nicht bremsen.
 

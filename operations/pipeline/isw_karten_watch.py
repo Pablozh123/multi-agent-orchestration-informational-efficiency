@@ -398,8 +398,11 @@ class ISWKarte:
     def __init__(self, basis: str = ARCGIS_BASIS,
                  timeout: float = STANDARD_TIMEOUT,
                  client: httpx.Client | None = None,
-                 max_versuche: int = 4,
-                 backoff_start_s: float = 5.0) -> None:
+                 max_versuche: int = 5,
+                 backoff_start_s: float = 10.0) -> None:
+        # 10/20/40/80 s -> rund 150 s Geduld. Vier Versuche ab 5 s (35 s)
+        # reichten am 23.07. nicht aus, um eine anhaltende Drosselung
+        # auszusitzen.
         self.basis = basis
         self.timeout = timeout
         self.max_versuche = max_versuche

@@ -283,6 +283,84 @@ def test_durchlauf_bremst_nicht_wegen_alter_historie(tmp_path):
     assert ereignisse[0].objectid == 999
 
 
+def test_watchlist_rundlauf(tmp_path):
+    pfad = tmp_path / "watchlist.json"
+    ziele = [_ziel()]
+    rek.speichere_watchlist(pfad, ziele)
+    zurueck = rek.lade_watchlist(pfad)
+    assert len(zurueck) == 1
+    assert zurueck[0].slug == ziele[0].slug
+    assert zurueck[0].ringe == QUADRAT
+    assert zurueck[0].auswertbar is True
+
+
+def test_watchlist_cache_verhindert_neuaufbau(tmp_path):
+    """Der Neuaufbau kostet ~50 Abfragen und loest die Drosselung aus."""
+    pfad = tmp_path / "watchlist.json"
+    rek.speichere_watchlist(pfad, [_ziel()])
+    gebaut = {"n": 0}
+
+    def _zaehlt(*args, **kwargs):
+        gebaut["n"] += 1
+        return []
+
+    original = rek.baue_watchlist
+    rek.baue_watchlist = _zaehlt
+    try:
+        ziele = rek.hole_watchlist(None, None, pfad)
+    finally:
+        rek.baue_watchlist = original
+    assert gebaut["n"] == 0
+    assert len(ziele) == 1
+
+
+def test_watchlist_faellt_bei_fehler_auf_cache_zurueck(tmp_path):
+    """Regression: ein 429 beim Start beendete den Rekorder zweimal."""
+    pfad = tmp_path / "watchlist.json"
+    rek.speichere_watchlist(pfad, [_ziel()])
+
+    def _kracht(*args, **kwargs):
+        raise RuntimeError("HTTP 429: Too many requests")
+
+    original = rek.baue_watchlist
+    rek.baue_watchlist = _kracht
+    try:
+        ziele = rek.hole_watchlist(None, None, pfad, erzwinge_neu=True)
+    finally:
+        rek.baue_watchlist = original
+    assert len(ziele) == 1
+
+
+def test_watchlist_ohne_cache_reicht_fehler_durch(tmp_path):
+    def _kracht(*args, **kwargs):
+        raise RuntimeError("HTTP 429")
+
+    original = rek.baue_watchlist
+    rek.baue_watchlist = _kracht
+    try:
+        try:
+            rek.hole_watchlist(None, None, tmp_path / "fehlt.json")
+        except RuntimeError:
+            pass
+        else:
+            raise AssertionError("haette durchreichen muessen")
+    finally:
+        rek.baue_watchlist = original
+
+
+def test_watchlist_kaputter_cache_wird_neu_gebaut(tmp_path):
+    pfad = tmp_path / "watchlist.json"
+    pfad.write_text("{kein json", encoding="utf-8")
+    assert rek.lade_watchlist(pfad) == []
+
+
+def test_watchlist_alte_felder_erzwingen_neuaufbau(tmp_path):
+    """Schema-Aenderung darf nicht zu halben Objekten fuehren."""
+    pfad = tmp_path / "watchlist.json"
+    pfad.write_text(json.dumps([{"slug": "a", "unbekannt": 1}]), encoding="utf-8")
+    assert rek.lade_watchlist(pfad) == []
+
+
 def test_main_schleife_ueberlebt_unerwarteten_fehler(tmp_path, monkeypatch, capsys):
     """Regression: ein ReadTimeout beendete den Prozess nach dem 1. Durchlauf."""
     protokoll = tmp_path / "p.jsonl"
@@ -303,7 +381,8 @@ def test_main_schleife_ueberlebt_unerwarteten_fehler(tmp_path, monkeypatch, caps
                         raising=False)
 
     code = rek.main(["--einmal", "--zustand", str(zustand_pfad),
-                     "--protokoll", str(protokoll)])
+                     "--protokoll", str(protokoll),
+                     "--watchlist", str(tmp_path / "w.json")])
     assert code == 0, "main haette den Fehler abfangen muessen"
     eintraege = [json.loads(z) for z in
                  protokoll.read_text(encoding="utf-8").strip().splitlines()]

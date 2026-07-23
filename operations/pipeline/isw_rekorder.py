@@ -78,6 +78,7 @@ NACHFASS_MINUTEN = (0, 1, 5, 30)
 
 STANDARD_ZUSTAND = Path("data/live/isw_rekorder/zustand.json")
 STANDARD_PROTOKOLL = Path("data/live/isw_rekorder/ereignisse.jsonl")
+STANDARD_WATCHLIST = Path("data/live/isw_rekorder/watchlist.json")
 
 
 @dataclass
@@ -282,6 +283,61 @@ def verlorene_deckung(flaechen: list[ISWFlaeche],
             and ziel.slug not in jetzt]
 
 
+def speichere_watchlist(pfad: Path, ziele: list[Marktziel]) -> None:
+    """Watchlist samt Siedlungsgeometrien ablegen."""
+    pfad.parent.mkdir(parents=True, exist_ok=True)
+    temp = pfad.with_suffix(pfad.suffix + ".tmp")
+    temp.write_text(
+        json.dumps([asdict(ziel) for ziel in ziele], ensure_ascii=False),
+        encoding="utf-8",
+    )
+    temp.replace(pfad)
+
+
+def lade_watchlist(pfad: Path) -> list[Marktziel]:
+    """Watchlist aus dem Cache; leere Liste, wenn nicht lesbar."""
+    if not pfad.exists():
+        return []
+    try:
+        roh = json.loads(pfad.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return []
+    ziele = []
+    for eintrag in roh:
+        try:
+            ziele.append(Marktziel(**eintrag))
+        except TypeError:
+            return []           # Schema hat sich geaendert -> neu bauen
+    return ziele
+
+
+def hole_watchlist(leser: PolymarktLeser, karte: ISWKarte, pfad: Path,
+                   erzwinge_neu: bool = False) -> list[Marktziel]:
+    """Watchlist aus dem Cache oder neu gebaut.
+
+    Der Aufbau kostet rund 50 Abfragen gegen den Siedlungslayer und ist der
+    Hauptauslöser der ArcGIS-Drosselung: Jeder Neustart feuerte den ganzen
+    Schwung erneut, bis der Server mit 429 antwortete und der Rekorder beim
+    Start starb (23.07., zweimal).
+
+    Siedlungsgeometrien sind Verwaltungsgrenzen und ändern sich praktisch
+    nie — der Cache ist deshalb unbedenklich. Schlägt der Neuaufbau fehl und
+    liegt ein Cache vor, wird der Cache benutzt, statt den Start aufzugeben.
+    """
+    zwischenstand = lade_watchlist(pfad)
+    if zwischenstand and not erzwinge_neu:
+        return zwischenstand
+    try:
+        ziele = baue_watchlist(leser, karte)
+    except Exception:           # noqa: BLE001 - Start darf nicht scheitern
+        if zwischenstand:
+            return zwischenstand
+        raise
+    if ziele:
+        speichere_watchlist(pfad, ziele)
+    return ziele
+
+
 def _lade_zustand(pfad: Path) -> dict:
     if not pfad.exists():
         return {"layer_stand": {}, "gedeckt": {}, "offene_nachfassungen": []}
@@ -443,14 +499,19 @@ def main(argv: list[str] | None = None) -> int:
                           help="fester Poll-Abstand statt Tageszeit-Automatik")
     zerleger.add_argument("--zustand", type=Path, default=STANDARD_ZUSTAND)
     zerleger.add_argument("--protokoll", type=Path, default=STANDARD_PROTOKOLL)
+    zerleger.add_argument("--watchlist", type=Path, default=STANDARD_WATCHLIST)
+    zerleger.add_argument("--watchlist-neu", action="store_true",
+                          help="Watchlist neu aufbauen statt Cache nutzen")
     argumente = zerleger.parse_args(argv)
 
     karte = ISWKarte()
     leser = PolymarktLeser()
     zustand = _lade_zustand(argumente.zustand)
 
-    print("Watchlist wird gebaut ...")
-    ziele = baue_watchlist(leser, karte)
+    aus_cache = argumente.watchlist.exists() and not argumente.watchlist_neu
+    print("Watchlist " + ("aus Cache ..." if aus_cache else "wird gebaut ..."))
+    ziele = hole_watchlist(leser, karte, argumente.watchlist,
+                           erzwinge_neu=argumente.watchlist_neu)
     auswertbar = [z for z in ziele if z.auswertbar]
     print(f"{len(ziele)} Maerkte mit Siedlungsflaeche, "
           f"davon {len(auswertbar)} auswertbar "

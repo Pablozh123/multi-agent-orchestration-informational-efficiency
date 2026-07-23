@@ -223,6 +223,41 @@ PROFILE = {
         # je zu blacken. Latenz 8s ist fuer einen Wochen-Markt egal.
         "x_poll_s": 8.0,
     },
+    "trump_july20": {
+        "live_dir": "trump_july20",
+        "event_id": "715499",
+        "event_slug": (
+            "what-will-trump-post-this-week-july-20-july-26-"
+            "20260717143433877"
+        ),
+        # Quelle wie july13: oeffentliche Truth-Social-API von
+        # @realDonaldTrump (truth_watch.py, curl_cffi-Impersonation),
+        # eigenes Skript trump_bot.py, NUR YES.
+        # ACHTUNG ABGRENZUNG (geprueft 23.07.): Polymarket listet diese
+        # Woche ZWEI Trump-Serien. 11341 "trump-post-weekly" (DIESES
+        # Event) wertet GESCHRIEBENE Truths — unser Bot. 11277
+        # "trump-weekly-mentions" (Event 723717 "What will Trump SAY")
+        # wertet ausschliesslich GESPROCHENES ("Written usages ... will
+        # not count") und braucht eine voellig andere Quelle (Reden,
+        # Pressekonferenzen, Videos) -> NICHT mit diesem Profil handeln.
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "what-will-trump-post",
+        "x_user_id": None,
+        "truth_user_id": "107780257626128497",  # @realDonaldTrump
+        "truth_poll_s": 15.0,
+        "p_win": 0.97,
+        "min_edge": 0.03,
+        "periode_start_utc": "2026-07-20T04:00:00Z",  # 20.7. 00:00 ET
+        "periode_ende_utc": "2026-07-27T03:59:59Z",   # 26.7. 23:59 ET
+        # Wallet-Stand 23.07.: 420.13 pUSD, geteilt mit mrbeast/lemonade/
+        # hotones -> 400 statt 510 (Executor deckelt zusaetzlich am
+        # echten Wallet-Delta, kann also nie ueberziehen).
+        "max_usd_gesamt": 400.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+    },
     "trump_july13": {
         "live_dir": "trump_july13",
         "event_id": "690224",

@@ -13,6 +13,8 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone
 
+import pytest
+
 from operations.pipeline.elon_bot import ElonMatcher, baue_elon_rules
 from operations.pipeline.market_rules import MarketRule
 from operations.pipeline.truth_watch import (
@@ -183,3 +185,38 @@ def test_hole_startscan_paginiert_bis_periodenstart() -> None:
     assert sorted(p.post_id for p in posts) == [10, 20, 30]
     # Seite 2 wurde mit max_id des aeltesten Posts von Seite 1 geholt.
     assert w.max_ids == [None, 20]
+
+
+# ------------------------------------ Wochen-Rollover (23.07.2026)
+
+
+def test_trump_july20_profil_neue_woche() -> None:
+    from operations.pipeline import config
+
+    p = config.PROFILE["trump_july20"]
+    alt = config.PROFILE["trump_july13"]
+    # Quelle unveraendert (Truth Social, derselbe verifizierte Account)
+    assert p["truth_user_id"] == alt["truth_user_id"]
+    assert p["discovery_slug_filter"] == alt["discovery_slug_filter"]
+    # Neues Event + Periode 20.-26.07. ET, luecken- und ueberlappungsfrei
+    # zur Vorwoche (deren Ende ist der neue Start).
+    assert p["event_id"] == "715499"
+    assert p["periode_start_utc"] == "2026-07-20T04:00:00Z"
+    assert p["periode_ende_utc"] == "2026-07-27T03:59:59Z"
+    assert alt["periode_ende_utc"] < p["periode_start_utc"]
+    # Budget an den realen Wallet-Stand angepasst (geteiltes Wallet)
+    assert p["max_usd_gesamt"] == pytest.approx(400.0)
+
+
+def test_trump_profile_nur_post_serie_kein_say_event() -> None:
+    # Abgrenzung: Der "What will Trump SAY"-Markt (Serie 11277, Event
+    # 723717) wertet NUR Gesprochenes und darf nie mit dem Truth-Social-
+    # Textbot gehandelt werden. Kein Profil zeigt darauf.
+    from operations.pipeline import config
+
+    for name, p in config.PROFILE.items():
+        if not name.startswith("trump"):
+            continue
+        assert p["event_id"] != "723717"
+        assert "trump-say" not in (p.get("event_slug") or "")
+        assert "-post-" in (p.get("event_slug") or "")

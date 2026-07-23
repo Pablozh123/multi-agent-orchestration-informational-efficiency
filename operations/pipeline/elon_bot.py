@@ -4,7 +4,8 @@ NUR YES (User-Vorgabe 13.7.): die NO-Seite konvergiert die ganze Woche
 gegen 1 — dort gibt es keinen Geschwindigkeits-Edge. Der Edge liegt im
 Fenster zwischen Elons Post und der Markt-Einpreisung.
 
-Matching nach Marktregeln (siehe config-Profil elon_july13):
+Matching nach Marktregeln (siehe config-Profile elon_*, aktuell
+elon_july20 fuer Event 715491):
 - STRIKT (loest Auto-Kauf aus): exaktes Wort, Plural/Possessiv, jede
   Gross-/Kleinschreibung, Sigil davor (#/@/$). Angrenzende Buchstaben,
   Ziffern oder Unterstriche blocken (deckt "Misspellings zaehlen nicht"
@@ -19,7 +20,7 @@ Cookies: X_AUTH_TOKEN und X_CT0 in .env. Fehlen sie, wartet der Bot und
 laedt .env jede Minute neu (Handel startet dann automatisch).
 
 Aufruf:
-  BOT_PROFIL=elon_july13 python -m operations.pipeline.elon_bot [--live]
+  BOT_PROFIL=elon_july20 python -m operations.pipeline.elon_bot [--live]
 """
 
 from __future__ import annotations
@@ -338,10 +339,13 @@ def lauf(live: bool) -> None:
                     })
                     letzte_abdeckung = watcher.reply_abdeckung
             if not startscan_fertig:
-                # Historie seit Periodenstart nachziehen (max 4 Seiten).
+                # Historie seit Periodenstart nachziehen. Seitenzahl je
+                # Profil (config.X_STARTSCAN_SEITEN): ein Start mitten in
+                # der Marktperiode muss weiter zurueckblaettern als ein
+                # Start am Periodenanfang.
                 seiten = 0
                 alle = list(posts)
-                while (cursor and seiten < 4 and alle
+                while (cursor and seiten < config.X_STARTSCAN_SEITEN and alle
                        and _utc(alle[-1].created_utc) > start):
                     mehr, cursor = watcher.hole_posts(cursor)
                     if not mehr:
@@ -351,6 +355,12 @@ def lauf(live: bool) -> None:
                 _schreibe_event("startscan", {
                     "posts_geladen": len(alle),
                     "aeltester": alle[-1].created_utc if alle else None,
+                    # Belegt beim Armieren mitten in der Periode, ob der
+                    # Scan bis zum Periodenstart zurueckkam.
+                    "seiten_geblaettert": seiten,
+                    "seiten_max": config.X_STARTSCAN_SEITEN,
+                    "erreicht_periodenstart": bool(
+                        alle and _utc(alle[-1].created_utc) <= start),
                 })
                 startscan_fertig = True
                 posts = alle

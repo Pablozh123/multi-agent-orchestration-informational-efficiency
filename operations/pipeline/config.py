@@ -557,6 +557,66 @@ PROFILE = {
         "max_usd_pro_markt": 50.0,
         "max_clips_pro_markt": 40,
     },
+    "elon_july20": {
+        # Event 715491 "What will Elon post this week? (July 20 - July 26)",
+        # 17 Maerkte. Nachfolger von elon_july13; der Regeltext ist
+        # WORTGLEICH zur Vorwoche (23.07. an der Gamma-Beschreibung von
+        # Markt 2966514 gegengelesen): Plural/Possessiv/Case zaehlen,
+        # Sigils (#/@/$) davor sind ok, Compounds zaehlen, Misspellings
+        # und Symbole IM Wort disqualifizieren, eigener Text in Quote-
+        # und Reply-Posts zaehlt, zitierter Fremdtext und Reposts nicht,
+        # Bildtext nur klar ausgeschrieben. Damit traegt der bestehende
+        # Matcher aus elon_bot.py unveraendert.
+        "live_dir": "elon_july20",
+        "event_id": "715491",
+        "event_slug": (
+            "what-will-elon-post-this-week-july-20-july-26-"
+            "20260717142325168"
+        ),
+        # Kein Audio: Quelle sind X-Posts von @elonmusk (x_watch.py,
+        # GraphQL-Web-Pfad mit Login-Cookies X_AUTH_TOKEN/X_CT0 aus .env).
+        # Eigenes Skript elon_bot.py; die Audio-Felder bleiben leer.
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "what-will-elon-post",
+        "x_user_id": "44196397",  # @elonmusk (verifizierter Account)
+        # NUR YES (User-Vorgabe 13.07., am 23.07. fuer diese Woche
+        # bestaetigt): die NO-Seite konvergiert die ganze Woche gegen 1,
+        # dort gibt es keinen Geschwindigkeits-Edge. elon_bot.py kennt
+        # ohnehin nur den YES-Zweig — kein NO-Pfad zu sperren.
+        # Deckel wie Vorwoche: 0.97 - 0.03 = 0.94.
+        "p_win": 0.97,
+        "min_edge": 0.03,
+        "periode_start_utc": "2026-07-20T04:00:00Z",  # 20.07. 00:00 ET
+        "periode_ende_utc": "2026-07-27T03:59:59Z",   # 26.07. 23:59 ET
+        # 8s wie july13 (adaptives Pacing streckt bei Bedarf zusaetzlich).
+        "x_poll_s": 8.0,
+        # Budget 400 (User-Vorgabe 23.07.) mit dem grossen Sweep der
+        # Vollprofile (allin_july17: 50 USD je Clip, 40 Clips, budget-
+        # statt cliplimitiert). Grund fuer den grossen Clip HIER: Die
+        # ausfuehrbare YES-Tiefe unter dem 0.94-Deckel liegt bei 22-255
+        # USD je Markt (CLOB, 23.07.) — mit 15-USD-Clips braucht das
+        # 4-6 sequenzielle Netzrunden, und genau die Sekunden fehlten in
+        # der Vorwoche: Beim Trigger verschwand die Ask-Seite komplett
+        # (Buchlog elon_july13, "Always" 13.07.: keine Ask-Zeile von
+        # 18:39 bis 20:56). Nach oben ist nichts zu verlieren, der
+        # Deckel 0.94 bleibt hart. Geteiltes Wallet mit mrbeast_gaming,
+        # lemonade_july22 und hotones_july23 — der Executor-Delta-Sync
+        # verhindert Ueberziehen, aber ein Profil kann dem anderen den
+        # Pool wegkaufen; vor dem Scharfschalten Wallet-Stand pruefen.
+        "max_usd_gesamt": 400.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        # ARMIERUNG MITTEN IN DER PERIODE (23.07., Tag 4 von 7). Der
+        # Startscan muss deshalb weiter zurueckreichen als die 4 Seiten
+        # eines Montag-Starts — sonst bleiben die Posts vom 20.-23.07.
+        # ungeprueft und ein vom Markt uebersehener Treffer (Fall
+        # "Birth Tourism", allin_july3) faellt hinten runter. 12 Seiten
+        # decken die bisherige Woche ab; der Bot bricht ohnehin ab,
+        # sobald der aelteste geladene Post vor dem Periodenstart liegt.
+        "startscan_seiten": 12,
+    },
 }
 
 PROFIL = _os.environ.get("BOT_PROFIL", "allin_july10")
@@ -687,11 +747,17 @@ BUCH_LOG_INTERVALL_S = 120
 # 200-400ms je totem Markt und Chunk). Am Episodenende einmaliger Re-Check.
 VORSCAN_PAUSE_CHUNKS = 15
 
-# Elon-Post-Bot (Profil elon_july13): X-Feed-Parameter.
+# Elon-Post-Bot (Profile elon_*): X-Feed-Parameter.
 X_USER_ID = _P.get("x_user_id")
 PERIODE_START_UTC = _P.get("periode_start_utc")
 PERIODE_ENDE_UTC = _P.get("periode_ende_utc")
 X_POLL_S = float(_P.get("x_poll_s", 16.0))
+# Seiten, die der Startscan maximal zurueckblaettert, um die Historie seit
+# PERIODE_START_UTC nachzuziehen. 4 reicht fuer einen Start am Perioden-
+# anfang; wer mitten in der Woche armiert, braucht mehr (Profil-Override).
+# Abbruch erfolgt ohnehin frueher, sobald der aelteste geladene Post vor
+# dem Periodenstart liegt.
+X_STARTSCAN_SEITEN = int(_P.get("startscan_seiten", 4))
 
 # Trump-Post-Bot (Serie trump-post-weekly): Truth-Social-Parameter.
 # Kein Login noetig (curl_cffi-Chrome-Impersonation, Befund 18.07.);

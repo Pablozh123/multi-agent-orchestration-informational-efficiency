@@ -557,7 +557,22 @@ PROFILE = {
         "periode_ende_utc": "2026-07-27T03:59:59Z",   # 26.07. 23:59 ET
         # 8s wie july13 (adaptives Pacing streckt bei Bedarf zusaetzlich).
         "x_poll_s": 8.0,
-        "max_usd_gesamt": 170.0,
+        # Budget 400 (User-Vorgabe 23.07.) mit dem grossen Sweep der
+        # Vollprofile (allin_july17: 50 USD je Clip, 40 Clips, budget-
+        # statt cliplimitiert). Grund fuer den grossen Clip HIER: Die
+        # ausfuehrbare YES-Tiefe unter dem 0.94-Deckel liegt bei 22-255
+        # USD je Markt (CLOB, 23.07.) — mit 15-USD-Clips braucht das
+        # 4-6 sequenzielle Netzrunden, und genau die Sekunden fehlten in
+        # der Vorwoche: Beim Trigger verschwand die Ask-Seite komplett
+        # (Buchlog elon_july13, "Always" 13.07.: keine Ask-Zeile von
+        # 18:39 bis 20:56). Nach oben ist nichts zu verlieren, der
+        # Deckel 0.94 bleibt hart. Geteiltes Wallet mit mrbeast_gaming,
+        # lemonade_july22 und hotones_july23 — der Executor-Delta-Sync
+        # verhindert Ueberziehen, aber ein Profil kann dem anderen den
+        # Pool wegkaufen; vor dem Scharfschalten Wallet-Stand pruefen.
+        "max_usd_gesamt": 400.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
         # ARMIERUNG MITTEN IN DER PERIODE (23.07., Tag 4 von 7). Der
         # Startscan muss deshalb weiter zurueckreichen als die 4 Seiten
         # eines Montag-Starts — sonst bleiben die Posts vom 20.-23.07.

@@ -161,11 +161,18 @@ def test_nur_yes_deckel_094(profil) -> None:
 
 
 def test_budget_und_sweep(profil) -> None:
-    # Budget wie Vorwoche (elon_july13). Standard-Sweep: 15 USD je Clip,
-    # 10 Clips -> effektiv budget-limitiert bei 13 offenen Maerkten.
-    assert config.MAX_USD_GESAMT == pytest.approx(170.0)
-    assert config.MAX_USD_PRO_MARKT == pytest.approx(15.0)
-    assert config.MAX_CLIPS_PRO_MARKT == 10
+    # Budget 400 (User-Vorgabe 23.07.) mit dem grossen Sweep der
+    # Vollprofile: 50 USD je Clip raeumt die 22-255 USD tiefe Ask-Leiter
+    # in ein bis zwei Netzrunden ab statt in fuenf.
+    assert config.MAX_USD_GESAMT == pytest.approx(400.0)
+    assert config.MAX_USD_PRO_MARKT == pytest.approx(50.0)
+    assert config.MAX_CLIPS_PRO_MARKT == 40
+    for feld in ("max_usd_pro_markt", "max_clips_pro_markt"):
+        assert (config.PROFILE[PROFIL][feld]
+                == config.PROFILE["allin_july17"][feld])
+    # Deutlich groesser als der Standard-Sweep der Vorwoche (15/10).
+    alt = config.PROFILE["elon_july13"]
+    assert alt.get("max_usd_pro_markt", 15.0) < config.MAX_USD_PRO_MARKT
 
 
 def test_startscan_tiefer_als_bei_wochenstart(profil) -> None:

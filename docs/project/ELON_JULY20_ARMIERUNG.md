@@ -146,20 +146,18 @@ Der Code liegt im Worktree `Projects\wt-elon`. Erst nach ba-thesis bringen:
 
 ## Offene Entscheidungen
 
-- **Budget.** `max_usd_gesamt` steht auf **170.0** — der Wert der
-  Vorwoche, bewusst unverändert übernommen und **nicht** vom Nutzer für
-  diese Woche bestätigt. Einordnung: Die gesamte Ask-Leiter unter 0.94
-  über alle 13 Märkte ist rund 1'096 USD tief, realistisch triggern in
-  dreieinhalb Restagen ein bis drei Märkte. Das Wallet ist mit
-  `mrbeast_gaming` (510), `lemonade_july22` (510) und `hotones_july23`
-  (400) geteilt; der Executor-Delta-Sync verhindert Überziehen, aber ein
-  Profil kann dem anderen den Pool wegkaufen. Vor dem Scharfschalten am
-  realen Wallet-Stand gegenprüfen.
-- **Sweep-Größe.** Standard (15 USD je Clip, 10 Clips → 150 USD je
-  Markt), wie `elon_july13`. Bei Buchtiefen von 22–255 USD je Markt ist
-  das plausibel; wer die tiefen Bücher (Soccer 255) voll abräumen will,
-  bräuchte `max_usd_pro_markt`/`max_clips_pro_markt` wie `allin_july17`
-  (50/40).
+- **Budget: entschieden (User-Vorgabe 23.07.).** `max_usd_gesamt` = **400**,
+  Sweep **50 USD je Clip / 40 Clips** wie `allin_july17`. Der große Clip
+  ist hier kein Größen-, sondern ein Zeitargument: Die ausführbare Tiefe
+  unter 0.94 liegt bei 22–255 USD je Markt; mit 15-USD-Clips braucht das
+  4–6 sequenzielle Netzrunden, und genau diese Sekunden fehlten in der
+  Vorwoche. Nach oben ist nichts zu verlieren — der Deckel 0.94 bleibt
+  hart, der Sweep räumt nur vorhandene Level ab.
+  **Vorbehalt:** Das Wallet ist mit `mrbeast_gaming` (510),
+  `lemonade_july22` (510) und `hotones_july23` (400) geteilt. Der
+  Executor-Delta-Sync verhindert Überziehen, aber ein Profil kann dem
+  anderen den Pool wegkaufen. Vor dem Scharfschalten am realen
+  Wallet-Stand gegenprüfen (belegt ist nur der 18.07.-Stand).
 - **Reply-Abdeckung.** In der Vorwoche loggte der Bot am 16.07. fünfmal
   `warnung … nur UserTweets aktiv — Fremd-Replies fehlen`. Elon
   antwortet viel, und Replies zählen laut Regel. Der Selbstheilungspfad

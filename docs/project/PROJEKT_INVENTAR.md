@@ -117,7 +117,7 @@ Erster Lauf über die Kette am 22.07., 12:11 UTC: 1655 geprüfte Märkte, kumuli
 
 ## Update 23.07.2026: Elon-Post-Woche 20.–26.07. armiert (Profil `elon_july20`)
 
-**Neues Profil.** `elon_july20` in `operations/pipeline/config.py`, Event `715491` („What will Elon post this week? (July 20 – July 26)"), Periode 20.07. 04:00 UTC bis 27.07. 03:59 UTC, nur YES, Ask-Deckel 0.94 (p_win 0.97 − min_edge 0.03), Budget 170 USD (Wert der Vorwoche, für diese Woche noch nicht bestätigt). Der Regeltext der Serie ist am 23.07. an der Gamma-Beschreibung gegengelesen und wortgleich zur Vorwoche — der Matcher aus `elon_bot.py` trägt unverändert. Runbook und offene Entscheidungen in `docs/project/ELON_JULY20_ARMIERUNG.md`. Tests 1006 grün (vorher 990), ruff sauber.
+**Neues Profil.** `elon_july20` in `operations/pipeline/config.py`, Event `715491` („What will Elon post this week? (July 20 – July 26)"), Periode 20.07. 04:00 UTC bis 27.07. 03:59 UTC, nur YES, Ask-Deckel 0.94 (p_win 0.97 − min_edge 0.03), Budget 400 USD mit dem großen Sweep der Vollprofile (50 USD je Clip, 40 Clips; User-Vorgabe 23.07.). Der Regeltext der Serie ist am 23.07. an der Gamma-Beschreibung gegengelesen und wortgleich zur Vorwoche — der Matcher aus `elon_bot.py` trägt unverändert. Runbook und offene Entscheidungen in `docs/project/ELON_JULY20_ARMIERUNG.md`. Tests 1006 grün (vorher 990), ruff sauber.
 
 **Ein Code-Eingriff.** Der Startscan blätterte fest 4 Seiten zurück. Das reicht für einen Start am Wochenanfang, nicht für eine Armierung an Tag 4 von 7. Neuer additiver Profil-Knopf `startscan_seiten` → `config.X_STARTSCAN_SEITEN` (Default bleibt 4, `elon_july20` nimmt 12); das `startscan`-Event loggt jetzt `seiten_geblaettert`, `seiten_max` und `erreicht_periodenstart`.
 
@@ -127,4 +127,4 @@ Erster Lauf über die Kette am 22.07., 12:11 UTC: 1655 geprüfte Märkte, kumuli
 
 **Marktlage beim Armieren (Gamma/CLOB, 23.07.).** 17 Märkte, 4 davon bereits zu 1.00 aufgelöst (`Tesla`, `Video game`, `Claude`, `SpaceX`) und von `baue_elon_rules` automatisch übersprungen; 13 offen. Event-Liquidität 2'552 USD, Volumen 15'150 USD. Ausführbare YES-Tiefe unter dem 0.94-Deckel: 22–255 USD je Markt, Summe rund 1'096 USD. Über allen Büchern liegt ein wiederkehrendes Angebot bei 0.95, genau eine Stufe über dem Deckel.
 
-**Offen.** Budget-Bestätigung für diese Woche, Sweep-Größe (Standard 15/10 vs. All-In-Sweep 50/40), Reply-Abdeckung (Vorwoche: fünfmal `nur UserTweets aktiv — Fremd-Replies fehlen`; Fallback `APIFY_REPLY_FALLBACK=1` kostet externe Apify-Läufe), sowie 365 von 1'138 Buchlog-Runden mit CLOB-404 (betrifft nur die Analyse-Zeitreihe, nicht den Handelspfad).
+**Offen.** Reply-Abdeckung (Vorwoche: fünfmal `nur UserTweets aktiv — Fremd-Replies fehlen`; Fallback `APIFY_REPLY_FALLBACK=1` kostet externe Apify-Läufe), sowie 365 von 1'138 Buchlog-Runden mit CLOB-404 (betrifft nur die Analyse-Zeitreihe, nicht den Handelspfad).

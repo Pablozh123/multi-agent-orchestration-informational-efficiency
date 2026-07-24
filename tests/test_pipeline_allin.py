@@ -763,3 +763,26 @@ def test_lemonade_july22_profil_konfiguration() -> None:
     # Boilerplate-Lexikon (kein festes Jingle, Captions-Check 22.07.)
     assert p["serie_id"] == "11828"
     assert "boilerplate_begriffe" not in p
+
+
+# ----------------------------------- All-In july-24 / E282 (23.07.2026)
+
+
+def test_allin_july24_profil_konfiguration() -> None:
+    p = config.PROFILE["allin_july24"]
+    alt = config.PROFILE["allin_july17"]
+    # Quellen und Gates identisch zur bewiesenen E281-Woche
+    assert p["mp3_probe_muster"] == alt["mp3_probe_muster"]
+    assert p["yt_playlist_id"] == alt["yt_playlist_id"]
+    assert p["rss_nur_muster"] == alt["rss_nur_muster"]
+    assert p["event_id"] == "715508"
+    # NO-Schutzschild komplett: Boilerplate + Basisraten-Serie
+    assert "tension" in p["boilerplate_begriffe"]
+    assert p["serie_id"] == "11300"
+    # Volles Kapital, grosser Sweep, langes Nachlauf-Fenster
+    assert p["max_usd_gesamt"] == pytest.approx(500.0)
+    assert p["max_usd_pro_markt"] == pytest.approx(50.0)
+    assert p["max_clips_pro_markt"] == 40
+    assert p["nachlauf_minuten"] == 90
+    # NO-Deckel bleibt beim Default 0.80 (kein Override — die E281-Lehre)
+    assert "no_ask_obergrenze" not in p

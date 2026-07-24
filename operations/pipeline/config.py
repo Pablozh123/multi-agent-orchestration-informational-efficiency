@@ -107,6 +107,44 @@ PROFILE = {
         # Sprecher-Verifikation: YES nur aus MrBeast-zugerechneten Treffern.
         "zielsprecher_referenz": "data/live/mrbeast_next/referenz_stimme.npy",
     },
+    "allin_july24": {
+        "live_dir": "allin_july24",
+        "event_id": "715508",
+        "event_slug": (
+            "what-will-be-said-on-the-next-all-in-podcast-july-24-"
+            "20260717155813224"
+        ),
+        # E282-Woche (Drop Fr 24.07. ~22-23 UTC). Quellen wie july17:
+        # Prober auf traffic.libsyn.com (Muster 23.07. verifiziert:
+        # E281 HTTP 200 mit bekannter Laenge, E282 noch 404 -> Prober
+        # feuert bei Minute 0), RSS nur ALLIN-E<n>-Hauptepisoden,
+        # Playlist-Diff als Positiv-Identifikation, YT als Fallback.
+        "rss_feed_url": "https://allinchamathjason.libsyn.com/rss",
+        "yt_channel_id": "UCESLZhusAkFfsNsApnjF_Cg",
+        "mp3_probe_muster": (
+            "https://traffic.libsyn.com/secure/allinchamathjason/"
+            "ALLIN-E{n}_Ch.mp3"
+        ),
+        "discovery_slug_filter": "all-in",
+        "yt_playlist_id": "PLn5MTSAqaf8peDZQ57QkJBzewJU1aUokl",
+        "rss_nur_muster": r"ALLIN-E\d+_Ch\.mp3",
+        # NO-Seite AKTIV mit dem vollen Schutzschild (User-Freigabe
+        # 23.07.): Seiten-Deckel 0.80 bis in den FAK-Sweep (PR #16),
+        # Basisraten-Veto ueber Serie 11300 (E281-E2E: alle 8 Sperren
+        # loesten real YES auf), Boilerplate-Lexikon (Tension-Lehre),
+        # Gap-Verify mit large-v3 ohne VAD vor der NO-Runde.
+        "boilerplate_begriffe": ALLIN_BOILERPLATE,
+        "serie_id": "11300",
+        # Volles Kapital (User 23.07.): Cash 397.02 pUSD + ~119 Hot-Ones-
+        # Rueckfluss (UMA proposed) -> Obergrenze 500; der Executor
+        # deckelt zusaetzlich am echten Wallet-Delta.
+        "max_usd_gesamt": 500.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        # Nachlauf 90 wie jre/lemonade: E280-NOs wurden noch lange nach
+        # der Runde zu 0.50-0.70 gehandelt — genau dieses Fenster.
+        "nachlauf_minuten": 90,
+    },
     "allin_july17": {
         "live_dir": "allin_july17",
         "event_id": "700931",

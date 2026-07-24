@@ -369,7 +369,58 @@ Geometrie plus Abrufzeit. Bei 20-Sekunden-Takt liegt die Erkennung
 gut unter einer Minute nach dem ISW-Insert — gegen 18.7 Minuten
 Marktträgheit weiterhin reichlich Reserve, aber eben nicht 10 Sekunden.
 
-## 11. Nächster Schritt
+## 11. Erstes Beobachtungsfenster (23.07. 14:35 – 24.07. 10:36 UTC)
+
+**Ergebnis: kein neues Messereignis.** Der Rekorder lief rund 20 Stunden
+durch und protokollierte ausser der Grundierung nichts.
+
+Das ist ein echtes Nullergebnis, kein stiller Ausfall: Ein Abgleich der
+gespeicherten Layer-Stände gegen den Live-Server zeigt für alle vier Layer
+exakt dieselben Zeitstempel. **ISW hat in diesem Fenster keinen der vier
+qualifizierenden Layer angefasst** — letzte Änderung 23.07. 14:13:31 UTC
+(Infiltration). Der erwartete Abendzyklus des 23.07. hat diese Layer nicht
+berührt.
+
+**Der Krasnoiarske-Fall ist abgeschlossen und bestätigt das Signal.** Alle
+drei offenen Märkte der Serie lösten am **23.07. um 23:35:58 UTC mit YES**
+auf (July-31, September-30, December-31; `umaResolutionStatus: resolved`).
+Damit ist die vollständige Kette belegt:
+
+| Zeit (UTC) | Ereignis |
+| --- | --- |
+| 22.07. 20:39:00 | ISW legt Infiltrations-Polygon an |
+| 22.07. 20:57:43 | Markt repreist, YES 0.046 → 0.93 |
+| 23.07. 14:13:31 | letzte ISW-Änderung, Schattierung bleibt |
+| 23.07. 23:35:58 | Auflösung YES |
+
+Das Signal vom 22.07. war also ein **echter Positivfall**, kein Fehlalarm.
+Vom ISW-Eintrag bis zur Auflösung vergingen rund 27 Stunden; die
+Persistenzklausel wurde erfüllt, ohne dass ISW die Fläche nochmals anfassen
+musste.
+
+Der gemessene Vorlauf von 18 min 43 s bleibt damit die einzige saubere
+Beobachtung, ist aber jetzt eine mit bekanntem Ausgang. N=1 unverändert.
+
+### Konstruktionsfehler: die Watchlist veraltet
+
+Der Cache aus Abschnitt 10 behandelt die ganze Watchlist als unveränderlich.
+Das gilt für die Siedlungsgeometrien — **nicht** für die Marktliste: Von den
+52 gecachten Märkten waren nach 19 Stunden bereits **10 geschlossen** (die
+drei Krasnoiarske-Märkte plus Novyi Donbas, Svitle, Vasylivka, zwei
+Novooleksandrivka und zwei Rodynske). Auswertbar und offen blieben 18 statt
+26.
+
+Der Rekorder beobachtet also weiter Siedlungen, deren Markt es nicht mehr
+gibt, und sieht neue Märkte nicht. Beides verzerrt die Messung: verpasste
+Ereignisse fehlen in der Verteilung, tote Märkte erzeugen Treffer ohne
+handelbaren Gegenwert.
+
+**Zu trennen:** Siedlungsgeometrie dauerhaft cachen (ändert sich nie, teuer
+abzufragen, Auslöser der Drosselung), Marktliste dagegen regelmässig neu
+ziehen (ein einziger Gamma-Aufruf, billig). Das ist die erste Aufgabe vor
+dem nächsten Dauerlauf.
+
+## 12. Nächster Schritt
 
 Rekorder vor Handel. Konkret: ein Profil, das die vier Layer im
 20-Sekunden-Takt beobachtet, jede Änderung mit Feature-Zeitstempel und
@@ -380,6 +431,33 @@ dann ist die Frage „gibt es hier eine Kante" beantwortbar statt behauptbar.
 
 Das entspricht dem Vorgehen beim Mentions-Strang (erst Paper-Protokoll, dann
 Echtgeld) und der Vorregistrierungslogik des Piloten.
+
+Konkrete Reihenfolge nach dem ersten Fenster:
+
+1. Marktliste vom Geometrie-Cache trennen (Abschnitt 11).
+2. Rekorder in den `ba-thesis`-Klon unter den Watchdog, damit er
+   Session-unabhängig läuft. Ohne das gibt es keine Verteilung, sondern nur
+   Stichproben von wenigen Stunden.
+3. Erst danach über Handel reden.
+
+### Was die Fehlersuche selbst gezeigt hat
+
+Fünf Fehler traten auf, keiner davon im Test sichtbar, alle mit derselben
+Signatur — kein Fehler, nur Schweigen:
+
+| Fehler | wie es sich angefühlt hätte |
+| --- | --- |
+| Rebuild-Bremse prüfte alle statt neue Features | „an der Front passiert nichts" |
+| Geometrie 5.6 s je Siedlung | Prozess hängt ohne Meldung |
+| ArcGIS 429 im error-Objekt einer 200-Antwort | sporadische Aussetzer |
+| Transportfehler ungefangen | Prozess weg, Daten hören auf |
+| Watchlist-Neuaufbau bei jedem Start | Start scheitert nach Neustarts |
+
+Bei einem Long-Shot-Markt ist „es passiert gerade nichts" über Wochen
+plausibel. Genau deshalb ist bei Latenz-Strategien nicht die fehlende Kante
+das Hauptrisiko, sondern die stille Fehlfunktion des Messapparats. Dasselbe
+Muster steht in den Mentions-Annotationen: Der Feed-Cache, der eine Stunde
+nachhing, war kein Fehler, sondern ein Schweigen.
 
 ## Anhang: verwendete Endpunkte
 

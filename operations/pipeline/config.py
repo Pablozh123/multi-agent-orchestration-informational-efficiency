@@ -617,6 +617,90 @@ PROFILE = {
         # sobald der aelteste geladene Post vor dem Periodenstart liegt.
         "startscan_seiten": 12,
     },
+    "earnings_axp_july24": {
+        # Event 715475 "What will American Express say during their next
+        # earnings call?" — Call 24.07.2026 08:30 AM ET = 12:30 UTC (EDT,
+        # von der Nutzerin am Call-Tag live bestaetigt). Kurzfristige
+        # Armierung am Call-Tag; Design und Gates identisch zu
+        # earnings_pg_july29 (siehe dort und Runbook). Alle Wortmaerkte
+        # sind Einzelbegriffe -> keine Komposita-Overrides noetig.
+        "live_dir": "earnings_axp_july24",
+        "event_id": "715475",
+        "event_slug": ("what-will-american-express-say-during-their-next-"
+                       "earnings-call-20260717164416058"),
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": (
+            "american-express-say-during-their-next-earnings"),
+        "call_start_utc": "2026-07-24T12:30:00Z",
+        "call_max_minuten": 120.0,
+        "chunk_sekunden": 10,
+        # YES-only wie pg_july29: Live-Capture ohne Abdeckungsgarantie.
+        "no_ask_obergrenze": 0.0,
+        "gap_verify_aktiv": False,
+        # Budget-Platzhalter; vor --live durch User-Vorgabe bestaetigen.
+        "max_usd_gesamt": 100.0,
+        "nachlauf_minuten": 30,
+    },
+    "earnings_pg_july29": {
+        # Event 715467 "What will Procter & Gamble say during their next
+        # earnings call?" — 22 Maerkte, davon 8 Zaehl-Brackets (Income/
+        # Quarter/Fiscal/Innovation/Revenue/Consumer/Profit 10+, Customer
+        # 5+). Erhoben via Gamma am 24.07.2026. Die Zaehl-Brackets sind
+        # laut Recherche 22.07. der einzig verteidigungsfaehige Rest-Edge
+        # dieser Marktklasse (Verarbeitungs-, kein Latenzvorsprung);
+        # Einzelwort-Maerkte repricen in ~4 s gegen unsere 10-15 s.
+        "live_dir": "earnings_pg_july29",
+        "event_id": "715467",
+        "event_slug": ("what-will-procter-gamble-say-during-their-next-"
+                       "earnings-call-20260717164206363"),
+        # Kein Drop-Watcher: Der Call startet zur bekannten Uhrzeit als
+        # Live-Webcast. Audio via Loopback-Geraet (Nutzer spielt den
+        # Webcast selbst ab — kein automatisierter Login, keine
+        # Zugangsdaten im Bot) oder direkte Stream-URL. Eigenes Skript
+        # earnings_bot.py; die Feed-Felder bleiben leer.
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "procter-gamble-say-during-their-next-earnings",
+        # Call laut Gamma-Beschreibung 29.07.2026 08:30 AM ET = 12:30 UTC
+        # (EDT). VOR der Armierung an der IR-Quelle gegenpruefen: beim
+        # Dow-Call nannte Polymarket 9 AM, die Firma selbst 8 AM ET
+        # (Messprotokoll 23.07., §8) — eine Stunde zu spaet armiert.
+        "call_start_utc": "2026-07-29T12:30:00Z",
+        "call_max_minuten": 120.0,
+        # 10s-Chunks: Beim Livestream ist die Chunk-Fuellzeit der
+        # dominante Latenzposten (Messprotokoll §4.3: Transkription
+        # selbst ~0.4 s bei small/cuda). Fuer Zaehl-Brackets ist Latenz
+        # zweitrangig; 10 s halten den Rueckstand trotzdem klein.
+        "chunk_sekunden": 10,
+        # Deckel: Audio-Standard p_win 0.93 - 0.03 = 0.90 (Defaults).
+        # NO-SEITE AUS: Live-Capture hat keine belegte Abdeckungs-
+        # garantie (spaeter Einstieg, Aussetzer der Quelle) — der
+        # erweiterte Zaehler ist dann kein tauglicher Abwesenheits-
+        # Proxy (E281-Lehre, verschaerft). Analog hotones_july23
+        # YES-only, bis die Abdeckung kalibriert ist; Gap-Verify
+        # entfaellt damit ebenfalls (grosser large-v3-Nachpass ohne
+        # NO-Nutzen).
+        "no_ask_obergrenze": 0.0,
+        "gap_verify_aktiv": False,
+        # Komposita-Schreibvarianten (PDF "Hyphenated Constructs"/
+        # "Compound Words": Leerzeichen ODER Bindestrich qualifiziert;
+        # die strikten Wortgrenzen-Patterns sehen "World-Cup"/
+        # "Toilet-paper" sonst nicht — Vorbild hotones_july23).
+        "markt_varianten_override": {
+            "2966437": ["World Cup", "World-Cup", "Worldcup"],
+            "2966445": ["Toilet paper", "Toilet-paper", "Toiletpaper"],
+        },
+        # Budget-Platzhalter bis zur User-Vorgabe bei der Armierung;
+        # Standard-Clips (15 USD, 10 je Markt). Dry-Run ist ohnehin
+        # der Standardmodus des Bots.
+        "max_usd_gesamt": 100.0,
+        # Earnings-Buecher stehen nach dem Call sofort auf 0.99+
+        # (Recherche §3.3: Vorpreisungs-Markt) — kurzes Fenster genuegt.
+        "nachlauf_minuten": 30,
+    },
 }
 
 PROFIL = _os.environ.get("BOT_PROFIL", "allin_july10")
@@ -693,8 +777,10 @@ MAX_NACHBESSERUNGEN = 1
 
 # 20s-Chunks: YES-Entscheidungen fallen pro Chunk (nicht erst am Ende).
 # Mit GPU-Transkription (~1-2s je Chunk) dominiert die Chunk-Grenze die
-# Latenz, daher kurze Chunks.
-CHUNK_SEKUNDEN = 20
+# Latenz, daher kurze Chunks. Profil-Override chunk_sekunden: beim
+# Live-Capture (Earnings-Webcast) ist die Chunk-Fuellzeit der dominante
+# Latenzposten -> 10s (Messprotokoll 22.07., §4.3/4.4).
+CHUNK_SEKUNDEN = int(_P.get("chunk_sekunden", 20))
 RSS_POLL_S = 15
 
 # Chunk-Ueberlappung gegen an der Grenze zerschnittene Woerter; Dedup
@@ -764,6 +850,14 @@ X_STARTSCAN_SEITEN = int(_P.get("startscan_seiten", 4))
 # Poll konservativ, Cloudflare-Drosselung via Backoff im Bot.
 TRUTH_USER_ID = _P.get("truth_user_id")
 TRUTH_POLL_S = float(_P.get("truth_poll_s", 15.0))
+
+# Earnings-Call-Bot (Profile earnings_*): Der Call startet zur bekannten
+# Uhrzeit als Live-Webcast (kein Drop-Ereignis). call_start_utc ist die
+# an der IR-Quelle gegenzupruefende Startzeit (die Zeitangabe der
+# Polymarket-Beschreibung war beim Dow-Call falsch, Messprotokoll §8);
+# call_max_minuten begrenzt den Lauf, falls niemand Ctrl+C drueckt.
+CALL_START_UTC = _P.get("call_start_utc")
+CALL_MAX_MINUTEN = float(_P.get("call_max_minuten", 120.0))
 
 # Nachlauf nach der NO-Runde: Market Maker ziehen beim Drop die Quotes
 # und stellen sie erst Minuten spaeter wieder rein (JRE #2523: alle Asks

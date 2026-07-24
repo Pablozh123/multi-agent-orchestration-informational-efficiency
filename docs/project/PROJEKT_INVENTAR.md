@@ -128,3 +128,13 @@ Erster Lauf über die Kette am 22.07., 12:11 UTC: 1655 geprüfte Märkte, kumuli
 **Marktlage beim Armieren (Gamma/CLOB, 23.07.).** 17 Märkte, 4 davon bereits zu 1.00 aufgelöst (`Tesla`, `Video game`, `Claude`, `SpaceX`) und von `baue_elon_rules` automatisch übersprungen; 13 offen. Event-Liquidität 2'552 USD, Volumen 15'150 USD. Ausführbare YES-Tiefe unter dem 0.94-Deckel: 22–255 USD je Markt, Summe rund 1'096 USD. Über allen Büchern liegt ein wiederkehrendes Angebot bei 0.95, genau eine Stufe über dem Deckel.
 
 **Offen.** Reply-Abdeckung (Vorwoche: fünfmal `nur UserTweets aktiv — Fremd-Replies fehlen`; Fallback `APIFY_REPLY_FALLBACK=1` kostet externe Apify-Läufe), sowie 365 von 1'138 Buchlog-Runden mit CLOB-404 (betrifft nur die Analyse-Zeitreihe, nicht den Handelspfad).
+
+## Update 24.07.2026: Earnings-Bot — Polymarket-Verbindung gebaut (Branch feat/earnings-bot)
+
+**Anlass.** Die Live-Transkriptions-Strecke für Webcasts ist seit dem AXP-Paper-Lauf (24.07., `mentions_paper_lauf.py` ausserhalb des Repos) einsatzbereit; es fehlte die Verbindung zu Polymarket (Entscheidung + Order). Die ist jetzt gebaut, als produktisierter Abschluss der Strecke Audio → Zählung → Entscheidung → Order.
+
+**Neu im Repo (additiv).** `operations/pipeline/earnings_bot.py` (Runner für Events ohne Drop-Ereignis: Audio via Loopback-Gerät/Stream-URL/WAV; wiederverwendet build_rules, ChunkTranscriber, StreamingCounter, decision, execution samt Startwache, Kill-Switch, FAK-Sweep), Profil `earnings_pg_july29` in `config.py` (Event 715467, P&G-Call 29.07. 12:30 UTC laut Gamma — an IR-Quelle gegenzuprüfen), `tests/test_earnings_bot.py` (13 Tests), Runbook `docs/project/EARNINGS_BOT_PG_JULY29_ARMIERUNG.md`. Suite 1040 grün, ruff sauber.
+
+**Drei festgenagelte Fallen.** (1) Anyone-Klausel je Markt-Beschreibung als Gate gegen die Sprecherfilter-Serie („What will Elon Musk say during Tesla … earnings call?"). (2) `groupItemThreshold` ist ein Sortier-Index, KEINE Zählschwelle (AXP-Event: Einzelwort-Märkte tragen 3/4/5, „Income 10+" trägt 0) — die Annahme aus der Recherche §9 war falsch, Schwelle kommt ausschliesslich aus dem Fragetext. (3) Kein Auto-Discovery-Rollover: Earnings-Slugs sind Rolling Slugs, der Refresh bleibt an der Event-ID.
+
+**Bewusst zu:** NO-Seite (`no_ask_obergrenze` 0.0) und Gap-Verify, bis die Capture-Abdeckung eines vollen Calls belegt ist; kein automatisierter Webcast-Login (Zugang bleibt Handarbeit im Browser). **Offen vor scharfem Einsatz:** ToS-/Rechtslage des Mitschnitts (Recherche §7/§10), IR-Zeitverifikation, Budget-Entscheid (Platzhalter 100 USD). Details und Armierungs-Schritte im Runbook.

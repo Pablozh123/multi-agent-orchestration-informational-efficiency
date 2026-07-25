@@ -707,6 +707,16 @@ NO_ANTEIL = 0.7               # NO nur wenn Endstand <= 70% der Schwelle
 #    NO-Runde ohne VAD nachtranskribieren. Modell MUSS large-v3 sein:
 #    small fand das E281-Outro auch ohne VAD nur 0/3 Laeufen,
 #    large-v3 2/2 (Messung 18.07.). Funde blocken nur NO, nie YES.
+# 4. NO-Konsens-Vollpass (Auftrag 25.07., nach dem innovation-Verlust
+#    E282): die GANZE Episode vor der NO-Runde einmal mit
+#    NO_KONSENS_MODELL (large-v3, batched) nachhoeren. small verhoert
+#    Woerter im Crosstalk (E282: "innovation" bei 3470.2s als "Master
+#    virtue signaling" — NO @0.13 verlor 20.86 USD; large-v3 hoert es).
+#    Deckt Verhoerer INNERHALB abgedeckter Fenster ab — die VAD-Loch-
+#    Klasse (E281) bleibt Domaene des Gap-Verify danach. Funde blocken
+#    nur NO, nie YES. ~170s je 90-Min-Episode auf der 3060 (Forensik
+#    E281+E282); vertretbar, weil NO-Asks nach dem Drop stehen
+#    (E280: 30+ Min; E281/E282: Nachlauf-Buchlogs).
 BOILERPLATE_BEGRIFFE = frozenset(
     str(w).lower() for w in _P.get("boilerplate_begriffe", []))
 SERIE_ID = _P.get("serie_id")
@@ -716,6 +726,11 @@ GAP_VERIFY_AKTIV = bool(_P.get("gap_verify_aktiv", True))
 GAP_MIN_LUECKE_S = float(_P.get("gap_min_luecke_s", 15.0))
 GAP_RAND_S = 5.0               # Fenster-Ueberlappung in die Abdeckung
 GAP_MODELL = str(_P.get("gap_modell", "large-v3"))
+# Vollpass-Schalter je Profil. Default AKTIV: bot.py laeuft nur fuer
+# Audio-Profile (Elon/Trump-Textbots haben eigene Skripte und erreichen
+# den Pfad nie); Modell folgt GAP_MODELL, per Profil uebersteuerbar.
+NO_KONSENS_AKTIV = bool(_P.get("no_konsens_aktiv", True))
+NO_KONSENS_MODELL = str(_P.get("no_konsens_modell", GAP_MODELL))
 ASR_KONFIDENZ_HOMOPHON = 0.8  # Homophon-Treffer nur ab Konfidenz > 0.8
 
 # Level-Sweep: je Markt wiederholte FAK-Clips, solange der beste Ask

@@ -781,6 +781,76 @@ PROFILE = {
         # (Recherche §3.3: Vorpreisungs-Markt) — kurzes Fenster genuegt.
         "nachlauf_minuten": 30,
     },
+    "earnings_pypl_july28": {
+        # Event 745733 "What will PayPal say during their next earnings
+        # call?" — Q2-Call Di 28.07.2026 08:00 AM ET = 12:00 UTC
+        # (IR-Eventseite am 27.07. verifiziert; Webcast auf der
+        # Q4-Inc-Plattform events.q4inc.com/attendee/222501806 —
+        # REGISTRIERUNG noetig, Handarbeit im Browser am Vortag;
+        # Quellen: RECHERCHE_EARNINGS_QUELLEN_2026-07-27.md §2).
+        # 19 Maerkte: 4 Brackets (Quarter 15+, Consumer 10+,
+        # Transaction 5+, Merchant 5+ — alle >0.96 vorgepreist, 27.07.)
+        # und ein dickes Mittelfeld fuer den AXP-Aufmerksamkeits-Kanal
+        # (Stablecoin 0.61, Agentic Commerce 0.52, Braintree 0.405,
+        # Stripe 0.30, Cash Back 0.265, Anthropic/Claude 0.20, ...).
+        # Design und Gates identisch zu earnings_pg_july29.
+        "live_dir": "earnings_pypl_july28",
+        "event_id": "745733",
+        "event_slug": ("what-will-paypal-say-during-their-next-earnings-"
+                       "call-20260724221739505"),
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "paypal-say-during-their-next-earnings",
+        "call_start_utc": "2026-07-28T12:00:00Z",
+        # PayPal-Calls laufen ~60 min; Puffer fuer Q&A-Ueberzieher.
+        "call_max_minuten": 90.0,
+        "chunk_sekunden": 10,
+        "no_ask_obergrenze": 0.0,
+        "gap_verify_aktiv": False,
+        "trigger_verify_aktiv": True,
+        # Bindestrich-/Zusammenschreibungen (PDF "Hyphenated
+        # Constructs"/"Compound Words"; ASR wechselt die Schreibweise):
+        "markt_varianten_override": {
+            "3094216": ["Stablecoin", "Stable Coin", "Stable-Coin"],
+            "3094223": ["Cash Back", "Cash-Back", "Cashback"],
+        },
+        # Budget-Platzhalter bis User-Entscheid (AXP-Vorbild:
+        # Standard-Clips 15 USD / 10 je Markt).
+        "max_usd_gesamt": 100.0,
+        "nachlauf_minuten": 30,
+    },
+    "earnings_ba_july28": {
+        # Event 745748 "What will Boeing say during their next earnings
+        # call?" — Q2-Call Di 28.07.2026 10:30 AM ET = 14:30 UTC
+        # (Boeing-PM 01.07.; Webcast ueber die Events-Seite von
+        # boeing.com/investors, kein Registrierungszwang in der PM —
+        # konkreten Player-Link am Vortag pruefen; Quellen: Recherche
+        # §2). 20 Maerkte: 4 Brackets (Quarter 15+, Consumer 10+,
+        # Airplane 10+, Customer 3+), Mittelfeld u.a. Guidance 0.475,
+        # Philippine Airlines 0.495, Tariff 0.38, Iran 0.355, Airbus
+        # 0.245 (27.07.). Die Phrase "Philippine Airlines" traegt der
+        # Regel-Parser nativ (flexible Leerzeichen im Pattern) — keine
+        # Overrides noetig, alle uebrigen Fragen sind Einzelbegriffe.
+        "live_dir": "earnings_ba_july28",
+        "event_id": "745748",
+        "event_slug": ("what-will-boeing-say-during-their-next-earnings-"
+                       "call-20260724221853543"),
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "boeing-say-during-their-next-earnings",
+        "call_start_utc": "2026-07-28T14:30:00Z",
+        # Boeing-Calls 60-90 min.
+        "call_max_minuten": 120.0,
+        "chunk_sekunden": 10,
+        "no_ask_obergrenze": 0.0,
+        "gap_verify_aktiv": False,
+        "trigger_verify_aktiv": True,
+        # Budget-Platzhalter bis User-Entscheid.
+        "max_usd_gesamt": 100.0,
+        "nachlauf_minuten": 30,
+    },
     "trump_michigan_july27": {
         # Event 745732 "What will Trump say during remarks in Michigan?"
         # — Rede am GM Proving Ground Milford, Mo 27.07.2026 15:00 ET =

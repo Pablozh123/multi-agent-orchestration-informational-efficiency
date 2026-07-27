@@ -445,3 +445,12 @@ def test_ffmpeg_befehl_geraet_und_stream(tmp_path) -> None:
     for wert in ("-ac", "-ar", "pcm_s16le"):
         assert wert in stream
     assert stream[-1] == str(wav)
+
+    # Lokale Datei (--wav Trockenlauf): KEINE Netz-Optionen — der
+    # WAV-Demuxer kennt sie nicht ("Option user_agent not found",
+    # Smoke-Test 27.07., ffmpeg beendete sich sofort).
+    lokal = ffmpeg_befehl(r"data\live\earnings_axp_july24\call_audio.wav",
+                          "stream", wav)
+    assert "-user_agent" not in lokal
+    assert "-live_start_index" not in lokal
+    assert "-i" in lokal

@@ -181,11 +181,16 @@ def ffmpeg_befehl(quelle: str, art: str, wav: Path) -> list[str]:
     basis = ["ffmpeg", "-hide_banner", "-loglevel", "warning"]
     if art == "geraet":
         eingabe = ["-f", "dshow", "-i", f"audio={quelle}"]
-    else:
+    elif quelle.lower().startswith(("http://", "https://")):
         # -live_start_index -1: am juengsten HLS-Segment starten statt
         # 3 Segmente hinter dem Live-Rand (Messprotokoll §4.2).
         eingabe = ["-user_agent", config.HTTP_HEADERS["User-Agent"],
                    "-live_start_index", "-1", "-i", quelle]
+    else:
+        # Lokale Datei (--wav Trockenlauf): Datei-Demuxer kennen die
+        # Netz-Optionen nicht — "Option user_agent not found" beendete
+        # ffmpeg sofort (Smoke-Test 27.07.).
+        eingabe = ["-i", quelle]
     return basis + eingabe + [
         "-vn", "-ac", "1", "-ar", "16000", "-acodec", "pcm_s16le",
         "-f", "wav", "-y", str(wav)]

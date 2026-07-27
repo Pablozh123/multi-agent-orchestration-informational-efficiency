@@ -414,25 +414,44 @@ def test_allin_july24_profil_wieder_vorhanden() -> None:
 
 
 def test_startskript_kanaele_und_url_parse(monkeypatch) -> None:
+    import json as _json
+
     from operations.pipeline import trump_michigan_start as start
 
     # Kommentarfreier Feed (White House) hat Prioritaet 1.
     assert "WhiteHouse" in start.KANAELE[0]
     assert len(start.KANAELE) >= 2
 
-    class _P:
-        returncode = 0
-        stdout = "https://example.com/hls.m3u8\nhttps://x/2\n"
+    def _antwort(daten, rc=0):
+        class _P:
+            returncode = rc
+            stdout = _json.dumps(daten) if daten is not None else ""
 
-    monkeypatch.setattr(start.subprocess, "run", lambda *a, **k: _P())
+        return lambda *a, **k: _P()
+
+    # Passender Livestream -> (URL, Titel).
+    monkeypatch.setattr(start.subprocess, "run", _antwort({
+        "title": "LIVE: President Trump Remarks in Michigan",
+        "url": "https://example.com/hls.m3u8", "is_live": True}))
     assert start.stream_url("https://youtube.com/@x/live") == (
-        "https://example.com/hls.m3u8")
+        "https://example.com/hls.m3u8",
+        "LIVE: President Trump Remarks in Michigan")
 
-    class _Leer:
-        returncode = 1
-        stdout = ""
+    # 24/7-Nachrichtenstream: Titel ohne "Trump" -> None (FOX2-Falle:
+    # deren Dauerstream lief schon mittags auf derselben /live-URL).
+    monkeypatch.setattr(start.subprocess, "run", _antwort({
+        "title": "FOX 2 News Now — Detroit around the clock",
+        "url": "https://example.com/news.m3u8", "is_live": True}))
+    assert start.stream_url("https://youtube.com/@x/live") is None
 
-    monkeypatch.setattr(start.subprocess, "run", lambda *a, **k: _Leer())
+    # VOD/Premiere (is_live fehlt) -> None.
+    monkeypatch.setattr(start.subprocess, "run", _antwort({
+        "title": "Trump speech from yesterday",
+        "url": "https://example.com/vod.m3u8"}))
+    assert start.stream_url("https://youtube.com/@x/live") is None
+
+    # Kein Stream (yt-dlp Fehler) -> None.
+    monkeypatch.setattr(start.subprocess, "run", _antwort(None, rc=1))
     assert start.stream_url("https://youtube.com/@x/live") is None
 
 

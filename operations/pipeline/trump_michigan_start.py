@@ -23,6 +23,8 @@ ein manueller Marker (SPRECHER_AKTIV anlegen) geht trotzdem jederzeit.
 from __future__ import annotations
 
 import argparse
+import json
+import re
 import subprocess
 import sys
 import time
@@ -37,22 +39,45 @@ KANAELE = [
     "https://www.youtube.com/@RSBN/live",
     "https://www.youtube.com/@FOX2Detroit/live",
 ]
+#: Der Stream-TITEL muss zum Event passen: Lokalsender (FOX2Detroit)
+#: streamen 24/7 Nachrichten auf derselben /live-URL — ohne Titel-Gate
+#: wuerde das Skript um 20:40 deren Dauerstream nehmen und die Rede
+#: verpassen (Befund 27.07.: FOX2-Stream lief bereits mittags).
+TITEL_MUSTER = re.compile(r"trump", re.IGNORECASE)
 POLL_S = 60
 #: Wartefenster: Rede offiziell 15:00 ET, Trump-typisch +30-60 min —
 #: 150 min Polling decken auch einen groben Verzug ab.
 MAX_WARTE_MINUTEN = 150.0
 
 
-def stream_url(watch_url: str) -> str | None:
-    """Direkte Medien-URL des Livestreams oder None (noch nicht live)."""
+def stream_url(watch_url: str) -> tuple[str, str] | None:
+    """(Medien-URL, Titel) des passenden Livestreams, sonst None.
+
+    None auch, wenn zwar ein Stream laeuft, sein Titel aber nicht zum
+    Event passt (24/7-Nachrichtenstream) oder is_live fehlt (VOD/
+    Premiere-Randfaelle).
+    """
     p = subprocess.run(
-        [sys.executable, "-m", "yt_dlp", "-g", "-f", "bestaudio/best",
-         "--no-warnings", watch_url],
+        [sys.executable, "-m", "yt_dlp", "--dump-single-json",
+         "--no-download", "-f", "bestaudio/best", "--no-warnings",
+         watch_url],
         capture_output=True, text=True, timeout=90)
-    zeilen = [z.strip() for z in (p.stdout or "").splitlines() if z.strip()]
-    if p.returncode == 0 and zeilen and zeilen[0].startswith("http"):
-        return zeilen[0]
-    return None
+    if p.returncode != 0 or not (p.stdout or "").strip():
+        return None
+    try:
+        daten = json.loads(p.stdout)
+    except json.JSONDecodeError:
+        return None
+    titel = str(daten.get("title") or "")
+    url = daten.get("url")
+    if not url or not str(url).startswith("http"):
+        return None
+    if not daten.get("is_live"):
+        return None
+    if not TITEL_MUSTER.search(titel):
+        print(f"  Stream laeuft, Titel passt nicht: {titel[:70]!r}")
+        return None
+    return str(url), titel
 
 
 def warte_auf_stream(max_minuten: float = MAX_WARTE_MINUTEN) -> str | None:
@@ -63,14 +88,15 @@ def warte_auf_stream(max_minuten: float = MAX_WARTE_MINUTEN) -> str | None:
             return None
         for kanal in KANAELE:
             try:
-                url = stream_url(kanal)
+                treffer = stream_url(kanal)
             except Exception as ex:  # noqa: BLE001 - Kanal weiterprobieren
                 print(f"  {kanal}: {ex}")
-                url = None
-            if url:
-                print(f"Stream live: {kanal}")
+                treffer = None
+            if treffer:
+                url, titel = treffer
+                print(f"Stream live: {kanal} — {titel[:70]!r}")
                 return url
-        print(f"noch kein Stream live — naechster Versuch in {POLL_S}s "
+        print(f"noch kein passender Stream — naechster Versuch in {POLL_S}s "
               f"(Rest {round((frist - time.time()) / 60)} min)")
         time.sleep(POLL_S)
     return None

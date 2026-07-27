@@ -392,8 +392,9 @@ def test_auto_marker_profilwerte(profil) -> None:
 
 def test_budget_vorgabe_einzelwort_fokus(profil) -> None:
     # User-Vorgabe 27.07.: Kappe 100 USD je Markt (2 FAK-Clips a 50),
-    # Pool 400 — Einzelwoerter und Brackets laufen mit derselben Kappe.
-    assert config.MAX_USD_GESAMT == pytest.approx(400.0)
+    # Pool 650 (abends korrigiert, vorher 400) — Einzelwoerter und
+    # Brackets laufen mit derselben Kappe.
+    assert config.MAX_USD_GESAMT == pytest.approx(650.0)
     assert config.MAX_USD_PRO_MARKT == pytest.approx(50.0)
     assert config.MAX_CLIPS_PRO_MARKT == 2
     assert config.MAX_USD_PRO_MARKT * config.MAX_CLIPS_PRO_MARKT == 100.0

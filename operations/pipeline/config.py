@@ -819,9 +819,10 @@ PROFILE = {
         # USD je Markt als 2 FAK-Clips a 50 (grosse Clips, weil Asks
         # nach dem Fall in Sekunden verschwinden — Elon-Lehre). Die
         # Zaehl-Brackets laufen mit derselben Kappe mit (YES ab
-        # Schwelle + 2). Gesamtpool 400 wie die Vollprofile; der
-        # Executor deckelt zusaetzlich am echten Wallet-Delta.
-        "max_usd_gesamt": 400.0,
+        # Schwelle + 2). Gesamtpool 650 (User-Korrektur 27.07. abends,
+        # vorher 400); der Executor deckelt zusaetzlich am echten
+        # Wallet-Delta und kann nie ueberziehen.
+        "max_usd_gesamt": 650.0,
         "max_usd_pro_markt": 50.0,
         "max_clips_pro_markt": 2,
         "nachlauf_minuten": 30,

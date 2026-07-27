@@ -110,6 +110,31 @@ Deckel 0.90, je EIN Kauf pro Markt. `--status` muss zeigen:
 8. **Rede-Ende**: Ctrl+C -> Endcheck + 30 min Nachlauf. Notaus:
    `data/live/STOP`.
 
+## 3b. Erledigt-Stand 27.07. ~16:30 CEST (alles im Live-Klon)
+
+- Handkopie fortgeschrieben (Betriebsmodus des Live-Klons: main +
+  Branch-Dateien; Hashes vorab verifiziert, keine fremde Arbeit
+  ueberschrieben): config.py, earnings_bot.py, trump_michigan_start.py,
+  vier .cmd im Root, Testdateien. **53/53 Kompatibilitaets-Tests gruen
+  im Live-Klon** (Branch-Code gegen main-Module).
+- **Referenzstimme gebaut und kalibriert**: Quelle WH-Ansprache
+  16.07.2026 (iIlqG0untYM, 3x30 s Solo), Positiv-Kontrolle WH-Ansprache
+  01.04.2026: **0.903**, Negativ-Kontrolle AXP-Call-Audio: **0.079** —
+  Schwelle 0.50 liegt mittig mit grossem Abstand.
+- **Smoke-Test bestanden** (Dry-Run gegen AXP-WAV): 25 aktive Maerkte,
+  ECAPA/large-v3/small alle cuda, Zaehlkette belegt ("Percent" = 59
+  auf dem Earnings-Audio — das %-Gate greift), **ausgegeben 0.00**:
+  Marker nie gesetzt, Auto-Marker feuerte nicht (fremde Stimmen),
+  alle Kaufsperren hielten trotz Zaehler weit ueber Schwelle.
+- Zwei dabei gefundene Bugs gefixt (Commits 43d898e ff.): --wav-
+  Trockenlauf bekam faelschlich Netz-Optionen (ffmpeg-Sofortabbruch);
+  Fernstart brauchte Titel-Gate + is_live-Check, weil FOX2Detroit
+  24/7 auf derselben /live-URL streamt (live verifiziert: Dauerstream
+  wird abgelehnt).
+- Scharf schalten macht der User: Scheduled Task oder Doppelklick auf
+  `trump_michigan_start_live.cmd` (siehe Chat-Vorgabe); Notaus
+  `bot_stop.cmd`, Hand-Marker `trump_michigan_marker.cmd`.
+
 ## 4. Risiken / bewusste Grenzen
 
 - **ECAPA-Referenz heute frisch kalibriert** (nicht ueber Tage

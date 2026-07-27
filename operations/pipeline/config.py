@@ -814,6 +814,14 @@ PROFILE = {
         # setzt der Bot den Marker selbst. Ohne ECAPA-Verifier feuert
         # das nie (fail-closed); Hand-Marker bleibt jederzeit moeglich.
         "sprecher_marker_auto_segmente": 6,
+        # Stream-Selbstheilung (nachgeruestet 27.07. abends nach dem
+        # Lauf): dieselben Kanaele wie der Fernstart.
+        "reconnect_kanaele": [
+            "https://www.youtube.com/@WhiteHouse/live",
+            "https://www.youtube.com/@RSBN/live",
+            "https://www.youtube.com/@FOX2Detroit/live",
+        ],
+        "stream_titel_muster": "trump",
         # Budget-Vorgabe User 27.07.: Fokus YES-Einzelwoerter — faellt
         # ein unwahrscheinliches Wort, ist der Payoff gross; Kappe 100
         # USD je Markt als 2 FAK-Clips a 50 (grosse Clips, weil Asks
@@ -822,6 +830,69 @@ PROFILE = {
         # Schwelle + 2). Gesamtpool 650 (User-Korrektur 27.07. abends,
         # vorher 400); der Executor deckelt zusaetzlich am echten
         # Wallet-Delta und kann nie ueberziehen.
+        "max_usd_gesamt": 650.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 2,
+        "nachlauf_minuten": 30,
+    },
+    "trump_graham_july28": {
+        # Event 745731 "What will Trump say during tribute to Lindsey
+        # Graham?" — Trauerfeier fuer Senator Graham, Washington
+        # National Cathedral, Di 28.07.2026 14:00 ET = 18:00 UTC
+        # (Zeremonie-Beginn; Trumps Tribute-Slot liegt IRGENDWO darin).
+        # 20 Maerkte, Liq 66k, Einzelwoerter/Phrasen 0.3-0.8, einziges
+        # Zaehl-Bracket "Hell" 2+. VIELE Fremdredner (Geistliche,
+        # Familie, Politiker) — die Sprecherbindung traegt alles.
+        # LEHREN AUS MICHIGAN (27.07., Runbook §5): (1) Die Referenz
+        # MUSS aus der Event-Uebertragungskette stammen: Studio-
+        # Referenz erreichte auf PA-Audio max 0.396 und haette JEDEN
+        # echten Trump-Treffer verworfen; die PA-Referenz (aus dem
+        # Michigan-Mitschnitt, Transkript-verifizierte Trump-Passagen)
+        # trennt scharf — Trump min 0.610, Gaeste max 0.287, AXP-Fremde
+        # max -0.040. Union mit der Studio-Referenz deckt beide
+        # Domaenen. (2) Stream-Rotation friert die Quelle ein ->
+        # reconnect_kanaele + Stall-Detektor. (3) Verschiebt die
+        # Kathedral-Akustik die Zurechnung erneut, ist --fenster-modus
+        # der Fallback (Operator-Fenster statt ECAPA; Neustart mitten
+        # in der Zeremonie kostet nichts, solange Trump noch nicht
+        # gesprochen hat — nur seine Worte zaehlen).
+        "live_dir": "trump_graham_july28",
+        "event_id": "745731",
+        "event_slug": ("what-will-trump-say-during-tribute-to-lindsey-"
+                       "graham-20260724170556632"),
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "trump-say-during-tribute-to-lindsey-graham",
+        "call_start_utc": "2026-07-28T18:00:00Z",
+        # Zeremonie 1.5-2.5 h, Trumps Slot unbekannt -> langes Fenster.
+        "call_max_minuten": 240.0,
+        "chunk_sekunden": 10,
+        "no_ask_obergrenze": 0.0,
+        "gap_verify_aktiv": False,
+        "trigger_verify_aktiv": True,
+        "sprecher_klausel_muster": r"if\s+Trump\s+says\s+the\s+listed\s+term",
+        # Union: PA-Referenz (Michigan-Mitschnitt 610-810s, Trump-only)
+        # + Studio-Referenz (WH-Ansprachen). Kopien im eigenen live_dir
+        # (Hot-Ones-Regel: Profil unabhaengig).
+        "zielsprecher_referenzen": [
+            "data/live/trump_graham_july28/referenz_stimme_pa.npy",
+            "data/live/trump_graham_july28/referenz_stimme_studio.npy",
+        ],
+        "sprecher_schwelle": 0.50,
+        "sprecher_marker_auto_segmente": 6,
+        # Kathedrale streamt selbst (kommentarfrei), C-SPAN und News
+        # als Backup; Titel-Gate passend zum Funeral — die 24/7-News-
+        # Dauerstreams ("ABC News Live") fallen durch.
+        "reconnect_kanaele": [
+            "https://www.youtube.com/@WNCathedral/live",
+            "https://www.youtube.com/@cspan/live",
+            "https://www.youtube.com/@ABCNews/live",
+            "https://www.youtube.com/@NBCNews/live",
+        ],
+        "stream_titel_muster": "graham|lindsey|funeral|memorial|tribute",
+        # Budget wie Michigan-Vorgabe (User 27.07.): 100 je Markt
+        # (2 FAK-Clips a 50), Pool 650; Executor-Delta-Sync deckelt.
         "max_usd_gesamt": 650.0,
         "max_usd_pro_markt": 50.0,
         "max_clips_pro_markt": 2,
@@ -1000,6 +1071,16 @@ TRIGGER_VERIFY_MODELL = str(_P.get("trigger_verify_modell", GAP_MODELL))
 # demselben Stream). None = normales Earnings-Event mit Anyone-Gate.
 SPRECHER_KLAUSEL_MUSTER = _P.get("sprecher_klausel_muster")
 SPRECHER_MARKER = LIVE_DIR / "SPRECHER_AKTIV"
+# Stream-Selbstheilung (Michigan-Lehre 27.07.): YouTube rotiert das
+# HLS-Manifest (Redebeginn/Sender-Umschaltung) — ffmpeg haengt dann oft
+# still am toten Manifest und die WAV friert ein (zweimal passiert,
+# zusammen ~65 min blind). Waechst die WAV laenger als STREAM_STALL_S
+# nicht, loest der Bot die /live-Kanaele neu auf (Titel-Gate
+# STREAM_TITEL_MUSTER) und bindet eine frische Quelle an — die
+# Markt-Zaehler bleiben erhalten (transcriber.neue_quelle).
+RECONNECT_KANAELE = [str(u) for u in _P.get("reconnect_kanaele", [])]
+STREAM_TITEL_MUSTER = str(_P.get("stream_titel_muster", "trump"))
+STREAM_STALL_S = float(_P.get("stream_stall_s", 25.0))
 # Auto-Marker: N Zielsprecher-zugerechnete Segmente (>= 1 s) im
 # rollenden 5-Chunk-Fenster setzen den Marker automatisch — fuer den
 # Fernstart ohne Operator am Rechner. 0 = aus; wirkt nur mit aktivem

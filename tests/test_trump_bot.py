@@ -228,4 +228,5 @@ def test_trump_profile_nur_post_serie_kein_say_event() -> None:
         else:
             assert p.get("sprecher_klausel_muster")
             assert p.get("call_start_utc")
-            assert p.get("zielsprecher_referenz")
+            assert (p.get("zielsprecher_referenz")
+                    or p.get("zielsprecher_referenzen"))

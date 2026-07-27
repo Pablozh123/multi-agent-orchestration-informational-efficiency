@@ -50,13 +50,17 @@ POLL_S = 60
 MAX_WARTE_MINUTEN = 150.0
 
 
-def stream_url(watch_url: str) -> tuple[str, str] | None:
+def stream_url(watch_url: str,
+               titel_muster: re.Pattern | None = None) -> tuple[str, str] | None:
     """(Medien-URL, Titel) des passenden Livestreams, sonst None.
 
     None auch, wenn zwar ein Stream laeuft, sein Titel aber nicht zum
     Event passt (24/7-Nachrichtenstream) oder is_live fehlt (VOD/
-    Premiere-Randfaelle).
+    Premiere-Randfaelle). titel_muster ueberschreibt das Modul-Default
+    (Profil-Feld stream_titel_muster — der earnings_bot-Reconnect und
+    andere Events als Trump-Reden brauchen eigene Muster).
     """
+    muster = titel_muster or TITEL_MUSTER
     p = subprocess.run(
         [sys.executable, "-m", "yt_dlp", "--dump-single-json",
          "--no-download", "-f", "bestaudio/best", "--no-warnings",
@@ -74,21 +78,36 @@ def stream_url(watch_url: str) -> tuple[str, str] | None:
         return None
     if not daten.get("is_live"):
         return None
-    if not TITEL_MUSTER.search(titel):
+    if not muster.search(titel):
         print(f"  Stream laeuft, Titel passt nicht: {titel[:70]!r}")
         return None
     return str(url), titel
 
 
-def warte_auf_stream(max_minuten: float = MAX_WARTE_MINUTEN) -> str | None:
+def profil_kanaele() -> list[str]:
+    """Kanal-Liste des aktiven Profils (reconnect_kanaele), sonst Default."""
+    return list(getattr(config, "RECONNECT_KANAELE", []) or KANAELE)
+
+
+def profil_titel_muster() -> re.Pattern:
+    """Titel-Muster des aktiven Profils, sonst Modul-Default."""
+    roh = getattr(config, "STREAM_TITEL_MUSTER", None)
+    return re.compile(roh, re.IGNORECASE) if roh else TITEL_MUSTER
+
+
+def warte_auf_stream(max_minuten: float = MAX_WARTE_MINUTEN,
+                     kanaele: list[str] | None = None,
+                     titel_muster: re.Pattern | None = None) -> str | None:
+    kanaele = kanaele if kanaele is not None else profil_kanaele()
+    muster = titel_muster or profil_titel_muster()
     frist = time.time() + max_minuten * 60
     while time.time() < frist:
         if config.STOP_FILE.exists():
             print("STOP-Datei — Abbruch vor dem Start.")
             return None
-        for kanal in KANAELE:
+        for kanal in kanaele:
             try:
-                treffer = stream_url(kanal)
+                treffer = stream_url(kanal, muster)
             except Exception as ex:  # noqa: BLE001 - Kanal weiterprobieren
                 print(f"  {kanal}: {ex}")
                 treffer = None

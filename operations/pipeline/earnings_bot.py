@@ -202,6 +202,45 @@ def starte_ffmpeg(quelle: str, art: str, wav: Path) -> subprocess.Popen:
         stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
 
 
+def _stream_reconnect(wav_index: int):
+    """Frische Live-URL aufloesen und ffmpeg auf NEUE WAV starten.
+
+    Michigan-Lehre 27.07.: YouTube rotiert das HLS-Manifest (Redebeginn,
+    Sender-Umschaltung) — ffmpeg stirbt dann oft nicht, sondern haengt
+    still am toten Manifest; die WAV friert ein und der Bot ist blind,
+    waehrend die Schleife weiterlaeuft. Der Reconnect loest die
+    /live-Kanalseiten neu auf (Titel-Gate wie beim Start) und beginnt
+    eine neue Datei; der Aufrufer schaltet den Transcriber um
+    (neue_quelle) — die Markt-Zaehler bleiben erhalten.
+
+    (proc, wav) oder None (kein passender Stream live).
+    """
+    import re as _re
+
+    from operations.pipeline.trump_michigan_start import stream_url
+
+    muster = _re.compile(config.STREAM_TITEL_MUSTER, _re.IGNORECASE)
+    for kanal in config.RECONNECT_KANAELE:
+        try:
+            treffer = stream_url(kanal, muster)
+        except Exception as ex:  # noqa: BLE001 - naechsten Kanal probieren
+            _schreibe_event("fehler", {"wo": f"reconnect:{kanal}",
+                                       "fehler": str(ex)})
+            treffer = None
+        if not treffer:
+            continue
+        url, titel = treffer
+        wav_neu = config.LIVE_DIR / f"call_audio_{wav_index}.wav"
+        if wav_neu.exists():
+            wav_neu.unlink()
+        proc = starte_ffmpeg(url, "stream", wav_neu)
+        _schreibe_event("stream_reconnect", {
+            "kanal": kanal, "titel": titel[:90], "wav": wav_neu.name})
+        print(f"RECONNECT auf {titel[:60]!r} -> {wav_neu.name}")
+        return proc, wav_neu
+    return None
+
+
 def warte_bis(iso_utc: str) -> None:
     """Blockiert bis zum Zielzeitpunkt (Armierung vor Call-Start)."""
     ziel = datetime.fromisoformat(iso_utc.replace("Z", "+00:00"))
@@ -300,6 +339,7 @@ def _yes_phase(
     verify_ok: set[str] | None = None,
     verify_abgelehnt: dict[str, int] | None = None,
     kauf_gesperrt: bool = False,
+    nutze_gesamtzaehler: bool = False,
 ) -> dict[str, int]:
     """Zaehler aktualisieren, dann edge-sortiert kaufen (wie bot.py).
 
@@ -313,6 +353,11 @@ def _yes_phase(
     Marker): Zaehler laufen normal weiter, aber weder Verifikation noch
     Buch-Roundtrips noch Kaeufe — das Vorprogramm soll zaehlbar im Log
     stehen, ohne je einen Trade ausloesen zu koennen.
+
+    nutze_gesamtzaehler=True (Fenster-Modus): Der Trigger laeuft auf
+    count_total statt ziel_count_total — die Sprecherbindung leistet
+    dann das OPERATOR-Fenster (Chunks ausserhalb des Markers werden gar
+    nicht erst ingestiert), nicht die ECAPA-Zurechnung.
     """
     verify_ok = verify_ok if verify_ok is not None else set()
     verify_abgelehnt = verify_abgelehnt if verify_abgelehnt is not None else {}
@@ -324,13 +369,15 @@ def _yes_phase(
         if kauf_gesperrt or r.market_id in getradet_yes:
             continue
         ziel = 1 if r.schwelle <= 1 else r.schwelle + config.YES_SCHWELLE_PUFFER
-        if log.ziel_count_total < ziel:
+        relevanter_count = (log.count_total if nutze_gesamtzaehler
+                            else log.ziel_count_total)
+        if relevanter_count < ziel:
             continue
         # Trigger-Verifikation VOR der Buch-Pause: so wird jeder Markt
         # genau einmal geprueft, und Endcheck/Nachlauf koennen sich auf
         # verify_ok verlassen (auch wenn das Buch beim Trigger tot war).
         if verifikation is not None and r.market_id not in verify_ok:
-            if log.ziel_count_total <= verify_abgelehnt.get(r.market_id, -1):
+            if relevanter_count <= verify_abgelehnt.get(r.market_id, -1):
                 continue  # kein neuer Treffer seit der Ablehnung
             try:
                 urteil = verifikation.pruefe(
@@ -341,9 +388,9 @@ def _yes_phase(
                                            "fehler": str(ex)})
                 continue
             _schreibe_event("trigger_verifikation", {
-                "markt": r.slug, "count": log.ziel_count_total, **urteil})
+                "markt": r.slug, "count": relevanter_count, **urteil})
             if not urteil["bestaetigt"]:
-                verify_abgelehnt[r.market_id] = log.ziel_count_total
+                verify_abgelehnt[r.market_id] = relevanter_count
                 print(f"  VERIFY LEHNT AB: {r.varianten[0]!r} — kein Kauf "
                       f"({urteil.get('text', '')[:60]!r})")
                 continue
@@ -358,7 +405,7 @@ def _yes_phase(
             book = fetch_book(r.yes_token_id)
             bereit.append({"rule": r, "book": book,
                            "best_ask": best_ask(book),
-                           "count": log.ziel_count_total,
+                           "count": relevanter_count,
                            "count_total": log.count_total})
         except Exception as ex:  # noqa: BLE001
             _schreibe_event("fehler", {"wo": f"yes_fetch:{r.slug}",
@@ -394,9 +441,13 @@ def _finale(
     getradet_yes: set[str],
     verifikation=None,
     verify_ok: set[str] | None = None,
+    nutze_gesamtzaehler: bool = False,
 ) -> None:
     """Nach Call-Ende: letzter YES-Blick, NO-Runde, Nachlauf (wie bot.py)."""
     verify_ok = verify_ok if verify_ok is not None else set()
+
+    def _zaehler(c: StreamingCounter) -> int:
+        return c.count if nutze_gesamtzaehler else c.ziel_count
 
     def _verify_fehlt(r: MarketRule) -> bool:
         """Fail-closed auch nach dem Call: unbestaetigte Trigger kaufen nie."""
@@ -412,13 +463,13 @@ def _finale(
             continue
         c = counters[r.market_id]
         ziel = 1 if r.schwelle <= 1 else r.schwelle + config.YES_SCHWELLE_PUFFER
-        if c.ziel_count < ziel:
+        if _zaehler(c) < ziel:
             continue
         if _verify_fehlt(r):
             continue
         try:
             book = fetch_book(r.yes_token_id)
-            d = entscheide_yes(r, c.ziel_count, best_ask(book))
+            d = entscheide_yes(r, _zaehler(c), best_ask(book))
             res = executor.place(d, book)
             if d.action == "YES":
                 getradet_yes.add(r.market_id)
@@ -479,7 +530,7 @@ def _finale(
             ziel = (1 if r.schwelle <= 1
                     else r.schwelle + config.YES_SCHWELLE_PUFFER)
             seite = None
-            if c.ziel_count >= ziel:
+            if _zaehler(c) >= ziel:
                 if verifikation is not None and r.market_id not in verify_ok:
                     continue  # fail-closed auch im Nachlauf
                 seite = "YES"
@@ -506,7 +557,7 @@ def _finale(
             c = counters[r.market_id]
             try:
                 if seite == "YES":
-                    d = entscheide_yes(r, c.ziel_count, k["best_ask"])
+                    d = entscheide_yes(r, _zaehler(c), k["best_ask"])
                 else:
                     d = entscheide_no(r, c.erweitert_count, k["best_ask"])
                 if d.action == "NONE":
@@ -543,8 +594,17 @@ def _finale(
 
 
 def lauf(live: bool, quelle: str, art: str, minuten: float,
-         ohne_verify: bool = False) -> None:
-    """Hauptschleife: Capture -> Chunks -> YES live -> Finale."""
+         ohne_verify: bool = False, fenster_modus: bool = False) -> None:
+    """Hauptschleife: Capture -> Chunks -> YES live -> Finale.
+
+    fenster_modus=True (sprechergebundene Events, Operator-gefuehrt):
+    Die Sprecherbindung leistet das MARKER-FENSTER statt der ECAPA-
+    Zurechnung — Chunks ohne Marker werden nicht ingestiert, Trigger
+    laufen auf dem Gesamtzaehler, der Marker ist KEIN Latch (loeschen
+    pausiert Zaehlung und Kaeufe wieder). Fuer Zeremonien mit vielen
+    Fremdrednern, deren Akustik die Referenz-Zurechnung verschiebt
+    (Michigan-Messung 27.07.: Studio-Referenz auf PA-Audio max 0.396).
+    """
     if not startwache.wache_nehmen(config.LIVE_DIR):
         _schreibe_event("doppelstart_abgebrochen", {
             "grund": "start.lock belegt — andere Instanz laeuft/startet",
@@ -587,20 +647,26 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
             print(f"Sprecher-Verifikation aktiv (Schwelle "
                   f"{config.SPRECHER_SCHWELLE}, YES nur aus "
                   "Zielsprecher-Treffern).")
-        elif live and sprecher_gebunden:
+        elif live and sprecher_gebunden and not fenster_modus:
             raise SystemExit(
                 "Zielsprecher-Referenz fehlt: "
                 + ", ".join(str(p) for p in fehlend)
                 + " — sprechergebundenes Event ohne Referenz nicht "
                 "scharf. Bauen: python -m operations.pipeline."
                 "baue_referenz_quellen (Solo-Clips + Kontrollen), "
-                "oder Dry-Run als Messlauf.")
+                "oder Dry-Run als Messlauf / --fenster-modus.")
         else:
             _schreibe_event("sprecher_referenz_fehlt", {
                 "pfade": [str(p) for p in fehlend]})
             print("WARNUNG: Zielsprecher-Referenz fehlt — ziel_count "
                   "zaehlt ALLE Stimmen (nur als Messlauf tauglich).")
-    if sprecher_gebunden:
+    if sprecher_gebunden and fenster_modus:
+        print("FENSTER-MODUS: Zaehlung und Kaeufe laufen NUR, solange "
+              f"der Marker existiert: {config.SPRECHER_MARKER}\n"
+              "  Marker anlegen, wenn der Zielsprecher beginnt; "
+              "LOESCHEN, sobald er endet (kein Latch!). Die "
+              "Sprecherbindung liegt beim Operator.")
+    elif sprecher_gebunden:
         print("SPRECHERGEBUNDEN: Kaufpfad gesperrt, bis der Marker "
               f"existiert: {config.SPRECHER_MARKER}\n"
               "  Marker setzen, sobald der Zielsprecher am Pult ist "
@@ -618,6 +684,8 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
         "trigger_verify": verify_gewollt,
         "sprecher_gebunden": sprecher_gebunden,
         "sprecher_verifikation": verifier is not None,
+        "fenster_modus": fenster_modus,
+        "reconnect_kanaele": len(config.RECONNECT_KANAELE),
     })
     print(f"[{modus}] Earnings-Bot: {len(aktive)} aktive Maerkte, "
           f"Quelle {art}, Chunk {config.CHUNK_SEKUNDEN}s.")
@@ -692,14 +760,62 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
     letzter_buchlog = 0.0
     # Latch: einmal gesetzt bleibt der Kaufpfad frei (die Feinarbeit —
     # Gaeste am Mikro, Chants — macht die ECAPA-Zurechnung je Segment).
+    # Im Fenster-Modus gilt stattdessen der MOMENTANE Marker-Zustand.
     sprecher_frei = not sprecher_gebunden
     # Auto-Marker (Fernstart ohne Operator): rollendes Chunk-Fenster der
-    # Zielsprecher-Segmente; nur mit aktivem Verifier.
+    # Zielsprecher-Segmente; nur mit aktivem Verifier, nie im
+    # Fenster-Modus (dort fuehrt der Operator).
     auto_fenster = (
         deque(maxlen=5)
         if (sprecher_gebunden and verifier is not None
-            and config.SPRECHER_MARKER_AUTO_SEGMENTE > 0)
+            and config.SPRECHER_MARKER_AUTO_SEGMENTE > 0
+            and not fenster_modus)
         else None)
+    # Stall-Detektor (Michigan-Lehre): nur fuer http-Stream-Quellen mit
+    # konfigurierten Reconnect-Kanaelen.
+    reconnect_aktiv = (art == "stream"
+                       and str(quelle).lower().startswith(("http://", "https://"))
+                       and bool(config.RECONNECT_KANAELE))
+    wav_index = 1
+    letzte_wav_groesse = 0
+    letzte_wav_zunahme = time.time()
+
+    def _reconnect_versuchen(grund: str):
+        """Alte Quelle beenden, Rest flushen, neue Quelle anbinden."""
+        nonlocal proc, wav, wav_index, letzte_wav_groesse, letzte_wav_zunahme
+        _schreibe_event("stream_stall", {"grund": grund, "wav": wav.name})
+        print(f"STREAM TOT ({grund}) — Reconnect laeuft.")
+        proc.terminate()
+        try:
+            proc.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+        # Rest-Audio der alten Datei noch zaehlen (unterhalb Chunk-Groesse).
+        try:
+            rest = transcriber.naechster_chunk(wav, final=True)
+        except Exception:  # noqa: BLE001 - Reconnect geht vor
+            rest = None
+        if rest:
+            _yes_phase(aktive, counters, rest, chunk_index, now_utc_iso(),
+                       executor, getradet_yes, yes_pause, verifikation,
+                       lambda: transcriber.dekodiertes_audio(wav),
+                       verify_ok, verify_abgelehnt,
+                       kauf_gesperrt=not sprecher_frei,
+                       nutze_gesamtzaehler=fenster_modus)
+        neu = _stream_reconnect(wav_index + 1)
+        if neu is None:
+            _schreibe_event("stream_reconnect_fehlgeschlagen", {})
+            print("  kein passender Stream live — neuer Versuch folgt.")
+            time.sleep(20.0)
+            letzte_wav_zunahme = time.time() - config.STREAM_STALL_S
+            return False
+        proc, wav = neu
+        wav_index += 1
+        transcriber.neue_quelle()
+        letzte_wav_groesse = 0
+        letzte_wav_zunahme = time.time() + 60.0  # Anlauf-Schonfrist
+        return True
+
     ende_ts = time.time() + minuten * 60
     try:
         while time.time() < ende_ts:
@@ -707,14 +823,28 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
                 ende_grund = "stop_datei"
                 break
             if proc.poll() is not None:
-                ende_grund = "quelle_beendet"
-                break
-            if not sprecher_frei and config.SPRECHER_MARKER.exists():
+                if not reconnect_aktiv or not _reconnect_versuchen("prozess_beendet"):
+                    if not reconnect_aktiv:
+                        ende_grund = "quelle_beendet"
+                        break
+                    continue
+            if fenster_modus:
+                sprecher_frei = config.SPRECHER_MARKER.exists()
+            elif not sprecher_frei and config.SPRECHER_MARKER.exists():
                 sprecher_frei = True
                 _schreibe_event("sprecher_marker_gesetzt",
                                 {"chunk_index": chunk_index})
                 print("Sprecher-Marker gesetzt — Kaufpfad frei.")
             jetzt = time.time()
+            if reconnect_aktiv:
+                groesse = wav.stat().st_size if wav.exists() else 0
+                if groesse > letzte_wav_groesse:
+                    letzte_wav_groesse = groesse
+                    letzte_wav_zunahme = jetzt
+                elif jetzt - letzte_wav_zunahme > config.STREAM_STALL_S:
+                    _reconnect_versuchen(
+                        f"wav_eingefroren_{int(jetzt - letzte_wav_zunahme)}s")
+                    continue
             if jetzt - letzter_buchlog >= config.BUCH_LOG_INTERVALL_S:
                 try:
                     zeilen = log_snapshots(aktive, now_utc_iso())
@@ -732,6 +862,15 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
                 time.sleep(0.3)
                 continue
             chunk_index += 1
+            if fenster_modus and not sprecher_frei:
+                # Fenster zu: nichts zaehlen, nichts kaufen — nur die
+                # Sichtlinie fuer den Operator, damit er den Redebeginn
+                # erkennt und den Marker setzt.
+                _schreibe_event("chunk_fenster_zu", {"index": chunk_index})
+                text = " ".join(s.text for s in segmente).strip()
+                if text:
+                    print(f"Chunk {chunk_index} [Fenster ZU]: {text[:105]}")
+                continue
             if not sprecher_frei and auto_fenster is not None:
                 auto_fenster.append(_auto_marker_treffer(segmente))
                 if sum(auto_fenster) >= config.SPRECHER_MARKER_AUTO_SEGMENTE:
@@ -749,7 +888,8 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
                                  yes_pause, verifikation,
                                  lambda: transcriber.dekodiertes_audio(wav),
                                  verify_ok, verify_abgelehnt,
-                                 kauf_gesperrt=not sprecher_frei)
+                                 kauf_gesperrt=not sprecher_frei,
+                                 nutze_gesamtzaehler=fenster_modus)
             _schreibe_event("chunk", {"index": chunk_index, "staende": staende})
             heiss = {k: v for k, v in staende.items() if v}
             print(f"Chunk {chunk_index}: " + (", ".join(
@@ -772,14 +912,18 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
         proc.kill()
 
     # Marker koennte erst kurz vor Ctrl+C gesetzt worden sein.
-    if not sprecher_frei and config.SPRECHER_MARKER.exists():
+    if fenster_modus:
+        sprecher_frei = config.SPRECHER_MARKER.exists()
+    elif not sprecher_frei and config.SPRECHER_MARKER.exists():
         sprecher_frei = True
         _schreibe_event("sprecher_marker_gesetzt",
                         {"chunk_index": chunk_index, "beim_finale": True})
 
     # Rest-Audio unterhalb der Chunk-Groesse flushen (final=True), damit
     # die letzten Sekunden des Calls noch in Zaehler und YES-Phase gehen.
-    while True:
+    # Im Fenster-Modus nur bei offenem Marker (sonst zaehlte der Rest
+    # Fremdredner nach Trumps Ende in die Zaehler).
+    while not (fenster_modus and not sprecher_frei):
         try:
             segmente = transcriber.naechster_chunk(wav, final=True)
         except Exception as ex:  # noqa: BLE001
@@ -792,9 +936,10 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
                    executor, getradet_yes, yes_pause, verifikation,
                    lambda: transcriber.dekodiertes_audio(wav),
                    verify_ok, verify_abgelehnt,
-                   kauf_gesperrt=not sprecher_frei)
+                   kauf_gesperrt=not sprecher_frei,
+                   nutze_gesamtzaehler=fenster_modus)
 
-    if not sprecher_frei:
+    if not fenster_modus and not sprecher_frei:
         # Marker wurde nie gesetzt (Event abgesagt/verschoben oder
         # Operator-Abbruch): Endcheck und Nachlauf duerfen dann genauso
         # wenig kaufen wie die Chunk-Phase — nur Endstaende festhalten.
@@ -809,7 +954,12 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
               "beendet.")
         return
 
-    _finale(aktive, counters, executor, getradet_yes, verifikation, verify_ok)
+    # Im Fenster-Modus tragen die Zaehler ausschliesslich Material aus
+    # offenen Marker-Fenstern — Endcheck/Nachlauf laufen deshalb auch
+    # bei momentan geschlossenem Marker (die Rede ist vorbei, die
+    # gesammelten Staende sind sprecherbereinigt).
+    _finale(aktive, counters, executor, getradet_yes, verifikation,
+            verify_ok, nutze_gesamtzaehler=fenster_modus)
 
 
 def main() -> None:
@@ -841,6 +991,10 @@ def main() -> None:
     parser.add_argument("--ohne-trigger-verify", action="store_true",
                         help="Trigger-Verifikation bewusst abschalten "
                              "(Kaeufe dann ohne large-v3-Bestaetigung)")
+    parser.add_argument("--fenster-modus", action="store_true",
+                        help="Sprecherbindung ueber das Operator-Fenster "
+                             "statt ECAPA: gezaehlt und gekauft wird NUR "
+                             "bei existierender Marker-Datei (kein Latch)")
     a = parser.parse_args()
 
     if a.liste_geraete:
@@ -867,7 +1021,7 @@ def main() -> None:
         warte_bis(a.ab)
     minuten = a.minuten if a.minuten else config.CALL_MAX_MINUTEN + 30.0
     lauf(live=a.live, quelle=quelle, art=art, minuten=minuten,
-         ohne_verify=a.ohne_trigger_verify)
+         ohne_verify=a.ohne_trigger_verify, fenster_modus=a.fenster_modus)
 
 
 if __name__ == "__main__":

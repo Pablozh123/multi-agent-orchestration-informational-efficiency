@@ -469,3 +469,138 @@ def test_startskript_stop_datei_verhindert_start(profil, tmp_path,
     stop.touch()
     monkeypatch.setattr(config, "STOP_FILE", stop)
     assert start.warte_auf_stream(max_minuten=0.02) is None
+
+
+# ------------------------------------ Stream-Selbstheilung (27.07. abends)
+
+
+def test_neue_quelle_setzt_position_und_cache_zurueck() -> None:
+    # Ohne GPU/faster_whisper: Instanz am Konstruktor vorbei bauen.
+    from operations.pipeline.transcription import ChunkTranscriber
+
+    t = ChunkTranscriber.__new__(ChunkTranscriber)
+    t.verarbeitete_samples = 123456
+    t._audio_cache = object()
+    t._cache_groesse = 987
+    t.neue_quelle()
+    assert t.verarbeitete_samples == 0
+    assert t._audio_cache is None
+    assert t._cache_groesse == -1
+
+
+def test_stream_url_mit_profil_titel_muster(monkeypatch) -> None:
+    import json as _json
+    import re as _re
+
+    from operations.pipeline import trump_michigan_start as start
+
+    def _antwort(daten):
+        class _P:
+            returncode = 0
+            stdout = _json.dumps(daten)
+
+        return lambda *a, **k: _P()
+
+    funeral = {"title": "Funeral Service for Sen. Lindsey Graham",
+               "url": "https://example.com/hls.m3u8", "is_live": True}
+    monkeypatch.setattr(start.subprocess, "run", _antwort(funeral))
+    graham_muster = _re.compile("graham|funeral", _re.IGNORECASE)
+    # Standard-Muster ("trump") lehnt den Funeral-Titel ab ...
+    assert start.stream_url("https://youtube.com/@x/live") is None
+    # ... das Profil-Muster akzeptiert ihn.
+    assert start.stream_url("https://youtube.com/@x/live",
+                            graham_muster) is not None
+
+
+def test_stream_reconnect_startet_neue_wav(profil, tmp_path,
+                                           monkeypatch) -> None:
+    from operations.pipeline import earnings_bot, trump_michigan_start
+
+    monkeypatch.setattr(config, "LIVE_DIR", tmp_path)
+    monkeypatch.setattr(config, "RECONNECT_KANAELE",
+                        ["https://youtube.com/@a/live",
+                         "https://youtube.com/@b/live"])
+    monkeypatch.setattr(config, "STREAM_TITEL_MUSTER", "trump")
+    aufrufe: list[str] = []
+
+    def _fake_stream_url(kanal, muster=None):
+        aufrufe.append(kanal)
+        if "@b/" in kanal:
+            return ("https://cdn.example.com/neu.m3u8", "Trump remarks")
+        return None
+
+    gestartet: list[tuple] = []
+    monkeypatch.setattr(trump_michigan_start, "stream_url", _fake_stream_url)
+    monkeypatch.setattr(earnings_bot, "starte_ffmpeg",
+                        lambda url, art, wav: gestartet.append((url, wav))
+                        or "DUMMY_PROC")
+    ergebnis = earnings_bot._stream_reconnect(2)
+    assert ergebnis is not None
+    proc, wav = ergebnis
+    assert proc == "DUMMY_PROC"
+    assert wav.name == "call_audio_2.wav"
+    # Kanal a lieferte nichts, b traf; ffmpeg lief auf der neuen URL.
+    assert len(aufrufe) == 2
+    assert gestartet[0][0] == "https://cdn.example.com/neu.m3u8"
+    # Event im Log.
+    events = [json.loads(z) for z in
+              (tmp_path / "bot_events.jsonl").read_text(
+                  encoding="utf-8").splitlines()]
+    assert any(e["art"] == "stream_reconnect" for e in events)
+
+
+def test_michigan_profil_hat_reconnect(profil) -> None:
+    assert len(config.RECONNECT_KANAELE) == 3
+    assert config.STREAM_TITEL_MUSTER == "trump"
+    # Earnings-Profile bleiben ohne Selbstheilung (statische Webcasts).
+    assert config.PROFILE["earnings_pg_july29"].get("reconnect_kanaele") is None
+
+
+# ------------------------------------ Fenster-Modus (Operator-Fenster)
+
+
+def test_fenster_modus_kauft_auf_gesamtzaehler(snapshot, tmp_path,
+                                               monkeypatch) -> None:
+    # Im Fenster-Modus traegt das Operator-Fenster die Sprecherbindung:
+    # ein Treffer OHNE ECAPA-Zurechnung (ist_ziel=False) kauft, weil
+    # der Trigger auf count_total laeuft. (Im Standard-Modus belegt
+    # test_fremdsprecher_treffer_loesen_keinen_kauf_aus das Gegenteil.)
+    from operations.pipeline import earnings_bot
+
+    monkeypatch.setattr(config, "LIVE_DIR", tmp_path)
+    rules = _rules(snapshot)
+    loan = rules["3094193"]
+    counters = {loan.market_id: StreamingCounter(loan)}
+    monkeypatch.setattr(
+        earnings_bot, "fetch_book",
+        lambda tok: {"asks": [{"price": "0.5", "size": "100"}], "bids": []})
+    ex = _MerkExecutor()
+    earnings_bot._yes_phase(
+        [loan], counters, [_seg("the loan programs", ist_ziel=False)],
+        1, "t1", ex, set(), {}, nutze_gesamtzaehler=True)
+    assert [d.action for d in ex.aufrufe] == ["YES"]
+
+
+def test_fenster_modus_finale_nutzt_gesamtzaehler(snapshot, tmp_path,
+                                                  monkeypatch) -> None:
+    from operations.pipeline import earnings_bot
+
+    monkeypatch.setattr(config, "LIVE_DIR", tmp_path)
+    monkeypatch.setattr(config, "NACHLAUF_MINUTEN", 0.0)
+    rules = _rules(snapshot)
+    loan = rules["3094193"]
+    counters = {loan.market_id: StreamingCounter(loan)}
+    counters[loan.market_id].ingest_chunk(
+        1, [_seg("a loan for families", ist_ziel=False)], "t")
+    monkeypatch.setattr(
+        earnings_bot, "fetch_book",
+        lambda tok: {"asks": [{"price": "0.5", "size": "100"}], "bids": []})
+    # Standard: ziel_count 0 -> kein Endcheck-Kauf.
+    ex1 = _MerkExecutor()
+    earnings_bot._finale([loan], counters, ex1, set())
+    assert all(d.action != "YES" for d in ex1.aufrufe)
+    # Fenster-Modus: count 1 traegt.
+    ex2 = _MerkExecutor()
+    earnings_bot._finale([loan], counters, ex2, set(),
+                         nutze_gesamtzaehler=True)
+    assert [d.action for d in ex2.aufrufe] == ["YES"]

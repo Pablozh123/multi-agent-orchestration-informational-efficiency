@@ -208,6 +208,68 @@ def test_trump_july20_profil_neue_woche() -> None:
     assert p["max_usd_gesamt"] == pytest.approx(400.0)
 
 
+def test_trump_july27_profil_neue_woche() -> None:
+    from operations.pipeline import config
+
+    p = config.PROFILE["trump_july27"]
+    alt = config.PROFILE["trump_july20"]
+    # Quelle unveraendert (Truth Social, derselbe verifizierte Account,
+    # gleicher Poll-Takt gegen die Cloudflare-Drosselung).
+    assert p["truth_user_id"] == alt["truth_user_id"]
+    assert p["truth_poll_s"] == alt["truth_poll_s"]
+    assert p["discovery_slug_filter"] == alt["discovery_slug_filter"]
+    # Neues Event + Periode 27.07.-02.08. ET, luecken- und
+    # ueberlappungsfrei zur Vorwoche (deren Ende ist der neue Start).
+    assert p["event_id"] == "745692"
+    assert p["periode_start_utc"] == "2026-07-27T04:00:00Z"
+    assert p["periode_ende_utc"] == "2026-08-03T03:59:59Z"
+    assert alt["periode_ende_utc"] < p["periode_start_utc"]
+    # Budget: Vorwochen-Wert uebernommen; Bestaetigung am realen
+    # Wallet-Stand ist Runbook-Schritt vor dem Scharfschalten.
+    assert p["max_usd_gesamt"] == pytest.approx(400.0)
+    assert p["max_usd_pro_markt"] == pytest.approx(50.0)
+    assert p["max_clips_pro_markt"] == 40
+
+
+def test_trump_july27_oder_und_mehrwort_begriffe(tmp_path,
+                                                 monkeypatch) -> None:
+    # Echte Fragen des Events 745692 (Gamma, 27.07.): zwei Mehrwort-
+    # Begriffe ("Wall Street", "President Xi") und zwei Oder-Maerkte in
+    # einer Woche — die Ableitung muss alle Varianten tragen.
+    from operations.pipeline import config
+
+    def _m(mid: str, frage: str) -> dict:
+        return {"id": mid, "slug": f"will-trump-post-{mid}",
+                "question": frage, "outcomes": json.dumps(["Yes", "No"]),
+                "clobTokenIds": json.dumps([f"y{mid}", f"n{mid}"]),
+                "closed": False, "description": ""}
+
+    snap = {"markets": [
+        _m("3093886",
+           'Will Trump post "Lindsey" or "Graham" on Truth Social '
+           "this week?"),
+        _m("3093887",
+           'Will Trump post "Wall Street" on Truth Social this week?'),
+        _m("3093888",
+           'Will Trump post "President Xi" on Truth Social this week?'),
+        _m("3093889",
+           'Will Trump post "Gold" or "Golden" on Truth Social this week?'),
+    ]}
+    pfad = tmp_path / "snap.json"
+    pfad.write_text(json.dumps(snap), encoding="utf-8")
+    monkeypatch.setattr(config, "GAMMA_SNAPSHOT", pfad)
+    nach_id = {r.market_id: r for r in baue_elon_rules()}
+    assert nach_id["3093886"].varianten == ["Lindsey", "Graham"]
+    assert nach_id["3093887"].varianten == ["Wall Street"]
+    assert nach_id["3093888"].varianten == ["President Xi"]
+    assert nach_id["3093889"].varianten == ["Gold", "Golden"]
+    # Mehrwort-Matching: Leerzeichen/Bindestrich treffen, Teilwort nicht.
+    m = ElonMatcher(nach_id["3093888"])
+    assert m.pruefe("Just spoke with President Xi about trade")[0] is True
+    assert m.pruefe("president-xi meeting")[0] is True
+    assert m.pruefe("The President said")[0] is False
+
+
 def test_trump_profile_nur_post_serie_kein_say_event() -> None:
     # Abgrenzung: Der "What will Trump SAY"-Markt (Serie 11277, Event
     # 723717) wertet NUR Gesprochenes und darf nie mit dem Truth-Social-

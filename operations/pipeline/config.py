@@ -261,6 +261,44 @@ PROFILE = {
         # je zu blacken. Latenz 8s ist fuer einen Wochen-Markt egal.
         "x_poll_s": 8.0,
     },
+    "trump_july27": {
+        "live_dir": "trump_july27",
+        "event_id": "745692",
+        "event_slug": (
+            "what-will-trump-post-this-week-july-27-august-2-"
+            "20260724154919527"
+        ),
+        # Quelle wie july13/july20: oeffentliche Truth-Social-API von
+        # @realDonaldTrump (truth_watch.py, curl_cffi-Impersonation),
+        # eigenes Skript trump_bot.py, NUR YES. Regeltext am 27.07. per
+        # Diff gegen den july20-Snapshot gegengelesen: WORTGLEICH bis auf
+        # die Datumsangaben, Beschreibungs-Schablone ueber alle 17
+        # Maerkte identisch — Matcher traegt unveraendert.
+        # ABGRENZUNG wie july20: Serie 11341 "trump-post-weekly" (DIESES
+        # Event) wertet GESCHRIEBENE Truths — unser Bot. Die parallele
+        # Serie 11277 "trump-weekly-mentions" ("What will Trump SAY")
+        # wertet NUR Gesprochenes -> nie mit diesem Profil handeln.
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "what-will-trump-post",
+        "x_user_id": None,
+        "truth_user_id": "107780257626128497",  # @realDonaldTrump
+        "truth_poll_s": 15.0,
+        "p_win": 0.97,
+        "min_edge": 0.03,
+        "periode_start_utc": "2026-07-27T04:00:00Z",  # 27.07. 00:00 ET
+        "periode_ende_utc": "2026-08-03T03:59:59Z",   # 02.08. 23:59 ET
+        # Budget: Vorwochen-Wert uebernommen (400/50/40, User-Vorgabe
+        # 23.07. fuer trump_july20) — vor dem Scharfschalten am realen
+        # Wallet-Stand bestaetigen (Runbook ELON_TRUMP_JULY27). Geteiltes
+        # Wallet mit mrbeast_gaming, allin_july24 und elon_july27; der
+        # Executor-Delta-Sync verhindert Ueberziehen, aber ein Profil
+        # kann dem anderen den Pool wegkaufen.
+        "max_usd_gesamt": 400.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+    },
     "trump_july20": {
         "live_dir": "trump_july20",
         "event_id": "715499",
@@ -654,6 +692,58 @@ PROFILE = {
         # decken die bisherige Woche ab; der Bot bricht ohnehin ab,
         # sobald der aelteste geladene Post vor dem Periodenstart liegt.
         "startscan_seiten": 12,
+    },
+    "elon_july27": {
+        # Event 745693 "What will Elon post this week? (July 27 - August
+        # 2)", 14 Maerkte, beim Armieren am 27.07. alle offen. Nachfolger
+        # von elon_july20. Der Regeltext ist WORTGLEICH zu july13/july20
+        # (27.07. per Diff gegen den july20-Snapshot gegengelesen, nur die
+        # Datumsangaben wechseln; Beschreibungs-Schablone ueber alle 14
+        # Maerkte identisch): Plural/Possessiv/Case zaehlen, Sigils
+        # (#/@/$) davor sind ok, Compounds zaehlen, Misspellings und
+        # Symbole IM Wort disqualifizieren, eigener Text in Quote- und
+        # Reply-Posts zaehlt, zitierter Fremdtext und Reposts nicht,
+        # Bildtext nur klar ausgeschrieben. Der Matcher aus elon_bot.py
+        # traegt damit unveraendert.
+        "live_dir": "elon_july27",
+        "event_id": "745693",
+        "event_slug": (
+            "what-will-elon-post-this-week-july-27-august-2-"
+            "20260724155239115"
+        ),
+        # Quelle unveraendert: X-Posts von @elonmusk (x_watch.py,
+        # GraphQL-Web-Pfad mit Login-Cookies X_AUTH_TOKEN/X_CT0 aus .env).
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "what-will-elon-post",
+        "x_user_id": "44196397",  # @elonmusk (verifizierter Account)
+        # NUR YES wie july13/july20 (User-Vorgabe 13.07.); elon_bot.py
+        # hat keinen NO-Zweig. Deckel wie Vorwochen: 0.97 - 0.03 = 0.94.
+        "p_win": 0.97,
+        "min_edge": 0.03,
+        "periode_start_utc": "2026-07-27T04:00:00Z",  # 27.07. 00:00 ET
+        "periode_ende_utc": "2026-08-03T03:59:59Z",   # 02.08. 23:59 ET
+        "x_poll_s": 8.0,
+        # Budget: Vorwochen-Vorgabe uebernommen (400/50/40, User 23.07.
+        # fuer elon_july20) — vor dem Scharfschalten am realen Wallet-
+        # Stand bestaetigen (Runbook ELON_TRUMP_JULY27). Der Befund aus
+        # zwei Wochen null Fills: Es scheiterte nie am Budget, sondern an
+        # der beim Trigger verschwindenden Ask-Seite; der grosse Clip
+        # bleibt das Zeitargument (Leiter in 1-2 Netzrunden abraeumen
+        # statt 4-6). Geteiltes Wallet mit mrbeast_gaming, allin_july24
+        # und trump_july27.
+        "max_usd_gesamt": 400.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        # Armierung am Abend von Tag 1: kein Tag-4-Rueckstand wie bei
+        # july20, aber bei Elons Post-Frequenz (oft >80 Posts+Replies am
+        # Tag) reichen die 4 Default-Seiten (~80 Eintraege) fuer den
+        # angebrochenen Tag nicht sicher zurueck bis 04:00 UTC. 8 Seiten
+        # sind reine Reserve — der Scan bricht ohnehin ab, sobald der
+        # aelteste geladene Post vor dem Periodenstart liegt. Kontrolle:
+        # startscan-Event muss "erreicht_periodenstart": true zeigen.
+        "startscan_seiten": 8,
     },
 }
 

@@ -19,6 +19,14 @@ Earnings-spezifische Gates gegenueber bot.py:
   during Tesla ... earnings call?") filtert auf Markt-Ebene nach
   Sprecher — ohne Diarisierung waere unser Zaehler dort systematisch
   falsch (Recherche 22.07., §2). Fehlt die Klausel -> SKIP.
+- SPRECHERGEBUNDENE Events (Profil setzt sprecher_klausel_muster, z.B.
+  trump_michigan_july27 "if Trump says the listed term"): Das Anyone-
+  Gate wird durch das Profil-Klauselmuster ERSETZT, und zwei Schutz-
+  schichten kommen dazu: (1) ECAPA-Sprecher-Verifikation — YES zaehlt
+  nur Trump-zugerechnete Treffer (ziel_count, Referenz Pflicht bei
+  --live); (2) Operator-Marker config.SPRECHER_MARKER — der Kaufpfad
+  bleibt gesperrt, bis die Datei existiert (Redebeginn), denn
+  Vorprogramm und Vorredner laufen auf demselben Stream.
 - Schwelle NUR aus dem Fragetext ("N+ times", parse_schwelle). Das
   Gamma-Feld groupItemThreshold ist ein SORTIER-Index der Event-Gruppe,
   keine Zaehlschwelle (AXP-Event 715475: Einzelwort-Maerkte tragen
@@ -117,12 +125,23 @@ def baue_earnings_rules() -> list[MarketRule]:
     maerkte = snap["markets"]
     rules = build_rules(maerkte)
     nach_id = {str(m.get("id")): m for m in maerkte}
+    # Sprechergebundenes Profil: Das Anyone-Gate wird durch das exakte
+    # Klausel-Muster des Profils ersetzt (die Beschreibung MUSS die
+    # sprechergebundene Resolution tragen — schuetzt auch gegen einen
+    # versehentlichen Event-/Profil-Mix nach einem Slug-Roll).
+    sprecher_klausel = (
+        re.compile(config.SPRECHER_KLAUSEL_MUSTER, re.IGNORECASE)
+        if config.SPRECHER_KLAUSEL_MUSTER else None)
     for r in rules:
         if r.status != "active":
             continue
         m = nach_id.get(r.market_id, {})
         if m.get("closed"):
             r.status, r.skip_grund = "skip", "markt_geschlossen"
+            continue
+        if sprecher_klausel is not None:
+            if not sprecher_klausel.search(m.get("description") or ""):
+                r.status, r.skip_grund = "skip", "sprecher_klausel_fehlt"
             continue
         if not _ANYONE_KLAUSEL.search(m.get("description") or ""):
             r.status = "skip"
@@ -218,6 +237,12 @@ def status_bericht() -> dict:
         "ask_obergrenze": config.ASK_OBERGRENZE,
         "no_ask_obergrenze": config.NO_ASK_OBERGRENZE,
         "trigger_verify": config.TRIGGER_VERIFY_AKTIV,
+        "sprecher_gebunden": bool(config.SPRECHER_KLAUSEL_MUSTER),
+        "sprecher_referenz_vorhanden": (
+            all(p.exists() for p in config.ZIELSPRECHER_REFERENZEN)
+            if config.ZIELSPRECHER_REFERENZEN else None),
+        "sprecher_marker": (str(config.SPRECHER_MARKER)
+                            if config.SPRECHER_KLAUSEL_MUSTER else None),
         "aktive_maerkte": len(aktive),
         "zaehl_brackets": sorted(
             r.question for r in aktive if r.schwelle > 1),
@@ -255,6 +280,7 @@ def _yes_phase(
     audio_holen=None,
     verify_ok: set[str] | None = None,
     verify_abgelehnt: dict[str, int] | None = None,
+    kauf_gesperrt: bool = False,
 ) -> dict[str, int]:
     """Zaehler aktualisieren, dann edge-sortiert kaufen (wie bot.py).
 
@@ -263,6 +289,11 @@ def _yes_phase(
     wird (fail-closed). Eine Ablehnung sperrt den Markt, bis ein NEUER
     Treffer den Zaehler erhoeht; eine Bestaetigung gilt fuer den Rest
     des Laufs (auch Endcheck und Nachlauf kaufen nur bestaetigt).
+
+    kauf_gesperrt=True (sprechergebundenes Event vor dem Operator-
+    Marker): Zaehler laufen normal weiter, aber weder Verifikation noch
+    Buch-Roundtrips noch Kaeufe — das Vorprogramm soll zaehlbar im Log
+    stehen, ohne je einen Trade ausloesen zu koennen.
     """
     verify_ok = verify_ok if verify_ok is not None else set()
     verify_abgelehnt = verify_abgelehnt if verify_abgelehnt is not None else {}
@@ -271,7 +302,7 @@ def _yes_phase(
     for r in aktive:
         log = counters[r.market_id].ingest_chunk(chunk_index, segmente, ts)
         staende[r.slug] = log.count_total
-        if r.market_id in getradet_yes:
+        if kauf_gesperrt or r.market_id in getradet_yes:
             continue
         ziel = 1 if r.schwelle <= 1 else r.schwelle + config.YES_SCHWELLE_PUFFER
         if log.ziel_count_total < ziel:
@@ -514,6 +545,48 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
     verify_ok: set[str] = set()
     verify_abgelehnt: dict[str, int] = {}
 
+    # Sprechergebundenes Event: ECAPA-Verifier laden (YES zaehlt nur
+    # Zielsprecher-Treffer). Fail-closed bei --live: ohne kalibrierte
+    # Referenz kein Echtgeld — der Gesamtzaehler wuerde Vorredner und
+    # Publikums-Chants dem Zielsprecher zurechnen. Im Dry-Run laeuft
+    # der Messbetrieb auch ohne Referenz (ziel_count == count), mit
+    # deutlicher Warnung.
+    sprecher_gebunden = bool(config.SPRECHER_KLAUSEL_MUSTER)
+    verifier = None
+    if config.ZIELSPRECHER_REFERENZEN:
+        fehlend = [p for p in config.ZIELSPRECHER_REFERENZEN
+                   if not p.exists()]
+        if not fehlend:
+            from operations.pipeline.speaker import SpeakerVerifier
+
+            verifier = SpeakerVerifier(config.ZIELSPRECHER_REFERENZEN,
+                                       schwelle=config.SPRECHER_SCHWELLE)
+            _schreibe_event("sprecher_verifikation", {
+                "schwelle": config.SPRECHER_SCHWELLE,
+                "pfade": [str(p) for p in config.ZIELSPRECHER_REFERENZEN],
+            })
+            print(f"Sprecher-Verifikation aktiv (Schwelle "
+                  f"{config.SPRECHER_SCHWELLE}, YES nur aus "
+                  "Zielsprecher-Treffern).")
+        elif live and sprecher_gebunden:
+            raise SystemExit(
+                "Zielsprecher-Referenz fehlt: "
+                + ", ".join(str(p) for p in fehlend)
+                + " — sprechergebundenes Event ohne Referenz nicht "
+                "scharf. Bauen: python -m operations.pipeline."
+                "baue_referenz_quellen (Solo-Clips + Kontrollen), "
+                "oder Dry-Run als Messlauf.")
+        else:
+            _schreibe_event("sprecher_referenz_fehlt", {
+                "pfade": [str(p) for p in fehlend]})
+            print("WARNUNG: Zielsprecher-Referenz fehlt — ziel_count "
+                  "zaehlt ALLE Stimmen (nur als Messlauf tauglich).")
+    if sprecher_gebunden:
+        print("SPRECHERGEBUNDEN: Kaufpfad gesperrt, bis der Marker "
+              f"existiert: {config.SPRECHER_MARKER}\n"
+              "  Marker setzen, sobald der Zielsprecher am Pult ist "
+              "(Datei anlegen genuegt).")
+
     verify_gewollt = config.TRIGGER_VERIFY_AKTIV and not ohne_verify
     _schreibe_event("start", {
         "modus": modus, "event_id": config.EVENT_ID,
@@ -524,6 +597,8 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
         "ask_obergrenze": config.ASK_OBERGRENZE,
         "no_ask_obergrenze": config.NO_ASK_OBERGRENZE,
         "trigger_verify": verify_gewollt,
+        "sprecher_gebunden": sprecher_gebunden,
+        "sprecher_verifikation": verifier is not None,
     })
     print(f"[{modus}] Earnings-Bot: {len(aktive)} aktive Maerkte, "
           f"Quelle {art}, Chunk {config.CHUNK_SEKUNDEN}s.")
@@ -558,7 +633,7 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
 
     transcriber = None
     for versuch in range(1, 5):
-        transcriber = ChunkTranscriber()
+        transcriber = ChunkTranscriber(verifier=verifier)
         if transcriber.geraet.startswith("cuda"):
             break
         print(f"  Versuch {versuch}: nur {transcriber.geraet} — "
@@ -567,7 +642,7 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
         transcriber = None
         time.sleep(5.0)
     if transcriber is None:
-        transcriber = ChunkTranscriber()
+        transcriber = ChunkTranscriber(verifier=verifier)
     _schreibe_event("whisper_bereit", {"geraet": transcriber.geraet})
     print(f"Whisper bereit ({transcriber.geraet}).")
 
@@ -596,6 +671,9 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
     ende_grund = "zeitlimit"
     chunk_index = 0
     letzter_buchlog = 0.0
+    # Latch: einmal gesetzt bleibt der Kaufpfad frei (die Feinarbeit —
+    # Gaeste am Mikro, Chants — macht die ECAPA-Zurechnung je Segment).
+    sprecher_frei = not sprecher_gebunden
     ende_ts = time.time() + minuten * 60
     try:
         while time.time() < ende_ts:
@@ -605,6 +683,11 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
             if proc.poll() is not None:
                 ende_grund = "quelle_beendet"
                 break
+            if not sprecher_frei and config.SPRECHER_MARKER.exists():
+                sprecher_frei = True
+                _schreibe_event("sprecher_marker_gesetzt",
+                                {"chunk_index": chunk_index})
+                print("Sprecher-Marker gesetzt — Kaufpfad frei.")
             jetzt = time.time()
             if jetzt - letzter_buchlog >= config.BUCH_LOG_INTERVALL_S:
                 try:
@@ -627,7 +710,8 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
                                  now_utc_iso(), executor, getradet_yes,
                                  yes_pause, verifikation,
                                  lambda: transcriber.dekodiertes_audio(wav),
-                                 verify_ok, verify_abgelehnt)
+                                 verify_ok, verify_abgelehnt,
+                                 kauf_gesperrt=not sprecher_frei)
             _schreibe_event("chunk", {"index": chunk_index, "staende": staende})
             heiss = {k: v for k, v in staende.items() if v}
             print(f"Chunk {chunk_index}: " + (", ".join(
@@ -649,6 +733,12 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
     except subprocess.TimeoutExpired:
         proc.kill()
 
+    # Marker koennte erst kurz vor Ctrl+C gesetzt worden sein.
+    if not sprecher_frei and config.SPRECHER_MARKER.exists():
+        sprecher_frei = True
+        _schreibe_event("sprecher_marker_gesetzt",
+                        {"chunk_index": chunk_index, "beim_finale": True})
+
     # Rest-Audio unterhalb der Chunk-Groesse flushen (final=True), damit
     # die letzten Sekunden des Calls noch in Zaehler und YES-Phase gehen.
     while True:
@@ -663,7 +753,23 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
         _yes_phase(aktive, counters, segmente, chunk_index, now_utc_iso(),
                    executor, getradet_yes, yes_pause, verifikation,
                    lambda: transcriber.dekodiertes_audio(wav),
-                   verify_ok, verify_abgelehnt)
+                   verify_ok, verify_abgelehnt,
+                   kauf_gesperrt=not sprecher_frei)
+
+    if not sprecher_frei:
+        # Marker wurde nie gesetzt (Event abgesagt/verschoben oder
+        # Operator-Abbruch): Endcheck und Nachlauf duerfen dann genauso
+        # wenig kaufen wie die Chunk-Phase — nur Endstaende festhalten.
+        _schreibe_event("fertig", {
+            "endstaende": {r.slug: counters[r.market_id].count
+                           for r in aktive},
+            "nachlauf_kaeufe": 0,
+            "ausgegeben_usd": executor.ausgegeben_usd,
+            "hinweis": "kaeufe_gesperrt_sprecher_marker_nie_gesetzt",
+        })
+        print("Sprecher-Marker wurde nie gesetzt — Finale ohne Kaeufe "
+              "beendet.")
+        return
 
     _finale(aktive, counters, executor, getradet_yes, verifikation, verify_ok)
 

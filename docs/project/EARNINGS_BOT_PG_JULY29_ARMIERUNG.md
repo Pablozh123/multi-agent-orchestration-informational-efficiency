@@ -106,7 +106,11 @@ kollidiert nicht mit deren GPU-Nutzung.
    unveraendert offen und ausdruecklich VOR jedem scharfen Einsatz zu
    klaeren. Entscheid liegt bei der Studentin. Der Loopback-Weg vermeidet
    automatisierte Zugriffe, ersetzt die Klaerung aber nicht.
-2. **IR-Zeitverifikation** (Schritt 1) steht aus.
+2. **IR-Zeitverifikation** (Schritt 1): erledigt 27.07. — P&G-PM vom
+   01.07.2026 (us.pg.com/Businesswire) bestaetigt Mi 29.07., 8:30 a.m.
+   ET, offener Live-Audio-Webcast auf pginvestor.com, keine
+   Registrierung erwaehnt. `call_start_utc` 12:30 stimmt. Quellen in
+   `RECHERCHE_EARNINGS_QUELLEN_2026-07-27.md`.
 3. **NO-Seite und Gap-Verify** bleiben zu, bis die Capture-Abdeckung
    eines vollen Calls einmal belegt ist (Kandidat: dieser Lauf).
 4. **Whisper-Umgebung**: Vollpfad laeuft nur im ba-thesis-Klon
@@ -148,8 +152,9 @@ Resolutions- und Tape-Cache liegen in `data/raw/live_runs/`. Die
 versionierten Kurat-Kopien (`data/live_curated/`) sind auf alle 14
 Laeufe aufgefrischt.
 
-**Fuer den P&G-Call unveraendert offen:** IR-Zeitverifikation
-(Schritt 1), Budget-Entscheid (Platzhalter 100 USD), ToS-Frage (§4.1).
+**Fuer den P&G-Call unveraendert offen:** Budget-Entscheid (Platzhalter
+100 USD), ToS-Frage (§4.1); IR-Zeitverifikation am 27.07. erledigt
+(§4.2, Webcast offen auf pginvestor.com).
 Neu zu beachten: large-v3 laeuft beim Call zusaetzlich zum
 small-Transcriber auf der GPU (zusammen ~4–5 GB VRAM; auf der
 Maschine bereits am 18.07. fuer Gap-Verify gemessen).

@@ -705,6 +705,71 @@ PROFILE = {
         # (Recherche §3.3: Vorpreisungs-Markt) — kurzes Fenster genuegt.
         "nachlauf_minuten": 30,
     },
+    "trump_michigan_july27": {
+        # Event 745732 "What will Trump say during remarks in Michigan?"
+        # — Rede am GM Proving Ground Milford, Mo 27.07.2026 15:00 ET =
+        # 19:00 UTC (WXYZ/C-SPAN, 27.07.; C-SPAN listet 14:50 ET). 26
+        # Maerkte, davon 6 Zaehl-Brackets (Percent 15+, Joe/Biden 12+,
+        # Oil/Gas 10+, Hell 7+, Trump 5+, Job 20+). Quellen und Konzept:
+        # RECHERCHE_EARNINGS_QUELLEN_2026-07-27.md §4.
+        # SPRECHERGEBUNDEN: Resolution ist "if Trump says the listed
+        # term" — es gibt KEINE Anyone-Klausel. Zwei Gates zusaetzlich
+        # zum Earnings-Design: (1) ECAPA-Sprecher-Verifikation, YES nur
+        # aus Trump-zugerechneten Treffern (ziel_count, wie
+        # mrbeast_gaming); (2) Operator-Marker SPRECHER_AKTIV im
+        # live_dir — der Kaufpfad bleibt gesperrt, bis der Operator
+        # Trumps Redebeginn markiert (Vorprogramm-Musik und Vorredner
+        # laufen auf demselben Stream).
+        "live_dir": "trump_michigan_july27",
+        "event_id": "745732",
+        "event_slug": ("what-will-trump-say-during-remarks-in-michigan-"
+                       "20260724162420350"),
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        # Disjunkt zu "what-will-trump-post" (Truth-Social-Profile) und
+        # zur "trump-weekly-mentions"-Serie (sagt "during-remarks" nicht).
+        "discovery_slug_filter": "trump-say-during-remarks-in-michigan",
+        "call_start_utc": "2026-07-27T19:00:00Z",
+        # Trump-Events starten regelmaessig 30-60 min verspaetet, die
+        # Rede selbst laeuft 60-90 min — grosszuegiges Fenster, Ctrl+C
+        # beendet ohnehin frueher.
+        "call_max_minuten": 180.0,
+        "chunk_sekunden": 10,
+        # YES-only wie alle Live-Capture-Profile: keine belegte
+        # Abdeckungsgarantie, und der Gesamtzaehler ist bei einem
+        # sprechergebundenen Markt ohnehin kein Abwesenheits-Proxy
+        # (Hot-Ones-Begruendung, verschaerft).
+        "no_ask_obergrenze": 0.0,
+        "gap_verify_aktiv": False,
+        "trigger_verify_aktiv": True,
+        # Ersetzt das Anyone-Gate: Maerkte sind nur aktiv, wenn die
+        # Beschreibung exakt die sprechergebundene Klausel traegt.
+        "sprecher_klausel_muster": r"if\s+Trump\s+says\s+the\s+listed\s+term",
+        # ECAPA-Referenz im Live-Klon bauen (baue_referenz_quellen:
+        # Solo-Clips einer frueheren Rede plus Negativ-Kontrollen wie
+        # Moderatoren/Vorredner). Schwelle 0.50 wie mrbeast_gaming/
+        # hotones: Praezision vor Recall — ein Falsch-Positiv ist ein
+        # Fehlkauf, ein verpasster YES kostet 0.
+        "zielsprecher_referenz": (
+            "data/live/trump_michigan_july27/referenz_stimme.npy"),
+        "sprecher_schwelle": 0.50,
+        "markt_varianten_override": {
+            # "Percent" 15+: Whisper schreibt gesprochenes "percent" in
+            # Ziffernkontexten als "%" ("50%") — ohne "%"-Variante
+            # wuerde der Zaehler massiv untererfassen; "per cent" als
+            # seltene ASR-Schreibvariante derselben Aussprache.
+            "3094188": ["Percent", "per cent", "%"],
+            # ASR setzt Kommas in den Slogan: "Drill, baby, drill".
+            "3094204": ["Drill Baby Drill", "Drill, Baby, Drill"],
+            # Akronyme: Punkt-Schreibweisen als ASR-Varianten ("A.I."-
+            # Vorbild in VARIANTEN_MAP).
+            "3114659": ["USMCA", "U.S.M.C.A.", "NAFTA", "N.A.F.T.A."],
+        },
+        # Budget-Platzhalter; vor --live durch User-Vorgabe bestaetigen.
+        "max_usd_gesamt": 100.0,
+        "nachlauf_minuten": 30,
+    },
 }
 
 PROFIL = _os.environ.get("BOT_PROFIL", "allin_july10")
@@ -869,6 +934,15 @@ CALL_MAX_MINUTEN = float(_P.get("call_max_minuten", 120.0))
 # und schuetzt gegen die E281-Homophon-Klasse.
 TRIGGER_VERIFY_AKTIV = bool(_P.get("trigger_verify_aktiv", False))
 TRIGGER_VERIFY_MODELL = str(_P.get("trigger_verify_modell", GAP_MODELL))
+# Sprechergebundene Live-Events ("What will Trump say during ..."): Die
+# Resolution wertet nur den benannten Sprecher, eine Anyone-Klausel gibt
+# es nicht. Das Profil nennt das Klausel-Muster, das STATT der Anyone-
+# Klausel in der Markt-Beschreibung stehen muss (sonst SKIP); zusaetzlich
+# bleibt der Kaufpfad gesperrt, bis der Operator die Marker-Datei anlegt
+# (Redebeginn des Zielsprechers — Vorprogramm und Vorredner laufen auf
+# demselben Stream). None = normales Earnings-Event mit Anyone-Gate.
+SPRECHER_KLAUSEL_MUSTER = _P.get("sprecher_klausel_muster")
+SPRECHER_MARKER = LIVE_DIR / "SPRECHER_AKTIV"
 
 # Nachlauf nach der NO-Runde: Market Maker ziehen beim Drop die Quotes
 # und stellen sie erst Minuten spaeter wieder rein (JRE #2523: alle Asks

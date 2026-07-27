@@ -355,6 +355,11 @@ def test_status_bericht_nennt_sprecher_gates(snapshot, tmp_path,
     from operations.pipeline import earnings_bot
 
     monkeypatch.setattr(config, "LIVE_DIR", tmp_path)
+    # Referenz-Pfade auf tmp_path zwingen: Im Live-Klon existiert die
+    # echte referenz_stimme.npy (seit 27.07. 15:58) — der Test darf
+    # nicht vom Dateisystem-Zustand des Klons abhaengen.
+    monkeypatch.setattr(config, "ZIELSPRECHER_REFERENZEN",
+                        [tmp_path / "referenz_fehlt.npy"])
     monkeypatch.setattr(
         earnings_bot, "fetch_book", lambda tok: {"asks": [], "bids": []})
     bericht = earnings_bot.status_bericht()

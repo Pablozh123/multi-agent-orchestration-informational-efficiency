@@ -286,6 +286,12 @@ class PipelineEintrag(_Strict):
     bestes_angebot: Optional[float]
     bestes_gebot: Optional[float]
     size_usd: Optional[float]
+    #: Extraktionsquote je Kauf: wieviel der im Kaufmoment unter dem
+    #: Preisdeckel verfuegbaren Buch-Tiefe (USD) der Sweep tatsaechlich
+    #: gekauft hat. Reine Ausfuehrungsguete aus dem Buch-Snapshot des
+    #: decisions_log — keine PnL-Aussage. None fuer Nicht-Kaeufe.
+    verfuegbar_usd: Optional[float] = None
+    extraktionsquote: Optional[float] = None
 
 
 class PipelineLauf(_Strict):
@@ -296,6 +302,12 @@ class PipelineLauf(_Strict):
     n_kaeufe: int = Field(ge=0)
     eintraege: List[PipelineEintrag]
     wortzaehler_endstaende: Dict[str, int]
+    #: Aggregierte Extraktionsquote des Laufs ueber alle Kauf-Eintraege
+    #: mit Buch-Snapshot: Summe gekauft / Summe verfuegbar (unter dem
+    #: jeweiligen Seiten-Deckel). None, wenn keine Kaeufe.
+    extraktion_gekauft_usd: Optional[float] = None
+    extraktion_verfuegbar_usd: Optional[float] = None
+    extraktionsquote: Optional[float] = None
 
 
 class PipelineForwardPayload(_Strict):
@@ -682,10 +694,24 @@ def _lies_lauf(
             record = json.loads(line)
             decision = record.get("decision", {}) or {}
             result = record.get("result", {}) or {}
-            bestes_angebot, bestes_gebot = _best_prices(
-                record.get("book_snapshot", {}) or {}
-            )
+            book = record.get("book_snapshot", {}) or {}
+            bestes_angebot, bestes_gebot = _best_prices(book)
             letzter_ts = max(letzter_ts, str(record.get("wall_ts_utc", "")))
+            # Extraktionsquote nur fuer echte Kaeufe: gekaufte USD gegen
+            # die im Kaufmoment unter dem Seiten-Deckel verfuegbare
+            # Ask-Tiefe (Clamp auf 1.0 gegen Rundungs-/Mittelkurs-Drift).
+            verfuegbar_usd: Optional[float] = None
+            quote: Optional[float] = None
+            gekauft = result.get("size_usd")
+            if str(decision.get("action", "NONE")) != "NONE" and gekauft:
+                deckel = _deckel_aus_reason(
+                    str(decision.get("reason", "")), decision.get("outcome")
+                )
+                verfuegbar_usd = _verfuegbar_unter_deckel(book, deckel)
+                if verfuegbar_usd:
+                    quote = round(
+                        min(1.0, float(gekauft) / verfuegbar_usd), 4
+                    )
             eintraege.append(
                 PipelineEintrag(
                     action=str(decision.get("action", "NONE")),
@@ -702,6 +728,8 @@ def _lies_lauf(
                         if result.get("size_usd") is None
                         else float(result["size_usd"])
                     ),
+                    verfuegbar_usd=verfuegbar_usd,
+                    extraktionsquote=quote,
                 )
             )
 
@@ -720,6 +748,41 @@ def _lies_lauf(
                 endstaende = {str(k): int(v) for k, v in event["staende"].items()}
 
     return eintraege, endstaende, letzter_ts
+
+
+_DECKEL_MUSTER = re.compile(r"<=\s*([01](?:\.\d+)?)")
+
+
+def _deckel_aus_reason(reason: str, outcome: Optional[str]) -> float:
+    """Preisdeckel des Kaufs aus dem Entscheidungs-Grund.
+
+    Der Bot schreibt den wirksamen Deckel in den reason ("ask 0.29 <=
+    0.9" bzw. "no_ask 0.8 <= 0.8"); der LETZTE "<= x"-Treffer ist die
+    Preisgrenze (davor kann die Zaehler-Grenze stehen). Fallback auf die
+    Seiten-Defaults 0.9 (Yes) / 0.8 (No).
+    """
+
+    treffer = _DECKEL_MUSTER.findall(reason or "")
+    if treffer:
+        return float(treffer[-1])
+    return 0.8 if str(outcome or "").strip().lower() == "no" else 0.9
+
+
+def _verfuegbar_unter_deckel(
+    book_snapshot: Dict[str, Any], deckel: float
+) -> Optional[float]:
+    """Ausfuehrbare Ask-Tiefe (USD) bis einschliesslich Preisdeckel."""
+
+    total = 0.0
+    for stufe in book_snapshot.get("asks") or []:
+        try:
+            preis = float(stufe.get("price"))
+            groesse = float(stufe.get("size"))
+        except (TypeError, ValueError):
+            continue
+        if preis <= deckel + 1e-9:
+            total += preis * groesse
+    return round(total, 2) if total > 0 else None
 
 
 def entdecke_laeufe(roots: List[Path]) -> List[tuple[str, Path]]:
@@ -769,6 +832,22 @@ def build_pipeline_forward(
         eintraege, endstaende, letzter_ts = _lies_lauf(lauf_dir)
         if not eintraege:
             continue
+        kaeufe_mit_buch = [
+            e for e in eintraege
+            if e.action != "NONE" and e.size_usd and e.verfuegbar_usd
+        ]
+        gekauft_summe = (
+            round(sum(e.size_usd for e in kaeufe_mit_buch), 2)
+            if kaeufe_mit_buch else None
+        )
+        verfuegbar_summe = (
+            round(sum(e.verfuegbar_usd for e in kaeufe_mit_buch), 2)
+            if kaeufe_mit_buch else None
+        )
+        lauf_quote = (
+            round(min(1.0, gekauft_summe / verfuegbar_summe), 4)
+            if gekauft_summe and verfuegbar_summe else None
+        )
         gelesen.append(
             (
                 letzter_ts,
@@ -778,6 +857,9 @@ def build_pipeline_forward(
                     n_kaeufe=sum(1 for e in eintraege if e.action != "NONE"),
                     eintraege=eintraege,
                     wortzaehler_endstaende=endstaende,
+                    extraktion_gekauft_usd=gekauft_summe,
+                    extraktion_verfuegbar_usd=verfuegbar_summe,
+                    extraktionsquote=lauf_quote,
                 ),
             )
         )

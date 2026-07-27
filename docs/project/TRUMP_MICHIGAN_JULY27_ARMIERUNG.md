@@ -38,6 +38,21 @@ gegenueber Earnings zwei zusaetzliche Gates, beide sind drin:
 5. Unveraendert aus dem Earnings-Design: Trigger-Verify (large-v3,
    fail-closed) an, NO-Seite zu (0.0), Vorscan-Pause, Kill-Switch,
    Startwache, Event-ID-gebundener Refresh, not-air-Markt skip.
+6. **Nachtrag 27.07. ~16:00 (User-Entscheide):** (a) Budget-Vorgabe:
+   Fokus YES-Einzelwoerter, **Kappe 100 USD je Markt** (2 FAK-Clips a
+   50 — grosse Clips, weil Asks nach dem Fall in Sekunden weg sind),
+   Pool 400, Brackets laufen mit derselben Kappe. (b) **Fernstart**:
+   `trump_michigan_start.py` loest die /live-URL (WhiteHouse -> RSBN ->
+   FOX2Detroit) per yt-dlp auf, pollt bis der Stream live ist und
+   startet den Bot mit `--stream` — kein Browser, kein Loopback.
+   (c) **Auto-Marker**: 6 Trump-zugerechnete Segmente (>= 1 s) im
+   rollenden 5-Chunk-Fenster setzen den Marker selbst (nur mit aktivem
+   ECAPA-Verifier — ohne Referenz nie). Hand-Marker und STOP bleiben:
+   `trump_michigan_marker.cmd`, `bot_stop.cmd` /
+   `bot_stop_aufheben.cmd` im Repo-Root. (d) Beifang: allin_july24-
+   Profil von main in die Branch-config uebernommen — der Watchdog
+   haelt es bis 01.08. aktiv (E283 Fr 31.07.), die Handkopie vom
+   24.07. haette einen All-In-Neustart mit KeyError sterben lassen.
 
 ## 2. Erwartungsbild (Gamma 27.07., ~13:00 UTC)
 

@@ -363,3 +363,84 @@ def test_status_bericht_nennt_sprecher_gates(snapshot, tmp_path,
     assert bericht["sprecher_marker"].endswith("SPRECHER_AKTIV")
     # Alle 6 Brackets im Bericht.
     assert len(bericht["zaehl_brackets"]) == 6
+
+
+# ------------------------------------------------ Auto-Marker und Budget
+
+
+def test_auto_marker_zaehlt_nur_lange_zielsegmente(profil) -> None:
+    from operations.pipeline.earnings_bot import _auto_marker_treffer
+
+    segmente = [
+        _seg("trump speaking clearly", ist_ziel=True, start=0.0, ende=4.0),
+        _seg("kurzer schnipsel", ist_ziel=True, start=4.0, ende=4.5),
+        _seg("vorredner am pult", ist_ziel=False, start=5.0, ende=9.0),
+        _seg("verifikation inaktiv", ist_ziel=None, start=9.0, ende=13.0),
+    ]
+    # Nur das eine lange Trump-Segment zaehlt: Schnipsel < 1 s, Fremd-
+    # und None-Segmente nie (ohne Referenz kein Auto-Marker).
+    assert _auto_marker_treffer(segmente) == 1
+
+
+def test_auto_marker_profilwerte(profil) -> None:
+    assert config.SPRECHER_MARKER_AUTO_SEGMENTE == 6
+    # Earnings-/Default-Profile: Auto-Marker aus.
+    importlib.reload_hint = None  # noqa: B018 - nur Lesbarkeit
+    assert config.PROFILE["earnings_pg_july29"].get(
+        "sprecher_marker_auto_segmente") is None
+
+
+def test_budget_vorgabe_einzelwort_fokus(profil) -> None:
+    # User-Vorgabe 27.07.: Kappe 100 USD je Markt (2 FAK-Clips a 50),
+    # Pool 400 — Einzelwoerter und Brackets laufen mit derselben Kappe.
+    assert config.MAX_USD_GESAMT == pytest.approx(400.0)
+    assert config.MAX_USD_PRO_MARKT == pytest.approx(50.0)
+    assert config.MAX_CLIPS_PRO_MARKT == 2
+    assert config.MAX_USD_PRO_MARKT * config.MAX_CLIPS_PRO_MARKT == 100.0
+
+
+def test_allin_july24_profil_wieder_vorhanden() -> None:
+    # Watchdog haelt allin_july24 bis 01.08. aktiv (E283-Drop Fr 31.07.);
+    # die Handkopie vom 24.07. hatte das Profil verloren — ein Bot-
+    # Neustart waere mit KeyError gestorben. Wortgleich von main
+    # uebernommen.
+    p = config.PROFILE["allin_july24"]
+    assert p["event_id"] == "715508"
+    assert p["max_usd_gesamt"] == pytest.approx(500.0)
+    assert p["serie_id"] == "11300"
+
+
+# ------------------------------------------------ Fernstart-Skript
+
+
+def test_startskript_kanaele_und_url_parse(monkeypatch) -> None:
+    from operations.pipeline import trump_michigan_start as start
+
+    # Kommentarfreier Feed (White House) hat Prioritaet 1.
+    assert "WhiteHouse" in start.KANAELE[0]
+    assert len(start.KANAELE) >= 2
+
+    class _P:
+        returncode = 0
+        stdout = "https://example.com/hls.m3u8\nhttps://x/2\n"
+
+    monkeypatch.setattr(start.subprocess, "run", lambda *a, **k: _P())
+    assert start.stream_url("https://youtube.com/@x/live") == (
+        "https://example.com/hls.m3u8")
+
+    class _Leer:
+        returncode = 1
+        stdout = ""
+
+    monkeypatch.setattr(start.subprocess, "run", lambda *a, **k: _Leer())
+    assert start.stream_url("https://youtube.com/@x/live") is None
+
+
+def test_startskript_stop_datei_verhindert_start(profil, tmp_path,
+                                                 monkeypatch) -> None:
+    from operations.pipeline import trump_michigan_start as start
+
+    stop = tmp_path / "STOP"
+    stop.touch()
+    monkeypatch.setattr(config, "STOP_FILE", stop)
+    assert start.warte_auf_stream(max_minuten=0.02) is None

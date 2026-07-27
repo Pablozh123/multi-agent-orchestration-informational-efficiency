@@ -51,6 +51,7 @@ import json
 import re
 import subprocess
 import time
+from collections import deque
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -265,6 +266,19 @@ def _segment_fenster(segmente) -> tuple[float, float] | None:
     if not enden:
         return None
     return (min(starts), max(enden))
+
+
+def _auto_marker_treffer(segmente) -> int:
+    """Zielsprecher-zugerechnete Segmente tragfaehiger Laenge im Chunk.
+
+    Fuer den Auto-Marker (Fernstart): Kurze Schnipsel unter 1 s liefern
+    keine verlaessliche ECAPA-Zurechnung (speaker.MIN_SEGMENT_S) und
+    zaehlen nicht — sonst koennte ein einzelner Fehl-Frame im
+    Vorprogramm den Kaufpfad oeffnen. ist_ziel None (Verifikation
+    inaktiv) zaehlt bewusst NICHT: ohne Referenz nie ein Auto-Marker.
+    """
+    return sum(1 for s in segmente
+               if s.ist_ziel is True and (s.end_s - s.start_s) >= 1.0)
 
 
 def _yes_phase(
@@ -674,6 +688,13 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
     # Latch: einmal gesetzt bleibt der Kaufpfad frei (die Feinarbeit —
     # Gaeste am Mikro, Chants — macht die ECAPA-Zurechnung je Segment).
     sprecher_frei = not sprecher_gebunden
+    # Auto-Marker (Fernstart ohne Operator): rollendes Chunk-Fenster der
+    # Zielsprecher-Segmente; nur mit aktivem Verifier.
+    auto_fenster = (
+        deque(maxlen=5)
+        if (sprecher_gebunden and verifier is not None
+            and config.SPRECHER_MARKER_AUTO_SEGMENTE > 0)
+        else None)
     ende_ts = time.time() + minuten * 60
     try:
         while time.time() < ende_ts:
@@ -706,6 +727,18 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
                 time.sleep(0.3)
                 continue
             chunk_index += 1
+            if not sprecher_frei and auto_fenster is not None:
+                auto_fenster.append(_auto_marker_treffer(segmente))
+                if sum(auto_fenster) >= config.SPRECHER_MARKER_AUTO_SEGMENTE:
+                    config.SPRECHER_MARKER.parent.mkdir(parents=True,
+                                                        exist_ok=True)
+                    config.SPRECHER_MARKER.touch()
+                    sprecher_frei = True
+                    _schreibe_event("sprecher_marker_gesetzt", {
+                        "chunk_index": chunk_index, "auto": True,
+                        "segmente_im_fenster": sum(auto_fenster)})
+                    print("Auto-Marker: Zielsprecher erkannt — "
+                          "Kaufpfad frei.")
             staende = _yes_phase(aktive, counters, segmente, chunk_index,
                                  now_utc_iso(), executor, getradet_yes,
                                  yes_pause, verifikation,

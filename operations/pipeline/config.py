@@ -639,6 +639,7 @@ PROFILE = {
         # YES-only wie pg_july29: Live-Capture ohne Abdeckungsgarantie.
         "no_ask_obergrenze": 0.0,
         "gap_verify_aktiv": False,
+        "trigger_verify_aktiv": True,
         # Budget-Platzhalter; vor --live durch User-Vorgabe bestaetigen.
         "max_usd_gesamt": 100.0,
         "nachlauf_minuten": 30,
@@ -685,6 +686,9 @@ PROFILE = {
         # NO-Nutzen).
         "no_ask_obergrenze": 0.0,
         "gap_verify_aktiv": False,
+        # Trigger-Verifikation an (AXP-Lehre 24.07.): jeder YES-Trigger
+        # wird vor dem Kauf per large-v3 bestaetigt, fail-closed.
+        "trigger_verify_aktiv": True,
         # Komposita-Schreibvarianten (PDF "Hyphenated Constructs"/
         # "Compound Words": Leerzeichen ODER Bindestrich qualifiziert;
         # die strikten Wortgrenzen-Patterns sehen "World-Cup"/
@@ -858,6 +862,13 @@ TRUTH_POLL_S = float(_P.get("truth_poll_s", 15.0))
 # call_max_minuten begrenzt den Lauf, falls niemand Ctrl+C drueckt.
 CALL_START_UTC = _P.get("call_start_utc")
 CALL_MAX_MINUTEN = float(_P.get("call_max_minuten", 120.0))
+# Trigger-Verifikation: jeden YES-Trigger vor dem Kauf mit dem grossen
+# Modell nachpruefen (fail-closed, siehe trigger_verify.py). AXP-Lehre
+# 24.07.: Schwelle-1-Kaeufe gegen zweifelnde Maerkte haengen an einem
+# einzigen ASR-Treffer — die Nachpruefung kostet ~1-3 s (Modell warm)
+# und schuetzt gegen die E281-Homophon-Klasse.
+TRIGGER_VERIFY_AKTIV = bool(_P.get("trigger_verify_aktiv", False))
+TRIGGER_VERIFY_MODELL = str(_P.get("trigger_verify_modell", GAP_MODELL))
 
 # Nachlauf nach der NO-Runde: Market Maker ziehen beim Drop die Quotes
 # und stellen sie erst Minuten spaeter wieder rein (JRE #2523: alle Asks

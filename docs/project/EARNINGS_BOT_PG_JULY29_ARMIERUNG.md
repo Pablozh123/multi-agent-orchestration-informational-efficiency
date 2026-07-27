@@ -112,3 +112,44 @@ kollidiert nicht mit deren GPU-Nutzung.
 4. **Whisper-Umgebung**: Vollpfad laeuft nur im ba-thesis-Klon
    (.venv mit cuBLAS/cuDNN); dieser Klon hier hat kein faster_whisper —
    Tests und Read-only-Checks laufen, der Audio-Teil nicht.
+
+## 5. Nachtrag 27.07.: AXP-Erstlauf (LIVE) und zwei Haertungen
+
+**Erstlauf 24.07., American Express (Event 715475, Profil
+`earnings_axp_july24`), auf User-Entscheid direkt scharf statt Dry-Run.**
+Setup stand 90 s vor Call-Beginn (Whisper cuda/float16 nach 5 s), 470
+Chunks ohne einen Fehler-Event, Ctrl+C-Finale sauber. Zwei Kaeufe, beide
+per UMA YES aufgeloest: Luxury YES @0.56 (58.79 USD, 4 Clips) und Fraud
+YES @0.52 (15 USD) — **realisierter PnL +60.06 USD** auf 73.79 Einsatz.
+Die Bruecken-Befunde: Brackets waren vorgepreist (Quarter auf 25/10
+gezaehlt, nie ein Ask unter 0.90), gefallene Einzelwoerter sofort tot —
+der reale Kanal sind **mittelpreisige, von der Crowd nicht mitgehoerte
+Woerter** (Aufmerksamkeits-, kein Latenz-Edge). Beide Kaeufe hingen an je
+EINEM small-Treffer gegen einen zweifelnden Markt (Buecher nach Kauf bei
+0.33/0.06) — richtig, aber strukturell E281-Risiko.
+
+**Haertung 1 — Vorscan-Pause fuer tote Buecher:** 2029 von 2081
+YES-Entscheidungen waren Wiederholungen auf Maerkten ohne Asks (1–2 s
+unnoetige Roundtrips je Chunk im heissen Pfad). Leere Buecher pausieren
+jetzt wie zu teure; Re-Check am Call-Ende bleibt.
+
+**Haertung 2 — Trigger-Verifikation (`trigger_verify.py`):** Jeder
+YES-Trigger wird vor dem Kauf mit large-v3 (warm geladen beim Start,
+~1–3 s je Fenster) ohne VAD nachtranskribiert und strikt nachgezaehlt.
+Fail-closed auf allen Kaufpfaden (Chunk, Endcheck, Nachlauf): keine
+Bestaetigung -> kein Kauf; eine Ablehnung sperrt bis zum naechsten
+neuen Treffer. Laedt das Modell nicht, bricht der Start ab (bewusst
+ohne: `--ohne-trigger-verify`). Profile: `trigger_verify_aktiv` True
+fuer beide Earnings-Profile, Podcast-Profile unveraendert.
+
+**Terminal:** Die taegliche Kette hat den Lauf am 27.07. automatisch
+publiziert (runs.json: 14 Runs, AXP mit Einsatz 73.79 / PnL +60.06);
+Resolutions- und Tape-Cache liegen in `data/raw/live_runs/`. Die
+versionierten Kurat-Kopien (`data/live_curated/`) sind auf alle 14
+Laeufe aufgefrischt.
+
+**Fuer den P&G-Call unveraendert offen:** IR-Zeitverifikation
+(Schritt 1), Budget-Entscheid (Platzhalter 100 USD), ToS-Frage (§4.1).
+Neu zu beachten: large-v3 laeuft beim Call zusaetzlich zum
+small-Transcriber auf der GPU (zusammen ~4–5 GB VRAM; auf der
+Maschine bereits am 18.07. fuer Gap-Verify gemessen).

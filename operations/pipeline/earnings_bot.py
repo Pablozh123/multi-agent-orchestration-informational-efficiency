@@ -217,6 +217,7 @@ def status_bericht() -> dict:
         "call_start_utc": config.CALL_START_UTC,
         "ask_obergrenze": config.ASK_OBERGRENZE,
         "no_ask_obergrenze": config.NO_ASK_OBERGRENZE,
+        "trigger_verify": config.TRIGGER_VERIFY_AKTIV,
         "aktive_maerkte": len(aktive),
         "zaehl_brackets": sorted(
             r.question for r in aktive if r.schwelle > 1),
@@ -232,6 +233,15 @@ def status_bericht() -> dict:
     return bericht
 
 
+def _segment_fenster(segmente) -> tuple[float, float] | None:
+    """(fruehester Start, spaetestes Ende) der Chunk-Segmente, sonst None."""
+    starts = [s.start_s for s in segmente if s.end_s > s.start_s]
+    enden = [s.end_s for s in segmente if s.end_s > s.start_s]
+    if not enden:
+        return None
+    return (min(starts), max(enden))
+
+
 def _yes_phase(
     aktive: list[MarketRule],
     counters: dict[str, StreamingCounter],
@@ -241,8 +251,21 @@ def _yes_phase(
     executor,
     getradet_yes: set[str],
     yes_pause: dict[str, int],
+    verifikation=None,
+    audio_holen=None,
+    verify_ok: set[str] | None = None,
+    verify_abgelehnt: dict[str, int] | None = None,
 ) -> dict[str, int]:
-    """Zaehler aktualisieren, dann edge-sortiert kaufen (wie bot.py)."""
+    """Zaehler aktualisieren, dann edge-sortiert kaufen (wie bot.py).
+
+    Mit aktiver Trigger-Verifikation wird jeder Schwellen-Trigger EINMAL
+    durch das grosse Modell bestaetigt, bevor ueberhaupt ein Buch geholt
+    wird (fail-closed). Eine Ablehnung sperrt den Markt, bis ein NEUER
+    Treffer den Zaehler erhoeht; eine Bestaetigung gilt fuer den Rest
+    des Laufs (auch Endcheck und Nachlauf kaufen nur bestaetigt).
+    """
+    verify_ok = verify_ok if verify_ok is not None else set()
+    verify_abgelehnt = verify_abgelehnt if verify_abgelehnt is not None else {}
     staende: dict[str, int] = {}
     bereit = []
     for r in aktive:
@@ -253,8 +276,32 @@ def _yes_phase(
         ziel = 1 if r.schwelle <= 1 else r.schwelle + config.YES_SCHWELLE_PUFFER
         if log.ziel_count_total < ziel:
             continue
-        # Vorscan-Pause: Buch zuletzt ueber der Obergrenze -> Roundtrip
-        # im heissen Pfad sparen (Re-Check am Call-Ende).
+        # Trigger-Verifikation VOR der Buch-Pause: so wird jeder Markt
+        # genau einmal geprueft, und Endcheck/Nachlauf koennen sich auf
+        # verify_ok verlassen (auch wenn das Buch beim Trigger tot war).
+        if verifikation is not None and r.market_id not in verify_ok:
+            if log.ziel_count_total <= verify_abgelehnt.get(r.market_id, -1):
+                continue  # kein neuer Treffer seit der Ablehnung
+            try:
+                urteil = verifikation.pruefe(
+                    r, audio_holen(), _segment_fenster(segmente))
+            except Exception as ex:  # noqa: BLE001 - fail-closed: kein Kauf,
+                # naechster Chunk versucht es erneut.
+                _schreibe_event("fehler", {"wo": f"trigger_verify:{r.slug}",
+                                           "fehler": str(ex)})
+                continue
+            _schreibe_event("trigger_verifikation", {
+                "markt": r.slug, "count": log.ziel_count_total, **urteil})
+            if not urteil["bestaetigt"]:
+                verify_abgelehnt[r.market_id] = log.ziel_count_total
+                print(f"  VERIFY LEHNT AB: {r.varianten[0]!r} — kein Kauf "
+                      f"({urteil.get('text', '')[:60]!r})")
+                continue
+            verify_ok.add(r.market_id)
+            print(f"  VERIFY OK: {r.varianten[0]!r} "
+                  f"({urteil['treffer']} Treffer, {urteil['dauer_s']}s)")
+        # Vorscan-Pause: Buch zuletzt ueber der Obergrenze ODER ohne
+        # Asks -> Roundtrip im heissen Pfad sparen (Re-Check am Ende).
         if chunk_index < yes_pause.get(r.market_id, 0):
             continue
         try:
@@ -273,7 +320,11 @@ def _yes_phase(
             res = executor.place(d, book)
             if d.action == "YES":
                 getradet_yes.add(r.market_id)
-            elif ask is not None and ask > config.ASK_OBERGRENZE:
+            elif ask is None or ask > config.ASK_OBERGRENZE:
+                # Totes Buch (keine Asks) genauso pausieren wie ein zu
+                # teures: beim AXP-Lauf erzeugten leere Buecher 2029
+                # sinnlose Entscheidungs-Roundtrips (1-2 s je Chunk im
+                # heissen Pfad). Der Re-Check am Call-Ende bleibt.
                 yes_pause[r.market_id] = (
                     chunk_index + config.VORSCAN_PAUSE_CHUNKS)
             _schreibe_event("yes_entscheidung", {
@@ -291,8 +342,20 @@ def _finale(
     counters: dict[str, StreamingCounter],
     executor,
     getradet_yes: set[str],
+    verifikation=None,
+    verify_ok: set[str] | None = None,
 ) -> None:
     """Nach Call-Ende: letzter YES-Blick, NO-Runde, Nachlauf (wie bot.py)."""
+    verify_ok = verify_ok if verify_ok is not None else set()
+
+    def _verify_fehlt(r: MarketRule) -> bool:
+        """Fail-closed auch nach dem Call: unbestaetigte Trigger kaufen nie."""
+        if verifikation is None or r.market_id in verify_ok:
+            return False
+        _schreibe_event("yes_uebersprungen", {
+            "markt": r.slug, "grund": "trigger_nicht_verifiziert"})
+        return True
+
     gefuellt = {"dry_run_fill", "live_fill", "live_partial"}
     for r in aktive:
         if r.market_id in getradet_yes:
@@ -300,6 +363,8 @@ def _finale(
         c = counters[r.market_id]
         ziel = 1 if r.schwelle <= 1 else r.schwelle + config.YES_SCHWELLE_PUFFER
         if c.ziel_count < ziel:
+            continue
+        if _verify_fehlt(r):
             continue
         try:
             book = fetch_book(r.yes_token_id)
@@ -365,6 +430,8 @@ def _finale(
                     else r.schwelle + config.YES_SCHWELLE_PUFFER)
             seite = None
             if c.ziel_count >= ziel:
+                if verifikation is not None and r.market_id not in verify_ok:
+                    continue  # fail-closed auch im Nachlauf
                 seite = "YES"
             elif (config.NO_ASK_OBERGRENZE > 0
                     and c.erweitert_count <= config.NO_ANTEIL * r.schwelle
@@ -425,7 +492,8 @@ def _finale(
           f"({nachlauf_kaeufe} Nachkaeufe).")
 
 
-def lauf(live: bool, quelle: str, art: str, minuten: float) -> None:
+def lauf(live: bool, quelle: str, art: str, minuten: float,
+         ohne_verify: bool = False) -> None:
     """Hauptschleife: Capture -> Chunks -> YES live -> Finale."""
     if not startwache.wache_nehmen(config.LIVE_DIR):
         _schreibe_event("doppelstart_abgebrochen", {
@@ -443,7 +511,10 @@ def lauf(live: bool, quelle: str, art: str, minuten: float) -> None:
     counters = {r.market_id: StreamingCounter(r) for r in aktive}
     getradet_yes: set[str] = set()
     yes_pause: dict[str, int] = {}
+    verify_ok: set[str] = set()
+    verify_abgelehnt: dict[str, int] = {}
 
+    verify_gewollt = config.TRIGGER_VERIFY_AKTIV and not ohne_verify
     _schreibe_event("start", {
         "modus": modus, "event_id": config.EVENT_ID,
         "call_start_utc": config.CALL_START_UTC,
@@ -452,9 +523,33 @@ def lauf(live: bool, quelle: str, art: str, minuten: float) -> None:
         "quelle_art": art, "chunk_s": config.CHUNK_SEKUNDEN,
         "ask_obergrenze": config.ASK_OBERGRENZE,
         "no_ask_obergrenze": config.NO_ASK_OBERGRENZE,
+        "trigger_verify": verify_gewollt,
     })
     print(f"[{modus}] Earnings-Bot: {len(aktive)} aktive Maerkte, "
           f"Quelle {art}, Chunk {config.CHUNK_SEKUNDEN}s.")
+
+    # Trigger-Verifikation VOR dem teuren Setup laden: schlaegt der
+    # Modell-Load fehl, soll der Operator das VOR dem Call erfahren —
+    # nicht beim ersten Trigger. Fail-closed ist Absicht; bewusst ohne
+    # Verifikation laufen geht nur explizit via --ohne-trigger-verify.
+    verifikation = None
+    if verify_gewollt:
+        from operations.pipeline.trigger_verify import TriggerVerifikation
+
+        try:
+            verifikation = TriggerVerifikation()
+        except Exception as ex:  # noqa: BLE001
+            _schreibe_event("fehler", {"wo": "trigger_verify_laden",
+                                       "fehler": str(ex)})
+            raise SystemExit(
+                f"Trigger-Verifikation laedt nicht ({ex}) — Abbruch. "
+                "Bewusst ohne: --ohne-trigger-verify."
+            ) from ex
+        _schreibe_event("trigger_verify_bereit", {
+            "modell": verifikation.modell_name,
+            "geraet": verifikation.geraet})
+        print(f"Trigger-Verifikation bereit ({verifikation.modell_name}, "
+              f"{verifikation.geraet}).")
 
     # GPU-Warmup mit Wiederholung: laufen parallel andere Bots auf der
     # GPU, faellt ChunkTranscriber still auf cpu/int8 zurueck (~10x
@@ -530,7 +625,9 @@ def lauf(live: bool, quelle: str, art: str, minuten: float) -> None:
             chunk_index += 1
             staende = _yes_phase(aktive, counters, segmente, chunk_index,
                                  now_utc_iso(), executor, getradet_yes,
-                                 yes_pause)
+                                 yes_pause, verifikation,
+                                 lambda: transcriber.dekodiertes_audio(wav),
+                                 verify_ok, verify_abgelehnt)
             _schreibe_event("chunk", {"index": chunk_index, "staende": staende})
             heiss = {k: v for k, v in staende.items() if v}
             print(f"Chunk {chunk_index}: " + (", ".join(
@@ -564,9 +661,11 @@ def lauf(live: bool, quelle: str, art: str, minuten: float) -> None:
             break
         chunk_index += 1
         _yes_phase(aktive, counters, segmente, chunk_index, now_utc_iso(),
-                   executor, getradet_yes, yes_pause)
+                   executor, getradet_yes, yes_pause, verifikation,
+                   lambda: transcriber.dekodiertes_audio(wav),
+                   verify_ok, verify_abgelehnt)
 
-    _finale(aktive, counters, executor, getradet_yes)
+    _finale(aktive, counters, executor, getradet_yes, verifikation, verify_ok)
 
 
 def main() -> None:
@@ -595,6 +694,9 @@ def main() -> None:
     parser.add_argument("--minuten", type=float, default=None,
                         help="Zeitlimit ab Capture-Start (Default: "
                              "call_max_minuten + 30)")
+    parser.add_argument("--ohne-trigger-verify", action="store_true",
+                        help="Trigger-Verifikation bewusst abschalten "
+                             "(Kaeufe dann ohne large-v3-Bestaetigung)")
     a = parser.parse_args()
 
     if a.liste_geraete:
@@ -620,7 +722,8 @@ def main() -> None:
     if a.ab:
         warte_bis(a.ab)
     minuten = a.minuten if a.minuten else config.CALL_MAX_MINUTEN + 30.0
-    lauf(live=a.live, quelle=quelle, art=art, minuten=minuten)
+    lauf(live=a.live, quelle=quelle, art=art, minuten=minuten,
+         ohne_verify=a.ohne_trigger_verify)
 
 
 if __name__ == "__main__":

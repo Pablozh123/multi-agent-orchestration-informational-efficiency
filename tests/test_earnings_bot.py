@@ -264,6 +264,165 @@ def test_no_seite_ist_gesperrt(snapshot) -> None:
     assert entscheide_no(trump, 0, 0.50).action == "NONE"
 
 
+# ------------------------------------------------ Vorscan und Verifikation
+
+
+class _MerkExecutor:
+    """Zaehlt place()-Aufrufe; kein Log, kein Netz."""
+
+    ausgegeben_usd = 0.0
+
+    def __init__(self) -> None:
+        self.aufrufe: list = []
+
+    def place(self, decision, book):
+        from operations.pipeline.execution import PlacementResult
+
+        self.aufrufe.append(decision)
+        status = "dry_run_fill" if decision.action != "NONE" else "no_action"
+        return PlacementResult(
+            decision.market_id, decision.action, decision.token_id,
+            decision.limit_price, 0.0, 0.0, status, "test",
+        )
+
+
+def _seg(text: str, start: float = 10.0, ende: float = 12.0):
+    return Segment(text=text, confidence=0.95, start_s=start, end_s=ende)
+
+
+def test_vorscan_pause_bei_leerem_buch(snapshot, tmp_path, monkeypatch) -> None:
+    # AXP-Befund: 2029 von 2081 Entscheidungen waren Wiederholungen auf
+    # Maerkten OHNE Asks. Ein leeres Buch muss den Markt genauso
+    # pausieren wie ein zu teures.
+    from operations.pipeline import earnings_bot
+
+    monkeypatch.setattr(config, "LIVE_DIR", tmp_path)
+    rules = _rules(snapshot)
+    trump = rules["2966443"]  # Schwelle 1
+    counters = {trump.market_id: StreamingCounter(trump)}
+    fetches: list[str] = []
+    monkeypatch.setattr(
+        earnings_bot, "fetch_book",
+        lambda tok: fetches.append(tok) or {"asks": [], "bids": []})
+    ex = _MerkExecutor()
+    getradet: set[str] = set()
+    pause: dict[str, int] = {}
+    earnings_bot._yes_phase(
+        [trump], counters, [_seg("they mentioned trump today")],
+        1, "t1", ex, getradet, pause)
+    assert len(fetches) == 1
+    assert pause[trump.market_id] == 1 + config.VORSCAN_PAUSE_CHUNKS
+    # Naechster Chunk: Markt ist pausiert -> kein zweiter Roundtrip.
+    earnings_bot._yes_phase(
+        [trump], counters, [_seg("nothing relevant")],
+        2, "t2", ex, getradet, pause)
+    assert len(fetches) == 1
+
+
+def test_trigger_verifikation_bestaetigt_und_lehnt_ab(snapshot) -> None:
+    from operations.pipeline.trigger_verify import SAMPLE_RATE, TriggerVerifikation
+
+    rules = _rules(snapshot)
+    trump = rules["2966443"]
+    audio = [0.0] * (60 * SAMPLE_RATE)
+
+    v_ok = TriggerVerifikation(
+        modell="test", transkribiere_fn=lambda a: "tariffs and Trump's plan")
+    urteil = v_ok.pruefe(trump, audio, (10.0, 12.0))
+    assert urteil["bestaetigt"] is True
+    assert urteil["treffer"] == 1
+    # Fenster: Segment 10-12s plus 5s Rand.
+    assert urteil["fenster_s"] == [5.0, 17.0]
+
+    # Homophon-/Hoerfehler-Fall: aehnliches Wort zaehlt strikt nicht.
+    v_nein = TriggerVerifikation(
+        modell="test", transkribiere_fn=lambda a: "the trumpet section played")
+    assert v_nein.pruefe(trump, audio, (10.0, 12.0))["bestaetigt"] is False
+
+    # Fallback ohne Segment-Zeiten: letzte CHUNK_SEKUNDEN + 2*RAND.
+    urteil = v_ok.pruefe(trump, audio, None)
+    assert urteil["fenster_s"][1] == 60.0
+
+
+def test_yes_phase_kauft_nur_mit_bestaetigung(
+    snapshot, tmp_path, monkeypatch
+) -> None:
+    from operations.pipeline import earnings_bot
+    from operations.pipeline.trigger_verify import SAMPLE_RATE, TriggerVerifikation
+
+    monkeypatch.setattr(config, "LIVE_DIR", tmp_path)
+    rules = _rules(snapshot)
+    trump = rules["2966443"]
+    audio = [0.0] * (60 * SAMPLE_RATE)
+    monkeypatch.setattr(
+        earnings_bot, "fetch_book",
+        lambda tok: {"asks": [{"price": "0.5", "size": "100"}], "bids": []})
+
+    # Ablehnung: kein Kauf, Ablehnung gemerkt.
+    ex = _MerkExecutor()
+    verify_ok: set[str] = set()
+    abgelehnt: dict[str, int] = {}
+    counters = {trump.market_id: StreamingCounter(trump)}
+    v = TriggerVerifikation(modell="test",
+                            transkribiere_fn=lambda a: "the trumpet played")
+    earnings_bot._yes_phase(
+        [trump], counters, [_seg("trump said")], 1, "t1", ex,
+        set(), {}, v, lambda: audio, verify_ok, abgelehnt)
+    assert ex.aufrufe == []
+    assert abgelehnt[trump.market_id] == 1
+    # Chunk ohne neuen Treffer: Verifikation wird NICHT wiederholt.
+    zaehl = {"n": 0}
+
+    def _spaeter(a):
+        zaehl["n"] += 1
+        return "trump again"
+
+    v2 = TriggerVerifikation(modell="test", transkribiere_fn=_spaeter)
+    earnings_bot._yes_phase(
+        [trump], counters, [_seg("nothing")], 2, "t2", ex,
+        set(), {}, v2, lambda: audio, verify_ok, abgelehnt)
+    assert zaehl["n"] == 0
+    # Neuer Treffer -> erneute Pruefung, Bestaetigung -> Kauf.
+    earnings_bot._yes_phase(
+        [trump], counters, [_seg("trump once more")], 3, "t3", ex,
+        set(), {}, v2, lambda: audio, verify_ok, abgelehnt)
+    assert zaehl["n"] == 1
+    assert trump.market_id in verify_ok
+    assert [d.action for d in ex.aufrufe] == ["YES"]
+
+
+def test_finale_kauft_nicht_ohne_verifikation(
+    snapshot, tmp_path, monkeypatch
+) -> None:
+    # Endcheck/Nachlauf bleiben fail-closed: getriggerte, aber nie
+    # bestaetigte Maerkte kaufen auch nach dem Call nicht.
+    from operations.pipeline import earnings_bot
+
+    monkeypatch.setattr(config, "LIVE_DIR", tmp_path)
+    rules = _rules(snapshot)
+    trump = rules["2966443"]
+    counters = {trump.market_id: StreamingCounter(trump)}
+    counters[trump.market_id].ingest_chunk(1, [_seg("trump said")], "t")
+    monkeypatch.setattr(
+        earnings_bot, "fetch_book",
+        lambda tok: {"asks": [{"price": "0.5", "size": "100"}], "bids": []})
+    monkeypatch.setattr(config, "NACHLAUF_MINUTEN", 0.0)
+    ex = _MerkExecutor()
+    earnings_bot._finale([trump], counters, ex, set(),
+                         verifikation=object(), verify_ok=set())
+    assert all(d.action != "YES" for d in ex.aufrufe)
+
+
+def test_profil_trigger_verify_aktiv(profil) -> None:
+    assert config.TRIGGER_VERIFY_AKTIV is True
+    assert config.TRIGGER_VERIFY_MODELL == "large-v3"
+
+
+def test_default_profil_ohne_trigger_verify() -> None:
+    importlib.reload(config)
+    assert config.TRIGGER_VERIFY_AKTIV is False
+
+
 # ------------------------------------------------ Audio-Kommando
 
 

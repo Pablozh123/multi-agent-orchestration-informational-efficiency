@@ -53,6 +53,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import time
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -721,6 +722,34 @@ def _faellige_nachfassungen(leser: PolymarktLeser, zustand: dict,
     zustand["offene_nachfassungen"] = offen
 
 
+def _herzschlag(live_dir: Path | None, art: str = "herzschlag",
+                **extra) -> None:
+    """Watchdog-Lebenszeichen nach `data/live/<profil>/bot_events.jsonl`.
+
+    Der Watchdog erklärt einen Bot für tot, wenn das letzte Event älter als
+    600 s ist (`STALE_S`); `art` "stop"/"fertig" heisst absichtlich beendet.
+    Der Ruhe-Takt von 120 s hält den Abstand komfortabel darunter.
+    """
+    if live_dir is None:
+        return
+    zeile = json.dumps(
+        {"wall_ts_utc": _iso(_jetzt_utc()), "art": art, **extra},
+        ensure_ascii=False,
+    )
+    for versuch in (0, 1):
+        try:
+            live_dir.mkdir(parents=True, exist_ok=True)
+            with (live_dir / "bot_events.jsonl").open(
+                    "a", encoding="utf-8") as datei:
+                datei.write(zeile + "\n")
+            return
+        except OSError:
+            if versuch:
+                break
+            time.sleep(0.5)
+    print("WARNUNG bot_events.jsonl nicht schreibbar")
+
+
 def main(argv: list[str] | None = None) -> int:
     zerleger = argparse.ArgumentParser(
         description="Rekorder ISW-Karte -> Polymarket-Preis (read-only)")
@@ -728,6 +757,10 @@ def main(argv: list[str] | None = None) -> int:
                           help="nur ein Durchlauf, dann beenden")
     zerleger.add_argument("--takt-s", type=int, default=None,
                           help="fester Poll-Abstand statt Tageszeit-Automatik")
+    zerleger.add_argument("--live", action="store_true",
+                          help="Watchdog-Modus: Profil aus BOT_PROFIL, "
+                               "Startwache-Lock, bot.pid, Herzschlag-Events; "
+                               "alle Pfade unter data/live/<profil>/")
     zerleger.add_argument("--zustand", type=Path, default=STANDARD_ZUSTAND)
     zerleger.add_argument("--protokoll", type=Path, default=STANDARD_PROTOKOLL)
     zerleger.add_argument("--geometrie-cache", type=Path,
@@ -735,6 +768,24 @@ def main(argv: list[str] | None = None) -> int:
     zerleger.add_argument("--markt-refresh-s", type=int,
                           default=MARKT_REFRESH_S)
     argumente = zerleger.parse_args(argv)
+
+    live_dir: Path | None = None
+    if argumente.live:
+        # Watchdog-Vertrag (siehe operations/pipeline/watchdog.py): Start
+        # als `-m ... --live` mit BOT_PROFIL in der Umgebung; genau eine
+        # Instanz je Profil via start.lock; bot.pid sofort nach Lock-Gewinn
+        # (uebernimmt wache_nehmen); Lebenszeichen in bot_events.jsonl.
+        profil = os.environ.get("BOT_PROFIL", "isw_ukraine")
+        wurzel = Path(os.environ.get("THESIS_LIVE_ROOT", "data/live"))
+        live_dir = wurzel / profil
+        from operations.pipeline.startwache import wache_nehmen
+        if not wache_nehmen(live_dir):
+            print(f"{profil}: andere Instanz haelt start.lock - Ende.")
+            return 0
+        argumente.zustand = live_dir / "zustand.json"
+        argumente.protokoll = live_dir / "ereignisse.jsonl"
+        argumente.geometrie_cache = live_dir / "geometrie_cache.json"
+        _herzschlag(live_dir, art="start")
 
     karte = ISWKarte()
     leser = PolymarktLeser()
@@ -748,6 +799,8 @@ def main(argv: list[str] | None = None) -> int:
     try:
         ziele = lade_marktziele(leser, karte, cache, argumente.geometrie_cache)
     except Exception as fehler:  # noqa: BLE001 - ohne Ziele kein Betrieb
+        # Bewusst KEIN stop-Event: transiente Gamma-Ausfaelle soll der
+        # Watchdog per Neustart ueberbruecken.
         print(f"FATAL Marktliste nicht ladbar: {fehler}")
         return 1
     auswertbar = [z for z in ziele if z.auswertbar]
@@ -772,6 +825,7 @@ def main(argv: list[str] | None = None) -> int:
                       f"{str(fehler)[:120]}")
                 meldungen = []
             _schreibe_zustand(argumente.zustand, zustand)
+            _herzschlag(live_dir, kandidaten=len(zustand["kandidaten"]))
             for m in meldungen:
                 marke = "" if m.get("auswertbar") else "  [nicht auswertbar]"
                 print(f"KANDIDAT {m['zeit_utc']} {m['layer']} -> {m['slug']} "
@@ -808,6 +862,8 @@ def main(argv: list[str] | None = None) -> int:
                     })
             time.sleep(argumente.takt_s or takt_fuer(_jetzt_utc()))
     except KeyboardInterrupt:
+        # Manuelles Ende: der Watchdog resurrectet stop-beendete Bots nicht.
+        _herzschlag(live_dir, art="stop")
         return 0
     finally:
         karte.schliessen()

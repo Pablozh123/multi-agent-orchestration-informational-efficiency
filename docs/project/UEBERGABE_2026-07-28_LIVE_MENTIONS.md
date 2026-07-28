@@ -120,6 +120,28 @@ YES proposed (0.995) trotz Goldstandard-0, Kalibrierpunkt #0 offen.**
 Markt-Zweifel trotz Vollpass-0 bei Oil (0.44) und Philippine
 Airlines (0.18).
 
+**Nachtrag ~20:15: Kalibrierpunkt #0 entschieden — Guidance ist
+final YES resolved.** Wahrscheinliche Aufloesung (Agentic-Lektion,
+zweiter Fall): KEIN Resolver-Irrtum, sondern Verschreibung im
+Goldstandard — das Band enthaelt im Q&A "given the guides that we
+have related to delivery" (2234.8s), "the guide that we have for
+the year" (2264.6s), "deliver on this guide" (2299.0s); phonetisch
+"the guidance that we have" ≈ "the guides that we have". Boeing
+sagte das Wort sehr wahrscheinlich; large-v3 verschrieb es; die
+485-Shares-Antizipierer irrten NICHT (Erkenntnis §3.2 relativiert
+sich fuer diesen Fall). Audio-Nachpruefung 2230-2310s nach dem
+Graham-Lauf. Bis dahin resolved konsistent: Philippine Airlines NO
+(Markt zweifelte bei 0.18 — Vollpass hatte recht), China/Iran/
+Consumer10+ NO, Quarter/Airplane/Customer/Delivery/Space YES.
+**Konsequenz fuer die Late-NO-Kette (verschaerft):** Vollpass-0
+allein ist KEIN NO-Beweis, wenn das Transkript phonetische
+Nachbarformen des Zielworts enthaelt (guide/guides bei guidance,
+agent e-commerce bei agentic commerce) — Nachbarschafts-Check wird
+Pflichtfilter; dazu durchgehender Pass statt starrem 30-s-Raster
+(das Boeing-Transkript hat native Segmentzeiten — die
+Raster-Methode des PayPal-Passes war schlechter und verlor Agentic
+an der Blockgrenze).
+
 **§2-Prüfpunkt geklärt (ausgegeben_usd 0.0):** execution.py
 `_budget_sync()` ersetzt die korrekte post_antwort-Summe (16.08)
 durch start_balance−aktuell; der Server-Balance-Cache war Sekunden

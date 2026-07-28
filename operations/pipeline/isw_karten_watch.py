@@ -147,9 +147,17 @@ class ISWFlaeche:
     edit_ms: int | None = None
 
     @property
-    def zeitstempel_ms(self) -> int | None:
-        """Beste verfügbare Ereigniszeit: Anlage vor Änderung."""
-        return self.creation_ms if self.creation_ms is not None else self.edit_ms
+    def juengste_aenderung_ms(self) -> int | None:
+        """Zeit der letzten Änderung: Maximum aus Anlage und Edit.
+
+        Neue Überdeckung entsteht auch dadurch, dass ISW ein BESTEHENDES
+        Polygon per Edit erweitert. Wer dann die Anlagezeit als Ereigniszeit
+        nimmt, misst Tage statt Sekunden (Review-Befund 24.07.; der
+        Krasnoiarske-Fall trug einen Edit 21:02 auf einem 20:39 angelegten
+        Polygon).
+        """
+        stempel = [s for s in (self.creation_ms, self.edit_ms) if s is not None]
+        return max(stempel) if stempel else None
 
 
 class ISWFehler(RuntimeError):
@@ -182,21 +190,21 @@ def markt_polaritaet(slug: str | None) -> str:
 
     "russisch"   -> russische Schattierung ist das YES-Signal
     "ukrainisch" -> russische Schattierung ist das GEGEN-Signal
-                    (`will-ukraine-re-enter-…`, `…-recapture-…`)
     "unklar"     -> nicht automatisch entscheidbar, nie handeln
 
-    Eigener Fehlerfall aus der Sondierung: ein Filter auf "enter" im Slug
-    fängt "re-enter" mit und dreht damit das Vorzeichen um.
+    Entschieden wird ausschliesslich über das Subjekt am Slug-Anfang.
+    Verb-Substrings sind doppelt verbrannt: "enter" fängt "re-enter", und
+    ein "-recapture-"-Filter hätte `will-russia-recapture-…` fälschlich
+    ukrainisch eingefärbt (russische Rückeroberung = russische Schattierung
+    = YES; Review-Befund 24.07.).
     """
     if not slug:
         return "unklar"
     s = slug.lower()
-    if "ukraine-re-enter" in s or "ukraine-recapture" in s:
-        return "ukrainisch"
-    if s.startswith("will-ukraine") or "-recapture-" in s:
-        return "ukrainisch"
     if s.startswith("will-russia"):
         return "russisch"
+    if s.startswith("will-ukraine"):
+        return "ukrainisch"
     return "unklar"
 
 
@@ -301,13 +309,6 @@ def _segment_box_ueberlappt(p1: list[float], p2: list[float],
     return True
 
 
-def _erster_punkt(ringe: list[list[list[float]]]) -> list[float] | None:
-    for ring in ringe:
-        if ring:
-            return ring[0]
-    return None
-
-
 def polygone_beruehren(a: list[list[list[float]]],
                        b: list[list[list[float]]]) -> bool:
     """Teilen sich zwei Polygone irgendeinen Punkt?
@@ -317,8 +318,13 @@ def polygone_beruehren(a: list[list[list[float]]],
     1. Boxen-Vorfilter.
     2. Kantenschnitt, aber NUR gegen die Kanten von `a`, die in die Box von
        `b` hineinreichen.
-    3. Fehlt jede Randberührung, liegt entweder eines vollständig im anderen
-       oder sie sind disjunkt. Beides entscheidet je ein einziger Punkttest.
+    3. Fehlt jede Randberührung, ist JEDER Ring entweder vollständig im
+       anderen Polygon oder vollständig draussen (die Grenze zu kreuzen
+       bräuchte einen Kantenschnitt). Darum genügt der erste Punkt — aber
+       je Ring, nicht je Polygon: ArcGIS-Features dürfen mehrere
+       Aussenringe tragen (Multipart), und ein Teilpolygon kann ganz im
+       anderen liegen, während der erste Ring weit entfernt ist
+       (Review-Befund 24.07., mit Gegenbeispiel am echten Code belegt).
 
     Warum Stufe 2 den Kantenfilter braucht: Das grösste Kontroll-Polygon der
     ISW-Karte trägt 51'901 Stützpunkte in einem Ring. Der naive Test — alle
@@ -328,13 +334,13 @@ def polygone_beruehren(a: list[list[list[float]]],
     bleibt es bei zwei linearen Durchläufen über `a`.
 
     Löcher bleiben korrekt behandelt: `punkt_in_polygon` zählt even-odd über
-    alle Ringe, und eine Siedlung in einem Loch von `a` erzeugt in Stufe 2
-    keinen Schnitt und in Stufe 3 eine gerade Kreuzungszahl.
+    alle Ringe. Ein Loch-Ring-Punkt ist ein Randpunkt des Polygons; liegt er
+    im anderen Polygon, berühren sie sich wirklich. Liegt das andere Polygon
+    ganz IM Loch, sind alle Punkttests negativ — korrekt disjunkt.
     """
+    a = [ring for ring in a if ring]
+    b = [ring for ring in b if ring]
     if not a or not b:
-        return False
-    punkt_a, punkt_b = _erster_punkt(a), _erster_punkt(b)
-    if punkt_a is None or punkt_b is None:
         return False
     box_a, box_b = bounding_box(a), bounding_box(b)
     if not _boxen_ueberlappen(box_a, box_b):
@@ -348,47 +354,22 @@ def polygone_beruehren(a: list[list[list[float]]],
             if strecken_schneiden(p1, p2, p3, p4):
                 return True
 
-    if punkt_in_polygon(punkt_b[0], punkt_b[1], a):
-        return True
-    return punkt_in_polygon(punkt_a[0], punkt_a[1], b)
-
-
-def neue_zeitstempel(zeitstempel_ms: list[int | None],
-                     seit_ms: int | None) -> list[int]:
-    """Nur die Stempel, die nach dem letzten bekannten Layer-Stand liegen.
-
-    Ohne diese Einschränkung bewertet die Rebuild-Bremse bei jedem Poll die
-    gesamte Layer-Historie. Die ist naturgemäss geclustert (ISW baut den
-    Layer periodisch neu auf), die Bremse würde dauerhaft greifen und der
-    Rekorder nie ein Signal liefern — ein stiller Totalausfall des
-    Instruments. Gefunden im Probelauf vom 23.07.
-    """
-    stempel = [t for t in zeitstempel_ms if t is not None]
-    if seit_ms is None:
-        return stempel
-    return [t for t in stempel if t > seit_ms]
-
-
-def ist_bulk_rebuild(zeitstempel_ms: list[int],
-                     schwelle: int = 10,
-                     fenster_s: int = 300) -> bool:
-    """Erkennt einen Neuaufbau des Layers statt einer echten Änderung.
-
-    Muster vom 21.07.: 115 Features in 48 Minuten. Ohne diese Bremse feuert
-    der Rekorder nach jedem Rebuild für Dutzende Siedlungen gleichzeitig.
-
-    Erwartet die per `neue_zeitstempel` gefilterten Stempel, nicht den
-    gesamten Layer-Inhalt.
-    """
-    stempel = sorted(t for t in zeitstempel_ms if t is not None)
-    if len(stempel) < schwelle:
-        return False
-    fenster_ms = fenster_s * 1000
-    for i in range(len(stempel) - schwelle + 1):
-        if stempel[i + schwelle - 1] - stempel[i] <= fenster_ms:
+    for ring in a:
+        if punkt_in_polygon(ring[0][0], ring[0][1], b):
+            return True
+    for ring in b:
+        if punkt_in_polygon(ring[0][0], ring[0][1], a):
             return True
     return False
 
+
+# Anmerkung: Die fruehere Rebuild-Bremse (ist_bulk_rebuild/neue_zeitstempel)
+# ist entfernt. Der Review vom 24.07. hat gezeigt, dass sie im Live-Takt nie
+# greift (beim 21.07.-Muster sieht ein 20-s-Poll ~1 neues Feature je Delta,
+# Schwelle war 10) und die Loesch-Phase eines Rebuilds gar nicht abdeckt.
+# Den Schutz uebernimmt das Beruhigungsfenster im Rekorder: Ereignisse werden
+# als Kandidaten gefuehrt und erst nach Bestand ueber das Fenster bestaetigt —
+# ein Loeschen-und-Neuzeichnen-Zyklus nettet sich damit zu null Ereignissen.
 
 # ------------------------------------------------------------------- Client
 
@@ -432,7 +413,14 @@ class ISWKarte:
             raise ISWFehler(TRANSPORT_STATUS, str(fehler)) from fehler
         if antwort.status_code != 200:
             raise ISWFehler(antwort.status_code, antwort.text)
-        nutz = antwort.json()
+        try:
+            nutz = antwort.json()
+        except ValueError as fehler:
+            # 200-Antwort ohne JSON (z. B. Cloudflare-Fehlerseite) ist ein
+            # transienter Fall und gehoert in den Backoff, nicht als
+            # ungefangene Exception in den Durchlauf (Review-Befund 24.07.).
+            raise ISWFehler(TRANSPORT_STATUS,
+                            "keine JSON-Antwort") from fehler
         # ArcGIS meldet Fehler auch mit HTTP 200 und einem error-Objekt —
         # unter anderem 429 "Unable to perform query. Too many requests."
         if isinstance(nutz, dict) and "error" in nutz:

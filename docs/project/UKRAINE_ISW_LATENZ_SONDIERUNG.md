@@ -420,7 +420,72 @@ abzufragen, Auslöser der Drosselung), Marktliste dagegen regelmässig neu
 ziehen (ein einziger Gamma-Aufruf, billig). Das ist die erste Aufgabe vor
 dem nächsten Dauerlauf.
 
-## 12. Nächster Schritt
+## 12. Umbau nach Logik-Review (28.07.)
+
+Ein adversarialer Review (36 Agenten, jeder Befund von zwei unabhängigen
+Prüfern am Code verifiziert) fand vor dem zweiten Dauerlauf drei bestätigte
+und mehrere plausible Defekte — alle mit derselben Signatur wie die fünf
+Fehler der ersten Runde: kein Fehler, nur eine still verzerrte Messung.
+
+**Bestätigt:**
+
+1. *`vorlauf_s` mass die falsche Zeit.* Anlage-vor-Edit ignoriert, dass ISW
+   bestehende Polygone per Edit ERWEITERT (Krasnoiarske trug einen Edit
+   21:02 auf einem 20:39 angelegten Polygon); zusätzlich nahm `deckung()`
+   die erste statt der jüngsten schneidenden Fläche, und `jetzt` war vor dem
+   Backoff eingefroren (negative Vorläufe möglich).
+2. *Die Löschphase eines Rebuilds erzeugte falsche `deckung_verloren` ohne
+   Gegenbuchung* — die Persistenzmessung hätte exakt falsche Daten geliefert
+   (Schattierung „verschwand", stand aber durchgehend).
+3. *Die Rebuild-Bremse griff im Live-Takt nie* (beim 21.07.-Muster sieht ein
+   20-s-Poll ~1 neues Feature je Delta, Schwelle war 10) und deckte
+   Löschungen gar nicht ab.
+
+**Plausibel, mit Repro belegt:** Der Enthaltungstest prüfte nur den ersten
+Punkt des ersten Rings — Multipart-Features (mehrere Aussenringe, in den
+ISW-Layern real) erzeugten stille Falsch-Negative. Dazu: Layer-Stand wurde
+vor der Auswertung committet (Fehlschlag des Flächenabrufs verlor das
+Ereignis endgültig), `None` überschrieb bekannte Stände, eine
+Nicht-JSON-200-Antwort umging den Backoff.
+
+**Umbau (Commits vom 28.07.):**
+
+- **Kandidaten-Architektur mit Beruhigungsfenster (60 min).** Jeder
+  Übergang wird sofort als `kandidat_treffer`/`kandidat_verlust` mit voller
+  T+0-Messung protokolliert (Preis, Orderbuch-Tiefe bis 0.30/0.50, Vorlauf)
+  und erst nach Bestand über das Fenster `*_bestaetigt`; kehrt der alte
+  Zustand vorher zurück, heben sich Kandidat und Gegenereignis auf (Flap).
+  Das ersetzt die Rebuild-Bremse, nettet Löschen-und-Neuzeichnen zu null
+  und spiegelt die Persistenzklausel der Marktregel. Die Auswertung nutzt
+  nur bestätigte Ereignisse, die T+0-Messung stammt aus dem Kandidaten.
+- Vorlauf gegen `max(CreationDate, EditDate)` der jüngsten schneidenden
+  Fläche, Erkennungszeit je Layer frisch, Nachfassungen tragen den realen
+  Abstand zusätzlich zur geplanten Minute.
+- Layer-Stand-Commit erst nach erfolgreicher Auswertung; `None` überschreibt
+  nie; Nicht-JSON-200 geht in den Backoff; Zustand-/Protokoll-Schreiben mit
+  Wiederholversuch (Windows-Locks).
+- Multipart-Fix: Enthaltungstest je Aussenring.
+- Marktliste alle 15 min frisch (ein Gamma-Aufruf); nur Siedlungsgeometrien
+  dauerhaft gecacht (`geometrie_cache.json`, migriert aus der alten
+  watchlist.json). Kandidaten geschlossener Märkte werden als
+  `*_markt_geschlossen` protokolliert — oft der interessante Fall
+  (aufgelöst wegen des Ereignisses).
+- Polarität nur noch über das Slug-Subjekt (`will-russia-…`/`will-ukraine-…`)
+  — ein `-recapture-`-Substring hätte `will-russia-recapture-…` invertiert.
+- HTTP-Budget je Zyklus (12 Preis-/Buchabrufe): ein Massenübergang löst
+  keinen CLOB-Sturm aus.
+- Zustands-Schema v2; ein v1-Zustand wird bewusst verworfen und neu
+  grundiert, weil der Multipart-Fix die Deckung ändern kann.
+
+Bekannte Restlücke: zwischen Protokoll-Zeile und Zustands-Schreiben kann ein
+Absturz einen Kandidaten nach Neustart doppelt protokollieren — bei der
+Auswertung über (slug, layer, erste_sichtung) deduplizieren.
+
+Stand nach Umbau: 46 offene Märkte mit Koordinate, 20 auswertbar (vor fünf
+Tagen 52/26 — die Veraltung, die der Markt-Refresh jetzt behebt). Suite 1086
+grün.
+
+## 13. Nächster Schritt
 
 Rekorder vor Handel. Konkret: ein Profil, das die vier Layer im
 20-Sekunden-Takt beobachtet, jede Änderung mit Feature-Zeitstempel und

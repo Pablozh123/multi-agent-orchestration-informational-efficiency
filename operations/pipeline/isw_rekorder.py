@@ -4,33 +4,44 @@ Misst, wie lange der Markt braucht, bis er eine Änderung der Auflösungsquelle
 einpreist. Handelt nicht. Kein Order-Pfad, keine Keys, keine Wallet.
 
 Warum überhaupt messen statt gleich handeln: Es gibt genau EINE saubere
-Beobachtung (Krasnoiarske, 22.07.2026, Vorlauf 18 min 43 s). Ein historischer
-Backtest ist ausgeschlossen, weil ISW die Polygone periodisch löscht und neu
-zeichnet — `CreationDate` ist kein Ereignisprotokoll (am 21.07. entstanden 115
-Features in 48 Minuten). Belastbar ist nur Vorwärtsmessung. Der Rekorder
-sammelt die Verteilung, aus der sich die Frage "gibt es hier eine Kante"
-beantworten lässt, statt sie aus N=1 zu behaupten.
+Beobachtung (Krasnoiarske, 22.07.2026, Vorlauf 18 min 43 s, am 23.07. mit YES
+aufgelöst). Ein historischer Backtest ist ausgeschlossen, weil ISW die
+Polygone periodisch löscht und neu zeichnet — `CreationDate` ist kein
+Ereignisprotokoll. Belastbar ist nur Vorwärtsmessung.
 
-Ablauf je Durchlauf:
+Messdesign (nach dem Logik-Review vom 24.07.):
 
-1. Stolperdraht — `editingInfo.lastEditDate` der vier qualifizierenden Layer
-   vergleichen (gemessen 104 ms je Layer). Ohne Änderung endet der Durchlauf.
-2. Delta — nur bei Änderung die Flächen des betroffenen Layers holen.
-3. Geometrie — lokal gegen die gecachten Siedlungsflächen schneiden.
-   Server-seitig wäre je Siedlung eine Anfrage nötig (52 × ~600 ms); lokal
-   ist der Test praktisch gratis.
-4. Bei neuem Treffer: Ereignis schreiben und Preis-Nachfassungen einplanen
-   (T+0, T+1, T+5, T+30 Minuten).
+1. Stolperdraht — `editingInfo.lastEditDate` der vier qualifizierenden Layer.
+   Der Layer-Stand wird erst NACH erfolgreicher Auswertung fortgeschrieben:
+   scheitert der Flächenabruf, versucht es der nächste Poll erneut, statt das
+   Ereignis endgültig zu verlieren. `None` überschreibt nie einen bekannten
+   Stand.
+2. Übergänge — der beobachtete Deckungszustand je Siedlung und Layer wird mit
+   dem aktuellen Flächenschnitt verglichen. Jeder Übergang erzeugt einen
+   KANDIDATEN (`kandidat_treffer` / `kandidat_verlust`) mit sofortiger
+   T+0-Messung: Preis, Orderbuch-Tiefe, Vorlauf.
+3. Beruhigungsfenster — ein Kandidat wird erst nach BERUHIGUNG_S Bestand
+   bestätigt (`*_bestaetigt`) oder verworfen (`*_verworfen`). Kehrt der alte
+   Zustand vorher zurück, heben sich Kandidat und Gegenereignis auf (Flap).
+   Das nettet die Lösch-/Neuzeichnen-Zyklen der ISW-Rebuilds zu null und
+   spiegelt zugleich die Persistenzklausel der Marktregel.
+4. Vorlauf — `vorlauf_s` rechnet gegen die JÜNGSTE Änderung
+   (max(CreationDate, EditDate)) der jüngsten schneidenden Fläche, mit einer
+   je Layer FRISCH genommenen Erkennungszeit. Beides Review-Befunde: die alte
+   Fassung mass bei erweiterten Polygonen die Anlagezeit (Tage statt
+   Sekunden) und fror `jetzt` vor dem Backoff ein (negative Vorläufe
+   möglich).
 
-Schutz vor Falsch-Positiven, jeder Punkt aus einem beobachteten Fehlermodus:
-- Bulk-Rebuild-Bremse (siehe `ist_bulk_rebuild`).
-- Marktpolarität: `will-ukraine-re-enter-…` invertiert das Signal.
-- Kriterium: "capture all of" verlangt Vollüberdeckung; der Rekorder
-  protokolliert dort die Berührung, bewertet aber die Auflösung NICHT.
-- Persistenz: eine Berührung ist ein Kandidat, keine Auflösung. Neben dem
-  Entstehen wird auch das Verschwinden einer Schattierung protokolliert
-  (`deckung_verloren`) — der Myrnohrad-Fall vom November 2025 war genau
-  das: eine Karteneditierung, die am Folgetag wieder weg war.
+Die Auswertung nutzt nur `*_bestaetigt`-Ereignisse; die T+0-Messung stammt
+aus dem Kandidaten-Eintrag. Bekannte Restlücke: stürzt der Prozess zwischen
+Protokoll-Zeile und Zustands-Schreiben ab, kann ein Kandidat nach Neustart
+doppelt protokolliert werden — bei der Auswertung über (slug, layer,
+erste_sichtung) deduplizieren.
+
+Die Marktliste wird alle MARKT_REFRESH_S neu gezogen (ein Gamma-Aufruf);
+nur die Siedlungsgeometrien sind dauerhaft gecacht — sie sind
+Verwaltungsgrenzen, ändern sich nie und waren als wiederholte Abfrage der
+Auslöser der ArcGIS-Drosselung.
 
 Aufruf:
 
@@ -43,7 +54,7 @@ from __future__ import annotations
 import argparse
 import json
 import time
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -54,12 +65,9 @@ from operations.pipeline.isw_karten_watch import (
     ISWFehler,
     ISWFlaeche,
     ISWKarte,
-    Siedlung,
-    ist_bulk_rebuild,
     koordinate_aus_beschreibung,
     markt_kriterium,
     markt_polaritaet,
-    neue_zeitstempel,
     polygone_beruehren,
 )
 
@@ -74,11 +82,36 @@ AKTIV_BIS_UTC = 23
 TAKT_AKTIV_S = 20
 TAKT_RUHE_S = 120
 
+# Beruhigungsfenster: der Rebuild vom 21.07. brauchte 48 Minuten vom ersten
+# bis zum letzten Feature. 60 Minuten decken Löschen-und-Neuzeichnen ab.
+BERUHIGUNG_S = 3600
+
+# Marktliste neu ziehen (ein Gamma-Aufruf): 10 von 52 Märkten waren nach dem
+# ersten 19-h-Fenster bereits geschlossen — eine Startliste veraltet schnell.
+MARKT_REFRESH_S = 900
+
+# HTTP-Budget je Zyklus für Preis-/Buchabrufe: ein Massenübergang (Rebuild)
+# darf nicht Dutzende CLOB-Aufrufe in einem Durchlauf auslösen.
+PREISABRUFE_JE_ZYKLUS = 12
+
 NACHFASS_MINUTEN = (0, 1, 5, 30)
 
 STANDARD_ZUSTAND = Path("data/live/isw_rekorder/zustand.json")
 STANDARD_PROTOKOLL = Path("data/live/isw_rekorder/ereignisse.jsonl")
-STANDARD_WATCHLIST = Path("data/live/isw_rekorder/watchlist.json")
+STANDARD_GEOMETRIE = Path("data/live/isw_rekorder/geometrie_cache.json")
+
+ZUSTAND_SCHEMA = 2
+
+
+def _leerer_zustand() -> dict:
+    return {
+        "schema": ZUSTAND_SCHEMA,
+        "layer_stand": {},
+        "beobachtet": {},        # slug -> [layernamen mit beobachteter Deckung]
+        "kandidaten": [],        # offene Übergänge im Beruhigungsfenster
+        "qualifiziert": {},      # slug -> [layer], bestätigte Treffer (absorbierend)
+        "offene_nachfassungen": [],
+    }
 
 
 @dataclass
@@ -100,24 +133,6 @@ class Marktziel:
     def auswertbar(self) -> bool:
         """Ob ein Treffer überhaupt als Signal taugt."""
         return self.polaritaet == "russisch" and self.kriterium == "beruehrung"
-
-
-@dataclass
-class Kartenereignis:
-    """Eine neu erkannte Überdeckung einer beobachteten Siedlung."""
-
-    erkannt_utc: str
-    layer: str
-    objectid: int
-    feature_zeit_utc: str | None
-    slug: str
-    siedlung: str
-    polaritaet: str
-    kriterium: str
-    auswertbar: bool
-    preis_yes_bei_erkennung: float | None
-    vorlauf_s: float | None       # Erkennung minus Feature-Zeit
-    nachfassungen: dict[str, float | None] = field(default_factory=dict)
 
 
 def _jetzt_utc() -> datetime:
@@ -142,7 +157,7 @@ def takt_fuer(zeit: datetime) -> int:
 # ------------------------------------------------------------- Polymarket
 
 class PolymarktLeser:
-    """Read-only Polymarket-Zugriff: Marktliste und Preise."""
+    """Read-only Polymarket-Zugriff: Marktliste, Preise, Orderbuch."""
 
     def __init__(self, timeout: float = 30.0,
                  client: httpx.Client | None = None) -> None:
@@ -183,36 +198,120 @@ class PolymarktLeser:
         except (httpx.HTTPError, ValueError, TypeError):
             return None
 
+    def buch_tiefe(self, token_id: str) -> dict | None:
+        """Ask-Tiefe der YES-Seite — beantwortet 'war das Buch füllbar?'.
+
+        Der Midpoint allein kann das nicht (Review-Befund 24.07.): im
+        Krasnoiarske-Sweep lag der billigste Fill bei 0.395, obwohl der
+        Midpoint davor 0.046 zeigte.
+        """
+        try:
+            antwort = self._client.get(
+                f"{CLOB_BASIS}/book", params={"token_id": token_id}
+            )
+            antwort.raise_for_status()
+            buch = antwort.json()
+            asks = sorted(
+                (float(a["price"]), float(a["size"]))
+                for a in buch.get("asks") or []
+            )
+            bids = [float(b["price"]) for b in buch.get("bids") or []]
+
+            def usd_bis(grenze: float) -> float:
+                return round(sum(p * s for p, s in asks if p <= grenze), 2)
+
+            return {
+                "best_bid": max(bids) if bids else None,
+                "best_ask": asks[0][0] if asks else None,
+                "usd_bis_030": usd_bis(0.30),
+                "usd_bis_050": usd_bis(0.50),
+            }
+        except (httpx.HTTPError, ValueError, KeyError, TypeError):
+            return None
+
     def schliessen(self) -> None:
         self._client.close()
 
 
-def baue_watchlist(leser: PolymarktLeser, karte: ISWKarte,
-                   pause_s: float = 0.3) -> list[Marktziel]:
-    """Märkte mit Koordinate auf Siedlungsflächen abbilden.
+# ------------------------------------------------ Geometrie-Cache & Maerkte
 
-    Die Zuordnung läuft ausschliesslich über die Koordinate — Namen weichen
-    zwischen Markt und ISW-Layer ab.
+def _cache_key(lat: float, lon: float) -> str:
+    return f"{lat:.5f},{lon:.5f}"
 
-    `pause_s` entzerrt die Siedlungsabfragen. Ohne Pause laufen rund 50
-    Abfragen in Folge gegen den FeatureServer und lösen die Drosselung aus
-    (HTTP 429, beobachtet 23.07.). Die Watchlist wird nur beim Start gebaut,
-    die Pause kostet also einmalig gut 15 Sekunden.
+
+def lade_geometrie_cache(pfad: Path,
+                         alt_watchlist: Path | None = None) -> dict:
+    """Siedlungsgeometrien aus dem Cache; einmalige Migration vom alten
+    watchlist.json (das Geometrie und Marktliste vermischte)."""
+    if pfad.exists():
+        try:
+            roh = json.loads(pfad.read_text(encoding="utf-8"))
+            if isinstance(roh, dict):
+                return roh
+        except (json.JSONDecodeError, OSError):
+            pass
+    cache: dict = {}
+    if alt_watchlist is not None and alt_watchlist.exists():
+        try:
+            alt = json.loads(alt_watchlist.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            alt = []
+        if isinstance(alt, list):
+            for eintrag in alt:
+                try:
+                    cache.setdefault(
+                        _cache_key(eintrag["lat"], eintrag["lon"]),
+                        {
+                            "objectid": eintrag["siedlung_objectid"],
+                            "name": eintrag["siedlung_name"],
+                            "ringe": eintrag["ringe"],
+                        },
+                    )
+                except (KeyError, TypeError):
+                    continue
+    return cache
+
+
+def speichere_geometrie_cache(pfad: Path, cache: dict) -> None:
+    pfad.parent.mkdir(parents=True, exist_ok=True)
+    temp = pfad.with_suffix(pfad.suffix + ".tmp")
+    temp.write_text(json.dumps(cache, ensure_ascii=False), encoding="utf-8")
+    temp.replace(pfad)
+
+
+def lade_marktziele(leser: PolymarktLeser, karte: ISWKarte, cache: dict,
+                    cache_pfad: Path | None,
+                    pause_s: float = 0.3) -> list[Marktziel]:
+    """Offene Märkte auf Siedlungsflächen abbilden.
+
+    Zuordnung ausschliesslich über die Koordinate (Namen weichen zwischen
+    Markt und ISW-Layer ab). Der Siedlungslayer wird nur für Koordinaten
+    befragt, die noch nicht im Cache liegen — auch negative Ergebnisse
+    werden gemerkt, sonst fragt jeder Refresh dieselben Lücken erneut ab.
     """
     ziele: list[Marktziel] = []
-    siedlungs_cache: dict[tuple[float, float], Siedlung | None] = {}
+    gewachsen = False
     for markt in leser.maerkte():
         koordinate = koordinate_aus_beschreibung(markt.get("description"))
         if koordinate is None:
             continue
         lat, lon = koordinate
-        schluessel = (round(lat, 5), round(lon, 5))
-        if schluessel not in siedlungs_cache:
-            siedlungs_cache[schluessel] = karte.siedlung_an_punkt(lat, lon)
+        schluessel = _cache_key(lat, lon)
+        if schluessel not in cache:
+            siedlung = karte.siedlung_an_punkt(lat, lon)
+            if siedlung is None or not siedlung.ringe:
+                cache[schluessel] = {"leer": True}
+            else:
+                cache[schluessel] = {
+                    "objectid": siedlung.objectid,
+                    "name": siedlung.name,
+                    "ringe": siedlung.ringe,
+                }
+            gewachsen = True
             if pause_s:
                 time.sleep(pause_s)
-        siedlung = siedlungs_cache[schluessel]
-        if siedlung is None or not siedlung.ringe:
+        eintrag = cache[schluessel]
+        if eintrag.get("leer"):
             continue
         try:
             token = json.loads(markt.get("clobTokenIds") or "[]")[0]
@@ -227,10 +326,12 @@ def baue_watchlist(leser: PolymarktLeser, karte: ISWKarte,
             token_yes=str(token),
             polaritaet=markt_polaritaet(slug),
             kriterium=markt_kriterium(slug),
-            siedlung_name=siedlung.name,
-            siedlung_objectid=siedlung.objectid,
-            ringe=siedlung.ringe,
+            siedlung_name=eintrag["name"],
+            siedlung_objectid=eintrag["objectid"],
+            ringe=eintrag["ringe"],
         ))
+    if gewachsen and cache_pfad is not None:
+        speichere_geometrie_cache(cache_pfad, cache)
     return ziele
 
 
@@ -238,253 +339,383 @@ def baue_watchlist(leser: PolymarktLeser, karte: ISWKarte,
 
 def deckung(flaechen: list[ISWFlaeche],
             ziele: list[Marktziel]) -> dict[str, ISWFlaeche]:
-    """Welche Siedlungen deckt dieser Layer gerade? slug -> erste Fläche."""
+    """Welche Siedlungen deckt dieser Layer gerade? slug -> jüngste Fläche.
+
+    Bewusst die JÜNGSTE schneidende Fläche, nicht die erste in
+    Server-Reihenfolge: der Ereignis-Zeitstempel soll von der auslösenden
+    Änderung stammen, nicht von einem Alt-Polygon mit Randberührung
+    (Review-Befund 24.07.).
+    """
     heraus: dict[str, ISWFlaeche] = {}
     for ziel in ziele:
+        beste: ISWFlaeche | None = None
         for flaeche in flaechen:
             if not flaeche.ringe:
                 continue
-            if polygone_beruehren(flaeche.ringe, ziel.ringe):
-                heraus[ziel.slug] = flaeche
-                break
+            if not polygone_beruehren(flaeche.ringe, ziel.ringe):
+                continue
+            if beste is None or ((flaeche.juengste_aenderung_ms or -1)
+                                 > (beste.juengste_aenderung_ms or -1)):
+                beste = flaeche
+        if beste is not None:
+            heraus[ziel.slug] = beste
     return heraus
 
 
-def neue_treffer(flaechen: list[ISWFlaeche],
-                 ziele: list[Marktziel],
-                 bereits_gedeckt: dict[str, list[str]]) -> list[tuple[Marktziel, ISWFlaeche]]:
-    """Welche Siedlungen sind neu von diesem Layer gedeckt?
-
-    `bereits_gedeckt` bildet slug -> Liste bereits bekannter Layernamen ab und
-    verhindert, dass derselbe Zustand bei jedem Durchlauf erneut feuert.
-    """
-    jetzt = deckung(flaechen, ziele)
-    nach_slug = {ziel.slug: ziel for ziel in ziele}
-    return [(nach_slug[slug], flaeche) for slug, flaeche in jetzt.items()
-            if flaeche.layer not in bereits_gedeckt.get(slug, [])]
-
-
-def verlorene_deckung(flaechen: list[ISWFlaeche],
-                      ziele: list[Marktziel],
-                      bereits_gedeckt: dict[str, list[str]],
-                      layer_name: str) -> list[Marktziel]:
-    """Welche Siedlungen hat dieser Layer seit dem letzten Stand verloren?
-
-    Das ist die Gegenrichtung zu `neue_treffer` und der Kern der
-    Persistenzfrage: Die Marktregel verlangt, dass eine Schattierung den
-    nächsten vollen ISW-Zyklus übersteht. Der Myrnohrad-Fall vom November
-    2025 (Karteneditierung verschwand am Folgetag) ist genau dieser Fall.
-    Ohne diese Erkennung misst der Rekorder nur das Entstehen, nicht das
-    Verschwinden.
-    """
-    jetzt = deckung(flaechen, ziele)
-    return [ziel for ziel in ziele
-            if layer_name in bereits_gedeckt.get(ziel.slug, [])
-            and ziel.slug not in jetzt]
-
-
-def speichere_watchlist(pfad: Path, ziele: list[Marktziel]) -> None:
-    """Watchlist samt Siedlungsgeometrien ablegen."""
-    pfad.parent.mkdir(parents=True, exist_ok=True)
-    temp = pfad.with_suffix(pfad.suffix + ".tmp")
-    temp.write_text(
-        json.dumps([asdict(ziel) for ziel in ziele], ensure_ascii=False),
-        encoding="utf-8",
-    )
-    temp.replace(pfad)
-
-
-def lade_watchlist(pfad: Path) -> list[Marktziel]:
-    """Watchlist aus dem Cache; leere Liste, wenn nicht lesbar."""
-    if not pfad.exists():
-        return []
-    try:
-        roh = json.loads(pfad.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, OSError):
-        return []
-    ziele = []
-    for eintrag in roh:
-        try:
-            ziele.append(Marktziel(**eintrag))
-        except TypeError:
-            return []           # Schema hat sich geaendert -> neu bauen
-    return ziele
-
-
-def hole_watchlist(leser: PolymarktLeser, karte: ISWKarte, pfad: Path,
-                   erzwinge_neu: bool = False) -> list[Marktziel]:
-    """Watchlist aus dem Cache oder neu gebaut.
-
-    Der Aufbau kostet rund 50 Abfragen gegen den Siedlungslayer und ist der
-    Hauptauslöser der ArcGIS-Drosselung: Jeder Neustart feuerte den ganzen
-    Schwung erneut, bis der Server mit 429 antwortete und der Rekorder beim
-    Start starb (23.07., zweimal).
-
-    Siedlungsgeometrien sind Verwaltungsgrenzen und ändern sich praktisch
-    nie — der Cache ist deshalb unbedenklich. Schlägt der Neuaufbau fehl und
-    liegt ein Cache vor, wird der Cache benutzt, statt den Start aufzugeben.
-    """
-    zwischenstand = lade_watchlist(pfad)
-    if zwischenstand and not erzwinge_neu:
-        return zwischenstand
-    try:
-        ziele = baue_watchlist(leser, karte)
-    except Exception:           # noqa: BLE001 - Start darf nicht scheitern
-        if zwischenstand:
-            return zwischenstand
-        raise
-    if ziele:
-        speichere_watchlist(pfad, ziele)
-    return ziele
-
+# ------------------------------------------------------- Zustand & Protokoll
 
 def _lade_zustand(pfad: Path) -> dict:
     if not pfad.exists():
-        return {"layer_stand": {}, "gedeckt": {}, "offene_nachfassungen": []}
+        return _leerer_zustand()
     try:
-        return json.loads(pfad.read_text(encoding="utf-8"))
+        roh = json.loads(pfad.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError):
-        return {"layer_stand": {}, "gedeckt": {}, "offene_nachfassungen": []}
+        return _leerer_zustand()
+    if not isinstance(roh, dict) or roh.get("schema") != ZUSTAND_SCHEMA:
+        # Schema-Wechsel: bewusst neu grundieren (der Multipart-Fix vom
+        # 24.07. kann den Deckungszustand ändern).
+        return _leerer_zustand()
+    zustand = _leerer_zustand()
+    zustand.update(roh)
+    return zustand
 
 
 def _schreibe_zustand(pfad: Path, zustand: dict) -> None:
-    """Atomar schreiben — der Ordner wird parallel gelesen (Torn-Write-Lehre)."""
-    pfad.parent.mkdir(parents=True, exist_ok=True)
-    temp = pfad.with_suffix(pfad.suffix + ".tmp")
-    temp.write_text(json.dumps(zustand, ensure_ascii=False, indent=2),
-                    encoding="utf-8")
-    temp.replace(pfad)
+    """Atomar, mit einem Wiederholungsversuch (Windows-Datei-Locks)."""
+    for versuch in (0, 1):
+        try:
+            pfad.parent.mkdir(parents=True, exist_ok=True)
+            temp = pfad.with_suffix(pfad.suffix + ".tmp")
+            temp.write_text(
+                json.dumps(zustand, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            temp.replace(pfad)
+            return
+        except OSError:
+            if versuch:
+                break
+            time.sleep(0.5)
+    print("WARNUNG Zustand nicht geschrieben, naechster Zyklus versucht erneut")
 
 
 def _protokolliere(pfad: Path, eintrag: dict) -> None:
-    pfad.parent.mkdir(parents=True, exist_ok=True)
-    with pfad.open("a", encoding="utf-8") as datei:
-        datei.write(json.dumps(eintrag, ensure_ascii=False) + "\n")
+    """Zeile anhängen, mit einem Wiederholungsversuch; nie den Lauf abreissen."""
+    zeile = json.dumps(eintrag, ensure_ascii=False)
+    for versuch in (0, 1):
+        try:
+            pfad.parent.mkdir(parents=True, exist_ok=True)
+            with pfad.open("a", encoding="utf-8") as datei:
+                datei.write(zeile + "\n")
+            return
+        except OSError:
+            if versuch:
+                break
+            time.sleep(0.5)
+    print(f"WARNUNG Protokoll nicht schreibbar: {zeile[:200]}")
 
+
+# ---------------------------------------------------------------- Kandidaten
+
+def _entferne_kandidat(zustand: dict, slug: str, layer: str,
+                       art: str) -> dict | None:
+    """Offenen Kandidaten (slug, layer, art) aus dem Zustand nehmen."""
+    for i, k in enumerate(zustand["kandidaten"]):
+        if k["slug"] == slug and k["layer"] == layer and k["art"] == art:
+            return zustand["kandidaten"].pop(i)
+    return None
+
+
+def _reife_kandidaten(zustand: dict, leser: PolymarktLeser,
+                      protokoll: Path) -> None:
+    """Kandidaten nach Ablauf des Beruhigungsfensters entscheiden."""
+    jetzt = _jetzt_utc()
+    ts = jetzt.timestamp()
+    offen: list[dict] = []
+    for k in zustand["kandidaten"]:
+        if ts - k["erste_sichtung_ts"] < BERUHIGUNG_S:
+            offen.append(k)
+            continue
+        gedeckt = k["layer"] in zustand["beobachtet"].get(k["slug"], [])
+        haelt = gedeckt if k["art"] == "treffer" else not gedeckt
+        status = "bestaetigt" if haelt else "verworfen"
+        eintrag = {
+            "art": f"{k['art']}_{status}",
+            "zeit_utc": _iso(jetzt),
+            "slug": k["slug"],
+            "layer": k["layer"],
+            "siedlung": k.get("siedlung"),
+            "auswertbar": k.get("auswertbar"),
+            "erste_sichtung_utc": k.get("erste_sichtung_utc"),
+            "dauer_s": round(ts - k["erste_sichtung_ts"], 1),
+        }
+        if k.get("auswertbar"):
+            eintrag["preis_yes_jetzt"] = leser.preis_yes(k["token"])
+        _protokolliere(protokoll, eintrag)
+        if k["art"] == "treffer" and status == "bestaetigt":
+            q = zustand["qualifiziert"].setdefault(k["slug"], [])
+            if k["layer"] not in q:
+                q.append(k["layer"])
+    zustand["kandidaten"] = offen
+
+
+def _bereinige_zustand(zustand: dict, slugs_aktiv: set[str],
+                       protokoll: Path) -> int:
+    """Zustand auf die aktuelle Marktliste einschränken.
+
+    Kandidaten geschlossener Märkte werden mit eigenem Status protokolliert:
+    ein Markt, der vor Ablauf des Beruhigungsfensters schliesst, ist oft
+    genau der interessante Fall (aufgelöst wegen des Ereignisses).
+    """
+    jetzt = _jetzt_utc()
+    behalten: list[dict] = []
+    geschlossen = 0
+    for k in zustand["kandidaten"]:
+        if k["slug"] in slugs_aktiv:
+            behalten.append(k)
+            continue
+        geschlossen += 1
+        _protokolliere(protokoll, {
+            "art": k["art"] + "_markt_geschlossen",
+            "zeit_utc": _iso(jetzt),
+            "slug": k["slug"],
+            "layer": k["layer"],
+            "erste_sichtung_utc": k.get("erste_sichtung_utc"),
+            "hinweis": "Markt vor Fensterende geschlossen (oft: aufgeloest)",
+        })
+    zustand["kandidaten"] = behalten
+    for slug in [s for s in zustand["beobachtet"] if s not in slugs_aktiv]:
+        del zustand["beobachtet"][slug]
+    zustand["offene_nachfassungen"] = [
+        a for a in zustand["offene_nachfassungen"] if a["slug"] in slugs_aktiv
+    ]
+    return geschlossen
+
+
+# -------------------------------------------------------------- Durchlauf
 
 def durchlauf(karte: ISWKarte,
               leser: PolymarktLeser,
               ziele: list[Marktziel],
               zustand: dict,
-              protokoll: Path) -> list[Kartenereignis]:
-    """Ein Poll-Zyklus über alle vier Layer."""
-    ereignisse: list[Kartenereignis] = []
-    jetzt = _jetzt_utc()
+              protokoll: Path) -> list[dict]:
+    """Ein Poll-Zyklus über alle vier Layer. Liefert neue Kandidaten-Einträge."""
+    meldungen: list[dict] = []
+    budget = {"rest": PREISABRUFE_JE_ZYKLUS}
+    slugs_aktiv = {z.slug for z in ziele}
+    ziel_nach_slug = {z.slug: z for z in ziele}
+
+    def _preis(token: str) -> tuple[float | None, bool]:
+        if budget["rest"] <= 0:
+            return None, True
+        budget["rest"] -= 1
+        return leser.preis_yes(token), False
 
     for layer in QUALIFIZIERENDE_LAYER:
         try:
             stand = karte.layer_stand(layer)
         except ISWFehler as fehler:
             _protokolliere(protokoll, {
-                "art": "fehler", "zeit_utc": _iso(jetzt),
+                "art": "fehler", "zeit_utc": _iso(_jetzt_utc()),
                 "layer": layer.name, "status": fehler.status,
             })
             continue
-
-        vorher = zustand["layer_stand"].get(layer.name)
-        if stand is not None and vorher == stand:
+        if stand is None:
+            # Metadaten ohne lastEditDate: bekannten Stand NIE mit None
+            # ueberschreiben, sonst grundiert der Folgelauf still
+            # (Review-Befund 24.07.).
             continue
-        zustand["layer_stand"][layer.name] = stand
-
-        # Erster Lauf: nur grundieren, nicht signalisieren.
-        grundierung = vorher is None
+        vorher = zustand["layer_stand"].get(layer.name)
+        if vorher == stand:
+            continue
 
         try:
             flaechen = karte.flaechen(layer)
         except ISWFehler as fehler:
+            # layer_stand bewusst NICHT fortschreiben: der naechste Poll
+            # sieht die Aenderung erneut, statt sie endgueltig zu verlieren.
             _protokolliere(protokoll, {
-                "art": "fehler", "zeit_utc": _iso(jetzt),
+                "art": "fehler", "zeit_utc": _iso(_jetzt_utc()),
                 "layer": layer.name, "status": fehler.status,
             })
             continue
 
-        # Nur was seit dem letzten Stand dazukam, zaehlt fuer die Bremse.
-        frisch = neue_zeitstempel([f.zeitstempel_ms for f in flaechen], vorher)
-        if ist_bulk_rebuild(frisch):
-            _protokolliere(protokoll, {
-                "art": "rebuild", "zeit_utc": _iso(jetzt),
-                "layer": layer.name, "n_flaechen": len(flaechen),
-                "n_neu": len(frisch),
-                "hinweis": "Bulk-Rebuild erkannt, neu grundiert statt signalisiert",
-            })
-            grundierung = True
+        # Erkennungszeit FRISCH nach dem Abruf — ein eingefrorenes 'jetzt'
+        # macht vorlauf_s unter Backoff minutenweise falsch.
+        jetzt = _jetzt_utc()
+        aktuelle = deckung(flaechen, ziele)
+        vorher_gedeckt = {
+            s for s, layers in zustand["beobachtet"].items()
+            if layer.name in layers and s in slugs_aktiv
+        }
+        grundierung = vorher is None
 
-        # Gegenrichtung zuerst: verschwundene Schattierung ist die
-        # Persistenzfrage und muss auch bei Grundierung protokolliert werden.
-        for ziel in verlorene_deckung(flaechen, ziele, zustand["gedeckt"],
-                                      layer.name):
-            zustand["gedeckt"][ziel.slug] = [
-                name for name in zustand["gedeckt"].get(ziel.slug, [])
-                if name != layer.name
-            ]
-            _protokolliere(protokoll, {
-                "art": "deckung_verloren",
-                "zeit_utc": _iso(jetzt),
-                "layer": layer.name,
-                "slug": ziel.slug,
-                "siedlung": ziel.siedlung_name,
-                "auswertbar": ziel.auswertbar,
-                "preis_yes": leser.preis_yes(ziel.token_yes),
-                "restliche_layer": zustand["gedeckt"][ziel.slug],
-            })
-
-        for ziel, flaeche in neue_treffer(flaechen, ziele, zustand["gedeckt"]):
-            zustand["gedeckt"].setdefault(ziel.slug, [])
-            if flaeche.layer not in zustand["gedeckt"][ziel.slug]:
-                zustand["gedeckt"][ziel.slug].append(flaeche.layer)
+        for slug in [s for s in aktuelle if s not in vorher_gedeckt]:
+            zustand["beobachtet"].setdefault(slug, [])
+            if layer.name not in zustand["beobachtet"][slug]:
+                zustand["beobachtet"][slug].append(layer.name)
             if grundierung:
                 continue
-
-            preis = leser.preis_yes(ziel.token_yes)
-            feature_zeit = _ms_nach_iso(flaeche.zeitstempel_ms)
+            flap = _entferne_kandidat(zustand, slug, layer.name, "verlust")
+            if flap is not None:
+                _protokolliere(protokoll, {
+                    "art": "verlust_verworfen",
+                    "zeit_utc": _iso(jetzt),
+                    "slug": slug,
+                    "layer": layer.name,
+                    "dauer_s": round(jetzt.timestamp()
+                                     - flap["erste_sichtung_ts"], 1),
+                    "hinweis": "Deckung binnen Fenster zurueck (Flap/Rebuild)",
+                })
+                continue
+            ziel = ziel_nach_slug[slug]
+            flaeche = aktuelle[slug]
+            preis, uebersprungen = _preis(ziel.token_yes)
+            buch = None
+            if ziel.auswertbar and budget["rest"] > 0:
+                budget["rest"] -= 1
+                buch = leser.buch_tiefe(ziel.token_yes)
             vorlauf = None
-            if flaeche.zeitstempel_ms:
-                vorlauf = (jetzt.timestamp()
-                           - flaeche.zeitstempel_ms / 1000)
-            ereignis = Kartenereignis(
-                erkannt_utc=_iso(jetzt),
-                layer=flaeche.layer,
-                objectid=flaeche.objectid,
-                feature_zeit_utc=feature_zeit,
-                slug=ziel.slug,
-                siedlung=ziel.siedlung_name,
-                polaritaet=ziel.polaritaet,
-                kriterium=ziel.kriterium,
-                auswertbar=ziel.auswertbar,
-                preis_yes_bei_erkennung=preis,
-                vorlauf_s=vorlauf,
-                nachfassungen={"0": preis},
-            )
-            ereignisse.append(ereignis)
-            _protokolliere(protokoll, {"art": "treffer", **asdict(ereignis)})
+            if flaeche.juengste_aenderung_ms:
+                vorlauf = round(
+                    jetzt.timestamp() - flaeche.juengste_aenderung_ms / 1000, 1
+                )
+            kandidat = {
+                "art": "treffer",
+                "slug": slug,
+                "layer": layer.name,
+                "siedlung": ziel.siedlung_name,
+                "token": ziel.token_yes,
+                "auswertbar": ziel.auswertbar,
+                "objectid": flaeche.objectid,
+                "erste_sichtung_ts": jetzt.timestamp(),
+                "erste_sichtung_utc": _iso(jetzt),
+                "vorlauf_s": vorlauf,
+            }
+            zustand["kandidaten"].append(kandidat)
+            eintrag = {
+                "art": "kandidat_treffer",
+                "zeit_utc": _iso(jetzt),
+                "slug": slug,
+                "layer": layer.name,
+                "siedlung": ziel.siedlung_name,
+                "objectid": flaeche.objectid,
+                "feature_zeit_utc": _ms_nach_iso(flaeche.juengste_aenderung_ms),
+                "vorlauf_s": vorlauf,
+                "polaritaet": ziel.polaritaet,
+                "kriterium": ziel.kriterium,
+                "auswertbar": ziel.auswertbar,
+                "markt_bereits_qualifiziert":
+                    bool(zustand["qualifiziert"].get(slug)),
+                "preis_yes": preis,
+                "preis_uebersprungen": uebersprungen,
+                "buch": buch,
+            }
+            _protokolliere(protokoll, eintrag)
+            meldungen.append(eintrag)
             for minute in NACHFASS_MINUTEN[1:]:
                 zustand["offene_nachfassungen"].append({
-                    "slug": ziel.slug,
+                    "slug": slug,
                     "token": ziel.token_yes,
-                    "layer": flaeche.layer,
-                    "faellig_ts": jetzt.timestamp() + minute * 60,
+                    "layer": layer.name,
                     "minute": minute,
+                    "erste_sichtung_ts": jetzt.timestamp(),
+                    "faellig_ts": jetzt.timestamp() + minute * 60,
                 })
 
+        for slug in [s for s in vorher_gedeckt if s not in aktuelle]:
+            zustand["beobachtet"][slug] = [
+                name for name in zustand["beobachtet"].get(slug, [])
+                if name != layer.name
+            ]
+            if grundierung:
+                continue
+            flap = _entferne_kandidat(zustand, slug, layer.name, "treffer")
+            if flap is not None:
+                _protokolliere(protokoll, {
+                    "art": "treffer_verworfen",
+                    "zeit_utc": _iso(jetzt),
+                    "slug": slug,
+                    "layer": layer.name,
+                    "dauer_s": round(jetzt.timestamp()
+                                     - flap["erste_sichtung_ts"], 1),
+                    "hinweis": "Deckung binnen Fenster verschwunden (Flap)",
+                })
+                continue
+            ziel = ziel_nach_slug[slug]
+            preis = None
+            if ziel.auswertbar:
+                preis, _ = _preis(ziel.token_yes)
+            kandidat = {
+                "art": "verlust",
+                "slug": slug,
+                "layer": layer.name,
+                "siedlung": ziel.siedlung_name,
+                "token": ziel.token_yes,
+                "auswertbar": ziel.auswertbar,
+                "erste_sichtung_ts": jetzt.timestamp(),
+                "erste_sichtung_utc": _iso(jetzt),
+            }
+            zustand["kandidaten"].append(kandidat)
+            _protokolliere(protokoll, {
+                "art": "kandidat_verlust",
+                "zeit_utc": _iso(jetzt),
+                "slug": slug,
+                "layer": layer.name,
+                "siedlung": ziel.siedlung_name,
+                "auswertbar": ziel.auswertbar,
+                "preis_yes": preis,
+                "restliche_layer": zustand["beobachtet"].get(slug, []),
+            })
+
+        if grundierung:
+            # Bereits gedeckte Siedlungen gelten als qualifiziert: der Markt
+            # preist sie laengst (Divergenz-Scan 23.07.: alle bei 0.91+).
+            for slug in aktuelle:
+                q = zustand["qualifiziert"].setdefault(slug, [])
+                if layer.name not in q:
+                    q.append(layer.name)
+            _protokolliere(protokoll, {
+                "art": "grundierung",
+                "zeit_utc": _iso(jetzt),
+                "layer": layer.name,
+                "n_flaechen": len(flaechen),
+                "n_gedeckt": len(aktuelle),
+            })
+
+        # Erst NACH erfolgreicher Auswertung fortschreiben.
+        zustand["layer_stand"][layer.name] = stand
+
+    _reife_kandidaten(zustand, leser, protokoll)
     _faellige_nachfassungen(leser, zustand, protokoll)
-    return ereignisse
+    return meldungen
 
 
 def _faellige_nachfassungen(leser: PolymarktLeser, zustand: dict,
                             protokoll: Path) -> None:
-    """Preis-Nachfassungen einsammeln, deren Zeitpunkt erreicht ist."""
-    jetzt_ts = _jetzt_utc().timestamp()
+    """Preis-Nachfassungen einsammeln, deren Zeitpunkt erreicht ist.
+
+    Protokolliert neben der geplanten Minute den realen Abstand zur ersten
+    Sichtung — unter Backoff können die auseinanderlaufen, und die
+    Auswertung braucht den echten Abstand.
+    """
+    jetzt = _jetzt_utc()
+    ts = jetzt.timestamp()
     offen = []
     for auftrag in zustand.get("offene_nachfassungen", []):
-        if auftrag["faellig_ts"] > jetzt_ts:
+        if auftrag["faellig_ts"] > ts:
             offen.append(auftrag)
             continue
+        real_s = None
+        if auftrag.get("erste_sichtung_ts"):
+            real_s = round(ts - auftrag["erste_sichtung_ts"], 1)
         _protokolliere(protokoll, {
             "art": "nachfassung",
-            "zeit_utc": _iso(_jetzt_utc()),
+            "zeit_utc": _iso(jetzt),
             "slug": auftrag["slug"],
             "layer": auftrag["layer"],
-            "minute": auftrag["minute"],
+            "geplante_minute": auftrag["minute"],
+            "real_s": real_s,
             "preis_yes": leser.preis_yes(auftrag["token"]),
         })
     zustand["offene_nachfassungen"] = offen
@@ -499,34 +730,38 @@ def main(argv: list[str] | None = None) -> int:
                           help="fester Poll-Abstand statt Tageszeit-Automatik")
     zerleger.add_argument("--zustand", type=Path, default=STANDARD_ZUSTAND)
     zerleger.add_argument("--protokoll", type=Path, default=STANDARD_PROTOKOLL)
-    zerleger.add_argument("--watchlist", type=Path, default=STANDARD_WATCHLIST)
-    zerleger.add_argument("--watchlist-neu", action="store_true",
-                          help="Watchlist neu aufbauen statt Cache nutzen")
+    zerleger.add_argument("--geometrie-cache", type=Path,
+                          default=STANDARD_GEOMETRIE)
+    zerleger.add_argument("--markt-refresh-s", type=int,
+                          default=MARKT_REFRESH_S)
     argumente = zerleger.parse_args(argv)
 
     karte = ISWKarte()
     leser = PolymarktLeser()
     zustand = _lade_zustand(argumente.zustand)
+    cache = lade_geometrie_cache(
+        argumente.geometrie_cache,
+        alt_watchlist=argumente.geometrie_cache.parent / "watchlist.json",
+    )
 
-    aus_cache = argumente.watchlist.exists() and not argumente.watchlist_neu
-    print("Watchlist " + ("aus Cache ..." if aus_cache else "wird gebaut ..."))
-    ziele = hole_watchlist(leser, karte, argumente.watchlist,
-                           erzwinge_neu=argumente.watchlist_neu)
+    print("Marktliste wird aufgebaut ...")
+    try:
+        ziele = lade_marktziele(leser, karte, cache, argumente.geometrie_cache)
+    except Exception as fehler:  # noqa: BLE001 - ohne Ziele kein Betrieb
+        print(f"FATAL Marktliste nicht ladbar: {fehler}")
+        return 1
     auswertbar = [z for z in ziele if z.auswertbar]
     print(f"{len(ziele)} Maerkte mit Siedlungsflaeche, "
           f"davon {len(auswertbar)} auswertbar "
           f"(russisch + Beruehrungskriterium)")
 
+    letzter_refresh = time.monotonic()
     try:
         while True:
-            # Ein Rekorder, der tagelang laufen soll, darf an keinem
-            # Einzelfehler sterben. Am 23.07. hat ein httpx.ReadTimeout den
-            # Prozess nach dem ersten Durchlauf abgerissen; gefangen wurden
-            # damals nur ISWFehler.
             try:
-                ereignisse = durchlauf(karte, leser, ziele, zustand,
-                                       argumente.protokoll)
-            except Exception as fehler:  # noqa: BLE001
+                meldungen = durchlauf(karte, leser, ziele, zustand,
+                                      argumente.protokoll)
+            except Exception as fehler:  # noqa: BLE001 - Messlauf nie abreissen
                 _protokolliere(argumente.protokoll, {
                     "art": "lauf_fehler",
                     "zeit_utc": _iso(_jetzt_utc()),
@@ -535,15 +770,42 @@ def main(argv: list[str] | None = None) -> int:
                 })
                 print(f"Durchlauf-Fehler ({type(fehler).__name__}), weiter: "
                       f"{str(fehler)[:120]}")
-                ereignisse = []
+                meldungen = []
             _schreibe_zustand(argumente.zustand, zustand)
-            for ereignis in ereignisse:
-                marke = "" if ereignis.auswertbar else "  [nicht auswertbar]"
-                print(f"TREFFER {ereignis.erkannt_utc} {ereignis.layer} "
-                      f"-> {ereignis.slug} ({ereignis.siedlung}) "
-                      f"YES={ereignis.preis_yes_bei_erkennung}{marke}")
+            for m in meldungen:
+                marke = "" if m.get("auswertbar") else "  [nicht auswertbar]"
+                print(f"KANDIDAT {m['zeit_utc']} {m['layer']} -> {m['slug']} "
+                      f"({m['siedlung']}) YES={m.get('preis_yes')}{marke}")
             if argumente.einmal:
                 return 0
+
+            if time.monotonic() - letzter_refresh >= argumente.markt_refresh_s:
+                letzter_refresh = time.monotonic()
+                try:
+                    neue = lade_marktziele(leser, karte, cache,
+                                           argumente.geometrie_cache)
+                    alt_slugs = {z.slug for z in ziele}
+                    neu_slugs = {z.slug for z in neue}
+                    if alt_slugs != neu_slugs:
+                        geschlossen = _bereinige_zustand(
+                            zustand, neu_slugs, argumente.protokoll)
+                        _protokolliere(argumente.protokoll, {
+                            "art": "watchlist_refresh",
+                            "zeit_utc": _iso(_jetzt_utc()),
+                            "n_maerkte": len(neue),
+                            "neu": sorted(neu_slugs - alt_slugs),
+                            "entfernt": sorted(alt_slugs - neu_slugs),
+                            "kandidaten_geschlossen": geschlossen,
+                        })
+                    ziele = neue
+                except Exception as fehler:  # noqa: BLE001 - alte Liste weiter
+                    _protokolliere(argumente.protokoll, {
+                        "art": "lauf_fehler",
+                        "zeit_utc": _iso(_jetzt_utc()),
+                        "wo": "markt_refresh",
+                        "typ": type(fehler).__name__,
+                        "text": str(fehler)[:300],
+                    })
             time.sleep(argumente.takt_s or takt_fuer(_jetzt_utc()))
     except KeyboardInterrupt:
         return 0

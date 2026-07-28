@@ -155,7 +155,11 @@ Venue-spezifisch (drei Nähte):
 
 ## 5. Implementierungsplan
 
-### Phase 0 — Zugangsklärung (Blocker, nur der User kann das)
+**Stand 29.07.:** Phase 0 erledigt (Konto angelegt), Phase 1–3 gebaut und
+getestet. Offen sind der API-Key und der Demo-Trockenlauf (Phase 3b), dann
+Phase 4.
+
+### Phase 0 — Zugangsklärung (erledigt 29.07.)
 
 1. Kontoeignung Deutschland im **Kalshi Member Agreement** prüfen. Dritt-
    quellen führen Deutschland als unterstützt und Frankreich, Italien,
@@ -188,34 +192,73 @@ Neue Dateien:
   laufenden Polymarket-Bots parallel die Kalshi-Preisspur desselben Calls
   mit (WS-Ticker oder Polling), Format analog `orderbook_log.csv`.
 
-Tests: `tests/test_kalshi_rules.py` (Wortsplit, NQE-Ausschluss,
-Variantenregel), `tests/test_kalshi_client.py` (gegen gespeicherte
-Fixtures, keine Live-Calls im Test).
+Tests in `tests/test_kalshi_rules.py` (26), offline gegen den echten
+API-Abzug `tests/fixtures/kalshi_mentions_snapshot.json`.
 
 Ertrag ohne jedes Risiko: Latenz- und Preisdivergenz Kalshi ↔ Polymarket ↔
 unsere Verify-Zeit auf demselben Audio; Messung der tatsächlichen
 Nach-Call-Fensterlänge über mehrere Calls.
 
-### Phase 2 — Regel- und Entscheidungsschicht (~0,5 Tag)
+**Gebaut 29.07.** Ein Befund kam beim Bauen dazu: `compile_patterns` deckt
+Kalshis Variantenregel bereits exakt ab (Suffix `('s|s|')`) — bis auf
+Plurale, die nicht durch bloßes „s" entstehen. Ohne die Ergänzung hätte
+der Fed-Markt „Tax" ein gesprochenes *taxes* nie gezählt. Unregelmäßige
+Plurale (leaf/leaves) werden bewusst nicht geraten: ein verpasster Treffer
+kostet weniger als ein Geistertreffer.
 
-- Gebührenmodell in `decision.py`: `gebuehr(p) = ceil(0.07·p·(1−p)·100)/100`,
-  Edge-Schwelle gebührenbereinigt; Kappe je Markt in Kontrakten statt USD.
-- Nachbarschafts-/Verschreibungsfilter aus der Late-NO-Arbeit (guide/guides,
-  agent e-commerce) als **Pflichtfilter** für Kalshi-NO verdrahten — auf
-  Kalshi entscheidet das Ohr, ein Transkriptvertipper ist dort garantiert
-  ein Verlust.
-- Preisdeckel neu kalibrieren: 1-Cent-Tick statt 0.001.
+### Phase 2 — Regel- und Entscheidungsschicht (gebaut 29.07.)
 
-### Phase 3 — Ausführung gegen Demo (~1 Tag)
+`operations/pipeline/kalshi_decision.py`:
 
-- `operations/pipeline/kalshi_execution.py` — `KalshiExecutor(ExecutorBase)`
-  analog `LiveExecutor` (execution.py:242): RSA-PSS-Signatur, FOK-Orders,
-  Budget-/Kappenlogik übernehmen. **`_budget_sync`-Fehler aus execution.py
-  nicht mitschleppen** (§4-Nachtrag der Übergabe: Balance-Delta überschrieb
-  die korrekte Fill-Summe) — hier von Anfang an `fill_count` × Preis
-  buchen.
-- Trockenlauf: `kalshi_test_order.py` gegen Demo, ein Kontrakt, Signatur-
-  und Fehlerpfade prüfen.
+- **Gebühr im Deckel.** Geprüft wird der Vollpreis (Ask + Gebühr), nicht
+  der rohe Ask. Sonst kauft der Bot am 0.90-Deckel systematisch einen Cent
+  zu teuer — bei 0.895 liegt der Vollpreis bereits über der Grenze.
+- **Verschreibungsfilter als NO-Pflichtsperre.** Ein NO unterbleibt,
+  sobald das Vollpass-Transkript ein Wort enthält, das mit dem Zielwort
+  mindestens vier Anfangsbuchstaben teilt, ohne selbst ein Treffer zu
+  sein. Die Schwelle 4 ist aus den beiden belegten Fällen abgeleitet:
+  *guidance*/*guides* teilen „guid", *agentic*/*agent* teilen „agen".
+  Der Filter kann nur Käufe verhindern, nie welche auslösen.
+- **Kein NO ohne Vollpass-Transkript.** Fehlt es, gibt es kein NO — auf
+  einer video-aufgelösten Venue ist Abwesenheit sonst nicht belegbar.
+
+### Phase 3 — Ausführung (gebaut 29.07., Demo-Trockenlauf offen)
+
+`operations/pipeline/kalshi_execution.py`. Beim Bauen zeigte die
+OpenAPI-Spezifikation zwei Dinge, die aus der Doku allein falsch
+herausgelesen waren:
+
+- Der Endpunkt ist **`POST /portfolio/events/orders`** (V2). Das ältere
+  `/portfolio/orders` wird laut Spec ab Mai 2026 abgekündigt.
+- V2 quotiert **alles aus YES-Sicht**: `side: bid` kauft YES, `side: ask`
+  verkauft YES — wirtschaftlich ein NO-Kauf zu `1 − price`. Es gibt kein
+  `yes_price`/`no_price`-Paar mehr, und Preise wie Stückzahlen sind
+  Dezimalstrings (Bruchteile ab 0.01 Kontrakt).
+
+Weitere Entscheidungen:
+
+- **Buchung aus der Orderantwort**, nicht aus dem Kontostand. Die
+  V2-Antwort liefert `average_fill_price` und `average_fee_paid` — der
+  Einsatz ist damit gemessen statt geschätzt. Der `_budget_sync`-Fehler
+  der Polymarket-Seite (PayPal 28.07.: `ausgegeben_usd 0.0` trotz 16.08
+  USD Fill) wird nicht mitgeschleppt.
+- **FOK statt Level-Sweep**: 1-Cent-Ticks und bekanntes bestes Level;
+  fällt die Order durch, greift der nächste Durchlauf mit frischem Buch.
+- Das Kalshi-Buch wird per `kalshi_client.buch_als_polymarket` in das
+  CLOB-Format übersetzt, damit Budget-, Tiefen- und Kill-Switch-Logik der
+  bewährten `ExecutorBase` unverändert greifen.
+
+Tests in `tests/test_kalshi_handel.py` (38), darunter die beiden
+Verschreibungsfälle als Regressionstests und eine Signaturprüfung gegen
+ein Wegwerf-Schlüsselpaar.
+
+### Phase 3b — Demo-Trockenlauf (offen, braucht den API-Key)
+
+1. API-Key im Kalshi-Konto erzeugen, Private Key als PEM sichern.
+2. In `.env`: `KALSHI_KEY_ID=…`, `KALSHI_PRIVATE_KEY_PFAD=…`.
+3. Eine Order über `baue_executor(live=True, demo=True)` gegen
+   `external-api.demo.kalshi.co`, ein Kontrakt, Signatur- und
+   Fehlerpfade prüfen.
 
 ### Phase 4 — Ein kleiner Live-Lauf, parallel zu Polymarket
 

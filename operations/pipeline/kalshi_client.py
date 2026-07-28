@@ -141,6 +141,42 @@ def yes_quotes(buch: dict) -> tuple[float | None, float | None]:
     return yes_bid, yes_ask
 
 
+def buch_als_polymarket(buch: dict, seite: str = "yes") -> dict:
+    """Kalshi-Zwei-Seiten-Buch in das CLOB-Format {asks, bids} uebersetzen.
+
+    Damit greifen `orderbook.ausfuehrbare_tiefe_usd` und die gesamte
+    Budget-/Groessenlogik aus `execution.ExecutorBase` unveraendert auch
+    auf Kalshi — statt sie ein zweites Mal zu schreiben.
+
+    Kalshi fuehrt je Markt zwei Gebotsseiten. Ein YES-Ask ist das
+    Spiegelbild eines NO-Gebots: wer NO zu 0.19 kauft, verkauft YES zu
+    0.81. `seite="no"` dreht die Sicht um, damit NO-Kaeufe dieselbe
+    Tiefenrechnung bekommen.
+    """
+    roh = (buch.get("orderbook_fp") or buch.get("orderbook") or {})
+    gegen = "no" if seite == "yes" else "yes"
+
+    def level(name: str) -> list[list]:
+        return roh.get(f"{name}_dollars") or []
+
+    asks = []
+    for preis, groesse in level(gegen):
+        p, g = zahl(preis), zahl(groesse)
+        if p is None or g is None:
+            continue
+        asks.append({"price": round(1.0 - p, 4), "size": g})
+    bids = []
+    for preis, groesse in level(seite):
+        p, g = zahl(preis), zahl(groesse)
+        if p is None or g is None:
+            continue
+        bids.append({"price": p, "size": g})
+    # CLOB-Konvention: Asks aufsteigend, Bids absteigend.
+    asks.sort(key=lambda a: a["price"])
+    bids.sort(key=lambda b: b["price"], reverse=True)
+    return {"asks": asks, "bids": bids, "min_order_size": 1}
+
+
 def gebuehr(preis: float, kontrakte: int = 1) -> float:
     """Kalshi-Taker-Gebuehr: ceil(0.07 * P * (1-P) * 100)/100 je Kontrakt.
 

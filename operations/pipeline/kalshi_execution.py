@@ -46,13 +46,41 @@ ORDER_PFAD = "/portfolio/events/orders"
 MIN_KONTRAKTE = 0.01
 
 
+def _sieht_nach_schluesselmaterial_aus(wert: str) -> bool:
+    """Erkennt einen versehentlich direkt eingetragenen Schluessel.
+
+    `KALSHI_PRIVATE_KEY_PFAD` erwartet einen Dateipfad. Wird stattdessen
+    der Schluessel selbst eingetragen, muss der Fehler sofort und
+    unmissverstaendlich auffallen — und die Fehlermeldung darf den Wert
+    NICHT enthalten.
+    """
+    probe = wert.strip()
+    return (
+        "PRIVATE KEY" in probe
+        or probe.startswith(("MII", "-----"))
+        or len(probe) > 400
+    )
+
+
 def lade_private_key(pfad: str | Path):
-    """RSA-Private-Key aus PEM-Datei laden (nur lokal, nie geloggt)."""
+    """RSA-Private-Key aus PEM-Datei laden (nur lokal, nie geloggt).
+
+    Wirft bei Schluesselmaterial statt Pfad einen sprechenden Fehler —
+    ohne den Wert auszugeben.
+    """
     from cryptography.hazmat.primitives import serialization
 
-    return serialization.load_pem_private_key(
-        Path(pfad).read_bytes(), password=None
-    )
+    roh = str(pfad)
+    if _sieht_nach_schluesselmaterial_aus(roh):
+        raise RuntimeError(
+            "KALSHI_PRIVATE_KEY_PFAD enthaelt Schluesselmaterial statt eines "
+            "Dateipfads. Den Key als .pem-Datei speichern und die Variable "
+            "auf diese Datei zeigen lassen. Wert wird nicht ausgegeben."
+        )
+    datei = Path(roh)
+    if not datei.exists():
+        raise RuntimeError(f"Kalshi-Private-Key nicht gefunden: {datei}")
+    return serialization.load_pem_private_key(datei.read_bytes(), password=None)
 
 
 def signatur(private_key, timestamp_ms: int, methode: str, pfad: str) -> str:
@@ -162,8 +190,6 @@ class KalshiExecutor(ExecutorBase):
                 "KALSHI_KEY_ID / KALSHI_PRIVATE_KEY_PFAD fehlen in .env — "
                 "Live nicht moeglich"
             )
-        if not Path(key_pfad).exists():
-            raise RuntimeError(f"Kalshi-Private-Key nicht gefunden: {key_pfad}")
         self.private_key = lade_private_key(key_pfad)
 
     def _post(self, pfad: str, koerper: dict) -> dict:

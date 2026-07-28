@@ -413,6 +413,88 @@ def test_baue_executor_ohne_live_platziert_nichts(tmp_path):
     assert isinstance(ex, kalshi_execution.KalshiDryRunExecutor)
 
 
+def test_schluessel_statt_pfad_wird_erkannt(tmp_path):
+    """Haeufige Verwechslung: der Key landet direkt in der Pfad-Variablen."""
+    for wert in (
+        "-----BEGIN RSA PRIVATE KEY-----",
+        "MIIEowIBAAKCAQEAxxxx",
+        "A" * 401,
+    ):
+        with pytest.raises(RuntimeError, match="Schluesselmaterial"):
+            kalshi_execution.lade_private_key(wert)
+
+
+def test_fehlermeldung_gibt_den_schluessel_nicht_aus():
+    """Die Meldung darf nie Schluesselmaterial enthalten."""
+    geheim = "MIIEowIBAAKCAQEA" + "Z" * 500
+    with pytest.raises(RuntimeError) as fehler:
+        kalshi_execution.lade_private_key(geheim)
+    assert geheim not in str(fehler.value)
+    assert "Z" * 20 not in str(fehler.value)
+
+
+def test_fehlender_pfad_meldet_sauber(tmp_path):
+    with pytest.raises(RuntimeError, match="nicht gefunden"):
+        kalshi_execution.lade_private_key(tmp_path / "gibt_es_nicht.pem")
+
+
+def test_echter_pem_key_wird_geladen(tmp_path, schluesselpaar):
+    from cryptography.hazmat.primitives import serialization
+
+    privat, _ = schluesselpaar
+    pem = tmp_path / "kalshi_key.pem"
+    pem.write_bytes(privat.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption(),
+    ))
+    geladen = kalshi_execution.lade_private_key(pem)
+    assert kalshi_execution.signatur(geladen, 1, "GET", "/x")
+
+
+# --- Vorflug-Check ----------------------------------------------------
+
+
+def test_probelauf_bewertet_kaufbaren_markt(tmp_path, snapshot, regel):
+    from operations.pipeline import kalshi_probelauf
+
+    ex = kalshi_execution.KalshiDryRunExecutor(tmp_path / "log.jsonl")
+    zeile = kalshi_probelauf.pruefe_markt(
+        regel, snapshot["orderbuch_fed_ai"], ex
+    )
+    assert zeile["aktion"] == "YES"
+    assert zeile["ask"] is not None
+    assert zeile["vollpreis"] > zeile["ask"]  # Gebuehr sichtbar
+    assert zeile["kontrakte"] > 0
+
+
+def test_probelauf_meldet_leeres_buch(tmp_path, regel):
+    """Genau die Lage in Kalshis Demo-Umgebung."""
+    from operations.pipeline import kalshi_probelauf
+
+    ex = kalshi_execution.KalshiDryRunExecutor(tmp_path / "log.jsonl")
+    zeile = kalshi_probelauf.pruefe_markt(
+        regel, {"orderbook_fp": {"yes_dollars": [], "no_dollars": []}}, ex
+    )
+    assert zeile["aktion"] == "NONE"
+    assert zeile["ask"] is None
+    assert zeile["kontrakte"] == 0.0
+
+
+def test_probelauf_jeder_markt_bekommt_volles_budget(tmp_path, snapshot, regel):
+    """Kein geteilter Pool — sonst saehen spaete Maerkte untradebar aus."""
+    from operations.pipeline import kalshi_probelauf
+
+    zeilen = []
+    for _ in range(3):
+        ex = kalshi_execution.KalshiDryRunExecutor(tmp_path / "log.jsonl")
+        zeilen.append(
+            kalshi_probelauf.pruefe_markt(regel, snapshot["orderbuch_fed_ai"], ex)
+        )
+    assert all(z["kontrakte"] == zeilen[0]["kontrakte"] for z in zeilen)
+    assert zeilen[0]["kontrakte"] > 0
+
+
 def test_live_executor_ohne_key_bricht_ab(tmp_path, monkeypatch):
     monkeypatch.delenv("KALSHI_KEY_ID", raising=False)
     monkeypatch.delenv("KALSHI_PRIVATE_KEY_PFAD", raising=False)

@@ -157,6 +157,20 @@ vermutlich manueller Late-NO-Versuch auf Batch-Pass-Basis. Markt
 resolvet YES → −10 USD. Live-Beleg für "NIE NO ohne VAD-freien
 Vollpass" (und selbst der reicht allein nicht, s.o.).
 
+**Nachtrag 29.07. ~01:00 — Kalibrier-Endstand aller drei Events:**
+PYPL 19/19 resolved (18 Vollpass-konsistent + Agentic als
+Zaehlartefakt), BA 20/20 (19 konsistent + Guidance), Graham 23/23
+(Bot 8/11 live erkannt, 3 Misses im 54-s-Stall — Ergebnis im
+Graham-Runbook §4a). Oil resolvete NO — der 0.44-Zweifelsfall war
+der dickste verpasste Late-NO-Trade des Tages. Guidance-Nachcheck
+(zweiter large-v3-Pass 2200-2340s, word_timestamps): wieder nur
+"guides"/"guide" (p 0.86/0.91) — unentscheidbar, ob konsistente
+ASR-Verschreibung oder grosszuegige Resolver-Wertung (guide =
+guidance); BEIDE Deutungen bestaetigen den Nachbarschafts-Filter
+als Pflicht. Merke ausserdem: zwei Laeufe desselben Modells sind
+KEINE zwei Methoden — der Konsens-Check braucht ein zweites
+ASR-Modell oder das menschliche Ohr.
+
 ## 5. Graham-Lauf HEUTE 19:45 (Task `TrumpGrahamBot` feuert selbst)
 
 Rollen: Der Task startet, findet den Stream (WNCathedral→C-SPAN→ABC→

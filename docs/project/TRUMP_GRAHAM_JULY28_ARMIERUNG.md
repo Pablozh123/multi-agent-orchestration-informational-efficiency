@@ -65,6 +65,53 @@ Auto-Marker 6 Segmente (nur ECAPA-Modus).
 4. Ende: laeuft selbst aus (240+30 min) oder `bot_stop.cmd`
    (danach `bot_stop_aufheben.cmd` nicht vergessen — Watchdog!).
 
+## 4a. Lauf-Ergebnis 28.07. (Nachtrag der Abend-Session, 29.07. ~01:00)
+
+**Betrieb:** Scheduled Task war auf 27.07. datiert und haette NIE
+gefeuert (LastTaskResult 267011, NextRunTime leer) — um 18:20 mit
+/SD 28.07.2026 neu angelegt. Feuer 19:45:01, Kathedral-Stream sofort
+gefunden (19:45:24, LIVE, 22 aktive Maerkte — drei neue seit dem
+DRY_RUN: Democrat, Top Five/Top Ten, Afghanistan). **Auto-Marker
+20:24:49 nach 6 Segmenten** — die Union-Referenz PA+Studio trug in
+der Kathedrale, kein Fenster-Modus noetig (Michigan-Lehre 2
+validiert). Lauf endete 20:49:20 durch Schliessen des Task-Fensters
+(forrtl window-CLOSE, ffmpeg starb zuerst als "prozess_beendet")
+OHNE fertig-Event/Endcheck → **Betriebsregel: Laeufe NUR ueber
+bot_stop.cmd beenden, nie uebers Fenster-X.**
+
+**Ergebnis: 0 Fills, aber die Kette stand.** 8 der 11 YES-Woerter
+live erkannt und large-v3-verifiziert (Sister, Military, Security,
+Worker, Stop Calling Me, Golf, Patriot, Air Force), 0 Fehltrigger.
+Kein Kauf: alles binnen Sekunden >=0.98 oder Buch leer; selbst der
+0.41er "Stop Calling Me" war nach unserer ~20-s-Kette abgeraeumt.
+
+**Stall #1 kostete alle drei Misses:** 20:30:06-20:31:00 (54 s;
+Selbstheilung reconnectete 12 s nach Detektion — Michigan-Lehre 1
+validiert, aber Erkennungsschwelle 40 s bleibt teuer). GENAU darin
+fielen Supreme Court (~20:30:22, Reprice-Beleg), Democrat
+(~20:30:46, Reprice 0.68→0.99) und Tough Cookie (~20:31:00). Die
+Sekunden fehlen auch im Band — nicht rekonstruierbar.
+
+**Sprecherbindung verhinderte einen Fehlkauf:** "Forever" stand im
+Gesamtzaehler auf 2 (Fremdredner), resolvet NO — ohne ECAPA-Bindung
+haette der Bot bei 0.745 gekauft (~-75 USD vermieden). Kein
+Forever-Trigger wurde je ausgeloest: Bindung + Verify arbeiteten
+korrekt.
+
+**Hybrid-Duell Mensch vs. Bot — erster Sieg des Menschen:** Operator
+hoerte per ffplay-Direktstream (~3-6 s hinter Saal) und kaufte IM
+Bot-Blindfenster manuell Supreme Court YES @0.944 (105.9 sh) und
+Tough Cookie YES @0.99 (101 sh); beide YES resolved → +5.90/+1.00.
+Lehren: (1) Der Mensch ist die Stall-Redundanz. (2) Mit
+Ohr-Bestaetigung ist Kaufen ueber dem 0.90-Modell-Deckel rational —
+die Information ist besser als die Deckel-Annahme. (3) Die
+"20 s vor mir"-Kaeufer waren Kontext-Antizipierer (Tough Cookie =
+bekannte Trump-Wendung); Erstschlag bleibt unerreichbar.
+
+**Kalibrier-Bilanz Graham: 23/23 resolved,** Bot-Zaehler konsistent
+bis auf die drei Blindfenster-Misses; Forever-Diskrepanz ist
+Fremdstimmen-Artefakt des Gesamtzaehlers (Kaufpfad korrekt).
+
 ## 4. Ehrliche Erwartung (Reprice-Messung Michigan)
 
 Der Markt preist ein live mitgehoertes Wort in **1-4 Sekunden** ein

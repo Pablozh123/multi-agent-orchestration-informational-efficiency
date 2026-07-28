@@ -1,4 +1,4 @@
-"""Kuratierte, versionierbare Kopien abgeschlossener Live-Laeufe erzeugen.
+﻿"""Kuratierte, versionierbare Kopien abgeschlossener Live-Laeufe erzeugen.
 
 Hintergrund: ``data/live/`` ist gitignored und existiert nur in dem Checkout,
 in dem die Bots gelaufen sind. Die taegliche Kette laeuft aber in einer anderen
@@ -10,16 +10,18 @@ Dieses Modul schreibt je Lauf eine reduzierte Kopie nach
 
 * ``decisions_log.jsonl``: ``wall_ts_utc`` (nur zur Sortierung der Laeufe, wird
   nicht publiziert), ``decision.{action,reason,limit_price}``,
-  ``result.size_usd`` sowie ``book_snapshot.{asks,bids}`` auf ``price``
+  ``result.size_usd`` sowie ``book_snapshot.{asks,bids}`` auf ``price``/``size``
   reduziert (daraus werden bester Brief- und Geldkurs abgeleitet).
 * ``bot_events.jsonl``: nur die Ereignisse mit Wortzaehler-Staenden
   (``chunk``/``staende`` und ``fertig``/``endstaende``), in Original-Reihenfolge,
   damit der Endstand identisch bleibt.
 
-Bewusst NICHT kopiert: ``token_id``, ``market_id``, ``outcome``,
+Bewusst NICHT kopiert: ``token_id``, ``market_id``,
 ``result.status``/``detail``/``size_shares`` (enthaelt gekuerzte Wallet-Ids),
-Buch-Groessen und Zeitstempel, Orderbuch-CSV, Bot-Logs, ``deposit_wallet.json``,
-Audio- und Videodateien. Vor dem Schreiben laeuft dasselbe Redaktions-Gate wie
+Buch-Zeitstempel, Orderbuch-CSV, Bot-Logs, ``deposit_wallet.json``,
+Audio- und Videodateien. ``decision.outcome`` und die Buch-Groessen
+bleiben seit 27.07. erhalten — die Extraktionsquote des Publish-Schritts
+braucht Seiten-Fallback und Ebenen-Tiefe (beides redaktionssicher). Vor dem Schreiben laeuft dasselbe Redaktions-Gate wie
 im Publish-Schritt ueber jede erzeugte Datei; ein Fund bricht ab.
 
 Aufruf::
@@ -55,10 +57,16 @@ def kuratiere_entscheidung(record: Dict[str, Any]) -> Dict[str, Any]:
     book = record.get("book_snapshot", {}) or {}
 
     def _preise(seite: str) -> List[Dict[str, Any]]:
+        # price UND size behalten: die Extraktionsquote des Publish-
+        # Schritts braucht die Ebenen-Tiefe (verfuegbare USD unter dem
+        # Deckel); beides ist redaktionssicher (keine Wallet-Daten).
         eintraege: List[Dict[str, Any]] = []
         for entry in book.get(seite, []) or []:
             if isinstance(entry, dict) and entry.get("price") is not None:
-                eintraege.append({"price": entry["price"]})
+                schlank_entry: Dict[str, Any] = {"price": entry["price"]}
+                if entry.get("size") is not None:
+                    schlank_entry["size"] = entry["size"]
+                eintraege.append(schlank_entry)
         return eintraege
 
     schlank: Dict[str, Any] = {
@@ -66,6 +74,8 @@ def kuratiere_entscheidung(record: Dict[str, Any]) -> Dict[str, Any]:
             "action": decision.get("action", "NONE"),
             "reason": decision.get("reason", ""),
             "limit_price": decision.get("limit_price"),
+            # Seiten-Fallback fuer den Deckel der Extraktionsquote.
+            "outcome": decision.get("outcome"),
         },
         "result": {"size_usd": result.get("size_usd")},
         "book_snapshot": {"asks": _preise("asks"), "bids": _preise("bids")},

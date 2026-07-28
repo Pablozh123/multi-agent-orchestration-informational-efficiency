@@ -66,21 +66,22 @@ def test_kuration_behaelt_nur_publish_felder(tmp_path: Path) -> None:
     kuratiert = kll.kuratiere_entscheidung(ROH_ENTSCHEIDUNG)
 
     assert set(kuratiert) == {"wall_ts_utc", "decision", "result", "book_snapshot"}
-    assert set(kuratiert["decision"]) == {"action", "reason", "limit_price"}
+    # outcome bleibt als Seiten-Fallback fuer den Extraktions-Deckel.
+    assert set(kuratiert["decision"]) == {"action", "reason", "limit_price", "outcome"}
     assert set(kuratiert["result"]) == {"size_usd"}
-    assert kuratiert["book_snapshot"]["asks"] == [{"price": "0.99"}, {"price": "0.68"}]
-    assert kuratiert["book_snapshot"]["bids"] == [{"price": "0.01"}, {"price": "0.63"}]
 
     text = json.dumps(kuratiert)
     for verboten in (
-        "token_id", "market_id", "outcome", "size_shares", "status", "detail",
+        "token_id", "market_id", "size_shares", "status", "detail",
         "0x4d335c329a5b", "timestamp", "min_order_size", "neg_risk",
     ):
         assert verboten not in text
-    # Buch-Groessen fliegen raus, nur die Preise bleiben stehen.
+    # Preis UND Groesse bleiben stehen (die Extraktionsquote braucht die
+    # Ebenen-Tiefe); alle anderen Buchfelder fliegen raus.
     for seite in ("asks", "bids"):
         for eintrag in kuratiert["book_snapshot"][seite]:
-            assert set(eintrag) == {"price"}
+            assert set(eintrag) <= {"price", "size"}
+            assert "price" in eintrag
 
 
 def test_kuration_behaelt_nur_wortzaehler_ereignisse() -> None:

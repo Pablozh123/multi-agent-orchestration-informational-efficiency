@@ -494,6 +494,30 @@ def lauf(live: bool) -> None:
                     except Exception as ex:  # noqa: BLE001
                         _schreibe_event("fehler", {"wo": f"yes_endcheck:{r.slug}",
                                                    "fehler": str(ex)})
+                # NO-Konsens-Vollpass VOR Gap-Verify und NO-Runde: die
+                # ganze Episode noch einmal mit large-v3 (batched)
+                # hoeren. small verhoert Woerter im Crosstalk (E282:
+                # "innovation" bei 3470.2s als "Master virtue
+                # signaling" — die NO @0.13 verlor); large-v3 hoert
+                # sie. Funde erhoehen NUR den erweiterten Zaehler ->
+                # blocken NO, nie YES. Der Pass laeuft MIT VAD und
+                # endet vor musikunterlegten Outros — die VAD-Loch-
+                # Klasse (E281 "tension") deckt weiterhin der
+                # Gap-Verify danach ab.
+                if config.NO_KONSENS_AKTIV:
+                    try:
+                        from operations.pipeline.no_konsens import (
+                            no_konsens_pass,
+                        )
+
+                        audio = transcriber.dekodiertes_audio(audio_pfad)
+                        bericht = no_konsens_pass(audio, counters)
+                        _schreibe_event("no_konsens", bericht)
+                        if bericht["deltas"]:
+                            print(f"NO-KONSENS Funde: {bericht['deltas']}")
+                    except Exception as ex:  # noqa: BLE001
+                        _schreibe_event("warnung", {"wo": "no_konsens",
+                                                    "fehler": str(ex)})
                 # Gap-Verify VOR der NO-Runde: von der VAD verworfene
                 # Fenster (Musik/Jingles, E281-Outro) mit large-v3 ohne
                 # VAD nachtranskribieren. Funde erhoehen NUR den

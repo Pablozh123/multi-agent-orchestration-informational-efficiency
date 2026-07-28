@@ -107,6 +107,44 @@ PROFILE = {
         # Sprecher-Verifikation: YES nur aus MrBeast-zugerechneten Treffern.
         "zielsprecher_referenz": "data/live/mrbeast_next/referenz_stimme.npy",
     },
+    "allin_july24": {
+        "live_dir": "allin_july24",
+        "event_id": "715508",
+        "event_slug": (
+            "what-will-be-said-on-the-next-all-in-podcast-july-24-"
+            "20260717155813224"
+        ),
+        # E282-Woche (Drop Fr 24.07. ~22-23 UTC). Quellen wie july17:
+        # Prober auf traffic.libsyn.com (Muster 23.07. verifiziert:
+        # E281 HTTP 200 mit bekannter Laenge, E282 noch 404 -> Prober
+        # feuert bei Minute 0), RSS nur ALLIN-E<n>-Hauptepisoden,
+        # Playlist-Diff als Positiv-Identifikation, YT als Fallback.
+        "rss_feed_url": "https://allinchamathjason.libsyn.com/rss",
+        "yt_channel_id": "UCESLZhusAkFfsNsApnjF_Cg",
+        "mp3_probe_muster": (
+            "https://traffic.libsyn.com/secure/allinchamathjason/"
+            "ALLIN-E{n}_Ch.mp3"
+        ),
+        "discovery_slug_filter": "all-in",
+        "yt_playlist_id": "PLn5MTSAqaf8peDZQ57QkJBzewJU1aUokl",
+        "rss_nur_muster": r"ALLIN-E\d+_Ch\.mp3",
+        # NO-Seite AKTIV mit dem vollen Schutzschild (User-Freigabe
+        # 23.07.): Seiten-Deckel 0.80 bis in den FAK-Sweep (PR #16),
+        # Basisraten-Veto ueber Serie 11300 (E281-E2E: alle 8 Sperren
+        # loesten real YES auf), Boilerplate-Lexikon (Tension-Lehre),
+        # Gap-Verify mit large-v3 ohne VAD vor der NO-Runde.
+        "boilerplate_begriffe": ALLIN_BOILERPLATE,
+        "serie_id": "11300",
+        # Volles Kapital (User 23.07.): Cash 397.02 pUSD + ~119 Hot-Ones-
+        # Rueckfluss (UMA proposed) -> Obergrenze 500; der Executor
+        # deckelt zusaetzlich am echten Wallet-Delta.
+        "max_usd_gesamt": 500.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        # Nachlauf 90 wie jre/lemonade: E280-NOs wurden noch lange nach
+        # der Runde zu 0.50-0.70 gehandelt — genau dieses Fenster.
+        "nachlauf_minuten": 90,
+    },
     "allin_july17": {
         "live_dir": "allin_july17",
         "event_id": "700931",
@@ -222,6 +260,44 @@ PROFILE = {
         # adaptive Pacing in elon_bot streckt bei Bedarf zusaetzlich, ohne
         # je zu blacken. Latenz 8s ist fuer einen Wochen-Markt egal.
         "x_poll_s": 8.0,
+    },
+    "trump_july27": {
+        "live_dir": "trump_july27",
+        "event_id": "745692",
+        "event_slug": (
+            "what-will-trump-post-this-week-july-27-august-2-"
+            "20260724154919527"
+        ),
+        # Quelle wie july13/july20: oeffentliche Truth-Social-API von
+        # @realDonaldTrump (truth_watch.py, curl_cffi-Impersonation),
+        # eigenes Skript trump_bot.py, NUR YES. Regeltext am 27.07. per
+        # Diff gegen den july20-Snapshot gegengelesen: WORTGLEICH bis auf
+        # die Datumsangaben, Beschreibungs-Schablone ueber alle 17
+        # Maerkte identisch — Matcher traegt unveraendert.
+        # ABGRENZUNG wie july20: Serie 11341 "trump-post-weekly" (DIESES
+        # Event) wertet GESCHRIEBENE Truths — unser Bot. Die parallele
+        # Serie 11277 "trump-weekly-mentions" ("What will Trump SAY")
+        # wertet NUR Gesprochenes -> nie mit diesem Profil handeln.
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "what-will-trump-post",
+        "x_user_id": None,
+        "truth_user_id": "107780257626128497",  # @realDonaldTrump
+        "truth_poll_s": 15.0,
+        "p_win": 0.97,
+        "min_edge": 0.03,
+        "periode_start_utc": "2026-07-27T04:00:00Z",  # 27.07. 00:00 ET
+        "periode_ende_utc": "2026-08-03T03:59:59Z",   # 02.08. 23:59 ET
+        # Budget: Vorwochen-Wert uebernommen (400/50/40, User-Vorgabe
+        # 23.07. fuer trump_july20) — vor dem Scharfschalten am realen
+        # Wallet-Stand bestaetigen (Runbook ELON_TRUMP_JULY27). Geteiltes
+        # Wallet mit mrbeast_gaming, allin_july24 und elon_july27; der
+        # Executor-Delta-Sync verhindert Ueberziehen, aber ein Profil
+        # kann dem anderen den Pool wegkaufen.
+        "max_usd_gesamt": 400.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
     },
     "trump_july20": {
         "live_dir": "trump_july20",
@@ -617,6 +693,58 @@ PROFILE = {
         # sobald der aelteste geladene Post vor dem Periodenstart liegt.
         "startscan_seiten": 12,
     },
+    "elon_july27": {
+        # Event 745693 "What will Elon post this week? (July 27 - August
+        # 2)", 14 Maerkte, beim Armieren am 27.07. alle offen. Nachfolger
+        # von elon_july20. Der Regeltext ist WORTGLEICH zu july13/july20
+        # (27.07. per Diff gegen den july20-Snapshot gegengelesen, nur die
+        # Datumsangaben wechseln; Beschreibungs-Schablone ueber alle 14
+        # Maerkte identisch): Plural/Possessiv/Case zaehlen, Sigils
+        # (#/@/$) davor sind ok, Compounds zaehlen, Misspellings und
+        # Symbole IM Wort disqualifizieren, eigener Text in Quote- und
+        # Reply-Posts zaehlt, zitierter Fremdtext und Reposts nicht,
+        # Bildtext nur klar ausgeschrieben. Der Matcher aus elon_bot.py
+        # traegt damit unveraendert.
+        "live_dir": "elon_july27",
+        "event_id": "745693",
+        "event_slug": (
+            "what-will-elon-post-this-week-july-27-august-2-"
+            "20260724155239115"
+        ),
+        # Quelle unveraendert: X-Posts von @elonmusk (x_watch.py,
+        # GraphQL-Web-Pfad mit Login-Cookies X_AUTH_TOKEN/X_CT0 aus .env).
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "what-will-elon-post",
+        "x_user_id": "44196397",  # @elonmusk (verifizierter Account)
+        # NUR YES wie july13/july20 (User-Vorgabe 13.07.); elon_bot.py
+        # hat keinen NO-Zweig. Deckel wie Vorwochen: 0.97 - 0.03 = 0.94.
+        "p_win": 0.97,
+        "min_edge": 0.03,
+        "periode_start_utc": "2026-07-27T04:00:00Z",  # 27.07. 00:00 ET
+        "periode_ende_utc": "2026-08-03T03:59:59Z",   # 02.08. 23:59 ET
+        "x_poll_s": 8.0,
+        # Budget: Vorwochen-Vorgabe uebernommen (400/50/40, User 23.07.
+        # fuer elon_july20) — vor dem Scharfschalten am realen Wallet-
+        # Stand bestaetigen (Runbook ELON_TRUMP_JULY27). Der Befund aus
+        # zwei Wochen null Fills: Es scheiterte nie am Budget, sondern an
+        # der beim Trigger verschwindenden Ask-Seite; der grosse Clip
+        # bleibt das Zeitargument (Leiter in 1-2 Netzrunden abraeumen
+        # statt 4-6). Geteiltes Wallet mit mrbeast_gaming, allin_july24
+        # und trump_july27.
+        "max_usd_gesamt": 400.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        # Armierung am Abend von Tag 1: kein Tag-4-Rueckstand wie bei
+        # july20, aber bei Elons Post-Frequenz (oft >80 Posts+Replies am
+        # Tag) reichen die 4 Default-Seiten (~80 Eintraege) fuer den
+        # angebrochenen Tag nicht sicher zurueck bis 04:00 UTC. 8 Seiten
+        # sind reine Reserve — der Scan bricht ohnehin ab, sobald der
+        # aelteste geladene Post vor dem Periodenstart liegt. Kontrolle:
+        # startscan-Event muss "erreicht_periodenstart": true zeigen.
+        "startscan_seiten": 8,
+    },
 }
 
 PROFIL = _os.environ.get("BOT_PROFIL", "allin_july10")
@@ -669,6 +797,16 @@ NO_ANTEIL = 0.7               # NO nur wenn Endstand <= 70% der Schwelle
 #    NO-Runde ohne VAD nachtranskribieren. Modell MUSS large-v3 sein:
 #    small fand das E281-Outro auch ohne VAD nur 0/3 Laeufen,
 #    large-v3 2/2 (Messung 18.07.). Funde blocken nur NO, nie YES.
+# 4. NO-Konsens-Vollpass (Auftrag 25.07., nach dem innovation-Verlust
+#    E282): die GANZE Episode vor der NO-Runde einmal mit
+#    NO_KONSENS_MODELL (large-v3, batched) nachhoeren. small verhoert
+#    Woerter im Crosstalk (E282: "innovation" bei 3470.2s als "Master
+#    virtue signaling" — NO @0.13 verlor 20.86 USD; large-v3 hoert es).
+#    Deckt Verhoerer INNERHALB abgedeckter Fenster ab — die VAD-Loch-
+#    Klasse (E281) bleibt Domaene des Gap-Verify danach. Funde blocken
+#    nur NO, nie YES. ~170s je 90-Min-Episode auf der 3060 (Forensik
+#    E281+E282); vertretbar, weil NO-Asks nach dem Drop stehen
+#    (E280: 30+ Min; E281/E282: Nachlauf-Buchlogs).
 BOILERPLATE_BEGRIFFE = frozenset(
     str(w).lower() for w in _P.get("boilerplate_begriffe", []))
 SERIE_ID = _P.get("serie_id")
@@ -678,6 +816,11 @@ GAP_VERIFY_AKTIV = bool(_P.get("gap_verify_aktiv", True))
 GAP_MIN_LUECKE_S = float(_P.get("gap_min_luecke_s", 15.0))
 GAP_RAND_S = 5.0               # Fenster-Ueberlappung in die Abdeckung
 GAP_MODELL = str(_P.get("gap_modell", "large-v3"))
+# Vollpass-Schalter je Profil. Default AKTIV: bot.py laeuft nur fuer
+# Audio-Profile (Elon/Trump-Textbots haben eigene Skripte und erreichen
+# den Pfad nie); Modell folgt GAP_MODELL, per Profil uebersteuerbar.
+NO_KONSENS_AKTIV = bool(_P.get("no_konsens_aktiv", True))
+NO_KONSENS_MODELL = str(_P.get("no_konsens_modell", GAP_MODELL))
 ASR_KONFIDENZ_HOMOPHON = 0.8  # Homophon-Treffer nur ab Konfidenz > 0.8
 
 # Level-Sweep: je Markt wiederholte FAK-Clips, solange der beste Ask

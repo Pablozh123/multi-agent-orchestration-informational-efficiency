@@ -390,11 +390,13 @@ def test_pipeline_forward_whitelist_only(tmp_path: Path) -> None:
     }
     eintrag_felder = {
         "action", "reason", "limit_price", "bestes_angebot", "bestes_gebot", "size_usd",
+        "verfuegbar_usd", "extraktionsquote",
     }
     assert set(dumped["eintraege"][0].keys()) == eintrag_felder
     # Dieselbe Whitelist gilt innerhalb der Lauf-Liste.
     assert set(dumped["laeufe"][0].keys()) == {
         "profil", "n_eintraege", "n_kaeufe", "eintraege", "wortzaehler_endstaende",
+        "extraktion_gekauft_usd", "extraktion_verfuegbar_usd", "extraktionsquote",
     }
     assert set(dumped["laeufe"][0]["eintraege"][0].keys()) == eintrag_felder
     text = json.dumps(dumped)
@@ -729,3 +731,86 @@ def test_mentions_cache_complete(tmp_path: Path) -> None:
     (cache / "prices_a.json").write_text("{}", encoding="utf-8")
     # Zeile b ist ausgeschlossen -> Cache dafuer nicht noetig
     assert drr.mentions_cache_complete(seed, cache) is True
+
+
+# ---------------------------- Extraktionsquote (Auftrag 27.07.2026)
+
+
+def test_pipeline_forward_extraktionsquote_je_kauf_und_lauf(tmp_path: Path) -> None:
+    # Fixture-Buch unterm 0.9-Deckel: 0.82x15 + 0.84x5 = 16.50 USD
+    # verfuegbar; gekauft 12.30 -> Quote 0.7455 (Sweep liess 4.20 liegen).
+    live = _write_live_fixture(tmp_path)
+    payload = drr.build_pipeline_forward(
+        live_dir=live, profil="allin_july3", now_utc="2026-07-27T00:00:00+00:00"
+    )
+    e = payload.eintraege[0]
+    assert e.verfuegbar_usd == pytest.approx(16.5)
+    assert e.extraktionsquote == pytest.approx(12.3 / 16.5, abs=1e-4)
+    lauf = payload.laeufe[0]
+    assert lauf.extraktion_gekauft_usd == pytest.approx(12.3)
+    assert lauf.extraktion_verfuegbar_usd == pytest.approx(16.5)
+    assert lauf.extraktionsquote == pytest.approx(12.3 / 16.5, abs=1e-4)
+
+
+def test_extraktionsquote_no_deckel_aus_reason(tmp_path: Path) -> None:
+    # E282-disruptive-Muster: NO-Deckel 0.8 aus dem reason; die 0.81er-
+    # Ebene liegt DRUEBER und zaehlt nicht zum Verfuegbaren -> Quote 1.0.
+    live = tmp_path / "no_lauf"
+    live.mkdir()
+    record = {
+        "wall_ts_utc": "2026-07-24T20:54:02Z",
+        "decision": {
+            "market_id": "9", "action": "NO", "token_id": "t",
+            "outcome": "No", "limit_price": 0.8,
+            "reason": "endstand 0 <= grenze 0.7, ask 0.8 <= 0.8",
+        },
+        "result": {
+            "market_id": "9", "action": "NO", "token_id": "t",
+            "limit_price": 0.8, "size_usd": 104.8, "size_shares": 131.0,
+            "status": "live_fill", "detail": "Sweep: 3 Clips",
+        },
+        "book_snapshot": {
+            "asks": [
+                {"price": "0.99", "size": "41.58"},
+                {"price": "0.81", "size": "94"},
+                {"price": "0.8", "size": "131"},
+            ],
+            "bids": [], "timestamp": "1", "min_order_size": 5,
+            "neg_risk": False,
+        },
+    }
+    (live / "decisions_log.jsonl").write_text(
+        json.dumps(record) + "\n", encoding="utf-8"
+    )
+    payload = drr.build_pipeline_forward(
+        live_dir=live, profil="x", now_utc="2026-07-27T00:00:00+00:00"
+    )
+    e = payload.eintraege[0]
+    assert e.verfuegbar_usd == pytest.approx(104.8)
+    assert e.extraktionsquote == pytest.approx(1.0)
+
+
+def test_extraktionsquote_none_fuer_nicht_kaeufe(tmp_path: Path) -> None:
+    live = tmp_path / "none_lauf"
+    live.mkdir()
+    record = {
+        "wall_ts_utc": "t",
+        "decision": {"market_id": "1", "action": "NONE", "token_id": None,
+                     "outcome": None, "limit_price": None,
+                     "reason": "kein_yes_ask"},
+        "result": {"market_id": "1", "action": "NONE", "token_id": None,
+                   "limit_price": None, "size_usd": 0.0, "size_shares": 0.0,
+                   "status": "no_action", "detail": ""},
+        "book_snapshot": {"asks": [], "bids": [], "timestamp": "1",
+                          "min_order_size": 5, "neg_risk": False},
+    }
+    (live / "decisions_log.jsonl").write_text(
+        json.dumps(record) + "\n", encoding="utf-8"
+    )
+    payload = drr.build_pipeline_forward(
+        live_dir=live, profil="x", now_utc="2026-07-27T00:00:00+00:00"
+    )
+    e = payload.eintraege[0]
+    assert e.verfuegbar_usd is None
+    assert e.extraktionsquote is None
+    assert payload.laeufe[0].extraktionsquote is None

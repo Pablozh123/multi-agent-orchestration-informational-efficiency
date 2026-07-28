@@ -690,16 +690,49 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
     print(f"[{modus}] Earnings-Bot: {len(aktive)} aktive Maerkte, "
           f"Quelle {art}, Chunk {config.CHUNK_SEKUNDEN}s.")
 
-    # Trigger-Verifikation VOR dem teuren Setup laden: schlaegt der
-    # Modell-Load fehl, soll der Operator das VOR dem Call erfahren —
-    # nicht beim ersten Trigger. Fail-closed ist Absicht; bewusst ohne
-    # Verifikation laufen geht nur explizit via --ohne-trigger-verify.
+    # GPU-Warmup mit Wiederholung: laufen parallel andere Bots auf der
+    # GPU, faellt ChunkTranscriber still auf cpu/int8 zurueck (~10x
+    # langsamer) — mehrere Anlaeufe, bevor CPU akzeptiert wird.
+    from operations.pipeline.transcription import ChunkTranscriber
+
+    transcriber = None
+    for versuch in range(1, 5):
+        transcriber = ChunkTranscriber(config.TRANSCRIBER_MODELL,
+                                       verifier=verifier)
+        if transcriber.geraet.startswith("cuda"):
+            break
+        print(f"  Versuch {versuch}: nur {transcriber.geraet} — "
+              "GPU vermutlich belegt, neuer Anlauf in 5s")
+        del transcriber
+        transcriber = None
+        time.sleep(5.0)
+    if transcriber is None:
+        transcriber = ChunkTranscriber(config.TRANSCRIBER_MODELL,
+                                       verifier=verifier)
+
+    # Trigger-Verifikation: fail-closed ist Absicht; bewusst ohne laufen
+    # geht nur explizit via --ohne-trigger-verify. Ist das Verify-Modell
+    # identisch zum Haupt-Transcriber (large-v3-Betrieb), wird dessen
+    # Instanz GETEILT — der Verify-Blick bleibt trotzdem eigenstaendig:
+    # VAD-frei uebers groessere Fenster (der Agentic-Fall 28.07. fiel
+    # genau in ein VAD-Loch des gefilterten Pfads).
     verifikation = None
     if verify_gewollt:
         from operations.pipeline.trigger_verify import TriggerVerifikation
 
         try:
-            verifikation = TriggerVerifikation()
+            if config.TRIGGER_VERIFY_MODELL == config.TRANSCRIBER_MODELL:
+                def _vadfrei(ausschnitt, _m=transcriber.model):
+                    segs, _ = _m.transcribe(
+                        ausschnitt, language="en", beam_size=1,
+                        vad_filter=False, word_timestamps=False)
+                    return " ".join(s.text for s in segs).strip()
+
+                verifikation = TriggerVerifikation(
+                    modell=f"{config.TRANSCRIBER_MODELL}/geteilte-instanz",
+                    transkribiere_fn=_vadfrei)
+            else:
+                verifikation = TriggerVerifikation()
         except Exception as ex:  # noqa: BLE001
             _schreibe_event("fehler", {"wo": "trigger_verify_laden",
                                        "fehler": str(ex)})
@@ -712,24 +745,6 @@ def lauf(live: bool, quelle: str, art: str, minuten: float,
             "geraet": verifikation.geraet})
         print(f"Trigger-Verifikation bereit ({verifikation.modell_name}, "
               f"{verifikation.geraet}).")
-
-    # GPU-Warmup mit Wiederholung: laufen parallel andere Bots auf der
-    # GPU, faellt ChunkTranscriber still auf cpu/int8 zurueck (~10x
-    # langsamer) — mehrere Anlaeufe, bevor CPU akzeptiert wird.
-    from operations.pipeline.transcription import ChunkTranscriber
-
-    transcriber = None
-    for versuch in range(1, 5):
-        transcriber = ChunkTranscriber(verifier=verifier)
-        if transcriber.geraet.startswith("cuda"):
-            break
-        print(f"  Versuch {versuch}: nur {transcriber.geraet} — "
-              "GPU vermutlich belegt, neuer Anlauf in 5s")
-        del transcriber
-        transcriber = None
-        time.sleep(5.0)
-    if transcriber is None:
-        transcriber = ChunkTranscriber(verifier=verifier)
     _schreibe_event("whisper_bereit", {"geraet": transcriber.geraet})
     print(f"Whisper bereit ({transcriber.geraet}).")
 

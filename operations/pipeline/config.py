@@ -852,6 +852,12 @@ PROFILE = {
         "no_ask_obergrenze": 0.0,
         "gap_verify_aktiv": False,
         "trigger_verify_aktiv": True,
+        # Erster Lauf mit large-v3 als HAUPT-Transcriber (User-Entscheid
+        # 28.07. nach dem Braintree-Miss; Benchmark +0.53 s/Chunk).
+        # Verify bleibt an: gleicher Modell-Typ, aber VAD-freier Blick
+        # aufs groessere Fenster — der Agentic-Fall bewies den Wert;
+        # die Modell-Instanz wird geteilt (kein doppeltes VRAM).
+        "transcriber_modell": "large-v3",
         # Volles Budget freigegeben (User 28.07. frueh) — Vollprofil-
         # Sweep wie PayPal; real verfuegbar ist, was PayPal (12:00)
         # uebrig laesst (Executor-Delta-Sync am Wallet).
@@ -1234,6 +1240,12 @@ TRUTH_POLL_S = float(_P.get("truth_poll_s", 15.0))
 # call_max_minuten begrenzt den Lauf, falls niemand Ctrl+C drueckt.
 CALL_START_UTC = _P.get("call_start_utc")
 CALL_MAX_MINUTEN = float(_P.get("call_max_minuten", 120.0))
+# Haupt-Transcriber-Modell. Benchmark PayPal-Audio 28.07.: large-v3
+# kostet je 10s-Chunk nur +0.53 s (0.78 statt 0.24, p95 0.87) — ~5 %
+# der Gesamtlatenzkette — und fand bei "Braintree" 10 Nennungen, wo
+# small im Livepfad 2 hoerte (Eigennamen-Recall). Ist das Verify-Modell
+# identisch, teilen sich Haupt- und Verify-Pfad EINE Instanz (VRAM).
+TRANSCRIBER_MODELL = str(_P.get("transcriber_modell", "small"))
 # Trigger-Verifikation: jeden YES-Trigger vor dem Kauf mit dem grossen
 # Modell nachpruefen (fail-closed, siehe trigger_verify.py). AXP-Lehre
 # 24.07.: Schwelle-1-Kaeufe gegen zweifelnde Maerkte haengen an einem

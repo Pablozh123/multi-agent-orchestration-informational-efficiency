@@ -138,6 +138,19 @@ def test_ba_grunddaten(ba) -> None:
     assert config.CALL_MAX_MINUTEN == 120.0
     assert config.SPRECHER_KLAUSEL_MUSTER is None
     assert config.TRIGGER_VERIFY_AKTIV is True
+    # Erster large-v3-Hauptlauf (User 28.07.); Verify-Modell identisch
+    # -> geteilte Instanz im Bot.
+    assert config.TRANSCRIBER_MODELL == "large-v3"
+    assert config.TRIGGER_VERIFY_MODELL == "large-v3"
+
+
+def test_transcriber_modell_default_bleibt_small() -> None:
+    importlib.reload(config)
+    assert config.TRANSCRIBER_MODELL == "small"
+    assert config.PROFILE["earnings_pypl_july28"].get(
+        "transcriber_modell") is None
+    assert config.PROFILE["earnings_pg_july29"].get(
+        "transcriber_modell") is None
 
 
 def test_filter_und_live_dirs_disjunkt() -> None:

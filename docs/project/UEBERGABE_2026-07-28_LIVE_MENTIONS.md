@@ -84,6 +84,57 @@ UMA-Endergebnis in dieses Dokument nachtragen. Resolvet Guidance
 trotz 0 Nennungen YES, ist das ein hartes Warnsignal für die gesamte
 Late-NO-Idee (Resolver zählen anders als das Audio).
 
+### §4-Nachtrag der Übernahme-Session, 28.07. ~19:00 CEST
+
+**PayPal (745733) ist final: 18/19 resolved** (nur Agentic Commerce
+noch proposed→YES 0.9995). Kalibriertabelle VAD-freier Vollpass
+(30-s-Raster, large-v3, Goldstandard-Methode) vs. UMA-Endergebnis:
+
+| Markt | Schwelle | Vollpass | UMA | Deckung |
+| --- | --- | --- | --- | --- |
+| Quarter 15+ | 15 | 52 | YES | ✓ |
+| Transaction 5+ | 5 | 30 | YES | ✓ |
+| Consumer 10+ | 10 | 16 | YES | ✓ |
+| Braintree | 1 | 10 | YES | ✓ |
+| AI/Artificial Intelligence | 1 | 4 | YES | ✓ |
+| Merchant 5+ | 5 | 7 | YES | ✓ |
+| Users (unser Fill) | 1 | 2 | YES | ✓ |
+| Anthropic/Bitcoin/Block/Blockchain/Cash Back/Google/Regulation/Stablecoin/Stash/Stripe | je 1 | alle 0 | alle NO | ✓ |
+| **Agentic Commerce** | 1 | **0** | **→YES** | **✗ Zählartefakt** |
+
+**Agentic-Forensik (Methodik-Befund, wichtig für §6.1):** Das Wort
+fiel ~717-721s — mein 30-s-Raster schneidet GENAU dort (Block 690s
+endet "…such as agentic", Block 720s beginnt "meaningful
+contributors"; die Grenzsekunden fehlen, Whisper verwirft das
+angeschnittene Segment). Zusätzlich 2550s phonetische Verschreibung
+"agent e-commerce" (= agentic commerce fürs Ohr, 0 für jeden
+Text-Zähler). Der Live-Batch-Pass verlor dieselbe Stelle durch ein
+VAD-Loch. → Late-NO-Kette braucht: überlappende Fenster, Matching
+über Blockgrenzen, Ausschluss von Neologismen (agentic), und
+Zwei-Methoden-Konsens vor jedem NO. Der Markt (0.92) und UMA hatten
+recht; KEIN Resolver-Irrtum.
+
+**Boeing (745748), Stand 19:00:** Delivery, Space, "not air"
+resolved (alle ✓ zur Erwartung); Rest proposed — **Guidance weiter
+YES proposed (0.995) trotz Goldstandard-0, Kalibrierpunkt #0 offen.**
+Markt-Zweifel trotz Vollpass-0 bei Oil (0.44) und Philippine
+Airlines (0.18).
+
+**§2-Prüfpunkt geklärt (ausgegeben_usd 0.0):** execution.py
+`_budget_sync()` ersetzt die korrekte post_antwort-Summe (16.08)
+durch start_balance−aktuell; der Server-Balance-Cache war Sekunden
+nach dem FAK-Fill noch stale, danach kam nie eine weitere Order →
+kein Re-Sync. Buchführungs-, kein Geldproblem. On-chain bestätigt:
+12:15:44Z, 25.12 sh @0.64 = 16.08 USD (tx 0x326ae5…7917).
+Fix-Idee (offen): Delta nur übernehmen wenn ≥ Fill-Summe; Sync vor
+dem fertig-Event.
+
+**Wallet-Befund 13:23:49Z (15:23 CEST):** BUY NO @0.149, 67.11 sh
+= 10 USD auf Agentic Commerce — OHNE Bot-Log (Bot kauft nie NO);
+vermutlich manueller Late-NO-Versuch auf Batch-Pass-Basis. Markt
+resolvet YES → −10 USD. Live-Beleg für "NIE NO ohne VAD-freien
+Vollpass" (und selbst der reicht allein nicht, s.o.).
+
 ## 5. Graham-Lauf HEUTE 19:45 (Task `TrumpGrahamBot` feuert selbst)
 
 Rollen: Der Task startet, findet den Stream (WNCathedral→C-SPAN→ABC→

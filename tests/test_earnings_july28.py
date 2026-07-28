@@ -123,6 +123,10 @@ def test_pypl_grunddaten(pypl) -> None:
     assert config.ZIELSPRECHER_REFERENZEN == []
     assert config.NO_ASK_OBERGRENZE == 0.0
     assert config.TRIGGER_VERIFY_AKTIV is True
+    # Volles Budget (User 28.07. frueh): Vollprofil-Sweep, budget-
+    # statt clip-limitiert.
+    assert config.MAX_USD_GESAMT == pytest.approx(650.0)
+    assert (config.MAX_USD_PRO_MARKT, config.MAX_CLIPS_PRO_MARKT) == (50.0, 40)
 
 
 def test_ba_grunddaten(ba) -> None:

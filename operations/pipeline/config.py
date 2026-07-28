@@ -815,9 +815,14 @@ PROFILE = {
             "3094216": ["Stablecoin", "Stable Coin", "Stable-Coin"],
             "3094223": ["Cash Back", "Cash-Back", "Cashback"],
         },
-        # Budget-Platzhalter bis User-Entscheid (AXP-Vorbild:
-        # Standard-Clips 15 USD / 10 je Markt).
-        "max_usd_gesamt": 100.0,
+        # Volles Budget freigegeben (User 28.07. frueh, "wie letztes
+        # Mal, volle Sweeps"): Vollprofil-Muster der grossen Laeufe —
+        # Buch bis zum Deckel abraeumen, budget- statt clip-limitiert.
+        # Wallet geteilt mit Boeing (16:30), Graham (20:00) und den
+        # Wochen-Bots; Executor-Delta-Sync verhindert Ueberziehen.
+        "max_usd_gesamt": 650.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
         "nachlauf_minuten": 30,
     },
     "earnings_ba_july28": {
@@ -847,8 +852,12 @@ PROFILE = {
         "no_ask_obergrenze": 0.0,
         "gap_verify_aktiv": False,
         "trigger_verify_aktiv": True,
-        # Budget-Platzhalter bis User-Entscheid.
-        "max_usd_gesamt": 100.0,
+        # Volles Budget freigegeben (User 28.07. frueh) — Vollprofil-
+        # Sweep wie PayPal; real verfuegbar ist, was PayPal (12:00)
+        # uebrig laesst (Executor-Delta-Sync am Wallet).
+        "max_usd_gesamt": 650.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
         "nachlauf_minuten": 30,
     },
     "trump_michigan_july27": {

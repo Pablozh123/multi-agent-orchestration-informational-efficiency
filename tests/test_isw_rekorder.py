@@ -467,6 +467,70 @@ def test_bereinigung_meldet_kandidaten_geschlossener_maerkte(tmp_path):
     assert eintrag["art"] == "treffer_markt_geschlossen"
 
 
+# ------------------------------------------------------------- Live-Modus
+
+def _live_attrappen(monkeypatch):
+    monkeypatch.setattr(rek, "ISWKarte", lambda *a, **k: _KarteAttrappe({}, {}))
+    monkeypatch.setattr(rek, "PolymarktLeser", lambda *a, **k: _LeserAttrappe())
+    monkeypatch.setattr(rek, "lade_marktziele", lambda *a, **k: [_ziel()])
+    monkeypatch.setattr(_KarteAttrappe, "schliessen", lambda self: None,
+                        raising=False)
+    monkeypatch.setattr(_LeserAttrappe, "schliessen", lambda self: None,
+                        raising=False)
+
+
+def test_live_modus_erfuellt_den_watchdog_vertrag(tmp_path, monkeypatch):
+    """--live: Startwache, bot.pid, start-Event + Herzschlag, Pfade im
+    Profilverzeichnis — exakt das, was watchdog.py erwartet."""
+    import os as _os
+
+    from operations.pipeline import startwache
+
+    monkeypatch.setenv("BOT_PROFIL", "isw_test_vertrag")
+    monkeypatch.setenv("THESIS_LIVE_ROOT", str(tmp_path))
+    _live_attrappen(monkeypatch)
+    try:
+        code = rek.main(["--live", "--einmal"])
+    finally:
+        startwache.wache_freigeben()
+    assert code == 0
+    live = tmp_path / "isw_test_vertrag"
+    assert (live / "bot.pid").read_text(encoding="utf-8") == str(_os.getpid())
+    events = [json.loads(z) for z in
+              (live / "bot_events.jsonl").read_text(
+                  encoding="utf-8").splitlines()]
+    assert events[0]["art"] == "start"
+    assert any(e["art"] == "herzschlag" for e in events)
+    assert all("wall_ts_utc" in e for e in events)
+    # Pfade liegen im Profilverzeichnis, nicht im Standard-Pfad
+    assert (live / "zustand.json").exists()
+
+
+def test_live_modus_weicht_bei_belegter_wache_zurueck(tmp_path, monkeypatch):
+    """Zweite Instanz desselben Profils beendet sich, ohne bot.pid oder
+    Events anzufassen (Startwache-Semantik)."""
+    from operations.pipeline.startwache import Startwache
+
+    monkeypatch.setenv("BOT_PROFIL", "isw_test_belegt")
+    monkeypatch.setenv("THESIS_LIVE_ROOT", str(tmp_path))
+    _live_attrappen(monkeypatch)
+    live = tmp_path / "isw_test_belegt"
+    wache = Startwache(live)
+    assert wache.nehmen() is True
+    try:
+        code = rek.main(["--live", "--einmal"])
+    finally:
+        wache.freigeben()
+    assert code == 0
+    assert not (live / "bot.pid").exists()
+    assert not (live / "bot_events.jsonl").exists()
+
+
+def test_herzschlag_ohne_live_dir_ist_stumm(tmp_path):
+    rek._herzschlag(None, art="start")  # darf nichts werfen, nichts schreiben
+    assert list(tmp_path.iterdir()) == []
+
+
 # ------------------------------------------------------------------- main
 
 def test_main_schleife_ueberlebt_unerwarteten_fehler(tmp_path, monkeypatch):

@@ -119,6 +119,11 @@ def test_profil_grunddaten(profil) -> None:
     andere = [q["live_dir"] for name, q in config.PROFILE.items()
               if name != PROFIL]
     assert p["live_dir"] not in andere
+    # large-v3 als Haupt-Transcriber (User 28.07., Boeing-Vorbild);
+    # Verify-Modell identisch -> geteilte Instanz im Bot.
+    assert p["transcriber_modell"] == "large-v3"
+    assert config.TRANSCRIBER_MODELL == "large-v3"
+    assert config.TRIGGER_VERIFY_MODELL == "large-v3"
 
 
 def test_discovery_filter_disjunkt_zu_anderen_profilen(profil) -> None:

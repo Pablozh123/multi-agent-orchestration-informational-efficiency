@@ -149,8 +149,8 @@ def test_transcriber_modell_default_bleibt_small() -> None:
     assert config.TRANSCRIBER_MODELL == "small"
     assert config.PROFILE["earnings_pypl_july28"].get(
         "transcriber_modell") is None
-    assert config.PROFILE["earnings_pg_july29"].get(
-        "transcriber_modell") is None
+    # earnings_pg_july29 faehrt seit 28.07. large-v3 — Positiv-Test
+    # liegt beim Profil (test_earnings_bot.test_profil_grunddaten).
 
 
 def test_filter_und_live_dirs_disjunkt() -> None:

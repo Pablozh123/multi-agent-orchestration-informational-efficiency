@@ -773,6 +773,10 @@ PROFILE = {
             "2966437": ["World Cup", "World-Cup", "Worldcup"],
             "2966445": ["Toilet paper", "Toilet-paper", "Toiletpaper"],
         },
+        # large-v3 als Haupt-Transcriber (User 28.07., Boeing-Vorbild
+        # nach dem Braintree-Miss: Eigennamen-Recall schlaegt die
+        # +0.53 s/Chunk); Verify bleibt an, Modell-Instanz geteilt.
+        "transcriber_modell": "large-v3",
         # Budget-Platzhalter bis zur User-Vorgabe bei der Armierung;
         # Standard-Clips (15 USD, 10 je Markt). Dry-Run ist ohnehin
         # der Standardmodus des Bots.

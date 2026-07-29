@@ -158,3 +158,53 @@ Laeufe aufgefrischt.
 Neu zu beachten: large-v3 laeuft beim Call zusaetzlich zum
 small-Transcriber auf der GPU (zusammen ~4–5 GB VRAM; auf der
 Maschine bereits am 18.07. fuer Gap-Verify gemessen).
+
+## 6. Lauf-Ergebnis 29.07. (Nachtrag)
+
+Start 14:29 CEST (T-1 min; Budget-Entscheid User 650/50x40 kam
+14:25, Ein-Zeilen-Deploy fb07bd7 vor dem Start; Dry-Run-Probe §3.5
+entfiel bewusst — zwei saubere Live-Laeufe derselben Codebasis am
+Vortag). Loopback CABLE Output, erster large-v3-Hauptlauf der
+Earnings-Strecke, **582 Chunks / 97 min LUECKENLOS (null Stalls —
+erste belegte Vollabdeckung eines kompletten Calls, §4.3-Vorbehalt
+damit erfuellt)**. Ende per STOP-Datei 16:04, sauberes fertig-Event,
+STOP wieder aufgehoben.
+
+**0 Fills bei 10 Verifys (0 Fehltrigger).** Vier Brackets ueber
+Schwelle — Consumer 33, Quarter 25, Fiscal 23, Innovation 11 —
+alle vorgepreist (Quarter-Entscheid 12:38: ask 0.996). Die
+Zweifel-Brackets (Customer 5+ 0.22, Income/Revenue/Profit 10+
+0.06-0.08) erreichten die Schwelle NIE (Endstaende 2/1/0/1) — der
+Markt lag mit seinem Zweifel richtig. **Vierter Beleg der
+Bracket-These, und eine Verschaerfung: Das Bracket-Fenster braucht
+ein vom Markt UNTERSCHAETZTES Bracket; heute existierte keins.**
+
+**Valuation-Fall (Kalibrierpunkt, laufende UMA-Beobachtung):** Markt
+stand nach Call-Ende bei 0.495 (vor Call 0.16); User-Ohr meinte
+"gehoert". Durchgehender VAD-freier large-v3-Vollpass ueber das
+GANZE Band: valuation 0, evaluation/validation 0, nacktes "value"
+19x. Nach den Late-Regeln vom 28.07. in BEIDE Richtungen
+unhandelbar (Nachbarform-Risiko: 19 value-Kandidaten; kein
+Zwei-Methoden-Konsens, Ohr widerspricht). Das UMA-Endergebnis
+kalibriert die Resolver-Wertung von value/valuation
+(Guidance-Analogie).
+
+**Aufgeklaert per Wort-Zeitstempel + On-chain-Abgleich:** Die
+Verhoerer-Stelle ist Band 1546-1551s — "the next S-curve of growth
+and VALUE CREATION for P&G" (phonetisch ≈ valuation); der manuelle
+User-Kauf YES @0.274 (15 USD) kam 5 s spaeter (12:53:47Z,
+on-chain). Der Markt-Sprung 0.16→0.50 ist ein KOLLEKTIVER
+Verhoerer — erster vollstaendig dokumentierter Fall (Audio +
+Zeitstempel + Kaufzeit + Marktreaktion). Zweiter manueller Trade
+des Tages: Fiscal-10+-NO @0.044 (10 USD) gegen Endstand 23 →
+verloren (Lehre: vor Bracket-Lotterien den Sichtfenster-Stand
+pruefen).
+
+**Weitere Zweifelsfaelle nach Call-Ende (Vollpass-Transkript
+`vollpass_durchgehend_large_v3.txt` im Lauf-Ordner):** World Cup
+Markt 0.45 bei Vollpass-0 OHNE Verhoerer-Anker (nicht mal
+"world-class" fiel) — Marktzweifel ohne Audio-Basis; Customer 5+
+Markt 0.595 bei exakt 2x "customers" (Vollpass = Bot-Zaehler) —
+resolvet das YES, ist es nach Guidance der zweite harte
+Resolver-Fehler-Kandidat. Erste Proposals 17:0x eingelaufen, alle
+eindeutigen Faelle konsistent.

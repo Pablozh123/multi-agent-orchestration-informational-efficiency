@@ -777,10 +777,12 @@ PROFILE = {
         # nach dem Braintree-Miss: Eigennamen-Recall schlaegt die
         # +0.53 s/Chunk); Verify bleibt an, Modell-Instanz geteilt.
         "transcriber_modell": "large-v3",
-        # Budget-Platzhalter bis zur User-Vorgabe bei der Armierung;
-        # Standard-Clips (15 USD, 10 je Markt). Dry-Run ist ohnehin
-        # der Standardmodus des Bots.
-        "max_usd_gesamt": 100.0,
+        # Volles Budget freigegeben (User 29.07. vor Call-Start, wie
+        # PayPal/Boeing): Vollprofil-Sweep — budget- statt
+        # clip-limitiert; Executor-Delta-Sync deckelt am Wallet.
+        "max_usd_gesamt": 650.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
         # Earnings-Buecher stehen nach dem Call sofort auf 0.99+
         # (Recherche §3.3: Vorpreisungs-Markt) — kurzes Fenster genuegt.
         "nachlauf_minuten": 30,

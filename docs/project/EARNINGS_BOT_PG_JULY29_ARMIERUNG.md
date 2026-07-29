@@ -208,3 +208,18 @@ Markt 0.595 bei exakt 2x "customers" (Vollpass = Bot-Zaehler) —
 resolvet das YES, ist es nach Guidance der zweite harte
 Resolver-Fehler-Kandidat. Erste Proposals 17:0x eingelaufen, alle
 eindeutigen Faelle konsistent.
+
+**Kalibrier-Endstand 22/22 final (Abend 29.07.):** 20/22 deckungs-
+gleich mit dem Vollpass. Die Resolver bestanden DREI Ambiguitaets-
+tests streng nach Audio: Valuation NO (der "value creation"-
+Verhoerer wurde NICHT durchgewunken — User-Position -15 realisiert),
+World Cup NO, Trump NO (Maerkte standen 0.45-0.50). Einzige
+Diskrepanz: **Customer 5+ resolvete YES gegen unsere Zaehlung 2**
+(bei 34x consumer/consumers im Transkript). Wahrscheinlichste
+Ursache diesmal auf UNSERER Seite: Whisper-LM-Prior normalisiert
+seltene Woerter auf kontexttypische (customer→consumer im
+P&G-Sprech; Markt-Mehrheit UND Resolver hoerten >=5) — und
+small+large-v3 sind dieselbe Modellfamilie, ihre Fehler
+korrelieren. Damit Serie gesamt: 84 finale Kalibriermaerkte, 2
+Diskrepanzen (Guidance, Customer 5+), BEIDE in der
+Verwechslungsklasse, keine davon ein belegter Resolver-Willkuerakt.

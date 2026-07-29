@@ -71,12 +71,17 @@ Runbooks (`*_ARMIERUNG.md`), `UEBERGABE_2026-07-28_LIVE_MENTIONS.md`
    sofort proposed, die vier Zweifelsfaelle zuletzt —
    **Proposer-Reihenfolge als Ambiguitaets-Signal.**
 
-9. **Kalibrier-Datensatz (62+22 Maerkte, 28.-29.07.):** PayPal 19/19,
-   Boeing 20/20, Graham 23/23, P&G laufend — Vollpass-Prognose vs.
-   UMA-Endergebnis fast durchgehend deckungsgleich; die Ausnahmen
-   sind KEINE klaren Resolver-Fehler, sondern Verschreibungs-/
-   Methodenfaelle (s. C). Resolver-Grundqualitaet ist hoch; das
-   Restrisiko konzentriert sich exakt auf die ambigen Woerter.
+9. **Kalibrier-Datensatz (84 finale Maerkte, 28.-29.07.):** PayPal
+   19/19, Boeing 20/20, Graham 23/23, P&G 22/22 — Vollpass-Prognose
+   vs. UMA-Endergebnis in 82/84 deckungsgleich. Die Resolver
+   bestanden am 29.07. drei Ambiguitaetstests streng nach Audio
+   (Valuation/World Cup/Trump NO trotz 0.45-0.50-Maerkten). Beide
+   Diskrepanzen (Guidance, Customer 5+) liegen in der
+   Verwechslungsklasse und sind je einmal eher pro Resolver
+   (Customer) und unentscheidbar (Guidance) — kein belegter
+   Willkuerakt. Das Resolution-Risiko ist damit kleiner als nach
+   dem Guidance-Schreck befuerchtet; das dominante Restrisiko ist
+   die eigene ASR (These 10).
 
 ## C. Grenzen ASR-basierter Beweise (Kernbefund fuer die NO-Seite)
 
@@ -84,9 +89,15 @@ Runbooks (`*_ARMIERUNG.md`), `UEBERGABE_2026-07-28_LIVE_MENTIONS.md`
     "agent e-commerce" (phonetisch identisch), guidance → "guide(s)
     that" (Zwei-Pass-konsistent — UNENTSCHEIDBAR ob ASR- oder
     Resolver-Seite), valuation → "value creation" (Band 1546s,
-    on-chain-dokumentierter Kauf 5 s spaeter). Dazu die
-    Blockgrenzen-Falle: 30-s-Raster verlor "agentic commerce" exakt
-    am Schnitt (Whisper verwirft angeschnittene Segmente).
+    on-chain-dokumentierter Kauf 5 s spaeter), customer →
+    "consumer" (P&G: Resolver YES bei 5+, unsere Zaehlung 2 gegen
+    34x consumer — Whispers Sprachmodell-Prior NORMALISIERT seltene
+    Woerter auf kontexttypische; diesmal lag wahrscheinlich UNSERE
+    Seite falsch). Dazu die Blockgrenzen-Falle: 30-s-Raster verlor
+    "agentic commerce" exakt am Schnitt (Whisper verwirft
+    angeschnittene Segmente). Wichtig: small und large-v3 sind
+    DIESELBE Modellfamilie — ihre Fehler korrelieren, zwei
+    Whisper-Paesse sind kein unabhaengiger Konsens.
 
 11. **YES/NO-Asymmetrie:** YES braucht EIN sicheres Hoeren; NO
     braucht lueckenlose Abdeckung (Stall-frei!) + fehlerfreie

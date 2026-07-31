@@ -449,6 +449,59 @@ def test_geometrie_cache_migriert_alte_watchlist(tmp_path):
     assert cache[rek._cache_key(48.419117, 37.125165)]["name"] == "Krasnoyarske"
 
 
+def test_neu_geslugter_markt_erbt_die_deckung():
+    """Regression 31.07.: Polymarket vergibt derselben Frage neue Slugs
+    (…-september-30-2026 -> …-2026-715). Ohne Vererbung startet der neue
+    Slug ohne Deckung und der naechste Layer-Edit meldet eine 'neue'
+    Schattierung, die seit Tagen besteht — ein Phantom-Ereignis."""
+    alt = _ziel("will-russia-capture-all-of-ort-by-september-30-2026")
+    alt.siedlung_objectid = 2151
+    neu = _ziel("will-russia-capture-all-of-ort-by-september-30-2026-715")
+    neu.siedlung_objectid = 2151
+    zustand = _zustand(
+        beobachtet={alt.slug: ["infiltration", "advance"]},
+        qualifiziert={alt.slug: ["infiltration"]},
+    )
+    geerbt = rek.uebertrage_deckung(zustand, [alt], [neu])
+    assert geerbt == [neu.slug]
+    assert zustand["beobachtet"][neu.slug] == ["infiltration", "advance"]
+    assert zustand["qualifiziert"][neu.slug] == ["infiltration"]
+
+
+def test_neuer_markt_anderer_siedlung_erbt_nicht():
+    """Ein wirklich neuer Markt an anderem Ort darf nichts erben."""
+    alt = _ziel("will-russia-enter-ort-a-by-july-31")
+    alt.siedlung_objectid = 111
+    neu = _ziel("will-russia-enter-ort-b-by-july-31")
+    neu.siedlung_objectid = 222
+    zustand = _zustand(beobachtet={alt.slug: ["infiltration"]})
+    assert rek.uebertrage_deckung(zustand, [alt], [neu]) == []
+    assert neu.slug not in zustand["beobachtet"]
+
+
+def test_vererbung_ueberschreibt_bestehenden_zustand_nicht():
+    alt = _ziel("markt-alt")
+    alt.siedlung_objectid = 9
+    neu = _ziel("markt-neu")
+    neu.siedlung_objectid = 9
+    zustand = _zustand(beobachtet={alt.slug: ["infiltration"],
+                                   neu.slug: ["control"]})
+    assert rek.uebertrage_deckung(zustand, [alt], [neu]) == []
+    assert zustand["beobachtet"][neu.slug] == ["control"]
+
+
+def test_vererbung_ohne_deckung_traegt_nichts_ein():
+    """Ist die Siedlung ungedeckt, bekommt der neue Slug keinen Eintrag —
+    sonst wuerde ein echter spaeterer Treffer unterdrueckt."""
+    alt = _ziel("markt-alt")
+    alt.siedlung_objectid = 9
+    neu = _ziel("markt-neu")
+    neu.siedlung_objectid = 9
+    zustand = _zustand(beobachtet={alt.slug: []})
+    assert rek.uebertrage_deckung(zustand, [alt], [neu]) == []
+    assert neu.slug not in zustand["beobachtet"]
+
+
 def test_bereinigung_meldet_kandidaten_geschlossener_maerkte(tmp_path):
     zustand = _zustand(
         beobachtet={"toter-markt": ["infiltration"], "lebt": ["advance"]},

@@ -449,6 +449,45 @@ def test_geometrie_cache_migriert_alte_watchlist(tmp_path):
     assert cache[rek._cache_key(48.419117, 37.125165)]["name"] == "Krasnoyarske"
 
 
+def test_ausfall_wird_erkannt_und_markiert(tmp_path):
+    """Der Watchdog braucht bis zu 15 min, um einen toten Bot zu bemerken.
+    Ereignisse direkt nach so einer Luecke tragen einen unbrauchbaren
+    T+0-Preis und muessen markiert werden."""
+    import time as _time
+    ziel = _ziel()
+    zustand = _zustand(layer_stand={"infiltration": 111},
+                       letzter_zyklus_ts=_time.time() - 900)
+    flaeche = ISWFlaeche("infiltration", 1, QUADRAT, creation_ms=1000)
+    karte = _KarteAttrappe({"infiltration": 222}, {"infiltration": [flaeche]})
+    protokoll = tmp_path / "p.jsonl"
+    meldungen = rek.durchlauf(karte, _LeserAttrappe(0.92), [ziel], zustand,
+                              protokoll)
+    assert meldungen[0]["nach_ausfall_s"] > 800
+    arten = [json.loads(z)["art"] for z in
+             protokoll.read_text(encoding="utf-8").splitlines()]
+    assert "ausfall_erkannt" in arten
+
+
+def test_normaler_takt_ist_kein_ausfall(tmp_path):
+    import time as _time
+    ziel = _ziel()
+    zustand = _zustand(layer_stand={"infiltration": 111},
+                       letzter_zyklus_ts=_time.time() - 20)
+    flaeche = ISWFlaeche("infiltration", 1, QUADRAT, creation_ms=1000)
+    karte = _KarteAttrappe({"infiltration": 222}, {"infiltration": [flaeche]})
+    meldungen = rek.durchlauf(karte, _LeserAttrappe(), [ziel], zustand,
+                              tmp_path / "p.jsonl")
+    assert meldungen[0]["nach_ausfall_s"] == 0.0
+
+
+def test_zyklus_zeitstempel_wird_fortgeschrieben(tmp_path):
+    zustand = _zustand()
+    karte = _KarteAttrappe({}, {})
+    rek.durchlauf(karte, _LeserAttrappe(), [_ziel()], zustand,
+                  tmp_path / "p.jsonl")
+    assert zustand["letzter_zyklus_ts"] is not None
+
+
 def test_neu_geslugter_markt_erbt_die_deckung():
     """Regression 31.07.: Polymarket vergibt derselben Frage neue Slugs
     (…-september-30-2026 -> …-2026-715). Ohne Vererbung startet der neue

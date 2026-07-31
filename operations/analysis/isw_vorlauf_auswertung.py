@@ -108,7 +108,8 @@ class Ereignis:
     preis_t5: float | None
     preis_t30: float | None
     delta_t30: float | None     # preis_t30 - preis_t0
-    klasse: str                 # ueberraschung | teilweise | antizipiert | unbekannt
+    klasse: str                 # ueberraschung|teilweise|antizipiert|unbekannt|unsicher
+    nach_ausfall_s: float = 0.0  # >0: T+0 nach einer Rekorder-Lücke gemessen
 
 
 # Rekonstruierter Referenzfall vom 22.07. (vor Rekorder-Armierung); Zahlen
@@ -130,6 +131,7 @@ REFERENZ_KRASNOIARSKE = Ereignis(
     preis_t5=0.9465,                      # 21:06:07, Minutenhistorie
     preis_t30=0.8700,                     # 21:39:07, Minutenhistorie
     delta_t30=0.824,
+    nach_ausfall_s=0.0,
     klasse="ueberraschung",
 )
 
@@ -139,7 +141,18 @@ def _epoch(iso_utc: str) -> float:
         tzinfo=timezone.utc).timestamp()
 
 
-def klassifiziere(preis_t0: float | None) -> str:
+def klassifiziere(preis_t0: float | None,
+                  nach_ausfall_s: float | None = None) -> str:
+    """Klasse aus dem T+0-Preis; `unsicher` nach einem Rekorder-Ausfall.
+
+    War der Rekorder beim ISW-Edit unten, stammt der "T+0"-Preis von nach
+    dem Neustart — der Markt kann sich in der Lücke längst bewegt haben.
+    Eine echte Überraschung sähe dann wie ein antizipierter Fall aus, also
+    genau in der Richtung, die den Überraschungsanteil drückt. Solche
+    Ereignisse werden nicht klassifiziert.
+    """
+    if nach_ausfall_s:
+        return "unsicher"
     if preis_t0 is None:
         return "unbekannt"
     if preis_t0 < UEBERRASCHUNG_MAX:
@@ -307,7 +320,8 @@ def baue_ereignisse(zeilen: list[dict]) -> tuple[list[Ereignis], dict]:
             delta_t30=(round(preis_t30 - preis_t0, 4)
                        if preis_t30 is not None and preis_t0 is not None
                        else None),
-            klasse=klassifiziere(preis_t0),
+            nach_ausfall_s=k.get("nach_ausfall_s") or 0.0,
+            klasse=klassifiziere(preis_t0, k.get("nach_ausfall_s")),
         ))
     ereignisse.sort(key=lambda e: e.erkannt_utc)
     return ereignisse, zaehler
@@ -360,7 +374,9 @@ def baue_siedlungsereignisse(ereignisse: list[Ereignis]) -> list[Siedlungsereign
             buch_usd_050=_median(
                 [e.buch_usd_050 for e in gruppe
                  if e.buch_usd_050 is not None]),
-            klasse=klassifiziere(preis),
+            # Ein Ausfall betrifft den ganzen Zyklus, also die ganze Gruppe.
+            klasse=klassifiziere(
+                preis, max((e.nach_ausfall_s for e in gruppe), default=0.0)),
         ))
     heraus.sort(key=lambda s: s.erkannt_utc)
     return heraus
@@ -379,14 +395,16 @@ def fasse_zusammen(ereignisse: list[Ereignis],
     gewichten (Review-Befund 30.07.).
 
     Der Nenner des Überraschungsanteils sind die KLASSIFIZIERBAREN
-    Ereignisse. Ereignisse ohne T+0-Preis (Budget erschöpft) sind keine
-    Aussage "war eingepreist" — sie würden den Anteil sonst einseitig nach
-    unten verwässern und die 20-%-Schwelle kippen. Sie werden gesondert
-    ausgewiesen.
+    Ereignisse. Zwei Gruppen fallen heraus, beide würden den Anteil sonst
+    einseitig nach unten verwässern und die 20-%-Schwelle kippen:
+    `unbekannt` (kein T+0-Preis, HTTP-Budget erschöpft) und `unsicher`
+    (T+0 nach einem Rekorder-Ausfall gemessen, der Markt kann sich in der
+    Lücke bewegt haben). Beide werden gesondert ausgewiesen.
     """
     schwellen = schwellen or GO_SCHWELLEN
     je_klasse: dict[str, dict] = {}
-    for klasse in ("ueberraschung", "teilweise", "antizipiert", "unbekannt"):
+    for klasse in ("ueberraschung", "teilweise", "antizipiert",
+                   "unbekannt", "unsicher"):
         gruppe = [e for e in ereignisse if e.klasse == klasse]
         if not gruppe:
             continue
@@ -407,7 +425,8 @@ def fasse_zusammen(ereignisse: list[Ereignis],
     klassen: dict[str, int] = {}
     for s in physisch:
         klassen[s.klasse] = klassen.get(s.klasse, 0) + 1
-    n_klassifizierbar = sum(n for k, n in klassen.items() if k != "unbekannt")
+    n_klassifizierbar = sum(n for k, n in klassen.items()
+                            if k not in ("unbekannt", "unsicher"))
     n_ueberraschung = klassen.get("ueberraschung", 0)
     ueberraschungen = [s for s in physisch if s.klasse == "ueberraschung"]
 

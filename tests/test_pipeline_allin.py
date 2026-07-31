@@ -786,3 +786,35 @@ def test_allin_july24_profil_konfiguration() -> None:
     assert p["nachlauf_minuten"] == 90
     # NO-Deckel bleibt beim Default 0.80 (kein Override — die E281-Lehre)
     assert "no_ask_obergrenze" not in p
+
+
+# ----------------------------------- All-In july-31 / E283 (31.07.2026)
+
+
+def test_allin_july31_profil_konfiguration() -> None:
+    p = config.PROFILE["allin_july31"]
+    alt = config.PROFILE["allin_july24"]
+    # Quellen und Gates identisch zur gelaufenen E282-Woche
+    assert p["mp3_probe_muster"] == alt["mp3_probe_muster"]
+    assert p["yt_playlist_id"] == alt["yt_playlist_id"]
+    assert p["rss_nur_muster"] == alt["rss_nur_muster"]
+    assert p["rss_feed_url"] == alt["rss_feed_url"]
+    assert p["yt_channel_id"] == alt["yt_channel_id"]
+    assert p["discovery_slug_filter"] == alt["discovery_slug_filter"]
+    # Eigenes Event und eigener Lauf-Ordner (kein Ueberschreiben von E282)
+    assert p["event_id"] == "758791"
+    assert p["event_slug"].startswith(
+        "what-will-be-said-on-the-next-all-in-podcast-july-31-")
+    assert p["live_dir"] == "allin_july31"
+    assert p["live_dir"] != alt["live_dir"]
+    # NO-Schutzschild komplett und unveraendert: Boilerplate + Basisraten
+    assert p["boilerplate_begriffe"] == alt["boilerplate_begriffe"]
+    assert "tension" in p["boilerplate_begriffe"]
+    assert p["serie_id"] == "11300"
+    # NO-Deckel bleibt beim Default 0.80 (kein Override — die E281-Lehre)
+    assert "no_ask_obergrenze" not in p
+    # Volles Budget (User 31.07.), Clip-Groesse und Sweep wie july24
+    assert p["max_usd_gesamt"] == pytest.approx(620.0)
+    assert p["max_usd_pro_markt"] == alt["max_usd_pro_markt"]
+    assert p["max_clips_pro_markt"] == alt["max_clips_pro_markt"]
+    assert p["nachlauf_minuten"] == alt["nachlauf_minuten"]

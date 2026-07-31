@@ -145,6 +145,47 @@ PROFILE = {
         # der Runde zu 0.50-0.70 gehandelt — genau dieses Fenster.
         "nachlauf_minuten": 90,
     },
+    "allin_july31": {
+        "live_dir": "allin_july31",
+        "event_id": "758791",
+        "event_slug": (
+            "what-will-be-said-on-the-next-all-in-podcast-july-31-"
+            "20260727161921239"
+        ),
+        # E283-Woche (Drop Fr 31.07. ~22-23 UTC). Quellen und Gates 1:1
+        # aus der gelaufenen E282-Woche. Prober-Vorbedingung am 31.07.
+        # 14:25 UTC verifiziert: E282 HTTP 200 (134 964 123 B), E283 noch
+        # 404 -> Prober feuert bei Minute 0. Regeltext des Events 758791
+        # gegen july24 gelesen: gleiche Schablone (Playlist-Regel,
+        # "resolution source will be audio", Specials zaehlen nicht).
+        "rss_feed_url": "https://allinchamathjason.libsyn.com/rss",
+        "yt_channel_id": "UCESLZhusAkFfsNsApnjF_Cg",
+        "mp3_probe_muster": (
+            "https://traffic.libsyn.com/secure/allinchamathjason/"
+            "ALLIN-E{n}_Ch.mp3"
+        ),
+        "discovery_slug_filter": "all-in",
+        "yt_playlist_id": "PLn5MTSAqaf8peDZQ57QkJBzewJU1aUokl",
+        "rss_nur_muster": r"ALLIN-E\d+_Ch\.mp3",
+        # NO-Schutzschild unveraendert wie july24 (Seiten-Deckel 0.80,
+        # Basisraten-Veto Serie 11300, Boilerplate-Lexikon, Gap-Verify).
+        # Bewusst KEINE Aenderung an der NO-Kette in dieser Woche: der
+        # Nachbarschafts-/Blockgrenzen-Filter aus den Agentic- und
+        # Guidance-Faellen (28.07.) ist noch nicht gebaut.
+        "boilerplate_begriffe": ALLIN_BOILERPLATE,
+        "serie_id": "11300",
+        # Volles Budget (User 31.07.): Wallet-Stand 643.67 pUSD (Server-
+        # Sicht 14:26 UTC) -> 620 nutzbar, ~24 Puffer fuer Fees und den
+        # parallel laufenden trump_july27 (400er Pool auf DERSELBEN
+        # Wallet; der Executor-Delta-Sync verhindert Ueberziehen, aber
+        # ein Profil kann dem anderen den Pool wegkaufen).
+        # max_usd_pro_markt ist die FAK-CLIP-Groesse, nicht der Markt-
+        # deckel: 50 USD x bis zu 40 Clips -> effektiv budget-limitiert.
+        "max_usd_gesamt": 620.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        "nachlauf_minuten": 90,
+    },
     "allin_july17": {
         "live_dir": "allin_july17",
         "event_id": "700931",

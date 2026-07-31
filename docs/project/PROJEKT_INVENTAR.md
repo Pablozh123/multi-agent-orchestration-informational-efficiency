@@ -136,3 +136,42 @@ Erster Lauf über die Kette am 22.07., 12:11 UTC: 1655 geprüfte Märkte, kumuli
 **Wochenschluss july20 (abgelesen aus den Live-Artefakten, 27.07.).** `elon_july20` und `trump_july20` beendeten sich heute 04:00 UTC beide sauber mit `fertig … "getradet": []` — **erneut null Fills**, dritte Null-Fill-Woche der Post-Bots in Folge (nach `elon_july13`). Die Trigger-Forensik der july20-Woche (Latenzen, Buchverhalten) steht noch aus; Buchlogs liegen in `data/live/elon_july20/` und `data/live/trump_july20/` im ba-thesis-Klon.
 
 **Koordinationshinweis.** Im ba-thesis-Klon liegen uncommittete Änderungen einer anderen Session an `config.py`/`test_trump_bot.py` (Profil `trump_michigan_july27`) — Merge-Reihenfolge vor dem `git pull` klären (Runbook Schritt 1).
+
+## Update 30.07.2026: Ukraine-Karten-Rekorder armiert, erste Messpunkte
+
+**Neuer Messstrang** (Sessions wt-ukraine, PRs #36/#41, gemergt): Ein
+read-only Rekorder misst den Vorlauf zwischen Änderungen der ISW-ArcGIS-
+Karte (Auflösungsquelle der Polymarket-Familie `ukraine-map`, 46–51
+beobachtete Märkte) und der Marktpreisreaktion. Seit 28.07. 23:15 UTC als
+Watchdog-Profil `isw_ukraine` im ba-thesis-Klon in Dauerbetrieb
+(überlebt Abstürze und Neustarts). Architektur: Kandidaten mit sofortiger
+T+0-Messung (Preis + Orderbuch-Tiefe), Bestätigung nach 60-min-
+Beruhigungsfenster (nettet ISW-Rebuild-Artefakte, spiegelt die
+Persistenzklausel der Marktregel), Marktlisten-Refresh alle 15 min.
+Dokumentation: `docs/project/UKRAINE_ISW_LATENZ_SONDIERUNG.md`;
+Vorregistrierung der Auswertung:
+`docs/project/ISW_VORLAUF_MESSPROTOKOLL_2026-07-30.md` (Entwurf, Schwellen
+friert die Studentin ein). Lizenzfrage ISW-Daten laut Studentin geklärt
+(30.07.): Nutzung möglich.
+
+**Stand der Messung (N=2 Siedlungsereignisse):**
+
+| Ereignis | Markt vor ISW-Update | Reaktion | Kante |
+| --- | --- | --- | --- |
+| Krasnoiarske 22.07. (rekonstruiert) | YES 0.046 | 18 min 43 s totes Fenster, dann Sweep auf 0.93; Auflösung YES 23.07. | ~50 pp |
+| Oleksiyevo-Druzhkivka 29.07. (live gemessen) | YES 0.89 | keine Sofortreaktion, +6 pp binnen 30 min | ~5 pp |
+
+Der Markt preist den laufenden ISW-Bestand effizient (kein offener
+„enter"-Markt mit qualifizierender Schattierung unter 0.91, Scan 23.07.);
+die Kante existiert nur im Moment unerwarteter Änderungen. Auswertung
+deterministisch per `python -m operations.analysis.isw_vorlauf_auswertung`
+(16 Tests). Entscheidungsregel und Stichtag (14.08. oder N=10) stehen im
+Messprotokoll; ein Go führt zunächst in eine Paper-Phase, kein Order-Pfad
+im Rekorder.
+
+**Prozessnotiz:** Sechs Fehler des Rekorders wurden erst durch Probeläufe
+gegen die echten Endpunkte bzw. einen adversarialen Review sichtbar, alle
+mit derselben Signatur „kein Fehler, nur Schweigen" (Details Abschnitte
+10–12 der Sondierungs-Doku). Für die Thesis verwertbar als Befund über
+das Hauptrisiko von Latenz-Strategien: die stille Fehlfunktion des
+Messapparats, nicht die fehlende Kante.

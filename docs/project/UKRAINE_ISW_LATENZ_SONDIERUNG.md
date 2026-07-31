@@ -280,11 +280,10 @@ Rybar/WarGonzo/Dva Majora, LiveUAMap, Suriyakmaps, GeoConfirmed) überlebte
 
 ## 9. Offene Punkte
 
-- **Lizenz und Nutzungsbedingungen** der ISW-/AEI-Kartendaten und der
-  ArcGIS-Endpunkte für automatisierte Weiterverwendung: weiterhin ungeklärt
-  (die Recherche hat sie nicht auflösen können). Für DeepState ist die Lage
-  dagegen geklärt und negativ — siehe Abschnitt 5. Gleiche offene Frage wie
-  bei den IR-Webcasts.
+- **Lizenz und Nutzungsbedingungen** der ISW-/AEI-Kartendaten: **geklärt**
+  (Rückmeldung der Studentin, 30.07.) — Nutzung möglich. Für DeepState
+  bleibt die Lage negativ (Genehmigungspflicht für gewinnorientierte
+  Nutzung, Abschnitt 5).
 - **Quellenlandschaft ausserhalb von DeepState** (ISW-Publikationszeit, RSS,
   russisches Verteidigungsministerium, Rybar/WarGonzo/Dva Majora,
   Generalstab, LiveUAMap, Suriyakmaps, Andrew Perpetua, Militaryland,
@@ -523,6 +522,53 @@ plausibel. Genau deshalb ist bei Latenz-Strategien nicht die fehlende Kante
 das Hauptrisiko, sondern die stille Fehlfunktion des Messapparats. Dasselbe
 Muster steht in den Mentions-Annotationen: Der Feed-Cache, der eine Stunde
 nachhing, war kein Fehler, sondern ein Schweigen.
+
+## 14. Zweites Messereignis und Auswertungsstrecke (30.07.)
+
+**Oleksiyevo-Druzhkivka, 29.07.** — der erste vollständig
+live-instrumentierte Fall, zugleich das Gegenstück zu Krasnoiarske:
+
+```
+22:07:43  ISW erweitert Infiltrations-Polygon OID 2150
+22:09:43  Erkennung (120 s); T+0: enter-Maerkte YES 0.89 / 0.915, Ask 0.91
+22:10:51  T+1  0.895        22:14:49  T+5  0.895
+22:39:57  T+30 0.955/0.965  <- Restbewegung +6 pp NACH dem Edit
+23:10:14  treffer_bestaetigt (Fenster ueberstanden)
+```
+
+Der Markt hatte die Schattierung über Tage antizipiert (23.07. noch 0.39)
+und war bei T+0 zu ~90 % fertig; die letzte Bestätigungsbewegung kam in
+den 30 Minuten nach dem Edit. Kante ~5 pp gegen ~50 pp bei Krasnoiarske —
+die entscheidende Grösse ist damit der **Anteil der Überraschungsfälle**,
+nicht der mittlere Vorlauf.
+
+**Auswertungsstrecke steht:** Vorregistrierung in
+`ISW_VORLAUF_MESSPROTOKOLL_2026-07-30.md` (Ereigniseinheit =
+Siedlungsereignis, Klassifikation über den Median der T+0-Preise,
+Go/No-Go-Regel, Stichtag 14.08. oder N=10), deterministische Auswertung in
+`operations/analysis/isw_vorlauf_auswertung.py` (16 Tests). Stand 30.07.:
+2 Siedlungsereignisse aus 3 Marktzeilen, Anteil Überraschung 0.5.
+
+Betriebsnotizen: Marktlisten-Refresh nahm am 29.07. zwei frisch erstellte
+Hannivka-Märkte automatisch auf; das Gains24h-Tagesrauschen (Kostyantynivka)
+wurde wie entworfen als nicht-auswertbare Verlust-Kandidaten abgelegt.
+
+**Auflösung bestätigt das Signal (31.07.).** Beide Oleksiyevo-Druzhkivka-
+`enter`-Märkte lösten am 30.07. um 23:04:57 und 23:06:12 UTC mit **YES**
+auf (`umaResolutionStatus: resolved`). Der Rekorder hatte die
+qualifizierende Schattierung am 29.07. um 22:09:43 erkannt — rund
+**25 Stunden vor der Auflösung**. Damit haben beide bisher gemessenen
+Signale korrekt aufgelöst (Krasnoiarske 23.07., Oleksiyevo 30.07.);
+Falsch-Positive bislang keine.
+
+Realisierbar wäre in diesem Fall der Kauf zum T+0-Ask von 0.91 gewesen:
++9.9 % auf ~25 Stunden. Das ist die Grössenordnung des antizipierten
+Falls — die Krasnoiarske-Klasse liegt eine Zehnerpotenz darüber.
+
+**Watchdog-Bewährung (31.07.).** Nach einem Neustart der Arbeitsumgebung
+war der Rekorder-Prozess tot; der Watchdog hat ihn um 13:05:04 UTC
+selbständig neu gestartet (Herzschlag 13:09:38 wieder normal). Die
+Armierung trägt also über Sessiongrenzen hinweg, wie vorgesehen.
 
 ## Anhang: verwendete Endpunkte
 

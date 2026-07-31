@@ -460,6 +460,49 @@ def _reife_kandidaten(zustand: dict, leser: PolymarktLeser,
     zustand["kandidaten"] = offen
 
 
+def uebertrage_deckung(zustand: dict, alte: list[Marktziel],
+                       neue: list[Marktziel]) -> list[str]:
+    """Deckungszustand auf neu geslugte Märkte derselben Siedlung übertragen.
+
+    Polymarket vergibt für dieselbe Frage gelegentlich neue Slugs (beobachtet
+    31.07.: `…-kostyantynivka-by-september-30-2026` wurde zu
+    `…-2026-715`). Der Zustand ist slug-geführt, der neue Slug startet also
+    ohne Deckung — beim nächsten Layer-Edit meldete der Rekorder dann eine
+    "neue" Schattierung, die in Wahrheit seit Tagen besteht. Solche
+    Phantom-Ereignisse verschmutzen die Vorlauf-Verteilung (sie sähen wie
+    antizipierte Fälle aus).
+
+    Die physische Tatsache "Siedlung ist geschattet" hängt an der Siedlung,
+    nicht am Markt. Neue Slugs erben deshalb den Zustand jedes bekannten
+    Markts derselben Siedlung (`siedlung_objectid`, stabil).
+    """
+    siedlung_von: dict[str, int] = {z.slug: z.siedlung_objectid
+                                    for z in list(alte) + list(neue)}
+    deckung_je_siedlung: dict[int, list[str]] = {}
+    qualifiziert_je_siedlung: dict[int, list[str]] = {}
+    for slug, layers in zustand["beobachtet"].items():
+        objectid = siedlung_von.get(slug)
+        if objectid is not None and layers:
+            deckung_je_siedlung.setdefault(objectid, list(layers))
+    for slug, layers in zustand["qualifiziert"].items():
+        objectid = siedlung_von.get(slug)
+        if objectid is not None and layers:
+            qualifiziert_je_siedlung.setdefault(objectid, list(layers))
+
+    uebertragen: list[str] = []
+    for ziel in neue:
+        if ziel.slug in zustand["beobachtet"]:
+            continue
+        geerbt = deckung_je_siedlung.get(ziel.siedlung_objectid)
+        if geerbt:
+            zustand["beobachtet"][ziel.slug] = list(geerbt)
+            uebertragen.append(ziel.slug)
+        geerbt_q = qualifiziert_je_siedlung.get(ziel.siedlung_objectid)
+        if geerbt_q and ziel.slug not in zustand["qualifiziert"]:
+            zustand["qualifiziert"][ziel.slug] = list(geerbt_q)
+    return uebertragen
+
+
 def _bereinige_zustand(zustand: dict, slugs_aktiv: set[str],
                        protokoll: Path) -> int:
     """Zustand auf die aktuelle Marktliste einschränken.
@@ -841,6 +884,9 @@ def main(argv: list[str] | None = None) -> int:
                     alt_slugs = {z.slug for z in ziele}
                     neu_slugs = {z.slug for z in neue}
                     if alt_slugs != neu_slugs:
+                        # Erst erben, dann bereinigen: der Zustand des alten
+                        # Slugs ist die Quelle fuer den neu geslugten Markt.
+                        geerbt = uebertrage_deckung(zustand, ziele, neue)
                         geschlossen = _bereinige_zustand(
                             zustand, neu_slugs, argumente.protokoll)
                         _protokolliere(argumente.protokoll, {
@@ -850,6 +896,7 @@ def main(argv: list[str] | None = None) -> int:
                             "neu": sorted(neu_slugs - alt_slugs),
                             "entfernt": sorted(alt_slugs - neu_slugs),
                             "kandidaten_geschlossen": geschlossen,
+                            "deckung_geerbt": sorted(geerbt),
                         })
                     ziele = neue
                 except Exception as fehler:  # noqa: BLE001 - alte Liste weiter

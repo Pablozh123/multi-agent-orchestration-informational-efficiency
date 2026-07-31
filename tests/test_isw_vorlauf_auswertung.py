@@ -151,6 +151,46 @@ def test_klassifikation_schwellen():
     assert ava.klassifiziere(None) == "unbekannt"
 
 
+def test_ereignis_nach_ausfall_wird_unsicher():
+    """Regression 31.07.: War der Rekorder beim ISW-Edit unten, stammt der
+    'T+0'-Preis von nach dem Neustart. Eine Ueberraschung saehe dann wie
+    ein antizipierter Fall aus — genau die Richtung, die den
+    Ueberraschungsanteil und damit die Go-Entscheidung druecken wuerde."""
+    k = _kandidat(preis=0.92)
+    k["nach_ausfall_s"] = 910.5
+    ereignisse, _ = ava.baue_ereignisse([k, _bestaetigt()])
+    assert ereignisse[0].klasse == "unsicher"
+    assert ereignisse[0].nach_ausfall_s == 910.5
+
+
+def test_unsichere_ereignisse_zaehlen_nicht_im_nenner():
+    def _e(slug, siedlung, preis, ausfall=0.0):
+        return ava.Ereignis(slug=slug, siedlung=siedlung, layer="infiltration",
+                            quelle="rekorder", status="bestaetigt",
+                            feature_zeit_utc=None,
+                            erkannt_utc=f"2026-07-29T{siedlung}:00:00Z",
+                            vorlauf_s=None, preis_t0=preis, best_ask_t0=None,
+                            buch_usd_030=None, buch_usd_050=None,
+                            preis_t1=None, preis_t5=None, preis_t30=None,
+                            delta_t30=None,
+                            klasse=ava.klassifiziere(preis, ausfall),
+                            nach_ausfall_s=ausfall)
+    ereignisse = [_e("a", "10", 0.10), _e("b", "11", 0.90),
+                  _e("c", "12", 0.95, ausfall=900.0)]
+    z = ava.fasse_zusammen(ereignisse)
+    assert z["n_siedlungsereignisse"] == 3
+    assert z["n_klassifizierbar"] == 2
+    assert z["anteil_ueberraschung"] == 0.5   # nicht 0.333
+    assert z["klassen_siedlungsereignisse"]["unsicher"] == 1
+
+
+def test_klassifiziere_ausfall_schlaegt_preis():
+    assert ava.klassifiziere(0.95, 900.0) == "unsicher"
+    assert ava.klassifiziere(0.05, 900.0) == "unsicher"
+    assert ava.klassifiziere(0.95, 0.0) == "antizipiert"
+    assert ava.klassifiziere(0.95, None) == "antizipiert"
+
+
 def test_kandidat_ohne_preis_wird_unbekannt():
     k = _kandidat(preis=None)
     k["preis_uebersprungen"] = True

@@ -95,6 +95,16 @@ MARKT_REFRESH_S = 900
 # darf nicht Dutzende CLOB-Aufrufe in einem Durchlauf auslösen.
 PREISABRUFE_JE_ZYKLUS = 12
 
+# Ab wann gilt eine Lücke zwischen zwei Zyklen als Ausfall? Der Watchdog
+# erklärt einen Bot erst nach 600 s für tot und tickt alle 5 Minuten —
+# ein Absturz bleibt also bis zu ~15 Minuten unbemerkt. Ereignisse, die
+# direkt nach einer solchen Lücke erkannt werden, tragen einen
+# unbrauchbaren T+0-Preis: der Markt kann sich während des Ausfalls längst
+# bewegt haben, und eine Überraschung sähe dann wie ein antizipierter Fall
+# aus. Genau die Richtung, die die Go-Entscheidung verzerrt. Solche
+# Ereignisse werden markiert, nicht stillschweigend mitgezählt.
+AUSFALL_SCHWELLE_S = 300.0
+
 NACHFASS_MINUTEN = (0, 1, 5, 30)
 
 STANDARD_ZUSTAND = Path("data/live/isw_rekorder/zustand.json")
@@ -112,6 +122,7 @@ def _leerer_zustand() -> dict:
         "kandidaten": [],        # offene Übergänge im Beruhigungsfenster
         "qualifiziert": {},      # slug -> [layer], bestätigte Treffer (absorbierend)
         "offene_nachfassungen": [],
+        "letzter_zyklus_ts": None,   # für die Ausfallerkennung
     }
 
 
@@ -549,6 +560,22 @@ def durchlauf(karte: ISWKarte,
     slugs_aktiv = {z.slug for z in ziele}
     ziel_nach_slug = {z.slug: z for z in ziele}
 
+    # Lücke seit dem letzten Zyklus? Dann ist der gleich gemessene
+    # T+0-Preis nicht der Preis zum Zeitpunkt der ISW-Änderung.
+    vorheriger_zyklus = zustand.get("letzter_zyklus_ts")
+    ausfall_s = 0.0
+    if vorheriger_zyklus:
+        luecke = _jetzt_utc().timestamp() - vorheriger_zyklus
+        if luecke > AUSFALL_SCHWELLE_S:
+            ausfall_s = round(luecke, 1)
+            _protokolliere(protokoll, {
+                "art": "ausfall_erkannt",
+                "zeit_utc": _iso(_jetzt_utc()),
+                "luecke_s": ausfall_s,
+                "hinweis": "Ereignisse dieses Zyklus tragen einen "
+                           "unsicheren T+0-Preis",
+            })
+
     def _preis(token: str) -> tuple[float | None, bool]:
         if budget["rest"] <= 0:
             return None, True
@@ -653,6 +680,7 @@ def durchlauf(karte: ISWKarte,
                     bool(zustand["qualifiziert"].get(slug)),
                 "preis_yes": preis,
                 "preis_uebersprungen": uebersprungen,
+                "nach_ausfall_s": ausfall_s,
                 "buch": buch,
             }
             _protokolliere(protokoll, eintrag)
@@ -732,6 +760,7 @@ def durchlauf(karte: ISWKarte,
 
     _reife_kandidaten(zustand, leser, protokoll)
     _faellige_nachfassungen(leser, zustand, protokoll)
+    zustand["letzter_zyklus_ts"] = _jetzt_utc().timestamp()
     return meldungen
 
 

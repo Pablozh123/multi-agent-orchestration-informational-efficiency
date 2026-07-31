@@ -553,6 +553,23 @@ Betriebsnotizen: Marktlisten-Refresh nahm am 29.07. zwei frisch erstellte
 Hannivka-Märkte automatisch auf; das Gains24h-Tagesrauschen (Kostyantynivka)
 wurde wie entworfen als nicht-auswertbare Verlust-Kandidaten abgelegt.
 
+**Auflösung bestätigt das Signal (31.07.).** Beide Oleksiyevo-Druzhkivka-
+`enter`-Märkte lösten am 30.07. um 23:04:57 und 23:06:12 UTC mit **YES**
+auf (`umaResolutionStatus: resolved`). Der Rekorder hatte die
+qualifizierende Schattierung am 29.07. um 22:09:43 erkannt — rund
+**25 Stunden vor der Auflösung**. Damit haben beide bisher gemessenen
+Signale korrekt aufgelöst (Krasnoiarske 23.07., Oleksiyevo 30.07.);
+Falsch-Positive bislang keine.
+
+Realisierbar wäre in diesem Fall der Kauf zum T+0-Ask von 0.91 gewesen:
++9.9 % auf ~25 Stunden. Das ist die Grössenordnung des antizipierten
+Falls — die Krasnoiarske-Klasse liegt eine Zehnerpotenz darüber.
+
+**Watchdog-Bewährung (31.07.).** Nach einem Neustart der Arbeitsumgebung
+war der Rekorder-Prozess tot; der Watchdog hat ihn um 13:05:04 UTC
+selbständig neu gestartet (Herzschlag 13:09:38 wieder normal). Die
+Armierung trägt also über Sessiongrenzen hinweg, wie vorgesehen.
+
 ## Anhang: verwendete Endpunkte
 
 ```

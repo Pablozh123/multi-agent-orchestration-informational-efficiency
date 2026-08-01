@@ -570,6 +570,43 @@ war der Rekorder-Prozess tot; der Watchdog hat ihn um 13:05:04 UTC
 selbständig neu gestartet (Herzschlag 13:09:38 wieder normal). Die
 Armierung trägt also über Sessiongrenzen hinweg, wie vorgesehen.
 
+## 15. Auflösungswelle 31.07.: Zustand gegen Realität (01.08.)
+
+Mit dem Monatsende liefen elf beobachtete July-31-Märkte aus. Der Abgleich
+des `qualifiziert`-Zustands gegen die tatsächlichen Auflösungen ergibt
+**9 von 9 auswertbaren Fällen korrekt, kein Fehler**:
+
+| Markttyp | n | Deckung | Auflösung | Bewertung |
+| --- | --- | --- | --- | --- |
+| russisch / Berührung | 9 | keine | NO | 9× korrekt |
+| russisch / Vollüberdeckung | 1 | ja | NO | nicht auswertbar (anderes Kriterium) |
+| ukrainisch / Berührung | 1 | ja | NO | nicht auswertbar (invertierte Polarität) |
+
+Zusammen mit den beiden Positivfällen (Krasnoiarske 23.07., Oleksiyevo
+30.07., beide gedeckt → YES) steht die Bilanz bei **11 von 11**. Die neun
+Negativfälle sind schwächere Evidenz als ein Positivfall — sie zeigen vor
+allem, dass der Flächentest keine Phantom-Deckung erzeugt.
+
+**Methodenwarnung, am eigenen Prüfskript erlebt:** Ein erster Abgleich
+meldete zwei Abweichungen. Beide waren Fehler des Prüfskripts, nicht des
+Rekorders — es verglich stumpf „Deckung ⇒ YES" und wandte damit das
+Berührungskriterium auf einen `capture all of`-Markt an und die russische
+Polarität auf einen `will-ukraine-re-enter`-Markt. Dieselbe Falle wie beim
+Divergenz-Scan vom 23.07. Jede Auswertung muss Polarität und Kriterium je
+Markt aus dem Slug ableiten; dafür sind `markt_polaritaet()` und
+`markt_kriterium()` da.
+
+**Abfrage-Rezept für künftige Validierungen.** Ein ausgelaufener Markt ist
+über den Markt-Slug nicht mehr auffindbar (`/markets?slug=` liefert
+nichts) und taucht auch in keiner `closed=true`-Event-Liste auf: Das
+**Event** bleibt offen, solange es spätere Deadlines trägt, nur der
+einzelne **Markt** schliesst. Richtig ist deshalb, die OFFENEN Events des
+Tags zu holen und darin auch die geschlossenen Märkte auszuwerten:
+
+```
+GET /events?closed=false&tag_slug=ukraine-map   ->  e["markets"][*]
+```
+
 ## Anhang: verwendete Endpunkte
 
 ```

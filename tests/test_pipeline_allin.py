@@ -724,6 +724,91 @@ def test_jre_july20_profil_konfiguration() -> None:
     assert p["nachlauf_minuten"] == 90
 
 
+# ------------------------------------ JRE august-3 Armierung (04.08.2026)
+
+
+def test_jre_august3_profil_konfiguration() -> None:
+    p = config.PROFILE["jre_august3"]
+    alt = config.PROFILE["jre_july20"]
+    # Quellen und Titel-Gates unveraendert zur bewiesenen Vorwoche
+    assert p["rss_feed_url"] == alt["rss_feed_url"]
+    assert p["yt_channel_id"] == alt["yt_channel_id"]
+    assert p["titel_muster"] == alt["titel_muster"]
+    assert p["titel_verboten"] == alt["titel_verboten"]
+    assert p["yt_kanalseite_immer"] is True
+    assert p["discovery_slug_filter"] == alt["discovery_slug_filter"]
+    # Eigenes Event und eigener Lauf-Ordner
+    assert p["event_id"] == "778632"
+    assert p["event_slug"].startswith(
+        "what-will-be-said-on-the-first-joe-rogan-experience-episode-"
+        "of-the-week-august-3-")
+    assert p["live_dir"] == "jre_august3"
+    assert p["live_dir"] != alt["live_dir"]
+    # Budget/Sweep und NO-Schutzschichten wie july20
+    assert p["max_usd_gesamt"] == pytest.approx(510.0)
+    assert p["max_usd_pro_markt"] == pytest.approx(50.0)
+    assert p["max_clips_pro_markt"] == 40
+    assert p["serie_id"] == "11275"
+    assert p["boilerplate_begriffe"] == alt["boilerplate_begriffe"]
+    assert p["nachlauf_minuten"] == 90
+
+
+def test_jre_august3_titel_gate_schliesst_mma_show_aus() -> None:
+    """Marktregel: 'JRE MMA Show ... will not count'.
+
+    Am 04.08. 17:00:05Z erschien 'JRE MMA Show #183 with Rico Verhoeven'
+    als erstes Kanal-Video der Woche. Es darf den Lauf NICHT ausloesen —
+    sonst handelt der Bot auf der falschen Episode. Zwei unabhaengige
+    Gates greifen: das Verbots-Muster und das Titel-Muster (die MMA-Show
+    fuehrt keinen ' - '-Trenner nach der Nummer).
+    """
+    import re
+
+    p = config.PROFILE["jre_august3"]
+    mma = "JRE MMA Show #183 with Rico Verhoeven"
+    echt = "Joe Rogan Experience #2535 - Beispielgast"
+
+    assert re.search(p["titel_verboten"], mma, re.I)
+    assert not re.search(p["titel_muster"], mma, re.I)
+    # Die echte Episode passiert beide Gates
+    assert not re.search(p["titel_verboten"], echt, re.I)
+    assert re.search(p["titel_muster"], echt, re.I)
+
+
+# ----------------------------------- Elon august-3 Armierung (04.08.2026)
+
+
+def test_elon_august3_profil_konfiguration() -> None:
+    p = config.PROFILE["elon_august3"]
+    alt = config.PROFILE["elon_july27"]
+    # Quelle und Deckel unveraendert zur Vorwoche
+    assert p["x_user_id"] == alt["x_user_id"] == "44196397"
+    assert p["p_win"] == pytest.approx(0.97)
+    assert p["min_edge"] == pytest.approx(0.03)
+    assert p["x_poll_s"] == pytest.approx(8.0)
+    assert p["discovery_slug_filter"] == alt["discovery_slug_filter"]
+    # Reiner Textbot: keine Audio-Quellen
+    assert p["rss_feed_url"] is None
+    assert p["yt_channel_id"] is None
+    assert p["mp3_probe_muster"] is None
+    # Eigenes Event, eigener Lauf-Ordner, neue Periode
+    assert p["event_id"] == "778580"
+    assert p["live_dir"] == "elon_august3"
+    assert p["live_dir"] != alt["live_dir"]
+    assert p["periode_start_utc"] == "2026-08-03T04:00:00Z"
+    assert p["periode_ende_utc"] == "2026-08-10T03:59:59Z"
+    # Periode muss luecken- und ueberlappungsfrei an july27 anschliessen
+    assert p["periode_start_utc"] > alt["periode_ende_utc"]
+    # Budget/Sweep wie july27
+    assert p["max_usd_gesamt"] == pytest.approx(400.0)
+    assert p["max_usd_pro_markt"] == pytest.approx(50.0)
+    assert p["max_clips_pro_markt"] == 40
+    # Armierung an Tag 2 -> tiefer Startscan wie beim Tag-4-Einstieg
+    assert p["startscan_seiten"] == 12
+    # NUR YES: kein NO-Pfad, also auch keine Basisraten-Serie
+    assert "serie_id" not in p
+
+
 def test_nachlauf_default_bleibt_45() -> None:
     # Aktives Testprofil (Default) hat keinen Override -> 45.
     assert config.NACHLAUF_MINUTEN == pytest.approx(45.0)

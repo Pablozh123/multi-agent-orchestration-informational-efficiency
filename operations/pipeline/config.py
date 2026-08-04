@@ -473,6 +473,70 @@ PROFILE = {
         # noch lange nach der Runde guenstig gehandelt).
         "nachlauf_minuten": 90,
     },
+    "jre_august3": {
+        "live_dir": "jre_august3",
+        "event_id": "778632",
+        "event_slug": (
+            "what-will-be-said-on-the-first-joe-rogan-experience-episode-"
+            "of-the-week-august-3-20260731210932757"
+        ),
+        # Quellen und Gates 1:1 aus jre_july20. Feed-Stand 04.08. 16:58Z
+        # geprueft: letzte Episode #2534 (Fr 31.07. 17:00Z), diese Woche
+        # noch KEINE -> die erste Episode der Woche steht unmittelbar an.
+        # Rhythmus der letzten beiden Wochen ausnahmslos Di-Fr 17:00Z
+        # (#2528-#2530, #2531-#2534), Montag nie.
+        "rss_feed_url": "https://feeds.megaphone.fm/GLT1412515089",
+        "yt_channel_id": "UCzQUP1qoWDoEbmsQxvdjxgQ",  # PowerfulJRE
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "joe-rogan-experience",
+        "titel_muster": r"(?:joe rogan experience\s*)?#\d{3,5}\s*-",
+        "titel_verboten": r"mma\s*show",  # "JRE MMA Show ... will not count"
+        "yt_kanalseite_immer": True,
+        "max_usd_gesamt": 510.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        # NO-Schutzschichten wie july20: Serie 11275 fuer Basisraten
+        # (Dauerbrenner wie right/left/people werden gesperrt),
+        # Intro-Jingle-Lexikon.
+        "serie_id": "11275",
+        "boilerplate_begriffe": JRE_BOILERPLATE,
+        # Nachlauf 90: JRE-Buecher sind duenn und MMs traege (#2523: alle
+        # Asks beim Drop gepullt, 0 Trades) — dieselbe Fallenklasse wie
+        # der All-In-Liquiditaetsentzug vom 31.07.
+        "nachlauf_minuten": 90,
+    },
+    "elon_august3": {
+        "live_dir": "elon_august3",
+        "event_id": "778580",
+        "event_slug": (
+            "what-will-elon-post-this-week-august-3-august-9-"
+            "20260731162042267"
+        ),
+        # Quelle wie july20/july27: X-Posts von @elonmusk (x_watch.py,
+        # GraphQL-Web-Pfad mit Login-Cookies aus .env), elon_bot.py,
+        # NUR YES — die NO-Seite konvergiert die Woche ueber gegen 1,
+        # dort gibt es keinen Geschwindigkeits-Edge.
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "what-will-elon-post",
+        "x_user_id": "44196397",  # @elonmusk (verifizierter Account)
+        "p_win": 0.97,
+        "min_edge": 0.03,
+        "periode_start_utc": "2026-08-03T04:00:00Z",  # 03.08. 00:00 ET
+        "periode_ende_utc": "2026-08-10T03:59:59Z",   # 09.08. 23:59 ET
+        "x_poll_s": 8.0,
+        "max_usd_gesamt": 400.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        # ARMIERUNG MITTEN IN DER PERIODE (04.08., Tag 2 von 7) — gleiche
+        # Lage wie july20 an Tag 4: 12 Startscan-Seiten decken die
+        # bisherige Woche ab, sonst bleiben die Posts vom 03.-04.08.
+        # ungeprueft und ein vom Markt uebersehener Treffer faellt hinten
+        # runter. Der Bot bricht ohnehin ab, sobald der aelteste geladene
+        # Post vor dem Periodenstart liegt.
+        "startscan_seiten": 12,
+    },
     "lemonade_july22": {
         "live_dir": "lemonade_july22",
         "event_id": "708407",

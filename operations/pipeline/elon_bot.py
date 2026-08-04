@@ -49,6 +49,7 @@ from operations.pipeline.x_watch import (
     RateLimit,
     XPost,
     XWatcher,
+    hat_feed_position,
 )
 
 
@@ -69,6 +70,62 @@ def _stop() -> bool:
 def _utc(s: str) -> datetime:
     return datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ").replace(
         tzinfo=timezone.utc)
+
+
+def _aeltester_im_feed(posts: list[XPost]) -> XPost | None:
+    """Chronologisch aeltester Post MIT eigener Feed-Position.
+
+    Nur solche Posts belegen, wie weit ein Scan zurueckgeblaettert ist.
+    Angepinnte haengt X an jede Seite, Zitate/Repost-Originale haengen
+    unter einem anderen Post — beide koennen beliebig alt sein.
+    """
+    kandidaten = [p for p in posts if hat_feed_position(p)]
+    if not kandidaten:
+        return None
+    return min(kandidaten, key=lambda p: _utc(p.created_utc))
+
+
+def startscan(watcher: XWatcher, posts: list[XPost], cursor: str | None,
+              start: datetime, seiten_max: int) -> tuple[list[XPost], dict]:
+    """Historie bis zum Periodenstart nachblaettern.
+
+    Gibt (alle geladenen Posts, Daten fuers startscan-Event) zurueck.
+    Abbruch, sobald der aelteste Post MIT Feed-Position vor dem
+    Periodenstart liegt — nicht schon beim aeltesten Array-Element
+    (Fehler bis 4.8.2026: ein von Elon zitierter Post von 2014 stand als
+    letztes Element auf Seite 2 und beendete den Scan von elon_august3
+    um 17:05Z nach 44 Posts; die 5 Posts der laufenden Periode zwischen
+    05:35 und 13:47 fehlten, obwohl das Event "erreicht_periodenstart":
+    true meldete).
+    """
+    seiten = 0
+    alle = list(posts)
+    aeltester = _aeltester_im_feed(alle)
+    while (cursor and seiten < seiten_max and alle
+           and (aeltester is None or _utc(aeltester.created_utc) > start)):
+        mehr, cursor = watcher.hole_posts(cursor)
+        if not mehr:
+            break
+        alle += mehr
+        seiten += 1
+        aeltester = _aeltester_im_feed(alle)
+    return alle, {
+        "posts_geladen": len(alle),
+        "aeltester": aeltester.created_utc if aeltester else None,
+        # Kontrollwert: aeltester Post inklusive angepinnter/zitierter —
+        # weicht er stark ab, war genau das der alte Fehlabbruch.
+        "aeltester_mit_fremdposition": (
+            min(alle, key=lambda p: _utc(p.created_utc)).created_utc
+            if alle else None),
+        "ohne_feed_position": sum(
+            1 for p in alle if not hat_feed_position(p)),
+        # Belegt beim Armieren mitten in der Periode, ob der
+        # Scan bis zum Periodenstart zurueckkam.
+        "seiten_geblaettert": seiten,
+        "seiten_max": seiten_max,
+        "erreicht_periodenstart": bool(
+            aeltester is not None and _utc(aeltester.created_utc) <= start),
+    }
 
 
 def baue_elon_rules() -> list[MarketRule]:
@@ -343,25 +400,10 @@ def lauf(live: bool) -> None:
                 # Profil (config.X_STARTSCAN_SEITEN): ein Start mitten in
                 # der Marktperiode muss weiter zurueckblaettern als ein
                 # Start am Periodenanfang.
-                seiten = 0
-                alle = list(posts)
-                while (cursor and seiten < config.X_STARTSCAN_SEITEN and alle
-                       and _utc(alle[-1].created_utc) > start):
-                    mehr, cursor = watcher.hole_posts(cursor)
-                    if not mehr:
-                        break
-                    alle += mehr
-                    seiten += 1
-                _schreibe_event("startscan", {
-                    "posts_geladen": len(alle),
-                    "aeltester": alle[-1].created_utc if alle else None,
-                    # Belegt beim Armieren mitten in der Periode, ob der
-                    # Scan bis zum Periodenstart zurueckkam.
-                    "seiten_geblaettert": seiten,
-                    "seiten_max": config.X_STARTSCAN_SEITEN,
-                    "erreicht_periodenstart": bool(
-                        alle and _utc(alle[-1].created_utc) <= start),
-                })
+                alle, scan_daten = startscan(
+                    watcher, posts, cursor, start,
+                    config.X_STARTSCAN_SEITEN)
+                _schreibe_event("startscan", scan_daten)
                 startscan_fertig = True
                 posts = alle
             for p in posts:

@@ -533,8 +533,10 @@ PROFILE = {
         # Lage wie july20 an Tag 4: 12 Startscan-Seiten decken die
         # bisherige Woche ab, sonst bleiben die Posts vom 03.-04.08.
         # ungeprueft und ein vom Markt uebersehener Treffer faellt hinten
-        # runter. Der Bot bricht ohnehin ab, sobald der aelteste geladene
-        # Post vor dem Periodenstart liegt.
+        # runter. Der Bot bricht ohnehin ab, sobald der aelteste Post mit
+        # eigener Feed-Position vor dem Periodenstart liegt (04.08.: der
+        # Lauf um 17:05Z stoppte an einem zitierten 2014er Post, die
+        # Luecke 05:35-13:47 wurde manuell nachgeprueft — 0 Treffer).
         "startscan_seiten": 12,
     },
     "lemonade_july22": {
@@ -1334,8 +1336,10 @@ X_POLL_S = float(_P.get("x_poll_s", 16.0))
 # Seiten, die der Startscan maximal zurueckblaettert, um die Historie seit
 # PERIODE_START_UTC nachzuziehen. 4 reicht fuer einen Start am Perioden-
 # anfang; wer mitten in der Woche armiert, braucht mehr (Profil-Override).
-# Abbruch erfolgt ohnehin frueher, sobald der aelteste geladene Post vor
-# dem Periodenstart liegt.
+# Abbruch erfolgt ohnehin frueher, sobald der aelteste Post MIT eigener
+# Feed-Position vor dem Periodenstart liegt. Angepinnte und zitierte
+# Posts zaehlen dafuer nicht (Fehler bis 4.8.2026: ein zitierter Post von
+# 2014 beendete den Scan mitten in der Periode).
 X_STARTSCAN_SEITEN = int(_P.get("startscan_seiten", 4))
 
 # Trump-Post-Bot (Serie trump-post-weekly): Truth-Social-Parameter.

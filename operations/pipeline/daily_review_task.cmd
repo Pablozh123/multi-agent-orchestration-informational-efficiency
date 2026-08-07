@@ -4,7 +4,8 @@ REM   %1 = publish-dir (Website public\data)
 REM   %2 = live-root   (Live-Repo data\live, z.B. C:\Users\chole\ba-thesis\data\live)
 REM        Geht an Tageslauf UND Dashboard: die Rohdaten der Laeufe liegen nur
 REM        dort, data\live dieser Arbeitskopie ist gitignored und leer.
-REM Ablauf: Clone aktualisieren -> Tageslauf -> Daten-Artefakte committen+pushen.
+REM Ablauf: Clone aktualisieren -> Wachkontrolle -> Tageslauf -> Daten-Artefakte
+REM         committen+pushen.
 REM Lehre 16.7.: Der Task lief auf einem 10 Commits alten Clone, und der
 REM manuelle Artefakt-Commit im veralteten Stand erzeugte Divergenz (Rebase).
 setlocal
@@ -35,6 +36,18 @@ REM faellt dann auf data\live und danach auf data\live_curated zurueck.
 set LIVEARG=
 if not "%~2"=="" set LIVEARG=--live-root %2
 
+REM Zweiter, unabhaengiger Ausloeser der Wachkontrolle (anderer Task, anderer
+REM Clone als der Watchdog): meldet Messposten, die aus watchdog.json
+REM verschwunden sind. Der Watchdog prueft dasselbe alle 5 Min, teilt aber das
+REM Schicksal seines eigenen Tasks - faellt der aus, meldet nur noch dieser
+REM Lauf. Laeuft direkt nach dem Pull, damit die versionierte Sollbesetzung
+REM data/wachposten.json aktuell ist. Ohne %2 uebersprungen: dieser Clone hat
+REM kein eigenes data\live, die Kontrolle wuerde nur Phantom-Befunde melden.
+if "%~2"=="" goto :tageslauf
+python -m operations.pipeline.wachkontrolle --live-root %2 >> %LOG% 2>&1
+if errorlevel 1 echo [%date% %time%] ALARM: Wachkontrolle - Befunde, siehe oben (1=kritisch, 2=Warnung, 3=Sollbesetzung unlesbar) >> %LOG%
+
+:tageslauf
 python -m operations.pipeline.daily_review_run --collect --publish-dir %1 %LIVEARG% >> %LOG% 2>&1
 if errorlevel 1 echo [%date% %time%] WARN: daily_review_run Exit-Code %errorlevel% >> %LOG%
 

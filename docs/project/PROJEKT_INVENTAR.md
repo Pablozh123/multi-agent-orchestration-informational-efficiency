@@ -154,12 +154,19 @@ Vorregistrierung der Auswertung:
 friert die Studentin ein). Lizenzfrage ISW-Daten laut Studentin geklärt
 (30.07.): Nutzung möglich.
 
-**Stand der Messung (N=2 Siedlungsereignisse):**
+**Stand der Messung (N=3 Siedlungsereignisse, 07.08.):**
 
 | Ereignis | Markt vor ISW-Update | Reaktion | Kante |
 | --- | --- | --- | --- |
 | Krasnoiarske 22.07. (rekonstruiert) | YES 0.046 | 18 min 43 s totes Fenster, dann Sweep auf 0.93; Auflösung YES 23.07. | ~50 pp |
 | Oleksiyevo-Druzhkivka 29.07. (live gemessen) | YES 0.89 | keine Sofortreaktion, +6 pp binnen 30 min | ~5 pp |
+| Myrne 03.08. (live gemessen) | YES 0.93 | +1,5 pp binnen 30 min, Treffer bestätigt | ~1,5 pp |
+
+Anteil Überraschung 0.333, Entscheidung `weiter_messen` (N 3/10,
+Stichtag 14.08.). Zwei der drei Go-Kriterien erfüllt; die mediane
+Buchtiefe bleibt offen, weil sie nur über Überraschungsfälle gerechnet
+wird und der einzige davon der rekonstruierte Krasnoiarske-Fall ohne
+Orderbuch-Messung ist.
 
 Der Markt preist den laufenden ISW-Bestand effizient (kein offener
 „enter"-Markt mit qualifizierender Schattierung unter 0.91, Scan 23.07.);

@@ -706,12 +706,84 @@ die Liste schon falsch war, schlägt sie ebenfalls an. Die Meldung wäre
 also **2 h 16 min vor dem Tod des Prozesses** gekommen, nicht erst
 26 Stunden danach.
 
-**Was offen bleibt.** Stellt der Scheduled Task selbst den Betrieb ein,
-meldet weiterhin niemand etwas — die Kontrolle teilt dann das Schicksal
-ihres Wirts. Dagegen hilft nur ein zweiter, unabhängiger Auslöser (etwa
-der tägliche 06:30-Lauf im Zweit-Klon oder ein eigener Task); dafür ist
-der Rückgabecode da. Diese Entscheidung liegt bei der Studentin, weil sie
-den Windows-Aufgabenplaner betrifft.
+**Zweiter Auslöser.** Liefe die Kontrolle nur im Watchdog, teilte sie das
+Schicksal ihres Wirts: Stellt dessen Scheduled Task den Betrieb ein,
+meldet wieder niemand etwas. Deshalb ruft auch der versionierte
+Tageslauf-Wrapper `operations/pipeline/daily_review_task.cmd` sie auf —
+anderer Task (`\MarketIntelDailyReview`, täglich 06:30), anderer Klon,
+dieselbe `--live-root`. Der Aufruf steht direkt hinter dem `git pull`,
+damit die Sollbesetzung aktuell ist, und vor dem Tageslauf, damit ein
+hängender Lauf die Meldung nicht verschluckt; ohne `%2` wird er
+übersprungen, weil der Zweit-Klon kein eigenes `data/live` hat und die
+Kontrolle dort nur Phantom-Befunde melden würde. Ein Befund schreibt
+`ALARM` in `logs/daily_review_task.log` und hält den Tageslauf nicht auf.
+
+Damit sind beide Auslöser unabhängig: zwei Scheduled Tasks, zwei
+Arbeitskopien, ein gemeinsamer versionierter Sollstand. Stumm bleibt die
+Messung erst, wenn beide Tasks gleichzeitig ausfallen — ein Zustand, der
+im Gegensatz zum Vorfall vom 05.08. auch am ausbleibenden Tageslauf und
+an der stehenden Website sichtbar wird.
+
+## 18. Messstand 07.08.: N=3, drittes Ereignis Myrne
+
+Die Auswertung über die Live-Ereignisse
+(`python -m operations.analysis.isw_vorlauf_auswertung --protokoll
+.../isw_ukraine/ereignisse.jsonl --mit-referenz`):
+
+| erkannt (UTC) | Siedlung | T+0 | T+30 | Δ30 | Vorlauf | Klasse |
+| --- | --- | --- | --- | --- | --- | --- |
+| 22.07. 20:57:43 | Krasnoyarske* | 0.046 | 0.870 | +0.824 | 1123 s | Überraschung |
+| 29.07. 22:09:43 | Oleksiyevo-Druzhkivka | 0.890 | 0.955 | +0.065 | 120 s | antizipiert |
+| 29.07. 22:09:43 | Oleksiyevo-Druzhkivka | 0.915 | 0.965 | +0.050 | 120 s | antizipiert |
+| 03.08. 14:06:17 | **Myrne** | 0.930 | 0.945 | +0.015 | 118 s | antizipiert |
+
+\* rekonstruierter Referenzfall, nicht vom Rekorder gemessen.
+
+**Myrne, 03.08.** — das dritte Siedlungsereignis und der bisher am
+stärksten antizipierte Fall. ISW legte das Infiltrations-Polygon um
+14:04:19 an, der Rekorder sah es 118 s später; der Markt stand da schon
+bei 0.93 und bewegte sich in 30 Minuten um 1,5 pp. Der Treffer überstand
+das Beruhigungsfenster (`treffer_bestaetigt` 15:06:34, Dauer 3617 s).
+Die Reihe Krasnoiarske → Oleksiyevo → Myrne zeigt einen fallenden
+Restweg: +82 pp, +6 pp, +1,5 pp.
+
+**Stand der Vorregistrierung:** 3 Siedlungsereignisse, Anteil
+Überraschung 0.333, **Entscheidung `weiter_messen`** (N 3/10, Stichtag
+14.08.). Von den drei Go-Kriterien sind zwei erfüllt (Anteil Überraschung
+0.333 ≥ 0.2; Median Δ30 0.824 ≥ 0.1), eines ist **offen**: die mediane
+Buchtiefe bis 0.50 ist `None`, weil sie nur über
+Überraschungs-Ereignisse gerechnet wird und der einzige davon der
+rekonstruierte Krasnoiarske-Fall ohne Orderbuch-Messung ist. Solange
+kein live gemessener Überraschungsfall dazukommt, ist dieses Kriterium
+strukturell nicht entscheidbar — das ist kein Fehler der Auswertung,
+sondern die ehrliche Konsequenz aus N=1 in der interessanten Klasse.
+
+**Die Ausfallmarkierung, genau gelesen.** Alle vier Kandidaten des
+Neustarts vom 07.08. tragen `nach_ausfall_s = 95952`. Sie stehen aber
+**noch aus einem zweiten Grund** nicht in der Verteilung: Die Auswertung
+zählt ausschliesslich bestätigte Treffer, und ihr Beruhigungsfenster war
+zum Zeitpunkt dieser Auswertung noch offen. Eine Gegenprobe zeigt das —
+entfernt man die Markierung aus einer Kopie des Protokolls, ändert sich
+nichts (3 Siedlungsereignisse, Anteil 0.333). Die Markierung greift erst
+bei der Bestätigung; dann liefert `klassifiziere()` `unsicher` und der
+Fall bleibt aus dem Nenner (`isw_vorlauf_auswertung.py:155,429`,
+deterministisch abgedeckt in `tests/test_isw_vorlauf_auswertung.py:154,
+166,188`).
+
+Der Effekt wäre dann rechnerisch: Matiasheve ist **ein**
+Siedlungsereignis (zwei Marktzeilen, T+0 0.94 und 0.969, russische
+`enter`-Märkte) — mitgezählt ergäbe das 4 statt 3 Siedlungsereignisse
+bei unverändert einem Überraschungsfall, also einen Anteil von 0.25
+statt 0.333. Die beiden Huliaipole-Zeilen sind ohnehin
+`auswertbar: false` (`re-enter`-Märkte mit invertierter Polarität). Die
+Behauptung aus Abschnitt 16, die Markierung verhindere eine Verzerrung,
+bleibt damit richtig — sie ist nur noch nicht eingelöst, sondern steht
+aus.
+
+**Zweiter, kleiner Ausfall am 03.08.** 21:25:03 protokollierte der
+Rekorder `ausfall_erkannt` mit `luecke_s` 657 (11 min). Er lag nach dem
+Myrne-Ereignis und traf keinen Kandidaten; erwähnt, weil er zeigt, dass
+kurze Lücken im Normalbetrieb vorkommen und sauber erkannt werden.
 
 Nur `isw_ukraine` steht in der Sollbesetzung — die am 05.08. ebenfalls
 verlorenen Earnings-Profile gehören anderen Sessions und werden nach der

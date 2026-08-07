@@ -13525,3 +13525,61 @@ Next step:
   06:30 daily run in the second clone, or its own task); the exit code
   exists for that. That decision belongs to the author because it touches
   the Windows Task Scheduler.
+
+## 2026-08-07 - ukraine: zweiter Ausloeser + Messstand N=3
+
+Task:
+
+- Close the residual gap of the previous commit (the control shared the
+  fate of its own scheduled task) and record the current measurement
+  state, which had advanced past the documentation.
+
+Files changed:
+
+- `operations/pipeline/daily_review_task.cmd`
+- `docs/project/UKRAINE_ISW_LATENZ_SONDIERUNG.md` (section 17 close-out,
+  new section 18)
+- `docs/project/PROJEKT_INVENTAR.md`
+
+Key output:
+
+- Second, independent trigger: the versioned daily wrapper now calls
+  `wachkontrolle` right after the `git pull` and before the run. Two
+  scheduled tasks, two working copies, one versioned roster. Silence now
+  requires BOTH tasks to fail — which, unlike 05.08., is also visible in
+  the missing daily run and the stale website.
+- Third measured settlement event found in the live protocol and not yet
+  documented: Myrne, 03.08. 14:06:17Z, lead 118.5 s, T+0 0.930 -> T+30
+  0.945, hit confirmed after the calming window. The three events form a
+  falling remaining path: +82 pp, +6 pp, +1.5 pp.
+- State against the 30.07. preregistration: 3 settlement events, share of
+  surprises 0.333, decision `weiter_messen` (N 3/10, cutoff 14.08.). Two
+  of three Go criteria met; median book depth is structurally
+  undecidable while the only surprise case is the reconstructed
+  Krasnoiarske event without an order-book measurement.
+
+Verification:
+
+- `python -m pytest -q` -> 1172 passed.
+- cmd control flow verified in isolation with a stub exit code: ALARM
+  line on 1/2/3, silent on 0, skipped without `%2`, and the Tageslauf
+  label is always reached (the control never blocks the daily run).
+- Counterfactual run with the outage markers stripped from a copy of the
+  protocol: unchanged at 3 events / 0.333.
+
+Decision:
+
+- Correction to the reading in section 16: the four post-outage
+  candidates are currently out of the distribution because the
+  evaluation counts only CONFIRMED hits and their calming window was
+  still open — not yet because of `nach_ausfall_s`. The marker takes
+  effect at confirmation. Documented as pending rather than as a
+  demonstrated effect; the arithmetic it would then prevent is 0.25
+  instead of 0.333 (Matiasheve is one settlement event, two market
+  rows; the two Huliaipole rows are `auswertbar: false` anyway).
+
+Next step:
+
+- Merge into the live clone: `ba-thesis` still runs the watchdog without
+  the control (it sits on `feat/earnings-bot`). Until then neither
+  trigger protects the running measurement.

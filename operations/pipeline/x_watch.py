@@ -82,6 +82,23 @@ class XPost:
     ist_repost: bool
     ist_reply: bool
     hat_medien: bool
+    # Feed-Position (Befund 4.8.2026): nur Posts, die X als eigenen
+    # Timeline-Eintrag ausliefert, belegen, wie weit ein Scan
+    # zurueckgeblaettert ist. Angepinnte Posts haengt X an JEDE Seite,
+    # Zitate/Repost-Originale haengen unter einem anderen Post — beide
+    # koennen beliebig alt sein und taeuschen sonst Scan-Tiefe vor.
+    ist_angepinnt: bool = False
+    ist_eingebettet: bool = False
+
+
+def hat_feed_position(p: XPost) -> bool:
+    """True, wenn der Post eine eigene Position im Feed belegt."""
+    return not (p.ist_angepinnt or p.ist_eingebettet)
+
+
+# Unter diesen Schluesseln haengen fremd-positionierte Posts: das Zitat
+# unter dem zitierenden Post, das Original unter dem Repost.
+EINGEBETTET_UNTER = ("quoted_status_result", "retweeted_status_result")
 
 
 def _snowflake_utc(post_id: int) -> str:
@@ -98,16 +115,24 @@ def parse_timeline(antwort: dict, user_id: str = ELON_USER_ID) -> list[XPost]:
     Timeline-Module enthalten auch fremde Tweets (Konversationen) —
     gezaehlt wird nur user_id. Reposts (retweeted_status) fliegen raus,
     der eigene Text von Quotes/Replies bleibt (Marktregel).
+
+    Posts ohne eigene Feed-Position werden markiert statt verworfen:
+    angepinnte (TimelinePinEntry) und eingebettete (quoted_status_result
+    / retweeted_status_result). Sie sind echte Posts des Users und
+    zaehlen fuers Matching, belegen aber keine Scan-Tiefe.
     """
     posts: dict[int, XPost] = {}
 
-    def _walk(knoten) -> None:
+    def _walk(knoten, angepinnt: bool = False,
+              eingebettet: bool = False) -> None:
         if isinstance(knoten, list):
             for k in knoten:
-                _walk(k)
+                _walk(k, angepinnt, eingebettet)
             return
         if not isinstance(knoten, dict):
             return
+        if knoten.get("type") == "TimelinePinEntry":
+            angepinnt = True
         legacy = knoten.get("legacy")
         if (
             isinstance(legacy, dict)
@@ -124,14 +149,25 @@ def parse_timeline(antwort: dict, user_id: str = ELON_USER_ID) -> list[XPost]:
                               or text.startswith("RT @"))
                 medien = bool((legacy.get("entities") or {}).get("media")
                               or (legacy.get("extended_entities") or {}).get("media"))
-                posts[pid] = XPost(
+                neu = XPost(
                     post_id=pid,
                     text=text,
                     created_utc=_snowflake_utc(pid),
                     ist_repost=ist_repost,
                     ist_reply=bool(legacy.get("in_reply_to_status_id_str")),
                     hat_medien=medien,
+                    ist_angepinnt=angepinnt,
+                    ist_eingebettet=eingebettet,
                 )
+                # Derselbe Post kann mehrfach in einer Antwort stehen
+                # (angepinnt UND als regulaerer Eintrag, oder zusaetzlich
+                # als Zitat) — die Fundstelle mit Feed-Position gewinnt.
+                alt = posts.get(pid)
+                if alt is None or (not hat_feed_position(alt)
+                                   and hat_feed_position(neu)):
+                    if alt is not None:
+                        neu.text = alt.text  # note_tweet-Volltext behalten
+                    posts[pid] = neu
         # note_tweet (lange Posts): voller Text liegt separat
         note = knoten.get("note_tweet")
         if isinstance(note, dict):
@@ -143,9 +179,10 @@ def parse_timeline(antwort: dict, user_id: str = ELON_USER_ID) -> list[XPost]:
                   .get("text"))
             if pid in posts and nt:
                 posts[pid].text = str(nt)
-        for v in knoten.values():
+        for schluessel, v in knoten.items():
             if isinstance(v, (dict, list)):
-                _walk(v)
+                _walk(v, angepinnt,
+                      eingebettet or schluessel in EINGEBETTET_UNTER)
 
     _walk(antwort)
     return sorted(posts.values(), key=lambda p: -p.post_id)

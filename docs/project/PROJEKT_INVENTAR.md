@@ -169,6 +169,17 @@ deterministisch per `python -m operations.analysis.isw_vorlauf_auswertung`
 Messprotokoll; ein Go führt zunächst in eine Paper-Phase, kein Order-Pfad
 im Rekorder.
 
+**Armierung:** Der Rekorder läuft als Watchdog-Profil `isw_ukraine`
+(`modul: isw_rekorder`, `--live`, read-only). Seine Sollbesetzung liegt
+versioniert in `data/wachposten.json` und wird von
+`operations/pipeline/wachkontrolle.py` (28 Tests) in jedem
+Watchdog-Durchlauf geprüft — Anlass war der Ausfall vom 05.–07.08.
+(26,7 h), bei dem das Profil aus dem gitignorierten
+`data/live/watchdog.json` verschwand und der Watchdog trotzdem
+wahrheitsgemäss „alle betreuten Bots leben" meldete. Eigenständiger
+Aufruf mit Rückgabecode: `python -m operations.pipeline.wachkontrolle
+--live-root <live>`.
+
 **Prozessnotiz:** Sechs Fehler des Rekorders wurden erst durch Probeläufe
 gegen die echten Endpunkte bzw. einen adversarialen Review sichtbar, alle
 mit derselben Signatur „kein Fehler, nur Schweigen" (Details Abschnitte

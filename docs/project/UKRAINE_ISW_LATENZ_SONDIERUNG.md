@@ -647,12 +647,75 @@ Sessions nicht stillschweigend korrigieren) — sie sind gemeldet. Eine
 Sicherung des vorgefundenen Stands liegt als
 `data/live/watchdog.json.vor-isw-rearm`.
 
-**Offene Schwachstelle.** Ein Profil, das aus `watchdog.json`
-verschwindet, erzeugt keinerlei Signal: Der Watchdog meldet dann
-wahrheitsgemäss „kein betreutes Profil im Zeitfenster", und der stille
-Ausfall ist von einem ruhigen Betrieb nicht zu unterscheiden. Wer die
-Messreihe ernst nimmt, braucht eine Aussenkontrolle, die das
-Fehlen eines erwarteten Profils bemerkt — nicht nur dessen Tod.
+**Schwachstelle — geschlossen am 07.08., siehe Abschnitt 17.** Ein Profil,
+das aus `watchdog.json` verschwindet, erzeugt keinerlei Signal: Der
+Watchdog meldet dann wahrheitsgemäss „kein betreutes Profil im
+Zeitfenster", und der stille Ausfall ist von einem ruhigen Betrieb nicht
+zu unterscheiden. Wer die Messreihe ernst nimmt, braucht eine
+Aussenkontrolle, die das Fehlen eines erwarteten Profils bemerkt — nicht
+nur dessen Tod.
+
+## 17. Wachkontrolle: die Sollbesetzung wird versioniert (07.08.)
+
+Die Aussenkontrolle aus Abschnitt 16 steht als
+`operations/pipeline/wachkontrolle.py` (28 Tests). Ihr tragender Gedanke
+ist die Ablage, nicht die Prüflogik: Die **Sollbesetzung liegt
+versioniert in `data/wachposten.json`**, nicht in `data/live/`. Genau
+dieses Verzeichnis wurde am 05.08. zurückgesetzt; eine Erwartung, die
+dort liegt, wird vom selben Vorfall mit gelöscht. In Git dagegen ist ein
+Zurücksetzen ein sichtbarer Diff.
+
+Geprüft wird je erwartetem Posten:
+
+| Befund | Bedeutung |
+| --- | --- |
+| `posten_fehlt` | nicht mehr in `watchdog.json` — der Fall vom 05.08. |
+| `posten_deaktiviert` | eingetragen, aber `aktiv: false` |
+| `modul_abweichung` | betreut, aber mit dem falschen Modul |
+| `fenster_abgelaufen` | `ende_utc` vorbei, der Watchdog überspringt ihn |
+| `fenster_zu_kurz` | endet vor dem Soll — künftiger Stillstand, Warnung |
+| `herzschlag_alt` / `herzschlag_fehlt` | Posten schweigt |
+| `posten_beendet` | letztes Event `stop`/`fertig`; so einen Bot startet der Watchdog nie wieder |
+| `stop_datei` | `data/live/STOP` gesetzt, der Watchdog startet gar nichts |
+| `watchdog_json_fehlt` / `_unlesbar` | Rückfall auf `DEFAULT_MANAGED`, in dem kein Messposten steht |
+
+**Wo sie läuft.** Im Durchlauf des Watchdogs selbst, alle fünf Minuten.
+Das klingt wie ein Widerspruch zum Wort „Aussenkontrolle", trifft aber
+den beobachteten Fehler: Der Scheduled Task lief während der 26,7 Stunden
+korrekt durch, nur seine *Liste* war falsch. Die Kontrolle meldet nur und
+greift nie ein — sie läuft nach der Neustart-Logik und schluckt jeden
+eigenen Fehler, damit sie einen Neustart nie verhindern kann. Zusätzlich
+ist sie als eigenständiger Aufruf mit Rückgabecodes nutzbar
+(0 besetzt, 1 kritisch, 2 Warnung, 3 Sollbesetzung unlesbar), auch aus dem
+Zweit-Klon gegen das Live-`data/live`:
+
+```
+python -m operations.pipeline.wachkontrolle --live-root C:/Users/chole/ba-thesis/data/live
+```
+
+Die Herzschlag-Grenze liegt bei 30 min statt bei den 600 s des Watchdogs:
+Erst wenn er rund fünf Zyklen lang nicht hochbekommen hat, ist das ein
+Befund und kein laufender Neustart.
+
+**Gegenprobe am echten Artefakt.** Die gesicherte Datei
+`watchdog.json.vor-isw-rearm` — der Fundzustand vom 07.08. — als
+Eingabe liefert `posten_fehlt` und Rückgabecode 1. Entscheidend ist die
+zweite Probe: mit **frischem** Herzschlag, also im Zustand des Fensters
+zwischen 19:25 und 21:41 am 05.08., als der Rekorder noch lief und nur
+die Liste schon falsch war, schlägt sie ebenfalls an. Die Meldung wäre
+also **2 h 16 min vor dem Tod des Prozesses** gekommen, nicht erst
+26 Stunden danach.
+
+**Was offen bleibt.** Stellt der Scheduled Task selbst den Betrieb ein,
+meldet weiterhin niemand etwas — die Kontrolle teilt dann das Schicksal
+ihres Wirts. Dagegen hilft nur ein zweiter, unabhängiger Auslöser (etwa
+der tägliche 06:30-Lauf im Zweit-Klon oder ein eigener Task); dafür ist
+der Rückgabecode da. Diese Entscheidung liegt bei der Studentin, weil sie
+den Windows-Aufgabenplaner betrifft.
+
+Nur `isw_ukraine` steht in der Sollbesetzung — die am 05.08. ebenfalls
+verlorenen Earnings-Profile gehören anderen Sessions und werden nach der
+Sync-Regel nicht stillschweigend mit eingetragen.
 
 ## Anhang: verwendete Endpunkte
 

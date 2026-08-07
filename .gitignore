@@ -22,6 +22,14 @@ data/literature/raw/
 
 # Claude Code
 .claude/worktrees/
+# Maschinenlokale Berechtigungen: "local" steht im Namen. Versioniert hiess
+# das, jede Maschine traegt die Datei dauerhaft als modifiziert vor sich her
+# und jeder Branchwechsel im Bot-Ordner stolpert darueber.
+.claude/settings.local.json
+
+# Lokale Sicherungskopien des Sync-Skripts (stage3_llm_audit_log.jsonl.lokal-
+# 2026-07-18.bak und Geschwister) — Arbeitsreste, kein Repo-Inhalt.
+*.lokal-*.bak
 
 # OS
 .DS_Store

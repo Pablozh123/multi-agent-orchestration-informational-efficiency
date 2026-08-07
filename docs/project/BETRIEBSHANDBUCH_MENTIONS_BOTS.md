@@ -45,7 +45,9 @@ Immer dieselben sechs Schritte, egal ob All-In, Trump oder Lemonade:
    Vorwoche mit neuer `event_id`, neuem `live_dir`, neuer Periode).
 3. Test dazu, komplette Testsuite und Lint laufen lassen.
 4. Pull Request, CI abwarten, mergen.
-5. Im Arbeitsordner `git pull`.
+5. Im Arbeitsordner Doppelklick auf `hole_main.cmd` (macht den Pull und
+   bricht ab, falls irgendetwas nicht stimmt — Branch, lokale
+   Aenderungen, kein Fast-Forward; danach laeuft die Wachkontrolle).
 6. Eintrag in `data\live\watchdog.json` — der Watchdog startet den Bot
    dann binnen fünf Minuten selbst. (Alternativ das Startskript
    `data\live\starte_bots.ps1` — aber **nie beides gleichzeitig**.)

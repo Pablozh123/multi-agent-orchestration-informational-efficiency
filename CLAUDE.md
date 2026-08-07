@@ -11,6 +11,9 @@ Follow `AGENTS.md` and `ARCHITECTURE_DECISIONS.md` for all project work.
 Those files override older prompt contracts, roadmap notes, skills, and agent
 instructions.
 
+Vor Arbeitsbeginn immer `docs/project/SYNC_KONTEXT_2026-07-16.md` und
+`docs/project/PROJEKT_INVENTAR.md` lesen (gemeinsamer Stand mit der Cowork-Session).
+
 ## Current Architecture
 
 The deterministic analysis core comes before all agents. Statistical

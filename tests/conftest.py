@@ -9,6 +9,33 @@ from typing import Generator
 import pytest
 
 
+@pytest.fixture(autouse=True)
+def _llm_audit_in_tmp(tmp_path, monkeypatch):
+    """Leitet den Default-LLM-Audit-Pfad fuer JEDEN Test in ein Temp-Verzeichnis.
+
+    call_llm() haengt an jede Attestierung genau eine Zeile an
+    DEFAULT_LLM_AUDIT_PATH an — im Repo die getrackte Beweisdatei
+    data/results/stage3_llm_audit_log.jsonl. Jeder Aufrufer, der keinen
+    audit_path setzt (build_review_queue() ohne Argumente, das Eval, der
+    Determinismus-Check), schrieb damit aus der Testsuite heraus in die
+    Beweiskette: +204 Zeilen pro Suite-Lauf, in jedem Checkout, was die
+    Arbeitskopien dauerhaft schmutzig hielt und Test-Attestierungen mit
+    echten Kettenlaeufen vermischte.
+
+    call_llm() liest die Konstante bei jedem Aufruf aus dem Modul-Scope und
+    behandelt absolute Pfade als endgueltig (base / absoluter_Pfad ergibt in
+    pathlib den absoluten Pfad), darum genuegt es, sie hier zu patchen.
+    Tests, die den Audit-Inhalt pruefen wollen, setzen weiterhin ihren
+    eigenen audit_path oder audit_sink — dieses Fixture aendert nur, wohin
+    der Default zeigt.
+    """
+    from operations.agents.review_queue import llm
+
+    monkeypatch.setattr(
+        llm, "DEFAULT_LLM_AUDIT_PATH", str(tmp_path / "stage3_llm_audit_log.jsonl")
+    )
+
+
 # Target schema — canonical definition of what the production init_db.py MUST produce.
 # Tests run against this fixture; mismatches in init_db.py will surface as failures.
 _TARGET_SCHEMA = """

@@ -2,8 +2,7 @@
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch, FancyArrow, Polygon, Circle, Rectangle, Arc
-import matplotlib.patches as mpatches
+from matplotlib.patches import FancyBboxPatch, Polygon, Circle, Rectangle, Arc
 
 NAVY='#16324f'; RED='#e8452c'; BLUE='#2467a6'; GREY='#5f6b76'; LGREY='#eef1f5'; BORD='#c9d2dc'
 fig,ax=plt.subplots(figsize=(16,9),dpi=200)

@@ -174,3 +174,59 @@ Erster Lauf über die Kette am 22.07., 12:11 UTC: 1655 geprüfte Märkte, kumuli
 **Michigan-Lauf 27.07. abends (Event 745732, LIVE): 0 Käufe, 0.00 USD — zwei Systemlehren, beide noch in der Nacht gefixt.** (1) YouTube rotierte das HLS-Manifest zweimal (21:01/22:07 CEST); ffmpeg hing still am toten Manifest, ~65 min blind — u. a. den Supreme-Court-Fall verpasst (CLOB-Trades: 0.19 → 0.97 um 20:13:27 UTC, sechs Minuten nach dem zweiten Einfrieren). Fix: Stall-Detektor (`stream_stall_s` 25 s) + In-Prozess-Reconnect über die `/live`-Kanäle mit Titel-Gate; `transcriber.neue_quelle()` — die Marktzähler überleben den Quellenwechsel. (2) Die 13 gehörten Minuten waren fast nur GASTREDNER (Transkript-verifiziert; „Save America" um 20:01 sagte ein Gast) — ECAPA wies korrekt ab. Das echte Defizit: Die Studio-Referenz erreichte auf PA-Audio max 0.396; eine Referenz aus den Trump-Passagen des Mitschnitts trennt scharf (Trump min 0.610, Gäste max 0.287). Dazu Reprice-Messung aus CLOB-Trades: der Markt preist live gehörte Wörter in 1–4 s ein (Save America 0.87→0.98 in 2 s; Transgender acht Trades in einer Sekunde). (3) Neuer `--fenster-modus` als Fallback: Sprecherbindung über das Operator-Fenster (Marker an/aus, kein Latch), Trigger auf dem Gesamtzähler.
 
 **Graham-Tribute armiert (Event 745731, 28.07. 18:00 UTC, National Cathedral).** Profil `trump_graham_july28`: Referenz-Union PA+Studio (Schwelle 0.50), Reconnect-Kanäle WNCathedral/C-SPAN/ABC/NBC mit Funeral-Titel-Gate, Budget 100/Markt (2×50) bei Pool 650 (User-Vorgabe), 19 aktive Märkte live verifiziert, Smoke-Test grün. Runbook `TRUMP_GRAHAM_JULY28_ARMIERUNG.md`; Task-Anlage bei der Studentin. Tests nach Merge und Ausbau: siehe jeweilige Commits (zuletzt 1081+ grün).
+## Update 30.07.2026: Ukraine-Karten-Rekorder armiert, erste Messpunkte
+
+**Neuer Messstrang** (Sessions wt-ukraine, PRs #36/#41, gemergt): Ein
+read-only Rekorder misst den Vorlauf zwischen Änderungen der ISW-ArcGIS-
+Karte (Auflösungsquelle der Polymarket-Familie `ukraine-map`, 46–51
+beobachtete Märkte) und der Marktpreisreaktion. Seit 28.07. 23:15 UTC als
+Watchdog-Profil `isw_ukraine` im ba-thesis-Klon in Dauerbetrieb
+(überlebt Abstürze und Neustarts). Architektur: Kandidaten mit sofortiger
+T+0-Messung (Preis + Orderbuch-Tiefe), Bestätigung nach 60-min-
+Beruhigungsfenster (nettet ISW-Rebuild-Artefakte, spiegelt die
+Persistenzklausel der Marktregel), Marktlisten-Refresh alle 15 min.
+Dokumentation: `docs/project/UKRAINE_ISW_LATENZ_SONDIERUNG.md`;
+Vorregistrierung der Auswertung:
+`docs/project/ISW_VORLAUF_MESSPROTOKOLL_2026-07-30.md` (Entwurf, Schwellen
+friert die Studentin ein). Lizenzfrage ISW-Daten laut Studentin geklärt
+(30.07.): Nutzung möglich.
+
+**Stand der Messung (N=3 Siedlungsereignisse, 07.08.):**
+
+| Ereignis | Markt vor ISW-Update | Reaktion | Kante |
+| --- | --- | --- | --- |
+| Krasnoiarske 22.07. (rekonstruiert) | YES 0.046 | 18 min 43 s totes Fenster, dann Sweep auf 0.93; Auflösung YES 23.07. | ~50 pp |
+| Oleksiyevo-Druzhkivka 29.07. (live gemessen) | YES 0.89 | keine Sofortreaktion, +6 pp binnen 30 min | ~5 pp |
+| Myrne 03.08. (live gemessen) | YES 0.93 | +1,5 pp binnen 30 min, Treffer bestätigt | ~1,5 pp |
+
+Anteil Überraschung 0.333, Entscheidung `weiter_messen` (N 3/10,
+Stichtag 14.08.). Zwei der drei Go-Kriterien erfüllt; die mediane
+Buchtiefe bleibt offen, weil sie nur über Überraschungsfälle gerechnet
+wird und der einzige davon der rekonstruierte Krasnoiarske-Fall ohne
+Orderbuch-Messung ist.
+
+Der Markt preist den laufenden ISW-Bestand effizient (kein offener
+„enter"-Markt mit qualifizierender Schattierung unter 0.91, Scan 23.07.);
+die Kante existiert nur im Moment unerwarteter Änderungen. Auswertung
+deterministisch per `python -m operations.analysis.isw_vorlauf_auswertung`
+(16 Tests). Entscheidungsregel und Stichtag (14.08. oder N=10) stehen im
+Messprotokoll; ein Go führt zunächst in eine Paper-Phase, kein Order-Pfad
+im Rekorder.
+
+**Armierung:** Der Rekorder läuft als Watchdog-Profil `isw_ukraine`
+(`modul: isw_rekorder`, `--live`, read-only). Seine Sollbesetzung liegt
+versioniert in `data/wachposten.json` und wird von
+`operations/pipeline/wachkontrolle.py` (28 Tests) in jedem
+Watchdog-Durchlauf geprüft — Anlass war der Ausfall vom 05.–07.08.
+(26,7 h), bei dem das Profil aus dem gitignorierten
+`data/live/watchdog.json` verschwand und der Watchdog trotzdem
+wahrheitsgemäss „alle betreuten Bots leben" meldete. Eigenständiger
+Aufruf mit Rückgabecode: `python -m operations.pipeline.wachkontrolle
+--live-root <live>`.
+
+**Prozessnotiz:** Sechs Fehler des Rekorders wurden erst durch Probeläufe
+gegen die echten Endpunkte bzw. einen adversarialen Review sichtbar, alle
+mit derselben Signatur „kein Fehler, nur Schweigen" (Details Abschnitte
+10–12 der Sondierungs-Doku). Für die Thesis verwertbar als Befund über
+das Hauptrisiko von Latenz-Strategien: die stille Fehlfunktion des
+Messapparats, nicht die fehlende Kante.

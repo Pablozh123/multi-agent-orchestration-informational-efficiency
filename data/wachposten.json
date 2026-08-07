@@ -1,0 +1,11 @@
+{
+  "_hinweis": "Sollbesetzung der Watchdog-Messposten - VERSIONIERT und damit gegen ein stilles Zuruecksetzen von data/live/watchdog.json geschuetzt. Geprueft von operations/pipeline/wachkontrolle.py: fehlt hier ein Eintrag in watchdog.json, ist er deaktiviert, abgelaufen oder still, schlaegt die Kontrolle an. Nur DAUERHAFT laufende Messposten eintragen - Audio-Bots beenden sich nach ihrem Lauf selbst via 'fertig' und wuerden dauerhaft als posten_beendet gemeldet. Jede Session traegt nur ihre eigenen Posten ein.",
+  "posten": {
+    "isw_ukraine": {
+      "modul": "isw_rekorder",
+      "ende_utc": "2026-12-31T23:59:59Z",
+      "max_herzschlag_s": 1800,
+      "grund": "Vorwaertsmessung ISW-Karte -> Polymarket-Preis. Ein historischer Backtest ist ausgeschlossen (ISW zeichnet Polygone neu), jede Ausfallstunde ist endgueltig verlorene Stichprobe. Ausfall 05.-07.08.2026: 26,7 h, vier qualifizierende Layer veraendert, ein kompletter ISW-Tageszyklus verloren."
+    }
+  }
+}

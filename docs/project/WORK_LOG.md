@@ -13462,3 +13462,124 @@ Next step:
 - Author fills in the pilot budget and freeze confirmation in the
   protocol, runs `python -m operations.pilot.watcher` during the trading
   window, and logs manual trades in `pilot/trades.csv`.
+
+## 2026-08-07 - ukraine: Wachkontrolle gegen den stillen Messausfall
+
+Task:
+
+- Close the weakness documented in section 16 of
+  `UKRAINE_ISW_LATENZ_SONDIERUNG.md`: a profile that VANISHES from
+  `data/live/watchdog.json` produces no signal at all. The watchdog then
+  truthfully reports "alle betreuten Bots leben" while the measurement is
+  dead — that is how 26.7 h of ISW recorder data were lost on 05.-07.08.
+
+Files changed:
+
+- `operations/pipeline/wachkontrolle.py` (new)
+- `data/wachposten.json` (new, versioned target roster)
+- `operations/pipeline/watchdog.py` (calls the control after each run)
+- `tests/test_wachkontrolle.py` (new, 28 tests)
+- `tests/test_watchdog_doppelstart.py` (fixture isolates the roster path)
+- `docs/project/UKRAINE_ISW_LATENZ_SONDIERUNG.md` (section 17)
+- `docs/project/PROJEKT_INVENTAR.md`
+
+Key output:
+
+- The load-bearing decision is WHERE the expectation lives, not the check
+  itself: `data/wachposten.json` is versioned, so a reset of the
+  gitignored `data/live/` cannot erase it and shows up as a git diff.
+- Replayed against the real artifact `watchdog.json.vor-isw-rearm` (the
+  state found on 07.08.), the control returns `posten_fehlt` plus exit
+  code 1. With a FRESH heartbeat — the 05.08. window between 19:25 and
+  21:41, when the roster was already wrong but the recorder still ran —
+  it also fires. The alarm would have come 2 h 16 min BEFORE the process
+  died, not 26 h after.
+
+Verification:
+
+- `python -m pytest tests/test_wachkontrolle.py tests/test_watchdog_doppelstart.py -q` -> 43 passed.
+- `python -m pytest -q` -> 1172 passed.
+- `python -m operations.project.review_check` -> pytest PASS; the four
+  FAILs (restricted claim wording, fixed whale threshold, ml scope guard,
+  live trading guard) are pre-existing and sit in files untouched here.
+- Live check against the running recorder:
+  `python -m operations.pipeline.wachkontrolle --live-root C:/Users/chole/ba-thesis/data/live`
+  -> "alle 1 erwarteten Posten besetzt und wach.", exit 0.
+
+Decision:
+
+- The control runs inside the watchdog's own 5-minute pass. That sounds
+  like a contradiction of "Aussenkontrolle", but it matches the observed
+  failure: the scheduled task ran correctly throughout the outage, only
+  its list was wrong. It reports and never intervenes — it runs after the
+  restart logic and swallows its own errors so it can never block a
+  restart.
+- Only `isw_ukraine` is entered in the roster. The earnings profiles lost
+  in the same 05.08. reset belong to other sessions and are not silently
+  re-added (parallel-session rule).
+
+Next step:
+
+- Residual gap: if the scheduled task itself stops running, nobody
+  reports anything. A second, independent trigger would close it (the
+  06:30 daily run in the second clone, or its own task); the exit code
+  exists for that. That decision belongs to the author because it touches
+  the Windows Task Scheduler.
+
+## 2026-08-07 - ukraine: zweiter Ausloeser + Messstand N=3
+
+Task:
+
+- Close the residual gap of the previous commit (the control shared the
+  fate of its own scheduled task) and record the current measurement
+  state, which had advanced past the documentation.
+
+Files changed:
+
+- `operations/pipeline/daily_review_task.cmd`
+- `docs/project/UKRAINE_ISW_LATENZ_SONDIERUNG.md` (section 17 close-out,
+  new section 18)
+- `docs/project/PROJEKT_INVENTAR.md`
+
+Key output:
+
+- Second, independent trigger: the versioned daily wrapper now calls
+  `wachkontrolle` right after the `git pull` and before the run. Two
+  scheduled tasks, two working copies, one versioned roster. Silence now
+  requires BOTH tasks to fail — which, unlike 05.08., is also visible in
+  the missing daily run and the stale website.
+- Third measured settlement event found in the live protocol and not yet
+  documented: Myrne, 03.08. 14:06:17Z, lead 118.5 s, T+0 0.930 -> T+30
+  0.945, hit confirmed after the calming window. The three events form a
+  falling remaining path: +82 pp, +6 pp, +1.5 pp.
+- State against the 30.07. preregistration: 3 settlement events, share of
+  surprises 0.333, decision `weiter_messen` (N 3/10, cutoff 14.08.). Two
+  of three Go criteria met; median book depth is structurally
+  undecidable while the only surprise case is the reconstructed
+  Krasnoiarske event without an order-book measurement.
+
+Verification:
+
+- `python -m pytest -q` -> 1172 passed.
+- cmd control flow verified in isolation with a stub exit code: ALARM
+  line on 1/2/3, silent on 0, skipped without `%2`, and the Tageslauf
+  label is always reached (the control never blocks the daily run).
+- Counterfactual run with the outage markers stripped from a copy of the
+  protocol: unchanged at 3 events / 0.333.
+
+Decision:
+
+- Correction to the reading in section 16: the four post-outage
+  candidates are currently out of the distribution because the
+  evaluation counts only CONFIRMED hits and their calming window was
+  still open — not yet because of `nach_ausfall_s`. The marker takes
+  effect at confirmation. Documented as pending rather than as a
+  demonstrated effect; the arithmetic it would then prevent is 0.25
+  instead of 0.333 (Matiasheve is one settlement event, two market
+  rows; the two Huliaipole rows are `auswertbar: false` anyway).
+
+Next step:
+
+- Merge into the live clone: `ba-thesis` still runs the watchdog without
+  the control (it sits on `feat/earnings-bot`). Until then neither
+  trigger protects the running measurement.

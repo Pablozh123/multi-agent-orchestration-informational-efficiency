@@ -1,0 +1,110 @@
+{
+  "layer_stand": {
+    "infiltration": 1784816011505,
+    "gains24h": 1784811263937,
+    "advance": 1784761071301,
+    "control": 1784672173022
+  },
+  "gedeckt": {
+    "will-russia-capture-kupiansk-vuzlovyi-by-december-31-547-481": [
+      "infiltration"
+    ],
+    "will-russia-capture-kupiansk-vuzlovyi-by-september-30": [
+      "infiltration"
+    ],
+    "will-russia-capture-all-of-kostyantynivka-by-july-31-2026": [
+      "infiltration",
+      "advance"
+    ],
+    "will-russia-capture-all-of-kostyantynivka-by-september-30-2026": [
+      "infiltration",
+      "advance"
+    ],
+    "will-russia-capture-all-of-kostyantynivka-by-december-31-2026-372-718": [
+      "infiltration",
+      "advance"
+    ],
+    "will-russia-capture-all-of-lyman-by-december-31-2026": [
+      "infiltration"
+    ],
+    "will-russia-enter-novyi-donbas-by-september-30": [
+      "infiltration"
+    ],
+    "will-russia-enter-svitle-by-september-30": [
+      "infiltration"
+    ],
+    "will-russia-enter-krasnoiarske-by-december-31-671": [
+      "infiltration"
+    ],
+    "will-russia-enter-krasnoiarske-by-july-31": [
+      "infiltration"
+    ],
+    "will-russia-enter-krasnoiarske-by-september-30": [
+      "infiltration"
+    ],
+    "will-russia-enter-vasylivka-by-july-31-2026": [
+      "infiltration"
+    ],
+    "will-russia-capture-all-of-bilytske-by-december-31": [
+      "infiltration",
+      "advance"
+    ],
+    "will-russia-capture-all-of-chasiv-yar-by-september-30": [
+      "infiltration",
+      "advance",
+      "control"
+    ],
+    "will-russia-capture-all-of-chasiv-yar-by-december-31": [
+      "infiltration",
+      "advance",
+      "control"
+    ],
+    "will-russia-capture-kupiansk-by-september-30-2026": [
+      "infiltration"
+    ],
+    "will-russia-capture-kupiansk-by-december-31-2026": [
+      "infiltration"
+    ],
+    "will-ukraine-re-enter-hryshyne-by-july-31-20260604220043035": [
+      "infiltration",
+      "advance"
+    ],
+    "will-ukraine-re-enter-hryshyne-by-september-30": [
+      "infiltration",
+      "advance"
+    ],
+    "untitled-market-1-20260630004444282": [
+      "infiltration"
+    ],
+    "will-russia-capture-kozacha-lopan-by-december-31-2026-20260630005737621": [
+      "infiltration"
+    ],
+    "will-ukraine-re-enter-uspenivka-by-december-31": [
+      "advance"
+    ],
+    "will-ukraine-re-enter-obratne-or-temyrivka-by-december-31": [
+      "advance"
+    ],
+    "will-russia-enter-novooleksandrivka-by-september-30-2026-358": [
+      "advance"
+    ],
+    "will-russia-enter-novooleksandrivka-by-july-31-2026": [
+      "advance"
+    ],
+    "will-ukraine-re-enter-myrnohrad-by-december-31": [
+      "advance",
+      "control"
+    ],
+    "will-russia-capture-all-of-rodynske-again-by-july-31": [
+      "advance"
+    ],
+    "will-russia-capture-all-of-rodynske-again-by-september-30": [
+      "advance"
+    ],
+    "will-ukraine-re-enter-kamianske-by-september-30": [
+      "advance",
+      "control"
+    ]
+  },
+  "offene_nachfassungen": []
+}

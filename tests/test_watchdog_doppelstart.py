@@ -51,6 +51,9 @@ def _isolierte_pfade(tmp_path, monkeypatch):
     monkeypatch.setattr(watchdog, "WATCHDOG_LOG", live / "watchdog.log")
     monkeypatch.setattr(watchdog, "WATCHDOG_LOCK", live / "watchdog.lock")
     monkeypatch.setattr(watchdog, "STOP_FILE", live / "STOP")
+    # Auch die Sollbesetzung: sonst prueft die Wachkontrolle die echten
+    # Messposten des Repos gegen diese tmp-Attrappen.
+    monkeypatch.setattr(watchdog, "WACHPOSTEN_JSON", live / "wachposten.json")
     # Sicherheitsnetz: Tests duerfen nie tasklist/taskkill erreichen.
     monkeypatch.setattr(watchdog, "_pid_lebt", lambda pid: False)
     yield

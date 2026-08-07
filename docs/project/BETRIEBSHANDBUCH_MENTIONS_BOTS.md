@@ -112,3 +112,45 @@ Datei löschen und `data\live\starte_bots.ps1` ausführen.
 - Ähnliche Marktnamen sind verschiedene Märkte — Regeltext entscheidet.
 - Bei Unsicherheit: `git log -1 --oneline` und `gh pr list` zeigen in
   zwei Zeilen, wo das Projekt steht.
+
+## 9. Nachtrag 07.08.2026: Ist-Zustand gegen die Regeln oben
+
+Erhoben am 07.08. über alle sechs Arbeitsorte. Zwei Regeln aus Abschnitt 1
+stimmen im Moment nicht mit der Wirklichkeit überein, und die Ordnertabelle
+aus Abschnitt 2 ist unvollständig.
+
+**Regel 2 und 4 gelten gerade nicht.** `C:\Users\chole\ba-thesis` steht auf
+`feat/earnings-bot`, nicht auf `main`, und ist 12 Commits hinter
+`origin/main`. Der Ordner, aus dem die Bots laufen, führt damit nicht den
+getesteten Stand. Nach Abschnitt 3 ist genau das der Fall, den die
+Worktree-Ordnung verhindern soll: Beim nächsten Bot-Neustart wird geladen,
+was hier liegt. Das Aufräumen ist Handarbeit der Autorin und kein
+Nebenbei-Schritt, weil ein Branchwechsel den laufenden Bots die Konfiguration
+unter den Füssen wegzieht — erst STOP-Datei, dann wechseln, dann neu starten.
+
+**Die Ordnertabelle kennt zwei Ordner nicht.**
+`C:\Users\chole\Projects\wt-elon` und `C:\Users\chole\Projects\wt-ukraine`
+sind Worktrees dieses Repositories, liegen aber nicht unter
+`.claude\worktrees` und sind nicht temporär: wt-ukraine trägt den
+Ukraine-Zweig seit Wochen. Nach der Regel „nicht anfassen, ignorieren" wären
+sie übersehbar, was für einen Ordner mit unverschobener Arbeit die falsche
+Anweisung ist. wt-elon steht seit dem 07.08. wieder auf dem Stand von `main`,
+sein Zweig war vollständig gemergt.
+
+**Sechster Ort:** `C:\Users\chole\Projects\multi-agent-orchestration-informational-efficiency`
+ist ein zweiter vollständiger Klon desselben Repositories (schon in
+SYNC_KONTEXT §6 vermerkt). Von dort laufen keine Bots.
+
+**Was das Netz seit heute besser abdeckt.** Die CI löst jetzt auch bei Pushes
+auf `feat/**` und `fix/**` aus, nicht mehr nur auf `main` und Pull Requests.
+Schritt 3 im Ablauf oben ist damit nicht mehr die einzige Prüfung vor dem
+Merge. Ausgelöst hat die Änderung ein Befund: `feat/earnings-bot` hatte 34
+Commits gesammelt, die nie in der CI waren, und `fix/elon-startscan-feedposition`
+lag zwei Tage mit einer Korrektheitskorrektur ungemergt herum.
+
+**Zweigbestand:** 20 Fernzweige, davon 16 vollständig in `main` enthalten und
+löschbar. Unverschobene Arbeit tragen nur `feat/ukraine-karte-bot` (PR #46)
+und `fix/elon-startscan-feedposition` (PR #47).
+`feat/pilot-watcher-kette-und-quellpfad` sieht mit fünf Commits danach aus,
+ist es aber nicht: atomares Publish, Quellpfad-Fallback und die zugehörigen
+Tests stehen längst auf `main`. Der Zweig ist überholt, nicht offen.

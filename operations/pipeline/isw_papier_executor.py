@@ -54,15 +54,25 @@ from dataclasses import asdict, dataclass
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
-from operations.pipeline.config import STOP_FILE
 from operations.pipeline.isw_feuerkette import (
     STANDARD_BEFEHLE,
     WOCHENDECKEL_USDC,
 )
-from operations.pipeline.watchdog import NOTAUS_GRUND
 
 STANDARD_JOURNAL = Path("data/live/isw_ukraine/papier_journal.jsonl")
 LIVE_INTERVALL_S = 20.0   # Befehle verfallen nach 600 s; 20 s laesst Reserve.
+
+# Bewusst NICHT aus config/watchdog importiert: config.py loest BOT_PROFIL
+# beim Import gegen seine PROFILE-Tabelle auf, und der Watchdog startet
+# diesen Executor mit BOT_PROFIL=isw_papier — einem Profil, das dort mit
+# Absicht nicht steht (der Executor hat kein Event, keine Periode, kein
+# live_dir im Profilsinn). Der Import beider Module liess den Prozess am
+# 07.08. in einer stillen Neustart-Schleife sterben, bevor er sein erstes
+# Ereignis schreiben konnte. Die Werte stehen darum lokal; dass sie mit
+# watchdog.NOTAUS_GRUND und config.STOP_FILE identisch bleiben, sichert
+# der Test (der ohne fremdes BOT_PROFIL importieren darf).
+STOP_DATEI = Path("data/live/STOP")
+NOTAUS_GRUND = "STOP-Datei"
 
 
 @dataclass(frozen=True)
@@ -318,7 +328,7 @@ def _ereignis(live_dir: Path, art: str, **extra) -> None:
 
 
 def live_lauf(befehle_pfad: Path, journal_pfad: Path, live_dir: Path,
-              stop_datei: Path = STOP_FILE,
+              stop_datei: Path = STOP_DATEI,
               intervall_s: float = LIVE_INTERVALL_S,
               max_zyklen: int | None = None,
               schlaf=time.sleep,

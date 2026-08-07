@@ -145,6 +145,47 @@ PROFILE = {
         # der Runde zu 0.50-0.70 gehandelt — genau dieses Fenster.
         "nachlauf_minuten": 90,
     },
+    "allin_july31": {
+        "live_dir": "allin_july31",
+        "event_id": "758791",
+        "event_slug": (
+            "what-will-be-said-on-the-next-all-in-podcast-july-31-"
+            "20260727161921239"
+        ),
+        # E283-Woche (Drop Fr 31.07. ~22-23 UTC). Quellen und Gates 1:1
+        # aus der gelaufenen E282-Woche. Prober-Vorbedingung am 31.07.
+        # 14:25 UTC verifiziert: E282 HTTP 200 (134 964 123 B), E283 noch
+        # 404 -> Prober feuert bei Minute 0. Regeltext des Events 758791
+        # gegen july24 gelesen: gleiche Schablone (Playlist-Regel,
+        # "resolution source will be audio", Specials zaehlen nicht).
+        "rss_feed_url": "https://allinchamathjason.libsyn.com/rss",
+        "yt_channel_id": "UCESLZhusAkFfsNsApnjF_Cg",
+        "mp3_probe_muster": (
+            "https://traffic.libsyn.com/secure/allinchamathjason/"
+            "ALLIN-E{n}_Ch.mp3"
+        ),
+        "discovery_slug_filter": "all-in",
+        "yt_playlist_id": "PLn5MTSAqaf8peDZQ57QkJBzewJU1aUokl",
+        "rss_nur_muster": r"ALLIN-E\d+_Ch\.mp3",
+        # NO-Schutzschild unveraendert wie july24 (Seiten-Deckel 0.80,
+        # Basisraten-Veto Serie 11300, Boilerplate-Lexikon, Gap-Verify).
+        # Bewusst KEINE Aenderung an der NO-Kette in dieser Woche: der
+        # Nachbarschafts-/Blockgrenzen-Filter aus den Agentic- und
+        # Guidance-Faellen (28.07.) ist noch nicht gebaut.
+        "boilerplate_begriffe": ALLIN_BOILERPLATE,
+        "serie_id": "11300",
+        # Volles Budget (User 31.07.): Wallet-Stand 643.67 pUSD (Server-
+        # Sicht 14:26 UTC) -> 620 nutzbar, ~24 Puffer fuer Fees und den
+        # parallel laufenden trump_july27 (400er Pool auf DERSELBEN
+        # Wallet; der Executor-Delta-Sync verhindert Ueberziehen, aber
+        # ein Profil kann dem anderen den Pool wegkaufen).
+        # max_usd_pro_markt ist die FAK-CLIP-Groesse, nicht der Markt-
+        # deckel: 50 USD x bis zu 40 Clips -> effektiv budget-limitiert.
+        "max_usd_gesamt": 620.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        "nachlauf_minuten": 90,
+    },
     "allin_july17": {
         "live_dir": "allin_july17",
         "event_id": "700931",
@@ -432,6 +473,110 @@ PROFILE = {
         # noch lange nach der Runde guenstig gehandelt).
         "nachlauf_minuten": 90,
     },
+    "allin_august7": {
+        "live_dir": "allin_august7",
+        "event_id": "790609",
+        "event_slug": (
+            "what-will-be-said-on-the-next-all-in-podcast-august-7-"
+            "20260731211505799"
+        ),
+        # E284-Woche. Quellen und Gates 1:1 aus allin_july31. Prober-
+        # Vorbedingung am 07.08. 15:59Z verifiziert: E283 HTTP 200
+        # (139 038 710 B — dieselbe Datei, die der 31.07.-Lauf geladen
+        # hat), E284 noch 404 -> Prober feuert bei Minute 0.
+        # Brett diesmal nur 11 Maerkte (statt 18) und mit angehobenen
+        # Schwellen: AI 50+ (war 35+), Anthropic 5+ (war 3+).
+        "rss_feed_url": "https://allinchamathjason.libsyn.com/rss",
+        "yt_channel_id": "UCESLZhusAkFfsNsApnjF_Cg",
+        "mp3_probe_muster": (
+            "https://traffic.libsyn.com/secure/allinchamathjason/"
+            "ALLIN-E{n}_Ch.mp3"
+        ),
+        "discovery_slug_filter": "all-in",
+        "yt_playlist_id": "PLn5MTSAqaf8peDZQ57QkJBzewJU1aUokl",
+        "rss_nur_muster": r"ALLIN-E\d+_Ch\.mp3",
+        # NO-Schutzschild unveraendert (Deckel 0.80, Basisraten-Veto
+        # Serie 11300, Boilerplate, Gap-Verify). Es hat am 31.07. zweimal
+        # korrekt gegriffen (SpaceX 0.83, Blue 1.00) und traegt die
+        # NO-Seite weiterhin allein — der Nachbarschafts-/Blockgrenzen-
+        # Filter ist nach wie vor nicht gebaut.
+        "boilerplate_begriffe": ALLIN_BOILERPLATE,
+        "serie_id": "11300",
+        # Volles Budget nach demselben Prinzip wie am 31.07. (User
+        # "volles Budget"): Wallet-Stand 711.58 pUSD (Server-Sicht
+        # 07.08. 16:02Z) -> 680 nutzbar, ~31 Puffer fuer Fees und den
+        # parallel laufenden elon_august3 (400er Pool auf DERSELBEN
+        # Wallet; Delta-Sync verhindert Ueberziehen, aber ein Profil
+        # kann dem anderen den Pool wegkaufen).
+        "max_usd_gesamt": 680.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        "nachlauf_minuten": 90,
+    },
+    "jre_august3": {
+        "live_dir": "jre_august3",
+        "event_id": "778632",
+        "event_slug": (
+            "what-will-be-said-on-the-first-joe-rogan-experience-episode-"
+            "of-the-week-august-3-20260731210932757"
+        ),
+        # Quellen und Gates 1:1 aus jre_july20. Feed-Stand 04.08. 16:58Z
+        # geprueft: letzte Episode #2534 (Fr 31.07. 17:00Z), diese Woche
+        # noch KEINE -> die erste Episode der Woche steht unmittelbar an.
+        # Rhythmus der letzten beiden Wochen ausnahmslos Di-Fr 17:00Z
+        # (#2528-#2530, #2531-#2534), Montag nie.
+        "rss_feed_url": "https://feeds.megaphone.fm/GLT1412515089",
+        "yt_channel_id": "UCzQUP1qoWDoEbmsQxvdjxgQ",  # PowerfulJRE
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "joe-rogan-experience",
+        "titel_muster": r"(?:joe rogan experience\s*)?#\d{3,5}\s*-",
+        "titel_verboten": r"mma\s*show",  # "JRE MMA Show ... will not count"
+        "yt_kanalseite_immer": True,
+        "max_usd_gesamt": 510.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        # NO-Schutzschichten wie july20: Serie 11275 fuer Basisraten
+        # (Dauerbrenner wie right/left/people werden gesperrt),
+        # Intro-Jingle-Lexikon.
+        "serie_id": "11275",
+        "boilerplate_begriffe": JRE_BOILERPLATE,
+        # Nachlauf 90: JRE-Buecher sind duenn und MMs traege (#2523: alle
+        # Asks beim Drop gepullt, 0 Trades) — dieselbe Fallenklasse wie
+        # der All-In-Liquiditaetsentzug vom 31.07.
+        "nachlauf_minuten": 90,
+    },
+    "elon_august3": {
+        "live_dir": "elon_august3",
+        "event_id": "778580",
+        "event_slug": (
+            "what-will-elon-post-this-week-august-3-august-9-"
+            "20260731162042267"
+        ),
+        # Quelle wie july20/july27: X-Posts von @elonmusk (x_watch.py,
+        # GraphQL-Web-Pfad mit Login-Cookies aus .env), elon_bot.py,
+        # NUR YES — die NO-Seite konvergiert die Woche ueber gegen 1,
+        # dort gibt es keinen Geschwindigkeits-Edge.
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "what-will-elon-post",
+        "x_user_id": "44196397",  # @elonmusk (verifizierter Account)
+        "p_win": 0.97,
+        "min_edge": 0.03,
+        "periode_start_utc": "2026-08-03T04:00:00Z",  # 03.08. 00:00 ET
+        "periode_ende_utc": "2026-08-10T03:59:59Z",   # 09.08. 23:59 ET
+        "x_poll_s": 8.0,
+        "max_usd_gesamt": 400.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        # ARMIERUNG MITTEN IN DER PERIODE (04.08., Tag 2 von 7) — gleiche
+        # Lage wie july20 an Tag 4: 12 Startscan-Seiten decken die
+        # bisherige Woche ab, sonst bleiben die Posts vom 03.-04.08.
+        # ungeprueft und ein vom Markt uebersehener Treffer faellt hinten
+        # runter. Der Bot bricht ohnehin ab, sobald der aelteste geladene
+        # Post vor dem Periodenstart liegt.
+        "startscan_seiten": 12,
+    },
     "lemonade_july22": {
         "live_dir": "lemonade_july22",
         "event_id": "708407",
@@ -693,6 +838,335 @@ PROFILE = {
         # sobald der aelteste geladene Post vor dem Periodenstart liegt.
         "startscan_seiten": 12,
     },
+    "earnings_axp_july24": {
+        # Event 715475 "What will American Express say during their next
+        # earnings call?" — Call 24.07.2026 08:30 AM ET = 12:30 UTC (EDT,
+        # von der Nutzerin am Call-Tag live bestaetigt). Kurzfristige
+        # Armierung am Call-Tag; Design und Gates identisch zu
+        # earnings_pg_july29 (siehe dort und Runbook). Alle Wortmaerkte
+        # sind Einzelbegriffe -> keine Komposita-Overrides noetig.
+        "live_dir": "earnings_axp_july24",
+        "event_id": "715475",
+        "event_slug": ("what-will-american-express-say-during-their-next-"
+                       "earnings-call-20260717164416058"),
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": (
+            "american-express-say-during-their-next-earnings"),
+        "call_start_utc": "2026-07-24T12:30:00Z",
+        "call_max_minuten": 120.0,
+        "chunk_sekunden": 10,
+        # YES-only wie pg_july29: Live-Capture ohne Abdeckungsgarantie.
+        "no_ask_obergrenze": 0.0,
+        "gap_verify_aktiv": False,
+        "trigger_verify_aktiv": True,
+        # Budget-Platzhalter; vor --live durch User-Vorgabe bestaetigen.
+        "max_usd_gesamt": 100.0,
+        "nachlauf_minuten": 30,
+    },
+    "earnings_pg_july29": {
+        # Event 715467 "What will Procter & Gamble say during their next
+        # earnings call?" — 22 Maerkte, davon 8 Zaehl-Brackets (Income/
+        # Quarter/Fiscal/Innovation/Revenue/Consumer/Profit 10+, Customer
+        # 5+). Erhoben via Gamma am 24.07.2026. Die Zaehl-Brackets sind
+        # laut Recherche 22.07. der einzig verteidigungsfaehige Rest-Edge
+        # dieser Marktklasse (Verarbeitungs-, kein Latenzvorsprung);
+        # Einzelwort-Maerkte repricen in ~4 s gegen unsere 10-15 s.
+        "live_dir": "earnings_pg_july29",
+        "event_id": "715467",
+        "event_slug": ("what-will-procter-gamble-say-during-their-next-"
+                       "earnings-call-20260717164206363"),
+        # Kein Drop-Watcher: Der Call startet zur bekannten Uhrzeit als
+        # Live-Webcast. Audio via Loopback-Geraet (Nutzer spielt den
+        # Webcast selbst ab — kein automatisierter Login, keine
+        # Zugangsdaten im Bot) oder direkte Stream-URL. Eigenes Skript
+        # earnings_bot.py; die Feed-Felder bleiben leer.
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "procter-gamble-say-during-their-next-earnings",
+        # Call laut Gamma-Beschreibung 29.07.2026 08:30 AM ET = 12:30 UTC
+        # (EDT). VOR der Armierung an der IR-Quelle gegenpruefen: beim
+        # Dow-Call nannte Polymarket 9 AM, die Firma selbst 8 AM ET
+        # (Messprotokoll 23.07., §8) — eine Stunde zu spaet armiert.
+        "call_start_utc": "2026-07-29T12:30:00Z",
+        "call_max_minuten": 120.0,
+        # 10s-Chunks: Beim Livestream ist die Chunk-Fuellzeit der
+        # dominante Latenzposten (Messprotokoll §4.3: Transkription
+        # selbst ~0.4 s bei small/cuda). Fuer Zaehl-Brackets ist Latenz
+        # zweitrangig; 10 s halten den Rueckstand trotzdem klein.
+        "chunk_sekunden": 10,
+        # Deckel: Audio-Standard p_win 0.93 - 0.03 = 0.90 (Defaults).
+        # NO-SEITE AUS: Live-Capture hat keine belegte Abdeckungs-
+        # garantie (spaeter Einstieg, Aussetzer der Quelle) — der
+        # erweiterte Zaehler ist dann kein tauglicher Abwesenheits-
+        # Proxy (E281-Lehre, verschaerft). Analog hotones_july23
+        # YES-only, bis die Abdeckung kalibriert ist; Gap-Verify
+        # entfaellt damit ebenfalls (grosser large-v3-Nachpass ohne
+        # NO-Nutzen).
+        "no_ask_obergrenze": 0.0,
+        "gap_verify_aktiv": False,
+        # Trigger-Verifikation an (AXP-Lehre 24.07.): jeder YES-Trigger
+        # wird vor dem Kauf per large-v3 bestaetigt, fail-closed.
+        "trigger_verify_aktiv": True,
+        # Komposita-Schreibvarianten (PDF "Hyphenated Constructs"/
+        # "Compound Words": Leerzeichen ODER Bindestrich qualifiziert;
+        # die strikten Wortgrenzen-Patterns sehen "World-Cup"/
+        # "Toilet-paper" sonst nicht — Vorbild hotones_july23).
+        "markt_varianten_override": {
+            "2966437": ["World Cup", "World-Cup", "Worldcup"],
+            "2966445": ["Toilet paper", "Toilet-paper", "Toiletpaper"],
+        },
+        # large-v3 als Haupt-Transcriber (User 28.07., Boeing-Vorbild
+        # nach dem Braintree-Miss: Eigennamen-Recall schlaegt die
+        # +0.53 s/Chunk); Verify bleibt an, Modell-Instanz geteilt.
+        "transcriber_modell": "large-v3",
+        # Volles Budget freigegeben (User 29.07. vor Call-Start, wie
+        # PayPal/Boeing): Vollprofil-Sweep — budget- statt
+        # clip-limitiert; Executor-Delta-Sync deckelt am Wallet.
+        "max_usd_gesamt": 650.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        # Earnings-Buecher stehen nach dem Call sofort auf 0.99+
+        # (Recherche §3.3: Vorpreisungs-Markt) — kurzes Fenster genuegt.
+        "nachlauf_minuten": 30,
+    },
+    "earnings_pypl_july28": {
+        # Event 745733 "What will PayPal say during their next earnings
+        # call?" — Q2-Call Di 28.07.2026 08:00 AM ET = 12:00 UTC
+        # (IR-Eventseite am 27.07. verifiziert; Webcast auf der
+        # Q4-Inc-Plattform events.q4inc.com/attendee/222501806 —
+        # REGISTRIERUNG noetig, Handarbeit im Browser am Vortag;
+        # Quellen: RECHERCHE_EARNINGS_QUELLEN_2026-07-27.md §2).
+        # 19 Maerkte: 4 Brackets (Quarter 15+, Consumer 10+,
+        # Transaction 5+, Merchant 5+ — alle >0.96 vorgepreist, 27.07.)
+        # und ein dickes Mittelfeld fuer den AXP-Aufmerksamkeits-Kanal
+        # (Stablecoin 0.61, Agentic Commerce 0.52, Braintree 0.405,
+        # Stripe 0.30, Cash Back 0.265, Anthropic/Claude 0.20, ...).
+        # Design und Gates identisch zu earnings_pg_july29.
+        "live_dir": "earnings_pypl_july28",
+        "event_id": "745733",
+        "event_slug": ("what-will-paypal-say-during-their-next-earnings-"
+                       "call-20260724221739505"),
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "paypal-say-during-their-next-earnings",
+        "call_start_utc": "2026-07-28T12:00:00Z",
+        # PayPal-Calls laufen ~60 min; Puffer fuer Q&A-Ueberzieher.
+        "call_max_minuten": 90.0,
+        "chunk_sekunden": 10,
+        "no_ask_obergrenze": 0.0,
+        "gap_verify_aktiv": False,
+        "trigger_verify_aktiv": True,
+        # Bindestrich-/Zusammenschreibungen (PDF "Hyphenated
+        # Constructs"/"Compound Words"; ASR wechselt die Schreibweise):
+        "markt_varianten_override": {
+            "3094216": ["Stablecoin", "Stable Coin", "Stable-Coin"],
+            "3094223": ["Cash Back", "Cash-Back", "Cashback"],
+        },
+        # Volles Budget freigegeben (User 28.07. frueh, "wie letztes
+        # Mal, volle Sweeps"): Vollprofil-Muster der grossen Laeufe —
+        # Buch bis zum Deckel abraeumen, budget- statt clip-limitiert.
+        # Wallet geteilt mit Boeing (16:30), Graham (20:00) und den
+        # Wochen-Bots; Executor-Delta-Sync verhindert Ueberziehen.
+        "max_usd_gesamt": 650.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        "nachlauf_minuten": 30,
+    },
+    "earnings_ba_july28": {
+        # Event 745748 "What will Boeing say during their next earnings
+        # call?" — Q2-Call Di 28.07.2026 10:30 AM ET = 14:30 UTC
+        # (Boeing-PM 01.07.; Webcast ueber die Events-Seite von
+        # boeing.com/investors, kein Registrierungszwang in der PM —
+        # konkreten Player-Link am Vortag pruefen; Quellen: Recherche
+        # §2). 20 Maerkte: 4 Brackets (Quarter 15+, Consumer 10+,
+        # Airplane 10+, Customer 3+), Mittelfeld u.a. Guidance 0.475,
+        # Philippine Airlines 0.495, Tariff 0.38, Iran 0.355, Airbus
+        # 0.245 (27.07.). Die Phrase "Philippine Airlines" traegt der
+        # Regel-Parser nativ (flexible Leerzeichen im Pattern) — keine
+        # Overrides noetig, alle uebrigen Fragen sind Einzelbegriffe.
+        "live_dir": "earnings_ba_july28",
+        "event_id": "745748",
+        "event_slug": ("what-will-boeing-say-during-their-next-earnings-"
+                       "call-20260724221853543"),
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "boeing-say-during-their-next-earnings",
+        "call_start_utc": "2026-07-28T14:30:00Z",
+        # Boeing-Calls 60-90 min.
+        "call_max_minuten": 120.0,
+        "chunk_sekunden": 10,
+        "no_ask_obergrenze": 0.0,
+        "gap_verify_aktiv": False,
+        "trigger_verify_aktiv": True,
+        # Erster Lauf mit large-v3 als HAUPT-Transcriber (User-Entscheid
+        # 28.07. nach dem Braintree-Miss; Benchmark +0.53 s/Chunk).
+        # Verify bleibt an: gleicher Modell-Typ, aber VAD-freier Blick
+        # aufs groessere Fenster — der Agentic-Fall bewies den Wert;
+        # die Modell-Instanz wird geteilt (kein doppeltes VRAM).
+        "transcriber_modell": "large-v3",
+        # Volles Budget freigegeben (User 28.07. frueh) — Vollprofil-
+        # Sweep wie PayPal; real verfuegbar ist, was PayPal (12:00)
+        # uebrig laesst (Executor-Delta-Sync am Wallet).
+        "max_usd_gesamt": 650.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        "nachlauf_minuten": 30,
+    },
+    "trump_michigan_july27": {
+        # Event 745732 "What will Trump say during remarks in Michigan?"
+        # — Rede am GM Proving Ground Milford, Mo 27.07.2026 15:00 ET =
+        # 19:00 UTC (WXYZ/C-SPAN, 27.07.; C-SPAN listet 14:50 ET). 26
+        # Maerkte, davon 6 Zaehl-Brackets (Percent 15+, Joe/Biden 12+,
+        # Oil/Gas 10+, Hell 7+, Trump 5+, Job 20+). Quellen und Konzept:
+        # RECHERCHE_EARNINGS_QUELLEN_2026-07-27.md §4.
+        # SPRECHERGEBUNDEN: Resolution ist "if Trump says the listed
+        # term" — es gibt KEINE Anyone-Klausel. Zwei Gates zusaetzlich
+        # zum Earnings-Design: (1) ECAPA-Sprecher-Verifikation, YES nur
+        # aus Trump-zugerechneten Treffern (ziel_count, wie
+        # mrbeast_gaming); (2) Operator-Marker SPRECHER_AKTIV im
+        # live_dir — der Kaufpfad bleibt gesperrt, bis der Operator
+        # Trumps Redebeginn markiert (Vorprogramm-Musik und Vorredner
+        # laufen auf demselben Stream).
+        "live_dir": "trump_michigan_july27",
+        "event_id": "745732",
+        "event_slug": ("what-will-trump-say-during-remarks-in-michigan-"
+                       "20260724162420350"),
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        # Disjunkt zu "what-will-trump-post" (Truth-Social-Profile) und
+        # zur "trump-weekly-mentions"-Serie (sagt "during-remarks" nicht).
+        "discovery_slug_filter": "trump-say-during-remarks-in-michigan",
+        "call_start_utc": "2026-07-27T19:00:00Z",
+        # Trump-Events starten regelmaessig 30-60 min verspaetet, die
+        # Rede selbst laeuft 60-90 min — grosszuegiges Fenster, Ctrl+C
+        # beendet ohnehin frueher.
+        "call_max_minuten": 180.0,
+        "chunk_sekunden": 10,
+        # YES-only wie alle Live-Capture-Profile: keine belegte
+        # Abdeckungsgarantie, und der Gesamtzaehler ist bei einem
+        # sprechergebundenen Markt ohnehin kein Abwesenheits-Proxy
+        # (Hot-Ones-Begruendung, verschaerft).
+        "no_ask_obergrenze": 0.0,
+        "gap_verify_aktiv": False,
+        "trigger_verify_aktiv": True,
+        # Ersetzt das Anyone-Gate: Maerkte sind nur aktiv, wenn die
+        # Beschreibung exakt die sprechergebundene Klausel traegt.
+        "sprecher_klausel_muster": r"if\s+Trump\s+says\s+the\s+listed\s+term",
+        # ECAPA-Referenz im Live-Klon bauen (baue_referenz_quellen:
+        # Solo-Clips einer frueheren Rede plus Negativ-Kontrollen wie
+        # Moderatoren/Vorredner). Schwelle 0.50 wie mrbeast_gaming/
+        # hotones: Praezision vor Recall — ein Falsch-Positiv ist ein
+        # Fehlkauf, ein verpasster YES kostet 0.
+        "zielsprecher_referenz": (
+            "data/live/trump_michigan_july27/referenz_stimme.npy"),
+        "sprecher_schwelle": 0.50,
+        "markt_varianten_override": {
+            # "Percent" 15+: Whisper schreibt gesprochenes "percent" in
+            # Ziffernkontexten als "%" ("50%") — ohne "%"-Variante
+            # wuerde der Zaehler massiv untererfassen; "per cent" als
+            # seltene ASR-Schreibvariante derselben Aussprache.
+            "3094188": ["Percent", "per cent", "%"],
+            # ASR setzt Kommas in den Slogan: "Drill, baby, drill".
+            "3094204": ["Drill Baby Drill", "Drill, Baby, Drill"],
+            # Akronyme: Punkt-Schreibweisen als ASR-Varianten ("A.I."-
+            # Vorbild in VARIANTEN_MAP).
+            "3114659": ["USMCA", "U.S.M.C.A.", "NAFTA", "N.A.F.T.A."],
+        },
+        # Auto-Marker fuer den Fernstart (User unterwegs): sobald im
+        # 5-Chunk-Fenster 6 Trump-zugerechnete Segmente (>= 1 s) laufen,
+        # setzt der Bot den Marker selbst. Ohne ECAPA-Verifier feuert
+        # das nie (fail-closed); Hand-Marker bleibt jederzeit moeglich.
+        "sprecher_marker_auto_segmente": 6,
+        # Stream-Selbstheilung (nachgeruestet 27.07. abends nach dem
+        # Lauf): dieselben Kanaele wie der Fernstart.
+        "reconnect_kanaele": [
+            "https://www.youtube.com/@WhiteHouse/live",
+            "https://www.youtube.com/@RSBN/live",
+            "https://www.youtube.com/@FOX2Detroit/live",
+        ],
+        "stream_titel_muster": "trump",
+        # Budget-Vorgabe User 27.07.: Fokus YES-Einzelwoerter — faellt
+        # ein unwahrscheinliches Wort, ist der Payoff gross; Kappe 100
+        # USD je Markt als 2 FAK-Clips a 50 (grosse Clips, weil Asks
+        # nach dem Fall in Sekunden verschwinden — Elon-Lehre). Die
+        # Zaehl-Brackets laufen mit derselben Kappe mit (YES ab
+        # Schwelle + 2). Gesamtpool 650 (User-Korrektur 27.07. abends,
+        # vorher 400); der Executor deckelt zusaetzlich am echten
+        # Wallet-Delta und kann nie ueberziehen.
+        "max_usd_gesamt": 650.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 2,
+        "nachlauf_minuten": 30,
+    },
+    "trump_graham_july28": {
+        # Event 745731 "What will Trump say during tribute to Lindsey
+        # Graham?" — Trauerfeier fuer Senator Graham, Washington
+        # National Cathedral, Di 28.07.2026 14:00 ET = 18:00 UTC
+        # (Zeremonie-Beginn; Trumps Tribute-Slot liegt IRGENDWO darin).
+        # 20 Maerkte, Liq 66k, Einzelwoerter/Phrasen 0.3-0.8, einziges
+        # Zaehl-Bracket "Hell" 2+. VIELE Fremdredner (Geistliche,
+        # Familie, Politiker) — die Sprecherbindung traegt alles.
+        # LEHREN AUS MICHIGAN (27.07., Runbook §5): (1) Die Referenz
+        # MUSS aus der Event-Uebertragungskette stammen: Studio-
+        # Referenz erreichte auf PA-Audio max 0.396 und haette JEDEN
+        # echten Trump-Treffer verworfen; die PA-Referenz (aus dem
+        # Michigan-Mitschnitt, Transkript-verifizierte Trump-Passagen)
+        # trennt scharf — Trump min 0.610, Gaeste max 0.287, AXP-Fremde
+        # max -0.040. Union mit der Studio-Referenz deckt beide
+        # Domaenen. (2) Stream-Rotation friert die Quelle ein ->
+        # reconnect_kanaele + Stall-Detektor. (3) Verschiebt die
+        # Kathedral-Akustik die Zurechnung erneut, ist --fenster-modus
+        # der Fallback (Operator-Fenster statt ECAPA; Neustart mitten
+        # in der Zeremonie kostet nichts, solange Trump noch nicht
+        # gesprochen hat — nur seine Worte zaehlen).
+        "live_dir": "trump_graham_july28",
+        "event_id": "745731",
+        "event_slug": ("what-will-trump-say-during-tribute-to-lindsey-"
+                       "graham-20260724170556632"),
+        "rss_feed_url": None,
+        "yt_channel_id": None,
+        "mp3_probe_muster": None,
+        "discovery_slug_filter": "trump-say-during-tribute-to-lindsey-graham",
+        "call_start_utc": "2026-07-28T18:00:00Z",
+        # Zeremonie 1.5-2.5 h, Trumps Slot unbekannt -> langes Fenster.
+        "call_max_minuten": 240.0,
+        "chunk_sekunden": 10,
+        "no_ask_obergrenze": 0.0,
+        "gap_verify_aktiv": False,
+        "trigger_verify_aktiv": True,
+        "sprecher_klausel_muster": r"if\s+Trump\s+says\s+the\s+listed\s+term",
+        # Union: PA-Referenz (Michigan-Mitschnitt 610-810s, Trump-only)
+        # + Studio-Referenz (WH-Ansprachen). Kopien im eigenen live_dir
+        # (Hot-Ones-Regel: Profil unabhaengig).
+        "zielsprecher_referenzen": [
+            "data/live/trump_graham_july28/referenz_stimme_pa.npy",
+            "data/live/trump_graham_july28/referenz_stimme_studio.npy",
+        ],
+        "sprecher_schwelle": 0.50,
+        "sprecher_marker_auto_segmente": 6,
+        # Kathedrale streamt selbst (kommentarfrei), C-SPAN und News
+        # als Backup; Titel-Gate passend zum Funeral — die 24/7-News-
+        # Dauerstreams ("ABC News Live") fallen durch.
+        "reconnect_kanaele": [
+            "https://www.youtube.com/@WNCathedral/live",
+            "https://www.youtube.com/@cspan/live",
+            "https://www.youtube.com/@ABCNews/live",
+            "https://www.youtube.com/@NBCNews/live",
+        ],
+        "stream_titel_muster": "graham|lindsey|funeral|memorial|tribute",
+        # Budget wie Michigan-Vorgabe (User 27.07.): 100 je Markt
+        # (2 FAK-Clips a 50), Pool 650; Executor-Delta-Sync deckelt.
+        "max_usd_gesamt": 650.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 2,
+        "nachlauf_minuten": 30,
+    },
     "elon_july27": {
         # Event 745693 "What will Elon post this week? (July 27 - August
         # 2)", 14 Maerkte, beim Armieren am 27.07. alle offen. Nachfolger
@@ -836,8 +1310,10 @@ MAX_NACHBESSERUNGEN = 1
 
 # 20s-Chunks: YES-Entscheidungen fallen pro Chunk (nicht erst am Ende).
 # Mit GPU-Transkription (~1-2s je Chunk) dominiert die Chunk-Grenze die
-# Latenz, daher kurze Chunks.
-CHUNK_SEKUNDEN = 20
+# Latenz, daher kurze Chunks. Profil-Override chunk_sekunden: beim
+# Live-Capture (Earnings-Webcast) ist die Chunk-Fuellzeit der dominante
+# Latenzposten -> 10s (Messprotokoll 22.07., §4.3/4.4).
+CHUNK_SEKUNDEN = int(_P.get("chunk_sekunden", 20))
 RSS_POLL_S = 15
 
 # Chunk-Ueberlappung gegen an der Grenze zerschnittene Woerter; Dedup
@@ -907,6 +1383,52 @@ X_STARTSCAN_SEITEN = int(_P.get("startscan_seiten", 4))
 # Poll konservativ, Cloudflare-Drosselung via Backoff im Bot.
 TRUTH_USER_ID = _P.get("truth_user_id")
 TRUTH_POLL_S = float(_P.get("truth_poll_s", 15.0))
+
+# Earnings-Call-Bot (Profile earnings_*): Der Call startet zur bekannten
+# Uhrzeit als Live-Webcast (kein Drop-Ereignis). call_start_utc ist die
+# an der IR-Quelle gegenzupruefende Startzeit (die Zeitangabe der
+# Polymarket-Beschreibung war beim Dow-Call falsch, Messprotokoll §8);
+# call_max_minuten begrenzt den Lauf, falls niemand Ctrl+C drueckt.
+CALL_START_UTC = _P.get("call_start_utc")
+CALL_MAX_MINUTEN = float(_P.get("call_max_minuten", 120.0))
+# Haupt-Transcriber-Modell. Benchmark PayPal-Audio 28.07.: large-v3
+# kostet je 10s-Chunk nur +0.53 s (0.78 statt 0.24, p95 0.87) — ~5 %
+# der Gesamtlatenzkette — und fand bei "Braintree" 10 Nennungen, wo
+# small im Livepfad 2 hoerte (Eigennamen-Recall). Ist das Verify-Modell
+# identisch, teilen sich Haupt- und Verify-Pfad EINE Instanz (VRAM).
+TRANSCRIBER_MODELL = str(_P.get("transcriber_modell", "small"))
+# Trigger-Verifikation: jeden YES-Trigger vor dem Kauf mit dem grossen
+# Modell nachpruefen (fail-closed, siehe trigger_verify.py). AXP-Lehre
+# 24.07.: Schwelle-1-Kaeufe gegen zweifelnde Maerkte haengen an einem
+# einzigen ASR-Treffer — die Nachpruefung kostet ~1-3 s (Modell warm)
+# und schuetzt gegen die E281-Homophon-Klasse.
+TRIGGER_VERIFY_AKTIV = bool(_P.get("trigger_verify_aktiv", False))
+TRIGGER_VERIFY_MODELL = str(_P.get("trigger_verify_modell", GAP_MODELL))
+# Sprechergebundene Live-Events ("What will Trump say during ..."): Die
+# Resolution wertet nur den benannten Sprecher, eine Anyone-Klausel gibt
+# es nicht. Das Profil nennt das Klausel-Muster, das STATT der Anyone-
+# Klausel in der Markt-Beschreibung stehen muss (sonst SKIP); zusaetzlich
+# bleibt der Kaufpfad gesperrt, bis der Operator die Marker-Datei anlegt
+# (Redebeginn des Zielsprechers — Vorprogramm und Vorredner laufen auf
+# demselben Stream). None = normales Earnings-Event mit Anyone-Gate.
+SPRECHER_KLAUSEL_MUSTER = _P.get("sprecher_klausel_muster")
+SPRECHER_MARKER = LIVE_DIR / "SPRECHER_AKTIV"
+# Stream-Selbstheilung (Michigan-Lehre 27.07.): YouTube rotiert das
+# HLS-Manifest (Redebeginn/Sender-Umschaltung) — ffmpeg haengt dann oft
+# still am toten Manifest und die WAV friert ein (zweimal passiert,
+# zusammen ~65 min blind). Waechst die WAV laenger als STREAM_STALL_S
+# nicht, loest der Bot die /live-Kanaele neu auf (Titel-Gate
+# STREAM_TITEL_MUSTER) und bindet eine frische Quelle an — die
+# Markt-Zaehler bleiben erhalten (transcriber.neue_quelle).
+RECONNECT_KANAELE = [str(u) for u in _P.get("reconnect_kanaele", [])]
+STREAM_TITEL_MUSTER = str(_P.get("stream_titel_muster", "trump"))
+STREAM_STALL_S = float(_P.get("stream_stall_s", 25.0))
+# Auto-Marker: N Zielsprecher-zugerechnete Segmente (>= 1 s) im
+# rollenden 5-Chunk-Fenster setzen den Marker automatisch — fuer den
+# Fernstart ohne Operator am Rechner. 0 = aus; wirkt nur mit aktivem
+# ECAPA-Verifier (ohne Referenz gibt es keine Zurechnungen, also nie
+# einen Auto-Marker: fail-closed).
+SPRECHER_MARKER_AUTO_SEGMENTE = int(_P.get("sprecher_marker_auto_segmente", 0))
 
 # Nachlauf nach der NO-Runde: Market Maker ziehen beim Drop die Quotes
 # und stellen sie erst Minuten spaeter wieder rein (JRE #2523: alle Asks

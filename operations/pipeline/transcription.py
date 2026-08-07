@@ -251,6 +251,19 @@ class ChunkTranscriber:
         """Volles dekodiertes Audio (Cache) — fuer den Gap-Verify-Nachpass."""
         return self._decode(pfad)
 
+    def neue_quelle(self) -> None:
+        """Auf eine NEUE wachsende Datei umschalten (Stream-Reconnect).
+
+        Position und Dekodier-Cache nullen; die Markt-Zaehler des
+        Aufrufers bleiben unberuehrt — genau der Zweck des In-Prozess-
+        Reconnects (Michigan-Lauf 27.07.: zwei Manifest-Rotationen
+        haetten sonst je einen Prozess-Neustart mit Zaehlerverlust
+        erzwungen).
+        """
+        self.verarbeitete_samples = 0
+        self._audio_cache = None
+        self._cache_groesse = -1
+
     def _transkribiere(self, ausschnitt, batched: bool):
         if batched and self.geraet.startswith("cuda"):
             if self._batched is None:

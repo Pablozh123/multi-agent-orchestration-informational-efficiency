@@ -1,0 +1,129 @@
+{
+ "profil": "allin_july24",
+ "event_slug": "what-will-be-said-on-the-next-all-in-podcast-july-24-20260717155813224",
+ "event_titel": "What will be said on the next All-In Podcast? (July 24)",
+ "abgerufen_utc": "2026-08-07T04:30:41+00:00",
+ "quelle": "gamma-api.polymarket.com/events (oeffentlich, read-only)",
+ "maerkte": {
+  "2966572": {
+   "frage": "Will \"AI\" be said 35+ times during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966573": {
+   "frage": "Will \"Hundred\" or \"Thousand\" or \"Million\" be said 10+ times during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966574": {
+   "frage": "Will \"SpaceX\" be said 3+ times during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966575": {
+   "frage": "Will \"IPO\" be said during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966576": {
+   "frage": "Will \"Nvidia\" be said during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2966577": {
+   "frage": "Will \"Red\" be said during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966578": {
+   "frage": "Will \"Blue\" be said during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966579": {
+   "frage": "Will \"Anthropic\" be said during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966580": {
+   "frage": "Will \"Regulatory\" be said during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966581": {
+   "frage": "Will \"Alignment\" be said during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2966582": {
+   "frage": "Will \"Canada\" be said during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2966583": {
+   "frage": "Will \"Software\" be said during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966584": {
+   "frage": "Will \"Stock Market\" be said during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966585": {
+   "frage": "Will \"Constitution\" be said during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966586": {
+   "frage": "Will \"Disruptive\" be said during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2966587": {
+   "frage": "Will \"Innovation\" be said during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966589": {
+   "frage": "Will \"Cancer\" be said during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2966590": {
+   "frage": "Will \"Biology\" be said during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2966591": {
+   "frage": "Will \"Miracle\" be said during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2966592": {
+   "frage": "Will no episode air?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  }
+ }
+}

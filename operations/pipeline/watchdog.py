@@ -22,8 +22,14 @@ Sicherheiten:
   18.7. standen in keiner PID-Datei; der venv-Launcher-Stub des
   laufenden Schwesterprofils dagegen ist harmlos — Fehlalarm 20.7.).
 - Respektiert den Kill-Switch data/live/STOP (startet dann nichts).
-- Startet einen Bot NICHT neu, dessen letztes Event `fertig`/`stop` ist
-  (der hat seinen Lauf korrekt beendet — z.B. Audio-Episode fertig).
+- Startet einen Bot NICHT neu, dessen Lauf korrekt endete: `fertig`,
+  oder `stop` OHNE Not-Aus-Grund (z.B. Audio-Episode fertig, Ctrl+C).
+  Ein per Kill-Switch gestoppter Bot (`stop` mit grund="STOP-Datei")
+  zaehlt dagegen als offen und laeuft wieder an, sobald die STOP-Datei
+  weg ist und ende_utc noch nicht erreicht — Ausfall 29.-31.7.:
+  trump_july27 lag nach dem Not-Aus des P&G-Laufs 48 h still, weil
+  beide Faelle ununterscheidbar waren und das Log trotzdem "alle
+  betreuten Bots leben" meldete.
 - Nur innerhalb des konfigurierten Zeitfensters (ende_utc).
 - Idempotent: der Neustart-Schutz der Bots (getradet aus dem Log)
   verhindert Doppeltrades.
@@ -65,6 +71,10 @@ WATCHDOG_LOG = LIVE_ROOT / "watchdog.log"
 WATCHDOG_LOCK = LIVE_ROOT / "watchdog.lock"
 WACHPOSTEN_JSON = REPO_ROOT / "data" / "wachposten.json"
 STALE_S = 600.0  # >10 min ohne Event = tot (Bots schreiben alle <=5 min)
+# Grund, den bot.py/elon_bot.py/trump_bot.py in ihr stop-Event schreiben,
+# wenn sie wegen data/live/STOP aussteigen. Einziger stop-Fall, der KEIN
+# regulaeres Laufende ist (Ctrl+C-Stopps tragen diesen Grund nicht).
+NOTAUS_GRUND = "STOP-Datei"
 
 DEFAULT_MANAGED = {
     "elon_july13": {"modul": "elon_bot",
@@ -154,11 +164,15 @@ def lade_managed() -> dict:
     return DEFAULT_MANAGED
 
 
-def _letztes_event(profil: str) -> tuple[str | None, float | None]:
-    """(art, alter_sekunden) des letzten Log-Events oder (None, None)."""
+def _letztes_event(profil: str) -> tuple[str | None, float | None, str | None]:
+    """(art, alter_sekunden, grund) des letzten Log-Events, sonst 3x None.
+
+    `grund` unterscheidet den Not-Aus-Stopp vom regulaeren Laufende; die
+    Bots schreiben ihn flach ins Event ({"art": "stop", "grund": ...}).
+    """
     pfad = LIVE_ROOT / profil / "bot_events.jsonl"
     if not pfad.exists():
-        return None, None
+        return None, None, None
     letzte = None
     with open(pfad, encoding="utf-8", errors="replace") as f:
         for zeile in f:
@@ -166,14 +180,30 @@ def _letztes_event(profil: str) -> tuple[str | None, float | None]:
             if zeile:
                 letzte = zeile
     if not letzte:
-        return None, None
+        return None, None, None
     try:
         e = json.loads(letzte)
         ts = datetime.strptime(e["wall_ts_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(
             tzinfo=timezone.utc)
-        return e.get("art"), (_now() - ts).total_seconds()
+        return e.get("art"), (_now() - ts).total_seconds(), e.get("grund")
     except Exception:  # noqa: BLE001
-        return None, None
+        return None, None, None
+
+
+def _regulaer_beendet(art: str | None, grund: str | None) -> bool:
+    """True, wenn das letzte Event einen korrekt abgeschlossenen Lauf zeigt.
+
+    Nur dieser Fall darf einen Neustart unterdruecken. Ein `stop` mit
+    Grund "STOP-Datei" gehoert NICHT dazu: der Bot hat lediglich den
+    Kill-Switch befolgt und ist weiter betreuungspflichtig, sobald die
+    STOP-Datei (bot_stop_aufheben.cmd) wieder weg ist. Genau diese
+    Verwechslung kostete trump_july27 am 29.-31.7. 48 h Handelszeit.
+    """
+    if art == "fertig":
+        return True
+    if art == "stop":
+        return grund != NOTAUS_GRUND
+    return False
 
 
 def _pid_lebt(pid: int) -> bool:
@@ -359,7 +389,8 @@ def durchlauf(dry_run: bool) -> None:
         return
     managed = lade_managed()
     jetzt = _now()
-    aktionen = 0
+    betreut = 0          # aktive Profile, deren ende_utc noch laeuft
+    offen: list[str] = []  # davon: weder lebend noch regulaer beendet
     for profil, cfg in managed.items():
         if not cfg.get("aktiv", True):
             continue
@@ -371,17 +402,28 @@ def durchlauf(dry_run: bool) -> None:
                     continue  # Fenster vorbei — nicht mehr betreuen
             except ValueError:
                 pass
-        art, alter = _letztes_event(profil)
-        if art in ("fertig", "stop"):
+        betreut += 1
+        art, alter, grund = _letztes_event(profil)
+        if _regulaer_beendet(art, grund):
             continue  # Lauf korrekt beendet — nicht neu starten
-        lebt = alter is not None and alter < STALE_S
+        # Ein abgemeldeter Bot ist WEG, egal wie frisch sein Abschieds-
+        # Event ist: der Heartbeat-Test wuerde einen Not-Aus-Stopp sonst
+        # noch STALE_S lang faelschlich als "lebt" durchwinken.
+        abgemeldet = art in ("fertig", "stop")
+        lebt = not abgemeldet and alter is not None and alter < STALE_S
         if lebt:
             continue
-        # Tot oder haengend -> neu starten.
-        zustand = "kein Log" if alter is None else f"letztes Event vor {alter:.0f}s ({art})"
-        _log(f"{profil}: TOT ({zustand}) -> Neustart"
+        # Tot, haengend oder per Not-Aus gestoppt -> neu starten.
+        offen.append(profil)
+        if abgemeldet:
+            kopf = "NOT-AUS-STOPP"
+            zustand = f"stop/{grund} vor {alter:.0f}s, STOP-Datei ist weg"
+        elif alter is None:
+            kopf, zustand = "TOT", "kein Log"
+        else:
+            kopf, zustand = "TOT", f"letztes Event vor {alter:.0f}s ({art})"
+        _log(f"{profil}: {kopf} ({zustand}) -> Neustart"
              + (" [dry-run, kein Start]" if dry_run else ""))
-        aktionen += 1
         if not dry_run:
             _kill_haenger(profil)
             fremde = _fremde_instanzen(cfg["modul"], managed)
@@ -394,8 +436,19 @@ def durchlauf(dry_run: bool) -> None:
                 _log(f"  WARN {profil}: Prozessliste nicht ermittelbar — "
                      "Start ohne Doppelstart-Gegencheck.")
             _starte(profil, cfg["modul"])
-    if aktionen == 0:
+    # Entwarnung nur, wenn sie stimmt: sie gilt genau dann, wenn JEDES
+    # betreute Profil im Zeitfenster lebt oder korrekt beendet ist. Vor
+    # dem 31.7. meldete der Watchdog sie auch ueber einem per Not-Aus
+    # gestoppten Bot — der Ausfall war dadurch im Log unsichtbar.
+    if offen:
+        return
+    if betreut:
         _log("alle betreuten Bots leben (oder korrekt beendet).")
+    else:
+        _log("kein betreutes Profil im Zeitfenster.")
+    # Nach der Meldung, nicht in ihr: die Wachkontrolle prueft die Liste
+    # selbst und muss beide Faelle sehen — gerade der leere Fall kann daher
+    # kommen, dass ein Posten aus watchdog.json gefallen ist.
     _wachkontrolle()
 
 

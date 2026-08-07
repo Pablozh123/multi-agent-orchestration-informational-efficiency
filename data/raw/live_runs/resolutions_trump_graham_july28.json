@@ -1,0 +1,147 @@
+{
+ "profil": "trump_graham_july28",
+ "event_slug": "what-will-trump-say-during-tribute-to-lindsey-graham-20260724170556632",
+ "event_titel": "What will Trump say during tribute to Lindsey Graham?",
+ "abgerufen_utc": "2026-08-07T04:30:41+00:00",
+ "quelle": "gamma-api.polymarket.com/events (oeffentlich, read-only)",
+ "maerkte": {
+  "3094168": {
+   "frage": "Will Trump say \"Hell\" 2+ times during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3094169": {
+   "frage": "Will Trump say \"Ukraine\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3094170": {
+   "frage": "Will Trump say \"Save America Act\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3094171": {
+   "frage": "Will Trump say \"Israel\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3094172": {
+   "frage": "Will Trump say \"Tough Cookie\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3094173": {
+   "frage": "Will Trump say \"Nobody Like Him\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3094174": {
+   "frage": "Will Trump say \"Sister\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3094175": {
+   "frage": "Will Trump say \"Stop Calling Me\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3094176": {
+   "frage": "Will Trump say \"Supreme Court\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3094177": {
+   "frage": "Will Trump say \"See You Soon\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3094178": {
+   "frage": "Will Trump say \"Patriot\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3094179": {
+   "frage": "Will Trump say \"Golf\" or \"Golfer\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3094180": {
+   "frage": "Will Trump say \"Military\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3094181": {
+   "frage": "Will Trump say \"Forever\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3094182": {
+   "frage": "Will Trump say \"Worker\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3094183": {
+   "frage": "Will Trump say \"Gay\" or \"Homosexual\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3094184": {
+   "frage": "Will Trump say \"Security\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3094185": {
+   "frage": "Will Trump say \"Air Force\" or \"Space Force\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3094186": {
+   "frage": "Will Trump say \"Crypto\" or \"Bitcoin\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3094187": {
+   "frage": "Will Trump’s remarks not air?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3142859": {
+   "frage": "Will Trump say \"Top Five\" or \"Top Ten\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3142860": {
+   "frage": "Will Trump say \"Afghanistan\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3142861": {
+   "frage": "Will Trump say \"Democrat\" during tribute to Lindsey Graham?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  }
+ }
+}

@@ -271,14 +271,24 @@ def test_trump_july27_oder_und_mehrwort_begriffe(tmp_path,
 
 
 def test_trump_profile_nur_post_serie_kein_say_event() -> None:
-    # Abgrenzung: Der "What will Trump SAY"-Markt (Serie 11277, Event
-    # 723717) wertet NUR Gesprochenes und darf nie mit dem Truth-Social-
-    # Textbot gehandelt werden. Kein Profil zeigt darauf.
+    # Abgrenzung: "What will Trump SAY"-Maerkte werten NUR Gesprochenes
+    # und duerfen nie mit dem Truth-Social-Textbot gehandelt werden.
+    # TEXT-Profile (truth_user_id gesetzt) zeigen darum ausschliesslich
+    # auf die Post-Serie. Say-Events sind seit 27.07. als eigene
+    # AUDIO-Profile erlaubt (trump_michigan_july27, earnings_bot mit
+    # ECAPA-Zurechnung und Operator-Marker) — die tragen dann zwingend
+    # sprecher_klausel_muster, eine Call-Startzeit und KEINE Text-Quelle.
     from operations.pipeline import config
 
     for name, p in config.PROFILE.items():
         if not name.startswith("trump"):
             continue
-        assert p["event_id"] != "723717"
-        assert "trump-say" not in (p.get("event_slug") or "")
-        assert "-post-" in (p.get("event_slug") or "")
+        if p.get("truth_user_id"):
+            assert p["event_id"] != "723717"
+            assert "trump-say" not in (p.get("event_slug") or "")
+            assert "-post-" in (p.get("event_slug") or "")
+        else:
+            assert p.get("sprecher_klausel_muster")
+            assert p.get("call_start_utc")
+            assert (p.get("zielsprecher_referenz")
+                    or p.get("zielsprecher_referenzen"))

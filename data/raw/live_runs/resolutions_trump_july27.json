@@ -1,0 +1,111 @@
+{
+ "profil": "trump_july27",
+ "event_slug": "what-will-trump-post-this-week-july-27-august-2-20260724154919527",
+ "event_titel": "What will Trump post this week? (July 27 - August 2)",
+ "abgerufen_utc": "2026-08-07T04:30:41+00:00",
+ "quelle": "gamma-api.polymarket.com/events (oeffentlich, read-only)",
+ "maerkte": {
+  "3093884": {
+   "frage": "Will Trump post \"Football\" on Truth Social this week?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3093885": {
+   "frage": "Will Trump post \"Nuclear\" on Truth Social this week?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3093886": {
+   "frage": "Will Trump post \"Lindsey\" or \"Graham\" on Truth Social this week?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3093887": {
+   "frage": "Will Trump post \"Wall Street\" on Truth Social this week?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3093888": {
+   "frage": "Will Trump post \"President Xi\" on Truth Social this week?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3093889": {
+   "frage": "Will Trump post \"Gold\" or \"Golden\" on Truth Social this week?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3093890": {
+   "frage": "Will Trump post \"Pope\" on Truth Social this week?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3093891": {
+   "frage": "Will Trump post \"Crime\" on Truth Social this week?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3093892": {
+   "frage": "Will Trump post \"Scam\" on Truth Social this week?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3093893": {
+   "frage": "Will Trump post \"Rigged\" on Truth Social this week?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3093894": {
+   "frage": "Will Trump post \"Russia\" on Truth Social this week?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3093895": {
+   "frage": "Will Trump post \"Israel\" on Truth Social this week?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3093896": {
+   "frage": "Will Trump post \"Communist\" on Truth Social this week?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3093897": {
+   "frage": "Will Trump post \"China\" on Truth Social this week?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3093898": {
+   "frage": "Will Trump post \"World Cup\" on Truth Social this week?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3093899": {
+   "frage": "Will Trump post \"Uranium\" on Truth Social this week?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3093900": {
+   "frage": "Will Trump post \"Crypto\" or \"Bitcoin\" on Truth Social this week?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  }
+ }
+}

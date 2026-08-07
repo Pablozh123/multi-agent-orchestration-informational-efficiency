@@ -724,6 +724,36 @@ def test_jre_july20_profil_konfiguration() -> None:
     assert p["nachlauf_minuten"] == 90
 
 
+# ----------------------------------- All-In august-7 / E284 (07.08.2026)
+
+
+def test_allin_august7_profil_konfiguration() -> None:
+    p = config.PROFILE["allin_august7"]
+    alt = config.PROFILE["allin_july31"]
+    # Quellen und Gates identisch zur E283-Woche
+    assert p["mp3_probe_muster"] == alt["mp3_probe_muster"]
+    assert p["yt_playlist_id"] == alt["yt_playlist_id"]
+    assert p["rss_nur_muster"] == alt["rss_nur_muster"]
+    assert p["rss_feed_url"] == alt["rss_feed_url"]
+    assert p["yt_channel_id"] == alt["yt_channel_id"]
+    assert p["discovery_slug_filter"] == alt["discovery_slug_filter"]
+    # Eigenes Event, eigener Lauf-Ordner
+    assert p["event_id"] == "790609"
+    assert p["event_slug"].startswith(
+        "what-will-be-said-on-the-next-all-in-podcast-august-7-")
+    assert p["live_dir"] == "allin_august7"
+    assert p["live_dir"] != alt["live_dir"]
+    # NO-Schutzschild komplett und unveraendert
+    assert p["boilerplate_begriffe"] == alt["boilerplate_begriffe"]
+    assert p["serie_id"] == "11300"
+    assert "no_ask_obergrenze" not in p
+    # Volles Budget, Clip-Groesse und Sweep wie july31
+    assert p["max_usd_gesamt"] == pytest.approx(680.0)
+    assert p["max_usd_pro_markt"] == alt["max_usd_pro_markt"]
+    assert p["max_clips_pro_markt"] == alt["max_clips_pro_markt"]
+    assert p["nachlauf_minuten"] == alt["nachlauf_minuten"]
+
+
 # ------------------------------------ JRE august-3 Armierung (04.08.2026)
 
 

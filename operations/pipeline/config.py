@@ -473,6 +473,46 @@ PROFILE = {
         # noch lange nach der Runde guenstig gehandelt).
         "nachlauf_minuten": 90,
     },
+    "allin_august7": {
+        "live_dir": "allin_august7",
+        "event_id": "790609",
+        "event_slug": (
+            "what-will-be-said-on-the-next-all-in-podcast-august-7-"
+            "20260731211505799"
+        ),
+        # E284-Woche. Quellen und Gates 1:1 aus allin_july31. Prober-
+        # Vorbedingung am 07.08. 15:59Z verifiziert: E283 HTTP 200
+        # (139 038 710 B — dieselbe Datei, die der 31.07.-Lauf geladen
+        # hat), E284 noch 404 -> Prober feuert bei Minute 0.
+        # Brett diesmal nur 11 Maerkte (statt 18) und mit angehobenen
+        # Schwellen: AI 50+ (war 35+), Anthropic 5+ (war 3+).
+        "rss_feed_url": "https://allinchamathjason.libsyn.com/rss",
+        "yt_channel_id": "UCESLZhusAkFfsNsApnjF_Cg",
+        "mp3_probe_muster": (
+            "https://traffic.libsyn.com/secure/allinchamathjason/"
+            "ALLIN-E{n}_Ch.mp3"
+        ),
+        "discovery_slug_filter": "all-in",
+        "yt_playlist_id": "PLn5MTSAqaf8peDZQ57QkJBzewJU1aUokl",
+        "rss_nur_muster": r"ALLIN-E\d+_Ch\.mp3",
+        # NO-Schutzschild unveraendert (Deckel 0.80, Basisraten-Veto
+        # Serie 11300, Boilerplate, Gap-Verify). Es hat am 31.07. zweimal
+        # korrekt gegriffen (SpaceX 0.83, Blue 1.00) und traegt die
+        # NO-Seite weiterhin allein — der Nachbarschafts-/Blockgrenzen-
+        # Filter ist nach wie vor nicht gebaut.
+        "boilerplate_begriffe": ALLIN_BOILERPLATE,
+        "serie_id": "11300",
+        # Volles Budget nach demselben Prinzip wie am 31.07. (User
+        # "volles Budget"): Wallet-Stand 711.58 pUSD (Server-Sicht
+        # 07.08. 16:02Z) -> 680 nutzbar, ~31 Puffer fuer Fees und den
+        # parallel laufenden elon_august3 (400er Pool auf DERSELBEN
+        # Wallet; Delta-Sync verhindert Ueberziehen, aber ein Profil
+        # kann dem anderen den Pool wegkaufen).
+        "max_usd_gesamt": 680.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        "nachlauf_minuten": 90,
+    },
     "jre_august3": {
         "live_dir": "jre_august3",
         "event_id": "778632",

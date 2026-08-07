@@ -789,6 +789,63 @@ Nur `isw_ukraine` steht in der Sollbesetzung — die am 05.08. ebenfalls
 verlorenen Earnings-Profile gehören anderen Sessions und werden nach der
 Sync-Regel nicht stillschweigend mit eingetragen.
 
+## 19. Feuerkette: vom Kandidaten zur Order-Spezifikation (07.08.)
+
+Die Messung bleibt, aber das Ziel hat gewechselt: Es geht nicht mehr um
+eine Verteilung, sondern darum, im Überraschungsmoment handlungsfähig zu
+sein. `operations/pipeline/isw_feuerkette.py` (29 Tests) macht aus einem
+Kandidaten eine fertige Order-Spezifikation. Sie platziert nichts — das
+Auslösen liegt bei der Autorin.
+
+Parameter: Ask-Deckel 0.60, 200 USDC je Siedlungsereignis, Wochendeckel
+400 USDC rollend, kurzdatiertester Markt.
+
+**Drei Entwurfsentscheidungen, alle aus den Messdaten:**
+
+1. **Feuern am Kandidaten, nicht an der Bestätigung.** Das
+   Beruhigungsfenster dauert 3600 s — länger als das gesamte
+   Krasnoiarske-Fenster von 1123 s. Es filtert Flap-Artefakte für die
+   Statistik; als Handelsauslöser kostet es die ganze Kante. Rechtfertigung
+   aus dem Protokoll: **17 von 17 Kandidaten bestätigt, 0 Flaps.**
+   Mess- und Feuerpfad laufen jetzt getrennt, die Bestätigung unverändert
+   weiter.
+
+2. **Der Deckel prüft `best_ask`, nie den Midpoint.** Im
+   Krasnoiarske-Sweep zeigte der Midpoint 0.046, der billigste echte Fill
+   lag bei **0.395**. Ein Gate auf `preis_yes` hätte gefeuert in dem
+   Glauben, zum Midpoint kaufen zu können. Fehlt das Orderbuch (Preisbudget
+   je Zyklus erschöpft), wird nicht gefeuert: Ein unbekannter Ask ist kein
+   niedriger Ask.
+
+3. **Ein Siedlungsereignis, ein Markt.** Dieselbe Schattierung trifft
+   mehrere Laufzeiten gleichzeitig — Krasnoiarske 3 Märkte, Oleksiyevo 2.
+   Ohne Gruppierung entstünde dreifaches statt einfaches Exposure. Dafür
+   trägt `Marktziel` jetzt das Gamma-`endDate`; gewählt wird der
+   kurzdatierteste Markt, bei Krasnoiarske also genau der `july-31`, der
+   von 0.046 auf 0.93 lief.
+
+**Jeder Kandidat erzeugt einen Befehl ODER eine protokollierte
+Ablehnung** (`ask_ueber_deckel`, `kein_orderbuch`, `bereits_qualifiziert`,
+`nicht_auswertbar`, `markt_unbekannt`, `wochendeckel`). Das ist die Lehre
+aus der eigenen Betriebsgeschichte: Eine Kette, die schweigend nicht
+feuert, wäre derselbe Fehler wie die Ausfälle, die wie Normalbetrieb
+aussahen.
+
+**Der Wochendeckel liest die eigene Spur zurück**, statt einen Zähler zu
+führen — ein Neustart setzt ihn damit nicht zurück. Gezählt wird der
+ausgegebene Befehl, nicht der ausgeführte Trade: Bleibt eine Rückmeldung
+aus, bremst der Deckel trotzdem.
+
+**Gegenprobe mit den Krasnoiarske-Realwerten** (Ask 0.395, drei Märkte,
+Erkennung 20:57:43): genau ein Befehl auf `by-july-31`, 200 USDC,
+Limit 0.60, gültig bis 21:07:43. Ein Befehl verfällt nach 600 s — wer ihn
+später aufgreift, kauft in einen Markt, der die Nachricht längst hat.
+
+**Grenze.** Orderplatzierung, Credentials und Wallet-Zugriff liegen
+ausserhalb dieser Kette. Der Befehl trägt alles, was ein Executor braucht
+(Slug, Token-ID, Seite, Limit, Einsatz, Deadline, Gültigkeit) — der
+letzte Schritt ist Sache der Autorin.
+
 ## Anhang: verwendete Endpunkte
 
 ```

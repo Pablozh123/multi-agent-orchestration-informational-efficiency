@@ -255,7 +255,36 @@ def test_stop_grund_ist_der_notaus_grund_des_watchdogs():
     Schreibt der Executor einen anderen String, gilt sein STOP-Ende als
     "korrekt beendet" und er wird nach Aufheben der STOP-Datei nie wieder
     gestartet — der stille Ausfall von trump_july27 (29.-31.7.), nur
-    andersherum.
+    andersherum. Die Konstanten stehen im Executor absichtlich lokal
+    (siehe Profilfalle unten); DIESER Test haelt sie mit dem Watchdog
+    identisch, denn hier darf importiert werden.
     """
+    from operations.pipeline.config import STOP_FILE
     from operations.pipeline.watchdog import NOTAUS_GRUND
     assert px.NOTAUS_GRUND == NOTAUS_GRUND == "STOP-Datei"
+    assert str(STOP_FILE).endswith(str(Path("data/live/STOP")))
+    assert px.STOP_DATEI == Path("data/live/STOP")
+
+
+def test_start_unter_fremdem_bot_profil_crasht_nicht(tmp_path: Path):
+    """Die Profilfalle vom 07.08., als Regressionstest.
+
+    Der Watchdog startet jeden Bot mit BOT_PROFIL=<profil>. config.py
+    loest diese Variable beim Import gegen PROFILE auf und wirft KeyError
+    fuer unbekannte Profile; ein (transitiver) config-Import liess den
+    Executor deshalb sterben, bevor er sein erstes Ereignis schrieb —
+    eine stille Neustart-Schleife, alle fuenf Minuten, ohne roten Test.
+    Hier wird der echte Interpreter-Start unter genau dieser Umgebung
+    nachgestellt.
+    """
+    import os
+    import subprocess
+    import sys
+    umgebung = dict(os.environ)
+    umgebung["BOT_PROFIL"] = "isw_papier"
+    lauf = subprocess.run(
+        [sys.executable, "-m", "operations.pipeline.isw_papier_executor",
+         "--zeigen", "--journal", str(tmp_path / "journal.jsonl")],
+        cwd=Path(px.__file__).resolve().parents[2],
+        env=umgebung, capture_output=True, text=True, timeout=60)
+    assert lauf.returncode == 0, lauf.stderr

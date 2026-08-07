@@ -51,6 +51,26 @@ zusätzlich ≤ ~60 USD gebunden. Alles innerhalb der üblichen Clip-Größen.
 4. Post-Air-Sweep Mo ~06:00 CEST nur mit eigener Sichtung/Aufnahme;
    Zwei-Methoden-Konsens vor jedem NO gilt weiter (Ohr + HBO-Max-Subs).
 
+## Promo-Befund (Regel 1 erledigt, 07.08. ~21:45 CEST)
+
+Offizieller Clip „EARLY PREVIEW: Curtis Prepares To See His Ex-Wife"
+(YouTube GMWhuF5oWK8, Adult-Swim-Kanal, 122 s; large-v3-Transkript im
+Session-Scratchpad, `promo_e3_transkript.txt`). Zielwort-Treffer:
+
+- „Security" 1× („the head of Homeland Security") — bestätigt den
+  0.98-Markt, kein Trade.
+- „President" 1× („brandished an edged weapon at the president") —
+  Zähler tickt, für 10+ ohne Aussagekraft.
+- Alle übrigen Zielwörter: 0 im Clip. Absenz beweist nichts
+  (2 Szenen von ~22 min) — keine Prognoseänderung.
+
+Neue Inhalts-Infos: Offsite-Einrichtung heißt „West Wing World";
+neuer Agent „Chomps" ersetzt O'Doyle; O'Doyle-Suspendierung hält den
+Secret-Service-Strang zentral (stützt p=0.88 für „Secret" qualitativ).
+
+**Prognosen unverändert.** Ausführung: `curtis_e3_orders.py`
+(operations/pipeline), Platzierung durch die Autorin selbst.
+
 ## Auswertung (nach Resolution auszufüllen)
 
 | Markt | Ergebnis | p_uns | Markt-Mid vorab | Brier uns | Brier Markt |

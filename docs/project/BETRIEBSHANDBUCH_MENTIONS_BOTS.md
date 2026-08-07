@@ -45,9 +45,13 @@ Immer dieselben sechs Schritte, egal ob All-In, Trump oder Lemonade:
    Vorwoche mit neuer `event_id`, neuem `live_dir`, neuer Periode).
 3. Test dazu, komplette Testsuite und Lint laufen lassen.
 4. Pull Request, CI abwarten, mergen.
-5. Im Arbeitsordner Doppelklick auf `hole_main.cmd` (macht den Pull und
-   bricht ab, falls irgendetwas nicht stimmt — Branch, lokale
-   Aenderungen, kein Fast-Forward; danach laeuft die Wachkontrolle).
+5. Die Session, die gemergt hat, fuehrt danach selbst `hole_main.cmd` im
+   Arbeitsordner aus (pullt nur fast-forward, bricht bei allem
+   Verdaechtigen ab, laesst die Wachkontrolle laufen). Der Doppelklick
+   bleibt dein manueller Knopf, falls du selbst am Ordner stehst; die
+   Montagsroutine meldet, falls beides vergessen ging. Vergessen ist
+   dabei ungefaehrlich: die Bots laufen einfach den letzten getesteten
+   Stand weiter, nie einen halben.
 6. Eintrag in `data\live\watchdog.json` — der Watchdog startet den Bot
    dann binnen fünf Minuten selbst. (Alternativ das Startskript
    `data\live\starte_bots.ps1` — aber **nie beides gleichzeitig**.)

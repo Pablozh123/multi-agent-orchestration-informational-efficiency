@@ -80,8 +80,10 @@ pro Werkbank, ohne dass sich zwei Straenge gegenseitig die Dateien wechseln.
 2. Push. Die CI prueft seit 07.08. jeden Push auf `feat/**` und `fix/**`,
    nicht mehr erst den PR.
 3. PR nach `main`, CI gruen, mergen. Branch danach loeschen.
-4. Im Betriebsordner `git pull` (nur das, kein checkout, kein Editieren).
-   Laufende Bots uebernehmen den neuen Stand bei ihrem naechsten Neustart.
+4. Betriebsordner nachziehen: `hole_main.cmd` dort ausfuehren. Das macht die
+   Session, die gemergt hat, selbst (Regel in CLAUDE.md); der Doppelklick
+   bleibt der manuelle Knopf, die Montagsroutine das Netz. Laufende Bots
+   uebernehmen den neuen Stand bei ihrem naechsten Neustart.
 
 **Regeln, die aus Vorfaellen stammen (nicht aus Vorsicht):**
 

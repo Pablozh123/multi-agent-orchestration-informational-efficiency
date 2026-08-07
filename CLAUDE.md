@@ -14,6 +14,11 @@ instructions.
 Vor Arbeitsbeginn immer `docs/project/SYNC_KONTEXT_2026-07-16.md` und
 `docs/project/PROJEKT_INVENTAR.md` lesen (gemeinsamer Stand mit der Cowork-Session).
 
+Nach jedem Merge nach main: `hole_main.cmd` im Betriebsordner
+`C:\Users\chole\ba-thesis` ausfuehren (PowerShell: `& .\hole_main.cmd`), damit
+die Bots den getesteten Stand bekommen. Das erledigt die Session selbst, nicht
+die Autorin. Bricht das Skript ab, den Befund melden statt ihn zu umgehen.
+
 ## Current Architecture
 
 The deterministic analysis core comes before all agents. Statistical

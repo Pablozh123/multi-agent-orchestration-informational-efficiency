@@ -1,10 +1,81 @@
 # GOAL.md
 
+Die BA-Thesis ist am 07.08.2026 abgeschlossen. Alles ab „Archiv:
+abgeschlossene Thesis-Ziele" ist historisch und steuert keine Arbeit
+mehr.
+
 ## Active Goal
+
+goal_id: goal-isw-ueberraschung-feuerkette-001
+title: Feuerkette für ISW-Überraschungen (Signal bis Order-Spezifikation)
+status: active
+phase: Live-Strecke: vom Messapparat zur Reaktionsfähigkeit
+why:
+- Der Rekorder misst seit 22.07. den Vorlauf ISW-Karte -> Polymarket. Die
+  Kante existiert ausschliesslich im Moment der Überraschung: Krasnoiarske
+  22.07. +82 pp, Oleksiyevo 29.07. +6 pp, Myrne 03.08. +1,5 pp. Gegenüber
+  dem bekannten ISW-Stand ist der Markt effizient.
+- Das Fenster ist kurz (Krasnoiarske: 18 min 43 s ohne einen Trade), und
+  das Signal landet heute nur als Zeile in einer JSONL-Datei. Erkennung
+  ohne Reaktionsweg ist wertlos.
+- 17 von 17 Kandidaten wurden bestätigt, 0 Flaps. Das Beruhigungsfenster
+  von 3600 s hat bisher nichts herausgefiltert, kostet aber die gesamte
+  Kante. Mess-Trigger und Feuer-Trigger müssen deshalb getrennt werden.
+- Erkennungszeit 118-120 s über drei Ereignisse: das ist ISW's eigener
+  Verzug zwischen Feature-Anlage und Layer-Metadaten, nicht unsere
+  Poll-Verzögerung. Schneller pollen bringt nichts; der Gewinn liegt
+  allein im Weg nach der Erkennung.
+parameter (von der Autorin festgelegt, 07.08.2026):
+- ask_deckel: 0.60
+- einsatz_usdc_je_siedlungsereignis: 200
+- wochendeckel_usdc: 400
+- marktwahl: kurzdatiertester Markt des Siedlungsereignisses
+- start: vor der Go-Prüfung des Messprotokolls (bewusste Abweichung von
+  der vorregistrierten Reihenfolge Go -> Paper -> Echtgeld)
+deliverables:
+- Sofort-Trigger, der am Kandidaten feuert statt nach dem
+  Beruhigungsfenster; die Bestätigung läuft unverändert für die Messung
+  weiter.
+- Gate: Deckung laut Geometrietest UND Ask <= ask_deckel.
+- Marktwahl: je Siedlungsereignis genau EIN Markt (der kurzdatierteste).
+  Ein Ereignis trifft mehrere Märkte gleichzeitig (Krasnoiarske 3,
+  Oleksiyevo 2); ohne diese Regel entsteht mehrfaches Exposure.
+- Order-Spezifikation als Ausgabe: Markt-Slug, Token-ID, Seite,
+  Max-Preis, Grösse, Zeitstempel, Deadline.
+- Wochendeckel im Signal geführt: ist er erreicht, liefert die Kette
+  keine Order-Spezifikation mehr, sondern einen Deckel-Hinweis. Das Limit
+  greift damit unabhängig von der nachgelagerten Ausführung.
+- Fokussierte Tests für Gate, Marktwahl, Deckel-Arithmetik und
+  Determinismus.
+scope:
+- `operations/pipeline/isw_rekorder.py` (Sofort-Trigger)
+- neues Modul für Gate, Marktwahl, Deckel und Order-Spezifikation
+- zugehörige Tests
+out_of_scope:
+- Orderplatzierung, Orderstornierung, Trading-Credentials, Wallet-Zugriff,
+  authentifizierte Kanäle, autonome Ausführung. Die Kette endet bei der
+  Order-Spezifikation; das Auslösen liegt bei der Autorin.
+- Änderungen am Messpfad, die die laufende Vorlauf-Messung verfälschen.
+acceptance_criteria:
+- Genau ein aktives Ziel in dieser Datei.
+- Der Sofort-Trigger feuert im selben Zyklus wie die Kandidatenerkennung.
+- Die Bestätigungslogik und damit `isw_vorlauf_auswertung` bleiben
+  unverändert; die Messreihe darf durch die Feuerkette nicht kippen.
+- Je Siedlungsereignis entsteht höchstens eine Order-Spezifikation.
+- Der Wochendeckel ist deterministisch geprüft und testgedeckt.
+- Kein Order-Pfad, keine Keys, keine Wallet im Repo-Code dieser Kette.
+next_commit: feat(ukraine): Feuerkette Signal bis Order-Spezifikation
+
+## Archiv: abgeschlossene Thesis-Ziele
+
+Die folgenden Ziele gehören zur abgeschlossenen BA-Thesis und bleiben nur
+als Nachweis stehen.
+
+### Abgeschlossen: H3 Informed-Trading Signature
 
 goal_id: goal-h3-informed-trading-signature-001
 title: Build tested H3 informed-trading signature diagnostics
-status: active
+status: abgeschlossen (Thesis abgegeben 07.08.2026)
 phase: Phase 13: H3 Informed-Trading Signature Diagnostics
 why:
 - Exploratory H3 event-wallet profile artifacts exist, but the informed-trading
@@ -61,11 +132,11 @@ acceptance_criteria:
   `python -m operations.project.commit_plan` run before final reporting.
 next_commit: feat: add h3 informed trading signature diagnostics
 
-## Previous Active Goal
+### Abgeschlossen: Thesis-Konsolidierung
 
 goal_id: goal-thesis-consolidation-001
 title: Consolidate thesis-ready evidence, results, and future agent design
-status: paused
+status: abgeschlossen (Thesis abgegeben 07.08.2026)
 phase: Phase 12: Thesis Consolidation And Evidence Mapping
 why:
 - H1-H3 deterministic baseline outputs exist and pass project tests.
@@ -505,7 +576,7 @@ next_commit: docs: update project control workflow
 ## Scoped Side Goal: Echtgeld Pilot Watcher (read-only)
 
 goal_id: goal-pilot-watcher-readonly-001
-status: active (bounded side goal, 2026-07-16 to 2026-08-02)
+status: abgelaufen (Fenster 2026-07-16 bis 2026-08-02 vorbei)
 source: docs/project/PILOT_PROTOKOLL_ECHTGELD_2026-07-11.md (version 2) and
 docs/project/REPLAY_NACHWEIS.md
 scope:

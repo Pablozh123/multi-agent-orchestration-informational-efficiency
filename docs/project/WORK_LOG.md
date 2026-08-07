@@ -13583,3 +13583,65 @@ Next step:
 - Merge into the live clone: `ba-thesis` still runs the watchdog without
   the control (it sits on `feat/earnings-bot`). Until then neither
   trigger protects the running measurement.
+
+## 2026-08-07 - ukraine: Feuerkette Kandidat -> Order-Spezifikation
+
+Task:
+
+- Ziel der Live-Strecke gewechselt: nicht mehr Verteilung messen, sondern
+  im Ueberraschungsmoment handlungsfaehig sein. GOAL.md umgestellt (die
+  BA-Thesis ist abgeschlossen), dann die Kette gebaut.
+
+Files changed:
+
+- `GOAL.md` (eigener Commit fdc9db5)
+- `operations/pipeline/isw_feuerkette.py` (neu)
+- `operations/pipeline/isw_rekorder.py` (Marktziel.ende_utc, _feuern,
+  --feuerbefehle, --keine-feuerkette)
+- `tests/test_isw_feuerkette.py` (neu, 29 Tests)
+- `docs/project/UKRAINE_ISW_LATENZ_SONDIERUNG.md` (Abschnitt 19)
+
+Key output:
+
+- Zwei Fallen, die die Kette still ruiniert haetten, vor dem Bauen
+  gefunden:
+  1. `preis_yes` ist der MIDPOINT. Bei Krasnoiarske zeigte er 0.046,
+     waehrend der billigste echte Fill bei 0.395 lag. Der Deckel prueft
+     darum `buch.best_ask`. Ohne Orderbuch wird nicht gefeuert.
+  2. `Marktziel` trug kein Enddatum. Ohne das ist "kurzdatiertester
+     Markt" nicht entscheidbar; Gamma `endDate` wird jetzt eingelesen.
+- Feuern am Kandidaten statt an der Bestaetigung. Rechtfertigung aus dem
+  Protokoll: 17 von 17 Kandidaten bestaetigt, 0 Flaps. Das
+  Beruhigungsfenster (3600 s) ist laenger als das gesamte
+  Krasnoiarske-Fenster (1123 s) und als Handelsausloeser unbrauchbar.
+- Ein Siedlungsereignis erzeugt genau EINEN Befehl. Krasnoiarske traf 3
+  Maerkte, Oleksiyevo 2 - ohne Gruppierung waere das mehrfaches Exposure.
+- Jeder Kandidat erzeugt Befehl ODER protokollierte Ablehnung. Eine
+  schweigend nicht feuernde Kette waere derselbe Fehler wie die
+  Ausfaelle, die wie Normalbetrieb aussahen.
+- Wochendeckel liest die eigene Spur zurueck statt einen Zaehler zu
+  fuehren; ein Neustart setzt ihn nicht zurueck. Gezaehlt wird der
+  ausgegebene Befehl, nicht der ausgefuehrte Trade.
+
+Verification:
+
+- `python -m pytest -q` -> 1201 passed (29 neu).
+- Trockenlauf mit den Krasnoiarske-Realwerten (Ask 0.395, drei Maerkte,
+  Erkennung 20:57:43): genau ein Befehl auf `by-july-31`, 200 USDC,
+  Limit 0.60, gueltig bis 21:07:43, Geschwistermaerkte vermerkt.
+- `python -m operations.pipeline.isw_feuerkette --zeigen` -> Deckel 400
+  USDC, verbraucht 0.00, frei 400.00.
+
+Decision:
+
+- Die Kette endet bei der Order-Spezifikation. Orderplatzierung,
+  Credentials und Wallet-Zugriff bleiben ausserhalb; das Ausloesen liegt
+  bei der Autorin. Der Befehl traegt alles, was ein Executor braucht,
+  und verfaellt nach 600 s.
+- Feuerkette standardmaessig an (`--keine-feuerkette` schaltet sie aus),
+  weil die Befehlsspur ohne Executor inert ist.
+
+Next step:
+
+- Push und PR sind noch offen; der Inhalt ist Handelslogik statt
+  Ueberwachung, das entscheidet die Autorin.

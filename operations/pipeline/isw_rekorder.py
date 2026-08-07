@@ -110,6 +110,7 @@ NACHFASS_MINUTEN = (0, 1, 5, 30)
 STANDARD_ZUSTAND = Path("data/live/isw_rekorder/zustand.json")
 STANDARD_PROTOKOLL = Path("data/live/isw_rekorder/ereignisse.jsonl")
 STANDARD_GEOMETRIE = Path("data/live/isw_rekorder/geometrie_cache.json")
+STANDARD_FEUERBEFEHLE = Path("data/live/isw_rekorder/feuerbefehle.jsonl")
 
 ZUSTAND_SCHEMA = 2
 
@@ -140,6 +141,10 @@ class Marktziel:
     siedlung_name: str
     siedlung_objectid: int
     ringe: list[list[list[float]]] = field(default_factory=list)
+    # Gamma `endDate`. Ein Siedlungsereignis trifft mehrere Laufzeiten
+    # gleichzeitig (Krasnoiarske 3, Oleksiyevo 2); die Feuerkette wählt
+    # daraus den kurzdatiertesten Markt.
+    ende_utc: str | None = None
 
     @property
     def auswertbar(self) -> bool:
@@ -341,6 +346,7 @@ def lade_marktziele(leser: PolymarktLeser, karte: ISWKarte, cache: dict,
             siedlung_name=eintrag["name"],
             siedlung_objectid=eintrag["objectid"],
             ringe=eintrag["ringe"],
+            ende_utc=markt.get("endDate"),
         ))
     if gewachsen and cache_pfad is not None:
         speichere_geometrie_cache(cache_pfad, cache)
@@ -822,6 +828,36 @@ def _herzschlag(live_dir: Path | None, art: str = "herzschlag",
     print("WARNUNG bot_events.jsonl nicht schreibbar")
 
 
+def _feuern(meldungen: list[dict], ziele: list[Marktziel],
+            befehle_pfad: Path) -> None:
+    """Sofort-Trigger: Kandidaten → Order-Spezifikation, ohne Verzug.
+
+    Getrennt vom Messpfad. Das Beruhigungsfenster (3600 s) bleibt für die
+    Statistik unangetastet — es ist länger als das gesamte
+    Krasnoiarske-Fenster und als Handelsauslöser deshalb unbrauchbar.
+
+    Schluckt jeden eigenen Fehler: Die Messreihe ist das Fundament und
+    darf nie an der Feuerkette sterben.
+    """
+    try:
+        from operations.pipeline import isw_feuerkette as feuerkette
+
+        jetzt = _jetzt_utc()
+        verbraucht = feuerkette.wochenverbrauch(befehle_pfad, jetzt)
+        befehle, ablehnungen = feuerkette.pruefe(
+            meldungen, {z.slug: z for z in ziele},
+            verbraucht_usdc=verbraucht, jetzt=jetzt)
+        feuerkette.schreibe(befehle_pfad, befehle + ablehnungen)
+        for befehl in befehle:
+            print(f"FEUERBEFEHL {befehl.markt_slug} ask={befehl.best_ask} "
+                  f"max={befehl.max_preis} {befehl.einsatz_usdc:.0f} USDC "
+                  f"gueltig bis {befehl.gueltig_bis_utc}")
+        for ablehnung in ablehnungen:
+            print(f"  kein Feuer {ablehnung.markt_slug}: {ablehnung.grund}")
+    except Exception as fehler:  # noqa: BLE001 - Messung geht vor
+        print(f"WARNUNG Feuerkette uebersprungen ({fehler})")
+
+
 def main(argv: list[str] | None = None) -> int:
     zerleger = argparse.ArgumentParser(
         description="Rekorder ISW-Karte -> Polymarket-Preis (read-only)")
@@ -839,6 +875,13 @@ def main(argv: list[str] | None = None) -> int:
                           default=STANDARD_GEOMETRIE)
     zerleger.add_argument("--markt-refresh-s", type=int,
                           default=MARKT_REFRESH_S)
+    zerleger.add_argument("--feuerbefehle", type=Path,
+                          default=STANDARD_FEUERBEFEHLE,
+                          help="Spur der Order-Spezifikationen")
+    zerleger.add_argument("--keine-feuerkette", dest="feuerkette",
+                          action="store_false",
+                          help="nur messen, keine Order-Spezifikationen "
+                               "ausgeben")
     argumente = zerleger.parse_args(argv)
 
     live_dir: Path | None = None
@@ -857,6 +900,7 @@ def main(argv: list[str] | None = None) -> int:
         argumente.zustand = live_dir / "zustand.json"
         argumente.protokoll = live_dir / "ereignisse.jsonl"
         argumente.geometrie_cache = live_dir / "geometrie_cache.json"
+        argumente.feuerbefehle = live_dir / "feuerbefehle.jsonl"
         _herzschlag(live_dir, art="start")
 
     karte = ISWKarte()
@@ -902,6 +946,8 @@ def main(argv: list[str] | None = None) -> int:
                 marke = "" if m.get("auswertbar") else "  [nicht auswertbar]"
                 print(f"KANDIDAT {m['zeit_utc']} {m['layer']} -> {m['slug']} "
                       f"({m['siedlung']}) YES={m.get('preis_yes')}{marke}")
+            if meldungen and argumente.feuerkette:
+                _feuern(meldungen, ziele, argumente.feuerbefehle)
             if argumente.einmal:
                 return 0
 

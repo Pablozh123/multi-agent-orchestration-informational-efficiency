@@ -17,12 +17,6 @@ unterdrueckt.
 
 from __future__ import annotations
 
-# Die Entwarnung des Watchdogs, wortgenau. Der Teilstring allein reicht
-# nicht: wachkontrolle.py zitiert denselben Satz in ihrer Erklaerung, warum
-# ein herausgefallener Posten frueher unbemerkt blieb — ein Test, der nur
-# auf das Zitat trifft, faellt beim ersten gemeinsamen Lauf beider Module.
-ENTWARNUNG = "alle betreuten Bots leben (oder korrekt beendet)."
-
 import json
 import re
 from datetime import datetime, timedelta, timezone
@@ -30,6 +24,11 @@ from datetime import datetime, timedelta, timezone
 import pytest
 
 from operations.pipeline import watchdog
+# Die Entwarnung des Watchdogs, wortgenau. Der Teilstring allein reicht
+# nicht: wachkontrolle.py zitiert denselben Satz in ihrer Erklaerung, warum
+# ein herausgefallener Posten frueher unbemerkt blieb — ein Test, der nur
+# auf das Zitat trifft, faellt beim ersten gemeinsamen Lauf beider Module.
+ENTWARNUNG = "alle betreuten Bots leben (oder korrekt beendet)."
 
 LEBT_S = 60      # frisch genug fuer den Heartbeat (< STALE_S)
 STALE_TS = "2026-01-01T00:00:00Z"  # uralt -> stale

@@ -27,6 +27,12 @@ Sicherheiten:
 - Nur innerhalb des konfigurierten Zeitfensters (ende_utc).
 - Idempotent: der Neustart-Schutz der Bots (getradet aus dem Log)
   verhindert Doppeltrades.
+- Wachkontrolle nach jedem Durchlauf: gleicht die Liste gegen die
+  versionierte Sollbesetzung data/wachposten.json ab und meldet Posten,
+  die aus watchdog.json VERSCHWUNDEN sind. Ein fehlendes Profil erzeugt
+  sonst kein Signal — der Watchdog meldet dann wahrheitsgemaess "alle
+  betreuten Bots leben" (Ausfall 5.-7.8., 26,7 h). Siehe
+  operations/pipeline/wachkontrolle.py.
 
 Konfiguration: data/live/watchdog.json (gitignored, pro Woche editierbar):
   {"managed": {"elon_july13": {"modul": "elon_bot",
@@ -57,6 +63,7 @@ STOP_FILE = config.STOP_FILE
 WATCHDOG_JSON = LIVE_ROOT / "watchdog.json"
 WATCHDOG_LOG = LIVE_ROOT / "watchdog.log"
 WATCHDOG_LOCK = LIVE_ROOT / "watchdog.lock"
+WACHPOSTEN_JSON = REPO_ROOT / "data" / "wachposten.json"
 STALE_S = 600.0  # >10 min ohne Event = tot (Bots schreiben alle <=5 min)
 
 DEFAULT_MANAGED = {
@@ -315,9 +322,40 @@ def _starte(profil: str, modul: str) -> None:
     _log(f"  NEUGESTARTET {profil} ({modul})")
 
 
+def _wachkontrolle() -> None:
+    """Sind die erwarteten Messposten ueberhaupt noch eingetragen?
+
+    Der Watchdog kann nicht bemerken, was NICHT in seiner Liste steht: Am
+    5.8. wurde watchdog.json auf einen Juli-Stand zurueckgesetzt,
+    isw_ukraine fiel heraus, und dieser Log meldete 26,7 h lang
+    wahrheitsgemaess "alle betreuten Bots leben". Der Task selbst lief die
+    ganze Zeit korrekt — nur die Liste war falsch. Darum vergleicht jeder
+    Durchlauf die Liste gegen die VERSIONIERTE Sollbesetzung
+    (data/wachposten.json), die ein Zuruecksetzen von data/live nicht
+    erreicht.
+
+    Reine Meldung, kein Eingriff: die Kontrolle startet nichts und darf
+    einen Neustart nie verhindern — deshalb laeuft sie nach der
+    Neustart-Logik und schluckt jeden Fehler.
+    """
+    try:
+        from operations.pipeline import wachkontrolle
+
+        posten = wachkontrolle.lade_wachposten(WACHPOSTEN_JSON)
+        if not posten:
+            return
+        befunde = wachkontrolle.pruefe(
+            posten, watchdog_json=WATCHDOG_JSON, live_root=LIVE_ROOT)
+        for befund in befunde:
+            _log(f"WACHKONTROLLE {befund.zeile()}")
+    except Exception as ex:  # noqa: BLE001 - Kontrolle darf nie stoeren
+        _log(f"WARN Wachkontrolle uebersprungen ({ex}).")
+
+
 def durchlauf(dry_run: bool) -> None:
     if STOP_FILE.exists():
         _log("STOP-Datei aktiv — Watchdog startet nichts.")
+        _wachkontrolle()
         return
     managed = lade_managed()
     jetzt = _now()
@@ -358,6 +396,7 @@ def durchlauf(dry_run: bool) -> None:
             _starte(profil, cfg["modul"])
     if aktionen == 0:
         _log("alle betreuten Bots leben (oder korrekt beendet).")
+    _wachkontrolle()
 
 
 def main() -> None:

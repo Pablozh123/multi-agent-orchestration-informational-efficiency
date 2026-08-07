@@ -154,12 +154,19 @@ Vorregistrierung der Auswertung:
 friert die Studentin ein). Lizenzfrage ISW-Daten laut Studentin geklärt
 (30.07.): Nutzung möglich.
 
-**Stand der Messung (N=2 Siedlungsereignisse):**
+**Stand der Messung (N=3 Siedlungsereignisse, 07.08.):**
 
 | Ereignis | Markt vor ISW-Update | Reaktion | Kante |
 | --- | --- | --- | --- |
 | Krasnoiarske 22.07. (rekonstruiert) | YES 0.046 | 18 min 43 s totes Fenster, dann Sweep auf 0.93; Auflösung YES 23.07. | ~50 pp |
 | Oleksiyevo-Druzhkivka 29.07. (live gemessen) | YES 0.89 | keine Sofortreaktion, +6 pp binnen 30 min | ~5 pp |
+| Myrne 03.08. (live gemessen) | YES 0.93 | +1,5 pp binnen 30 min, Treffer bestätigt | ~1,5 pp |
+
+Anteil Überraschung 0.333, Entscheidung `weiter_messen` (N 3/10,
+Stichtag 14.08.). Zwei der drei Go-Kriterien erfüllt; die mediane
+Buchtiefe bleibt offen, weil sie nur über Überraschungsfälle gerechnet
+wird und der einzige davon der rekonstruierte Krasnoiarske-Fall ohne
+Orderbuch-Messung ist.
 
 Der Markt preist den laufenden ISW-Bestand effizient (kein offener
 „enter"-Markt mit qualifizierender Schattierung unter 0.91, Scan 23.07.);
@@ -168,6 +175,17 @@ deterministisch per `python -m operations.analysis.isw_vorlauf_auswertung`
 (16 Tests). Entscheidungsregel und Stichtag (14.08. oder N=10) stehen im
 Messprotokoll; ein Go führt zunächst in eine Paper-Phase, kein Order-Pfad
 im Rekorder.
+
+**Armierung:** Der Rekorder läuft als Watchdog-Profil `isw_ukraine`
+(`modul: isw_rekorder`, `--live`, read-only). Seine Sollbesetzung liegt
+versioniert in `data/wachposten.json` und wird von
+`operations/pipeline/wachkontrolle.py` (28 Tests) in jedem
+Watchdog-Durchlauf geprüft — Anlass war der Ausfall vom 05.–07.08.
+(26,7 h), bei dem das Profil aus dem gitignorierten
+`data/live/watchdog.json` verschwand und der Watchdog trotzdem
+wahrheitsgemäss „alle betreuten Bots leben" meldete. Eigenständiger
+Aufruf mit Rückgabecode: `python -m operations.pipeline.wachkontrolle
+--live-root <live>`.
 
 **Prozessnotiz:** Sechs Fehler des Rekorders wurden erst durch Probeläufe
 gegen die echten Endpunkte bzw. einen adversarialen Review sichtbar, alle

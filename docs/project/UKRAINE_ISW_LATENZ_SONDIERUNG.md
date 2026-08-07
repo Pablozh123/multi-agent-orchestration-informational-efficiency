@@ -570,6 +570,225 @@ war der Rekorder-Prozess tot; der Watchdog hat ihn um 13:05:04 UTC
 selbständig neu gestartet (Herzschlag 13:09:38 wieder normal). Die
 Armierung trägt also über Sessiongrenzen hinweg, wie vorgesehen.
 
+## 15. Auflösungswelle 31.07.: Zustand gegen Realität (01.08.)
+
+Mit dem Monatsende liefen elf beobachtete July-31-Märkte aus. Der Abgleich
+des `qualifiziert`-Zustands gegen die tatsächlichen Auflösungen ergibt
+**9 von 9 auswertbaren Fällen korrekt, kein Fehler**:
+
+| Markttyp | n | Deckung | Auflösung | Bewertung |
+| --- | --- | --- | --- | --- |
+| russisch / Berührung | 9 | keine | NO | 9× korrekt |
+| russisch / Vollüberdeckung | 1 | ja | NO | nicht auswertbar (anderes Kriterium) |
+| ukrainisch / Berührung | 1 | ja | NO | nicht auswertbar (invertierte Polarität) |
+
+Zusammen mit den beiden Positivfällen (Krasnoiarske 23.07., Oleksiyevo
+30.07., beide gedeckt → YES) steht die Bilanz bei **11 von 11**. Die neun
+Negativfälle sind schwächere Evidenz als ein Positivfall — sie zeigen vor
+allem, dass der Flächentest keine Phantom-Deckung erzeugt.
+
+**Methodenwarnung, am eigenen Prüfskript erlebt:** Ein erster Abgleich
+meldete zwei Abweichungen. Beide waren Fehler des Prüfskripts, nicht des
+Rekorders — es verglich stumpf „Deckung ⇒ YES" und wandte damit das
+Berührungskriterium auf einen `capture all of`-Markt an und die russische
+Polarität auf einen `will-ukraine-re-enter`-Markt. Dieselbe Falle wie beim
+Divergenz-Scan vom 23.07. Jede Auswertung muss Polarität und Kriterium je
+Markt aus dem Slug ableiten; dafür sind `markt_polaritaet()` und
+`markt_kriterium()` da.
+
+**Abfrage-Rezept für künftige Validierungen.** Ein ausgelaufener Markt ist
+über den Markt-Slug nicht mehr auffindbar (`/markets?slug=` liefert
+nichts) und taucht auch in keiner `closed=true`-Event-Liste auf: Das
+**Event** bleibt offen, solange es spätere Deadlines trägt, nur der
+einzelne **Markt** schliesst. Richtig ist deshalb, die OFFENEN Events des
+Tags zu holen und darin auch die geschlossenen Märkte auszuwerten:
+
+```
+GET /events?closed=false&tag_slug=ukraine-map   ->  e["markets"][*]
+```
+
+## 16. Messausfall 05.–07.08.: 26,7 Stunden (07.08.)
+
+**Der Rekorder stand 26 Stunden 39 Minuten still.** Letzter Herzschlag
+05.08. 21:41:08 UTC, Neustart 07.08. 00:20:17 UTC.
+
+**Ursache: `data/live/watchdog.json` wurde am 05.08. um 19:25 auf einen
+Stand von etwa dem 25.07. zurückgesetzt.** Danach enthielt die Datei nur
+noch abgelaufene Juli-Profile — `isw_ukraine` fehlte darin, ebenso die
+Profile der Earnings-Strecke (`elon_july27`, `trump_july27`,
+`allin_july31`). Der Rekorder lief noch rund zwei Stunden weiter und
+starb dann; weil der Watchdog ihn nicht mehr kannte, blieb er tot. Die
+Datei liegt ausserhalb der Versionierung (`data/live/` ist gitignored),
+der Auslöser ist aus den Artefakten nicht rekonstruierbar.
+
+**Datenverlust: vollständig für das Fenster.** Alle vier qualifizierenden
+Layer änderten sich im Ausfall, darunter ein kompletter ISW-Tageszyklus
+am 06.08.:
+
+| Layer | Stand bei Ausfall | Stand bei Neustart |
+| --- | --- | --- |
+| infiltration | 05.08. 20:53:22 | 06.08. 19:10:31 |
+| gains24h | 31.07. 12:55:41 | 06.08. 11:21:54 |
+| advance | 05.08. 18:59:31 | 06.08. 19:09:49 |
+| control | 03.08. 21:45:57 | 05.08. 22:48:54 |
+
+**Die Ausfallerkennung hat gehalten.** Der Neustart protokollierte
+`ausfall_erkannt` mit `luecke_s` 95 952 (26,7 h); alle vier daraufhin
+erkannten Kandidaten tragen `nach_ausfall_s` und werden von der
+Auswertung als `unsicher` geführt, also aus dem Nenner genommen. Zwei
+davon sind `enter`-Märkte (Matiasheve) und wären ohne die Markierung als
+scheinbar antizipierte Fälle in die Verteilung gelaufen — genau die
+Verzerrung, gegen die der Mechanismus am 31.07. gebaut wurde. Erster
+Praxisnachweis.
+
+**Wiederhergestellt wurde ausschliesslich das eigene Profil.** Die
+fehlenden Earnings-Profile sind nicht angefasst (Sync-Regel: fremde
+Sessions nicht stillschweigend korrigieren) — sie sind gemeldet. Eine
+Sicherung des vorgefundenen Stands liegt als
+`data/live/watchdog.json.vor-isw-rearm`.
+
+**Schwachstelle — geschlossen am 07.08., siehe Abschnitt 17.** Ein Profil,
+das aus `watchdog.json` verschwindet, erzeugt keinerlei Signal: Der
+Watchdog meldet dann wahrheitsgemäss „kein betreutes Profil im
+Zeitfenster", und der stille Ausfall ist von einem ruhigen Betrieb nicht
+zu unterscheiden. Wer die Messreihe ernst nimmt, braucht eine
+Aussenkontrolle, die das Fehlen eines erwarteten Profils bemerkt — nicht
+nur dessen Tod.
+
+## 17. Wachkontrolle: die Sollbesetzung wird versioniert (07.08.)
+
+Die Aussenkontrolle aus Abschnitt 16 steht als
+`operations/pipeline/wachkontrolle.py` (28 Tests). Ihr tragender Gedanke
+ist die Ablage, nicht die Prüflogik: Die **Sollbesetzung liegt
+versioniert in `data/wachposten.json`**, nicht in `data/live/`. Genau
+dieses Verzeichnis wurde am 05.08. zurückgesetzt; eine Erwartung, die
+dort liegt, wird vom selben Vorfall mit gelöscht. In Git dagegen ist ein
+Zurücksetzen ein sichtbarer Diff.
+
+Geprüft wird je erwartetem Posten:
+
+| Befund | Bedeutung |
+| --- | --- |
+| `posten_fehlt` | nicht mehr in `watchdog.json` — der Fall vom 05.08. |
+| `posten_deaktiviert` | eingetragen, aber `aktiv: false` |
+| `modul_abweichung` | betreut, aber mit dem falschen Modul |
+| `fenster_abgelaufen` | `ende_utc` vorbei, der Watchdog überspringt ihn |
+| `fenster_zu_kurz` | endet vor dem Soll — künftiger Stillstand, Warnung |
+| `herzschlag_alt` / `herzschlag_fehlt` | Posten schweigt |
+| `posten_beendet` | letztes Event `stop`/`fertig`; so einen Bot startet der Watchdog nie wieder |
+| `stop_datei` | `data/live/STOP` gesetzt, der Watchdog startet gar nichts |
+| `watchdog_json_fehlt` / `_unlesbar` | Rückfall auf `DEFAULT_MANAGED`, in dem kein Messposten steht |
+
+**Wo sie läuft.** Im Durchlauf des Watchdogs selbst, alle fünf Minuten.
+Das klingt wie ein Widerspruch zum Wort „Aussenkontrolle", trifft aber
+den beobachteten Fehler: Der Scheduled Task lief während der 26,7 Stunden
+korrekt durch, nur seine *Liste* war falsch. Die Kontrolle meldet nur und
+greift nie ein — sie läuft nach der Neustart-Logik und schluckt jeden
+eigenen Fehler, damit sie einen Neustart nie verhindern kann. Zusätzlich
+ist sie als eigenständiger Aufruf mit Rückgabecodes nutzbar
+(0 besetzt, 1 kritisch, 2 Warnung, 3 Sollbesetzung unlesbar), auch aus dem
+Zweit-Klon gegen das Live-`data/live`:
+
+```
+python -m operations.pipeline.wachkontrolle --live-root C:/Users/chole/ba-thesis/data/live
+```
+
+Die Herzschlag-Grenze liegt bei 30 min statt bei den 600 s des Watchdogs:
+Erst wenn er rund fünf Zyklen lang nicht hochbekommen hat, ist das ein
+Befund und kein laufender Neustart.
+
+**Gegenprobe am echten Artefakt.** Die gesicherte Datei
+`watchdog.json.vor-isw-rearm` — der Fundzustand vom 07.08. — als
+Eingabe liefert `posten_fehlt` und Rückgabecode 1. Entscheidend ist die
+zweite Probe: mit **frischem** Herzschlag, also im Zustand des Fensters
+zwischen 19:25 und 21:41 am 05.08., als der Rekorder noch lief und nur
+die Liste schon falsch war, schlägt sie ebenfalls an. Die Meldung wäre
+also **2 h 16 min vor dem Tod des Prozesses** gekommen, nicht erst
+26 Stunden danach.
+
+**Zweiter Auslöser.** Liefe die Kontrolle nur im Watchdog, teilte sie das
+Schicksal ihres Wirts: Stellt dessen Scheduled Task den Betrieb ein,
+meldet wieder niemand etwas. Deshalb ruft auch der versionierte
+Tageslauf-Wrapper `operations/pipeline/daily_review_task.cmd` sie auf —
+anderer Task (`\MarketIntelDailyReview`, täglich 06:30), anderer Klon,
+dieselbe `--live-root`. Der Aufruf steht direkt hinter dem `git pull`,
+damit die Sollbesetzung aktuell ist, und vor dem Tageslauf, damit ein
+hängender Lauf die Meldung nicht verschluckt; ohne `%2` wird er
+übersprungen, weil der Zweit-Klon kein eigenes `data/live` hat und die
+Kontrolle dort nur Phantom-Befunde melden würde. Ein Befund schreibt
+`ALARM` in `logs/daily_review_task.log` und hält den Tageslauf nicht auf.
+
+Damit sind beide Auslöser unabhängig: zwei Scheduled Tasks, zwei
+Arbeitskopien, ein gemeinsamer versionierter Sollstand. Stumm bleibt die
+Messung erst, wenn beide Tasks gleichzeitig ausfallen — ein Zustand, der
+im Gegensatz zum Vorfall vom 05.08. auch am ausbleibenden Tageslauf und
+an der stehenden Website sichtbar wird.
+
+## 18. Messstand 07.08.: N=3, drittes Ereignis Myrne
+
+Die Auswertung über die Live-Ereignisse
+(`python -m operations.analysis.isw_vorlauf_auswertung --protokoll
+.../isw_ukraine/ereignisse.jsonl --mit-referenz`):
+
+| erkannt (UTC) | Siedlung | T+0 | T+30 | Δ30 | Vorlauf | Klasse |
+| --- | --- | --- | --- | --- | --- | --- |
+| 22.07. 20:57:43 | Krasnoyarske* | 0.046 | 0.870 | +0.824 | 1123 s | Überraschung |
+| 29.07. 22:09:43 | Oleksiyevo-Druzhkivka | 0.890 | 0.955 | +0.065 | 120 s | antizipiert |
+| 29.07. 22:09:43 | Oleksiyevo-Druzhkivka | 0.915 | 0.965 | +0.050 | 120 s | antizipiert |
+| 03.08. 14:06:17 | **Myrne** | 0.930 | 0.945 | +0.015 | 118 s | antizipiert |
+
+\* rekonstruierter Referenzfall, nicht vom Rekorder gemessen.
+
+**Myrne, 03.08.** — das dritte Siedlungsereignis und der bisher am
+stärksten antizipierte Fall. ISW legte das Infiltrations-Polygon um
+14:04:19 an, der Rekorder sah es 118 s später; der Markt stand da schon
+bei 0.93 und bewegte sich in 30 Minuten um 1,5 pp. Der Treffer überstand
+das Beruhigungsfenster (`treffer_bestaetigt` 15:06:34, Dauer 3617 s).
+Die Reihe Krasnoiarske → Oleksiyevo → Myrne zeigt einen fallenden
+Restweg: +82 pp, +6 pp, +1,5 pp.
+
+**Stand der Vorregistrierung:** 3 Siedlungsereignisse, Anteil
+Überraschung 0.333, **Entscheidung `weiter_messen`** (N 3/10, Stichtag
+14.08.). Von den drei Go-Kriterien sind zwei erfüllt (Anteil Überraschung
+0.333 ≥ 0.2; Median Δ30 0.824 ≥ 0.1), eines ist **offen**: die mediane
+Buchtiefe bis 0.50 ist `None`, weil sie nur über
+Überraschungs-Ereignisse gerechnet wird und der einzige davon der
+rekonstruierte Krasnoiarske-Fall ohne Orderbuch-Messung ist. Solange
+kein live gemessener Überraschungsfall dazukommt, ist dieses Kriterium
+strukturell nicht entscheidbar — das ist kein Fehler der Auswertung,
+sondern die ehrliche Konsequenz aus N=1 in der interessanten Klasse.
+
+**Die Ausfallmarkierung, genau gelesen.** Alle vier Kandidaten des
+Neustarts vom 07.08. tragen `nach_ausfall_s = 95952`. Sie stehen aber
+**noch aus einem zweiten Grund** nicht in der Verteilung: Die Auswertung
+zählt ausschliesslich bestätigte Treffer, und ihr Beruhigungsfenster war
+zum Zeitpunkt dieser Auswertung noch offen. Eine Gegenprobe zeigt das —
+entfernt man die Markierung aus einer Kopie des Protokolls, ändert sich
+nichts (3 Siedlungsereignisse, Anteil 0.333). Die Markierung greift erst
+bei der Bestätigung; dann liefert `klassifiziere()` `unsicher` und der
+Fall bleibt aus dem Nenner (`isw_vorlauf_auswertung.py:155,429`,
+deterministisch abgedeckt in `tests/test_isw_vorlauf_auswertung.py:154,
+166,188`).
+
+Der Effekt wäre dann rechnerisch: Matiasheve ist **ein**
+Siedlungsereignis (zwei Marktzeilen, T+0 0.94 und 0.969, russische
+`enter`-Märkte) — mitgezählt ergäbe das 4 statt 3 Siedlungsereignisse
+bei unverändert einem Überraschungsfall, also einen Anteil von 0.25
+statt 0.333. Die beiden Huliaipole-Zeilen sind ohnehin
+`auswertbar: false` (`re-enter`-Märkte mit invertierter Polarität). Die
+Behauptung aus Abschnitt 16, die Markierung verhindere eine Verzerrung,
+bleibt damit richtig — sie ist nur noch nicht eingelöst, sondern steht
+aus.
+
+**Zweiter, kleiner Ausfall am 03.08.** 21:25:03 protokollierte der
+Rekorder `ausfall_erkannt` mit `luecke_s` 657 (11 min). Er lag nach dem
+Myrne-Ereignis und traf keinen Kandidaten; erwähnt, weil er zeigt, dass
+kurze Lücken im Normalbetrieb vorkommen und sauber erkannt werden.
+
+Nur `isw_ukraine` steht in der Sollbesetzung — die am 05.08. ebenfalls
+verlorenen Earnings-Profile gehören anderen Sessions und werden nach der
+Sync-Regel nicht stillschweigend mit eingetragen.
+
 ## Anhang: verwendete Endpunkte
 
 ```

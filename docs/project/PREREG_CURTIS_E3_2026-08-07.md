@@ -71,6 +71,22 @@ Secret-Service-Strang zentral (stützt p=0.88 für „Secret" qualitativ).
 **Prognosen unverändert.** Ausführung: `curtis_e3_orders.py`
 (operations/pipeline), Platzierung durch die Autorin selbst.
 
+## Platzierungsstand (07.08. 19:56 UTC, durch die Autorin ausgeführt)
+
+Alle 6 Orders platziert (`curtis_e3_orders.py --scharf --mit-rick`,
+Log `data/live/curtis_e3/orders.jsonl`, Wallet 0x29afE1…F88d):
+
+- Taker, alle voll gefüllt (MATCHED): Secret 100 @ 0.38, Paranormal
+  100 @ 0.16, Rick 100 @ 0.13 — 67 USD investiert.
+- Maker-GTC ruhend: President 10+ 50 @ 0.60, Ghost 40 @ 0.40,
+  White House 40 @ 0.35 — 60 USD gebunden.
+
+Max. Auszahlung Taker bei 3× YES: 300 USD. Betreuungsplan: KEINE
+laufende Buchbeobachtung (kein Handlungsbedarf vor Airing; gefüllte
+Maker-Limits sind Datenpunkte, keine Nachlege-Signale). Nächster
+Checkpoint: Montag 10.08. tagsüber CEST — Fill-Stand der Maker,
+HBO-Max-/Untertitel-Abgleich, UMA-Resolutionen, dann Brier-Tabelle.
+
 ## Auswertung (nach Resolution auszufüllen)
 
 | Markt | Ergebnis | p_uns | Markt-Mid vorab | Brier uns | Brier Markt |

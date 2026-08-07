@@ -18,13 +18,6 @@
 [tool.ruff]
 # Muss der Python-Version der CI folgen (.github/workflows/ci.yml).
 target-version = "py314"
-
-[tool.ruff.lint.per-file-ignores]
-# Einmalige Abbildungs-Generatoren im kompakten Matplotlib-Stil (Semikolons,
-# einzeilige ifs). Die PNGs stecken in der abgegebenen Arbeit; die Skripte
-# nachtraeglich zu reformatieren aendert Belege ohne Gewinn. Echte Fehler
-# (F-Regeln) gelten dort weiterhin.
-"thesis/figures/make_*.py" = ["E701", "E702"]
 line-length = 88
 exclude = [
     "operations/analysis",
@@ -32,3 +25,10 @@ exclude = [
     ".venv",
     "_disabled",
 ]
+
+[tool.ruff.lint.per-file-ignores]
+# Einmalige Abbildungs-Generatoren im kompakten Matplotlib-Stil (Semikolons,
+# einzeilige ifs). Die PNGs stecken in der abgegebenen Arbeit; die Skripte
+# nachtraeglich zu reformatieren aendert Belege ohne Gewinn. Echte Fehler
+# (F-Regeln) gelten dort weiterhin.
+"thesis/figures/make_*.py" = ["E701", "E702"]

@@ -10,7 +10,7 @@ Stand 16.07.2026. Dieses Dokument ist die gemeinsame Referenz für alle Beteilig
 
 **Gelernte Regel seit 16.07.:** Der Schreibweg von Cowork auf deine Festplatte über die Ordner-Verbindung ist unzuverlässig (Dateien landeten nur in einer Sitzungskopie und gingen verloren). Darum gilt: Cowork liefert alles über den Chat, du legst es selbst ab. Umgekehrt bekomme ich neue Stände nur, wenn du sie hochlädst.
 
-**Kanonische Ablage:**
+**Kanonische Ablage:** (Ordnerkarte mit Stand 07.08. in Abschnitt 7)
 
 | Was | Kanonischer Ort | Wer pflegt |
 | --- | --- | --- |
@@ -53,3 +53,54 @@ Pilot-Ankündigung in 4.2 und Ergebnis-Box (nach Pilotstart bzw. Fensterende), L
 ## 6. Update 18.07.2026 (Inventar Teil B erhoben, drei Korrekturen)
 
 Das PROJEKT_INVENTAR.md enthält jetzt beide Teile und ist die massgebliche Faktenquelle. Drei Angaben weiter oben sind damit überholt. Erstens: Der Pilot wurde direkt auf main gebaut, einen Branch pilot/feldtest-2026-07 gibt es nicht. Zweitens: `C:\Users\chole\ba-thesis` und `C:\Users\chole\Projects\multi-agent-orchestration-informational-efficiency` sind zwei Klone desselben GitHub-Repos (Pablozh123/multi-agent-orchestration-informational-efficiency). Synchronisiert wird über git push und pull, gearbeitet wird immer nur in einer Kopie. Drittens: Das Terminal-Repo liegt unter `C:\Users\chole\Projects\prediction-market-terminal`, die tägliche Kette publiziert dorthin (public/data mit neun JSON-Artefakten). Zahlen und Fundorte stehen im Inventar.
+
+## 7. Ordnerkarte und Arbeitsregeln (Stand 07.08.2026, ersetzt die Tabelle in §1 wo abweichend)
+
+Drei GitHub-Repositories, sechs lokale Ordner. Die Verwirrung entstand, weil
+vier der sechs Ordner dasselbe Repository zeigen — in verschiedenen Rollen.
+
+| Ordner | Ist | Rolle |
+| --- | --- | --- |
+| `C:\Users\chole\ba-thesis` | Klon von `multi-agent-orchestration-informational-efficiency` | **Betriebsordner.** Bots laufen NUR hier, `data\live\` liegt nur hier. Steht immer auf `main`, niemand entwickelt hier. |
+| `C:\Users\chole\Projects\multi-agent-orchestration-informational-efficiency` | zweiter Klon desselben Repos | **Entwicklungsordner.** Taegliche Kette laeuft hier (liest `data\live` des Betriebsordners ueber `THESIS_LIVE_ROOT`), Commits und PRs entstehen hier. |
+| `C:\Users\chole\Projects\wt-elon` | Worktree des Entwicklungsordners | **Parallel-Werkbank 1.** Eigener Branch je Feature, Rest wie Entwicklungsordner. |
+| `C:\Users\chole\Projects\wt-ukraine` | Worktree des Entwicklungsordners | **Parallel-Werkbank 2.** Dito. |
+| `C:\Users\chole\Projects\prediction-market-terminal` | eigenes Repo (public) | **Terminal/Website.** Die taegliche Kette publiziert JSON nach `public/data`. |
+| `C:\Users\chole\Projects\prediction-alpha-bot` | eigenes Repo (public) | **Arbitrage-Scanner** (TypeScript, paper-only). Unabhaengig, kein Datenaustausch zur Laufzeit. |
+
+Warum zwei Klone plus zwei Worktrees vom selben Repo: Der Betriebsordner darf
+sich nur durch `git pull` bewegen, weil laufende Bots beim Neustart laden, was
+dort liegt. Entwickelt wird deshalb woanders — und zwar parallel, ein Branch
+pro Werkbank, ohne dass sich zwei Straenge gegenseitig die Dateien wechseln.
+
+**Der eine Kreislauf, der alles synchron haelt:**
+
+1. Feature bauen in einer Werkbank (wt-elon, wt-ukraine oder Entwicklungsordner)
+   auf einem `feat/*`- oder `fix/*`-Branch.
+2. Push. Die CI prueft seit 07.08. jeden Push auf `feat/**` und `fix/**`,
+   nicht mehr erst den PR.
+3. PR nach `main`, CI gruen, mergen. Branch danach loeschen.
+4. Im Betriebsordner `git pull` (nur das, kein checkout, kein Editieren).
+   Laufende Bots uebernehmen den neuen Stand bei ihrem naechsten Neustart.
+
+**Regeln, die aus Vorfaellen stammen (nicht aus Vorsicht):**
+
+- Betriebsordner nie auf einem Feature-Branch stehen lassen. Er stand 12
+  Commits zurueck auf `feat/earnings-bot`; die am 07.08. gemergte Feuerkette
+  war deshalb auf GitHub scharf und im Betrieb nicht vorhanden.
+- Getrackte Dateien, die pro Maschine abweichen, gibt es nicht mehr:
+  `.claude/settings.local.json` ist seit 07.08. enttrackt, Testlaeufe
+  schreiben seit a5d3a63 nicht mehr in die Audit-Beweisdatei. Wenn `git
+  status` im Betriebsordner etwas Getracktes als geaendert zeigt, ist das ab
+  jetzt ein Befund, kein Grundrauschen.
+- `data\live\watchdog.json` vor jedem Ueberschreiben mit dem aktiven Satz
+  vergleichen (Vorfall 07.08.: Juli-Stand eingespielt, jre_august3 und
+  elon_august3 starben unbetreut).
+- Fernzweige nach dem Merge loeschen. Am 07.08. wurden 19 vollstaendig
+  gemergte Zweige geloescht; uebrig ist nur, was echte offene Arbeit traegt.
+
+**Rollenverteilung der Repos fuers Vorzeigen:** `prediction-market-terminal`
+(public) ist das Produkt, `prediction-alpha-bot` (public) die
+Scanner-Forschung, dieses Repo (privat) traegt Bots, Messreihen und Thesis.
+Die Gesamtsicht fuer Externe liegt als Einseiter im Terminal-Repo unter
+`docs/research/ONE_PAGER.md`.

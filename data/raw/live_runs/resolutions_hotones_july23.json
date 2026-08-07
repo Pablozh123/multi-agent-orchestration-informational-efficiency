@@ -1,0 +1,141 @@
+{
+ "profil": "hotones_july23",
+ "event_slug": "what-will-jon-bernthal-or-tom-holland-say-on-hot-ones-20260721145535497",
+ "event_titel": "What will Jon Bernthal or Tom Holland say on Hot Ones?",
+ "abgerufen_utc": "2026-08-07T04:30:41+00:00",
+ "quelle": "gamma-api.polymarket.com/events (oeffentlich, read-only)",
+ "maerkte": {
+  "3026022": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Brother\" or \"Mate\" 10+ times on Hot Ones?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3026023": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Fuck\" or \"Fucking\" 5+ times on Hot Ones?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3026024": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Spider\" or \"Spider-man\" 5+ times on Hot Ones?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3026026": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Milk\" 3+ times on Hot Ones?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3026028": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Odyssey\" on Hot Ones?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3026030": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Hollywood\" on Hot Ones?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3026031": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Timothy\" on Hot Ones?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3026032": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Zendaya\" on Hot Ones?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3026033": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Wedding\" on Hot Ones?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3026034": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Soccer\" on Hot Ones?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3026035": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"World Cup\" on Hot Ones?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3026036": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Morocco\" on Hot Ones?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3026037": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Punisher\" on Hot Ones?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3026038": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Marvel\" on Hot Ones?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3026039": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Pitbull\" on Hot Ones?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3026040": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Uncharted\" on Hot Ones?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3026041": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Scoville\" on Hot Ones?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3026042": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Fire\" on Hot Ones?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3026043": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Ice Cream\" on Hot Ones?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3026044": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Brother\" on Hot Ones?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3026045": {
+   "frage": "Will Jon Bernthal or Tom Holland say \"Grey\" or \"Gray\" on Hot Ones?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3026046": {
+   "frage": "Will Hot One’s episode not air?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  }
+ }
+}

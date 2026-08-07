@@ -1,0 +1,135 @@
+{
+ "profil": "earnings_axp_july24",
+ "event_slug": "what-will-american-express-say-during-their-next-earnings-call-20260717164416058",
+ "event_titel": "What will American Express say during their next earnings call?",
+ "abgerufen_utc": "2026-08-07T04:30:41+00:00",
+ "quelle": "gamma-api.polymarket.com/events (oeffentlich, read-only)",
+ "maerkte": {
+  "2966457": {
+   "frage": "Will American Express say \"Income\" 10+ times during earnings call?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2966458": {
+   "frage": "Will American Express say \"Quarter\" 10+ times during earnings call?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966459": {
+   "frage": "Will American Express say \"Fiscal\" 10+ times during earnings call?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2966460": {
+   "frage": "Will American Express say \"Airline\" during earnings call?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966461": {
+   "frage": "Will American Express say \"Restaurant\" during earnings call?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966462": {
+   "frage": "Will American Express say \"Luxury\" during earnings call?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966463": {
+   "frage": "Will American Express say \"Crypto\" during earnings call?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2966464": {
+   "frage": "Will American Express say \"Tariff\" during earnings call?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2966465": {
+   "frage": "Will American Express say \"Volatility\" during earnings call?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2966466": {
+   "frage": "Will American Express say \"Inventory\" during earnings call?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2966467": {
+   "frage": "Will American Express say \"Commercial\" during earnings call?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966468": {
+   "frage": "Will American Express say \"Expense\" during earnings call?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966469": {
+   "frage": "Will American Express say \"Refresh\" during earnings call?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966470": {
+   "frage": "Will American Express say \"Retention\" during earnings call?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966471": {
+   "frage": "Will American Express say \"Acquisition\" during earnings call?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966472": {
+   "frage": "Will American Express say \"Wealth\" during earnings call?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2966473": {
+   "frage": "Will American Express say \"Fraud\" during earnings call?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "2966474": {
+   "frage": "Will American Express say \"Cybersecurity\" during earnings call?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2966475": {
+   "frage": "Will American Express say \"Automation\" during earnings call?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2966476": {
+   "frage": "Will American Express say \"Reservation\" during earnings call?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "2966477": {
+   "frage": "Will the earnings call not air?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  }
+ }
+}

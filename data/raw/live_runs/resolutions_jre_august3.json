@@ -1,0 +1,105 @@
+{
+ "profil": "jre_august3",
+ "event_slug": "what-will-be-said-on-the-first-joe-rogan-experience-episode-of-the-week-august-3-20260731210932757",
+ "event_titel": "What will be said on the first Joe Rogan Experience episode of the week? (August 3)",
+ "abgerufen_utc": "2026-08-07T04:30:41+00:00",
+ "quelle": "gamma-api.polymarket.com/events (oeffentlich, read-only)",
+ "maerkte": {
+  "3247488": {
+   "frage": "Will \"People\" be said 200+ times during the first Joe Rogan Experience of the week of August 3?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3247489": {
+   "frage": "Will \"People\" be said 100+ times during the first Joe Rogan Experience of the week of August 3?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3247490": {
+   "frage": "Will \"Dude\" be said 20+ times during the first Joe Rogan Experience of the week of August 3?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3247491": {
+   "frage": "Will \"Trump\" be said 10+ times during the first Joe Rogan Experience of the week of August 3?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3247492": {
+   "frage": "Will \"Fuck\" or \"Fucking\" be said 10+ times during the first Joe Rogan Experience of the week of August 3?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3247493": {
+   "frage": "Will \"Microsoft\" be said during the first Joe Rogan Experience of the week of August 3?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3247494": {
+   "frage": "Will \"OpenAI\" be said during the first Joe Rogan Experience of the week of August 3?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3247495": {
+   "frage": "Will \"SpaceX\" be said during the first Joe Rogan Experience of the week of August 3?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3247496": {
+   "frage": "Will \"Spy\" be said during the first Joe Rogan Experience of the week of August 3?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3247497": {
+   "frage": "Will \"World Cup\" be said during the first Joe Rogan Experience of the week of August 3?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3247498": {
+   "frage": "Will \"Alien\" be said during the first Joe Rogan Experience of the week of August 3?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3247499": {
+   "frage": "Will \"Right\" be said during the first Joe Rogan Experience of the week of August 3?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3247500": {
+   "frage": "Will \"Left\" be said during the first Joe Rogan Experience of the week of August 3?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3247501": {
+   "frage": "Will \"Red\" be said during the first Joe Rogan Experience of the week of August 3?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3247502": {
+   "frage": "Will \"Blue\" be said during the first Joe Rogan Experience of the week of August 3?",
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
+  },
+  "3247503": {
+   "frage": "Will no Rogan episode air?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  }
+ }
+}

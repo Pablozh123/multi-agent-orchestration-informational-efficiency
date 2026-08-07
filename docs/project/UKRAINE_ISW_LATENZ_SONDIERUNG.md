@@ -607,6 +607,53 @@ Tags zu holen und darin auch die geschlossenen Märkte auszuwerten:
 GET /events?closed=false&tag_slug=ukraine-map   ->  e["markets"][*]
 ```
 
+## 16. Messausfall 05.–07.08.: 26,7 Stunden (07.08.)
+
+**Der Rekorder stand 26 Stunden 39 Minuten still.** Letzter Herzschlag
+05.08. 21:41:08 UTC, Neustart 07.08. 00:20:17 UTC.
+
+**Ursache: `data/live/watchdog.json` wurde am 05.08. um 19:25 auf einen
+Stand von etwa dem 25.07. zurückgesetzt.** Danach enthielt die Datei nur
+noch abgelaufene Juli-Profile — `isw_ukraine` fehlte darin, ebenso die
+Profile der Earnings-Strecke (`elon_july27`, `trump_july27`,
+`allin_july31`). Der Rekorder lief noch rund zwei Stunden weiter und
+starb dann; weil der Watchdog ihn nicht mehr kannte, blieb er tot. Die
+Datei liegt ausserhalb der Versionierung (`data/live/` ist gitignored),
+der Auslöser ist aus den Artefakten nicht rekonstruierbar.
+
+**Datenverlust: vollständig für das Fenster.** Alle vier qualifizierenden
+Layer änderten sich im Ausfall, darunter ein kompletter ISW-Tageszyklus
+am 06.08.:
+
+| Layer | Stand bei Ausfall | Stand bei Neustart |
+| --- | --- | --- |
+| infiltration | 05.08. 20:53:22 | 06.08. 19:10:31 |
+| gains24h | 31.07. 12:55:41 | 06.08. 11:21:54 |
+| advance | 05.08. 18:59:31 | 06.08. 19:09:49 |
+| control | 03.08. 21:45:57 | 05.08. 22:48:54 |
+
+**Die Ausfallerkennung hat gehalten.** Der Neustart protokollierte
+`ausfall_erkannt` mit `luecke_s` 95 952 (26,7 h); alle vier daraufhin
+erkannten Kandidaten tragen `nach_ausfall_s` und werden von der
+Auswertung als `unsicher` geführt, also aus dem Nenner genommen. Zwei
+davon sind `enter`-Märkte (Matiasheve) und wären ohne die Markierung als
+scheinbar antizipierte Fälle in die Verteilung gelaufen — genau die
+Verzerrung, gegen die der Mechanismus am 31.07. gebaut wurde. Erster
+Praxisnachweis.
+
+**Wiederhergestellt wurde ausschliesslich das eigene Profil.** Die
+fehlenden Earnings-Profile sind nicht angefasst (Sync-Regel: fremde
+Sessions nicht stillschweigend korrigieren) — sie sind gemeldet. Eine
+Sicherung des vorgefundenen Stands liegt als
+`data/live/watchdog.json.vor-isw-rearm`.
+
+**Offene Schwachstelle.** Ein Profil, das aus `watchdog.json`
+verschwindet, erzeugt keinerlei Signal: Der Watchdog meldet dann
+wahrheitsgemäss „kein betreutes Profil im Zeitfenster", und der stille
+Ausfall ist von einem ruhigen Betrieb nicht zu unterscheiden. Wer die
+Messreihe ernst nimmt, braucht eine Aussenkontrolle, die das
+Fehlen eines erwarteten Profils bemerkt — nicht nur dessen Tod.
+
 ## Anhang: verwendete Endpunkte
 
 ```

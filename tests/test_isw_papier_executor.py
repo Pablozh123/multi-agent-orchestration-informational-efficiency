@@ -182,10 +182,80 @@ def test_modul_hat_strukturell_keine_kauffaehigkeit():
                 "websocket", "websockets", "web3", "py_clob_client",
                 "eth_account", "aiohttp"}
     assert not (importiert & verboten), importiert & verboten
-    # Erlaubte Aussenwelt: nur stdlib-Werkzeuge und die eigene Feuerkette.
-    assert importiert <= {"argparse", "json", "sys", "time", "dataclasses",
-                          "datetime", "pathlib", "operations", "__future__"}, importiert
+    # Erlaubte Aussenwelt: nur stdlib-Werkzeuge und die eigene Pipeline
+    # (Feuerkette fuer den Deckel, config fuer STOP, watchdog fuer den
+    # Not-Aus-Grund).
+    assert importiert <= {"argparse", "json", "os", "sys", "time",
+                          "dataclasses", "datetime", "pathlib",
+                          "operations", "__future__"}, importiert
 
     quelle = Path(px.__file__).read_text(encoding="utf-8").lower()
     for token in ("private_key", "passphrase", "api_key"):
         assert token not in quelle, f"Key-Material-Token im Modul: {token}"
+
+
+# ------------------------------------------------------ Watchdog-Betrieb
+
+def test_live_lauf_schreibt_start_und_herzschlag(tmp_path: Path):
+    quelle = tmp_path / "feuerbefehle.jsonl"
+    quelle.write_text(befehl() + "\n", encoding="utf-8")
+    live_dir = tmp_path / "isw_papier"
+
+    px.live_lauf(quelle, tmp_path / "journal.jsonl", live_dir,
+                 stop_datei=tmp_path / "STOP", max_zyklen=2,
+                 schlaf=lambda s: None, jetzt_fn=lambda: JETZT)
+
+    events = [json.loads(z) for z in
+              (live_dir / "bot_events.jsonl").read_text(
+                  encoding="utf-8").splitlines()]
+    assert [e["art"] for e in events] == ["start", "herzschlag", "herzschlag"]
+    assert events[1]["neu"] == 1     # der Kauf des ersten Zyklus
+    assert events[2]["neu"] == 0     # zweiter Zyklus: schon verarbeitet
+
+
+def test_live_lauf_gehorcht_der_stop_datei(tmp_path: Path):
+    stop = tmp_path / "STOP"
+    stop.write_text("halt", encoding="utf-8")
+    live_dir = tmp_path / "isw_papier"
+
+    rc = px.live_lauf(tmp_path / "leer.jsonl", tmp_path / "journal.jsonl",
+                      live_dir, stop_datei=stop, max_zyklen=5,
+                      schlaf=lambda s: None, jetzt_fn=lambda: JETZT)
+
+    assert rc == 0
+    events = [json.loads(z) for z in
+              (live_dir / "bot_events.jsonl").read_text(
+                  encoding="utf-8").splitlines()]
+    assert [e["art"] for e in events] == ["start", "stop"]
+    assert events[-1]["grund"] == "STOP-Datei"
+    assert not (tmp_path / "journal.jsonl").exists()
+
+
+def test_stop_waehrend_des_laufs_beendet_vor_dem_naechsten_durchlauf(
+        tmp_path: Path):
+    stop = tmp_path / "STOP"
+    live_dir = tmp_path / "isw_papier"
+
+    def schlaf_und_stop(_s: float) -> None:
+        stop.write_text("halt", encoding="utf-8")
+
+    px.live_lauf(tmp_path / "leer.jsonl", tmp_path / "journal.jsonl",
+                 live_dir, stop_datei=stop, max_zyklen=5,
+                 schlaf=schlaf_und_stop, jetzt_fn=lambda: JETZT)
+
+    arten = [json.loads(z)["art"] for z in
+             (live_dir / "bot_events.jsonl").read_text(
+                 encoding="utf-8").splitlines()]
+    assert arten == ["start", "herzschlag", "stop"]
+
+
+def test_stop_grund_ist_der_notaus_grund_des_watchdogs():
+    """Der Watchdog unterscheidet Not-Aus von regulaerem Ende am Grund.
+
+    Schreibt der Executor einen anderen String, gilt sein STOP-Ende als
+    "korrekt beendet" und er wird nach Aufheben der STOP-Datei nie wieder
+    gestartet — der stille Ausfall von trump_july27 (29.-31.7.), nur
+    andersherum.
+    """
+    from operations.pipeline.watchdog import NOTAUS_GRUND
+    assert px.NOTAUS_GRUND == NOTAUS_GRUND == "STOP-Datei"

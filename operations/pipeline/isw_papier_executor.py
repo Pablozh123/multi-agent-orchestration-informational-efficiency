@@ -33,24 +33,36 @@ Aufruf:
     python -m operations.pipeline.isw_papier_executor            # ein Durchlauf
     python -m operations.pipeline.isw_papier_executor --zeigen   # nur Stand, schreibt nichts
     python -m operations.pipeline.isw_papier_executor --folgen 20  # Schleife, alle 20 s
+    python -m operations.pipeline.isw_papier_executor --live     # Watchdog-Betrieb
+
+``--live`` spricht die Bot-Konventionen des Watchdogs: Profilordner aus
+``BOT_PROFIL`` (Standard ``isw_papier``), Lebenszeichen je Zyklus nach
+``bot_events.jsonl`` (die Watchdog-Schwelle liegt bei 600 s), und die
+STOP-Datei beendet den Lauf mit demselben ``stop``-Grund, den auch die
+anderen Bots schreiben — der Watchdog wertet das als "betreuungspflichtig,
+sobald STOP weg ist", nicht als Laufende.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import time
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
+from operations.pipeline.config import STOP_FILE
 from operations.pipeline.isw_feuerkette import (
     STANDARD_BEFEHLE,
     WOCHENDECKEL_USDC,
 )
+from operations.pipeline.watchdog import NOTAUS_GRUND
 
 STANDARD_JOURNAL = Path("data/live/isw_ukraine/papier_journal.jsonl")
+LIVE_INTERVALL_S = 20.0   # Befehle verfallen nach 600 s; 20 s laesst Reserve.
 
 
 @dataclass(frozen=True)
@@ -290,6 +302,49 @@ def durchlauf(befehle_pfad: Path, journal_pfad: Path,
     return statistik
 
 
+def _ereignis(live_dir: Path, art: str, **extra) -> None:
+    """Lebenszeichen nach ``bot_events.jsonl`` — dieselbe Spur wie alle Bots.
+
+    Schluckt Schreibfehler mit Warnung: das Journal ist das Fundament und
+    darf nie am Lebenszeichen sterben.
+    """
+    eintrag = {"wall_ts_utc": _iso(_jetzt()), "art": art, **extra}
+    try:
+        live_dir.mkdir(parents=True, exist_ok=True)
+        with (live_dir / "bot_events.jsonl").open("a", encoding="utf-8") as f:
+            f.write(json.dumps(eintrag, ensure_ascii=False) + "\n")
+    except OSError:
+        print("WARNUNG bot_events.jsonl nicht schreibbar")
+
+
+def live_lauf(befehle_pfad: Path, journal_pfad: Path, live_dir: Path,
+              stop_datei: Path = STOP_FILE,
+              intervall_s: float = LIVE_INTERVALL_S,
+              max_zyklen: int | None = None,
+              schlaf=time.sleep,
+              jetzt_fn=_jetzt) -> int:
+    """Watchdog-Betrieb: Durchlauf + Herzschlag je Zyklus, STOP beendet.
+
+    ``max_zyklen`` und ``schlaf`` sind fuer Tests injizierbar; im Betrieb
+    laeuft die Schleife, bis die STOP-Datei erscheint oder der Watchdog
+    den Prozess ersetzt.
+    """
+    _ereignis(live_dir, "start")
+    zyklen = 0
+    while max_zyklen is None or zyklen < max_zyklen:
+        if stop_datei.exists():
+            _ereignis(live_dir, "stop", grund=NOTAUS_GRUND)
+            print(f"STOP-Datei gesehen ({stop_datei}) — Papier-Executor endet.")
+            return 0
+        statistik = durchlauf(befehle_pfad, journal_pfad, jetzt=jetzt_fn())
+        _ereignis(live_dir, "herzschlag",
+                  neu=statistik["kaeufe"] + statistik["ablehnungen"])
+        zyklen += 1
+        if max_zyklen is None or zyklen < max_zyklen:
+            schlaf(intervall_s)
+    return 0
+
+
 def zeige_stand(journal_pfad: Path, jetzt: datetime | None = None) -> None:
     jetzt = jetzt or _jetzt()
     journal, _ = _zeilen_zu_dicts(lese_zeilen(journal_pfad))
@@ -311,11 +366,21 @@ def main(argv: list[str] | None = None) -> int:
                           help="nur den Journalstand ausgeben, nichts schreiben")
     zerleger.add_argument("--folgen", type=float, metavar="SEKUNDEN",
                           help="Dauerbetrieb: alle N Sekunden ein Durchlauf")
+    zerleger.add_argument("--live", action="store_true",
+                          help="Watchdog-Betrieb: Herzschlag, STOP-Datei, "
+                               "Profilordner aus BOT_PROFIL")
     argumente = zerleger.parse_args(argv)
 
     if argumente.zeigen:
         zeige_stand(argumente.journal)
         return 0
+
+    if argumente.live:
+        profil = os.environ.get("BOT_PROFIL", "isw_papier")
+        live_dir = Path("data/live") / profil
+        print(f"Papier-Executor im Watchdog-Betrieb (Profil {profil}, "
+              f"alle {LIVE_INTERVALL_S:.0f}s)")
+        return live_lauf(argumente.befehle, argumente.journal, live_dir)
 
     if argumente.folgen:
         intervall = max(1.0, float(argumente.folgen))

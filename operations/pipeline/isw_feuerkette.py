@@ -55,8 +55,21 @@ from pathlib import Path
 
 # --- Parameter der Autorin (07.08.2026) -------------------------------
 ASK_DECKEL = 0.60              # teurer wird nicht gekauft
-EINSATZ_USDC = 200.0           # je Siedlungsereignis, nicht je Markt
-WOCHENDECKEL_USDC = 400.0      # rollend über 7 Tage
+EINSATZ_USDC = 100.0           # je Siedlungsereignis, nicht je Markt
+WOCHENDECKEL_USDC = 400.0      # rollend über 7 Tage -> vier Schuss
+
+# Bulk-Rebuild-Bremse. Bis zum 29.07. hatte der Rekorder eine eigene
+# Rebuild-Erkennung ("Bulk-Rebuild erkannt, neu grundiert statt
+# signalisiert", zuletzt gefeuert am 23.07. bei 162 neuen
+# Infiltrations-Flächen); Commit 86b7d09 ersetzte sie durch Kandidat +
+# Beruhigungsfenster. Für die MESSUNG ist das besser — der Zustand läuft
+# pro Siedlung, ein Neuzeichnen derselben Flächen erzeugt gar keinen
+# Übergang. Die Feuerkette feuert aber VOR dem Fenster und hat von
+# dessen Verrechnung nichts. Darum hier wieder eine Bremse: Mehr als
+# BULK_GRENZE Siedlungsereignisse in EINEM Zyklus sind kein
+# Nachrichtenlage-Muster (bisher immer 1-2), sondern ein Kartenumbau.
+# Dann feuert nichts.
+BULK_GRENZE = 3
 
 # Ein Feuerbefehl verfällt. Das Krasnoiarske-Fenster war 1123 s lang, die
 # Erkennung kostet ~120 s davon. Wer den Befehl später aufgreift, kauft
@@ -195,6 +208,7 @@ def pruefe(meldungen: list[dict],
            ask_deckel: float = ASK_DECKEL,
            einsatz_usdc: float = EINSATZ_USDC,
            wochendeckel_usdc: float = WOCHENDECKEL_USDC,
+           bulk_grenze: int = BULK_GRENZE,
            ) -> tuple[list[Feuerbefehl], list[Ablehnung]]:
     """Kandidaten eines Zyklus → (Feuerbefehle, Ablehnungen).
 
@@ -251,7 +265,17 @@ def pruefe(meldungen: list[dict],
                       meldung.get("layer"))
         gruppen.setdefault(schluessel, []).append((meldung, ziel))
 
-    # 3. Je Gruppe genau ein Markt, gegen den Wochendeckel.
+    # 3. Bulk-Rebuild-Bremse vor jeder Ausgabe.
+    if len(gruppen) > bulk_grenze:
+        for gruppe in gruppen.values():
+            meldung, _ = waehle_markt(gruppe)
+            ablehnen(str(meldung.get("slug") or ""), "bulk_verdacht",
+                     f"{len(gruppen)} Siedlungsereignisse in einem Zyklus "
+                     f"(Grenze {bulk_grenze}) — sieht nach Kartenumbau aus, "
+                     "nicht nach Nachrichtenlage.")
+        return [], ablehnungen
+
+    # 4. Je Gruppe genau ein Markt, gegen den Wochendeckel.
     offen = round(wochendeckel_usdc - verbraucht_usdc, 2)
     for schluessel in sorted(gruppen, key=lambda k: str(k)):
         gruppe = gruppen[schluessel]

@@ -62,7 +62,7 @@ def test_niedriger_ask_feuert():
     b = befehle[0]
     assert b.seite == "BUY_YES"
     assert b.max_preis == 0.60
-    assert b.einsatz_usdc == 200.0
+    assert b.einsatz_usdc == 100.0
     assert b.best_ask == 0.40
 
 
@@ -183,18 +183,19 @@ def test_marktwahl_ist_deterministisch_bei_gleichem_enddatum():
 # --------------------------------------------------------- Wochendeckel
 
 
-def test_wochendeckel_laesst_genau_zwei_ereignisse_zu():
-    meldungen = [_meldung(slug="a"), _meldung(slug="b"), _meldung(slug="c")]
-    ziele = [_ziel(slug="a", objectid=1), _ziel(slug="b", objectid=2),
-             _ziel(slug="c", objectid=3)]
-    befehle, ablehnungen = _pruefe(meldungen, ziele)
-    assert len(befehle) == 2                      # 2 x 200 = 400 USDC
+def test_wochendeckel_laesst_genau_vier_ereignisse_zu():
+    # 4 x 100 = 400 USDC. Der fuenfte wird abgelehnt.
+    slugs = "abcde"
+    meldungen = [_meldung(slug=s) for s in slugs]
+    ziele = [_ziel(slug=s, objectid=i) for i, s in enumerate(slugs, 1)]
+    befehle, ablehnungen = _pruefe(meldungen, ziele, bulk_grenze=99)
+    assert len(befehle) == 4
     assert [a.grund for a in ablehnungen] == ["wochendeckel"]
 
 
 def test_bereits_verbrauchtes_budget_bremst():
     befehle, ablehnungen = _pruefe([_meldung()], [_ziel()],
-                                   verbraucht_usdc=250.0)
+                                   verbraucht_usdc=350.0)
     assert befehle == []
     assert ablehnungen[0].grund == "wochendeckel"
 
@@ -202,7 +203,7 @@ def test_bereits_verbrauchtes_budget_bremst():
 def test_teilbudget_laesst_noch_ein_ereignis_zu():
     meldungen = [_meldung(slug="a"), _meldung(slug="b")]
     ziele = [_ziel(slug="a", objectid=1), _ziel(slug="b", objectid=2)]
-    befehle, _ = _pruefe(meldungen, ziele, verbraucht_usdc=200.0)
+    befehle, _ = _pruefe(meldungen, ziele, verbraucht_usdc=300.0)
     assert len(befehle) == 1
 
 
@@ -250,7 +251,7 @@ def test_befehl_traegt_alles_zur_ausfuehrung_noetige():
     b = befehle[0]
     assert b.token_id == "tok-42"
     assert b.ende_utc == "2026-08-31T12:00:00Z"
-    assert b.shares_bei_deckel == round(200.0 / 0.60, 2)
+    assert b.shares_bei_deckel == round(100.0 / 0.60, 2)
     assert b.vorlauf_s == 118.5
 
 
@@ -277,7 +278,7 @@ def test_schreibe_haengt_an_und_ist_lesbar(tmp_path):
     zeilen = [json.loads(z) for z in
               pfad.read_text(encoding="utf-8").splitlines()]
     assert [z["art"] for z in zeilen] == ["feuerbefehl", "ablehnung"]
-    assert fk.wochenverbrauch(pfad, JETZT) == 200.0
+    assert fk.wochenverbrauch(pfad, JETZT) == 100.0
 
 
 def test_leere_meldungsliste_erzeugt_nichts():
@@ -317,12 +318,49 @@ def test_wochendeckel_wirkt_ueber_neustarts_hinweg(tmp_path):
     from operations.pipeline import isw_rekorder as rek
 
     pfad = tmp_path / "feuerbefehle.jsonl"
-    for slug, oid in (("a", 1), ("b", 2), ("c", 3)):
-        rek._feuern([_meldung(slug=slug)], [_ziel(slug=slug, objectid=oid)],
+    # Je Aufruf EIN Ereignis: so laeuft es real, und so greift die
+    # Bulk-Bremse nicht — der Deckel muss trotzdem ueber die Aufrufe
+    # hinweg zaehlen.
+    for i, slug in enumerate("abcde", 1):
+        rek._feuern([_meldung(slug=slug)], [_ziel(slug=slug, objectid=i)],
                     pfad)
     zeilen = [json.loads(z) for z in
               pfad.read_text(encoding="utf-8").splitlines()]
     befehle = [z for z in zeilen if z["art"] == "feuerbefehl"]
-    assert len(befehle) == 2
+    assert len(befehle) == 4                       # 4 x 100 = 400 USDC
     assert [z["grund"] for z in zeilen if z["art"] == "ablehnung"] \
         == ["wochendeckel"]
+
+
+# ------------------------------------------------- Bulk-Rebuild-Bremse
+
+
+def test_kartenumbau_feuert_auf_nichts():
+    # Am 23.07. legte ISW 162 Infiltrations-Flaechen auf einmal an. Die
+    # alte Rebuild-Erkennung des Rekorders wurde am 29.07. (86b7d09)
+    # durch das Beruhigungsfenster ersetzt - das greift aber erst nach
+    # einer Stunde und damit nie vor einem Feuerbefehl.
+    slugs = "abcd"
+    meldungen = [_meldung(slug=s) for s in slugs]
+    ziele = [_ziel(slug=s, objectid=i) for i, s in enumerate(slugs, 1)]
+    befehle, ablehnungen = _pruefe(meldungen, ziele)
+    assert befehle == []
+    assert {a.grund for a in ablehnungen} == {"bulk_verdacht"}
+    assert len(ablehnungen) == 4
+
+
+def test_normale_nachrichtenlage_bleibt_unter_der_bremse():
+    # Bisher waren es immer 1-2 Siedlungsereignisse je Zyklus.
+    slugs = "abc"
+    meldungen = [_meldung(slug=s) for s in slugs]
+    ziele = [_ziel(slug=s, objectid=i) for i, s in enumerate(slugs, 1)]
+    befehle, _ = _pruefe(meldungen, ziele)
+    assert len(befehle) == 3
+
+
+def test_ein_ereignis_mit_vielen_maerkten_ist_kein_kartenumbau():
+    # Krasnoiarske traf 3 Maerkte - eine Siedlung, kein Rebuild.
+    meldungen = [_meldung(slug=f"s-{n}") for n in range(6)]
+    ziele = [_ziel(slug=f"s-{n}", objectid=1) for n in range(6)]
+    befehle, _ = _pruefe(meldungen, ziele)
+    assert len(befehle) == 1

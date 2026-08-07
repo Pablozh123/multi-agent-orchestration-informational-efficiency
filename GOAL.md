@@ -27,8 +27,10 @@ why:
   allein im Weg nach der Erkennung.
 parameter (von der Autorin festgelegt, 07.08.2026):
 - ask_deckel: 0.60
-- einsatz_usdc_je_siedlungsereignis: 200
-- wochendeckel_usdc: 400
+- einsatz_usdc_je_siedlungsereignis: 100
+- wochendeckel_usdc: 400 (also vier Schuss je Woche)
+- bulk_grenze: 3 Siedlungsereignisse je Zyklus; darueber feuert
+  nichts (Kartenumbau statt Nachrichtenlage)
 - marktwahl: kurzdatiertester Markt des Siedlungsereignisses
 - start: vor der Go-Prüfung des Messprotokolls (bewusste Abweichung von
   der vorregistrierten Reihenfolge Go -> Paper -> Echtgeld)

@@ -797,8 +797,8 @@ sein. `operations/pipeline/isw_feuerkette.py` (29 Tests) macht aus einem
 Kandidaten eine fertige Order-Spezifikation. Sie platziert nichts — das
 Auslösen liegt bei der Autorin.
 
-Parameter: Ask-Deckel 0.60, 200 USDC je Siedlungsereignis, Wochendeckel
-400 USDC rollend, kurzdatiertester Markt.
+Parameter: Ask-Deckel 0.60, 100 USDC je Siedlungsereignis, Wochendeckel
+400 USDC rollend (vier Schuss je Woche), kurzdatiertester Markt.
 
 **Drei Entwurfsentscheidungen, alle aus den Messdaten:**
 
@@ -836,9 +836,22 @@ führen — ein Neustart setzt ihn damit nicht zurück. Gezählt wird der
 ausgegebene Befehl, nicht der ausgeführte Trade: Bleibt eine Rückmeldung
 aus, bremst der Deckel trotzdem.
 
+**Bulk-Rebuild-Bremse — ein zurückgeholter Schutz.** Bis zum 29.07. hatte
+der Rekorder eine eigene Rebuild-Erkennung; sie feuerte zuletzt am 23.07.
+um 14:35:40 bei 162 neuen Infiltrations-Flächen mit dem Protokolleintrag
+„Bulk-Rebuild erkannt, neu grundiert statt signalisiert". Commit
+`86b7d09` ersetzte sie durch Kandidat + Beruhigungsfenster. Für die
+Messung ist das die bessere Lösung: Der Deckungszustand läuft **pro
+Siedlung**, nicht pro Polygon — zeichnet ISW dieselben Flächen neu,
+entsteht gar kein Übergang. Die Feuerkette feuert aber vor dem Fenster und
+hat von dessen Verrechnung nichts. Darum bremst sie selbst: mehr als drei
+Siedlungsereignisse in EINEM Zyklus sind kein Nachrichtenmuster (bisher
+immer eins bis zwei), sondern ein Kartenumbau — dann feuert nichts, und
+jede Gruppe bekommt eine `bulk_verdacht`-Ablehnung.
+
 **Gegenprobe mit den Krasnoiarske-Realwerten** (Ask 0.395, drei Märkte,
-Erkennung 20:57:43): genau ein Befehl auf `by-july-31`, 200 USDC,
-Limit 0.60, gültig bis 21:07:43. Ein Befehl verfällt nach 600 s — wer ihn
+Erkennung 20:57:43): genau ein Befehl auf `by-july-31`, 100 USDC,
+Limit 0.60, gültig bis 21:07:43 (100 USDC). Ein Befehl verfällt nach 600 s — wer ihn
 später aufgreift, kauft in einen Markt, der die Nachricht längst hat.
 
 **Grenze.** Orderplatzierung, Credentials und Wallet-Zugriff liegen

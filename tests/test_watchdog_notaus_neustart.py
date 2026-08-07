@@ -17,6 +17,12 @@ unterdrueckt.
 
 from __future__ import annotations
 
+# Die Entwarnung des Watchdogs, wortgenau. Der Teilstring allein reicht
+# nicht: wachkontrolle.py zitiert denselben Satz in ihrer Erklaerung, warum
+# ein herausgefallener Posten frueher unbemerkt blieb — ein Test, der nur
+# auf das Zitat trifft, faellt beim ersten gemeinsamen Lauf beider Module.
+ENTWARNUNG = "alle betreuten Bots leben (oder korrekt beendet)."
+
 import json
 import re
 from datetime import datetime, timedelta, timezone
@@ -124,7 +130,7 @@ def test_notaus_gestoppter_bot_wird_neu_gestartet(monkeypatch) -> None:
     assert starts == [("trump_july27", "trump_bot")]
     log = _log_text()
     assert "NOT-AUS-STOPP" in log
-    assert "alle betreuten Bots leben" not in log
+    assert ENTWARNUNG not in log
 
 
 def test_notaus_stopp_zaehlt_nicht_als_heartbeat(monkeypatch) -> None:
@@ -158,7 +164,7 @@ def test_notaus_stopp_bleibt_liegen_solange_die_stop_datei_da_ist(
     assert starts == []
     log = _log_text()
     assert "STOP-Datei aktiv" in log
-    assert "alle betreuten Bots leben" not in log
+    assert ENTWARNUNG not in log
 
 
 def test_notaus_stopp_nach_periodenende_bleibt_unangetastet(
@@ -191,7 +197,7 @@ def test_regulaeres_ende_startet_weiterhin_nicht_neu(monkeypatch) -> None:
     starts = _sammle_starts(monkeypatch)
     watchdog.durchlauf(dry_run=False)
     assert starts == []
-    assert "alle betreuten Bots leben" in _log_text()
+    assert ENTWARNUNG in _log_text()
 
 
 def test_notaus_stopp_im_dry_run_wird_nur_gemeldet(monkeypatch) -> None:
@@ -206,7 +212,7 @@ def test_notaus_stopp_im_dry_run_wird_nur_gemeldet(monkeypatch) -> None:
     assert starts == []
     log = _log_text()
     assert "dry-run, kein Start" in log
-    assert "alle betreuten Bots leben" not in log
+    assert ENTWARNUNG not in log
 
 
 # ---------------------------------------------------- Ehrlichkeit der Logzeile
@@ -229,7 +235,7 @@ def test_entwarnung_nur_wenn_jedes_profil_versorgt_ist(monkeypatch) -> None:
     starts = _sammle_starts(monkeypatch)
     watchdog.durchlauf(dry_run=False)
     assert starts == [("trump_july27", "trump_bot")]
-    assert "alle betreuten Bots leben" not in _log_text()
+    assert ENTWARNUNG not in _log_text()
 
 
 def test_keine_entwarnung_wenn_der_start_uebersprungen_wird(
@@ -249,7 +255,7 @@ def test_keine_entwarnung_wenn_der_start_uebersprungen_wird(
     assert starts == []
     log = _log_text()
     assert "DOPPELSTART-VERDACHT" in log
-    assert "alle betreuten Bots leben" not in log
+    assert ENTWARNUNG not in log
 
 
 def test_entwarnung_bei_ausschliesslich_inaktiven_profilen(
@@ -266,7 +272,7 @@ def test_entwarnung_bei_ausschliesslich_inaktiven_profilen(
     assert starts == []
     log = _log_text()
     assert "kein betreutes Profil im Zeitfenster." in log
-    assert "alle betreuten Bots leben" not in log
+    assert ENTWARNUNG not in log
 
 
 # ------------------------------------------------- Erzeuger des stop-Grundes

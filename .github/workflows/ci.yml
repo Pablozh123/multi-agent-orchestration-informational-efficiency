@@ -2,7 +2,12 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    # Die Bot-Straenge leben wochenlang auf feat/*-Zweigen, jeder in einem
+    # eigenen Worktree. Mit `branches: [main]` allein sah die CI davon nichts,
+    # bis ein PR aufging: feat/earnings-bot sammelte so 34 ungepruefte Commits
+    # an, und die zwei Fehler, die der Merge dann zutage foerderte, standen
+    # fuenf Wochen unentdeckt im Zweig.
+    branches: [main, "feat/**", "fix/**"]
   pull_request:
     branches: [main]
 
@@ -20,8 +25,11 @@ jobs:
       - name: Install ruff
         run: pip install ruff==0.15.22
 
-      - name: Ruff lint (Bot-Code + Tests)
-        run: ruff check operations/pipeline tests
+      # Der Umfang steht in pyproject.toml, nicht hier: sonst gibt es zwei
+      # Orte, an denen "wird nicht gelintet" entschieden wird, und der
+      # zweite ist unsichtbar.
+      - name: Ruff lint
+        run: ruff check .
 
   test:
     runs-on: ubuntu-latest

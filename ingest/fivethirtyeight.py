@@ -9,7 +9,6 @@ Quell-URL: https://raw.githubusercontent.com/fivethirtyeight/data/master/polls/
 """
 import io
 import logging
-import sqlite3
 from pathlib import Path
 
 import httpx

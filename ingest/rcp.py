@@ -286,8 +286,6 @@ def _normalize_rcp_data(raw_data: object) -> list[dict]:
     Returns:
         Liste von Dicts mit Schluesseln date (YYYY-MM-DD), trump_pct, harris_pct.
     """
-    import pandas as pd
-
     if raw_data is None:
         return []
 

@@ -6,7 +6,6 @@ Das Skript ist idempotent: bei jedem Aufruf wird die bestehende Datei geloescht
 und neu erstellt, um Schema-Divergenz zu verhindern.
 """
 import sqlite3
-import sys
 from pathlib import Path
 
 DB_PATH = Path("data/thesis.db")

@@ -64,11 +64,10 @@ FILL_STATUS = ("dry_run_fill", "live_fill", "live_partial")
 
 HINWEIS = (
     "Descriptive post-run review of our own small-stake live runs of the "
-    "mentions bot. Reconstructed read-only from the run logs; resolutions "
-    "from public Gamma data. Stakes/shares are log estimates: where the FAK "
-    "order status returned no fill price, the price cap is assumed, which "
-    "overstates the stake. Cash truth per event is the curated wallet "
-    "reconciliation (wallet_netto_usd). No trading recommendation, no "
+    "mentions bot. The dollar headlines are the wallet's own numbers, read "
+    "from the public Polymarket Data API for this address; runs, timing and "
+    "per-bet detail are reconstructed read-only from the run logs, "
+    "resolutions from public Gamma data. No trading recommendation, no "
     "return forecast."
 )
 

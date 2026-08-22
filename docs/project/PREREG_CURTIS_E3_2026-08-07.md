@@ -1,94 +1,100 @@
-# Preregistration: President Curtis S01E03 „Ex" — Mention-Markt-Testlauf
+# Preregistration: President Curtis S01E03 "Ex" — mention-market test run
 
-Angelegt 07.08.2026 ~21:20 CEST, VOR Platzierung jeglicher Orders und vor
-Ausstrahlung (So 09.08. 23:30 EST = Mo 10.08. 05:30 CEST). Zweck: Test der
-These „Transkript-Basisraten + Folgeninhalts-Infos schlagen generisches
-Market-Making in TV-Episoden-Mention-Märkten". Auswertung nach Resolution
-per Brier-Abgleich gegen diese Tabelle — Tabelle danach NICHT ändern.
+> English translation (2026-08-22) of the German original pre-registered on
+> 2026-08-07. Substance unchanged; the original wording is preserved in the
+> git history of this file.
+
+Created 2026-08-07 ~21:20 CEST, BEFORE any orders were placed and before
+airing (Sun 2026-08-09 23:30 EST = Mon 2026-08-10 05:30 CEST). Purpose: test
+of the thesis "transcript base rates + episode-content information beat
+generic market making in TV-episode mention markets". Evaluation after
+resolution via Brier comparison against this table — table NOT to be changed
+afterwards.
 
 Event: `what-will-be-said-during-the-third-episode-of-president-curtis-season-1-20260804193637080`
 
-## Evidenzbasis
+## Evidence base
 
-- Volltranskripte E1 („Pilot") + E2 („Triangle"), scrapsfromtheloft.com,
-  Zählung mit exakten Wortgrenzen, Dialog-Kontexte manuell geprüft
-  (Synopsis-Boilerplate der Seiten ausgeschlossen).
-- E3-Inhalt: Curtis auf Inaugurations-Gala der Ex-Frau; Banks + O'Doyle
-  in Job-Evaluation (Offsite). Kein Monster-of-the-week-Plot erkennbar.
-- O'Doyle ist Secret-Service-Agent (Hauptfigur, jede Episode präsent).
-- Regeln: Recap/Preview-Segmente und Hintergrundmusik zählen nicht.
+- Full transcripts E1 ("Pilot") + E2 ("Triangle"), scrapsfromtheloft.com,
+  counted with exact word boundaries, dialogue contexts checked manually
+  (the sites' synopsis boilerplate excluded).
+- E3 content: Curtis at his ex-wife's inauguration gala; Banks + O'Doyle
+  in a job evaluation (offsite). No monster-of-the-week plot apparent.
+- O'Doyle is a Secret Service agent (main character, present in every episode).
+- Rules: recap/preview segments and background music do not count.
 
-## Prognosen (p_uns) vs. Markt, Stand 07.08. ~21:15 CEST
+## Forecasts (p_ours) vs. the market, as of 2026-08-07 ~21:15 CEST
 
-| Markt | E1 | E2 | Markt Bid/Ask | p_uns | Order |
+| Market | E1 | E2 | Market bid/ask | p_ours | Order |
 | --- | --- | --- | --- | --- | --- |
-| Secret | ~6 | ~5 | 0.34/0.38 | **0.88** | Taker: YES 100 @ 0.38 (Kern) |
+| Secret | ~6 | ~5 | 0.34/0.38 | **0.88** | Taker: YES 100 @ 0.38 (core) |
 | Paranormal | 0 | 2 | 0.12/0.16 | **0.40** | Taker: YES 100 @ 0.16 |
-| Rick | 1 | 0 | 0.09/0.13 | **0.25** | Taker klein: YES 50–100 @ 0.13 (optional) |
-| President 10+ | ~22 | ~15 | 0.06/0.93 | **0.85** | Maker: YES-Bid 0.60, 25–50 Sh |
-| Ghost | 1 | 4 | 0.08/0.87 | **0.55** | Maker: YES-Bid 0.40, 25–50 Sh |
-| White House | 8 | 0 | 0.05/0.92 | **0.55** | Maker: YES-Bid 0.35, 25–50 Sh |
-| CIA | 18 | ~0 | 0.05/0.92 | **0.35** | keine |
-| Morty | 1 | 0 | 0.05/0.50 | **0.20** | keine |
-| Security | ~2 | 1 | 0.981/0.999 | **0.93** | keine (kein Puffer zum Ask) |
-| Black | 0 | 0 | 0.08/0.92 | **0.30** | optional Maker: NO-Bid 0.60 |
-| Anomaly | 0 | 0 | 0.05/0.95 | **0.15** | optional Maker: NO-Bid 0.60 |
-| Episode airt nicht | — | — | 0.001/0.048 | **0.02** | keine |
+| Rick | 1 | 0 | 0.09/0.13 | **0.25** | Taker small: YES 50–100 @ 0.13 (optional) |
+| President 10+ | ~22 | ~15 | 0.06/0.93 | **0.85** | Maker: YES bid 0.60, 25–50 sh |
+| Ghost | 1 | 4 | 0.08/0.87 | **0.55** | Maker: YES bid 0.40, 25–50 sh |
+| White House | 8 | 0 | 0.05/0.92 | **0.55** | Maker: YES bid 0.35, 25–50 sh |
+| CIA | 18 | ~0 | 0.05/0.92 | **0.35** | none |
+| Morty | 1 | 0 | 0.05/0.50 | **0.20** | none |
+| Security | ~2 | 1 | 0.981/0.999 | **0.93** | none (no buffer to the ask) |
+| Black | 0 | 0 | 0.08/0.92 | **0.30** | optional Maker: NO bid 0.60 |
+| Anomaly | 0 | 0 | 0.05/0.95 | **0.15** | optional Maker: NO bid 0.60 |
+| Episode does not air | — | — | 0.001/0.048 | **0.02** | none |
 
-Kapitalrahmen Taker gesamt: ≤ 67 USD (38 + 16 + 13). Maker-Limits
-zusätzlich ≤ ~60 USD gebunden. Alles innerhalb der üblichen Clip-Größen.
+Total taker capital frame: ≤ 67 USD (38 + 16 + 13). Maker limits bind an
+additional ≤ ~60 USD. All within the usual clip sizes.
 
-## Regeln für die Ausführung
+## Execution rules
 
-1. Vorher den offiziellen E3-Promo-Clip ansehen (Adult-Swim-YouTube /
-   Bleeding-Cool-Preview): jedes dort hörbare Zielwort → p auf ~0.97,
-   Kauf bis knapp unter Promo-Sicherheit vertretbar. Befund hier notieren.
-2. NIE über das Top-Level des Buchs hinaus marketordern — hinter den
-   100er-Clips ist das Buch leer (nächste Asks 0.74–0.98).
-3. Maker-Fills sind adversely selected (Presse-Screener existieren) —
-   deshalb kleine Clips; ein gefülltes Limit ist ein Datenpunkt, kein
-   Nachlege-Signal.
-4. Post-Air-Sweep Mo ~06:00 CEST nur mit eigener Sichtung/Aufnahme;
-   Zwei-Methoden-Konsens vor jedem NO gilt weiter (Ohr + HBO-Max-Subs).
+1. Watch the official E3 promo clip first (Adult Swim YouTube /
+   Bleeding Cool preview): every target word audible there → p to ~0.97,
+   buying up to just under promo certainty is defensible. Record the
+   finding here.
+2. NEVER market-order past the top level of the book — behind the
+   100-share clips the book is empty (next asks 0.74–0.98).
+3. Maker fills are adversely selected (press screeners exist) — hence
+   small clips; a filled limit is a data point, not a signal to add.
+4. Post-air sweep Mon ~06:00 CEST only with our own viewing/recording;
+   the two-method consensus before any NO still applies (ear + HBO Max
+   subtitles).
 
-## Promo-Befund (Regel 1 erledigt, 07.08. ~21:45 CEST)
+## Promo finding (rule 1 done, 2026-08-07 ~21:45 CEST)
 
-Offizieller Clip „EARLY PREVIEW: Curtis Prepares To See His Ex-Wife"
-(YouTube GMWhuF5oWK8, Adult-Swim-Kanal, 122 s; large-v3-Transkript im
-Session-Scratchpad, `promo_e3_transkript.txt`). Zielwort-Treffer:
+Official clip "EARLY PREVIEW: Curtis Prepares To See His Ex-Wife"
+(YouTube GMWhuF5oWK8, Adult Swim channel, 122 s; large-v3 transcript in
+the session scratchpad, `promo_e3_transkript.txt`). Target-word hits:
 
-- „Security" 1× („the head of Homeland Security") — bestätigt den
-  0.98-Markt, kein Trade.
-- „President" 1× („brandished an edged weapon at the president") —
-  Zähler tickt, für 10+ ohne Aussagekraft.
-- Alle übrigen Zielwörter: 0 im Clip. Absenz beweist nichts
-  (2 Szenen von ~22 min) — keine Prognoseänderung.
+- "Security" 1× ("the head of Homeland Security") — confirms the
+  0.98 market, no trade.
+- "President" 1× ("brandished an edged weapon at the president") —
+  the counter ticks, meaningless for 10+.
+- All other target words: 0 in the clip. Absence proves nothing
+  (2 scenes of ~22 min) — no forecast change.
 
-Neue Inhalts-Infos: Offsite-Einrichtung heißt „West Wing World";
-neuer Agent „Chomps" ersetzt O'Doyle; O'Doyle-Suspendierung hält den
-Secret-Service-Strang zentral (stützt p=0.88 für „Secret" qualitativ).
+New content information: the offsite facility is called "West Wing World";
+new agent "Chomps" replaces O'Doyle; O'Doyle's suspension keeps the
+Secret Service thread central (qualitatively supports p=0.88 for "Secret").
 
-**Prognosen unverändert.** Ausführung: `curtis_e3_orders.py`
-(operations/pipeline), Platzierung durch die Autorin selbst.
+**Forecasts unchanged.** Execution: `curtis_e3_orders.py`
+(operations/pipeline), placement by the author herself.
 
-## Platzierungsstand (07.08. 19:56 UTC, durch die Autorin ausgeführt)
+## Placement status (2026-08-07 19:56 UTC, executed by the author)
 
-Alle 6 Orders platziert (`curtis_e3_orders.py --scharf --mit-rick`,
-Log `data/live/curtis_e3/orders.jsonl`, Wallet 0x29afE1…F88d):
+All 6 orders placed (`curtis_e3_orders.py --scharf --mit-rick`,
+log `data/live/curtis_e3/orders.jsonl`, wallet 0x29afE1…F88d):
 
-- Taker, alle voll gefüllt (MATCHED): Secret 100 @ 0.38, Paranormal
-  100 @ 0.16, Rick 100 @ 0.13 — 67 USD investiert.
-- Maker-GTC ruhend: President 10+ 50 @ 0.60, Ghost 40 @ 0.40,
-  White House 40 @ 0.35 — 60 USD gebunden.
+- Taker, all fully filled (MATCHED): Secret 100 @ 0.38, Paranormal
+  100 @ 0.16, Rick 100 @ 0.13 — 67 USD invested.
+- Maker GTC resting: President 10+ 50 @ 0.60, Ghost 40 @ 0.40,
+  White House 40 @ 0.35 — 60 USD bound.
 
-Max. Auszahlung Taker bei 3× YES: 300 USD. Betreuungsplan: KEINE
-laufende Buchbeobachtung (kein Handlungsbedarf vor Airing; gefüllte
-Maker-Limits sind Datenpunkte, keine Nachlege-Signale). Nächster
-Checkpoint: Montag 10.08. tagsüber CEST — Fill-Stand der Maker,
-HBO-Max-/Untertitel-Abgleich, UMA-Resolutionen, dann Brier-Tabelle.
+Max taker payout at 3× YES: 300 USD. Monitoring plan: NO ongoing
+book-watching (no action needed before airing; filled maker limits are
+data points, not signals to add). Next checkpoint: Monday 2026-08-10
+during the day CEST — maker fill status, HBO Max/subtitle comparison,
+UMA resolutions, then the Brier table.
 
-## Auswertung (nach Resolution auszufüllen)
+## Evaluation (to be filled in after resolution)
 
-| Markt | Ergebnis | p_uns | Markt-Mid vorab | Brier uns | Brier Markt |
+| Market | Outcome | p_ours | Market mid beforehand | Brier ours | Brier market |
 | --- | --- | --- | --- | --- | --- |
 | … | | | | | |

@@ -652,3 +652,27 @@ def test_main_schleife_ueberlebt_unerwarteten_fehler(tmp_path, monkeypatch):
     assert eintraege[0]["art"] == "lauf_fehler"
     assert eintraege[0]["typ"] == "TimeoutError"
     assert zustand_pfad.exists()
+
+
+# ------------------------------------------ Schnell-Polling (27.08.2026)
+
+
+def test_takt_ist_im_aktivfenster_sekundenschnell():
+    """Stinky-Forensik 11.08.: Konkurrenz kauft 5 s nach Publikation —
+    mit dem alten 20-s-Takt (Latenz 45 s) ist das Rennen verloren."""
+    from datetime import UTC, datetime
+
+    aktiv = datetime(2026, 8, 27, 15, 0, tzinfo=UTC)
+    ruhe = datetime(2026, 8, 27, 3, 0, tzinfo=UTC)
+    assert rek.takt_fuer(aktiv) == rek.TAKT_AKTIV_S == 1
+    assert rek.takt_fuer(ruhe) == rek.TAKT_RUHE_S == 120
+
+
+def test_herzschlag_faellig_entkoppelt_vom_polltakt():
+    """Bei 1-s-Zyklen darf nicht jede Runde eine Event-Zeile schreiben."""
+    assert rek._herzschlag_faellig(None, 100.0)          # erster Zyklus
+    assert not rek._herzschlag_faellig(100.0, 100.0 + 1)
+    assert not rek._herzschlag_faellig(
+        100.0, 100.0 + rek.HERZSCHLAG_MIN_ABSTAND_S - 0.1)
+    assert rek._herzschlag_faellig(
+        100.0, 100.0 + rek.HERZSCHLAG_MIN_ABSTAND_S)

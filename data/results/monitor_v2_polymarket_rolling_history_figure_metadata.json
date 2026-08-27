@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-08-07T04:30:37+00:00",
+  "generated_at_utc": "2026-08-27T22:29:45+00:00",
   "inputs": {
     "baseline_readiness": "diagnostic_scores_available",
     "market_snapshots_path": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
@@ -21,7 +21,7 @@
     "name": "monitor_v2_polymarket_rolling_history_figure"
   },
   "outputs": {
-    "bucket_count": 52,
+    "bucket_count": 58,
     "contains_order_instructions": false,
     "contains_wallet_addresses": false,
     "figure_aspect_ratio": 1.7142857142857142,
@@ -29,7 +29,7 @@
     "figure_path": "data\\results\\monitor_v2_polymarket_rolling_history.png",
     "figure_width_inches": 12.0,
     "market_count": 14,
-    "token_snapshot_count": 814,
+    "token_snapshot_count": 874,
     "wallet_bucket_label_count": 6,
     "wallet_bucket_label_layout": "rank_staggered_offsets_points",
     "wallet_bucket_label_max_count": 6,
@@ -61,11 +61,11 @@
         "total_observed_amount_usd": 1099.8252360000001
       },
       {
-        "active_wallets": 8,
-        "timestamp_utc": "2026-05-22T22:05:00+00:00",
-        "total_observed_amount_usd": 1054.4541000000002
+        "active_wallets": 1,
+        "timestamp_utc": "2026-08-11T04:30:00+00:00",
+        "total_observed_amount_usd": 1247.5447900200002
       }
     ],
-    "wallet_snapshot_count": 407
+    "wallet_snapshot_count": 437
   }
 }

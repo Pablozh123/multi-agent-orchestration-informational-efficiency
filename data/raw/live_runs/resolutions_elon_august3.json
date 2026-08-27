@@ -1,102 +1,84 @@
 {
- "profil": "elon_july13",
- "event_slug": "what-will-elon-post-this-week-july-13-july-19-20260710174050678",
- "event_titel": "What will Elon post this week? (July 13 - July 19)",
+ "profil": "elon_august3",
+ "event_slug": "what-will-elon-post-this-week-august-3-august-9-20260731162042267",
+ "event_titel": "What will Elon post this week? (August 3 - August 9)",
  "abgerufen_utc": "2026-08-27T22:29:49+00:00",
  "quelle": "gamma-api.polymarket.com/events (oeffentlich, read-only)",
  "maerkte": {
-  "2877672": {
-   "frage": "Will Elon post \"Football\" on X this week?",
-   "closed": true,
-   "outcome_yes": false,
-   "aktueller_yes_preis": null
-  },
-  "2877673": {
-   "frage": "Will Elon post \"Soccer\" on X this week?",
-   "closed": true,
-   "outcome_yes": false,
-   "aktueller_yes_preis": null
-  },
-  "2877674": {
+  "3247301": {
    "frage": "Will Elon post \"President\" on X this week?",
    "closed": true,
    "outcome_yes": false,
    "aktueller_yes_preis": null
   },
-  "2877675": {
+  "3247302": {
    "frage": "Will Elon post \"Trump\" on X this week?",
    "closed": true,
    "outcome_yes": false,
    "aktueller_yes_preis": null
   },
-  "2877676": {
+  "3247303": {
+   "frage": "Will Elon post \"Sam\" or \"Altman\" on X this week?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3247304": {
+   "frage": "Will Elon post \"Tweak\" on X this week?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3247305": {
+   "frage": "Will Elon post \"Deport\" or \"Deported\" on X this week?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "3247306": {
    "frage": "Will Elon post \"Tesla\" on X this week?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "2877677": {
+  "3247307": {
    "frage": "Will Elon post \"Neuralink\" on X this week?",
    "closed": true,
    "outcome_yes": false,
    "aktueller_yes_preis": null
   },
-  "2877678": {
-   "frage": "Will Elon post \"Never\" on X this week?",
-   "closed": true,
-   "outcome_yes": false,
-   "aktueller_yes_preis": null
-  },
-  "2877679": {
-   "frage": "Will Elon post \"Always\" on X this week?",
+  "3247308": {
+   "frage": "Will Elon post \"Video game\" or \"Videogame\" on X this week?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "2877680": {
-   "frage": "Will Elon post \"Video game\" or \"Videogame\" on X this week?",
-   "closed": true,
-   "outcome_yes": false,
-   "aktueller_yes_preis": null
-  },
-  "2877681": {
+  "3247309": {
    "frage": "Will Elon post \"Iran\" or \"Iranian\" on X this week?",
    "closed": true,
    "outcome_yes": false,
    "aktueller_yes_preis": null
   },
-  "2877682": {
-   "frage": "Will Elon post \"China\" on X this week?",
-   "closed": true,
-   "outcome_yes": false,
-   "aktueller_yes_preis": null
-  },
-  "2877683": {
+  "3247310": {
    "frage": "Will Elon post \"IPO\" on X this week?",
    "closed": true,
    "outcome_yes": false,
    "aktueller_yes_preis": null
   },
-  "2877684": {
-   "frage": "Will Elon post \"Claude\" on X this week?",
-   "closed": true,
-   "outcome_yes": true,
-   "aktueller_yes_preis": null
-  },
-  "2877685": {
+  "3247311": {
    "frage": "Will Elon post \"ChatGPT\" on X this week?",
    "closed": true,
    "outcome_yes": false,
    "aktueller_yes_preis": null
   },
-  "2877686": {
+  "3247312": {
    "frage": "Will Elon post \"Texas\" on X this week?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "2877687": {
-   "frage": "Will Elon post \"Crypto\" or \"Bitcoin\" on X this week?",
+  "3247313": {
+   "frage": "Will Elon post \"Bitcoin,\" \"Crypto,\" or \"Cryptocurrency\" on X this week?",
    "closed": true,
    "outcome_yes": false,
    "aktueller_yes_preis": null

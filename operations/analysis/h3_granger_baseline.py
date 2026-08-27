@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
+import io
 import json
 import sqlite3
 import sys
@@ -298,12 +300,15 @@ def _granger_row(
         return {**base, "status": status}
 
     try:
-        with warnings.catch_warnings():
+        # statsmodels >= 0.15 kennt das verbose-Argument nicht mehr;
+        # aeltere Versionen drucken ohne es nach stdout. Darum ohne
+        # verbose aufrufen und die Ausgabe unterdruecken.
+        with warnings.catch_warnings(), \
+                contextlib.redirect_stdout(io.StringIO()):
             warnings.simplefilter("ignore", FutureWarning)
             result = grangercausalitytests(
                 valid[["price_change", "activity_change"]],
                 maxlag=lag_days,
-                verbose=False,
             )
         f_statistic, p_value, df_denom, df_num = result[lag_days][0]["ssr_ftest"]
     except (ValueError, np.linalg.LinAlgError) as exc:

@@ -513,6 +513,50 @@ PROFILE = {
         "max_clips_pro_markt": 40,
         "nachlauf_minuten": 90,
     },
+    "allin_august28": {
+        "live_dir": "allin_august28",
+        # E287-Woche (erwarteter Drop Fr 28./Sa 29.08.). Quellen und Gates
+        # 1:1 aus allin_august7. ACHTUNG: Das August-28-Event war bei der
+        # Armierung am 27.08. ~15:20Z auf Polymarket NOCH NICHT angelegt
+        # (Discovery tag_id=100343: 0 offene all-in-Events; die Wochen-
+        # Batches vom 26./27.08. enthielten JRE/Curtis/MrBeast, aber kein
+        # All-In). event_id zeigt darum als Platzhalter auf das bereits
+        # GESCHLOSSENE E286-Event (August 21); der Start-Refresh
+        # (bot.refresh_rules_von_gamma) wechselt
+        # selbst auf das neueste OFFENE all-in-Event, sobald es existiert.
+        # Erscheint das Event erst NACH dem ersten Botstart: Snapshot
+        # data/live/allin_august28/gamma_event_snapshot.json loeschen und
+        # den Bot-PID beenden — der Watchdog startet neu, und der frische
+        # Start-Refresh zieht das echte Event.
+        "event_id": "873145",
+        "event_slug": (
+            "what-will-be-said-on-the-next-all-in-podcast-august-21-"
+            "20260818"
+        ),
+        "rss_feed_url": "https://allinchamathjason.libsyn.com/rss",
+        "yt_channel_id": "UCESLZhusAkFfsNsApnjF_Cg",
+        "mp3_probe_muster": (
+            "https://traffic.libsyn.com/secure/allinchamathjason/"
+            "ALLIN-E{n}_Ch.mp3"
+        ),
+        "discovery_slug_filter": "all-in",
+        "yt_playlist_id": "PLn5MTSAqaf8peDZQ57QkJBzewJU1aUokl",
+        "rss_nur_muster": r"ALLIN-E\d+_Ch\.mp3",
+        # NO-Schutzschild unveraendert (Deckel 0.80, Basisraten-Veto
+        # Serie 11300, Boilerplate, Gap-Verify). Der Nachbarschafts-/
+        # Blockgrenzen-Filter ist weiterhin nicht gebaut; das Veto traegt
+        # die NO-Seite allein (E284: 6 von 10 Maerkten gesperrt).
+        "boilerplate_begriffe": ALLIN_BOILERPLATE,
+        "serie_id": "11300",
+        # Volles Budget nach dem Prinzip der letzten beiden Laeufe:
+        # Wallet-Stand 769.59 pUSD (Server-Sicht 27.08. ~15:10Z) -> 740
+        # nutzbar, ~30 Puffer fuer Fees. Kein parallel armierter Bot auf
+        # der Wallet (elon_august3 pensioniert).
+        "max_usd_gesamt": 740.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        "nachlauf_minuten": 90,
+    },
     "jre_august3": {
         "live_dir": "jre_august3",
         "event_id": "778632",

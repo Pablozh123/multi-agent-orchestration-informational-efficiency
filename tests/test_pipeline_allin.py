@@ -754,6 +754,39 @@ def test_allin_august7_profil_konfiguration() -> None:
     assert p["nachlauf_minuten"] == alt["nachlauf_minuten"]
 
 
+# ---------------------------------- All-In august-28 / E287 (27.08.2026)
+
+
+def test_allin_august28_profil_konfiguration() -> None:
+    p = config.PROFILE["allin_august28"]
+    alt = config.PROFILE["allin_august7"]
+    # Quellen und Gates identisch zur E284-Woche
+    assert p["mp3_probe_muster"] == alt["mp3_probe_muster"]
+    assert p["yt_playlist_id"] == alt["yt_playlist_id"]
+    assert p["rss_nur_muster"] == alt["rss_nur_muster"]
+    assert p["rss_feed_url"] == alt["rss_feed_url"]
+    assert p["yt_channel_id"] == alt["yt_channel_id"]
+    assert p["discovery_slug_filter"] == alt["discovery_slug_filter"]
+    # Eigener Lauf-Ordner; Event ist bei Armierung bewusst der
+    # GESCHLOSSENE E286-Platzhalter (das August-28-Event existierte am
+    # 27.08. noch nicht) — der Start-Refresh wechselt auf das neueste
+    # offene all-in-Event, sobald Polymarket es anlegt.
+    assert p["event_id"] == "873145"
+    assert p["event_slug"].startswith(
+        "what-will-be-said-on-the-next-all-in-podcast-august-21-")
+    assert p["live_dir"] == "allin_august28"
+    assert p["live_dir"] != alt["live_dir"]
+    # NO-Schutzschild komplett und unveraendert
+    assert p["boilerplate_begriffe"] == alt["boilerplate_begriffe"]
+    assert p["serie_id"] == "11300"
+    assert "no_ask_obergrenze" not in p
+    # Volles Budget (Wallet 769.59 -> 740), Clip-Groesse und Sweep wie E284
+    assert p["max_usd_gesamt"] == pytest.approx(740.0)
+    assert p["max_usd_pro_markt"] == alt["max_usd_pro_markt"]
+    assert p["max_clips_pro_markt"] == alt["max_clips_pro_markt"]
+    assert p["nachlauf_minuten"] == alt["nachlauf_minuten"]
+
+
 # ------------------------------------ JRE august-3 Armierung (04.08.2026)
 
 

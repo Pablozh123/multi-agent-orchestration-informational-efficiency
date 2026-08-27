@@ -60,9 +60,11 @@ ARCGIS_BASIS = (
 )
 SIEDLUNGS_LAYER = "Ukrainian_Settlements_Updated_view/FeatureServer/0"
 
-# Gemessen 23.07.: Layer-Metadaten 104 ms, Volldatenabruf 1494 ms.
-# Unter Dauerlast drosselt der Server allerdings (HTTP 429), und einzelne
-# Abrufe laufen in Read-Timeouts -- beides muss der Client abfangen.
+# Gemessen 23.07.: Layer-Metadaten 104 ms (Cache-Treffer, s. layer_stand),
+# Volldatenabruf 1494 ms. Neu gemessen 27.08. mit Cache-Buster: Metadaten
+# ~200 ms ab Origin. Unter Dauerlast drosselt der Server (HTTP 429; am
+# 23.07. bei Volldaten-Dauerlast beobachtet), und einzelne Abrufe laufen
+# in Read-Timeouts -- beides muss der Client abfangen.
 STANDARD_TIMEOUT = 30.0
 
 # Eigener Status fuer Transportfehler ohne HTTP-Antwort (Timeout, DNS,
@@ -453,11 +455,19 @@ class ISWKarte:
     def layer_stand(self, layer: ISWLayer) -> int | None:
         """`editingInfo.lastEditDate` in ms — der Stolperdraht.
 
-        Billigster Poll (gemessen 104 ms). Erkennt auch Löschungen, die eine
-        reine CreationDate-Abfrage übersieht. Als Ereigniszeit ungeeignet,
-        siehe Befund 1 im Modul-Docstring.
+        Erkennt auch Löschungen, die eine reine CreationDate-Abfrage
+        übersieht. Als Ereigniszeit ungeeignet, siehe Befund 1 im
+        Modul-Docstring.
+
+        Cache-Buster (Messung 27.08.): Der CDN cached die Layer-Metadaten
+        300 s (`cache-control: max-age=300`, `X-Cache: TCP_HIT`, ~10 ms) —
+        ohne eindeutigen Parameter ist jedes Polling unter 5 Minuten
+        wirkungslos, der Poll liest nur den Cache. Mit `_cb` antwortet der
+        Origin (TCP_MISS, ~200 ms) mit dem echten Stand. Die 104-ms-Messung
+        vom 23.07. war ein Cache-Treffer.
         """
-        nutz = self._json(f"{self.basis}{layer.pfad}?f=json")
+        nutz = self._json(f"{self.basis}{layer.pfad}?f=json"
+                          f"&_cb={int(time.time() * 1000)}")
         stand = (nutz.get("editingInfo") or {}).get("lastEditDate")
         return int(stand) if stand is not None else None
 

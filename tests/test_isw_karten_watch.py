@@ -322,3 +322,40 @@ def test_transport_status_ist_wiederholbar():
     assert ikw.TRANSPORT_STATUS in ikw.WIEDERHOLBAR
     assert 429 in ikw.WIEDERHOLBAR
     assert 400 not in ikw.WIEDERHOLBAR
+
+
+def test_layer_stand_umgeht_den_cdn_cache(monkeypatch):
+    """Messung 27.08.: Der CDN cached die Layer-Metadaten 300 s (TCP_HIT).
+
+    Ohne Cache-Buster liest ein 1-s-Poll fuenf Minuten lang denselben
+    Stand — der Parameter muss also in JEDER Metadaten-URL stehen.
+    """
+    karte = ikw.ISWKarte()
+    urls = []
+
+    def _fake_json(url, daten=None):
+        urls.append(url)
+        return {"editingInfo": {"lastEditDate": 1787843556016}}
+
+    monkeypatch.setattr(karte, "_json", _fake_json)
+    stand = karte.layer_stand(ikw.QUALIFIZIERENDE_LAYER[0])
+    assert stand == 1787843556016
+    assert len(urls) == 1
+    assert "f=json" in urls[0]
+    assert "_cb=" in urls[0], "Cache-Buster fehlt — Poll liest nur den CDN"
+
+
+def test_layer_stand_cache_buster_ist_je_abruf_eindeutig(monkeypatch):
+    karte = ikw.ISWKarte()
+    urls = []
+
+    def _fake_json(url, daten=None):
+        urls.append(url)
+        return {"editingInfo": {"lastEditDate": 1}}
+
+    zeiten = iter([1000.0, 1000.5])
+    monkeypatch.setattr(ikw.time, "time", lambda: next(zeiten))
+    monkeypatch.setattr(karte, "_json", _fake_json)
+    karte.layer_stand(ikw.QUALIFIZIERENDE_LAYER[0])
+    karte.layer_stand(ikw.QUALIFIZIERENDE_LAYER[0])
+    assert urls[0] != urls[1], "gleicher Cache-Buster = gecachte Antwort"

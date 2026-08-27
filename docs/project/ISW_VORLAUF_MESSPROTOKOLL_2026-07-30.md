@@ -131,4 +131,20 @@ als Null- oder Negativbefund.
 
 ## Amendments
 
-*(leer — Einträge nur nach dem Einfrieren, datiert, mit Begründung)*
+**A1 — 27.08.2026: Instrument-Wechsel Poll-Takt 20 s → 1 s (aktives
+Fenster) + Cache-Buster.** Anlass: Trade-Forensik Stinky 11.08. — die
+ersten Käufe kamen 5 s nach der Karten-Publikation, das Buch war nach
+6 s leergefegt; mit 20-s-Takt (gemessene Latenz 45 s) misst der Rekorder
+den T+0-Preis systematisch NACH dem Sofort-Repricing. Zusätzlich
+entdeckt 27.08.: der CDN cached die Layer-Metadaten 300 s
+(`max-age=300`) — der bisherige Poll las bis zu 5 Minuten alte Stände;
+seit diesem Amendment erzwingt ein Cache-Buster-Parameter Origin-
+Antworten. Lasttest 27.08. (2×4 min, 2 und 4 req/s): keine Drosselung.
+Konsequenz für die Auswertung: `vorlauf_s` und die T+0-Preise vor/nach
+dem 27.08. stammen aus verschiedenen Instrumenten und werden bei
+Latenz-Aussagen getrennt ausgewiesen; die Klassifikation
+(Überraschung/antizipiert) bleibt definitionsgleich. Der bekannte
+Grenzen-Punkt „Erkennungslatenz ~20–120 s" gilt ab 27.08. als „~2 s im
+Aktivfenster, ~120 s im Ruhefenster". Auftrag der Autorin vom 27.08.
+(„Umbau auf 1–2-Sekunden-Polling"), umgesetzt in Commit auf Branch
+feat/isw-schnellpoll.

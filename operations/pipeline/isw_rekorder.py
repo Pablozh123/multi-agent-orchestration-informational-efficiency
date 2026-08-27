@@ -80,8 +80,22 @@ UKRAINE_TAG = "ukraine-map"
 # lagen bei 15:20, 18:47, 19:48, 20:14 und 20:39 UTC.
 AKTIV_VON_UTC = 14
 AKTIV_BIS_UTC = 23
-TAKT_AKTIV_S = 20
+# Schnell-Polling seit 27.08. (vorher 20 s): Die Stinky-Forensik vom 11.08.
+# zeigt Konkurrenz-Bots, die 5 s nach der Karten-Publikation kaufen und das
+# Buch binnen 6 s leerfegen — mit 20-s-Takt (gemessene Latenz 45 s) ist das
+# Rennen verloren. Ein Zyklus kostet vier Metadaten-GETs mit Cache-Buster
+# (je ~200 ms, siehe isw_karten_watch.layer_stand); mit Takt 1 s liegt die
+# effektive Erkennungslatenz bei ~2 s. Lasttest 27.08.: 4 min Dauerlast mit
+# ~4 req/s ohne eine einzige Drosselung (429 erst bei Volldaten-Dauerlast,
+# Befund 23.07.). INSTRUMENT-WECHSEL fuer die Vorlauf-Messreihe: vorlauf_s
+# vor/nach dem 27.08. nicht mischen (Nachtrag im Messprotokoll).
+TAKT_AKTIV_S = 1
 TAKT_RUHE_S = 120
+
+# Herzschlag-Events entkoppelt vom Poll-Takt: bei 1-s-Zyklen wuerde je Zyklus
+# eine Zeile nach bot_events.jsonl geschrieben (~40k/Tag). Der Watchdog
+# toleriert 1800 s (wachposten.json) — 60 s ist dicht genug.
+HERZSCHLAG_MIN_ABSTAND_S = 60.0
 
 # Beruhigungsfenster: der Rebuild vom 21.07. brauchte 48 Minuten vom ersten
 # bis zum letzten Feature. 60 Minuten decken Löschen-und-Neuzeichnen ab.
@@ -800,6 +814,12 @@ def _faellige_nachfassungen(leser: PolymarktLeser, zustand: dict,
     zustand["offene_nachfassungen"] = offen
 
 
+def _herzschlag_faellig(letzter: float | None, jetzt: float) -> bool:
+    """Ob wieder ein Herzschlag geschrieben werden soll (entkoppelt vom
+    Poll-Takt, sonst eine Event-Zeile je 1-s-Zyklus)."""
+    return letzter is None or jetzt - letzter >= HERZSCHLAG_MIN_ABSTAND_S
+
+
 def _herzschlag(live_dir: Path | None, art: str = "herzschlag",
                 **extra) -> None:
     """Watchdog-Lebenszeichen nach `data/live/<profil>/bot_events.jsonl`.
@@ -901,7 +921,8 @@ def main(argv: list[str] | None = None) -> int:
         argumente.protokoll = live_dir / "ereignisse.jsonl"
         argumente.geometrie_cache = live_dir / "geometrie_cache.json"
         argumente.feuerbefehle = live_dir / "feuerbefehle.jsonl"
-        _herzschlag(live_dir, art="start")
+        _herzschlag(live_dir, art="start",
+                    takt_aktiv_s=TAKT_AKTIV_S, takt_ruhe_s=TAKT_RUHE_S)
 
     karte = ISWKarte()
     leser = PolymarktLeser()
@@ -925,6 +946,7 @@ def main(argv: list[str] | None = None) -> int:
           f"(russisch + Beruehrungskriterium)")
 
     letzter_refresh = time.monotonic()
+    letzter_herzschlag: float | None = None  # None -> erster Zyklus schreibt
     try:
         while True:
             try:
@@ -941,7 +963,9 @@ def main(argv: list[str] | None = None) -> int:
                       f"{str(fehler)[:120]}")
                 meldungen = []
             _schreibe_zustand(argumente.zustand, zustand)
-            _herzschlag(live_dir, kandidaten=len(zustand["kandidaten"]))
+            if _herzschlag_faellig(letzter_herzschlag, time.monotonic()):
+                _herzschlag(live_dir, kandidaten=len(zustand["kandidaten"]))
+                letzter_herzschlag = time.monotonic()
             for m in meldungen:
                 marke = "" if m.get("auswertbar") else "  [nicht auswertbar]"
                 print(f"KANDIDAT {m['zeit_utc']} {m['layer']} -> {m['slug']} "

@@ -28,7 +28,7 @@
   <h1>Insider-Risk Candidate Human Review</h1>
   <p class="note">Strict monitor candidates are insider-risk review cues only. This report contains no wallet addresses, order instructions, PnL, computed insider label, or misconduct claim.</p>
   <section class="metrics">
-    <div class="metric">Candidates<strong>36</strong></div>
+    <div class="metric">Candidates<strong>37</strong></div>
     <div class="metric">High priority<strong>8</strong></div>
     <div class="metric">Status<strong>needs review</strong></div>
   </section>
@@ -2081,6 +2081,63 @@
       </div>
     </section>
     <p><strong>Why flagged:</strong> active_wallet_activity triggered high on active_wallets</p>
+    <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
+    <p><strong>Next step:</strong> Low-context cue: keep in registry and review only if repeated.</p>
+  </article>
+
+
+  <article class="candidate">
+    <h3>Will Gavin Newsom win the 2028 Democratic presidential nomination?</h3>
+    <p>
+      <span class="pill low">priority: low</span>
+      <span class="pill">severity: high</span>
+      <span class="pill">rows: 2</span>
+    </p>
+    <p><strong>In plain words:</strong> Marked by the strict monitor rule and requires human review.</p>
+    <section class="explain-grid">
+      <div class="box">
+        <strong>Wallet amount</strong>
+        <p>No wallet-amount metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Concentration</strong>
+        <p>No concentration metric triggered for this candidate.</p>
+      </div>
+      <div class="box">
+        <strong>Reference overlap</strong>
+        <p>Reference overlap 0.0 means this candidate does not share the triggered neutral labels of the current reference profiles.</p>
+      </div>
+      <div class="box">
+        <strong>Reference scale</strong>
+        <p>observed_amount_usd=0.00; reference_case=adriancronauer_large_iran_flow_2026_05_14; reference_amount_usd=103248.00; reference_amount_ratio=0.000000; materiality_label=below_one_percent_of_reference</p>
+      </div>
+      <div class="box">
+        <strong>Coordination</strong>
+        <p>coordination_label=single_wallet_single_trade; active_wallets=0; trade_count=0; total_amount_usd=0.00; amount_per_wallet_usd=0.00; amount_per_trade_usd=0.00</p>
+      </div>
+      <div class="box">
+        <strong>Literature-prior risk</strong>
+        <p>Wallet score: 0.00
+        (not_available)<br>
+        Market score: 0.00
+        (not_available)<br>
+        Feature status: not_available</p>
+      </div>
+      <div class="box">
+        <strong>Quick numbers</strong>
+        <p>Observed amount: USD 0.00<br>
+        Active wallets: 0<br>
+        Trades: 0<br>
+        Amount per wallet: USD 0.00<br>
+        Amount per trade: USD 0.00<br>
+        Materiality: below_one_percent_of_reference<br>
+        Review label: insider-risk watch cue: weak or incomplete evidence<br>
+        Max percentile: 1.00<br>
+        Reference score: 0.00</p>
+        <div class="bar"><span style="width:100%"></span></div>
+      </div>
+    </section>
+    <p><strong>Why flagged:</strong> market_move triggered high on absolute_midpoint_change</p>
     <p><strong>Still missing:</strong> manual Polymarket market page review; independent news/event timestamp check; repeat-bucket confirmation; directional position or exit data; reviewed event candidate mapping</p>
     <p><strong>Next step:</strong> Low-context cue: keep in registry and review only if repeated.</p>
   </article>

@@ -1,9 +1,9 @@
 {
-  "generated_at_utc": "2026-08-31T04:30:45+00:00",
+  "generated_at_utc": "2026-09-01T04:30:45+00:00",
   "inputs": {
     "alert_rows_path": "data\\results\\monitor_v2_polymarket_rolling_alert_rows.csv",
     "reference_features_path": "data\\results\\wallet_reference_pattern_features.csv",
-    "source_alert_rows": 2714
+    "source_alert_rows": 2744
   },
   "limitations": {
     "aggregate_monitor_fields_only": true,

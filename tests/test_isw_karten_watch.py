@@ -322,6 +322,55 @@ def test_transport_status_ist_wiederholbar():
     assert ikw.TRANSPORT_STATUS in ikw.WIEDERHOLBAR
     assert 429 in ikw.WIEDERHOLBAR
     assert 400 not in ikw.WIEDERHOLBAR
+    assert 403 not in ikw.WIEDERHOLBAR, "Sperre ist Sache des Rekorders"
+
+
+def test_403_umgeht_den_backoff_ohne_zu_warten(monkeypatch):
+    """Vorfall 01.09.: 403 ist eine Abweisung, kein transienter Fehler.
+    Der Client wirft sofort (ein Versuch, kein 10-s-Schlaf); die
+    Abkuehlpause gehoert dem Rekorder (isw_rekorder.Sperre), sonst
+    haemmerte der Backoff weiter in die Sperre hinein."""
+    karte = ikw.ISWKarte(max_versuche=5, backoff_start_s=10)
+    versuche = {"n": 0}
+    schlaefe: list[float] = []
+    monkeypatch.setattr(ikw.time, "sleep", schlaefe.append)
+
+    def _immer_403(url, daten):
+        versuche["n"] += 1
+        raise ikw.ISWFehler(403, "Forbidden")
+
+    monkeypatch.setattr(karte, "_einmal", _immer_403)
+    try:
+        karte._json("egal")
+    except ikw.ISWFehler as fehler:
+        assert fehler.status == 403
+    else:
+        raise AssertionError("haette ISWFehler werfen muessen")
+    assert versuche["n"] == 1
+    assert schlaefe == []
+
+
+def test_429_backoff_verdoppelt_die_wartezeit(monkeypatch):
+    """Drosselung bleibt beim Client: 10 s, 20 s, 40 s zwischen vier
+    Versuchen, dann Aufgabe mit dem letzten Status."""
+    karte = ikw.ISWKarte(max_versuche=4, backoff_start_s=10)
+    versuche = {"n": 0}
+    schlaefe: list[float] = []
+    monkeypatch.setattr(ikw.time, "sleep", schlaefe.append)
+
+    def _immer_429(url, daten):
+        versuche["n"] += 1
+        raise ikw.ISWFehler(429, "Too many requests")
+
+    monkeypatch.setattr(karte, "_einmal", _immer_429)
+    try:
+        karte._json("egal")
+    except ikw.ISWFehler as fehler:
+        assert fehler.status == 429
+    else:
+        raise AssertionError("haette ISWFehler werfen muessen")
+    assert versuche["n"] == 4
+    assert schlaefe == [10, 20, 40]
 
 
 def test_layer_stand_umgeht_den_cdn_cache(monkeypatch):

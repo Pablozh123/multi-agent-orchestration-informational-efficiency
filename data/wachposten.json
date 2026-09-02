@@ -6,6 +6,12 @@
       "ende_utc": "2026-12-31T23:59:59Z",
       "max_herzschlag_s": 1800,
       "grund": "Vorwaertsmessung ISW-Karte -> Polymarket-Preis. Ein historischer Backtest ist ausgeschlossen (ISW zeichnet Polygone neu), jede Ausfallstunde ist endgueltig verlorene Stichprobe. Ausfall 05.-07.08.2026: 26,7 h, vier qualifizierende Layer veraendert, ein kompletter ISW-Tageszyklus verloren."
+    },
+    "deepstate_ukraine": {
+      "modul": "deepstate_rekorder",
+      "ende_utc": "2026-12-31T23:59:59Z",
+      "max_herzschlag_s": 1800,
+      "grund": "Vorwaertsmessung DeepStateMap -> ISW-Karte -> Polymarket-Preis (Messprotokoll Amendment A2, 02.09.2026). Das Latenzrennen an der ISW-Quelle ist auch mit 1-s-Poll verloren (Hannivka 01.09.: Ask in <1 s weg); gemessen wird, ob und wie oft die fruehere Quelle die ISW-Schattierung vorwegnimmt. Jede Ausfallstunde ist verlorene Stichprobe."
     }
   }
 }

@@ -13645,3 +13645,64 @@ Next step:
 
 - Push und PR sind noch offen; der Inhalt ist Handelslogik statt
   Ueberwachung, das entscheidet die Autorin.
+
+## 2026-09-02 - ukraine: 403-Sperre (PR #55) + DeepState-Rekorder (A2)
+
+Context:
+
+- Stand der ISW-Messstrecke geprueft: Rekorder lebt, N 5/10,
+  Anteil Ueberraschung 0.2, `weiter_messen`. Zwei Betriebsvorfaelle
+  seit 27.08.: Host-Ausfall 29.08. 07:25Z - 30.08. 10:47Z (27,4 h, auch
+  der Watchdog schwieg) und HTTP-403-Sperre des ArcGIS-Origins 01.09.
+  20:00-21:01Z (1674 Fehlerzeilen, kein Backoff fuer 403).
+- Hannivka 01.09. 15:00:49Z: erstes sauberes 1-s-Poll-Ereignis,
+  Erkennung +0,8 s - trotzdem verloren (bid 0.79 / ask 0.98 bei +1 s,
+  Prints +3 s, dieselbe Bot-Crew wie Stinky). T+0-Mid 0.885 ist ein
+  Artefakt der gezogenen Ask-Seite; gegen die Baseline 0.79 waere es
+  "teilweise", nicht "antizipiert".
+
+Change:
+
+- `operations/pipeline/isw_rekorder.py`: `Sperre` (60 s -> 600 s
+  eskalierend), ein `sperre`-/`sperre_ende`-Ereignis statt Fehlerzeile
+  je Zyklus, `_schlafe` mit Herzschlag-Scheiben, `letzter_zyklus_ts`
+  friert waehrend der Sperre ein (Amendment A3). Gemergt als PR #55,
+  Betriebsordner per hole_main.cmd nachgezogen.
+- Neu `operations/pipeline/deepstate_rekorder.py`: read-only Rekorder
+  fuer DeepStateMap (ETag-Poll auf /api/history/last, Klassen besetzt /
+  grauzone, Uebergaenge je Markt und Siedlungsflaeche mit T+0-Preis,
+  Buch und Nachfassungen, Erwaehnungen mit Koordinaten aus dem
+  Beschreibungstext, Sperre wie oben). Watchdog-Profil
+  `deepstate_ukraine`, Sollbesetzung in `data/wachposten.json`.
+- Neu `operations/analysis/deepstate_vorlauf_auswertung.py`: verknuepft
+  DeepState- und ISW-Ereignisse je Siedlung (Fenster 96 h):
+  Trefferquote, Median-Vorlauf, Preisraum, Gegenrichtung (ISW ohne
+  DeepState-Vorlauf).
+- Messprotokoll: Amendments A2 (DeepState-Kanal, Go-Vorschlag mit
+  Schwellen) und A3 (Sperre).
+
+Verification:
+
+- `python -m pytest -q` -> 1436 passed (9 Sperre, 20 DeepState-Rekorder,
+  10 Auswertung neu); `python -m ruff check .` sauber.
+- Trockenlauf `deepstate_rekorder --einmal` gegen die Live-APIs
+  (Scratchpad-Pfade): 47 Maerkte mit Siedlungsflaeche, 18 auswertbar,
+  Karte 1788288304 mit 526 Features / 56 klassifizierten Polygonen,
+  26 Maerkte grundiert (z. B. Kostyantynivka besetzt+grauzone, Lyman
+  grauzone, Hannivka ohne Beruehrung).
+- DeepState-API: `If-None-Match` liefert 304 (0 Byte), Cache-Buster
+  erzwingt Origin (cf-cache-status MISS).
+
+Decision:
+
+- Das Latenzrennen an der ISW-Quelle wird nicht weiter beschleunigt;
+  der Hebel liegt in der frueheren Quelle. Kein Handel auf dem
+  DeepState-Kanal vor einer Go-Pruefung.
+- T+0-Anker des ISW-Kanals und capture-all-of-Klassifikation bleiben
+  als offene Protokollentscheidung notiert (A2).
+
+Next step:
+
+- Profil `deepstate_ukraine` im Betriebsordner armieren (watchdog.json,
+  Geometrie-Cache aus isw_ukraine kopieren), isw_ukraine fuer den
+  403-Fix neu starten lassen.

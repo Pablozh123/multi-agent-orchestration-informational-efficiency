@@ -176,11 +176,16 @@ Sache der Autorin): N ≥ ▸10 entschiedene DeepState-Siedlungsereignisse,
 Trefferquote ≥ ▸0.5, Median-Vorlauf ≥ ▸2 h, Median-Preisraum ≥ ▸0.10.
 **Die Messsemantik von §3–§6 (ISW-Kanal) bleibt unverändert;** der
 DeepState-Kanal ist eine eigene Messreihe mit eigenem Protokoll
-(`data/live/deepstate_ukraine/ereignisse.jsonl`). Offen und weiterhin
-Entscheidung der Autorin: der T+0-Anker des ISW-Kanals (Hannivka wird
-mit T+0-Mid 0.885 als „antizipiert" geführt, gegen die
-Vor-Publikations-Baseline 0.79 wäre es „teilweise") und die Aufnahme der
-capture-all-of-Klasse in die ISW-Klassifikation.
+(`data/live/deepstate_ukraine/ereignisse.jsonl`). Zum T+0-Anker des ISW-Kanals
+(Hannivka: Sep-Markt T+0-Mid 0.885 „antizipiert", Best Bid 0.79
+„teilweise") weist die Auswertung seit 02.09. zusätzlich `klasse_basis`
+über den Best Bid bei Erkennung als Näherung der Vor-Publikations-
+Baseline aus, und die capture-all-of-Klasse (russisch, `vollstaendig`)
+als eigene Tabelle — beides informativ, die Go-Prüfung rechnet
+unverändert über die vorregistrierte Klasse (T+0-Mid). Ein Wechsel des
+Ankers bleibt Entscheidung der Autorin; Stand 02.09. ändert er den
+Überraschungsanteil auf Siedlungsebene nicht (0.2 → 0.2), weil der
+Dezember-Markt Hannivkas mit Bid 0.941 antizipiert war.
 
 **A3 — 02.09.2026: Abkühlpause bei quellseitiger Abweisung (HTTP 403).**
 Anlass: Betriebsvorfall 01.09. — der ArcGIS-Origin wies 20:00–21:01 UTC

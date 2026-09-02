@@ -45,8 +45,9 @@ vier Layern. 403 steht bewusst nicht im Wiederhol-Backoff des Clients
 und schrieb 1674 Fehlerzeilen. Seither gilt: ein Status aus SPERR_STATUS
 schaltet den Rekorder in eine Abkühlpause (SPERRE_START_S, verdoppelt bis
 SPERRE_MAX_S), protokolliert EIN `sperre`-Ereignis beim Beginn und ein
-`sperre_ende` beim ersten Erfolg; Herzschläge laufen während der Pause
-weiter, damit der Watchdog nicht neu startet. Zyklen während der Sperre
+`sperre_ende` beim ersten Erfolg (beide mit `von_utc` = Sperrbeginn);
+Herzschläge laufen während der Pause weiter, damit der Watchdog nicht
+neu startet. Zyklen während der Sperre
 schreiben `letzter_zyklus_ts` nicht fort — das erste Ereignis nach der
 Sperre trägt dadurch `nach_ausfall_s` wie nach jedem anderen Ausfall
 (Messprotokoll, Amendment A3).
@@ -224,6 +225,13 @@ class Sperre:
     def aktiv(self) -> bool:
         return self.seit_ts is not None
 
+    @property
+    def von_utc(self) -> str | None:
+        """Sperrbeginn als ISO-Zeit; steht in `sperre` und `sperre_ende`."""
+        if self.seit_ts is None:
+            return None
+        return _iso(datetime.fromtimestamp(self.seit_ts, tz=UTC))
+
     def treffer(self, status: int, jetzt_ts: float) -> bool:
         """Abweisung verbuchen. True, wenn die Sperre damit BEGINNT."""
         if not self.aktiv:
@@ -239,6 +247,7 @@ class Sperre:
     def ende(self, jetzt_ts: float) -> dict:
         """Sperre aufheben; liefert die Kennzahlen für das Protokoll."""
         info = {
+            "von_utc": self.von_utc,
             "status": self.status,
             "dauer_s": round(jetzt_ts - (self.seit_ts or jetzt_ts), 1),
             "versuche": self.versuche,
@@ -695,6 +704,7 @@ def durchlauf(karte: ISWKarte,
             _protokolliere(protokoll, {
                 "art": "sperre",
                 "zeit_utc": _iso(_jetzt_utc()),
+                "von_utc": sperre.von_utc,
                 "layer": layer_name,
                 "status": fehler.status,
                 "wartezeit_s": sperre.wartezeit_s,

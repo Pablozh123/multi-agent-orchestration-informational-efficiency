@@ -191,7 +191,8 @@ ungebremst durch die Sperre — mit dem Risiko, dass aus einer
 Stundensperre eine Dauersperre des Schnell-Polls wird. Seit diesem
 Amendment schaltet ein 403 den Rekorder in eine Abkühlpause (60 s,
 verdoppelt bis 600 s), protokolliert EIN `sperre`-Ereignis beim Beginn
-und ein `sperre_ende` (Dauer, Versuche) beim ersten Erfolg; Herzschläge
+und ein `sperre_ende` (Dauer, Versuche) beim ersten Erfolg, beide mit
+`von_utc` (Sperrbeginn); Herzschläge
 laufen während der Pause weiter, damit der Watchdog den wartenden
 Rekorder nicht neu startet. **Messsemantik unverändert:** gesperrte
 Zyklen schreiben `letzter_zyklus_ts` nicht fort, das erste Ereignis

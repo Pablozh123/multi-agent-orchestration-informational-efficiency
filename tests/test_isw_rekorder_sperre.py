@@ -11,6 +11,7 @@ Kein Netzzugriff — Karte und Polymarket sind Attrappen.
 from __future__ import annotations
 
 import json
+from datetime import UTC, datetime
 
 from operations.pipeline import isw_rekorder as rek
 from operations.pipeline.isw_karten_watch import ISWFehler
@@ -57,7 +58,9 @@ def test_sperre_eskaliert_und_deckelt():
         sperre.treffer(403, 2000.0)
     assert sperre.wartezeit_s == rek.SPERRE_MAX_S
     info = sperre.ende(5000.0)
-    assert info == {"status": 403, "dauer_s": 4000.0, "versuche": 12}
+    assert info == {"von_utc": "1970-01-01T00:16:40Z", "status": 403,
+                    "dauer_s": 4000.0, "versuche": 12}
+    assert sperre.von_utc is None
     assert not sperre.aktiv and sperre.wartezeit_s == rek.SPERRE_START_S
 
 
@@ -75,6 +78,7 @@ def test_403_erzeugt_genau_ein_sperre_ereignis(tmp_path):
     assert [z["art"] for z in zeilen] == ["sperre"]
     assert zeilen[0]["status"] == 403
     assert zeilen[0]["wartezeit_s"] == rek.SPERRE_START_S
+    assert zeilen[0]["von_utc"] == zeilen[0]["zeit_utc"]
     assert karte.aufrufe == 3, "je gesperrtem Zyklus genau ein Versuch"
     assert sperre.versuche == 3
     assert sperre.wartezeit_s == 4 * rek.SPERRE_START_S
@@ -111,6 +115,8 @@ def test_erfolg_beendet_sperre_und_meldet_die_luecke(tmp_path):
     assert arten[:2] == ["sperre_ende", "ausfall_erkannt"]
     assert zeilen[0]["versuche"] == 2
     assert zeilen[0]["dauer_s"] >= 3590.0
+    assert zeilen[0]["von_utc"] == rek._iso(
+        datetime.fromtimestamp(lange_her + 5.0, tz=UTC))
     assert zeilen[1]["luecke_s"] >= 3590.0
     assert zeilen[1]["hinweis"].startswith("Nach Sperre:")
     assert not sperre.aktiv
@@ -162,6 +168,54 @@ def test_ohne_sperre_objekt_bleibt_403_ein_fehler(tmp_path):
     rek.durchlauf(_AbweisendeKarte(403), _LeserAttrappe(), [_ziel()],
                   _zustand(), protokoll)
     assert [z["art"] for z in _zeilen(protokoll)] == ["fehler"] * 4
+
+
+# ------------------------------------------------------------------- main
+
+def test_main_schleife_schlaeft_eskalierend_und_erholt_sich(tmp_path,
+                                                             monkeypatch):
+    """Ganze Schleife: 403, 403, Erfolg -> Abkuehlpausen 60 s und 120 s
+    statt 1-s-Takt, EIN `sperre`, EIN `sperre_ende`, danach wieder der
+    normale Takt. Der Herzschlag-Rueckruf wandert in die Pause hinein."""
+    protokoll = tmp_path / "p.jsonl"
+    karte = _AbweisendeKarte(403)
+    monkeypatch.setattr(rek, "ISWKarte", lambda *a, **k: karte)
+    monkeypatch.setattr(rek, "PolymarktLeser", lambda *a, **k: _LeserAttrappe())
+    monkeypatch.setattr(rek, "lade_marktziele", lambda *a, **k: [_ziel()])
+    monkeypatch.setattr(_KarteAttrappe, "schliessen", lambda self: None,
+                        raising=False)
+    monkeypatch.setattr(_LeserAttrappe, "schliessen", lambda self: None,
+                        raising=False)
+    pausen: list[float] = []
+
+    def _pause(sekunden, herzschlag=None, **_):
+        pausen.append(sekunden)
+        herzschlag()                      # darf ohne live_dir nicht werfen
+        if len(pausen) == 2:
+            karte.status = None           # Quelle antwortet wieder
+
+    monkeypatch.setattr(rek, "_schlafe", _pause)
+
+    def _normaler_takt(_sekunden):
+        raise KeyboardInterrupt           # regulaerer Takt erreicht: Ende
+
+    monkeypatch.setattr(rek.time, "sleep", _normaler_takt)
+
+    code = rek.main(["--zustand", str(tmp_path / "z.json"),
+                     "--protokoll", str(protokoll),
+                     "--geometrie-cache", str(tmp_path / "geo.json")])
+    assert code == 0
+    assert pausen == [rek.SPERRE_START_S, 2 * rek.SPERRE_START_S]
+    assert karte.aufrufe == 2 + 4, "zwei gesperrte Zyklen, dann vier Layer"
+    zeilen = _zeilen(protokoll)
+    arten = [z["art"] for z in zeilen]
+    assert arten.count("sperre") == 1
+    assert arten.count("sperre_ende") == 1
+    assert "fehler" not in arten
+    ende = next(z for z in zeilen if z["art"] == "sperre_ende")
+    beginn = next(z for z in zeilen if z["art"] == "sperre")
+    assert ende["versuche"] == 2
+    assert ende["von_utc"] == beginn["von_utc"] == beginn["zeit_utc"]
 
 
 # --------------------------------------------------------------- Schlafen

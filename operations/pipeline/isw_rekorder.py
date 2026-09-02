@@ -38,6 +38,19 @@ Protokoll-Zeile und Zustands-Schreiben ab, kann ein Kandidat nach Neustart
 doppelt protokolliert werden — bei der Auswertung über (slug, layer,
 erste_sichtung) deduplizieren.
 
+Quellseitige Sperre (Betriebsvorfall 01.09.2026): Der ArcGIS-Origin
+antwortete 20:00–21:01 UTC exakt eine Stunde lang mit HTTP 403 auf allen
+vier Layern. 403 steht bewusst nicht im Wiederhol-Backoff des Clients
+(dauerhafter Fehler), also lief der 1-s-Takt ungebremst durch die Sperre
+und schrieb 1674 Fehlerzeilen. Seither gilt: ein Status aus SPERR_STATUS
+schaltet den Rekorder in eine Abkühlpause (SPERRE_START_S, verdoppelt bis
+SPERRE_MAX_S), protokolliert EIN `sperre`-Ereignis beim Beginn und ein
+`sperre_ende` beim ersten Erfolg; Herzschläge laufen während der Pause
+weiter, damit der Watchdog nicht neu startet. Zyklen während der Sperre
+schreiben `letzter_zyklus_ts` nicht fort — das erste Ereignis nach der
+Sperre trägt dadurch `nach_ausfall_s` wie nach jedem anderen Ausfall
+(Messprotokoll, Amendment A3).
+
 Die Marktliste wird alle MARKT_REFRESH_S neu gezogen (ein Gamma-Aufruf);
 nur die Siedlungsgeometrien sind dauerhaft gecacht — sie sind
 Verwaltungsgrenzen, ändern sich nie und waren als wiederholte Abfrage der
@@ -121,6 +134,14 @@ AUSFALL_SCHWELLE_S = 300.0
 
 NACHFASS_MINUTEN = (0, 1, 5, 30)
 
+# Quellseitige Sperre: 403 ist kein transienter Fehler, sondern eine
+# Abweisung — weiterpollen verlängert sie nur. 60 s -> 120 -> 240 -> 480
+# -> 600 s Deckel; die Stunde vom 01.09. hätte so ~8 Versuche statt 1674
+# Fehlerzeilen gekostet.
+SPERR_STATUS = frozenset({403})
+SPERRE_START_S = 60.0
+SPERRE_MAX_S = 600.0
+
 STANDARD_ZUSTAND = Path("data/live/isw_rekorder/zustand.json")
 STANDARD_PROTOKOLL = Path("data/live/isw_rekorder/ereignisse.jsonl")
 STANDARD_GEOMETRIE = Path("data/live/isw_rekorder/geometrie_cache.json")
@@ -183,6 +204,50 @@ def _ms_nach_iso(ms: int | None) -> str | None:
 def takt_fuer(zeit: datetime) -> int:
     """Poll-Abstand: dicht im ISW-Arbeitsfenster, sonst sparsam."""
     return TAKT_AKTIV_S if AKTIV_VON_UTC <= zeit.hour < AKTIV_BIS_UTC else TAKT_RUHE_S
+
+
+@dataclass
+class Sperre:
+    """Abkühlpause nach einer quellseitigen Abweisung (HTTP 403).
+
+    Lebt nur im Prozess: nach einem Neustart beginnt die Eskalation neu
+    bei SPERRE_START_S — ein Neustart unter Sperre ist selten und die
+    Folge (ein Versuch zu früh) harmlos.
+    """
+
+    seit_ts: float | None = None
+    status: int | None = None
+    wartezeit_s: float = SPERRE_START_S
+    versuche: int = 0
+
+    @property
+    def aktiv(self) -> bool:
+        return self.seit_ts is not None
+
+    def treffer(self, status: int, jetzt_ts: float) -> bool:
+        """Abweisung verbuchen. True, wenn die Sperre damit BEGINNT."""
+        if not self.aktiv:
+            self.seit_ts = jetzt_ts
+            self.status = status
+            self.wartezeit_s = SPERRE_START_S
+            self.versuche = 1
+            return True
+        self.versuche += 1
+        self.wartezeit_s = min(self.wartezeit_s * 2, SPERRE_MAX_S)
+        return False
+
+    def ende(self, jetzt_ts: float) -> dict:
+        """Sperre aufheben; liefert die Kennzahlen für das Protokoll."""
+        info = {
+            "status": self.status,
+            "dauer_s": round(jetzt_ts - (self.seit_ts or jetzt_ts), 1),
+            "versuche": self.versuche,
+        }
+        self.seit_ts = None
+        self.status = None
+        self.wartezeit_s = SPERRE_START_S
+        self.versuche = 0
+        return info
 
 
 # ------------------------------------------------------------- Polymarket
@@ -569,32 +634,74 @@ def _bereinige_zustand(zustand: dict, slugs_aktiv: set[str],
 
 # -------------------------------------------------------------- Durchlauf
 
+def _pruefe_ausfall(zustand: dict, protokoll: Path,
+                    hinweis: str = "") -> float:
+    """Lücke seit dem letzten beobachtenden Zyklus; 0.0 wenn keine.
+
+    Nach einer Lücke ist der gleich gemessene T+0-Preis nicht der Preis
+    zum Zeitpunkt der ISW-Änderung — das Ereignis wird markiert.
+    """
+    vorheriger_zyklus = zustand.get("letzter_zyklus_ts")
+    if not vorheriger_zyklus:
+        return 0.0
+    luecke = _jetzt_utc().timestamp() - vorheriger_zyklus
+    if luecke <= AUSFALL_SCHWELLE_S:
+        return 0.0
+    ausfall_s = round(luecke, 1)
+    _protokolliere(protokoll, {
+        "art": "ausfall_erkannt",
+        "zeit_utc": _iso(_jetzt_utc()),
+        "luecke_s": ausfall_s,
+        "hinweis": (hinweis + " " if hinweis else "")
+        + "Ereignisse dieses Zyklus tragen einen unsicheren T+0-Preis",
+    })
+    return ausfall_s
+
+
 def durchlauf(karte: ISWKarte,
               leser: PolymarktLeser,
               ziele: list[Marktziel],
               zustand: dict,
-              protokoll: Path) -> list[dict]:
-    """Ein Poll-Zyklus über alle vier Layer. Liefert neue Kandidaten-Einträge."""
+              protokoll: Path,
+              sperre: Sperre | None = None) -> list[dict]:
+    """Ein Poll-Zyklus über alle vier Layer. Liefert neue Kandidaten-Einträge.
+
+    `sperre` (optional) macht aus einer quellseitigen Abweisung eine
+    Abkühlpause statt eines Fehlers je Zyklus; siehe Modul-Docstring.
+    """
     meldungen: list[dict] = []
     budget = {"rest": PREISABRUFE_JE_ZYKLUS}
     slugs_aktiv = {z.slug for z in ziele}
     ziel_nach_slug = {z.slug: z for z in ziele}
 
-    # Lücke seit dem letzten Zyklus? Dann ist der gleich gemessene
-    # T+0-Preis nicht der Preis zum Zeitpunkt der ISW-Änderung.
-    vorheriger_zyklus = zustand.get("letzter_zyklus_ts")
+    # Während einer Sperre beobachtet der Zyklus nichts — die Lücke wird
+    # erst beim ersten Erfolg nach der Sperre gemessen und gemeldet.
     ausfall_s = 0.0
-    if vorheriger_zyklus:
-        luecke = _jetzt_utc().timestamp() - vorheriger_zyklus
-        if luecke > AUSFALL_SCHWELLE_S:
-            ausfall_s = round(luecke, 1)
+    if sperre is None or not sperre.aktiv:
+        ausfall_s = _pruefe_ausfall(zustand, protokoll)
+    gesperrt = False
+
+    def _abgewiesen(fehler: ISWFehler, layer_name: str) -> bool:
+        """Sperre verbuchen; True wenn der Zyklus abzubrechen ist."""
+        nonlocal gesperrt
+        if sperre is None or fehler.status not in SPERR_STATUS:
             _protokolliere(protokoll, {
-                "art": "ausfall_erkannt",
-                "zeit_utc": _iso(_jetzt_utc()),
-                "luecke_s": ausfall_s,
-                "hinweis": "Ereignisse dieses Zyklus tragen einen "
-                           "unsicheren T+0-Preis",
+                "art": "fehler", "zeit_utc": _iso(_jetzt_utc()),
+                "layer": layer_name, "status": fehler.status,
             })
+            return False
+        jetzt_ts = _jetzt_utc().timestamp()
+        if sperre.treffer(fehler.status, jetzt_ts):
+            _protokolliere(protokoll, {
+                "art": "sperre",
+                "zeit_utc": _iso(_jetzt_utc()),
+                "layer": layer_name,
+                "status": fehler.status,
+                "wartezeit_s": sperre.wartezeit_s,
+                "hinweis": "Quelle weist ab; Abkuehlpause statt Dauerpoll",
+            })
+        gesperrt = True
+        return True
 
     def _preis(token: str) -> tuple[float | None, bool]:
         if budget["rest"] <= 0:
@@ -606,11 +713,20 @@ def durchlauf(karte: ISWKarte,
         try:
             stand = karte.layer_stand(layer)
         except ISWFehler as fehler:
-            _protokolliere(protokoll, {
-                "art": "fehler", "zeit_utc": _iso(_jetzt_utc()),
-                "layer": layer.name, "status": fehler.status,
-            })
+            if _abgewiesen(fehler, layer.name):
+                # Die Sperre trifft alle Layer — nicht weiterhämmern.
+                break
             continue
+        if sperre is not None and sperre.aktiv:
+            info = sperre.ende(_jetzt_utc().timestamp())
+            _protokolliere(protokoll, {
+                "art": "sperre_ende",
+                "zeit_utc": _iso(_jetzt_utc()),
+                "layer": layer.name,
+                **info,
+            })
+            ausfall_s = _pruefe_ausfall(zustand, protokoll,
+                                        hinweis="Nach Sperre:")
         if stand is None:
             # Metadaten ohne lastEditDate: bekannten Stand NIE mit None
             # ueberschreiben, sonst grundiert der Folgelauf still
@@ -625,10 +741,8 @@ def durchlauf(karte: ISWKarte,
         except ISWFehler as fehler:
             # layer_stand bewusst NICHT fortschreiben: der naechste Poll
             # sieht die Aenderung erneut, statt sie endgueltig zu verlieren.
-            _protokolliere(protokoll, {
-                "art": "fehler", "zeit_utc": _iso(_jetzt_utc()),
-                "layer": layer.name, "status": fehler.status,
-            })
+            if _abgewiesen(fehler, layer.name):
+                break
             continue
 
         # Erkennungszeit FRISCH nach dem Abruf — ein eingefrorenes 'jetzt'
@@ -780,7 +894,10 @@ def durchlauf(karte: ISWKarte,
 
     _reife_kandidaten(zustand, leser, protokoll)
     _faellige_nachfassungen(leser, zustand, protokoll)
-    zustand["letzter_zyklus_ts"] = _jetzt_utc().timestamp()
+    if not gesperrt:
+        # Ein gesperrter Zyklus hat die Karte nicht gesehen; die Lücke
+        # läuft weiter bis zum ersten Erfolg (siehe _pruefe_ausfall).
+        zustand["letzter_zyklus_ts"] = _jetzt_utc().timestamp()
     return meldungen
 
 
@@ -818,6 +935,24 @@ def _herzschlag_faellig(letzter: float | None, jetzt: float) -> bool:
     """Ob wieder ein Herzschlag geschrieben werden soll (entkoppelt vom
     Poll-Takt, sonst eine Event-Zeile je 1-s-Zyklus)."""
     return letzter is None or jetzt - letzter >= HERZSCHLAG_MIN_ABSTAND_S
+
+
+def _schlafe(sekunden: float, herzschlag=None,
+             scheibe_s: float = HERZSCHLAG_MIN_ABSTAND_S) -> None:
+    """Pause in Scheiben, zwischen denen ein Herzschlag geschrieben wird.
+
+    Die Abkühlpause reicht bis SPERRE_MAX_S (600 s) — genau die Grenze,
+    ab der der Watchdog einen Bot für tot erklärt (STALE_S). Ohne
+    Zwischen-Herzschläge würde er den wartenden Rekorder neu starten,
+    und der Neustart pollte sofort wieder in die Sperre hinein.
+    """
+    rest = float(sekunden)
+    while rest > 0:
+        stueck = min(rest, scheibe_s)
+        time.sleep(stueck)
+        rest -= stueck
+        if rest > 0 and herzschlag is not None:
+            herzschlag()
 
 
 def _herzschlag(live_dir: Path | None, art: str = "herzschlag",
@@ -947,11 +1082,12 @@ def main(argv: list[str] | None = None) -> int:
 
     letzter_refresh = time.monotonic()
     letzter_herzschlag: float | None = None  # None -> erster Zyklus schreibt
+    sperre = Sperre()
     try:
         while True:
             try:
                 meldungen = durchlauf(karte, leser, ziele, zustand,
-                                      argumente.protokoll)
+                                      argumente.protokoll, sperre=sperre)
             except Exception as fehler:  # noqa: BLE001 - Messlauf nie abreissen
                 _protokolliere(argumente.protokoll, {
                     "art": "lauf_fehler",
@@ -1006,7 +1142,16 @@ def main(argv: list[str] | None = None) -> int:
                         "typ": type(fehler).__name__,
                         "text": str(fehler)[:300],
                     })
-            time.sleep(argumente.takt_s or takt_fuer(_jetzt_utc()))
+            if sperre.aktiv:
+                print(f"SPERRE HTTP {sperre.status} seit "
+                      f"{sperre.versuche} Versuch(en), warte "
+                      f"{sperre.wartezeit_s:.0f} s")
+                _schlafe(sperre.wartezeit_s, herzschlag=lambda: _herzschlag(
+                    live_dir, kandidaten=len(zustand["kandidaten"]),
+                    sperre_s=sperre.wartezeit_s))
+                letzter_herzschlag = time.monotonic()
+            else:
+                time.sleep(argumente.takt_s or takt_fuer(_jetzt_utc()))
     except KeyboardInterrupt:
         # Manuelles Ende: der Watchdog resurrectet stop-beendete Bots nicht.
         _herzschlag(live_dir, art="stop")

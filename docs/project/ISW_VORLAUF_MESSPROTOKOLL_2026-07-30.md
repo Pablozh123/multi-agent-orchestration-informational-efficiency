@@ -1,6 +1,6 @@
 # Messprotokoll ISW-Vorlauf (Vorregistrierung), Version 1
 
-Stand 30.07.2026. Analog zur Vorregistrierungslogik des Echtgeld-Piloten
+Stand 30.07.2026 (Amendments bis 02.09.2026). Analog zur Vorregistrierungslogik des Echtgeld-Piloten
 (PILOT_PROTOKOLL_ECHTGELD_2026-07-11.md): Ereignisdefinition, Kennzahlen,
 Erfolgskriterien und Entscheidungsregel werden VOR dem Einlauf der Daten
 festgelegt. Änderungen nach dem Einfrieren nur als datierter
@@ -148,3 +148,24 @@ Grenzen-Punkt „Erkennungslatenz ~20–120 s" gilt ab 27.08. als „~2 s im
 Aktivfenster, ~120 s im Ruhefenster". Auftrag der Autorin vom 27.08.
 („Umbau auf 1–2-Sekunden-Polling"), umgesetzt in Commit auf Branch
 feat/isw-schnellpoll.
+
+**A3 — 02.09.2026: Abkühlpause bei quellseitiger Abweisung (HTTP 403).**
+Anlass: Betriebsvorfall 01.09. — der ArcGIS-Origin wies 20:00–21:01 UTC
+exakt eine Stunde lang jede Anfrage auf allen vier Layern mit HTTP 403
+ab (1674 Fehlerzeilen). 403 stand bewusst nicht im Wiederhol-Backoff
+des Clients (dauerhafter Fehler), der 1-s-Takt aus A1 lief deshalb
+ungebremst durch die Sperre — mit dem Risiko, dass aus einer
+Stundensperre eine Dauersperre des Schnell-Polls wird. Seit diesem
+Amendment schaltet ein 403 den Rekorder in eine Abkühlpause (60 s,
+verdoppelt bis 600 s), protokolliert EIN `sperre`-Ereignis beim Beginn
+und ein `sperre_ende` (Dauer, Versuche) beim ersten Erfolg; Herzschläge
+laufen während der Pause weiter, damit der Watchdog den wartenden
+Rekorder nicht neu startet. **Messsemantik unverändert:** gesperrte
+Zyklen schreiben `letzter_zyklus_ts` nicht fort, das erste Ereignis
+nach einer Sperre trägt deshalb `nach_ausfall_s` über die gesamte
+Sperrdauer — derselbe Pfad wie `ausfall_erkannt` nach Prozess- oder
+Host-Ausfällen (§7). Ereignisse mit `nach_ausfall_s` > 300 s gelten
+weiterhin als „unsicher". Zwei weitere Lücken sind vorab zu deklarieren:
+29.08. 07:25Z – 30.08. 10:47Z (27,4 h, Host-Ausfall inkl. Watchdog, kein
+Bot-Fehler) und 01.09. 20:00–21:01Z (Sperre). Umsetzung: Branch
+`fix/isw-403-sperre`, Tests `tests/test_isw_rekorder_sperre.py`.

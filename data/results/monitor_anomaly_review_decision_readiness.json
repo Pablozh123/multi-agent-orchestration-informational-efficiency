@@ -588,8 +588,23 @@
       "target_status": "",
       "thesis_use_allowed_after_decision": "false",
       "thesis_use_scope": ""
+    },
+    {
+      "allowed_next_statuses": "source_check_pending;thesis_excluded",
+      "blocked_claims": "private_information_proof; misconduct_finding; causality; tradeability; profitability; future_performance; order_instruction; insider_risk_as_fact",
+      "case_id": "monitor_candidate_20260903_043000_6fd56280aa01",
+      "current_status": "needs_human_review",
+      "decision_note": "",
+      "decision_validation_status": "no_decision_recorded",
+      "limitations": "",
+      "missing_decision_fields": "",
+      "reviewer_action_required": "Open source check or explicitly exclude the case.",
+      "source_decision_artifact": "monitor_anomaly_review_decisions.csv",
+      "target_status": "",
+      "thesis_use_allowed_after_decision": "false",
+      "thesis_use_scope": ""
     }
   ],
   "max_default_rows_for_future_tools": 50,
-  "row_count": 39
+  "row_count": 40
 }

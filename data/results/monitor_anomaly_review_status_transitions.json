@@ -4,7 +4,7 @@
   "contains_order_instructions": false,
   "contains_wallet_addresses": false,
   "max_default_rows_for_future_tools": 50,
-  "row_count": 39,
+  "row_count": 40,
   "status_transitions": [
     {
       "allowed_interpretation": "Deterministic anomaly review cue for human source checking and later bounded SignalSpec drafting only; not a metric calculated by agents.",
@@ -546,6 +546,20 @@
       "case_id": "monitor_candidate_20260902_043000_cea18c7605b7",
       "current_status": "needs_human_review",
       "packet_id": "case_review_packet_monitor_candidate_20260902_043000_cea18c7605b7",
+      "reviewer_action_required": "Open source check or explicitly exclude the case.",
+      "source_packet_artifact": "monitor_anomaly_case_review_packets.csv",
+      "thesis_use_allowed": "false",
+      "thesis_use_gate": "No thesis-facing use before source check and human review decision.",
+      "transition_requirements": "Record public market source URL, public event/context source URL, reviewer, timestamp, and review note before acceptance or false-context decisions."
+    },
+    {
+      "allowed_interpretation": "Deterministic anomaly review cue for human source checking and later bounded SignalSpec drafting only; not a metric calculated by agents.",
+      "allowed_next_statuses": "source_check_pending;thesis_excluded",
+      "blocked_claims": "private_information_proof; misconduct_finding; causality; tradeability; profitability; future_performance; order_instruction; insider_risk_as_fact",
+      "blocked_next_statuses": "reviewed_keep_candidate;reviewed_false_context",
+      "case_id": "monitor_candidate_20260903_043000_6fd56280aa01",
+      "current_status": "needs_human_review",
+      "packet_id": "case_review_packet_monitor_candidate_20260903_043000_6fd56280aa01",
       "reviewer_action_required": "Open source check or explicitly exclude the case.",
       "source_packet_artifact": "monitor_anomaly_case_review_packets.csv",
       "thesis_use_allowed": "false",

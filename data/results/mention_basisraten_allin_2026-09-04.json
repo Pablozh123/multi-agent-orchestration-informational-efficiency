@@ -1,0 +1,3663 @@
+{
+ "stand_utc": "2026-09-04T17:27:55+00:00",
+ "quelle": "gamma-api.polymarket.com (oeffentlich, read-only)",
+ "serien": {
+  "11300": {
+   "n_events": 31,
+   "events": [
+    {
+     "id": "873145",
+     "ende": "2026-08-21",
+     "titel": "What will be said on the next All-In Podcast? (August 21)"
+    },
+    {
+     "id": "841250",
+     "ende": "2026-08-14",
+     "titel": "What will be said on the next All-In Podcast? (August 14)"
+    },
+    {
+     "id": "790609",
+     "ende": "2026-08-07",
+     "titel": "What will be said on the next All-In Podcast? (August 7)"
+    },
+    {
+     "id": "758791",
+     "ende": "2026-07-31",
+     "titel": "What will be said on the next All-In Podcast? (July 31)"
+    },
+    {
+     "id": "715508",
+     "ende": "2026-07-24",
+     "titel": "What will be said on the next All-In Podcast? (July 24)"
+    },
+    {
+     "id": "700931",
+     "ende": "2026-07-17",
+     "titel": "What will be said on the next All-In Podcast? (July 17)"
+    },
+    {
+     "id": "678491",
+     "ende": "2026-07-10",
+     "titel": "What will be said on the next All-In Podcast? (July 10)"
+    },
+    {
+     "id": "652614",
+     "ende": "2026-07-03",
+     "titel": "What will be said on the next All-In Podcast? (July 3)"
+    },
+    {
+     "id": "623444",
+     "ende": "2026-06-26",
+     "titel": "What will be said on the next All-In Podcast? (June 26)"
+    },
+    {
+     "id": "595223",
+     "ende": "2026-06-19",
+     "titel": "What will be said on the next All-In Podcast? (June 19)"
+    },
+    {
+     "id": "572819",
+     "ende": "2026-06-13",
+     "titel": "What will be said on the next All-In Podcast? (June 12)"
+    },
+    {
+     "id": "527321",
+     "ende": "2026-05-29",
+     "titel": "What will be said on the next All-In Podcast? (May 29)"
+    },
+    {
+     "id": "499401",
+     "ende": "2026-05-22",
+     "titel": "What will be said on the next All-In Podcast? (May 22)"
+    },
+    {
+     "id": "474098",
+     "ende": "2026-05-15",
+     "titel": "What will be said on the next All-In Podcast? (May 15)"
+    },
+    {
+     "id": "452131",
+     "ende": "2026-05-08",
+     "titel": "What will be said on the next All-In Podcast? (May 8)"
+    },
+    {
+     "id": "376172",
+     "ende": "2026-04-17",
+     "titel": "What will be said on the next All-In Podcast? (April 17)"
+    },
+    {
+     "id": "351919",
+     "ende": "2026-04-10",
+     "titel": "What will be said on the next All-In Podcast? (April 10)"
+    },
+    {
+     "id": "325999",
+     "ende": "2026-04-03",
+     "titel": "What will be said on the next All-In Podcast? (April 3)"
+    },
+    {
+     "id": "300426",
+     "ende": "2026-03-27",
+     "titel": "What will be said on the next All-In Podcast? (March 27)"
+    },
+    {
+     "id": "276697",
+     "ende": "2026-03-20",
+     "titel": "What will be said on the next All-In Podcast? (March 20)"
+    },
+    {
+     "id": "256660",
+     "ende": "2026-03-13",
+     "titel": "What will be said on the next All-In Podcast? (March 13)"
+    },
+    {
+     "id": "241933",
+     "ende": "2026-03-06",
+     "titel": "What will be said on the next All-In Podcast? (March 6)"
+    },
+    {
+     "id": "91339",
+     "ende": "2026-02-28",
+     "titel": "What will be said on the next All-In Podcast?"
+    },
+    {
+     "id": "228033",
+     "ende": "2026-02-27",
+     "titel": "What will be said on the next All-In Podcast? (February 27)"
+    },
+    {
+     "id": "179734",
+     "ende": "2026-01-23",
+     "titel": "What will be said on the next All-In Podcast? (January 23)"
+    },
+    {
+     "id": "161542",
+     "ende": "2026-01-16",
+     "titel": "What will be said on the next All-In Podcast? "
+    },
+    {
+     "id": "145453",
+     "ende": "2026-01-09",
+     "titel": "What will be said on the next All-In Podcast?"
+    },
+    {
+     "id": "117452",
+     "ende": "2025-12-26",
+     "titel": "What will be said on the next All-In Podcast?"
+    },
+    {
+     "id": "110173",
+     "ende": "2025-12-19",
+     "titel": "What will be said on the next All-In Podcast?"
+    },
+    {
+     "id": "101218",
+     "ende": "2025-12-12",
+     "titel": "What will be said on the next All-In Podcast?"
+    },
+    {
+     "id": "86358",
+     "ende": "2025-11-28",
+     "titel": "What will be said on the next All-In Podcast?"
+    }
+   ],
+   "basisraten": [
+    {
+     "wort": "nvidia",
+     "schwelle": 1,
+     "n": 24,
+     "yes": 17,
+     "quote": 0.708,
+     "laplace": 0.692,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2025-11-28:Y",
+      "2025-12-12:N",
+      "2026-01-09:Y",
+      "2026-02-27:N",
+      "2026-03-13:Y",
+      "2026-03-20:Y",
+      "2026-03-27:Y",
+      "2026-04-03:Y",
+      "2026-04-10:Y",
+      "2026-04-17:N",
+      "2026-05-08:Y",
+      "2026-05-15:Y",
+      "2026-05-22:Y",
+      "2026-05-29:N",
+      "2026-06-13:N",
+      "2026-06-19:N",
+      "2026-06-26:Y",
+      "2026-07-10:Y",
+      "2026-07-17:Y",
+      "2026-07-24:N",
+      "2026-07-31:Y",
+      "2026-08-07:Y",
+      "2026-08-14:Y",
+      "2026-08-21:Y"
+     ]
+    },
+    {
+     "wort": "alignment",
+     "schwelle": 1,
+     "n": 14,
+     "yes": 2,
+     "quote": 0.143,
+     "laplace": 0.188,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-03-27:N",
+      "2026-04-03:N",
+      "2026-04-10:N",
+      "2026-04-17:Y",
+      "2026-05-08:N",
+      "2026-05-15:N",
+      "2026-05-22:Y",
+      "2026-05-29:N",
+      "2026-06-13:N",
+      "2026-06-19:N",
+      "2026-06-26:N",
+      "2026-07-10:N",
+      "2026-07-17:N",
+      "2026-07-24:N"
+     ]
+    },
+    {
+     "wort": "constitution",
+     "schwelle": 1,
+     "n": 14,
+     "yes": 3,
+     "quote": 0.214,
+     "laplace": 0.25,
+     "letzte3_yes": 1,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-04-03:N",
+      "2026-04-10:N",
+      "2026-04-17:N",
+      "2026-05-08:N",
+      "2026-05-15:N",
+      "2026-05-22:N",
+      "2026-05-29:Y",
+      "2026-06-13:N",
+      "2026-06-19:N",
+      "2026-06-26:Y",
+      "2026-07-10:N",
+      "2026-07-17:N",
+      "2026-07-24:Y",
+      "2026-07-31:N"
+     ]
+    },
+    {
+     "wort": "software",
+     "schwelle": 1,
+     "n": 14,
+     "yes": 14,
+     "quote": 1.0,
+     "laplace": 0.938,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-04-03:Y",
+      "2026-04-10:Y",
+      "2026-04-17:Y",
+      "2026-05-08:Y",
+      "2026-05-15:Y",
+      "2026-06-19:Y",
+      "2026-06-26:Y",
+      "2026-07-10:Y",
+      "2026-07-17:Y",
+      "2026-07-24:Y",
+      "2026-07-31:Y",
+      "2026-08-07:Y",
+      "2026-08-14:Y",
+      "2026-08-21:Y"
+     ]
+    },
+    {
+     "wort": "anthropic",
+     "schwelle": 1,
+     "n": 12,
+     "yes": 12,
+     "quote": 1.0,
+     "laplace": 0.929,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-03-06:Y",
+      "2026-03-13:Y",
+      "2026-03-27:Y",
+      "2026-04-03:Y",
+      "2026-04-10:Y",
+      "2026-04-17:Y",
+      "2026-05-08:Y",
+      "2026-05-15:Y",
+      "2026-06-19:Y",
+      "2026-06-26:Y",
+      "2026-07-10:Y",
+      "2026-07-24:Y"
+     ]
+    },
+    {
+     "wort": "innovation",
+     "schwelle": 1,
+     "n": 11,
+     "yes": 7,
+     "quote": 0.636,
+     "laplace": 0.615,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-05-08:Y",
+      "2026-05-15:Y",
+      "2026-05-22:N",
+      "2026-05-29:Y",
+      "2026-06-13:N",
+      "2026-06-19:N",
+      "2026-06-26:N",
+      "2026-07-10:Y",
+      "2026-07-17:Y",
+      "2026-07-24:Y",
+      "2026-07-31:Y"
+     ]
+    },
+    {
+     "wort": "cancer",
+     "schwelle": 1,
+     "n": 10,
+     "yes": 5,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-05-15:Y",
+      "2026-05-22:N",
+      "2026-05-29:Y",
+      "2026-06-13:Y",
+      "2026-06-19:Y",
+      "2026-06-26:N",
+      "2026-07-10:N",
+      "2026-07-17:Y",
+      "2026-07-24:N",
+      "2026-07-31:N"
+     ]
+    },
+    {
+     "wort": "disruptive",
+     "schwelle": 1,
+     "n": 10,
+     "yes": 1,
+     "quote": 0.1,
+     "laplace": 0.167,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-05-15:N",
+      "2026-05-22:Y",
+      "2026-05-29:N",
+      "2026-06-13:N",
+      "2026-06-19:N",
+      "2026-06-26:N",
+      "2026-07-10:N",
+      "2026-07-17:N",
+      "2026-07-24:N",
+      "2026-07-31:N"
+     ]
+    },
+    {
+     "wort": "stock market",
+     "schwelle": 1,
+     "n": 10,
+     "yes": 4,
+     "quote": 0.4,
+     "laplace": 0.417,
+     "letzte3_yes": 2,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-04-17:Y",
+      "2026-06-19:N",
+      "2026-06-26:N",
+      "2026-07-10:N",
+      "2026-07-17:N",
+      "2026-07-24:Y",
+      "2026-07-31:N",
+      "2026-08-07:N",
+      "2026-08-14:Y",
+      "2026-08-21:Y"
+     ]
+    },
+    {
+     "wort": "blue",
+     "schwelle": 1,
+     "n": 9,
+     "yes": 7,
+     "quote": 0.778,
+     "laplace": 0.727,
+     "letzte3_yes": 2,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-06-26:Y",
+      "2026-07-03:Y",
+      "2026-07-10:Y",
+      "2026-07-17:Y",
+      "2026-07-24:Y",
+      "2026-07-31:N",
+      "2026-08-07:N",
+      "2026-08-14:Y",
+      "2026-08-21:Y"
+     ]
+    },
+    {
+     "wort": "hundred/thousand/million",
+     "schwelle": 10,
+     "n": 9,
+     "yes": 9,
+     "quote": 1.0,
+     "laplace": 0.909,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-06-19:Y",
+      "2026-06-26:Y",
+      "2026-07-10:Y",
+      "2026-07-17:Y",
+      "2026-07-24:Y",
+      "2026-07-31:Y",
+      "2026-08-07:Y",
+      "2026-08-14:Y",
+      "2026-08-21:Y"
+     ]
+    },
+    {
+     "wort": "red",
+     "schwelle": 1,
+     "n": 9,
+     "yes": 5,
+     "quote": 0.556,
+     "laplace": 0.545,
+     "letzte3_yes": 1,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-06-26:Y",
+      "2026-07-03:Y",
+      "2026-07-10:N",
+      "2026-07-17:Y",
+      "2026-07-24:Y",
+      "2026-07-31:N",
+      "2026-08-07:N",
+      "2026-08-14:Y",
+      "2026-08-21:N"
+     ]
+    },
+    {
+     "wort": "regulatory",
+     "schwelle": 1,
+     "n": 9,
+     "yes": 7,
+     "quote": 0.778,
+     "laplace": 0.727,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-04-03:N",
+      "2026-04-10:Y",
+      "2026-04-17:Y",
+      "2026-05-08:Y",
+      "2026-05-15:N",
+      "2026-06-19:Y",
+      "2026-06-26:Y",
+      "2026-07-10:Y",
+      "2026-07-24:Y"
+     ]
+    },
+    {
+     "wort": "spacex",
+     "schwelle": 3,
+     "n": 9,
+     "yes": 8,
+     "quote": 0.889,
+     "laplace": 0.818,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-06-19:Y",
+      "2026-06-26:Y",
+      "2026-07-10:Y",
+      "2026-07-17:Y",
+      "2026-07-24:Y",
+      "2026-07-31:N",
+      "2026-08-07:Y",
+      "2026-08-14:Y",
+      "2026-08-21:Y"
+     ]
+    },
+    {
+     "wort": "biology",
+     "schwelle": 1,
+     "n": 8,
+     "yes": 1,
+     "quote": 0.125,
+     "laplace": 0.2,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-05-15:N",
+      "2026-05-22:N",
+      "2026-05-29:N",
+      "2026-06-13:Y",
+      "2026-06-19:N",
+      "2026-06-26:N",
+      "2026-07-10:N",
+      "2026-07-24:N"
+     ]
+    },
+    {
+     "wort": "ipo",
+     "schwelle": 1,
+     "n": 8,
+     "yes": 8,
+     "quote": 1.0,
+     "laplace": 0.9,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-06-19:Y",
+      "2026-06-26:Y",
+      "2026-07-10:Y",
+      "2026-07-17:Y",
+      "2026-07-24:Y",
+      "2026-08-07:Y",
+      "2026-08-14:Y",
+      "2026-08-21:Y"
+     ]
+    },
+    {
+     "wort": "ai",
+     "schwelle": 35,
+     "n": 7,
+     "yes": 6,
+     "quote": 0.857,
+     "laplace": 0.778,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-04-17:Y",
+      "2026-05-08:Y",
+      "2026-06-19:N",
+      "2026-06-26:Y",
+      "2026-07-10:Y",
+      "2026-07-24:Y",
+      "2026-07-31:Y"
+     ]
+    },
+    {
+     "wort": "canada",
+     "schwelle": 1,
+     "n": 7,
+     "yes": 2,
+     "quote": 0.286,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-04-17:N",
+      "2026-05-08:N",
+      "2026-06-19:Y",
+      "2026-06-26:Y",
+      "2026-07-10:N",
+      "2026-07-17:N",
+      "2026-07-24:N"
+     ]
+    },
+    {
+     "wort": "data center",
+     "schwelle": 1,
+     "n": 7,
+     "yes": 7,
+     "quote": 1.0,
+     "laplace": 0.889,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2025-12-19:Y",
+      "2025-12-26:Y",
+      "2026-01-16:Y",
+      "2026-01-23:Y",
+      "2026-02-27:Y",
+      "2026-03-06:Y",
+      "2026-04-10:Y"
+     ]
+    },
+    {
+     "wort": "competent",
+     "schwelle": 1,
+     "n": 6,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.125,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-04-17:N",
+      "2026-05-08:N",
+      "2026-05-15:N",
+      "2026-05-22:N",
+      "2026-05-29:N",
+      "2026-06-13:N"
+     ]
+    },
+    {
+     "wort": "disgraziad",
+     "schwelle": 1,
+     "n": 6,
+     "yes": 3,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 2,
+     "letzte3_n": 3,
+     "historie": [
+      "2025-12-12:N",
+      "2025-12-19:N",
+      "2025-12-26:Y",
+      "2026-01-16:Y",
+      "2026-01-23:N",
+      "2026-02-28:Y"
+     ]
+    },
+    {
+     "wort": "globalization",
+     "schwelle": 1,
+     "n": 6,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.125,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-05-08:N",
+      "2026-05-15:N",
+      "2026-05-22:N",
+      "2026-05-29:N",
+      "2026-06-13:N",
+      "2026-06-19:N"
+     ]
+    },
+    {
+     "wort": "macroeconomy",
+     "schwelle": 1,
+     "n": 6,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.125,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-04-17:N",
+      "2026-05-08:N",
+      "2026-05-15:N",
+      "2026-05-22:N",
+      "2026-05-29:N",
+      "2026-06-13:N"
+     ]
+    },
+    {
+     "wort": "miracle",
+     "schwelle": 1,
+     "n": 6,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.125,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-05-08:N",
+      "2026-05-15:N",
+      "2026-06-19:N",
+      "2026-06-26:N",
+      "2026-07-10:N",
+      "2026-07-24:N"
+     ]
+    },
+    {
+     "wort": "national security",
+     "schwelle": 1,
+     "n": 6,
+     "yes": 1,
+     "quote": 0.167,
+     "laplace": 0.25,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-04-17:Y",
+      "2026-05-08:N",
+      "2026-05-15:N",
+      "2026-05-22:N",
+      "2026-05-29:N",
+      "2026-06-13:N"
+     ]
+    },
+    {
+     "wort": "california",
+     "schwelle": 1,
+     "n": 5,
+     "yes": 3,
+     "quote": 0.6,
+     "laplace": 0.571,
+     "letzte3_yes": 2,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-01-09:Y",
+      "2026-02-27:N",
+      "2026-03-06:N",
+      "2026-03-13:Y",
+      "2026-03-27:Y"
+     ]
+    },
+    {
+     "wort": "china",
+     "schwelle": 1,
+     "n": 5,
+     "yes": 4,
+     "quote": 0.8,
+     "laplace": 0.714,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-02-27:N",
+      "2026-03-06:Y",
+      "2026-03-20:Y",
+      "2026-03-27:Y",
+      "2026-04-10:Y"
+     ]
+    },
+    {
+     "wort": "closed source",
+     "schwelle": 1,
+     "n": 5,
+     "yes": 1,
+     "quote": 0.2,
+     "laplace": 0.286,
+     "letzte3_yes": 1,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-05-08:N",
+      "2026-05-15:N",
+      "2026-05-22:N",
+      "2026-05-29:Y",
+      "2026-06-13:N"
+     ]
+    },
+    {
+     "wort": "comparison",
+     "schwelle": 1,
+     "n": 5,
+     "yes": 3,
+     "quote": 0.6,
+     "laplace": 0.571,
+     "letzte3_yes": 2,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-04-17:N",
+      "2026-05-08:Y",
+      "2026-05-22:Y",
+      "2026-05-29:N",
+      "2026-06-13:Y"
+     ]
+    },
+    {
+     "wort": "iran",
+     "schwelle": 1,
+     "n": 5,
+     "yes": 3,
+     "quote": 0.6,
+     "laplace": 0.571,
+     "letzte3_yes": 1,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-02-27:Y",
+      "2026-03-13:Y",
+      "2026-03-20:Y",
+      "2026-03-27:N",
+      "2026-07-17:N"
+     ]
+    },
+    {
+     "wort": "microsoft",
+     "schwelle": 1,
+     "n": 5,
+     "yes": 2,
+     "quote": 0.4,
+     "laplace": 0.429,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-01-16:Y",
+      "2026-01-23:Y",
+      "2026-02-27:N",
+      "2026-03-13:N",
+      "2026-05-15:N"
+     ]
+    },
+    {
+     "wort": "sam/altman",
+     "schwelle": 1,
+     "n": 5,
+     "yes": 2,
+     "quote": 0.4,
+     "laplace": 0.429,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-03-06:Y",
+      "2026-03-13:Y",
+      "2026-03-20:N",
+      "2026-03-27:N",
+      "2026-04-03:N"
+     ]
+    },
+    {
+     "wort": "trump",
+     "schwelle": 1,
+     "n": 5,
+     "yes": 5,
+     "quote": 1.0,
+     "laplace": 0.857,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-01-09:Y",
+      "2026-02-27:Y",
+      "2026-03-27:Y",
+      "2026-04-03:Y",
+      "2026-04-10:Y"
+     ]
+    },
+    {
+     "wort": "ai",
+     "schwelle": 50,
+     "n": 4,
+     "yes": 4,
+     "quote": 1.0,
+     "laplace": 0.833,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-06-13:Y",
+      "2026-08-07:Y",
+      "2026-08-14:Y",
+      "2026-08-21:Y"
+     ]
+    },
+    {
+     "wort": "anthropic",
+     "schwelle": 5,
+     "n": 4,
+     "yes": 4,
+     "quote": 1.0,
+     "laplace": 0.833,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-07-17:Y",
+      "2026-08-07:Y",
+      "2026-08-14:Y",
+      "2026-08-21:Y"
+     ]
+    },
+    {
+     "wort": "anthropic",
+     "schwelle": 10,
+     "n": 4,
+     "yes": 4,
+     "quote": 1.0,
+     "laplace": 0.833,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-05-08:Y",
+      "2026-05-29:Y",
+      "2026-06-13:Y",
+      "2026-07-03:Y"
+     ]
+    },
+    {
+     "wort": "audit",
+     "schwelle": 1,
+     "n": 4,
+     "yes": 2,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-01-16:Y",
+      "2026-01-23:Y",
+      "2026-02-27:N",
+      "2026-03-06:N"
+     ]
+    },
+    {
+     "wort": "biden/kamala",
+     "schwelle": 1,
+     "n": 4,
+     "yes": 4,
+     "quote": 1.0,
+     "laplace": 0.833,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2025-12-19:Y",
+      "2025-12-26:Y",
+      "2026-01-09:Y",
+      "2026-02-27:Y"
+     ]
+    },
+    {
+     "wort": "bitcoin",
+     "schwelle": 1,
+     "n": 4,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.167,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-05-15:N",
+      "2026-05-22:N",
+      "2026-05-29:N",
+      "2026-06-13:N"
+     ]
+    },
+    {
+     "wort": "crypto/bitcoin",
+     "schwelle": 1,
+     "n": 4,
+     "yes": 2,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 3,
+     "historie": [
+      "2025-11-28:Y",
+      "2025-12-19:N",
+      "2026-03-13:N",
+      "2026-03-20:Y"
+     ]
+    },
+    {
+     "wort": "deepfake",
+     "schwelle": 1,
+     "n": 4,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.167,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-04-03:N",
+      "2026-04-10:N",
+      "2026-04-17:N",
+      "2026-05-15:N"
+     ]
+    },
+    {
+     "wort": "google",
+     "schwelle": 1,
+     "n": 4,
+     "yes": 3,
+     "quote": 0.75,
+     "laplace": 0.667,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-02-27:N",
+      "2026-03-20:Y",
+      "2026-04-03:Y",
+      "2026-04-10:Y"
+     ]
+    },
+    {
+     "wort": "hollywood",
+     "schwelle": 1,
+     "n": 4,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.167,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-05-08:N",
+      "2026-05-15:N",
+      "2026-05-22:N",
+      "2026-06-19:N"
+     ]
+    },
+    {
+     "wort": "insurance",
+     "schwelle": 1,
+     "n": 4,
+     "yes": 2,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 2,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-03-13:N",
+      "2026-05-22:N",
+      "2026-05-29:Y",
+      "2026-06-13:Y"
+     ]
+    },
+    {
+     "wort": "mark zuckerberg",
+     "schwelle": 1,
+     "n": 4,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.167,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-04-03:N",
+      "2026-04-10:N",
+      "2026-04-17:N",
+      "2026-05-08:N"
+     ]
+    },
+    {
+     "wort": "new york",
+     "schwelle": 1,
+     "n": 4,
+     "yes": 3,
+     "quote": 0.75,
+     "laplace": 0.667,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-01-09:N",
+      "2026-02-27:Y",
+      "2026-03-13:Y",
+      "2026-03-27:Y"
+     ]
+    },
+    {
+     "wort": "palantir",
+     "schwelle": 1,
+     "n": 4,
+     "yes": 1,
+     "quote": 0.25,
+     "laplace": 0.333,
+     "letzte3_yes": 1,
+     "letzte3_n": 3,
+     "historie": [
+      "2025-12-12:N",
+      "2026-03-13:Y",
+      "2026-03-20:N",
+      "2026-03-27:N"
+     ]
+    },
+    {
+     "wort": "plastic",
+     "schwelle": 1,
+     "n": 4,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.167,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-05-15:N",
+      "2026-05-22:N",
+      "2026-05-29:N",
+      "2026-06-13:N"
+     ]
+    },
+    {
+     "wort": "polymarket",
+     "schwelle": 1,
+     "n": 4,
+     "yes": 4,
+     "quote": 1.0,
+     "laplace": 0.833,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2025-12-12:Y",
+      "2026-03-13:Y",
+      "2026-04-03:Y",
+      "2026-04-10:Y"
+     ]
+    },
+    {
+     "wort": "best friend",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.2,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-03-27:N",
+      "2026-04-10:N",
+      "2026-05-08:N"
+     ]
+    },
+    {
+     "wort": "civilization",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 1,
+     "quote": 0.333,
+     "laplace": 0.4,
+     "letzte3_yes": 1,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-05-22:Y",
+      "2026-05-29:N",
+      "2026-06-13:N"
+     ]
+    },
+    {
+     "wort": "data center",
+     "schwelle": 5,
+     "n": 3,
+     "yes": 1,
+     "quote": 0.333,
+     "laplace": 0.4,
+     "letzte3_yes": 1,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-05-22:Y",
+      "2026-05-29:N",
+      "2026-06-13:N"
+     ]
+    },
+    {
+     "wort": "democracy",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 3,
+     "quote": 1.0,
+     "laplace": 0.8,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2025-12-19:Y",
+      "2025-12-26:Y",
+      "2026-01-09:Y"
+     ]
+    },
+    {
+     "wort": "elon/musk",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 2,
+     "quote": 0.667,
+     "laplace": 0.6,
+     "letzte3_yes": 2,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-02-27:Y",
+      "2026-03-13:N",
+      "2026-07-03:Y"
+     ]
+    },
+    {
+     "wort": "european union",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.2,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-05-22:N",
+      "2026-05-29:N",
+      "2026-06-13:N"
+     ]
+    },
+    {
+     "wort": "interest rate",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 2,
+     "quote": 0.667,
+     "laplace": 0.6,
+     "letzte3_yes": 2,
+     "letzte3_n": 3,
+     "historie": [
+      "2025-12-19:Y",
+      "2025-12-26:N",
+      "2026-01-09:Y"
+     ]
+    },
+    {
+     "wort": "middle east",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.2,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-05-22:N",
+      "2026-05-29:N",
+      "2026-06-13:N"
+     ]
+    },
+    {
+     "wort": "nuclear",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 1,
+     "quote": 0.333,
+     "laplace": 0.4,
+     "letzte3_yes": 1,
+     "letzte3_n": 3,
+     "historie": [
+      "2025-12-19:N",
+      "2025-12-26:N",
+      "2026-02-27:Y"
+     ]
+    },
+    {
+     "wort": "recession",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.2,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2025-12-12:N",
+      "2026-01-09:N",
+      "2026-02-28:N"
+     ]
+    },
+    {
+     "wort": "safety",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 3,
+     "quote": 1.0,
+     "laplace": 0.8,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-03-27:Y",
+      "2026-04-03:Y",
+      "2026-04-10:Y"
+     ]
+    },
+    {
+     "wort": "sanders",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 2,
+     "quote": 0.667,
+     "laplace": 0.6,
+     "letzte3_yes": 2,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-01-16:Y",
+      "2026-01-23:N",
+      "2026-02-27:Y"
+     ]
+    },
+    {
+     "wort": "santa/elf",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 1,
+     "quote": 0.333,
+     "laplace": 0.4,
+     "letzte3_yes": 1,
+     "letzte3_n": 3,
+     "historie": [
+      "2025-12-12:N",
+      "2025-12-19:N",
+      "2025-12-26:Y"
+     ]
+    },
+    {
+     "wort": "scott/bessent",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 2,
+     "quote": 0.667,
+     "laplace": 0.6,
+     "letzte3_yes": 2,
+     "letzte3_n": 3,
+     "historie": [
+      "2025-12-19:Y",
+      "2025-12-26:Y",
+      "2026-01-09:N"
+     ]
+    },
+    {
+     "wort": "telescope",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 1,
+     "quote": 0.333,
+     "laplace": 0.4,
+     "letzte3_yes": 1,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-04-17:N",
+      "2026-05-08:Y",
+      "2026-05-15:N"
+     ]
+    },
+    {
+     "wort": "tequila",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 2,
+     "quote": 0.667,
+     "laplace": 0.6,
+     "letzte3_yes": 2,
+     "letzte3_n": 3,
+     "historie": [
+      "2025-12-19:Y",
+      "2025-12-26:Y",
+      "2026-01-09:N"
+     ]
+    },
+    {
+     "wort": "tesla",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 2,
+     "quote": 0.667,
+     "laplace": 0.6,
+     "letzte3_yes": 2,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-02-27:N",
+      "2026-03-13:Y",
+      "2026-03-27:Y"
+     ]
+    },
+    {
+     "wort": "ai",
+     "schwelle": 15,
+     "n": 2,
+     "yes": 2,
+     "quote": 1.0,
+     "laplace": 0.75,
+     "letzte3_yes": 2,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-04-03:Y",
+      "2026-04-10:Y"
+     ]
+    },
+    {
+     "wort": "ai",
+     "schwelle": 45,
+     "n": 2,
+     "yes": 2,
+     "quote": 1.0,
+     "laplace": 0.75,
+     "letzte3_yes": 2,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-05-22:Y",
+      "2026-05-29:Y"
+     ]
+    },
+    {
+     "wort": "ai/artificial intelligence",
+     "schwelle": 5,
+     "n": 2,
+     "yes": 2,
+     "quote": 1.0,
+     "laplace": 0.75,
+     "letzte3_yes": 2,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-03-13:Y",
+      "2026-03-20:Y"
+     ]
+    },
+    {
+     "wort": "ai/artificial intelligence",
+     "schwelle": 10,
+     "n": 2,
+     "yes": 2,
+     "quote": 1.0,
+     "laplace": 0.75,
+     "letzte3_yes": 2,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-03-13:Y",
+      "2026-03-20:Y"
+     ]
+    },
+    {
+     "wort": "aoc",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 1,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 2,
+     "historie": [
+      "2025-12-19:N",
+      "2025-12-26:Y"
+     ]
+    },
+    {
+     "wort": "argentina",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.25,
+     "letzte3_yes": 0,
+     "letzte3_n": 2,
+     "historie": [
+      "2025-12-19:N",
+      "2025-12-26:N"
+     ]
+    },
+    {
+     "wort": "barrel",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 1,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-03-13:Y",
+      "2026-03-20:N"
+     ]
+    },
+    {
+     "wort": "bubble",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 1,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 2,
+     "historie": [
+      "2025-11-28:Y",
+      "2026-02-28:N"
+     ]
+    },
+    {
+     "wort": "coffee/tea",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 1,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 2,
+     "historie": [
+      "2025-12-19:N",
+      "2025-12-26:Y"
+     ]
+    },
+    {
+     "wort": "construction",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.25,
+     "letzte3_yes": 0,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-04-03:N",
+      "2026-04-10:N"
+     ]
+    },
+    {
+     "wort": "cookie",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.25,
+     "letzte3_yes": 0,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-04-10:N",
+      "2026-05-08:N"
+     ]
+    },
+    {
+     "wort": "crypto",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 2,
+     "quote": 1.0,
+     "laplace": 0.75,
+     "letzte3_yes": 2,
+     "letzte3_n": 2,
+     "historie": [
+      "2025-12-26:Y",
+      "2026-01-09:Y"
+     ]
+    },
+    {
+     "wort": "dario/amodei",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 2,
+     "quote": 1.0,
+     "laplace": 0.75,
+     "letzte3_yes": 2,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-03-06:Y",
+      "2026-03-27:Y"
+     ]
+    },
+    {
+     "wort": "denmark",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 1,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-01-16:Y",
+      "2026-01-23:N"
+     ]
+    },
+    {
+     "wort": "department of war",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 2,
+     "quote": 1.0,
+     "laplace": 0.75,
+     "letzte3_yes": 2,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-03-06:Y",
+      "2026-03-27:Y"
+     ]
+    },
+    {
+     "wort": "disgraceful",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.25,
+     "letzte3_yes": 0,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-01-16:N",
+      "2026-01-23:N"
+     ]
+    },
+    {
+     "wort": "elizabeth/warren",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 1,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 2,
+     "historie": [
+      "2025-12-19:Y",
+      "2025-12-26:N"
+     ]
+    },
+    {
+     "wort": "elon",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 1,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-01-16:N",
+      "2026-01-23:Y"
+     ]
+    },
+    {
+     "wort": "epstein/island",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 1,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 2,
+     "historie": [
+      "2025-12-19:N",
+      "2025-12-26:Y"
+     ]
+    },
+    {
+     "wort": "event",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 2,
+     "quote": 1.0,
+     "laplace": 0.75,
+     "letzte3_yes": 2,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-04-03:Y",
+      "2026-04-17:Y"
+     ]
+    },
+    {
+     "wort": "idiot/dumb",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 1,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 2,
+     "historie": [
+      "2025-12-19:Y",
+      "2025-12-26:N"
+     ]
+    },
+    {
+     "wort": "independence",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.25,
+     "letzte3_yes": 0,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-01-16:N",
+      "2026-01-23:N"
+     ]
+    },
+    {
+     "wort": "king/queen",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 2,
+     "quote": 1.0,
+     "laplace": 0.75,
+     "letzte3_yes": 2,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-04-17:Y",
+      "2026-05-08:Y"
+     ]
+    },
+    {
+     "wort": "maga",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 1,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-01-16:N",
+      "2026-01-23:Y"
+     ]
+    },
+    {
+     "wort": "oil",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 1,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-01-09:Y",
+      "2026-03-20:N"
+     ]
+    },
+    {
+     "wort": "open source",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 2,
+     "quote": 1.0,
+     "laplace": 0.75,
+     "letzte3_yes": 2,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-04-10:Y",
+      "2026-04-17:Y"
+     ]
+    },
+    {
+     "wort": "poland",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.25,
+     "letzte3_yes": 0,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-04-03:N",
+      "2026-04-10:N"
+     ]
+    },
+    {
+     "wort": "pope",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 1,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-05-29:Y",
+      "2026-06-13:N"
+     ]
+    },
+    {
+     "wort": "prediction",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 2,
+     "quote": 1.0,
+     "laplace": 0.75,
+     "letzte3_yes": 2,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-05-22:Y",
+      "2026-05-29:Y"
+     ]
+    },
+    {
+     "wort": "seminar",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.25,
+     "letzte3_yes": 0,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-03-27:N",
+      "2026-04-03:N"
+     ]
+    },
+    {
+     "wort": "silicon valley",
+     "schwelle": 2,
+     "n": 2,
+     "yes": 1,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-04-03:N",
+      "2026-04-10:Y"
+     ]
+    },
+    {
+     "wort": "supreme court",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 1,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 2,
+     "historie": [
+      "2025-12-12:N",
+      "2026-02-27:Y"
+     ]
+    },
+    {
+     "wort": "tariff",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 1,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-01-09:N",
+      "2026-02-27:Y"
+     ]
+    },
+    {
+     "wort": "tariff",
+     "schwelle": 3,
+     "n": 2,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.25,
+     "letzte3_yes": 0,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-03-13:N",
+      "2026-03-20:N"
+     ]
+    },
+    {
+     "wort": "too late",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 1,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-01-16:Y",
+      "2026-01-23:N"
+     ]
+    },
+    {
+     "wort": "unemployment",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 2,
+     "quote": 1.0,
+     "laplace": 0.75,
+     "letzte3_yes": 2,
+     "letzte3_n": 2,
+     "historie": [
+      "2025-12-19:Y",
+      "2025-12-26:Y"
+     ]
+    },
+    {
+     "wort": "war",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 2,
+     "quote": 1.0,
+     "laplace": 0.75,
+     "letzte3_yes": 2,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-03-13:Y",
+      "2026-03-20:Y"
+     ]
+    },
+    {
+     "wort": "5.2/gpt-5.2",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-12-12:N"
+     ]
+    },
+    {
+     "wort": "adam/eve",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-12-26:N"
+     ]
+    },
+    {
+     "wort": "agent",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-20:Y"
+     ]
+    },
+    {
+     "wort": "ai",
+     "schwelle": 5,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-06:Y"
+     ]
+    },
+    {
+     "wort": "ai",
+     "schwelle": 20,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-05-15:Y"
+     ]
+    },
+    {
+     "wort": "ai/artificial intelligence",
+     "schwelle": 20,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-27:Y"
+     ]
+    },
+    {
+     "wort": "ai/artificial intelligence",
+     "schwelle": 40,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-03:Y"
+     ]
+    },
+    {
+     "wort": "ai/artificial intelligence",
+     "schwelle": 50,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-17:Y"
+     ]
+    },
+    {
+     "wort": "anthropic",
+     "schwelle": 3,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-31:Y"
+     ]
+    },
+    {
+     "wort": "astronaut",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-04-17:N"
+     ]
+    },
+    {
+     "wort": "ayatollah",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-06:N"
+     ]
+    },
+    {
+     "wort": "bill/clinton",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-12-12:Y"
+     ]
+    },
+    {
+     "wort": "bitcoin / crypto",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-27:N"
+     ]
+    },
+    {
+     "wort": "blue ocean",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-04-17:N"
+     ]
+    },
+    {
+     "wort": "brics",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-28:N"
+     ]
+    },
+    {
+     "wort": "canada/canadian",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-31:N"
+     ]
+    },
+    {
+     "wort": "censorship",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-12-12:Y"
+     ]
+    },
+    {
+     "wort": "ceo",
+     "schwelle": 3,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-06:N"
+     ]
+    },
+    {
+     "wort": "china",
+     "schwelle": 3,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-12-12:Y"
+     ]
+    },
+    {
+     "wort": "china/chinese",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-31:Y"
+     ]
+    },
+    {
+     "wort": "christmas party",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-12-12:Y"
+     ]
+    },
+    {
+     "wort": "clout",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-11-28:N"
+     ]
+    },
+    {
+     "wort": "code red",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-12-12:N"
+     ]
+    },
+    {
+     "wort": "coin",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-06:N"
+     ]
+    },
+    {
+     "wort": "communist",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-28:Y"
+     ]
+    },
+    {
+     "wort": "company",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-03:Y"
+     ]
+    },
+    {
+     "wort": "compute",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-13:Y"
+     ]
+    },
+    {
+     "wort": "computer",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-04-03:Y"
+     ]
+    },
+    {
+     "wort": "cuba",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-06:N"
+     ]
+    },
+    {
+     "wort": "customize",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-03:N"
+     ]
+    },
+    {
+     "wort": "data",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-20:Y"
+     ]
+    },
+    {
+     "wort": "data center",
+     "schwelle": 8,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-27:N"
+     ]
+    },
+    {
+     "wort": "david/sacks",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-13:Y"
+     ]
+    },
+    {
+     "wort": "davos",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-01-23:Y"
+     ]
+    },
+    {
+     "wort": "deepseek",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-27:N"
+     ]
+    },
+    {
+     "wort": "dictator",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-20:N"
+     ]
+    },
+    {
+     "wort": "dollar",
+     "schwelle": 10,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-04-17:Y"
+     ]
+    },
+    {
+     "wort": "dumb",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-13:N"
+     ]
+    },
+    {
+     "wort": "dumb/kamala",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-28:N"
+     ]
+    },
+    {
+     "wort": "dystopian",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-28:N"
+     ]
+    },
+    {
+     "wort": "epstein",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-27:N"
+     ]
+    },
+    {
+     "wort": "eric adams",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-01-16:N"
+     ]
+    },
+    {
+     "wort": "europe/european",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-31:Y"
+     ]
+    },
+    {
+     "wort": "federal reserve",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-05-15:N"
+     ]
+    },
+    {
+     "wort": "festival",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-20:N"
+     ]
+    },
+    {
+     "wort": "first",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-03:Y"
+     ]
+    },
+    {
+     "wort": "foundational shift",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-11-28:N"
+     ]
+    },
+    {
+     "wort": "gas price/gas station",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-20:N"
+     ]
+    },
+    {
+     "wort": "gavin/newsom",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-27:N"
+     ]
+    },
+    {
+     "wort": "gemini",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-27:N"
+     ]
+    },
+    {
+     "wort": "genesis",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-28:N"
+     ]
+    },
+    {
+     "wort": "gobble gobble",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-28:N"
+     ]
+    },
+    {
+     "wort": "google/deepmind",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-01-09:Y"
+     ]
+    },
+    {
+     "wort": "green",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-03:Y"
+     ]
+    },
+    {
+     "wort": "greenland",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-01-23:Y"
+     ]
+    },
+    {
+     "wort": "groq",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-01-09:Y"
+     ]
+    },
+    {
+     "wort": "guard",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-06:Y"
+     ]
+    },
+    {
+     "wort": "hillary/clinton",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-05-08:N"
+     ]
+    },
+    {
+     "wort": "intellectually honest",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-11-28:N"
+     ]
+    },
+    {
+     "wort": "investor",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-20:N"
+     ]
+    },
+    {
+     "wort": "ipo/public",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-03:Y"
+     ]
+    },
+    {
+     "wort": "israel",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-27:N"
+     ]
+    },
+    {
+     "wort": "italy",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-12-19:N"
+     ]
+    },
+    {
+     "wort": "jensen/huang",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-01-09:Y"
+     ]
+    },
+    {
+     "wort": "joe/rogan",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-12-12:N"
+     ]
+    },
+    {
+     "wort": "korea/korean",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-03:N"
+     ]
+    },
+    {
+     "wort": "low iq",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-28:N"
+     ]
+    },
+    {
+     "wort": "maduro",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-01-09:Y"
+     ]
+    },
+    {
+     "wort": "market",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-03:Y"
+     ]
+    },
+    {
+     "wort": "michael/burry",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-11-28:Y"
+     ]
+    },
+    {
+     "wort": "middle-school math",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-28:N"
+     ]
+    },
+    {
+     "wort": "midterm/midterms",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-17:N"
+     ]
+    },
+    {
+     "wort": "model",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-03:Y"
+     ]
+    },
+    {
+     "wort": "monad",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-11-28:N"
+     ]
+    },
+    {
+     "wort": "moon",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-04-17:N"
+     ]
+    },
+    {
+     "wort": "moon/mars",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-12-26:N"
+     ]
+    },
+    {
+     "wort": "nasa",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-06:N"
+     ]
+    },
+    {
+     "wort": "netflix",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-06:N"
+     ]
+    },
+    {
+     "wort": "openai",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-27:Y"
+     ]
+    },
+    {
+     "wort": "openclaw",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-05-08:Y"
+     ]
+    },
+    {
+     "wort": "paris",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-04-10:N"
+     ]
+    },
+    {
+     "wort": "performer",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-03:Y"
+     ]
+    },
+    {
+     "wort": "pete/hegseth",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-28:N"
+     ]
+    },
+    {
+     "wort": "prisoner",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-03:N"
+     ]
+    },
+    {
+     "wort": "productivity",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-20:Y"
+     ]
+    },
+    {
+     "wort": "quagmire",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-28:N"
+     ]
+    },
+    {
+     "wort": "quizzical",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-28:N"
+     ]
+    },
+    {
+     "wort": "radical/aoc",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-28:Y"
+     ]
+    },
+    {
+     "wort": "rail",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-06:Y"
+     ]
+    },
+    {
+     "wort": "regulation",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-27:N"
+     ]
+    },
+    {
+     "wort": "regulator/regulatory",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-17:Y"
+     ]
+    },
+    {
+     "wort": "regulatory/regulation",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-31:Y"
+     ]
+    },
+    {
+     "wort": "robot",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-13:N"
+     ]
+    },
+    {
+     "wort": "russia",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-13:Y"
+     ]
+    },
+    {
+     "wort": "samsung/hynix",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-03:N"
+     ]
+    },
+    {
+     "wort": "shah",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-01-16:Y"
+     ]
+    },
+    {
+     "wort": "shahed",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-28:N"
+     ]
+    },
+    {
+     "wort": "sharp/stupid",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-20:N"
+     ]
+    },
+    {
+     "wort": "silicon valley",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-27:Y"
+     ]
+    },
+    {
+     "wort": "ski",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-01-16:Y"
+     ]
+    },
+    {
+     "wort": "skynet",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-06:Y"
+     ]
+    },
+    {
+     "wort": "socialist/socialism",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-04-17:N"
+     ]
+    },
+    {
+     "wort": "spacex",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-27:N"
+     ]
+    },
+    {
+     "wort": "steve/witkoff",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-28:N"
+     ]
+    },
+    {
+     "wort": "stock",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-03:Y"
+     ]
+    },
+    {
+     "wort": "strait of hormuz/hormuz strait",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-13:Y"
+     ]
+    },
+    {
+     "wort": "structural change",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-04-10:N"
+     ]
+    },
+    {
+     "wort": "student debt",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-12-12:Y"
+     ]
+    },
+    {
+     "wort": "switzerland",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-01-23:N"
+     ]
+    },
+    {
+     "wort": "tech/bro",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-12-12:Y"
+     ]
+    },
+    {
+     "wort": "tension",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-17:Y"
+     ]
+    },
+    {
+     "wort": "token",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-04-10:Y"
+     ]
+    },
+    {
+     "wort": "tourism",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-03:Y"
+     ]
+    },
+    {
+     "wort": "trillion/trillionaire",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-03:Y"
+     ]
+    },
+    {
+     "wort": "trump",
+     "schwelle": 3,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-12-12:Y"
+     ]
+    },
+    {
+     "wort": "trump",
+     "schwelle": 10,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-03:Y"
+     ]
+    },
+    {
+     "wort": "uber",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-12-12:N"
+     ]
+    },
+    {
+     "wort": "uber investor",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-28:N"
+     ]
+    },
+    {
+     "wort": "unconstitutional",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-28:N"
+     ]
+    },
+    {
+     "wort": "valuation",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2025-11-28:N"
+     ]
+    },
+    {
+     "wort": "venezuela",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-01-09:Y"
+     ]
+    },
+    {
+     "wort": "vpn/censorship",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-02-28:N"
+     ]
+    },
+    {
+     "wort": "white house",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-07-17:N"
+     ]
+    },
+    {
+     "wort": "wild",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-06:N"
+     ]
+    },
+    {
+     "wort": "winner",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-04-10:Y"
+     ]
+    },
+    {
+     "wort": "woke",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-06:N"
+     ]
+    },
+    {
+     "wort": "zelensky",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-01-16:N"
+     ]
+    },
+    {
+     "wort": "zelenskyy",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-01-23:N"
+     ]
+    },
+    {
+     "wort": "zohran/mamdani",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-03-06:N"
+     ]
+    }
+   ]
+  }
+ },
+ "vergleich": {
+  "event_id": "942921",
+  "titel": "What will be said on the next All-In Podcast? (September 4)",
+  "zeilen": [
+   {
+    "frage": "Will \"AI\" be said 50+ times during the next episode of the All-In Podcast?",
+    "bid": 0.78,
+    "ask": 0.98,
+    "n": 4,
+    "yes": 4,
+    "laplace": 0.833,
+    "letzte3": "3/3",
+    "label": "fair"
+   },
+   {
+    "frage": "Will \"Hundred\" or \"Thousand\" or \"Million\" be said 10+ times during the next episode of the All-In Podcast?",
+    "bid": 0.72,
+    "ask": 0.988,
+    "n": 9,
+    "yes": 9,
+    "laplace": 0.909,
+    "letzte3": "3/3",
+    "label": "fair"
+   },
+   {
+    "frage": "Will \"Anthropic\" be said 5+ times during the next episode of the All-In Podcast?",
+    "bid": 0.72,
+    "ask": 0.97,
+    "n": 4,
+    "yes": 4,
+    "laplace": 0.833,
+    "letzte3": "3/3",
+    "label": "fair"
+   },
+   {
+    "frage": "Will \"SpaceX\" be said 3+ times during the next episode of the All-In Podcast?",
+    "bid": 0.32,
+    "ask": 0.83,
+    "n": 9,
+    "yes": 8,
+    "laplace": 0.818,
+    "letzte3": "3/3",
+    "label": "YES-Kandidat (Maker-Bid)"
+   },
+   {
+    "frage": "Will \"IPO\" be said during the next episode of the All-In Podcast?",
+    "bid": 0.93,
+    "ask": 0.996,
+    "n": 8,
+    "yes": 8,
+    "laplace": 0.9,
+    "letzte3": "3/3",
+    "label": "fair"
+   },
+   {
+    "frage": "Will \"Nvidia\" be said during the next episode of the All-In Podcast?",
+    "bid": 0.36,
+    "ask": 0.97,
+    "n": 24,
+    "yes": 17,
+    "laplace": 0.692,
+    "letzte3": "3/3",
+    "label": "YES-Kandidat (Maker-Bid)"
+   },
+   {
+    "frage": "Will \"Red\" be said during the next episode of the All-In Podcast?",
+    "bid": 0.41,
+    "ask": 0.97,
+    "n": 9,
+    "yes": 5,
+    "laplace": 0.545,
+    "letzte3": "1/3",
+    "label": "fair"
+   },
+   {
+    "frage": "Will \"Blue\" be said during the next episode of the All-In Podcast?",
+    "bid": 0.41,
+    "ask": 0.97,
+    "n": 9,
+    "yes": 7,
+    "laplace": 0.727,
+    "letzte3": "2/3",
+    "label": "YES-Kandidat (Maker-Bid)"
+   },
+   {
+    "frage": "Will \"Software\" be said during the next episode of the All-In Podcast?",
+    "bid": 0.72,
+    "ask": 0.98,
+    "n": 14,
+    "yes": 14,
+    "laplace": 0.938,
+    "letzte3": "3/3",
+    "label": "fair"
+   },
+   {
+    "frage": "Will \"Stock Market\" be said during the next episode of the All-In Podcast?",
+    "bid": 0.11,
+    "ask": 0.99,
+    "n": 10,
+    "yes": 4,
+    "laplace": 0.417,
+    "letzte3": "2/3",
+    "label": "fair"
+   },
+   {
+    "frage": "Will no episode air?",
+    "bid": 0.002,
+    "ask": 0.499,
+    "n": 0,
+    "yes": 0,
+    "laplace": null,
+    "letzte3": "-",
+    "label": "keine Historie"
+   }
+  ]
+ }
+}

@@ -1,0 +1,543 @@
+{
+ "stand_utc": "2026-09-04T17:27:56+00:00",
+ "quelle": "gamma-api.polymarket.com (oeffentlich, read-only)",
+ "serien": {
+  "12413": {
+   "n_events": 5,
+   "events": [
+    {
+     "id": "913373",
+     "ende": "2026-08-30",
+     "titel": "What will be said during the sixth episode of President Curtis: Season 1?"
+    },
+    {
+     "id": "882937",
+     "ende": "2026-08-23",
+     "titel": "What will be said during the fifth episode of President Curtis: Season 1?"
+    },
+    {
+     "id": "830766",
+     "ende": "2026-08-16",
+     "titel": "What will be said during the fourth episode of President Curtis: Season 1?"
+    },
+    {
+     "id": "798582",
+     "ende": "2026-08-09",
+     "titel": "What will be said during the third episode of President Curtis: Season 1?"
+    },
+    {
+     "id": "765460",
+     "ende": "2026-08-02",
+     "titel": "What will be said during the second episode of President Curtis: Season 1?"
+    }
+   ],
+   "basisraten": [
+    {
+     "wort": "cia",
+     "schwelle": 1,
+     "n": 5,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.143,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-08-02:N",
+      "2026-08-09:N",
+      "2026-08-16:N",
+      "2026-08-23:N",
+      "2026-08-30:N"
+     ]
+    },
+    {
+     "wort": "president",
+     "schwelle": 10,
+     "n": 5,
+     "yes": 2,
+     "quote": 0.4,
+     "laplace": 0.429,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-08-02:Y",
+      "2026-08-09:Y",
+      "2026-08-16:N",
+      "2026-08-23:N",
+      "2026-08-30:N"
+     ]
+    },
+    {
+     "wort": "rick",
+     "schwelle": 1,
+     "n": 5,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.143,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-08-02:N",
+      "2026-08-09:N",
+      "2026-08-16:N",
+      "2026-08-23:N",
+      "2026-08-30:N"
+     ]
+    },
+    {
+     "wort": "security",
+     "schwelle": 1,
+     "n": 5,
+     "yes": 5,
+     "quote": 1.0,
+     "laplace": 0.857,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-08-02:Y",
+      "2026-08-09:Y",
+      "2026-08-16:Y",
+      "2026-08-23:Y",
+      "2026-08-30:Y"
+     ]
+    },
+    {
+     "wort": "white house",
+     "schwelle": 1,
+     "n": 5,
+     "yes": 2,
+     "quote": 0.4,
+     "laplace": 0.429,
+     "letzte3_yes": 2,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-08-02:N",
+      "2026-08-09:N",
+      "2026-08-16:Y",
+      "2026-08-23:Y",
+      "2026-08-30:N"
+     ]
+    },
+    {
+     "wort": "ghost",
+     "schwelle": 1,
+     "n": 4,
+     "yes": 2,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-08-02:Y",
+      "2026-08-09:N",
+      "2026-08-16:N",
+      "2026-08-23:Y"
+     ]
+    },
+    {
+     "wort": "paranormal",
+     "schwelle": 1,
+     "n": 4,
+     "yes": 2,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-08-02:Y",
+      "2026-08-09:Y",
+      "2026-08-16:N",
+      "2026-08-23:N"
+     ]
+    },
+    {
+     "wort": "secret",
+     "schwelle": 1,
+     "n": 4,
+     "yes": 3,
+     "quote": 0.75,
+     "laplace": 0.667,
+     "letzte3_yes": 2,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-08-02:Y",
+      "2026-08-09:Y",
+      "2026-08-16:Y",
+      "2026-08-23:N"
+     ]
+    },
+    {
+     "wort": "agent",
+     "schwelle": 5,
+     "n": 3,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.2,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-08-16:N",
+      "2026-08-23:N",
+      "2026-08-30:N"
+     ]
+    },
+    {
+     "wort": "bank",
+     "schwelle": 5,
+     "n": 3,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.2,
+     "letzte3_yes": 0,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-08-16:N",
+      "2026-08-23:N",
+      "2026-08-30:N"
+     ]
+    },
+    {
+     "wort": "god",
+     "schwelle": 5,
+     "n": 3,
+     "yes": 3,
+     "quote": 1.0,
+     "laplace": 0.8,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-08-16:Y",
+      "2026-08-23:Y",
+      "2026-08-30:Y"
+     ]
+    },
+    {
+     "wort": "hell",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 3,
+     "quote": 1.0,
+     "laplace": 0.8,
+     "letzte3_yes": 3,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-08-16:Y",
+      "2026-08-23:Y",
+      "2026-08-30:Y"
+     ]
+    },
+    {
+     "wort": "leprechaun",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 1,
+     "quote": 0.333,
+     "laplace": 0.4,
+     "letzte3_yes": 1,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-08-16:Y",
+      "2026-08-23:N",
+      "2026-08-30:N"
+     ]
+    },
+    {
+     "wort": "monster",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 2,
+     "quote": 0.667,
+     "laplace": 0.6,
+     "letzte3_yes": 2,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-08-16:N",
+      "2026-08-23:Y",
+      "2026-08-30:Y"
+     ]
+    },
+    {
+     "wort": "power",
+     "schwelle": 1,
+     "n": 3,
+     "yes": 2,
+     "quote": 0.667,
+     "laplace": 0.6,
+     "letzte3_yes": 2,
+     "letzte3_n": 3,
+     "historie": [
+      "2026-08-16:N",
+      "2026-08-23:Y",
+      "2026-08-30:Y"
+     ]
+    },
+    {
+     "wort": "anomaly",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.25,
+     "letzte3_yes": 0,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-08-02:N",
+      "2026-08-09:N"
+     ]
+    },
+    {
+     "wort": "black",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.25,
+     "letzte3_yes": 0,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-08-02:N",
+      "2026-08-09:N"
+     ]
+    },
+    {
+     "wort": "morty",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.25,
+     "letzte3_yes": 0,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-08-02:N",
+      "2026-08-09:N"
+     ]
+    },
+    {
+     "wort": "portal",
+     "schwelle": 1,
+     "n": 2,
+     "yes": 1,
+     "quote": 0.5,
+     "laplace": 0.5,
+     "letzte3_yes": 1,
+     "letzte3_n": 2,
+     "historie": [
+      "2026-08-02:Y",
+      "2026-08-09:N"
+     ]
+    },
+    {
+     "wort": "agent",
+     "schwelle": 10,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-08-02:N"
+     ]
+    },
+    {
+     "wort": "alien",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-08-02:Y"
+     ]
+    },
+    {
+     "wort": "gun",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-08-02:N"
+     ]
+    },
+    {
+     "wort": "invade/invasion",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 0,
+     "quote": 0.0,
+     "laplace": 0.333,
+     "letzte3_yes": 0,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-08-02:N"
+     ]
+    },
+    {
+     "wort": "worm",
+     "schwelle": 1,
+     "n": 1,
+     "yes": 1,
+     "quote": 1.0,
+     "laplace": 0.667,
+     "letzte3_yes": 1,
+     "letzte3_n": 1,
+     "historie": [
+      "2026-08-30:Y"
+     ]
+    }
+   ]
+  }
+ },
+ "vergleich": {
+  "event_id": "956826",
+  "titel": "What will be said during the seventh episode of President Curtis: Season 1?",
+  "zeilen": [
+   {
+    "frage": "Will anyone say \"President\" 10+ times during President Curtis E7 S1?",
+    "bid": 0.14,
+    "ask": 0.74,
+    "n": 5,
+    "yes": 2,
+    "laplace": 0.429,
+    "letzte3": "0/3",
+    "label": "fair"
+   },
+   {
+    "frage": "Will anyone say \"Agent\" 5+ times during President Curtis E7 S1?",
+    "bid": 0.03,
+    "ask": 0.98,
+    "n": 3,
+    "yes": 0,
+    "laplace": 0.2,
+    "letzte3": "0/3",
+    "label": "fair"
+   },
+   {
+    "frage": "Will anyone say \"God\" 5+ times during President Curtis E7 S1?",
+    "bid": 0.42,
+    "ask": 0.97,
+    "n": 3,
+    "yes": 3,
+    "laplace": 0.8,
+    "letzte3": "3/3",
+    "label": "YES-Kandidat (Maker-Bid)"
+   },
+   {
+    "frage": "Will anyone say \"Bank\" 5+ times during President Curtis E7 S1?",
+    "bid": 0.06,
+    "ask": 0.11,
+    "n": 3,
+    "yes": 0,
+    "laplace": 0.2,
+    "letzte3": "0/3",
+    "label": "fair"
+   },
+   {
+    "frage": "Will anyone say \"Rick\" during President Curtis E7 S1?",
+    "bid": 0.016,
+    "ask": 0.979,
+    "n": 5,
+    "yes": 0,
+    "laplace": 0.143,
+    "letzte3": "0/3",
+    "label": "fair"
+   },
+   {
+    "frage": "Will anyone say \"Security\" during President Curtis E7 S1?",
+    "bid": 0.958,
+    "ask": 1.0,
+    "n": 5,
+    "yes": 5,
+    "laplace": 0.857,
+    "letzte3": "3/3",
+    "label": "fair"
+   },
+   {
+    "frage": "Will anyone say \"CIA\" during President Curtis E7 S1?",
+    "bid": 0.02,
+    "ask": 0.98,
+    "n": 5,
+    "yes": 0,
+    "laplace": 0.143,
+    "letzte3": "0/3",
+    "label": "fair"
+   },
+   {
+    "frage": "Will anyone say \"Hell\" during President Curtis E7 S1?",
+    "bid": 0.52,
+    "ask": 0.97,
+    "n": 3,
+    "yes": 3,
+    "laplace": 0.8,
+    "letzte3": "3/3",
+    "label": "YES-Kandidat (Maker-Bid)"
+   },
+   {
+    "frage": "Will anyone say \"Monster\" during President Curtis E7 S1?",
+    "bid": 0.02,
+    "ask": 0.98,
+    "n": 3,
+    "yes": 2,
+    "laplace": 0.6,
+    "letzte3": "2/3",
+    "label": "YES-Kandidat (Maker-Bid)"
+   },
+   {
+    "frage": "Will anyone say \"Power\" during President Curtis E7 S1?",
+    "bid": 0.66,
+    "ask": 0.97,
+    "n": 3,
+    "yes": 2,
+    "laplace": 0.6,
+    "letzte3": "2/3",
+    "label": "fair"
+   },
+   {
+    "frage": "Will anyone say \"White House\" during President Curtis E7 S1?",
+    "bid": 0.65,
+    "ask": 0.71,
+    "n": 5,
+    "yes": 2,
+    "laplace": 0.429,
+    "letzte3": "2/3",
+    "label": "NO-Kandidat (Maker)"
+   },
+   {
+    "frage": "Will anyone say \"Worm\" during President Curtis E7 S1?",
+    "bid": 0.07,
+    "ask": 0.98,
+    "n": 1,
+    "yes": 1,
+    "laplace": 0.667,
+    "letzte3": "1/1",
+    "label": "YES-Kandidat (Maker-Bid)"
+   },
+   {
+    "frage": "Will anyone say \"Leprechaun\" during President Curtis E7 S1?",
+    "bid": 0.99,
+    "ask": 0.999,
+    "n": 3,
+    "yes": 1,
+    "laplace": 0.4,
+    "letzte3": "1/3",
+    "label": "NO-Kandidat (Maker)"
+   },
+   {
+    "frage": "Will episode not air?",
+    "bid": null,
+    "ask": 0.01,
+    "n": 0,
+    "yes": 0,
+    "laplace": null,
+    "letzte3": "-",
+    "label": "keine Historie"
+   }
+  ]
+ }
+}

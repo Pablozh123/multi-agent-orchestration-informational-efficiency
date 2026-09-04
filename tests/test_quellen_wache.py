@@ -40,6 +40,25 @@ def test_normalisiere_json_ist_reihenfolgeunabhaengig():
     assert a == b and qw.hash_von(a) == qw.hash_von(b)
 
 
+def test_ignoriere_entfernt_feed_zeitstempel_vor_dem_hash():
+    cfg = qw.STANDARD_QUELLEN["nhc_atlantic"]
+    a = (b"<rss><pubDate>Fri, 04 Sep 2026 18:02:29 GMT</pubDate>"
+         b"<description>No tropical cyclones as of Fri, 04 Sep 2026 18:02:29 GMT</description></rss>")
+    b = (b"<rss><pubDate>Fri, 04 Sep 2026 18:04:57 GMT</pubDate>"
+         b"<description>No tropical cyclones as of Fri, 04 Sep 2026 18:04:57 GMT</description></rss>")
+    c = b"<rss><pubDate>x</pubDate><description>Tropical Storm Dolly Advisory 12</description></rss>"
+    na, nb, nc = (qw.normalisiere(x, "text", cfg["ignoriere"]) for x in (a, b, c))
+    assert na == nb and "as of" not in na
+    assert nc != na
+
+
+def test_ignoriere_wirkt_auf_kanonischem_json():
+    cfg = qw.STANDARD_QUELLEN["apple_top_free_us"]
+    a = b'{"feed": {"updated": "Fri, Sep 4, 2026, 5:00 PM", "results": [{"name": "A"}]}}'
+    b = b'{"feed": {"results": [{"name": "A"}], "updated": "Fri, Sep 4, 2026, 6:00 PM"}}'
+    assert qw.normalisiere(a, "json", cfg["ignoriere"]) == qw.normalisiere(b, "json", cfg["ignoriere"])
+
+
 def test_diff_ausschnitt_zeigt_neue_zeile():
     d = qw.diff_ausschnitt("a\nb\nc", "a\nb\nc\nGrant: Jane Doe, December 3, 2026")
     assert d.startswith("+Grant: Jane Doe")

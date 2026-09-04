@@ -109,10 +109,14 @@ STANDARD_QUELLEN: dict[str, dict] = {
         "markt_event_id": "481717"},
     "nhc_atlantic": {
         "url": "https://www.nhc.noaa.gov/index-at.xml", "art": "text", "takt_s": 120,
-        "markt_event_id": "131388"},
+        "markt_event_id": "131388",
+        # Feed-Zeitstempel bewegen sich ohne Inhalt (Befund 04.09. 18:05Z).
+        "ignoriere": [r"<pubDate>.*?</pubDate>", r"<lastBuildDate>.*?</lastBuildDate>",
+                      r"\bas of \w{3}, \d{1,2} \w{3} \d{4} [\d:]+ GMT"]},
     "apple_top_free_us": {
         "url": "https://rss.marketingtools.apple.com/api/v2/us/apps/top-free/10/apps.json",
-        "art": "json", "takt_s": 300},
+        "art": "json", "takt_s": 300,
+        "ignoriere": [r'"updated":"[^"]*",?']},
 }
 
 
@@ -162,15 +166,27 @@ _KOMMENTAR = re.compile(r"<!--.*?-->", re.S)
 _TAG = re.compile(r"<[^>]+>")
 
 
-def normalisiere(body: bytes, art: str) -> str:
-    """Vergleichbare Textform je Quellenart (siehe Messdesign 2)."""
+def normalisiere(body: bytes, art: str, ignoriere: tuple[str, ...] | list[str] = ()) -> str:
+    """Vergleichbare Textform je Quellenart (siehe Messdesign 2).
+
+    `ignoriere`: Regex-Muster, die vor dem Hash entfernt werden — fuer
+    Zeitstempel und Zaehler, die sich ohne inhaltliche Aenderung bewegen
+    (Live-Befund 04.09. 18:05Z: der NHC-RSS traegt `pubDate` und "No
+    tropical cyclones as of <Zeit>" und aenderte sich damit alle zwei
+    Minuten). Bei JSON wirken die Muster auf der kanonischen Form.
+    """
     text = body.decode("utf-8", errors="replace")
     if art == "json":
         try:
-            return json.dumps(json.loads(text.lstrip("﻿")), sort_keys=True,
+            text = json.dumps(json.loads(text.lstrip("﻿")), sort_keys=True,
                               ensure_ascii=False, separators=(",", ":"))
+            for muster in ignoriere:
+                text = re.sub(muster, "", text)
+            return text
         except json.JSONDecodeError:
             pass
+    for muster in ignoriere:
+        text = re.sub(muster, "", text, flags=re.S)
     if art == "html":
         text = _KOMMENTAR.sub(" ", _SCRIPT.sub(" ", text))
         text = _TAG.sub("\n", text)
@@ -297,7 +313,7 @@ def pruefe_quelle(name: str, cfg: dict, zustand: dict, protokoll: Path, holer: H
     _sperre_ende(name, q, protokoll, jetzt)
     q["etag"] = a.headers.get("ETag") or q.get("etag")
     q["last_modified"] = a.headers.get("Last-Modified") or q.get("last_modified")
-    text = normalisiere(a.body, cfg.get("art", "html"))
+    text = normalisiere(a.body, cfg.get("art", "html"), tuple(cfg.get("ignoriere") or ()))
     h = hash_von(text)
     if q.get("hash") is None:
         q.update({"hash": h, "text": text[:20000], "letzte_aenderung_utc": _iso(jetzt)})

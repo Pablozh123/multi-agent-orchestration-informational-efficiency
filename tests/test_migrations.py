@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import sqlite3
 
+import pytest
+
 
 def _columns(conn: sqlite3.Connection, table: str) -> list[str]:
     return [row[1] for row in conn.execute(f"PRAGMA table_info({table})").fetchall()]
@@ -250,6 +252,33 @@ def test_migrate_preserves_existing_created_at_values(tmp_path):
             "SELECT created_at FROM events_timeline WHERE event_type = 'election_day'"
         ).fetchone()[0]
         assert created_at == "2024-01-01 00:00:00"
+    finally:
+        conn.close()
+
+
+def test_table_exists_reports_presence_and_absence(tmp_path):
+    """table_exists distinguishes a created table from one that was never created."""
+    from operations.db.migrations import table_exists
+
+    db_path = tmp_path / "presence.db"
+    conn = sqlite3.connect(db_path)
+    try:
+        conn.execute("CREATE TABLE events_timeline (id INTEGER PRIMARY KEY)")
+        assert table_exists(conn, "events_timeline") is True
+        assert table_exists(conn, "analysis_summaries") is False
+    finally:
+        conn.close()
+
+
+def test_column_exists_rejects_unsupported_table_identifier(tmp_path):
+    """Table names outside the fixed allowlist are rejected, not interpolated into SQL."""
+    from operations.db.migrations import column_exists
+
+    db_path = tmp_path / "guard.db"
+    conn = sqlite3.connect(db_path)
+    try:
+        with pytest.raises(ValueError, match="unsupported SQLite identifier"):
+            column_exists(conn, "events_timeline; DROP TABLE events_timeline;--", "id")
     finally:
         conn.close()
 

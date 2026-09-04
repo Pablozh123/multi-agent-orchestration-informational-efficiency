@@ -557,6 +557,47 @@ PROFILE = {
         "max_clips_pro_markt": 40,
         "nachlauf_minuten": 90,
     },
+    "allin_september4": {
+        "live_dir": "allin_september4",
+        # E288-Woche (erwarteter Drop Fr 04./Sa 05.09.; E287 kam Sa 29.08.
+        # 01:19Z). Quellen und Gates 1:1 aus allin_august28. Diesmal ist
+        # das Event bei der Armierung (04.09. ~01:20Z) bereits offen:
+        # 942921, angelegt 31.08., 11 Maerkte, liq ~2.0k. Lehre aus der
+        # Vorwoche: fuer den 28.08. hat Polymarket NIE ein Event angelegt;
+        # allin_august28 lief darum bis zum Ende auf dem geschlossenen
+        # E286-Brett und zaehlte E287 dort aus (0 Kaeufe, kein Schaden).
+        # Prober-Vorbedingung 04.09. 01:15Z verifiziert: E287 HTTP 200
+        # (139 212 298 B, dieselbe Datei, die der 28.08.-Lauf geladen
+        # hat), E288 noch 404 -> Prober feuert bei Minute 0.
+        "event_id": "942921",
+        "event_slug": (
+            "what-will-be-said-on-the-next-all-in-podcast-september-4-"
+            "20260831"
+        ),
+        "rss_feed_url": "https://allinchamathjason.libsyn.com/rss",
+        "yt_channel_id": "UCESLZhusAkFfsNsApnjF_Cg",
+        "mp3_probe_muster": (
+            "https://traffic.libsyn.com/secure/allinchamathjason/"
+            "ALLIN-E{n}_Ch.mp3"
+        ),
+        "discovery_slug_filter": "all-in",
+        "yt_playlist_id": "PLn5MTSAqaf8peDZQ57QkJBzewJU1aUokl",
+        "rss_nur_muster": r"ALLIN-E\d+_Ch\.mp3",
+        # NO-Schutzschild unveraendert (Deckel 0.80, Basisraten-Veto
+        # Serie 11300, Boilerplate, Gap-Verify). Der Nachbarschafts-/
+        # Blockgrenzen-Filter ist weiterhin nicht gebaut; das Veto traegt
+        # die NO-Seite allein.
+        "boilerplate_begriffe": ALLIN_BOILERPLATE,
+        "serie_id": "11300",
+        # Volles Budget nach dem Prinzip der letzten Laeufe: Wallet-Stand
+        # 769.59 pUSD (Server-Sicht 04.09. 01:17Z, unveraendert seit
+        # 27.08.) -> 740 nutzbar, ~30 Puffer fuer Fees. Kein parallel
+        # armierter Bot auf der Wallet (isw_papier ist reines Papier).
+        "max_usd_gesamt": 740.0,
+        "max_usd_pro_markt": 50.0,
+        "max_clips_pro_markt": 40,
+        "nachlauf_minuten": 90,
+    },
     "jre_august3": {
         "live_dir": "jre_august3",
         "event_id": "778632",

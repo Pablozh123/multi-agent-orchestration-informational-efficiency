@@ -13745,3 +13745,45 @@ Next step:
 - Erster scharfer Lauf ist der Tageslauf 05.09. 06:30; Logzeile
   "Website-Daten committet und gepusht" bzw. "unveraendert" in
   `logs\daily_review_task.log` pruefen.
+
+## 2026-09-04 - strategieforschung-polymarket-nachtrag
+
+Task:
+
+- Thesen der Marktrecherche 27./28.08. gegen echte Outcomes testen, Datenbasis
+  vergroessern und Messwerkzeuge aufsetzen (Dossier §9): Curtis-E6-Brier,
+  Warsh-Text-Drop-Retro (CLOB-Minutenhistorie + Fed-Redeseite), Basisraten
+  mit n bis 32 Wochen je Serie, Fed-Presser-Prioren aus Warsh-Transkripten,
+  Prereg Curtis E7 ("Ghosts", So 06.09.).
+
+Files changed:
+
+- `operations/analysis/mention_basisraten.py` (neu): Gamma-Serien-Harvester
+  mit Schwelle im Schluessel, Laplace, letzte-3-Quote, Quote-Vergleich, CLI/JSON.
+- `operations/pipeline/fed_text_rekorder.py` (neu): read-only Text-Drop-Rekorder
+  (Feed-/URL-Modus, Buch-Nachlauf, `--auswerte`), Regeln aus `market_rules`,
+  Zaehlung aus `counter_engine`.
+- `tests/test_mention_basisraten.py` (13), `tests/test_fed_text_rekorder.py` (11).
+- `data/results/mention_basisraten_{jre,allin,curtis}_2026-09-04.json`.
+- `docs/project/RECHERCHE_NAECHSTE_MAERKTE_2026-08-27.md` (§9 Nachtrag),
+  `docs/project/PREREG_CURTIS_E7_2026-09-04.md` (neu).
+
+Tests:
+
+- pytest: 1473 passed (107 s). ruff auf den vier neuen Dateien sauber.
+
+Decision:
+
+- Text-Drop-These bestaetigt (Redetext 14:00:11 UTC online, Prognose 20/22,
+  Markt preist Wort fuer Wort ueber 4-40 min) -> Messphase mit Rekorder
+  zuerst, kein Order-Pfad. JRE mit n=13-18: alle Quotes fair -> kein Handel;
+  die n=4-Kandidaten waren Rauschen. Curtis E7 nur Maker-Legs (E6: alle
+  Taker-Legs verloren; "Banks" zaehlte nicht als "Bank"). Bot-Veto
+  schluesselt ohne Schwelle -> als Folgeaufgabe geflaggt, hier nicht gefixt.
+
+Next step:
+
+- Autorin: Prereg E7 ausfuehren (Promo zuerst), All-In E288 nach dem Drop
+  annotieren. Fed-Rekorder fuer den 16.09. als Task im Betriebsordner anlegen,
+  sobald Polymarket ein Warsh-Presser-Event listet; Kalshi-Erstquotes gegen
+  die Prioren in §9.4.

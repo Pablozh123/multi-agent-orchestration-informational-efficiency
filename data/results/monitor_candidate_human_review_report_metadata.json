@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-09-03T04:30:49+00:00",
+  "generated_at_utc": "2026-09-04T04:31:18+00:00",
   "inputs": {
     "alert_rows_path": "data\\results\\monitor_v2_polymarket_rolling_alert_rows.csv",
     "candidate_features_path": "data\\results\\monitor_reference_candidate_features.csv",
@@ -7,7 +7,7 @@
     "reference_cases_path": "data\\reference_cases\\wallet_reference_cases.csv",
     "risk_score_summary_path": "data\\results\\monitor_literature_risk_score_summary.csv",
     "similarity_summary_path": "data\\results\\monitor_reference_candidate_similarity_summary.csv",
-    "source_alert_rows": 2804,
+    "source_alert_rows": 2834,
     "wallet_tier_snapshots_path": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",
     "watchlist_path": "data\\results\\monitor_v2_polymarket_live_watchlist.csv"
   },
@@ -32,7 +32,7 @@
     "uses_existing_files_only": true
   },
   "outputs": {
-    "candidate_count": 40,
+    "candidate_count": 41,
     "contains_computed_insider_label": false,
     "contains_order_instructions": false,
     "contains_wallet_addresses": false,

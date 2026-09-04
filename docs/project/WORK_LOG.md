@@ -13706,3 +13706,42 @@ Next step:
 - Profil `deepstate_ukraine` im Betriebsordner armieren (watchdog.json,
   Geometrie-Cache aus isw_ukraine kopieren), isw_ukraine fuer den
   403-Fix neu starten lassen.
+
+## 2026-09-04 - ops: Website-Daten-Commit im Tageslauf + Recherche-Doku
+
+Context:
+
+- Die vom Tageslauf nach `prediction-market-terminal\public\data`
+  publizierten Artefakte wurden nie automatisch committet; die
+  oeffentliche Seite wird aus main ausgeliefert. Das Checkout dort steht
+  regelmaessig auf einem Feature-Branch mit Code-WIP anderer Sessions
+  (04.09.: app/, tests/, web/ geaendert), ein checkout/stash/pull kommt
+  deshalb nicht in Frage.
+- `RECHERCHE_NAECHSTE_MAERKTE_2026-08-27.md` (Marktrecherche 27./28.08.)
+  lag seit einer Woche ungetrackt im Entwicklungsordner.
+
+Change:
+
+- `operations/pipeline/daily_review_task.cmd`: neuer Block `:website`.
+  Baut den Daten-Commit ueber einen temporaeren Index (`GIT_INDEX_FILE`)
+  direkt auf `origin/main` (read-tree, add public/data, write-tree,
+  commit-tree) und pusht `<commit>:main`. Arbeitsbaum, Index und lokaler
+  Branch des Website-Repos bleiben unberuehrt. Laeuft unabhaengig vom
+  Branch des Entwicklungsordners (der eigene Daten-Commit bleibt an main
+  gebunden). `LOGABS` (absoluter Logpfad fuer den pushd-Block) war seit
+  dem 07.08. definiert, aber ohne Verbraucher.
+- Recherche-Doku eingecheckt.
+
+Verification:
+
+- Block als Trockenlauf (push durch echo ersetzt) gegen das echte
+  Website-Repo: fetch ok, temporaerer Index gebaut und wieder geloescht,
+  Meldung "Website-Daten unveraendert gegen origin/main" (PR #150 dort
+  hatte die neun Dateien Minuten zuvor nachgezogen), realer Index und
+  Status des fremden Checkouts unveraendert.
+
+Next step:
+
+- Erster scharfer Lauf ist der Tageslauf 05.09. 06:30; Logzeile
+  "Website-Daten committet und gepusht" bzw. "unveraendert" in
+  `logs\daily_review_task.log` pruefen.

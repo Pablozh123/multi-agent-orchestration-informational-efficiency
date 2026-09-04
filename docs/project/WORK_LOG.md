@@ -13824,3 +13824,70 @@ Next step:
 - Watchdog-Profil `quellen_wache` im Betriebsordner aktivieren (nach Merge und
   hole_main), Auswertungsskript nach zwei Wochen Baseline, TSE-Alternative bis
   Ende September testen.
+
+## 2026-09-04 - pipeline: Basisraten-Schluessel um die Schwelle erweitert
+
+Context:
+
+- `operations/pipeline/basisraten.py` schluesselte die Serien-Historie
+  fuer das NO-Veto (decision.no_sperre) nur nach dem Slug-Wort. Der Slug
+  traegt die Schwelle hinter "-be-said-" (All-In "will-ai-be-said-50-
+  times-...", JRE "will-people-be-said-200-times-..."), wort_schluessel
+  schnitt sie ab: Bracket-Maerkte verschiedener Schwellen liefen unter
+  demselben Schluessel. Live-Snapshot allin_september4 (04.09., 01:41Z):
+  "ai" n=17 aus sechs Schwellen (35+ 7, 50+ 4, 15+/45+ je 2, 5+/20+ je
+  1), "anthropic" n=21 aus vier. Das Analyse-Modul aus PR #63
+  (`operations/analysis/mention_basisraten.py`) weist die Schwellen
+  getrennt aus und machte den Effekt sichtbar.
+- Befund reproduziert: Fixture mit AI 35+ (3x YES) und AI 50+ (1x YES,
+  2x NO) ergab unter dem alten Code einen Schluessel "ai" mit sechs
+  Eintraegen und Rate 0.67.
+
+Change:
+
+- `basis_schluessel(slug, question)`: Wort plus Schwelle ("ai-50-times");
+  Schwelle 1 bleibt das reine Wort ("anthropic"), damit Slugs ohne
+  Schwelle ihren bisherigen Schluessel behalten. Die Schwelle kommt aus
+  dem Fragetext (`market_rules.parse_schwelle`, dieselbe Quelle wie
+  build_rule), ohne Fragetext aus dem Slug. `historie_aus_events` und
+  `reichere_mit_basisraten` nutzen den neuen Schluessel; letzteres bleibt
+  fail-safe (kein Schluessel -> basisrate None, kein Veto).
+- `wort_schluessel` liefert jetzt in allen Schemata das reine Wort; im
+  "-say-"-Schema (MrBeast, Earnings) sass die Schwelle bisher im Wort-Teil
+  ("hundred-or-thousand-or-million-10-times"). Der Basis-Schluessel ist
+  dort unveraendert, die Serien-Snapshots von mrbeast_* bleiben lesbar.
+- `basisraten_snapshot.json` traegt neu `"schema": 2` (SNAPSHOT_SCHEMA).
+  Das Feld braucht es, weil alte und neue Snapshots sonst strukturell
+  gleich aussehen, die Schluessel aber anderes bedeuten; einen Leser gibt
+  es im Repo nicht, der Snapshot ist Nachvollziehbarkeits-Artefakt. Die
+  zehn Live-Snapshots von Juli bis September (ohne Feld) sind damit als
+  Wort-only erkennbar. hole_serien_historie rechnet die Historie nur noch
+  einmal.
+- Abgrenzungs-Notiz im Docstring von mention_basisraten.py nachgefuehrt.
+- Kein Eingriff in bot.py, decision.py, execution: Order-Pfade unberuehrt.
+
+Verification:
+
+- Neu `tests/test_basisraten_schwelle.py` (13 Tests: Reproduktion,
+  Schluessel-Form je Schema, Fail-safe, Snapshot-Schema per gefaktem
+  httpx.get); eine Erwartung in test_no_schutzschichten.py angepasst.
+  Volle Suite 1486 gruen (138 s), ruff auf den geaenderten Dateien sauber.
+- Read-only-Abgleich gegen Gamma (Serien 11300/11275, Snapshot nur im
+  Scratchpad), Veto-Defaults 0.8 / n>=4:
+  All-In E288 (10 aktive Maerkte): Veto-Menge unveraendert (AI 50+,
+  Hundred 10+, Anthropic 5+, SpaceX 3+, IPO, Software), aber auf eigener
+  Evidenz: AI 50+ 4/4 statt 16/17, Anthropic 5+ 4/4 statt 21/21,
+  SpaceX 3+ 8/9 statt 8/10.
+  JRE (Brett jre_august3): People 100+ neu mit Veto (16/18 = 0.89;
+  gemischt "people" 27/37 = 0.73 -> kein Veto, ein NO-Kauf waere moeglich
+  gewesen), People 200+ 5/13 = 0.38 frei (gemischt 0.73), Trump 10+ 1/14
+  statt 6/22, Dude 20+ 6/14 statt 14/26.
+
+Next step:
+
+- Nach dem Merge hole_main.cmd im Betriebsordner; der laufende Bot
+  allin_september4 (PID 15940) laedt die Historie erst beim naechsten
+  Neustart neu, fuer E288 aendert sich die Veto-Menge nicht.
+- Bei der E288-Annotation vermerken, dass die sechs Sperren vom 04.09.
+  01:41Z noch auf Wort-only-Schluesseln beruhen (Snapshot ohne
+  "schema"-Feld).

@@ -16,6 +16,7 @@ import pytest
 
 from operations.pipeline import config
 from operations.pipeline.basisraten import (
+    basis_schluessel,
     historie_aus_events,
     reichere_mit_basisraten,
     wort_schluessel,
@@ -105,10 +106,12 @@ def test_wort_schluessel_mrbeast_say_slug() -> None:
     assert wort_schluessel(
         "will-mrbeast-say-minecraft-during-his-next-gaming-youtube-video-"
         "20260604155409592") == "minecraft"
-    assert wort_schluessel(
-        "will-mrbeast-say-hundred-or-thousand-or-million-10-times-during-"
-        "his-next-gaming-youtube-video-20260604155409590"
-    ) == "hundred-or-thousand-or-million-10-times"
+    # Die Schwelle steckt hier im Wort-Teil des Slugs: das reine Wort ist
+    # ohne sie, der Historien-Schluessel traegt sie (wie vor 04.09.2026).
+    bracket = ("will-mrbeast-say-hundred-or-thousand-or-million-10-times-"
+               "during-his-next-gaming-youtube-video-20260604155409590")
+    assert wort_schluessel(bracket) == "hundred-or-thousand-or-million"
+    assert basis_schluessel(bracket) == "hundred-or-thousand-or-million-10-times"
     # Hauptkanal-Serie nutzt dasselbe Schema ohne "gaming"
     assert wort_schluessel(
         "will-mrbeast-say-subscribe-during-his-next-youtube-video-"

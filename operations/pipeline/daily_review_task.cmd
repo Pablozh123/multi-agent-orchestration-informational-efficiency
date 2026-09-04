@@ -12,6 +12,9 @@ setlocal
 cd /d "%~dp0\..\.."
 if not exist logs mkdir logs
 set LOG=logs\daily_review_task.log
+REM Absoluter Log-Pfad fuer Schritte, die per pushd in einem anderen
+REM Arbeitsverzeichnis laufen (Website-Commit-Block unten).
+set LOGABS=%CD%\%LOG%
 echo [%date% %time%] ===== Tageslauf-Start ===== >> %LOG%
 
 REM Git-Schritte nur auf main: steht der Clone auf einem Feature-Branch
@@ -54,7 +57,7 @@ if errorlevel 1 echo [%date% %time%] WARN: daily_review_run Exit-Code %errorleve
 python -m operations.pipeline.run_dashboard --live-root %2 --fetch-resolutions --fetch-tape --publish-dir %1 >> %LOG% 2>&1
 if errorlevel 1 echo [%date% %time%] WARN: run_dashboard Exit-Code %errorlevel% >> %LOG%
 
-if /i not "%BRANCH%"=="main" goto :ende
+if /i not "%BRANCH%"=="main" goto :website
 
 REM Nur Pipeline-Artefakte unter data/ committen - nie Code-WIP anderer
 REM Sessions (Parallel-Session-Regel in CLAUDE.md). Push mit einmaligem
@@ -69,6 +72,51 @@ if errorlevel 1 (
     git push origin main >> %LOG% 2>&1
   )
 )
+
+:website
+REM Website-Repo (prediction-market-terminal): %1 = <repo>\public\data. Die
+REM dorthin publizierten Artefakte wurden bisher nie automatisch committet
+REM (Befund 04.09.: neun Dateien seit 01.09. nur lokal). Die oeffentliche
+REM Seite wird aus main ausgeliefert, also muessen sie nach origin/main.
+REM Das Checkout dort steht oft auf einem Feature-Branch mit Code-WIP anderer
+REM Sessions, deshalb kein checkout, kein stash, kein pull: Der Commit wird
+REM ueber einen temporaeren Index (GIT_INDEX_FILE) direkt auf origin/main
+REM gebaut und als <commit>:main gepusht. Arbeitsbaum und lokaler Branch
+REM bleiben unberuehrt; nur public\data geht in den Commit.
+if "%~1"=="" goto :ende
+pushd "%~1\..\.." 2>nul || goto :ende
+if not exist .git goto :website_ende
+git fetch origin main >> "%LOGABS%" 2>&1
+if errorlevel 1 (
+  echo [%date% %time%] WARN: Website-Repo fetch fehlgeschlagen - Daten-Commit uebersprungen >> "%LOGABS%"
+  goto :website_ende
+)
+set GIT_INDEX_FILE=%CD%\.git\daily-data-index
+if exist "%GIT_INDEX_FILE%" del "%GIT_INDEX_FILE%"
+git read-tree origin/main >> "%LOGABS%" 2>&1
+git add -- public/data >> "%LOGABS%" 2>&1
+git diff-index --cached --quiet origin/main
+if not errorlevel 1 (
+  echo [%date% %time%] Website-Daten unveraendert gegen origin/main >> "%LOGABS%"
+  goto :website_index_ende
+)
+for /f "delims=" %%t in ('git write-tree') do set WEBTREE=%%t
+if "%WEBTREE%"=="" goto :website_index_ende
+for /f "delims=" %%c in ('git commit-tree %WEBTREE% -p origin/main -m "chore(data): daily pipeline artifacts (auto)"') do set WEBCOMMIT=%%c
+if "%WEBCOMMIT%"=="" goto :website_index_ende
+git push origin %WEBCOMMIT%:main >> "%LOGABS%" 2>&1
+if errorlevel 1 (
+  echo [%date% %time%] WARN: Website-Daten-Push fehlgeschlagen - naechster Lauf versucht es erneut >> "%LOGABS%"
+) else (
+  echo [%date% %time%] Website-Daten committet und gepusht: %WEBCOMMIT% >> "%LOGABS%"
+)
+:website_index_ende
+set GIT_INDEX_FILE=
+if exist ".git\daily-data-index" del ".git\daily-data-index"
+set WEBTREE=
+set WEBCOMMIT=
+:website_ende
+popd
 
 :ende
 echo [%date% %time%] ===== Tageslauf-Ende ===== >> %LOG%

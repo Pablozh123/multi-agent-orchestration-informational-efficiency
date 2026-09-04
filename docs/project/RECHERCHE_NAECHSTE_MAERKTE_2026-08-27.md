@@ -729,7 +729,17 @@ ETag/Last-Modified (Hash noetig), DOJ ETag+LM, SCOTUS LM, Fed-Feeds ETag
 (440/995 KB → 304 zaehlt), NHC 2 KB, Apple ok (ein Timeout), Rockstar
 Newswire nur JS-Huelle (weggelassen), TSE 403. Smoke 04.09. 17:47 UTC:
 8/8 erstgesichtet, zweiter Zyklus ohne Fehlalarm. Wachposten-Eintrag
-`quellen_wache` in `data/wachposten.json`.
+`quellen_wache` in `data/wachposten.json`. **Betrieb seit 04.09. 18:03Z**
+(Watchdog-Profil, PID-Paar Stub+Interpreter, Wachkontrolle 3/3).
+
+**Erster Live-Befund (18:05Z):** Der NHC-RSS aendert `pubDate` und den
+Satz „No tropical cyclones as of <Zeit>" alle zwei Minuten — ohne Inhalt.
+Ohne Gegenmassnahme haette jeder Zyklus eine `aenderung` samt
+Markt-Snapshot und drei Nachfassungen erzeugt. Fix: je Quelle eine
+`ignoriere`-Liste (Regex, vor dem Hash entfernt; Defaults fuer NHC-
+Zeitstempel und Apples `updated`), Tests dazu. Lehre fuer jede neue
+Quelle: erst zwei bis drei Zyklen im Smoke-Modus laufen lassen und die
+Diff-Ausschnitte lesen, bevor der Posten scharf geht.
 
 ### 10.5 Naechste Schritte (Teil 2)
 

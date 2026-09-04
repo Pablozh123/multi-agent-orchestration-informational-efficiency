@@ -556,6 +556,116 @@ thehill (Midterms ~200M$); Forbes/CoinDesk (Nobel-Insider-Fall); DOJ SDNY
 23.04.26 (erste Insider-Anklage Prediction Markets); Finance Magnates
 (Bot-Playground, 14/20-Wallets); arXiv 2603.03136 (Arb-Halbwertszeiten).
 
+## 9. Nachtrag 04.09.2026: Thesentests, Daten, Aufbauten
+
+Eine Woche nach der Recherche. Zwischenzeitlich von anderen Sessions
+umgesetzt: DeepState-Rekorder (Amendment A2, PR #56), Basis-Anker +
+capture-all-of informativ (PR #58), Basisraten-Veto im All-In-Bot und
+E288-Armierung (PR #61). Diese Session hat die Thesen gegen echte Outcomes
+getestet, die Datenbasis vergroessert und zwei Messwerkzeuge aufgesetzt.
+Alle Zahlen: dokumentierte Read-only-Abfragen (Gamma, CLOB
+`prices-history`, federalreserve.gov, scrapsfromtheloft), Skripte im
+Session-Scratchpad; keine Orders.
+
+### 9.1 Curtis E6 (T1) — Thesentest mit Outcomes
+
+Brier ueber 12 Wortmaerkte: **unser p̂ 0.143 vs. Markt-Mid 0.183**. Aber
+der Vergleich gegen Mids toter Spreads (0.02/0.98 → Mid 0.50) schmeichelt:
+Gegen die vorgeschlagenen ORDERS gerechnet verloren alle drei Taker-Legs
+(Leprechaun YES @0.55 → NO; President 10+ @0.57 → NO; Bank 5+ @0.14 → NO),
+gewonnen haetten nur die Maker-Legs (God 5+ YES bei Mid 0.57; Monster YES
+bei Mid 0.41), sofern gefuellt. Drei Lehren, die in
+`PREREG_CURTIS_E7_2026-09-04.md` eingebaut sind: (1) **Rezenz schlaegt
+Gesamtquote** — Leprechaun war 4/5, aber 0/2 zuletzt (Running Gag
+ausgelaufen); (2) **„Banks" (Figurenname) zaehlte NICHT als „Bank"** —
+die Regelkanten-These aus §4/T1 ist falsifiziert, UMA wertete strikt;
+(3) **Rohzaehlungen mit Titel-Boilerplate sind unbrauchbar** — „President"
+roh 21 in E6, Markt resolvte NO (<10 im Dialog). E7 „Ghosts" laeuft
+So 06.09.; Kandidaten nur Maker: God 5+ (3/3, Bid 0.42), Hell (3/3, Bid
+0.52), optional Monster/President-Lincoln-Plot/Worm-Malware-Plot.
+
+### 9.2 Warsh Jackson Hole (T4) — Text-Drop-These BESTAETIGT
+
+Retro ueber CLOB-Minutenhistorie (28.08., 13:30–15:30 UTC) und die
+Fed-Redeseite: **Text online 14:00:11 UTC** (Feed-Eintrag 10:00:00 AM,
+`Last-Modified` 14:00:11 GMT), **Text-Prognose 20/22 Maerkte korrekt**
+(Abweichungen: „Good Morning" = Begruessung ausserhalb des Manuskripts;
+„Bitcoin/Crypto" im Text, aber nicht gesprochen/Fussnote). Der Markt
+preiste trotzdem **Wort fuer Wort beim Sprechen**: CapEx 0.69 → 0.49 um
+14:05 → erst 14:20 auf 0.99; Bank/Asset 10+ Sprung 14:28; Regime 14:11;
+„Framework" (0.74, nicht im Text) zerfiel erst ab 14:26 auf 0.045; sieben
+mittelpreisige NO-Woerter (Independent 0.53, Too Late 0.565, Payment System
+0.48, Community 0.45, Ingenuity 0.40, Gold 0.47, Framework 0.74) waren um
+14:00:11 aus dem Text erkennbar. **Das ist die Gegenlage zu Earnings/
+Trump-Live (1–4 s): eine Textquelle mit Minuten Vorlauf, die niemand
+liest.** Aufgesetzt: `operations/pipeline/fed_text_rekorder.py` (read-only,
+Feed- oder URL-Modus, Buch-Nachlauf, `--auswerte`; 11 Tests). Naechste
+Gelegenheiten: FOMC 16.09. — Statement 14:00 ET, Eroeffnungs-Statement der
+Pressekonferenz 14:30 ET (PDF), jede Warsh-Rede mit Polymarket-Event.
+Aufruf im Modul-Docstring; Messphase zuerst (Protokoll wie ISW), kein
+Order-Pfad.
+
+### 9.3 Basisraten mit echtem n (T2/T3) — Harvester
+
+`operations/analysis/mention_basisraten.py` (13 Tests) zieht je Gamma-Serie
+bis 50 aufgeloeste Events und vergleicht mit dem offenen Event (Laplace,
+letzte 3, Screening-Label). Ergebnisse 04.09. in
+`data/results/mention_basisraten_{jre,allin,curtis}_2026-09-04.json`:
+
+- **JRE (Serie 11275, 32 Wochen):** People 200+ 5/13 (0.40) vs. 0.30/0.32,
+  Alien 10/18 (0.55) vs. 0.49/0.52, People 100+ 16/18 vs. 0.86/0.88 —
+  **alle 16 Maerkte „fair"**. Die n=4-Kandidaten aus §4/T3 waren
+  Stichprobenrauschen. JRE bleibt Beobachtung, kein Handel.
+- **All-In (Serie 11300, 31 Wochen):** Software 14/14, Anthropic 12/12,
+  Hundred/Thousand/Million 10+ 9/9, IPO 8/8 (E287 brach mit 0 die Serie —
+  Polymarket legte fuer den 28.08. nie ein Event an, der Bot zaehlte auf
+  dem E286-Brett, 0 Kaeufe). E288 (942921) hat nur liq 392: Maker-Kandidaten
+  Nvidia 17/24 (Bid 0.36), SpaceX 3+ 8/9 (Bid 0.32), Blue 7/9 (Bid 0.41);
+  Dauerbrenner stehen bei Asks 0.97–0.996 (fair). Nebenbefund: das
+  Bot-Veto schluesselt ohne Schwelle (AI 35+/50+ vereint) — als
+  Folgeaufgabe geflaggt.
+- **Curtis (Serie 12413, 5 Wochen):** siehe 9.1/Prereg E7.
+
+### 9.4 Fed-Presser 16.09. — Prioren aus Warsh-Transkripten
+
+Kalshi `KXFEDMENTION-26SEP` (46 Woerter) ist weiter ungequotet, kein
+Polymarket-Pendant gelistet. Aus den Pressekonferenz-Transkripten 17.06. und
+29.07.2026 (nur CHAIR-WARSH-Passagen, Kalshi-Variantenregel) — 2/2:
+Good Day (nicht „Good Afternoon" 0/2!), Productivity, Balance Sheet,
+Restrictive, AI, **Family Fight/Feud** (3 und 4), Central Bank, Shock
+(1 und 10), Uncertainty; 1/2: President, Dollar, Oil, Credit, Projection
+(nur SEP-Sitzung → 16.09. hat SEP), Pandemic, Egg; 0/2 u. a. Shutdown,
+Dissent, Recession, Stagflation, Trump, Bitcoin, Gold, Iran, Japan.
+Kontext: FOMC-Markt preist Hike 30.5 % — Dissent/Restrictive/Shutdown
+(30.09.) sind topikalitaetsgetrieben, Prioren nur Startpunkt. Aufgabe fuer
+die Autorin, sobald Kalshi seedet: Erstquotes gegen diese Tabelle
+(Skript `fed_priors.py` im Scratchpad, Ergebnis `fed_priors.json`).
+
+### 9.5 Kleinere Abschluesse
+
+- **Ukraine-Paar** (§8/N5): definitorisch erklaert — 478472 zaehlt eine
+  vereinbarte Waffenruhe, 486199 verlangt In-Kraft-Treten plus 10 Tage
+  Bestand; 0.135 vs. 0.065 ist konsistent, keine Inkohaerenz.
+- **Shutdown-Paar** (N3): auf 0.04/0.06 (Lapse) und 0.016/0.029
+  (Shutdown) kollabiert — der NO-Klein-Gedanke der Vorwoche haette 5–8 c
+  gebracht; Ordnung Lapse ≥ Shutdown stimmt jetzt. Dezember-Klippe bleibt
+  vorgemerkt.
+- **Ops:** Wachkontrolle 2/2 wach, All-In-E288-Bot lebt seit 03:41 auf
+  Event 942921 (Drop heute Nacht).
+
+### 9.6 Naechste Schritte (Stand 04.09. abends)
+
+1. **Sa/So:** Curtis-E7-Prereg ausfuehren (Promo zuerst, nur Maker).
+2. **Sa frueh:** All-In-E288 nach dem Drop annotieren (Memory-Auftrag).
+3. **Bis 15.09.:** Fed-Text-Rekorder fuer den 16.09. vorbereiten — sobald
+   Polymarket ein Warsh-Presser-Event listet: Event-ID eintragen,
+   `--feed-sprecher Warsh --feed-datum 9/16/2026 --ab 2026-09-16T17:55:00Z`
+   (Statement 18:00 UTC) als Task im Betriebsordner; parallel Kalshi-
+   Erstquotes gegen 9.4.
+4. **Wochenlich:** `mention_basisraten` vor jedem All-In-/JRE-/Curtis-
+   Listing laufen lassen; Handel nur bei Maker-Kandidaten.
+5. **Dez:** CR-Klippe 04./11.12. mit OPM-Poller (N3) vorbereiten.
+
 ---
 
 *Methodik-Notiz: Alle Preis-/Volumenangaben sind Snapshots vom 27.08. abends

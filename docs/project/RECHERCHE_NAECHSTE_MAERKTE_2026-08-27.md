@@ -666,6 +666,82 @@ die Autorin, sobald Kalshi seedet: Erstquotes gegen diese Tabelle
    Listing laufen lassen; Handel nur bei Maker-Kandidaten.
 5. **Dez:** CR-Klippe 04./11.12. mit OPM-Poller (N3) vorbereiten.
 
+## 10. Nachtrag 04.09.2026 (Teil 2): Nicht-Mention-Klassen — Tests, Daten, Quellen-Wache
+
+Auftrag Autorin 04.09. abends: „nun fuer andere Maerkte". Read-only-Pulls
+(Gamma, DOJ, Wikipedia, Quellen-Probe), Skripte im Session-Scratchpad.
+
+### 10.1 N5 Pardon-Kadenz — These „tote Spreads unterpreist" war richtig, ist zu
+
+DOJ-Clemency-Liste: 46 Grant-Tage seit 20.01.2025, Median-Abstand 5 Tage
+(Mittel 11.8), laengste Luecke 112 Tage (12.02.→04.06.2026); aktuelle Luecke
+60 Tage (seit 06.07.), nur 2 von 45 historischen Luecken waren laenger — von
+diesen endete 1/2 binnen weiteren 26 Tagen, 2/2 binnen 57. Die Leiter hat in
+einer Woche nachgezogen: Sep-30-Sprosse 0.18/0.84 → **0.50/0.76**, Okt-31
+0.34/0.74 → **0.61/0.82** (liq nur 405). Gegen die Kadenz ist das jetzt fair;
+die Unterpreisung der Vorwoche war real, aber geschlossen. Die DOJ-Seite
+aenderte sich am 02.09. ohne neues Grant-Datum — die Quellen-Wache misst ab
+jetzt, wie schnell die amtliche Liste einem Truth-Post folgt.
+
+### 10.2 N4 Brasilien — Strukturprior 2022 vs. Staaten-Erstplatz-Maerkte
+
+27 Staaten-Events, je **liq 97–132k bei vol24h 0–1.1k** (tote Buecher mit
+dicker Liquiditaet). Der Markt folgt der 2022-Stichwahlstruktur: 20 Staaten
+stehen bei ≥0.93 fuer die 2022-Seite. Battlegrounds (|Marge 2022| ≤ 12 pp):
+
+| Staat | Marge 2022 (Lula−Bolsonaro, Stichwahl) | P(Lula 1.) | P(Flávio 1.) | liq |
+| --- | --- | --- | --- | --- |
+| São Paulo | −10.5 | 0.13 | 0.86 | 128k |
+| Amapá | −2.7 | 0.685 | 0.315 | 120k |
+| Minas Gerais | +0.4 | 0.785 | 0.22 | 127k |
+| Amazonas | +2.2 | 0.69 | 0.26 | 101k |
+| Tocantins | +2.7 | 0.645 | 0.36 | 128k |
+| Pará | +9.5 | 0.95 | 0.04 | 120k |
+| (Rio de Janeiro / Rio Grande do Sul) | −13.1 / −12.7 | 0.16 / 0.17 | 0.72 / 0.84 | 96k / 117k |
+
+Auffaellig: SP bei 0.13 und Pará bei 0.95 bei fast symmetrischen Margen —
+Heimvorteile (Tarcísio SP, Flávio Rio) koennen das erklaeren; das ist die
+Arbeitsliste fuer State-Polls (Quaest/Datafolha/AtlasIntel-Crosstabs), nicht
+ein Trade. **Blocker fuer die Wahlnacht:** die TSE-Ergebnis-JSON (2022,
+`resultados.tse.jus.br/.../dados-simplificados/...`) antwortet aus
+Deutschland mit **403 — auch mit Browser-Headern** (Geo-Block wahrscheinlich).
+Ohne alternative Quelle (TSE-App-Endpunkte, G1/Globo-Live-JSON, AP) bleibt
+N4 eine Basisraten-Strecke, keine Latenz-Strecke. Bis Ende September testen.
+
+### 10.3 Emmys 14.09. — Board, kein eigener Kanal
+
+23 Events, Summe liq 221k. Favoriten stark (The Pitt 0.92, Rhys 0.94, Wyle
+0.935, Jean Smart 0.91, The Traitors 0.91); offen: Supporting Actor Comedy
+(Ford 0.45), Supporting Actor Drama (Pelphrey 0.465), Guest Actress Comedy
+(Gilpin 0.39), Guest Actor Comedy (Reiner 0.39); „insult Trump" 0.41.
+Precursor-Awards sind Fachwissen, das wir nicht haben → Beobachtung.
+
+### 10.4 Aufgesetzt: Quellen-Wache (`operations/pipeline/quellen_wache.py`, 12 Tests)
+
+Generischer Aenderungs-Rekorder nach ISW-Muster: 8 Standardquellen (OPM
+Operating Status, DOJ-Clemency, SCOTUS Opinions + Orders, Fed-Reden- und
+Presse-Feed, NHC-Atlantik-RSS, Apple Top-Free), Conditional GET
+(ETag/If-Modified-Since), Normalisierung (HTML→Text, JSON kanonisch),
+SHA-256-Hash, Diff-Ausschnitt, **Markt-Hooks** (OPM→580520, DOJ→674973,
+Fed-Presse→481717, NHC→131388) mit Nachfassung +1/+5/+30 min, Abkuehlpause
+bei Fehlern, Watchdog-Vertrag (`--live`). Quellen-Probe: OPM ohne
+ETag/Last-Modified (Hash noetig), DOJ ETag+LM, SCOTUS LM, Fed-Feeds ETag
+(440/995 KB → 304 zaehlt), NHC 2 KB, Apple ok (ein Timeout), Rockstar
+Newswire nur JS-Huelle (weggelassen), TSE 403. Smoke 04.09. 17:47 UTC:
+8/8 erstgesichtet, zweiter Zyklus ohne Fehlalarm. Wachposten-Eintrag
+`quellen_wache` in `data/wachposten.json`.
+
+### 10.5 Naechste Schritte (Teil 2)
+
+1. Watchdog-Profil `quellen_wache` im Betriebsordner aktivieren (nach Merge
+   + hole_main; `modul: quellen_wache`, ende 31.12.).
+2. Zwei Wochen Baseline sammeln, dann Aenderungshaeufigkeit und Tageszeiten
+   je Quelle auswerten (Auswertungsskript analog `isw_vorlauf_auswertung`).
+3. TSE-Alternative bis Ende September testen (sonst N4 = Basisraten only).
+4. State-Polls fuer die sechs Battlegrounds sammeln.
+5. 16.09.: Fed-Text-Rekorder (§9.2) und Wache-Feed-Hook liefern beide die
+   Publikationszeit — Kreuzvalidierung der Messung.
+
 ---
 
 *Methodik-Notiz: Alle Preis-/Volumenangaben sind Snapshots vom 27.08. abends

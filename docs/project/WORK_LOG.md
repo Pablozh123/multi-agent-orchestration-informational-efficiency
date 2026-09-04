@@ -13788,6 +13788,43 @@ Next step:
   sobald Polymarket ein Warsh-Presser-Event listet; Kalshi-Erstquotes gegen
   die Prioren in §9.4.
 
+## 2026-09-04 - strategieforschung-nicht-mention-klassen
+
+Task:
+
+- Nicht-Mention-Klassen aus Dossier §8 vorantreiben (Auftrag Autorin abends):
+  Pardon-Kadenz gegen die Leiter testen (N5), Brasilien-Staatenmaerkte gegen den
+  2022-Strukturprior (N4), Emmys-Board (Kalender), Quellen-Wache als generischer
+  Aenderungs-Rekorder fuer OPM/DOJ/SCOTUS/Fed-Feeds/NHC/Apple aufsetzen.
+
+Files changed:
+
+- `operations/pipeline/quellen_wache.py` (neu): Conditional GET, Normalisierung,
+  Hash/Diff, Markt-Hooks (+1/+5/+30 min), Abkuehlpause, Watchdog-Vertrag.
+- `tests/test_quellen_wache.py` (12).
+- `data/wachposten.json`: Posten `quellen_wache`.
+- `docs/project/RECHERCHE_NAECHSTE_MAERKTE_2026-08-27.md` (§10).
+
+Tests:
+
+- pytest: Ergebnis siehe Commit; ruff auf den neuen Dateien sauber. Smoke-Lauf
+  `--einmal` gegen die echten Quellen: 8/8 erstgesichtet, zweiter Zyklus ohne
+  Fehlalarm.
+
+Decision:
+
+- Pardon-Leiter nach Repricing fair (Vorwochen-Unterpreisung geschlossen).
+  Brasilien: TSE-JSON aus DE 403 -> Wahlnacht-Latenz ohne alternative Quelle
+  nicht machbar; Basisraten-Arbeit (State-Polls) bleibt. Quellen-Wache misst
+  zuerst zwei Wochen Baseline, kein Handel. Rockstar Newswire (JS-Huelle) und
+  TSE nicht als Quellen aufgenommen.
+
+Next step:
+
+- Watchdog-Profil `quellen_wache` im Betriebsordner aktivieren (nach Merge und
+  hole_main), Auswertungsskript nach zwei Wochen Baseline, TSE-Alternative bis
+  Ende September testen.
+
 ## 2026-09-04 - pipeline: Basisraten-Schluessel um die Schwelle erweitert
 
 Context:

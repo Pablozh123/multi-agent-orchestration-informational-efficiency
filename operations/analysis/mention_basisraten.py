@@ -23,11 +23,12 @@ Ereignisse ausgewiesen.
 
 Abgrenzung zu `operations.pipeline.basisraten` (Bot-Veto seit PR #61): Das
 Pipeline-Modul laedt dieselbe Serien-Historie fuer die Laufzeit des Bots
-und schluesselt nach dem Slug-Wort — ohne Schwelle (AI 35+ und AI 50+
-fallen dort zusammen) und ohne Rezenz. Dieses Analyse-Modul ist das
-Forschungs- und Screening-Werkzeug VOR dem Drop: Schluessel aus dem
-Fragetext inkl. Schwelle, Laplace-Glaettung, letzte-3-Quote, Vergleich
-mit den Quotes des offenen Events, JSON-Export fuer die Doku.
+und schluesselt seit 04.09.2026 ebenfalls nach Wort und Schwelle (aus dem
+Fragetext, Slug als Fallback; davor fielen AI 35+ und AI 50+ zusammen) —
+aber ohne Rezenz und ohne Glaettung. Dieses Analyse-Modul ist das
+Forschungs- und Screening-Werkzeug VOR dem Drop: Laplace-Glaettung,
+letzte-3-Quote, Vergleich mit den Quotes des offenen Events, JSON-Export
+fuer die Doku.
 
 Guardrails: read-only, hoechstens 50 Events je Abfrage, Ausgabe je Block
 begrenzt, keine Rohtabellen in Prompts.

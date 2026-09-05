@@ -27,6 +27,17 @@ ALLIN_BOILERPLATE = [
     "release", "somehow",
 ]
 
+# Hauptepisoden-Kennung im libsyn-Dateinamen. Bis E287 hiess die Datei
+# ALLIN-E<n>_Ch.mp3; E286 kam als E286_99_AUDIO.mp3, E288 (04.09.2026,
+# 23:10Z) als E288_AUDIO_v102.mp3 - der Bot allin_september4 verwarf E288
+# 73 Minuten lang als "Special" und kaufte nichts. Gemeinsam ist allen
+# Hauptepisoden das Token E<3-4 Ziffern> zwischen Trennzeichen; keiner
+# der Specials im Feed (Interviews, Paris, Saronic, Robots, MC_RAISE,
+# NATE_SILVER, Flock_CEO, Kratsios, Weinstein) traegt so ein Token.
+# Genutzt als rss_nur_muster der All-In-Profile und fuer die Episoden-
+# nummer des URL-Probers (rss_watch._EPISODEN_NR). Gruppe 1 = Nummer.
+ALLIN_HAUPTEPISODE_MUSTER = r"(?:^|[/_-])E(\d{3,4})(?=[_.-])"
+
 # Festes JRE-Intro-Jingle, laeuft musikunterlegt am Anfang JEDER Episode
 # (per YT-Captions #2526 UND #2527 wortidentisch belegt, 18.07.):
 # "Joe Rogan podcast. Check it out. / The Joe Rogan Experience. /
@@ -84,8 +95,8 @@ PROFILE = {
         # Marktregel july-10: nur Episoden der offiziellen Playlist zaehlen
         # (Specials nicht). Lehre aus dem Cerebras/BFL-Fehltrigger 10.7.
         "yt_playlist_id": "PLn5MTSAqaf8peDZQ57QkJBzewJU1aUokl",
-        # RSS/Feed: nur Hauptepisoden (ALLIN-E<n>) als Drop akzeptieren.
-        "rss_nur_muster": r"ALLIN-E\d+_Ch\.mp3",
+        # RSS/Feed: nur Hauptepisoden (Token E<n>) als Drop akzeptieren.
+        "rss_nur_muster": ALLIN_HAUPTEPISODE_MUSTER,
     },
     "mrbeast": {
         "live_dir": "mrbeast_next",
@@ -127,7 +138,7 @@ PROFILE = {
         ),
         "discovery_slug_filter": "all-in",
         "yt_playlist_id": "PLn5MTSAqaf8peDZQ57QkJBzewJU1aUokl",
-        "rss_nur_muster": r"ALLIN-E\d+_Ch\.mp3",
+        "rss_nur_muster": ALLIN_HAUPTEPISODE_MUSTER,
         # NO-Seite AKTIV mit dem vollen Schutzschild (User-Freigabe
         # 23.07.): Seiten-Deckel 0.80 bis in den FAK-Sweep (PR #16),
         # Basisraten-Veto ueber Serie 11300 (E281-E2E: alle 8 Sperren
@@ -166,7 +177,7 @@ PROFILE = {
         ),
         "discovery_slug_filter": "all-in",
         "yt_playlist_id": "PLn5MTSAqaf8peDZQ57QkJBzewJU1aUokl",
-        "rss_nur_muster": r"ALLIN-E\d+_Ch\.mp3",
+        "rss_nur_muster": ALLIN_HAUPTEPISODE_MUSTER,
         # NO-Schutzschild unveraendert wie july24 (Seiten-Deckel 0.80,
         # Basisraten-Veto Serie 11300, Boilerplate-Lexikon, Gap-Verify).
         # Bewusst KEINE Aenderung an der NO-Kette in dieser Woche: der
@@ -210,7 +221,7 @@ PROFILE = {
         "max_usd_pro_markt": 50.0,
         "max_clips_pro_markt": 40,
         "yt_playlist_id": "PLn5MTSAqaf8peDZQ57QkJBzewJU1aUokl",
-        "rss_nur_muster": r"ALLIN-E\d+_Ch\.mp3",
+        "rss_nur_muster": ALLIN_HAUPTEPISODE_MUSTER,
     },
     "mrbeast_gaming": {
         "live_dir": "mrbeast_gaming",
@@ -494,7 +505,7 @@ PROFILE = {
         ),
         "discovery_slug_filter": "all-in",
         "yt_playlist_id": "PLn5MTSAqaf8peDZQ57QkJBzewJU1aUokl",
-        "rss_nur_muster": r"ALLIN-E\d+_Ch\.mp3",
+        "rss_nur_muster": ALLIN_HAUPTEPISODE_MUSTER,
         # NO-Schutzschild unveraendert (Deckel 0.80, Basisraten-Veto
         # Serie 11300, Boilerplate, Gap-Verify). Es hat am 31.07. zweimal
         # korrekt gegriffen (SpaceX 0.83, Blue 1.00) und traegt die
@@ -541,7 +552,7 @@ PROFILE = {
         ),
         "discovery_slug_filter": "all-in",
         "yt_playlist_id": "PLn5MTSAqaf8peDZQ57QkJBzewJU1aUokl",
-        "rss_nur_muster": r"ALLIN-E\d+_Ch\.mp3",
+        "rss_nur_muster": ALLIN_HAUPTEPISODE_MUSTER,
         # NO-Schutzschild unveraendert (Deckel 0.80, Basisraten-Veto
         # Serie 11300, Boilerplate, Gap-Verify). Der Nachbarschafts-/
         # Blockgrenzen-Filter ist weiterhin nicht gebaut; das Veto traegt
@@ -582,7 +593,7 @@ PROFILE = {
         ),
         "discovery_slug_filter": "all-in",
         "yt_playlist_id": "PLn5MTSAqaf8peDZQ57QkJBzewJU1aUokl",
-        "rss_nur_muster": r"ALLIN-E\d+_Ch\.mp3",
+        "rss_nur_muster": ALLIN_HAUPTEPISODE_MUSTER,
         # NO-Schutzschild unveraendert (Deckel 0.80, Basisraten-Veto
         # Serie 11300, Boilerplate, Gap-Verify). Der Nachbarschafts-/
         # Blockgrenzen-Filter ist weiterhin nicht gebaut; das Veto traegt

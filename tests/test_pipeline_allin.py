@@ -279,6 +279,67 @@ def test_naechste_episoden_nummer() -> None:
     assert naechste_episoden_nummer(items) == 280
 
 
+# libsyn-Enclosures des All-In-Feeds, Stand 05.09.2026 01:10Z (echte
+# Dateinamen). E288 kam ohne das ALLIN-E<n>_Ch-Schema; der Bot
+# allin_september4 verwarf die Datei 73 Minuten lang als Special.
+_ALLIN_FEED_0409 = [
+    (288, "E288_AUDIO_v102.mp3?dest-id=1928300"),
+    (287, "ALLIN-E287_Ch.mp3?dest-id=1928300"),
+    (None, "Eric_Weinstein_Int_AUDIO_v99.mp3?dest-id=1928300"),
+    (None, "Kratsios_Int_AUDIO_VFINAL.mp3?dest-id=1928300"),
+    (286, "E286_99_AUDIO.mp3?dest-id=1928300"),
+    (None, "Flock_CEO_INT_AUDIO_V88.mp3?dest-id=1928300"),
+    (285, "ALLIN-E285_Ch.mp3?dest-id=1928300"),
+    (None, "ALLIN-INTV_Emanuel_Ch.mp3?dest-id=1928300"),
+    (284, "ALLIN-E284_Ch.mp3?dest-id=1928300"),
+    (None, "ALLIN_Saronic_Ch.mp3?dest-id=1928300"),
+    (None, "ALLIN_ROBOTS_Ch.mp3?dest-id=1928300"),
+    (None, "ALLIN_MC_RAISE_Ch.mp3?dest-id=1928300"),
+    (None, "Paris_2_Ch.mp3?dest-id=1928300"),
+    (None, "1_Paris_Ch.mp3?dest-id=1928300"),
+    (None, "PARIS_Versailles_Ch4.mp3?dest-id=1928300"),
+    (None, "FINAL_PASS_NATE_SILVER.mp3?dest-id=1928300"),
+]
+_LIBSYN = ("https://dts.podtrac.com/redirect.mp3/traffic.libsyn.com/"
+           "secure/allinchamathjason/")
+
+
+def test_hauptepisoden_muster_erkennt_e288_und_keinen_special() -> None:
+    """Reproduktion 04./05.09.: E288_AUDIO_v102.mp3 ist eine Hauptepisode."""
+    import re
+
+    from operations.pipeline.rss_watch import episoden_nummer
+
+    muster = config.PROFILE["allin_september4"]["rss_nur_muster"]
+    for erwartet, datei in _ALLIN_FEED_0409:
+        url = _LIBSYN + datei
+        assert episoden_nummer(url) == erwartet, datei
+        # Genau der Filter aus bot.py (re.search auf die volle URL)
+        assert bool(re.search(muster, url)) is (erwartet is not None), datei
+
+
+def test_naechste_episoden_nummer_mit_neuem_dateinamen() -> None:
+    from operations.pipeline.rss_watch import FeedItem, naechste_episoden_nummer
+
+    items = [FeedItem(f"g{i}", "", "", _LIBSYN + datei)
+             for i, (_, datei) in enumerate(_ALLIN_FEED_0409)]
+    # Vorher: E288 unsichtbar -> 288, der Prober haette ALLIN-E288_Ch.mp3
+    # bis zum Ende des Watchdog-Fensters geprobt.
+    assert naechste_episoden_nummer(items) == 289
+    nur_specials = [it for it in items
+                    if "ALLIN-E" not in it.audio_url and "/E2" not in it.audio_url]
+    with pytest.raises(ValueError):
+        naechste_episoden_nummer(nur_specials)
+
+
+def test_alle_allin_profile_teilen_das_hauptepisoden_muster() -> None:
+    allin = [k for k, p in config.PROFILE.items()
+             if p.get("rss_nur_muster") is not None]
+    assert allin, "kein Profil mit rss_nur_muster"
+    for k in allin:
+        assert config.PROFILE[k]["rss_nur_muster"] == config.ALLIN_HAUPTEPISODE_MUSTER, k
+
+
 def test_prober_feuert_erst_bei_stabiler_laenge() -> None:
     from operations.pipeline.rss_watch import Mp3UrlProber
 

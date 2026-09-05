@@ -13891,3 +13891,65 @@ Next step:
 - Bei der E288-Annotation vermerken, dass die sechs Sperren vom 04.09.
   01:41Z noch auf Wort-only-Schluesseln beruhen (Snapshot ohne
   "schema"-Feld).
+
+## 2026-09-05 - pipeline: All-In-Hauptepisoden-Muster nach dem E288-Fehlschlag
+
+Context:
+
+- E288 erschien am 04.09. 23:10Z (pubDate) im libsyn-Feed als
+  `E288_AUDIO_v102.mp3`, nicht mehr als `ALLIN-E288_Ch.mp3`. Der Bot
+  allin_september4 (PID 15940, LIVE, Budget 740) sah das Item ab 23:53Z
+  (Feed-Cache ~43 min nach pubDate) und verwarf es bis zum Sessionstart
+  01:06Z alle 30 s als "kein Hauptepisoden-Muster (Special)" (193
+  Eintraege in bot_events.jsonl). Der URL-Prober wartete auf
+  ALLIN-E288_Ch.mp3, das es nie gab; der YouTube-Kandidat DvFe9bR2eHA
+  (00:02Z) fiel durch "nicht in offizieller Playlist". Ergebnis: 0 Kaeufe,
+  kein Transkript. Marktstand 01:05Z: Anthropic 5+, Software, Hundred 10+,
+  IPO vom Markt auf YES 0.95-0.99 entschieden; AI 50+ 0.50, Nvidia YES
+  0.36, Blue/Red ~0.41, SpaceX 3+ 0.32 offen. Die Autorin hat den Lauf
+  als verloren eingestuft ("fuer diesen Durchgang zu spaet") und den Fix
+  beauftragt.
+- Feed-Historie (25 Items, 05.09. 01:10Z): Hauptepisoden E276-E285 und
+  E287 als ALLIN-E<n>_Ch.mp3, E286 als E286_99_AUDIO.mp3 (21.08., kein
+  Bot armiert), E288 als E288_AUDIO_v102.mp3. Specials tragen nie ein
+  E<Ziffern>-Token (Interviews *_Int_AUDIO_*, ALLIN-INTV_*, ALLIN_Saronic,
+  ALLIN_ROBOTS, ALLIN_MC_RAISE, Paris_*, FINAL_PASS_NATE_SILVER).
+- Nebenbefund in bot_stderr.log beim Start 01:41Z: py_clob_client
+  `400 Could not create api key`. Nicht Teil dieses Fixes, vor der
+  naechsten Armierung pruefen, ob die Orderstrecke ueberhaupt handeln kann.
+
+Change:
+
+- `config.ALLIN_HAUPTEPISODE_MUSTER = r"(?:^|[/_-])E(\d{3,4})(?=[_.-])"`
+  (Token E<3-4 Ziffern> zwischen Trennzeichen). Alle sieben All-In-
+  Profile mit `rss_nur_muster` zeigen auf die Konstante statt auf das
+  Literal `ALLIN-E\d+_Ch\.mp3`.
+- `rss_watch.episoden_nummer(url)` (Pfad ohne Query) als gemeinsame
+  Erkennung; `_EPISODEN_NR` nutzt dieselbe Konstante, damit
+  `naechste_episoden_nummer` E288 sieht und der Prober naechste Woche
+  E289 statt nochmals E288 probt. Fehlertext angepasst.
+- `mp3_probe_muster` bleibt ALLIN-E{n}_Ch.mp3: das neue Schema haengt eine
+  unvorhersehbare Version an (v102), eine probbare URL gibt es nicht
+  mehr. Der Prober ist damit fuer dieses Schema blind; die RSS-Schiene
+  (Feed-Cache bis ~1 h) ist die schnellste verbliebene Quelle. Kein
+  Eingriff in bot.py, decision.py, execution.
+
+Verification:
+
+- Neu in tests/test_pipeline_allin.py: Muster gegen alle 16 echten
+  Enclosure-Namen des Feeds (E288/E287/E286/E285/E284 erkannt, elf
+  Specials nicht; derselbe re.search-Aufruf wie in bot.py auf die volle
+  URL), naechste Nummer 289 aus dem 04.09.-Feed, ValueError ohne
+  Hauptepisode, alle Profile teilen die Konstante. Datei 71 gruen, ruff
+  sauber; volle Suite siehe PR.
+
+Next step:
+
+- YouTube-Schiene: ein Video, das vor dem Playlist-Eintrag gesehen wurde,
+  wird nie erneut geprueft (bekannt-Set im YouTubeWatcher). Ob DvFe9bR2eHA
+  spaeter in die Playlist kam, ist offen (yt-dlp im Zweit-Clone nicht
+  lauffaehig); vor der naechsten Armierung pruefen und ggf. Warteliste
+  fuer "nicht in Playlist"-Kandidaten bauen.
+- E288 in run_annotationen.json annotieren (0 Kaeufe, Ursache Muster),
+  Profil allin_september4 nach Watchdog-Ende (06.09. 06:00Z) auf
+  aktiv=false.

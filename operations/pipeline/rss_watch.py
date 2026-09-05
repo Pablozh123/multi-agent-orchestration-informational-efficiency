@@ -72,20 +72,29 @@ def fetch_feed_items(max_items: int = 5) -> list[FeedItem]:
     return parse_feed(_abruf(), max_items=max_items)
 
 
-_EPISODEN_NR = re.compile(r"ALLIN-E(\d+)_Ch\.mp3")
+# Hauptepisoden-Token E<n> im Dateinamen (ALLIN-E287_Ch.mp3,
+# E286_99_AUDIO.mp3, E288_AUDIO_v102.mp3); Herleitung in config.
+_EPISODEN_NR = re.compile(config.ALLIN_HAUPTEPISODE_MUSTER)
+
+
+def episoden_nummer(audio_url: str | None) -> int | None:
+    """E-Nummer der Hauptepisode aus der Enclosure-URL, None bei Specials.
+
+    Geprueft wird nur der Pfad (ohne Query wie ?dest-id=...).
+    """
+    pfad = (audio_url or "").split("?", 1)[0]
+    m = _EPISODEN_NR.search(pfad)
+    return int(m.group(1)) if m else None
 
 
 def naechste_episoden_nummer(items: list[FeedItem] | None = None) -> int:
     """Hoechste E-Nummer im Feed plus 1 (Hauptepisoden-Muster)."""
     if items is None:
         items = fetch_feed_items(max_items=15)
-    nummern = []
-    for it in items:
-        m = _EPISODEN_NR.search(it.audio_url or "")
-        if m:
-            nummern.append(int(m.group(1)))
+    nummern = [n for n in (episoden_nummer(it.audio_url) for it in items)
+               if n is not None]
     if not nummern:
-        raise ValueError("Keine ALLIN-E<n>_Ch.mp3 im Feed gefunden")
+        raise ValueError("Keine Hauptepisode E<n> im Feed gefunden")
     return max(nummern) + 1
 
 

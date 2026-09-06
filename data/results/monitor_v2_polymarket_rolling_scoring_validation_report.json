@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-09-05T04:35:15+00:00",
+  "generated_at_utc": "2026-09-06T04:30:42+00:00",
   "input_mode": "replay_first_live_input_files",
   "limitations": {
     "does_not_call_external_apis": true,
@@ -42,7 +42,7 @@
     },
     "market_snapshots": {
       "bucket_status_counts": {
-        "closed": 974
+        "closed": 984
       },
       "columns": [
         "collector_received_at_utc",
@@ -64,14 +64,14 @@
         "open_interest"
       ],
       "path": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
-      "row_count": 974,
+      "row_count": 984,
       "source_classes": [
         "market_state"
       ]
     },
     "wallet_tier_snapshots": {
       "bucket_status_counts": {
-        "closed": 487
+        "closed": 492
       },
       "columns": [
         "collector_received_at_utc",
@@ -92,14 +92,14 @@
         "filter_metadata"
       ],
       "path": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",
-      "row_count": 487,
+      "row_count": 492,
       "source_classes": [
         "wallet_activity"
       ]
     },
     "watchlist": {
       "bucket_status_counts": {
-        "closed": 14
+        "closed": 15
       },
       "columns": [
         "collector_received_at_utc",
@@ -120,7 +120,7 @@
         "status"
       ],
       "path": "data\\results\\monitor_v2_polymarket_live_watchlist.csv",
-      "row_count": 14,
+      "row_count": 15,
       "source_classes": [
         "market_discovery"
       ]

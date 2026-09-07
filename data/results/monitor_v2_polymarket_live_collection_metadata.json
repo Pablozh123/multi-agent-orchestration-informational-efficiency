@@ -4,7 +4,7 @@
     "data_api_trades": "https://data-api.polymarket.com/trades",
     "gamma_markets": "https://gamma-api.polymarket.com/markets"
   },
-  "generated_at_utc": "2026-09-06T04:30:42Z",
+  "generated_at_utc": "2026-09-07T04:30:44Z",
   "limitations": {
     "does_not_send_orders": true,
     "does_not_use_agents_or_mcp": true,
@@ -21,7 +21,7 @@
     "accepted_curated_rows_only": false,
     "append_to_existing_outputs": true,
     "bucket_minutes": 5,
-    "collector_received_at_utc": "2026-09-06T04:30:41Z",
+    "collector_received_at_utc": "2026-09-07T04:30:43Z",
     "curated_watchlist_path": "",
     "max_markets": 5,
     "name": "polymarket_readonly_collector",
@@ -39,11 +39,11 @@
     "contains_wallet_addresses": false,
     "event_candidate_row_count": 0,
     "event_candidates_path": "data\\results\\monitor_v2_polymarket_live_event_candidates.csv",
-    "market_snapshot_row_count": 984,
+    "market_snapshot_row_count": 994,
     "market_snapshots_path": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
     "validation_report_path": "data\\results\\monitor_v2_polymarket_live_input_validation_report.json",
     "validation_status": "pass",
-    "wallet_tier_snapshot_row_count": 492,
+    "wallet_tier_snapshot_row_count": 497,
     "wallet_tier_snapshots_path": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",
     "watchlist_path": "data\\results\\monitor_v2_polymarket_live_watchlist.csv",
     "watchlist_row_count": 15

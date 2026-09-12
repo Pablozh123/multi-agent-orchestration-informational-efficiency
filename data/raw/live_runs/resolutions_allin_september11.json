@@ -1,71 +1,71 @@
 {
- "profil": "allin_august28",
- "event_slug": "what-will-be-said-on-the-next-all-in-podcast-august-21-20260818",
- "event_titel": "What will be said on the next All-In Podcast? (August 21)",
+ "profil": "allin_september11",
+ "event_slug": "what-will-be-said-on-the-next-all-in-podcast-september-11-20260908",
+ "event_titel": "What will be said on the next All-In Podcast? (September 11)",
  "abgerufen_utc": "2026-09-12T04:31:16+00:00",
  "quelle": "gamma-api.polymarket.com/events (oeffentlich, read-only)",
  "maerkte": {
-  "3711385": {
+  "4391365": {
    "frage": "Will \"AI\" be said 50+ times during the next episode of the All-In Podcast?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "3711386": {
+  "4391366": {
    "frage": "Will \"Hundred\" or \"Thousand\" or \"Million\" be said 10+ times during the next episode of the All-In Podcast?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "3711387": {
+  "4391367": {
    "frage": "Will \"Anthropic\" be said 5+ times during the next episode of the All-In Podcast?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "3711388": {
+  "4391368": {
    "frage": "Will \"SpaceX\" be said 3+ times during the next episode of the All-In Podcast?",
    "closed": true,
-   "outcome_yes": true,
+   "outcome_yes": false,
    "aktueller_yes_preis": null
   },
-  "3711389": {
+  "4391369": {
    "frage": "Will \"IPO\" be said during the next episode of the All-In Podcast?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "3711390": {
+  "4391370": {
    "frage": "Will \"Nvidia\" be said during the next episode of the All-In Podcast?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "3711391": {
-   "frage": "Will \"Red\" be said during the next episode of the All-In Podcast?",
+  "4391371": {
+   "frage": "Will \"Mark Zuckerberg\" be said during the next episode of the All-In Podcast?",
    "closed": true,
    "outcome_yes": false,
    "aktueller_yes_preis": null
   },
-  "3711392": {
-   "frage": "Will \"Blue\" be said during the next episode of the All-In Podcast?",
+  "4391372": {
+   "frage": "Will \"Smartphone\" be said during the next episode of the All-In Podcast?",
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
+  },
+  "4391373": {
+   "frage": "Will \"Google\" be said during the next episode of the All-In Podcast?",
    "closed": true,
    "outcome_yes": true,
    "aktueller_yes_preis": null
   },
-  "3711393": {
-   "frage": "Will \"Software\" be said during the next episode of the All-In Podcast?",
+  "4391374": {
+   "frage": "Will \"Microsoft\" be said during the next episode of the All-In Podcast?",
    "closed": true,
-   "outcome_yes": true,
+   "outcome_yes": false,
    "aktueller_yes_preis": null
   },
-  "3711394": {
-   "frage": "Will \"Stock Market\" be said during the next episode of the All-In Podcast?",
-   "closed": true,
-   "outcome_yes": true,
-   "aktueller_yes_preis": null
-  },
-  "3711395": {
+  "4391375": {
    "frage": "Will no episode air?",
    "closed": true,
    "outcome_yes": false,

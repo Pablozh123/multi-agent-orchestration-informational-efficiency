@@ -3,21 +3,21 @@
     {
       "collected_at_utc": "",
       "event_candidate_row_count": 0,
-      "market_snapshot_row_count": 1054,
+      "market_snapshot_row_count": 1064,
       "sample_index": 0,
-      "wallet_tier_snapshot_row_count": 527,
+      "wallet_tier_snapshot_row_count": 532,
       "watchlist_row_count": 15
     },
     {
       "collected_at_utc": "",
       "event_candidate_row_count": 0,
-      "market_snapshot_row_count": 1054,
+      "market_snapshot_row_count": 1064,
       "sample_index": 1,
-      "wallet_tier_snapshot_row_count": 527,
+      "wallet_tier_snapshot_row_count": 532,
       "watchlist_row_count": 15
     }
   ],
-  "generated_at_utc": "2026-09-13T04:30:45+00:00",
+  "generated_at_utc": "2026-09-14T04:30:47+00:00",
   "limitations": {
     "does_not_send_orders": true,
     "does_not_use_agents_or_mcp": true,
@@ -58,21 +58,21 @@
     "figure_metadata_path": "data\\results\\monitor_v2_polymarket_rolling_history_figure_metadata.json",
     "figure_path": "data\\results\\monitor_v2_polymarket_rolling_history.png",
     "figure_result": {
-      "bucket_count": 76,
+      "bucket_count": 77,
       "figure_path": "data\\results\\monitor_v2_polymarket_rolling_history.png",
       "market_count": 15,
       "metadata_path": "data\\results\\monitor_v2_polymarket_rolling_history_figure_metadata.json",
-      "token_snapshot_count": 1054,
-      "wallet_snapshot_count": 527
+      "token_snapshot_count": 1064,
+      "wallet_snapshot_count": 532
     },
     "market_snapshots_path": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
     "scoring_metadata_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_metadata.json",
     "scoring_result": {
-      "alert_count": 76,
-      "alert_row_count": 3132,
+      "alert_count": 80,
+      "alert_row_count": 3162,
       "metadata_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_metadata.json",
       "rows_path": "data\\results\\monitor_v2_polymarket_rolling_alert_rows.csv",
-      "snapshot_count": 3132,
+      "snapshot_count": 3162,
       "snapshots_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_snapshots.csv",
       "summary_path": "data\\results\\monitor_v2_polymarket_rolling_alert_summary.csv",
       "summary_row_count": 74,
@@ -83,15 +83,15 @@
     "scoring_summary_path": "data\\results\\monitor_v2_polymarket_rolling_alert_summary.csv",
     "scoring_validation_report_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_validation_report.json",
     "severity_counts": {
-      "high": 54,
+      "high": 58,
       "info": 18,
-      "none": 3056,
+      "none": 3082,
       "watch": 4
     },
     "status_counts": {
       "insufficient_baseline": 144,
-      "ok": 264,
-      "zero_mad": 2724
+      "ok": 271,
+      "zero_mad": 2747
     },
     "validation_report_path": "data\\results\\monitor_v2_polymarket_live_input_validation_report.json",
     "wallet_tier_snapshots_path": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",

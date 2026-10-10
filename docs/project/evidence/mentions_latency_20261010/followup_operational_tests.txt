@@ -1,0 +1,5 @@
+Command: python -m pytest tests/test_incremental_audio.py tests/test_mentions_parallel_orders.py tests/test_mentions_pipeline_latency.py tests/test_pipeline_allin.py tests/test_trump_michigan_bot.py -q --maxfail=1 --tb=short
+Exit code: 0
+........................................................................ [ 53%]
+..............................................................           [100%]
+134 passed in 31.47s

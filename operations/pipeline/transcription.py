@@ -2,12 +2,13 @@
 
 faster-whisper small, bevorzugt GPU (CUDA float16, ~30x Echtzeit auf
 RTX 3060), CPU-int8-Fallback. Der Downloader schreibt das Audio
-fortlaufend auf Platte; der Transkriptor dekodiert nur bei
-Dateiwachstum neu (Cache statt O(n^2)-Redecodierung), transkribiert den
+fortlaufend auf Platte; der Transkriptor dekodiert bei
+Dateiwachstum neu oder liest MP3 optional inkrementell. Er transkribiert den
 Zuwachs in Bloecken von CHUNK_SEKUNDEN mit OVERLAP_S Ueberlappung und
 dedupliziert ueber Wort-Zeitstempel: gezaehlt werden nur Woerter, deren
-Startzeit hinter der Chunk-Grenze liegt. Der finale Rest (nach
-Download-Ende) laeuft als ein grosser Batch-Durchlauf.
+Startzeit hinter der Chunk-Grenze liegt. Nach Download-Ende verarbeitet
+die GPU einen grossen Rest gebuendelt, gibt aber jedes fertige Segment
+sofort zur Auswertung weiter. CPU und wachsende Dateien nutzen 20-s-Chunks.
 
 Zusaetzlich: YouTube-Audio-Download (yt-dlp) und Metadaten-Check fuer
 die Voll-Episoden-Erkennung (Clips < 30 Min. und Livestreams sind keine
@@ -165,9 +166,10 @@ def ist_voll_episode(meta: dict) -> tuple[bool, str]:
 def _cuda_dlls_einbinden() -> None:
     """Macht die pip-installierten cuBLAS/cuDNN-DLLs fuer ctranslate2 auffindbar."""
     import os
+    import sys
 
     for sub in ("cublas", "cudnn"):
-        p = config.REPO_ROOT / ".venv" / "Lib" / "site-packages" / "nvidia" / sub / "bin"
+        p = Path(sys.prefix) / "Lib" / "site-packages" / "nvidia" / sub / "bin"
         if p.is_dir():
             os.add_dll_directory(str(p))
             os.environ["PATH"] = str(p) + os.pathsep + os.environ.get("PATH", "")
@@ -207,16 +209,22 @@ class ChunkTranscriber:
 
     Dekodiert die Datei nur bei Groessenaenderung neu (Cache). Chunks
     ueberlappen um OVERLAP_S; doppelte Woerter werden ueber
-    Wort-Zeitstempel entfernt. Der finale Rest laeuft als ein grosser
-    Durchlauf (auf GPU batched, falls verfuegbar).
+    Wort-Zeitstempel entfernt. inkrementell_final gibt GPU-Teilergebnisse
+    sofort weiter und begrenzt CPU-Abschnitte. Andere Aufrufer erhalten
+    weiterhin den vollstaendigen finalen Rest in einem Aufruf.
     """
 
-    def __init__(self, model_size: str = "small", verifier=None) -> None:
+    def __init__(self, model_size: str = "small", verifier=None,
+                 *, inkrementell_final: bool = False,
+                 inkrementell_audio: bool = False) -> None:
         from faster_whisper import WhisperModel
 
         # Optionaler SpeakerVerifier: rechnet jedes Segment dem
         # Zielsprecher zu (Segment.ist_ziel) oder nicht.
         self.verifier = verifier
+        self.inkrementell_final = inkrementell_final
+        self.inkrementell_audio = inkrementell_audio
+        self._decoder = None
         _cuda_dlls_einbinden()
         try:
             self.model = WhisperModel(model_size, device="cuda",
@@ -236,11 +244,18 @@ class ChunkTranscriber:
         self.verarbeitete_samples = 0
         self._audio_cache = None
         self._cache_groesse = -1
+        self._pending = None
 
     def _decode(self, pfad: Path):
         """Dekodiert nur neu, wenn die Datei gewachsen ist (Cache)."""
         from faster_whisper.audio import decode_audio
 
+        if getattr(self, "inkrementell_audio", False) and pfad.suffix.lower() == ".mp3":
+            from operations.pipeline.incremental_audio import IncrementalMp3Decoder
+
+            if getattr(self, "_decoder", None) is None:
+                self._decoder = IncrementalMp3Decoder(pfad, sampling_rate=SAMPLE_RATE)
+            return self._decoder.audio()
         groesse = pfad.stat().st_size
         if self._audio_cache is None or groesse != self._cache_groesse:
             self._audio_cache = decode_audio(str(pfad), sampling_rate=SAMPLE_RATE)
@@ -248,8 +263,24 @@ class ChunkTranscriber:
         return self._audio_cache
 
     def dekodiertes_audio(self, pfad: Path):
-        """Volles dekodiertes Audio (Cache) — fuer den Gap-Verify-Nachpass."""
-        return self._decode(pfad)
+        """Vollstaendiges Audio inklusive Flush fuer NO/Gap-Verifikation."""
+        audio = self._decode(pfad)
+        if getattr(self, "_decoder", None) is not None:
+            return self._decoder.audio(final=True, wait=True)
+        return audio
+
+    def close(self) -> None:
+        """Offene ASR-Generatoren und den MP3-Worker schliessen."""
+        pending = getattr(self, "_pending", None)
+        try:
+            if pending is not None:
+                pending.close()
+        finally:
+            self._pending = None
+            decoder = getattr(self, "_decoder", None)
+            if decoder is not None:
+                decoder.close()
+                self._decoder = None
 
     def neue_quelle(self) -> None:
         """Auf eine NEUE wachsende Datei umschalten (Stream-Reconnect).
@@ -260,9 +291,21 @@ class ChunkTranscriber:
         haetten sonst je einen Prozess-Neustart mit Zaehlerverlust
         erzwungen).
         """
+        self.close()
         self.verarbeitete_samples = 0
         self._audio_cache = None
         self._cache_groesse = -1
+        self._pending = None
+
+    def _naechstes_teilergebnis(self) -> list[Segment]:
+        try:
+            return next(self._pending)
+        except StopIteration:
+            self._pending = None
+            return []
+        except Exception:
+            self._pending = None
+            raise
 
     def _transkribiere(self, ausschnitt, batched: bool):
         if batched and self.geraet.startswith("cuda"):
@@ -283,24 +326,35 @@ class ChunkTranscriber:
 
     def naechster_chunk(self, pfad: Path, final: bool = False) -> list[Segment] | None:
         """Segmente des naechsten Chunks (mit Overlap-Dedup) oder None."""
+        if getattr(self, "_pending", None) is not None:
+            return self._naechstes_teilergebnis()
         # Download-Start-Race: Datei existiert evtl. noch nicht oder ist
         # noch zu klein zum Dekodieren (E279-Befund).
-        if not pfad.exists() or pfad.stat().st_size < 65536:
+        streaming_final = (final and getattr(self, "inkrementell_audio", False)
+                           and pfad.suffix.lower() == ".mp3")
+        if not pfad.exists() or pfad.stat().st_size < (1 if streaming_final else 65536):
             return None
         audio = self._decode(pfad)
+        decoder = getattr(self, "_decoder", None)
+        if decoder is not None and final:
+            audio = decoder.audio(final=True)
+        abgeschlossen = decoder is None or decoder.finished
+        if decoder is not None and abgeschlossen:
+            # The worker may finish after the previous snapshot was taken.
+            audio = decoder.audio()
         verfuegbar = len(audio) - self.verarbeitete_samples
         chunk_samples = config.CHUNK_SEKUNDEN * SAMPLE_RATE
-        if verfuegbar < chunk_samples and not (final and verfuegbar > 0):
-            return None
-        nimm = verfuegbar if final else chunk_samples
+        if verfuegbar < chunk_samples and not (final and abgeschlossen and verfuegbar > 0):
+            return [] if final and not abgeschlossen else None
+        batched = (final and verfuegbar > 3 * chunk_samples
+                   and getattr(self, "geraet", "").startswith("cuda"))
+        inkrementell = getattr(self, "inkrementell_final", False)
+        nimm = (verfuegbar if final and (batched or not inkrementell)
+                else min(verfuegbar, chunk_samples))
         start = self.verarbeitete_samples
         overlap = min(int(config.OVERLAP_S * SAMPLE_RATE), start)
         ausschnitt = audio[start - overlap:start + nimm]
-        self.verarbeitete_samples = start + nimm
-
-        # Grosser finaler Rest: batched deutlich schneller auf GPU.
-        gross = nimm > 3 * chunk_samples
-        fw_segs = self._transkribiere(ausschnitt, batched=(final and gross))
+        fw_segs = self._transkribiere(ausschnitt, batched=batched)
 
         offset_s = (start - overlap) / SAMPLE_RATE
         grenze_s = start / SAMPLE_RATE
@@ -323,12 +377,34 @@ class ChunkTranscriber:
                         for w in worte
                     ]
 
-        adaptiert = [_SegAdapter(s) for s in fw_segs]
-        segmente = segmente_mit_wort_dedup(adaptiert, grenze_s)
-        if self.verifier is not None:
-            for seg in segmente:
-                a = int(seg.start_s * SAMPLE_RATE)
-                b = int(seg.end_s * SAMPLE_RATE)
-                ausschnitt_seg = audio[max(0, a):min(len(audio), b)]
-                seg.ist_ziel, _sim = self.verifier.ist_zielsprecher(ausschnitt_seg)
+        def vorbereiten(raw):
+            adaptiert = [_SegAdapter(s) for s in raw]
+            segmente = segmente_mit_wort_dedup(adaptiert, grenze_s)
+            if self.verifier is not None:
+                for seg in segmente:
+                    a = int(seg.start_s * SAMPLE_RATE)
+                    b = int(seg.end_s * SAMPLE_RATE)
+                    ausschnitt_seg = audio[max(0, a):min(len(audio), b)]
+                    seg.ist_ziel, _sim = self.verifier.ist_zielsprecher(ausschnitt_seg)
+            return adaptiert, segmente
+
+        if batched and inkrementell:
+            def teilergebnisse():
+                for raw in fw_segs:
+                    adaptiert, segmente = vorbereiten([raw])
+                    ende = math.ceil(adaptiert[0].end * SAMPLE_RATE)
+                    self.verarbeitete_samples = max(
+                        self.verarbeitete_samples, min(start + nimm, ende))
+                    yield segmente
+                # Auch abschliessende Stille ist erst nach erfolgreichem
+                # Durchlauf fertig. None bleibt dem naechsten Aufruf vorbehalten.
+                self.verarbeitete_samples = start + nimm
+
+            self._pending = teilergebnisse()
+            return self._naechstes_teilergebnis()
+
+        _, segmente = vorbereiten(fw_segs)
+        # Erst nach erfolgreicher ASR und Sprecherpruefung fortschreiben:
+        # ein fehlgeschlagener Abschnitt muss erneut versucht werden.
+        self.verarbeitete_samples = start + nimm
         return segmente

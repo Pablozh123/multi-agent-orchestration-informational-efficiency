@@ -1,0 +1,103 @@
+File groups:
+
+[other]
+- .gitignore
+- operations/pipeline/basisraten.py
+- operations/pipeline/bot.py
+- operations/pipeline/config.py
+- operations/pipeline/execution.py
+- operations/pipeline/orderbook.py
+- operations/pipeline/transcription.py
+- requirements.txt
+- tests/test_basisraten_schwelle.py
+- .graphifyignore
+- docs/decisions/2026-10-10-mentions-latenz.md
+- operations/pipeline/background.py
+- operations/pipeline/incremental_audio.py
+- operations/pipeline/parallel_orders.py
+- tests/test_allin_manual_start.py
+- tests/test_allin_next_live.py
+- tests/test_allin_next_paper.py
+- tests/test_allin_price_cap_audit.py
+- tests/test_allin_september11_ready.py
+- tests/test_incremental_audio.py
+- tests/test_mentions_parallel_orders.py
+- tests/test_mentions_pipeline_latency.py
+
+[project control docs]
+- AGENTS.md
+- GOAL.md
+- STATUS.md
+- docs/project/WORK_LOG.md
+- docs/project/ALLIN_E289_START_2026-09-11.md
+- docs/project/ALLIN_NEXT_LIVE.md
+- docs/project/ALLIN_NEXT_PAPER.md
+- docs/project/ALLIN_PRESCAN_2026-09-11.md
+- docs/project/ALLIN_PRICE_CAP_AUDIT_2026-09-12.md
+- docs/project/ISW_ANALYSE_2026-09-19.md
+- docs/project/ISW_SPEED_REVIEW_2026-10-07.md
+- docs/project/ISW_UPDATE_2026-10-07.md
+- docs/project/MENTIONS_OPTIMIERUNG_2026-10-10.md
+- docs/project/QUELLENLATENZ_MESSZIEL.md
+- docs/project/UEBERGABE_2026-10-10_ARCHITEKTUR_MENTIONS_LATENZ_JEV.md
+- docs/project/evidence/mentions_latency_20261010/baseline.json
+- docs/project/evidence/mentions_latency_20261010/basisraten_tests.txt
+- docs/project/evidence/mentions_latency_20261010/commit_plan.txt
+- docs/project/evidence/mentions_latency_20261010/decode_benchmark.json
+- docs/project/evidence/mentions_latency_20261010/development_review_check.txt
+- docs/project/evidence/mentions_latency_20261010/development_status_check.txt
+- docs/project/evidence/mentions_latency_20261010/focused_tests.txt
+- docs/project/evidence/mentions_latency_20261010/followup_development_review.txt
+- docs/project/evidence/mentions_latency_20261010/followup_development_suite.txt
+- docs/project/evidence/mentions_latency_20261010/followup_final_suite.txt
+- docs/project/evidence/mentions_latency_20261010/followup_operational_review.txt
+- docs/project/evidence/mentions_latency_20261010/followup_operational_tests.txt
+- docs/project/evidence/mentions_latency_20261010/followup_status.txt
+- docs/project/evidence/mentions_latency_20261010/followup_verification.json
+- docs/project/evidence/mentions_latency_20261010/gpu.json
+- docs/project/evidence/mentions_latency_20261010/gpu20.json
+- docs/project/evidence/mentions_latency_20261010/hybrid.json
+- docs/project/evidence/mentions_latency_20261010/public_book_probe.json
+- docs/project/evidence/mentions_latency_20261010/review_check.txt
+- docs/project/evidence/mentions_latency_20261010/status_check.txt
+- docs/project/evidence/mentions_latency_20261010/streamed.json
+
+[deterministic analysis]
+- operations/analysis/allin_price_cap_audit.py
+- operations/analysis/mentions_decode_benchmark.py
+- operations/analysis/mentions_pipeline_benchmark.py
+
+[project automation]
+- operations/project/allin_manual_start.py
+- operations/project/allin_next_live.py
+- operations/project/allin_next_paper.py
+
+Suggested commit messages:
+- chore: update project files
+- docs: update project control workflow
+- feat: update deterministic analysis module
+- chore: add goal-driven project automation
+
+Risky mixed changes:
+- Code and docs changed together; split only if they are not one coherent workflow.
+- More than three logical groups changed; inspect before staging.
+
+Git diff stat:
+```text
+ .gitignore                           |    3 +
+ AGENTS.md                            |   15 +
+ GOAL.md                              |   54 +-
+ STATUS.md                            |  501 ++++++++++---
+ docs/project/WORK_LOG.md             | 1327 ++++++++++++++++++++++++++++++++++
+ operations/pipeline/basisraten.py    |   20 +-
+ operations/pipeline/bot.py           |  349 +++++----
+ operations/pipeline/config.py        |   29 +
+ operations/pipeline/execution.py     |  281 ++++++-
+ operations/pipeline/orderbook.py     |  129 ++++
+ operations/pipeline/transcription.py |  130 +++-
+ requirements.txt                     |    1 +
+ tests/test_basisraten_schwelle.py    |    2 +-
+ 13 files changed, 2592 insertions(+), 249 deletions(-)
+```
+
+Note: untracked files are grouped from git status and do not appear in git diff --stat until staged.

@@ -203,3 +203,65 @@ for H2 outputs.
    - Document daily-window interpretation, event timing limitations, and
      accepted wording for H2.
    - Acceptance: thesis-facing text stays aligned with deterministic outputs.
+
+## Mentions-Latenz, 10.10.2026, Umsetzung
+
+Expliziter Nutzerauftrag: frühe Auswertung, unabhängige Quellen, WS-Bücher,
+SDK-Tokenwarmup und Offline-Vergleich. Kein Bot gestartet, keine Order gesendet.
+Während Download weiterhin 20 s mit 2 s Overlap. Finaler GPU-Rest liefert jetzt
+jedes fertige ASR-Segment sofort; andere Transkriptor-Aufrufer behalten den
+vollständigen Flush. Quellen und Buchlogger blockieren Audio nicht mehr.
+
+E292-Replay: erstes Segment 17,85 statt 44,44 s; Anthropic-Schwelle 18,91 statt
+44,44 s, Microsoft 22,41 statt 44,44 s. Alle 13 Marktstände identisch.
+Durchgehend 20-s-GPU-Aufträge verworfen: 152,34 s insgesamt und Zuckerberg verpasst.
+CPU/GPU-Probe auf 360 s: 66,15 s parallel statt 89,64 s seriell; nicht produktiv übernommen.
+Das sind warme ASR-Zeiten, kein gemessener Ordervorsprung.
+
+Prüfung: 111 fokussierte Tests bestanden. Isolierte Gesamtsuite: 1514 bestanden,
+ein vorhandener Schema-2/3-Testfehler. Entwicklungskopie nach Übernahme: 1565 bestanden.
+Ruff bestanden; unabhängiges Review ohne verbleibendes blockierendes Finding.
+Vier globale Projekt-Review-Beanstandungen bleiben. Kein pauschales Ready-Signal.
+
+Bericht: docs/project/MENTIONS_OPTIMIERUNG_2026-10-10.md
+ADR: docs/decisions/2026-10-10-mentions-latenz.md
+Messdateien: docs/project/evidence/mentions_latency_20261010/
+
+Offen: Order-Parallelisierung mit Budgetreservierung, SDK-Versionscache,
+Fill-Buchhaltung, Jev. NO-Konsens und Gap-Verify bleiben erhalten.
+Intendant-Agenda nicht erreichbar (HTTP 426/TLS); offene Punkte im Bericht gesichert.
+Nächster Commit: perf(mentions): stream final ASR results and decouple public market data
+Nur eigene Änderungen aufnehmen, vorhandene Config-/Basisratenarbeit nicht mitziehen.
+
+
+## Mentions-Nachauftrag: MP3 und parallele Orders, 10. Oktober 2026
+
+Fortlaufende MP3-Dekodierung und unabhängige gleichzeitige Wort-Aufträge
+umgesetzt. Live-All-In nutzt das verfügbare Wallet mit gemeinsamer Reservierung,
+3-%-Puffer und bestehenden Preisdeckeln. Paper behält simuliertes Gesamtbudget.
+Bekannte verspätete Fills setzen den Sweep fort, unbekannte POSTs halten
+Reservierung. STOP/NO-Konsens/Gap-Verify erhalten. Kein Live-Bot gestartet.
+
+E292: zehn wachsende Präfixe58,97 zu8,98s Dekodierung, fertige89'508'096 Samples
+bitgleich. Keine Messung des Vorsprungs bis zum echten Fill.
+Entwicklung:1588 Tests PASS in105,90s; operativ134 fokussierte Tests PASS.
+Operativ separat bestehender Schema2/3-Fehler:12 PASS/1 FAIL. Vier vorhandene
+globale Projekt-Review-Fehlergruppen bleiben. Keine allgemeine Repo-Freigabe.
+
+Bericht: docs/project/MENTIONS_OPTIMIERUNG_2026-10-10.md
+ADR: docs/decisions/2026-10-10-mentions-latenz.md
+Evidenz: docs/project/evidence/mentions_latency_20261010/followup_verification.json
+Offen: Jev, reale Publikations-zu-Fill-Messung, Recovery unklarer POSTs über
+Neustart, prozessübergreifende Budgetreservierung und ASR-unabhängiger Resume
+nach verzögerter Bestätigung. Eigene Änderungen nicht gestaged/committed.
+Nächster eigener Commit: perf(mentions): decode growing audio once and parallelize wallet sweeps.
+
+
+### Lokaler Commit auf Nutzerauftrag, 10.10.2026
+
+Expliziter Nachauftrag «commiten»: Mentions-Änderungen in beiden Repositories
+lokal committen, ohne Push. Codestand per SHA-256 unverändert gegenüber
+followup_verification.json. Frische fokussierte Entwicklungssuite: 134 PASS
+in 12,81 s. Vorhandene Config-/Basisratenänderungen und fremde
+Status-/Logabschnitte bleiben ausserhalb des Commits.
+Commit: perf(mentions): decode growing audio once and parallelize wallet sweeps.

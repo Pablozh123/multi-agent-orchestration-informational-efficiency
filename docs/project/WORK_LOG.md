@@ -13953,3 +13953,93 @@ Next step:
 - E288 in run_annotationen.json annotieren (0 Kaeufe, Ursache Muster),
   Profil allin_september4 nach Watchdog-Ende (06.09. 06:00Z) auf
   aktiv=false.
+
+## Mentions-Latenz, 10.10.2026, Umsetzung
+
+Expliziter Nutzerauftrag: frühe Auswertung, unabhängige Quellen, WS-Bücher,
+SDK-Tokenwarmup und Offline-Vergleich. Kein Bot gestartet, keine Order gesendet.
+Während Download weiterhin 20 s mit 2 s Overlap. Finaler GPU-Rest liefert jetzt
+jedes fertige ASR-Segment sofort; andere Transkriptor-Aufrufer behalten den
+vollständigen Flush. Quellen und Buchlogger blockieren Audio nicht mehr.
+
+E292-Replay: erstes Segment 17,85 statt 44,44 s; Anthropic-Schwelle 18,91 statt
+44,44 s, Microsoft 22,41 statt 44,44 s. Alle 13 Marktstände identisch.
+Durchgehend 20-s-GPU-Aufträge verworfen: 152,34 s insgesamt und Zuckerberg verpasst.
+CPU/GPU-Probe auf 360 s: 66,15 s parallel statt 89,64 s seriell; nicht produktiv übernommen.
+Das sind warme ASR-Zeiten, kein gemessener Ordervorsprung.
+
+Prüfung: 111 fokussierte Tests bestanden. Isolierte Gesamtsuite: 1514 bestanden,
+ein vorhandener Schema-2/3-Testfehler. Entwicklungskopie nach Übernahme: 1565 bestanden.
+Ruff bestanden; unabhängiges Review ohne verbleibendes blockierendes Finding.
+Vier globale Projekt-Review-Beanstandungen bleiben. Kein pauschales Ready-Signal.
+
+Bericht: docs/project/MENTIONS_OPTIMIERUNG_2026-10-10.md
+ADR: docs/decisions/2026-10-10-mentions-latenz.md
+Messdateien: docs/project/evidence/mentions_latency_20261010/
+
+Offen: Order-Parallelisierung mit Budgetreservierung, SDK-Versionscache,
+Fill-Buchhaltung, Jev. NO-Konsens und Gap-Verify bleiben erhalten.
+Intendant-Agenda nicht erreichbar (HTTP 426/TLS); offene Punkte im Bericht gesichert.
+Nächster Commit: perf(mentions): stream final ASR results and decouple public market data
+Nur eigene Änderungen aufnehmen, vorhandene Config-/Basisratenarbeit nicht mitziehen.
+
+
+## Mentions-Nachauftrag: inkrementelle MP3 und parallele Wallet-Sweeps, 10.10.2026
+
+Explizit beauftragt: fortlaufendes Dekodieren implementieren und testen; bei
+erreichter Wortschwelle alle ausführbaren Asks bis zum Preisdeckel kaufen,
+mit dem Wallet als Gesamtbudget und unabhängigen gleichzeitigen Wort-Aufträgen.
+PyAV dekodiert MP3-Bytes einmal; ASR-Fenster/Overlap bleiben erhalten.
+Thread-Aufträge entkoppeln Orders von der Audioauswertung, Wallet-Reservierungen
+verhindern doppelte Budgetverplanung. 3-%-Puffer und Mindestorder bleiben.
+Andere Serien behalten den Standard, Paper behält sein simuliertes Budget.
+
+E292-Messung: zehn wachsende Präfixe 58,97 zu 8,98 s, Faktor6,57 für Dekodierung.
+Vollständige Datei 8,04 zu 7,40 s. 89'508'096 Samples in beiden Endvergleichen
+bitgleich. Ein lokaler Cache-Durchlauf ohne ASR/Netzwerk/Orders.
+
+Unabhängiger Review: Rennen bei früher Bestätigung, Pending-Nachlauf,
+Fortsetzung nach delayed Fill, Wallet-Aufstockung vor erstem Trade, Legacy-YES-
+Sperre und Retryintervalle korrigiert. Final28 Order-/Bot-Tests grün. Ruff
+und eigene Whitespace-Prüfung bestanden. Gesamtsuite/operative Regressionen
+werden im anschliessenden Verifikationsnachtrag mit tatsächlichen Zahlen erfasst.
+
+Bericht/ADR und decode_benchmark.json unter docs/project/evidence/mentions_latency_20261010.
+Gleicher eigener Codestand in operativer und Entwicklungskopie, Sicherungen
+unter data/live/mentions_concurrent_followup_20261010/before. Vorhandene
+Config-/Basisraten-/Statusarbeit erhalten. Kein Bot gestartet, keine echten
+Orders/Absagen gesendet, keine Credentials gelesen, nichts gestaged/committed.
+
+Offen: Jev, gemessene Publikations-zu-Fill-Latenz, vollständige Recovery
+unbekannter POSTs ohne ID über Neustart, prozessübergreifendes Wallet-Ledger.
+Intendant-Agenda war im vorherigen Lauf wegen HTTP426/TLS nicht erreichbar;
+Folgearbeit bleibt deshalb in den Projektdateien.
+Vorgeschlagener nächster Commit: perf(mentions): decode growing audio once and parallelize wallet sweeps.
+
+
+### Verifikationsnachtrag Mentions, 10.10.2026
+
+Finale Entwicklungssuite1588 PASS in105,90s. Operative gezielte Suite134 PASS
+in31,47s. Bestehender operativer Schema2/3-Fehler separat bestätigt:12 PASS,
+1 FAIL (test_basisraten_schwelle.py:215); kein fremder Testfix. Ruff für zwölf
+Dateien PASS, eigene Whitespace-Prüfung PASS. Unabhängiges Review einschliesslich
+Paper-Budget-Ende ohne offenes Finding. Graphify aktualisiert,5574 Knoten/11274
+Kanten. Vier bekannte globale review_check-Fehlergruppen bleiben.
+Fehlgeleitete doppelte/Temp-Verzeichnis-Testläufe nicht als Beleg verwendet;
+finale Suite einzeln mit eigenem Testverzeichnis erfolgreich.
+Prüfkommandos und Ausgaben: docs/project/evidence/mentions_latency_20261010/followup_*
+Manifest: followup_verification.json. Preisdeckel, STOP, NO-Konsens und
+Gap-Verify erhalten; Wallet-Ledger gilt innerhalb eines Prozesses.
+Bei delayed-Bestätigungen hängt das Einreihen eines Folgesweeps noch am
+nächsten Hauptloop-Ergebnisabruf, was bei langen ASR-Aufrufen verzögern kann.
+Nächster eigener Commit: perf(mentions): decode growing audio once and parallelize wallet sweeps.
+
+
+### Lokaler Commit auf Nutzerauftrag, 10.10.2026
+
+Expliziter Nachauftrag «commiten»: Mentions-Änderungen in beiden Repositories
+lokal committen, ohne Push. Codestand per SHA-256 unverändert gegenüber
+followup_verification.json. Frische fokussierte Entwicklungssuite: 134 PASS
+in 12,81 s. Vorhandene Config-/Basisratenänderungen und fremde
+Status-/Logabschnitte bleiben ausserhalb des Commits.
+Commit: perf(mentions): decode growing audio once and parallelize wallet sweeps.

@@ -1,0 +1,54 @@
+PASS: STATUS.md updated
+## Automation Snapshot
+
+Generated: 2026-10-10 12:03
+
+Current goal: `goal-isw-ueberraschung-feuerkette-001` - Feuerkette für ISW-Überraschungen (Signal bis Order-Spezifikation)
+
+Current roadmap phase: Live-Strecke: vom Messapparat zur Reaktionsfähigkeit
+
+Test status: FAIL
+
+Pytest summary: `1 failed, 1514 passed in 117.87s (0:01:57)`
+
+Git branch: `codex/mentions-latency-20261010`
+
+Latest commit: `eb4856a`
+
+Git status:
+
+```text
+ M operations/pipeline/basisraten.py
+ M operations/pipeline/bot.py
+ M operations/pipeline/config.py
+ M operations/pipeline/execution.py
+ M operations/pipeline/orderbook.py
+ M operations/pipeline/transcription.py
+ M requirements.txt
+?? .superpowers/
+?? operations/analysis/mentions_pipeline_benchmark.py
+?? operations/pipeline/background.py
+?? tests/test_mentions_pipeline_latency.py
+```
+
+Git diff stat:
+
+```text
+ operations/pipeline/basisraten.py    |  20 ++-
+ operations/pipeline/bot.py           | 240 +++++++++++++++++++----------------
+ operations/pipeline/config.py        |  29 +++++
+ operations/pipeline/execution.py     |  17 ++-
+ operations/pipeline/orderbook.py     | 129 +++++++++++++++++++
+ operations/pipeline/transcription.py |  81 +++++++++---
+ requirements.txt                     |   1 +
+ 7 files changed, 383 insertions(+), 134 deletions(-)
+```
+
+Blockers:
+
+- Worktree has uncommitted changes that need review before commit.
+- Pytest is failing; inspect output before continuing.
+
+Next recommended action:
+
+- feat(ukraine): Feuerkette Signal bis Order-Spezifikation

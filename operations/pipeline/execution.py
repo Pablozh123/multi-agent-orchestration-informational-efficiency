@@ -3,7 +3,7 @@
 Regeln:
 - Nur Limit-Orders zum gesehenen besten Ask.
 - Groesse = min(ausfuehrbare Tiefe, MAX_USD_PRO_MARKT, Restbudget).
-- MAX_USD_GESAMT als hartes Gesamtlimit.
+- MAX_USD_GESAMT als Gesamtlimit im Standardpfad; All-In opt-in nutzt das Wallet.
 - Maximal MAX_NACHBESSERUNGEN Nachbesserungen, danach aufgeben.
 - Jede Entscheidung wird mit Orderbuch-Snapshot als JSONL geloggt.
 - Kill-Switch: existiert data/live/STOP, wird nichts mehr platziert.
@@ -17,9 +17,12 @@ nie geloggt.
 from __future__ import annotations
 
 import json
+import math
+import time
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+from threading import Condition, Lock, RLock
 
 from operations.pipeline import config
 from operations.pipeline.decision import Decision
@@ -101,9 +104,12 @@ class ExecutorBase:
         self.log_pfad = log_pfad or (config.LIVE_DIR / "decisions_log.jsonl")
         self.log_pfad.parent.mkdir(parents=True, exist_ok=True)
         self.ausgegeben_usd = 0.0
+        self._log_lock = Lock()
+        self._place_lock = RLock()
 
     def _stop_aktiv(self) -> bool:
-        return config.STOP_FILE.exists()
+        abort = getattr(self, "abort_event", None)
+        return config.STOP_FILE.exists() or (abort is not None and abort.is_set())
 
     def _log(self, decision: Decision, book: dict, result: PlacementResult) -> None:
         eintrag = {
@@ -118,7 +124,7 @@ class ExecutorBase:
                 "neg_risk": book.get("neg_risk"),
             },
         }
-        with open(self.log_pfad, "a", encoding="utf-8") as f:
+        with self._log_lock, open(self.log_pfad, "a", encoding="utf-8") as f:
             f.write(json.dumps(eintrag, ensure_ascii=False) + "\n")
 
     def place(self, decision: Decision, book: dict) -> PlacementResult:
@@ -195,6 +201,10 @@ class ExecutorBase:
 class DryRunExecutor(ExecutorBase):
     """Simuliert Fills zum Limitpreis (Annahme fuer die Auswertung)."""
 
+    def place(self, decision: Decision, book: dict) -> PlacementResult:
+        with self._place_lock:
+            return super().place(decision, book)
+
     def _platziere(
         self, decision: Decision, usd: float, shares: float
     ) -> PlacementResult:
@@ -239,6 +249,77 @@ def baue_live_client():
     return client, funder
 
 
+class OrderNotSent(RuntimeError):
+    """Signing/STOP failed before a request could reach the exchange."""
+
+
+class WalletBudget:
+    """One in-process wallet, conservative fee reserve, no stale-cache refunds."""
+
+    def __init__(self, balance: float | None) -> None:
+        self._condition = Condition()
+        self._remaining = self._valid_balance(balance)
+        self._holds: dict[int, tuple[float, float]] = {}
+        self._working: set[int] = set()
+        self._next = 0
+        self.spent_usd = 0.0
+
+    @staticmethod
+    def _valid_balance(value):
+        if value is None:
+            return None
+        value = float(value)
+        if not math.isfinite(value) or value < 0:
+            raise ValueError("invalid wallet balance")
+        return value
+
+    @property
+    def available(self) -> float:
+        with self._condition:
+            return max(0.0, (self._remaining or 0)-sum(h[1] for h in self._holds.values()))
+
+    def reserve(self) -> tuple[int, float] | None:
+        with self._condition:
+            usd = math.floor(min(config.MAX_USD_PRO_MARKT, self.available*0.97)*100)/100
+            if usd < 1:
+                return None
+            self._next += 1
+            hold = min(self.available, math.ceil(usd/0.97*100)/100)
+            self._holds[self._next] = (usd, hold)
+            self._working.add(self._next)
+            return self._next, usd
+
+    def settle(self, ticket: int, spent: float) -> None:
+        with self._condition:
+            usd, hold = self._holds[ticket]
+            if not math.isfinite(spent) or not 0 <= spent <= usd+0.01:
+                raise ValueError("fill outside reserved amount")
+            self._remaining = max(0.0, self._remaining-min(hold, math.ceil(spent/0.97*100)/100))
+            self.spent_usd = round(self.spent_usd+spent, 2)
+            del self._holds[ticket]
+            self._working.discard(ticket)
+            self._condition.notify_all()
+
+    def pending(self, ticket: int) -> None:
+        with self._condition:
+            self._working.discard(ticket)  # hold stays until terminal confirmation
+            self._condition.notify_all()
+
+    def wait_for_settlement(self) -> bool:
+        with self._condition:
+            if not self._working:
+                return False
+            self._condition.wait(timeout=0.05)
+            return True
+
+    def refresh(self, balance: float | None) -> None:
+        balance = self._valid_balance(balance)
+        with self._condition:
+            if balance is not None and not self._holds:
+                self._remaining = (balance if self._remaining is None or self.spent_usd == 0
+                                   else min(self._remaining, balance))
+
+
 class LiveExecutor(ExecutorBase):
     """Echte FAK-Market-Orders ueber py-clob-client-v2 (nur mit --live).
 
@@ -269,6 +350,174 @@ class LiveExecutor(ExecutorBase):
             )
         )
         self._start_balance = self._wallet_balance()
+
+    def prepare_markets(self, rules) -> dict:
+        """Populate SDK token/tick/fee context before waiting for the drop."""
+        prepared, errors = [], []
+        for token in dict.fromkeys(
+            token for rule in rules
+            for token in (rule.yes_token_id, rule.no_token_id) if token
+        ):
+            try:
+                self.client.get_fee_exponent(token)
+                prepared.append(token)
+            except Exception as exc:
+                errors.append({"token": token, "error": str(exc)[:160]})
+        return {"prepared_tokens": len(prepared), "errors": errors}
+
+    def enable_wallet_budget(self) -> None:
+        """Opt-in for All-In. Other profiles retain their configured budget."""
+        self.wallet_budget = WalletBudget(self._start_balance)
+        self._wallet_lock = RLock()
+        self._pending_orders = {}
+        self._next_balance_refresh = 0.0
+
+    def place(self, decision: Decision, book: dict) -> PlacementResult:
+        if not hasattr(self, "wallet_budget") or decision.action == "NONE":
+            return super().place(decision, book)
+        result = self._place_wallet(decision, book)
+        self._log(decision, book, result)
+        return result
+
+    def _settle_wallet(self, ticket: int, spent: float) -> None:
+        with self._wallet_lock:
+            self.wallet_budget.settle(ticket, spent)
+            self.ausgegeben_usd = self.wallet_budget.spent_usd
+
+    @staticmethod
+    def _terminal_status(status: dict, cap: float):
+        if str(status.get("status", "")).upper() not in {"MATCHED", "FILLED", "CANCELED", "CANCELLED", "EXPIRED"}:
+            return None
+        raw = status.get("size_matched")
+        if raw is None:
+            return None
+        shares = float(raw)
+        if not math.isfinite(shares) or shares < 0:
+            raise ValueError("invalid matched size")
+        return round(shares, 2), round(shares*cap, 2)
+
+    def _wallet_clip(self, d: Decision, usd: float):
+        cap = preis_deckel_fuer(d.outcome)
+        answer = self._bestell(d.token_id, usd, cap)
+        order_id = answer.get("orderID") or answer.get("orderId") or ""
+        if answer.get("success") is False:
+            return 0.0, 0.0, order_id, True, "rejected"
+        try:
+            taking, making = float(answer.get("takingAmount") or 0), float(answer.get("makingAmount") or 0)
+            if not all(math.isfinite(v) and v >= 0 for v in (taking, making)):
+                raise ValueError("invalid post fill")
+        except (ValueError, TypeError):
+            return 0.0, 0.0, order_id, False, "invalid post fill"
+        if taking > 0 and making > 0 and str(answer.get("status", "")).lower() not in {"delayed", "live", "pending"}:
+            return round(taking, 2), round(making, 2), order_id, True, "post_antwort"
+        if order_id:
+            try:
+                terminal = self._terminal_status(self._order_status(order_id), cap)
+            except Exception:
+                terminal = None
+            if terminal is not None:
+                shares, estimate = terminal
+                return shares, min(usd, estimate), order_id, True, "status_cap_estimate"
+        return 0.0, 0.0, order_id, False, "pending"
+
+    def _place_wallet(self, d: Decision, book: dict) -> PlacementResult:
+        from operations.pipeline.orderbook import best_ask
+
+        shares_total = usd_total = 0.0
+        attempts = empty = 0
+        status, detail = "gave_up", "no executable asks"
+        while not self._stop_aktiv():
+            try:
+                current = self.book_source(d.token_id)
+                ask = best_ask(current)
+            except Exception as exc:
+                detail = f"book unavailable: {exc}"
+                break
+            if ask is None or ask > preis_deckel_fuer(d.outcome):
+                break
+            reserved = self.wallet_budget.reserve()
+            if reserved is None:
+                if self.wallet_budget.wait_for_settlement():
+                    continue
+                status, detail = "skipped_budget", "wallet fully spent or reserved"
+                break
+            ticket, usd = reserved
+            if self._stop_aktiv():
+                self._settle_wallet(ticket, 0)
+                status = "skipped_stop"
+                break
+            order_id = ""
+            try:
+                shares, cost, order_id, terminal, source = self._wallet_clip(d, usd)
+                if terminal:
+                    self._settle_wallet(ticket, cost)
+                else:
+                    self.wallet_budget.pending(ticket)
+            except OrderNotSent as exc:
+                self._settle_wallet(ticket, 0)
+                status, detail = ("skipped_stop" if self._stop_aktiv() else "error"), str(exc)
+                break
+            except Exception as exc:
+                self.wallet_budget.pending(ticket)
+                shares, cost, terminal, source = 0.0, 0.0, False, str(exc)
+            attempts += 1
+            if not terminal:
+                with self._wallet_lock:
+                    self._pending_orders[ticket] = (d, order_id, book, usd)
+                status, detail = "pending_confirmation", f"reservation retained; order={order_id}; {source}"
+                break
+            shares_total += shares
+            usd_total += cost
+            detail = f"{attempts} FAK clips; last fill source={source}"
+            empty = empty+1 if shares <= 0 else 0
+            if empty > config.MAX_NACHBESSERUNGEN:
+                break
+        else:
+            status = "skipped_stop"
+        if shares_total > 0 and status != "pending_confirmation":
+            status = "live_fill"
+        return PlacementResult(d.market_id, d.action, d.token_id, d.limit_price,
+                               round(usd_total, 2), round(shares_total, 2), status, detail)
+
+    def reconcile_wallet(self) -> list[PlacementResult]:
+        """Off the audio path. Unknown posts keep their reservation."""
+        resolved = []
+        with self._wallet_lock:
+            pending = list(self._pending_orders.items())
+        for ticket, (d, order_id, book, usd) in pending:
+            if not order_id:
+                continue
+            try:
+                terminal = self._terminal_status(self._order_status(order_id), preis_deckel_fuer(d.outcome))
+                if terminal is None:
+                    continue
+                shares, estimate = terminal
+                cost = min(usd, estimate)
+                with self._wallet_lock:
+                    if ticket not in self._pending_orders:
+                        continue
+                    self._settle_wallet(ticket, cost)
+                    del self._pending_orders[ticket]
+                result = PlacementResult(d.market_id, d.action, d.token_id, d.limit_price,
+                                         cost, shares, "live_fill" if shares else "gave_up",
+                                         f"reconciled {order_id}; cost bounded by price cap")
+                self._log(d, book, result)
+                resolved.append(result)
+            except Exception:
+                continue  # keep reservation when confirmation is unavailable
+        if time.monotonic() < self._next_balance_refresh:
+            return resolved
+        self._next_balance_refresh = time.monotonic() + 5
+        with self._wallet_lock:
+            spent_before_read = self.ausgegeben_usd
+        balance = self._wallet_balance()
+        with self._wallet_lock:
+            # A fill completed while the snapshot was in flight. Subtract it
+            # even if the server snapshot may already include it, never refund it.
+            delta = self.ausgegeben_usd-spent_before_read
+            adjusted = max(0.0, balance-delta/0.97) if balance is not None else None
+            self.wallet_budget.refresh(adjusted)
+        return resolved
 
     def _wallet_balance(self) -> float | None:
         """Aktuelles pUSD-Guthaben der Deposit-Wallet (Server-Sicht)."""
@@ -304,13 +553,24 @@ class LiveExecutor(ExecutorBase):
         from py_clob_client_v2.clob_types import OrderType
         from py_clob_client_v2.order_builder.constants import BUY
 
-        order = self.client.create_market_order(
-            MarketOrderArgsV2(
-                token_id=token_id, amount=usd, side=BUY,
-                price=preis_deckel, order_type=OrderType.FAK,
+        try:
+            order = self.client.create_market_order(
+                MarketOrderArgsV2(
+                    token_id=token_id, amount=usd, side=BUY,
+                    price=preis_deckel, order_type=OrderType.FAK,
+                )
             )
-        )
-        return self.client.post_order(order, OrderType.FAK)
+        except Exception as exc:
+            raise OrderNotSent(f"order not signed: {exc}") from exc
+        if self._stop_aktiv():
+            raise OrderNotSent("STOP before post_order")
+        try:
+            return self.client.post_order(order, OrderType.FAK)
+        except Exception as exc:
+            status = getattr(exc, "status_code", None)
+            if isinstance(status, int) and status in {400, 401, 403, 404, 422}:
+                raise OrderNotSent(f"order rejected ({status}): {exc}") from exc
+            raise
 
     def _order_status(self, order_id: str) -> dict:
         return self.client.get_order(order_id)
@@ -395,7 +655,8 @@ class LiveExecutor(ExecutorBase):
             # Naechstes Level pruefen: nur weiter, wenn wieder Ware unter
             # dem Deckel liegt.
             try:
-                neuer_ask = best_ask(fetch_book(decision.token_id))
+                source = getattr(self, "book_source", fetch_book)
+                neuer_ask = best_ask(source(decision.token_id))
             except Exception:  # noqa: BLE001
                 break
             if neuer_ask is None or neuer_ask > deckel:

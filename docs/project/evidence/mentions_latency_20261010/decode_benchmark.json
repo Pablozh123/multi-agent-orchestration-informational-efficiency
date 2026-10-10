@@ -1,0 +1,205 @@
+{
+  "source": "C:\\Users\\chole\\ba-thesis\\data\\live\\allin_live_1139524\\episode.mp3",
+  "source_bytes": 134265006,
+  "created_utc": "2026-10-10T10:48:18.987039+00:00",
+  "python": "3.14.3",
+  "pyav": "18.0.0",
+  "sampling_rate": 16000,
+  "prefix_stages": 10,
+  "limitations": [
+    "One local run; cached files and machine load affect timings.",
+    "No ASR, GPU, network or trading was invoked.",
+    "Prefix waveforms exclude 64 resampler-tail samples.",
+    "Streaming can withhold a subsecond source FIFO plus demux buffers."
+  ],
+  "prefixes": [
+    {
+      "stage": 1,
+      "bytes": 13426500,
+      "baseline_s": 1.4159464999102056,
+      "baseline_samples": 8949504,
+      "incremental_s": 0.7972819998394698,
+      "incremental_samples": 8945648,
+      "compressed_bytes_read": 13426500,
+      "vs_complete_audio": {
+        "shared_samples": 8945584,
+        "excluded_tail_samples": 64,
+        "max_abs_error": 0.0,
+        "differing_samples": 0,
+        "same_length": false
+      }
+    },
+    {
+      "stage": 2,
+      "bytes": 26853001,
+      "baseline_s": 1.7628265998791903,
+      "baseline_samples": 17900544,
+      "incremental_s": 0.7265375000424683,
+      "incremental_samples": 17891312,
+      "compressed_bytes_read": 26853001,
+      "vs_complete_audio": {
+        "shared_samples": 17891248,
+        "excluded_tail_samples": 64,
+        "max_abs_error": 0.0,
+        "differing_samples": 0,
+        "same_length": false
+      }
+    },
+    {
+      "stage": 3,
+      "bytes": 40279501,
+      "baseline_s": 2.4909725000616163,
+      "baseline_samples": 26851200,
+      "incremental_s": 0.6558331998530775,
+      "incremental_samples": 26847728,
+      "compressed_bytes_read": 40279501,
+      "vs_complete_audio": {
+        "shared_samples": 26847664,
+        "excluded_tail_samples": 64,
+        "max_abs_error": 0.0,
+        "differing_samples": 0,
+        "same_length": false
+      }
+    },
+    {
+      "stage": 4,
+      "bytes": 53706002,
+      "baseline_s": 4.697292099939659,
+      "baseline_samples": 35802240,
+      "incremental_s": 0.704829900059849,
+      "incremental_samples": 35793392,
+      "compressed_bytes_read": 53706002,
+      "vs_complete_audio": {
+        "shared_samples": 35793328,
+        "excluded_tail_samples": 64,
+        "max_abs_error": 0.0,
+        "differing_samples": 0,
+        "same_length": false
+      }
+    },
+    {
+      "stage": 5,
+      "bytes": 67132503,
+      "baseline_s": 4.941652599954978,
+      "baseline_samples": 44753280,
+      "incremental_s": 0.6344407999422401,
+      "incremental_samples": 44749808,
+      "compressed_bytes_read": 67132503,
+      "vs_complete_audio": {
+        "shared_samples": 44749744,
+        "excluded_tail_samples": 64,
+        "max_abs_error": 0.0,
+        "differing_samples": 0,
+        "same_length": false
+      }
+    },
+    {
+      "stage": 6,
+      "bytes": 80559003,
+      "baseline_s": 7.679605899844319,
+      "baseline_samples": 53704320,
+      "incremental_s": 0.6851971999276429,
+      "incremental_samples": 53695472,
+      "compressed_bytes_read": 80559003,
+      "vs_complete_audio": {
+        "shared_samples": 53695408,
+        "excluded_tail_samples": 64,
+        "max_abs_error": 0.0,
+        "differing_samples": 0,
+        "same_length": false
+      }
+    },
+    {
+      "stage": 7,
+      "bytes": 93985504,
+      "baseline_s": 12.163546799914911,
+      "baseline_samples": 62655360,
+      "incremental_s": 1.7164903001394123,
+      "incremental_samples": 62651888,
+      "compressed_bytes_read": 93985504,
+      "vs_complete_audio": {
+        "shared_samples": 62651824,
+        "excluded_tail_samples": 64,
+        "max_abs_error": 0.0,
+        "differing_samples": 0,
+        "same_length": false
+      }
+    },
+    {
+      "stage": 8,
+      "bytes": 107412004,
+      "baseline_s": 8.084652499994263,
+      "baseline_samples": 71606400,
+      "incremental_s": 1.8496139999479055,
+      "incremental_samples": 71597552,
+      "compressed_bytes_read": 107412004,
+      "vs_complete_audio": {
+        "shared_samples": 71597488,
+        "excluded_tail_samples": 64,
+        "max_abs_error": 0.0,
+        "differing_samples": 0,
+        "same_length": false
+      }
+    },
+    {
+      "stage": 9,
+      "bytes": 120838505,
+      "baseline_s": 7.345923299901187,
+      "baseline_samples": 80557440,
+      "incremental_s": 0.5865737001877278,
+      "incremental_samples": 80553968,
+      "compressed_bytes_read": 120838505,
+      "vs_complete_audio": {
+        "shared_samples": 80553904,
+        "excluded_tail_samples": 64,
+        "max_abs_error": 0.0,
+        "differing_samples": 0,
+        "same_length": false
+      }
+    },
+    {
+      "stage": 10,
+      "bytes": 134265006,
+      "baseline_s": 8.385539799928665,
+      "baseline_samples": 89508096,
+      "incremental_s": 0.6227243999019265,
+      "incremental_samples": 89508096,
+      "compressed_bytes_read": 134265006,
+      "vs_complete_audio": {
+        "shared_samples": 89508096,
+        "excluded_tail_samples": 0,
+        "max_abs_error": 0.0,
+        "differing_samples": 0,
+        "same_length": true
+      }
+    }
+  ],
+  "growing": {
+    "baseline_total_s": 58.967958599328995,
+    "incremental_total_s": 8.97952299984172,
+    "baseline_decoded_prefix_bytes": 738457529,
+    "incremental_compressed_bytes_read": 134265006,
+    "final_samples": 89508096,
+    "final_comparison": {
+      "shared_samples": 89508096,
+      "excluded_tail_samples": 0,
+      "max_abs_error": 0.0,
+      "differing_samples": 0,
+      "same_length": true
+    },
+    "speedup": 6.566936640216681
+  },
+  "complete_file": {
+    "baseline_s": 8.040301800007,
+    "incremental_s": 7.400896300096065,
+    "compressed_bytes_read": 134265006,
+    "samples": 89508096,
+    "comparison": {
+      "shared_samples": 89508096,
+      "excluded_tail_samples": 0,
+      "max_abs_error": 0.0,
+      "differing_samples": 0,
+      "same_length": true
+    }
+  }
+}

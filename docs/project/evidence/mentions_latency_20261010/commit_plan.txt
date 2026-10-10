@@ -1,0 +1,57 @@
+File groups:
+
+[project control docs]
+- STATUS.md
+- docs/project/MENTIONS_OPTIMIERUNG_2026-10-10.md
+- docs/project/evidence/mentions_latency_20261010/baseline.json
+- docs/project/evidence/mentions_latency_20261010/basisraten_tests.txt
+- docs/project/evidence/mentions_latency_20261010/focused_tests.txt
+- docs/project/evidence/mentions_latency_20261010/gpu.json
+- docs/project/evidence/mentions_latency_20261010/gpu20.json
+- docs/project/evidence/mentions_latency_20261010/hybrid.json
+- docs/project/evidence/mentions_latency_20261010/public_book_probe.json
+- docs/project/evidence/mentions_latency_20261010/review_check.txt
+- docs/project/evidence/mentions_latency_20261010/status_check.txt
+- docs/project/evidence/mentions_latency_20261010/streamed.json
+
+[other]
+- operations/pipeline/basisraten.py
+- operations/pipeline/bot.py
+- operations/pipeline/config.py
+- operations/pipeline/execution.py
+- operations/pipeline/orderbook.py
+- operations/pipeline/transcription.py
+- requirements.txt
+- .superpowers/mentions-latency/apply_changes.py
+- .superpowers/mentions-latency/PLAN.md
+- .superpowers/mentions-latency/progress.md
+- .superpowers/mentions-latency/public_book_probe.py
+- docs/decisions/2026-10-10-mentions-latenz.md
+- operations/pipeline/background.py
+- tests/test_mentions_pipeline_latency.py
+
+[deterministic analysis]
+- operations/analysis/mentions_pipeline_benchmark.py
+
+Suggested commit messages:
+- docs: update project control workflow
+- chore: update project files
+- feat: update deterministic analysis module
+
+Risky mixed changes:
+- Code and docs changed together; split only if they are not one coherent workflow.
+
+Git diff stat:
+```text
+ STATUS.md                            | 110 ++++------------
+ operations/pipeline/basisraten.py    |  20 ++-
+ operations/pipeline/bot.py           | 240 +++++++++++++++++++----------------
+ operations/pipeline/config.py        |  29 +++++
+ operations/pipeline/execution.py     |  17 ++-
+ operations/pipeline/orderbook.py     | 129 +++++++++++++++++++
+ operations/pipeline/transcription.py |  81 +++++++++---
+ requirements.txt                     |   1 +
+ 8 files changed, 409 insertions(+), 218 deletions(-)
+```
+
+Note: untracked files are grouped from git status and do not appear in git diff --stat until staged.

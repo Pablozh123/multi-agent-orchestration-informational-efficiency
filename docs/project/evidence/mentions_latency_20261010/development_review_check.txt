@@ -1,0 +1,16 @@
+PASS: required docs - all required control docs exist
+PASS: active goal - goal-quellenlatenz-speed-edge-001: Quellen analysieren und mögliche Geschwindigkeitsvorteile messen
+PASS: sql select star - no SELECT star pattern found in operations
+FAIL: restricted claim wording - operations\agents\review_queue\_vendored_monitor_readonly.py:19; operations\mcp\monitor_readonly.py:19
+PASS: rcp guard - RCP usage remains guarded in analysis modules
+FAIL: fixed whale threshold - operations\analysis\h3_oos_maduro_case.py:4
+PASS: empirical decision markers - H2, H3, and ML markers are present
+PASS: h2 window guard - h2_window_status=selected
+PASS: h3 tier guard - h3_tier_status=selected
+FAIL: ml scope guard - ML implementation exists while ml_scope_status is deferred: operations\pipeline\speaker.py
+PASS: runtime agent guards - agent and MCP entry points remain guarded
+PASS: strategy architecture - strategy prototype is scoped as bounded signal generation and Python backtesting
+PASS: monitor v2 access guardrails - bounded summary access is enforced for 19 rows
+FAIL: live trading guard - operations\pilot\auto_arm2.py:110; operations\pipeline\execution.py:321
+PASS: active prompt metric scope - no active role prompts found
+PASS: pytest - skipped with reason: Full suite via update_status:1565 passed in101.90s; no duplicate run

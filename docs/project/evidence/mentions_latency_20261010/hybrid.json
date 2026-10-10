@@ -1,0 +1,113 @@
+{
+  "mode": "hybrid",
+  "audio": "C:\\Users\\chole\\ba-thesis\\data\\live\\allin_live_1139524\\episode.mp3",
+  "audio_sha256": "1fa87570b1c436e05da5513c482479332800bfce1d5d8dd40529a7800e603d2f",
+  "audio_s": 5594.256,
+  "decode_s": 8.431477899895981,
+  "cpu_threads": 4,
+  "versions": {
+    "faster-whisper": "1.2.1",
+    "ctranslate2": "4.8.0",
+    "numpy": "2.4.3"
+  },
+  "timing_scope": "warm ASR and counters; excludes source, download, decode, books and orders",
+  "probe_audio_s": 360.0,
+  "serial_s": 89.64070410002023,
+  "parallel_s": 66.14544150000438,
+  "cpu_serial": {
+    "elapsed_s": 80.21848740009591,
+    "first_segments_s": 4.726284499978647,
+    "segment_count": 104,
+    "threshold_elapsed_s": {
+      "will-company-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 52.33540730015375
+    },
+    "counts": {
+      "will-ai-50-times-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 1,
+      "will-hundred-10-times-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 6,
+      "will-anthropic-5-times-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-spacex-3-times-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-ipo-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-nvidia-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-mark-zuckerberg-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-smartphone-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-google-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-microsoft-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-battleground-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-massive-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-company-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 1
+    }
+  },
+  "gpu_serial": {
+    "elapsed_s": 9.407856300007552,
+    "first_segments_s": 9.401185599854216,
+    "segment_count": 12,
+    "threshold_elapsed_s": {
+      "will-company-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 9.401185599854216
+    },
+    "counts": {
+      "will-ai-50-times-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 1,
+      "will-hundred-10-times-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 1,
+      "will-anthropic-5-times-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-spacex-3-times-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-ipo-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-nvidia-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-mark-zuckerberg-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-smartphone-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-google-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-microsoft-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-battleground-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-massive-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-company-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 1
+    }
+  },
+  "cpu_parallel": {
+    "elapsed_s": 66.1352611000184,
+    "first_segments_s": 3.834437500219792,
+    "segment_count": 104,
+    "threshold_elapsed_s": {
+      "will-company-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 43.915216700173914
+    },
+    "counts": {
+      "will-ai-50-times-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 1,
+      "will-hundred-10-times-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 6,
+      "will-anthropic-5-times-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-spacex-3-times-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-ipo-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-nvidia-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-mark-zuckerberg-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-smartphone-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-google-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-microsoft-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-battleground-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-massive-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-company-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 1
+    }
+  },
+  "gpu_parallel": {
+    "elapsed_s": 10.025928199989721,
+    "first_segments_s": 10.021130600012839,
+    "segment_count": 12,
+    "threshold_elapsed_s": {
+      "will-company-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 10.021130600012839
+    },
+    "counts": {
+      "will-ai-50-times-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 1,
+      "will-hundred-10-times-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 1,
+      "will-anthropic-5-times-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-spacex-3-times-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-ipo-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-nvidia-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-mark-zuckerberg-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-smartphone-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-google-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-microsoft-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-battleground-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-massive-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 0,
+      "will-company-be-said-during-the-next-episode-of-the-all-in-podcast-20261005": 1
+    }
+  },
+  "load_s": {
+    "small": 5.212089899927378,
+    "large": 42.44334949995391
+  }
+}

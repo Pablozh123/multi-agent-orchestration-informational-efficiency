@@ -1,0 +1,92 @@
+PASS: STATUS.md updated
+## Automation Snapshot
+
+Generated: 2026-10-10 13:21
+
+Current goal: `goal-quellenlatenz-speed-edge-001` - Quellen analysieren und mögliche Geschwindigkeitsvorteile messen
+
+Current roadmap phase: Historische Sekundenfolge und Orderbuch-Evidenz
+
+Test status: PASS
+
+Pytest summary: `skipped: Final development suite1588 passed105.90s and operational focused134 passed31.47s; captured followup evidence. Existing operational schema regression remains.`
+
+Git branch: `main`
+
+Latest commit: `71f9f8d`
+
+Git status:
+
+```text
+ M .gitignore
+ M AGENTS.md
+ M GOAL.md
+ M STATUS.md
+ M docs/project/WORK_LOG.md
+ M operations/pipeline/basisraten.py
+ M operations/pipeline/bot.py
+ M operations/pipeline/config.py
+ M operations/pipeline/execution.py
+ M operations/pipeline/orderbook.py
+ M operations/pipeline/transcription.py
+ M requirements.txt
+ M tests/test_basisraten_schwelle.py
+?? .graphifyignore
+?? docs/decisions/
+?? docs/project/ALLIN_E289_START_2026-09-11.md
+?? docs/project/ALLIN_NEXT_LIVE.md
+?? docs/project/ALLIN_NEXT_PAPER.md
+?? docs/project/ALLIN_PRESCAN_2026-09-11.md
+?? docs/project/ALLIN_PRICE_CAP_AUDIT_2026-09-12.md
+?? docs/project/ISW_ANALYSE_2026-09-19.md
+?? docs/project/ISW_SPEED_REVIEW_2026-10-07.md
+?? docs/project/ISW_UPDATE_2026-10-07.md
+?? docs/project/MENTIONS_OPTIMIERUNG_2026-10-10.md
+?? docs/project/QUELLENLATENZ_MESSZIEL.md
+?? docs/project/UEBERGABE_2026-10-10_ARCHITEKTUR_MENTIONS_LATENZ_JEV.md
+?? docs/project/evidence/
+?? operations/analysis/allin_price_cap_audit.py
+?? operations/analysis/mentions_decode_benchmark.py
+?? operations/analysis/mentions_pipeline_benchmark.py
+?? operations/pipeline/background.py
+?? operations/pipeline/incremental_audio.py
+?? operations/pipeline/parallel_orders.py
+?? operations/project/allin_manual_start.py
+?? operations/project/allin_next_live.py
+?? operations/project/allin_next_paper.py
+?? tests/test_allin_manual_start.py
+?? tests/test_allin_next_live.py
+?? tests/test_allin_next_paper.py
+?? tests/test_allin_price_cap_audit.py
+?? tests/test_allin_september11_ready.py
+?? tests/test_incremental_audio.py
+?? tests/test_mentions_parallel_orders.py
+?? tests/test_mentions_pipeline_latency.py
+```
+
+Git diff stat:
+
+```text
+ .gitignore                           |    3 +
+ AGENTS.md                            |   15 +
+ GOAL.md                              |   54 +-
+ STATUS.md                            |  475 +++++++++---
+ docs/project/WORK_LOG.md             | 1327 ++++++++++++++++++++++++++++++++++
+ operations/pipeline/basisraten.py    |   20 +-
+ operations/pipeline/bot.py           |  349 +++++----
+ operations/pipeline/config.py        |   29 +
+ operations/pipeline/execution.py     |  281 ++++++-
+ operations/pipeline/orderbook.py     |  129 ++++
+ operations/pipeline/transcription.py |  130 +++-
+ requirements.txt                     |    1 +
+ tests/test_basisraten_schwelle.py    |    2 +-
+ 13 files changed, 2568 insertions(+), 247 deletions(-)
+```
+
+Blockers:
+
+- Worktree has uncommitted changes that need review before commit.
+
+Next recommended action:
+
+- docs(ukraine): verankere Quellenlatenzziel und rekonstruiere erste Käufe

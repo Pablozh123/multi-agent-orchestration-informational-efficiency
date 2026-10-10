@@ -1,0 +1,30 @@
+{
+  "created_utc": "2026-10-10T11:21:48.701024+00:00",
+  "code_copies_identical": true,
+  "sha256": {
+    "operations/pipeline/bot.py": "f6775de6d0a8b6d1e2c671db365d8860ffd181d9405576a65447fc39d786fb94",
+    "operations/pipeline/execution.py": "61b347a7af16b0e6f3edcff63ff198b7ae8a6d4272be52bad35b0ea4d4a03bcb",
+    "operations/pipeline/transcription.py": "b5d2739bd0dec58117bb5f1df216cb491c1f13bef41b17cbc23a4f7b06226c23",
+    "operations/pipeline/parallel_orders.py": "99c5c7d61b9898837cc33ed5fbf5ab89932a0b25944bcc30ac456226ed629503",
+    "operations/pipeline/incremental_audio.py": "87facf6cfcdbe068653ca2e9a04b406cd3f20e00489f48c41000061bc42457c8",
+    "operations/analysis/mentions_decode_benchmark.py": "5643e06186b67f3e9304ad72eb8bb26f907b00cea8eaa55bcfe1624ca6e5e558",
+    "tests/test_mentions_pipeline_latency.py": "1a1c8067e01c3eab9ddf9ae582080e14eed2c45a69298e273c38b81029ad5db1",
+    "tests/test_mentions_parallel_orders.py": "6dacd402b9f5644eb289f4d71f3da05b4618f452605f5df4cfd56b16d32bb901",
+    "tests/test_incremental_audio.py": "83fce9c3862c2b2e31c4de22364b11112188194e6432426df43875c1567fe25a"
+  },
+  "development_suite": {
+    "passed": 1588,
+    "seconds": 105.9
+  },
+  "operational_focused": {
+    "passed": 134,
+    "seconds": 31.47
+  },
+  "existing_operational_schema_test": {
+    "passed": 12,
+    "failed": 1
+  },
+  "global_review_existing_failure_groups": 4,
+  "live_bot_started": false,
+  "real_orders_sent": false
+}

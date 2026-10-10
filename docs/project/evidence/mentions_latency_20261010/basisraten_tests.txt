@@ -1,0 +1,37 @@
+......................F...                                               [100%]
+================================== FAILURES ===================================
+____________ test_snapshot_traegt_schema_und_schwellen_schluessel _____________
+
+tmp_path = WindowsPath('C:/Users/chole/AppData/Local/Temp/pytest-of-chole/pytest-1870/test_snapshot_traegt_schema_un0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000015FC949C520>
+
+    def test_snapshot_traegt_schema_und_schwellen_schluessel(
+            tmp_path, monkeypatch) -> None:
+        events = [{"markets": [_allin_ai(35, "20260701", "YES"),
+                               _allin_ai(50, "20260701", "NO")]}]
+
+        class _Antwort:
+            def raise_for_status(self) -> None:
+                pass
+
+            def json(self) -> list[dict]:
+                return events
+
+        aufrufe: list[dict] = []
+
+        def fake_get(url, params=None, headers=None, timeout=None):
+            aufrufe.append(params)
+            return _Antwort()
+
+        monkeypatch.setattr(httpx, "get", fake_get)
+        pfad = tmp_path / "basisraten_snapshot.json"
+        historie = hole_serien_historie("11300", snapshot_pfad=pfad)
+        assert historie == {"ai-35-times": ["YES"], "ai-50-times": ["NO"]}
+        snap = json.loads(pfad.read_text(encoding="utf-8"))
+>       assert snap["schema"] == SNAPSHOT_SCHEMA == 2
+E       assert 3 == 2
+
+tests\test_basisraten_schwelle.py:215: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_basisraten_schwelle.py::test_snapshot_traegt_schema_und_schwellen_schluessel
+1 failed, 25 passed in 0.39s

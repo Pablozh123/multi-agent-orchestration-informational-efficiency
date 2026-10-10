@@ -1,0 +1,1020 @@
+{
+ "profil": "allin_live_1139524",
+ "event_slug": "what-will-be-said-on-the-next-all-in-podcast-october-9-20261005",
+ "abgerufen_utc": "2026-10-10T04:31:26+00:00",
+ "quelle": "data-api.polymarket.com/trades (oeffentlich, read-only)",
+ "maerkte": {
+  "5343589": [
+   {
+    "ts_utc": "2026-10-06T12:02:19Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.17,
+    "size": 24.2,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T12:02:24Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.2,
+    "size": 24.4,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T12:02:48Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.23,
+    "size": 24.4,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T15:35:53Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.24,
+    "size": 6.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T17:49:32Z",
+    "side": "SELL",
+    "outcome": "No",
+    "preis": 0.22,
+    "size": 6.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T23:41:49Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.18,
+    "size": 11.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-07T07:26:08Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.1964285556,
+    "size": 10.181819,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-08T18:51:20Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.2380239521,
+    "size": 33.4,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-09T09:45:00Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.22,
+    "size": 33.4,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:26:44Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.977176543,
+    "size": 146.31,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:27:20Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.99,
+    "size": 20.202,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:30:17Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.99,
+    "size": 25.49,
+    "eigen": false
+   }
+  ],
+  "5343590": [
+   {
+    "ts_utc": "2026-10-10T02:27:11Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.98,
+    "size": 20.40815,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:30:14Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.98,
+    "size": 30.5,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:14:37Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.98,
+    "size": 49.09,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:14:42Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.9895238345,
+    "size": 19.09,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:14:49Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.998,
+    "size": 25.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:15:09Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.998,
+    "size": 25.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:15:10Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.999,
+    "size": 5.005,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:15:10Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.999,
+    "size": 4.994,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:15:22Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.998755142,
+    "size": 91.89,
+    "eigen": false
+   }
+  ],
+  "5343591": [
+   {
+    "ts_utc": "2026-10-06T05:44:04Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.2199999943,
+    "size": 24.363637,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T14:21:54Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.22,
+    "size": 0.03,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-07T07:26:20Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.2403846154,
+    "size": 8.32,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-07T14:19:41Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.79,
+    "size": 10.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-08T19:29:59Z",
+    "side": "SELL",
+    "outcome": "Yes",
+    "preis": 0.8,
+    "size": 10.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-09T20:19:11Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.95,
+    "size": 10.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-09T20:19:43Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.97,
+    "size": 20.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:26:44Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.98,
+    "size": 20.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:27:08Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.987531169,
+    "size": 20.2525,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:30:17Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.99,
+    "size": 2.17,
+    "eigen": false
+   }
+  ],
+  "5343594": [
+   {
+    "ts_utc": "2026-10-06T01:06:25Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.41,
+    "size": 25.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T01:44:53Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.38,
+    "size": 25.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-07T07:24:15Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.609999986,
+    "size": 16.393443,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:27:11Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.6949842185,
+    "size": 28.777629,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:31:08Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.76,
+    "size": 2.72,
+    "eigen": true
+   },
+   {
+    "ts_utc": "2026-10-10T04:10:24Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.97,
+    "size": 11.21,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:10:30Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.98,
+    "size": 25.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:10:33Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.99,
+    "size": 18.8,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:12:13Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.999,
+    "size": 4.994,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:20:36Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.999,
+    "size": 45.0,
+    "eigen": false
+   }
+  ],
+  "5343595": [
+   {
+    "ts_utc": "2026-10-05T22:18:13Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.5,
+    "size": 25.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T01:18:41Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.14,
+    "size": 25.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T01:44:52Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.73,
+    "size": 25.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-07T14:21:29Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.84,
+    "size": 5.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-09T03:20:00Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.8597395833,
+    "size": 38.4,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:26:44Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.6113686314,
+    "size": 100.1,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:27:11Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.9857072449,
+    "size": 20.29,
+    "eigen": false
+   }
+  ],
+  "5343596": [
+   {
+    "ts_utc": "2026-10-10T02:26:44Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.3013333333,
+    "size": 85.5,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:27:11Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.99,
+    "size": 20.202,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:12:09Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.99,
+    "size": 7.22,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:14:16Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.999,
+    "size": 4.994,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:24:49Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.999,
+    "size": 45.0,
+    "eigen": false
+   }
+  ],
+  "5343597": [
+   {
+    "ts_utc": "2026-10-06T09:32:43Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.92,
+    "size": 5.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T09:32:46Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.96,
+    "size": 5.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-07T18:49:45Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.76,
+    "size": 10.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-08T20:05:20Z",
+    "side": "SELL",
+    "outcome": "Yes",
+    "preis": 0.04,
+    "size": 10.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:26:44Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.3257446809,
+    "size": 42.3,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T03:21:24Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.98,
+    "size": 12.62,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T03:21:24Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.98,
+    "size": 5.051,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T03:21:24Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.98,
+    "size": 1.0204,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T03:29:26Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.99,
+    "size": 10.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T03:29:27Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.998,
+    "size": 5.01,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:15:55Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.9987693491,
+    "size": 64.99,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:15:57Z",
+    "side": "SELL",
+    "outcome": "Yes",
+    "preis": 0.068,
+    "size": 5.01,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:24:28Z",
+    "side": "SELL",
+    "outcome": "No",
+    "preis": 0.001,
+    "size": 10.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:24:43Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.999,
+    "size": 90.79,
+    "eigen": false
+   }
+  ],
+  "5343598": [
+   {
+    "ts_utc": "2026-10-06T01:05:40Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.76,
+    "size": 25.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:26:44Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.98,
+    "size": 5.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:27:11Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.99,
+    "size": 20.202,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:00:10Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.99,
+    "size": 7.22,
+    "eigen": false
+   }
+  ],
+  "5343599": [
+   {
+    "ts_utc": "2026-10-07T07:24:53Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.092936803,
+    "size": 53.8,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:27:03Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.9895238345,
+    "size": 19.09,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:33:24Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.999,
+    "size": 50.0,
+    "eigen": false
+   }
+  ],
+  "5343600": [
+   {
+    "ts_utc": "2026-10-05T22:51:38Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.51,
+    "size": 25.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T01:06:13Z",
+    "side": "SELL",
+    "outcome": "No",
+    "preis": 0.47,
+    "size": 25.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T02:34:24Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.54,
+    "size": 67.1,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T05:43:55Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.55,
+    "size": 8.4,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T05:43:55Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.55,
+    "size": 8.2,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T05:43:57Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.55,
+    "size": 8.4,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T05:44:15Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.55,
+    "size": 6.7,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T05:44:15Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.55,
+    "size": 6.7,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T05:44:16Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.55,
+    "size": 6.7,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T13:45:45Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.61,
+    "size": 20.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:26:44Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.9535099338,
+    "size": 15.1,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:27:02Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.99,
+    "size": 20.202,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T03:19:06Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.99,
+    "size": 10.101,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T03:19:08Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.99,
+    "size": 5.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T03:19:08Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.99,
+    "size": 2.11,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:16:16Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.999,
+    "size": 50.0,
+    "eigen": false
+   }
+  ],
+  "5343601": [
+   {
+    "ts_utc": "2026-10-06T09:27:33Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.98,
+    "size": 19.22,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T09:27:37Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.98,
+    "size": 1.22445,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T09:27:42Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.98,
+    "size": 3.95,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:00:41Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.1544317807,
+    "size": 151.79,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:26:44Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.98,
+    "size": 13.71,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:27:11Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.99,
+    "size": 20.202,
+    "eigen": false
+   }
+  ],
+  "5343602": [
+   {
+    "ts_utc": "2026-10-06T09:27:54Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.98,
+    "size": 5.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T09:27:58Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.99,
+    "size": 29.39,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-07T07:26:57Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.0691566328,
+    "size": 28.919858,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T03:17:35Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.998,
+    "size": 39.45,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T03:17:35Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.999,
+    "size": 4.994,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T03:17:36Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.999,
+    "size": 5.005,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:18:09Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.998,
+    "size": 39.44,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:18:12Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.999,
+    "size": 5.005,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:18:22Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.999,
+    "size": 190.48,
+    "eigen": false
+   }
+  ],
+  "5343603": [
+   {
+    "ts_utc": "2026-10-06T09:27:09Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.98,
+    "size": 5.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T09:27:10Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.99,
+    "size": 5.0505,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T09:27:13Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.99,
+    "size": 24.33,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-07T07:27:09Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.0592771144,
+    "size": 33.739834,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:32:36Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.998,
+    "size": 5.01,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:32:36Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.997,
+    "size": 13.33,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T03:08:45Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.997700888,
+    "size": 50.115,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T03:08:47Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.998,
+    "size": 4.86,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T03:32:45Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.9985978022,
+    "size": 50.05,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:18:43Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.998,
+    "size": 10.03,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:19:19Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.999,
+    "size": 20.08,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T04:24:10Z",
+    "side": "BUY",
+    "outcome": "Yes",
+    "preis": 0.999,
+    "size": 94.29,
+    "eigen": false
+   }
+  ],
+  "5343604": [
+   {
+    "ts_utc": "2026-10-06T02:43:55Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.98,
+    "size": 21.66,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T02:44:01Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.98,
+    "size": 5.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T05:18:55Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.99,
+    "size": 303.0,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-06T09:28:19Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.996,
+    "size": 8.54,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-09T11:11:16Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.999,
+    "size": 5.005,
+    "eigen": false
+   },
+   {
+    "ts_utc": "2026-10-10T02:28:44Z",
+    "side": "BUY",
+    "outcome": "No",
+    "preis": 0.999,
+    "size": 44.99,
+    "eigen": false
+   }
+  ]
+ }
+}

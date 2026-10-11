@@ -2,92 +2,92 @@
  "profil": "allin_live_1139524",
  "event_slug": "what-will-be-said-on-the-next-all-in-podcast-october-9-20261005",
  "event_titel": "What will be said on the next All-In Podcast? (October 9)",
- "abgerufen_utc": "2026-10-10T04:31:12+00:00",
+ "abgerufen_utc": "2026-10-11T04:31:25+00:00",
  "quelle": "gamma-api.polymarket.com/events (oeffentlich, read-only)",
  "maerkte": {
   "5343589": {
    "frage": "Will \"AI\" be said 50+ times during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.53
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
   },
   "5343590": {
    "frage": "Will \"Hundred\" or \"Thousand\" or \"Million\" be said 10+ times during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.9735
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
   },
   "5343591": {
    "frage": "Will \"Anthropic\" be said 5+ times during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.88
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
   },
   "5343594": {
    "frage": "Will \"SpaceX\" be said 3+ times during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.005
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
   },
   "5343595": {
    "frage": "Will \"IPO\" be said during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.46
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
   },
   "5343596": {
    "frage": "Will \"Nvidia\" be said during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.005
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
   },
   "5343597": {
    "frage": "Will \"Mark Zuckerberg\" be said during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.5255
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
   },
   "5343598": {
    "frage": "Will \"Smartphone\" be said during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.055
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
   },
   "5343599": {
    "frage": "Will \"Google\" be said during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.995
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
   },
   "5343600": {
    "frage": "Will \"Microsoft\" be said during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.771
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
   },
   "5343601": {
    "frage": "Will \"Battleground\" be said during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.345
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
   },
   "5343602": {
    "frage": "Will \"Massive\" be said during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.9645
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
   },
   "5343603": {
    "frage": "Will \"Company\" be said during the next episode of the All-In Podcast?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.9725
+   "closed": true,
+   "outcome_yes": true,
+   "aktueller_yes_preis": null
   },
   "5343604": {
    "frage": "Will no episode air?",
-   "closed": false,
-   "outcome_yes": null,
-   "aktueller_yes_preis": 0.0005
+   "closed": true,
+   "outcome_yes": false,
+   "aktueller_yes_preis": null
   }
  }
 }

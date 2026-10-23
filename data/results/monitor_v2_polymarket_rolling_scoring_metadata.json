@@ -1,13 +1,13 @@
 {
-  "generated_at_utc": "2026-10-22T04:30:43+00:00",
+  "generated_at_utc": "2026-10-23T04:30:46+00:00",
   "inputs": {
     "event_candidate_row_count": 0,
     "event_candidates_path": "data\\results\\monitor_v2_polymarket_live_event_candidates.csv",
-    "market_snapshot_row_count": 1444,
+    "market_snapshot_row_count": 1454,
     "market_snapshots_path": "data\\results\\monitor_v2_polymarket_live_market_snapshots.csv",
     "validation_report_path": "data\\results\\monitor_v2_polymarket_rolling_scoring_validation_report.json",
     "validation_status": "pass",
-    "wallet_tier_snapshot_row_count": 722,
+    "wallet_tier_snapshot_row_count": 727,
     "wallet_tier_snapshots_path": "data\\results\\monitor_v2_polymarket_live_wallet_tier_snapshots.csv",
     "watchlist_path": "data\\results\\monitor_v2_polymarket_live_watchlist.csv",
     "watchlist_row_count": 15
@@ -45,7 +45,7 @@
     "validates_inputs_before_scoring": true
   },
   "outputs": {
-    "alert_count": 119,
+    "alert_count": 122,
     "alert_row_columns": [
       "timestamp_utc",
       "market_id",
@@ -68,13 +68,13 @@
       "review_status",
       "claim_scope"
     ],
-    "alert_row_count": 4302,
+    "alert_row_count": 4332,
     "contains_order_instructions": false,
     "contains_wallet_addresses": false,
     "severity_counts": {
-      "high": 96,
-      "info": 19,
-      "none": 4183,
+      "high": 98,
+      "info": 20,
+      "none": 4210,
       "watch": 4
     },
     "snapshot_columns": [
@@ -90,11 +90,11 @@
       "limitation",
       "review_status"
     ],
-    "snapshot_count": 4302,
+    "snapshot_count": 4332,
     "status_counts": {
       "insufficient_baseline": 144,
-      "ok": 404,
-      "zero_mad": 3754
+      "ok": 408,
+      "zero_mad": 3780
     },
     "summary_columns": [
       "market_id",

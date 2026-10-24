@@ -1,9 +1,9 @@
 {
-  "generated_at_utc": "2026-10-23T04:30:47+00:00",
+  "generated_at_utc": "2026-10-24T04:30:46+00:00",
   "inputs": {
     "alert_rows_path": "data\\results\\monitor_v2_polymarket_rolling_alert_rows.csv",
     "reference_features_path": "data\\results\\wallet_reference_pattern_features.csv",
-    "source_alert_rows": 4332
+    "source_alert_rows": 4362
   },
   "limitations": {
     "aggregate_monitor_fields_only": true,
@@ -25,16 +25,16 @@
     "uses_existing_files_only": true
   },
   "outputs": {
-    "candidate_count": 68,
+    "candidate_count": 69,
     "candidate_features_path": "data\\results\\monitor_reference_candidate_features.csv",
     "candidate_summary_path": "data\\results\\monitor_reference_candidate_summary.csv",
     "contains_order_instructions": false,
     "contains_wallet_addresses": false,
     "dashboard_path": "data\\results\\monitor_reference_candidate_dashboard.html",
     "max_similarity_score": 1.0,
-    "similarity_comparison_rows": 136,
+    "similarity_comparison_rows": 138,
     "similarity_scores_path": "data\\results\\monitor_reference_candidate_similarity_scores.csv",
     "similarity_summary_path": "data\\results\\monitor_reference_candidate_similarity_summary.csv",
-    "triggered_feature_rows": 87
+    "triggered_feature_rows": 88
   }
 }
